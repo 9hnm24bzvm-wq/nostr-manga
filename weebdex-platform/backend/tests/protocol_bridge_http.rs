@@ -584,7 +584,7 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
     f.state.protocol.verify_schema().await.unwrap();
     f.state
         .protocol
-        .install_visibility_function()
+        .prepare_visibility_function()
         .await
         .unwrap();
     f.state
@@ -1399,7 +1399,7 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
     peer_state.protocol.verify_schema().await.unwrap();
     peer_state
         .protocol
-        .install_visibility_function()
+        .prepare_visibility_function()
         .await
         .unwrap();
     peer_state.protocol.configure_publication(OperatorRuntimeConfig{operator_key_file:peer_key.clone(),expected_publisher:peer_publisher.clone(),storage_owner:peer_publisher.clone(),storage_holder:peer_publisher.clone(),storage:json!({"path":peer_storage.path().join("originals"),"volume":"BridgeDistinctPeer","physical_bytes":64*1024*1024,"staging_bytes":64*1024*1024,"max_blob_bytes":8*1024*1024,"upload_slots":2}),group_keys_dir:None,backend:None,native_node:Some(json!({"bind":peer_bind.to_string(),"base_url":peer_origin,"service_key_file":peer_key,"admin_pubkey":peer_publisher,"database_plaintext_local":true,"read_policy":"public","cors_origins":[ORIGIN],"sync_worker_enabled":false,"auto_approve_publication_deletions":false,"backend":{"binary":binary,"data_dir":peer_storage.path().join("real-projection"),"map_bytes":64*1024*1024,"timeout_seconds":5}}))}).await.unwrap();

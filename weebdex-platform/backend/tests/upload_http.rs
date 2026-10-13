@@ -1886,7 +1886,7 @@ async fn signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_sta
     f.state.protocol.verify_schema().await.unwrap();
     f.state
         .protocol
-        .install_visibility_function()
+        .prepare_visibility_function()
         .await
         .unwrap();
     f.state

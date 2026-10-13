@@ -46,9 +46,11 @@ review and serialized compilation. Their new acceptance tests have not run.
 
 ## Actual connected pathways
 
-* Startup verifies the original schema and installs a visibility function generated
-  from the original catalogue policy. Without verified source tables, source-linked
-  resources fail closed; native instance-local resources remain available.
+* Explicit owner-role platform `migrate` prepares a visibility function generated
+  from the original catalogue policy. Startup verifies the original schema and exact
+  prepared policy without DDL; missing, mismatched or wrong-mode policy rejects
+  readiness. Native-only preparation hides every source-linked resource. See
+  [database role setup](database-role-setup.md).
 * The owned importer scans actual signed kind-1002/1001 source events in bounded
   repeating keyset sweeps. A preflight length query selects a <=2MiB prefix before
   loading bodies, so a16-row aggregate cannot wedge the cursor. Individually invalid
