@@ -16,7 +16,10 @@ EnvironmentFile=/etc/weebdex/secrets/runtime.env
 ExecStart=/opt/weebdex/weebdex-platform/scripts/run-platform.sh serve
 Restart=on-failure
 RestartSec=5
+# Signal only the main owner first; retain final whole-cgroup cleanup.
+KillMode=mixed
 KillSignal=SIGTERM
+# Must exceed the actual platform.json shutdown_grace_seconds (default 210).
 TimeoutStopSec=225
 UMask=0077
 NoNewPrivileges=true
