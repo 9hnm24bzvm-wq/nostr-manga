@@ -239,8 +239,15 @@ const fragments = files(path.join(root, 'platform-integrations')).filter(file =>
 const env = { ...process.env, PUBLIC_SITE_NAME: 'WeebDex', PUBLIC_API_URL: '/api', PUBLIC_KRATOS_PUBLIC_API: '/auth', PUBLIC_COVER_URL: '/covers', PUBLIC_DATA_URL: '/data', PUBLIC_UPLOAD_URL: '/uploads', PUBLIC_PROXY_URL: '/proxy', PUBLIC_OPENGRAPH_URL: '/og-image' };
 function run(label, args) {
   const started = Date.now();
-  const result = spawnSync(process.execPath, args, { cwd: project, env, encoding: 'utf8', timeout: 300_000, maxBuffer: 32 * 1024 * 1024 });
-  fs.writeFileSync(path.join(evidence, label + '.log'), (result.stdout ?? '') + (result.stderr ?? ''));
+  // svelte-check calls process.exit immediately after printing. Regular files
+  // make Node stdout synchronous, preventing a truncated buffered pipe receipt.
+  const stdoutPath = path.join(evidence, label + '.stdout.log'), stderrPath = path.join(evidence, label + '.stderr.log');
+  const stdoutFd = fs.openSync(stdoutPath, 'wx'), stderrFd = fs.openSync(stderrPath, 'wx');
+  let result;
+  try { result = spawnSync(process.execPath, args, { cwd: project, env, timeout: 300_000, stdio: ['ignore', stdoutFd, stderrFd] }); }
+  finally { fs.closeSync(stdoutFd); fs.closeSync(stderrFd); }
+  result.stdout = fs.readFileSync(stdoutPath, 'utf8'); result.stderr = fs.readFileSync(stderrPath, 'utf8');
+  fs.writeFileSync(path.join(evidence, label + '.log'), result.stdout + result.stderr);
   const receipt = { command: [process.execPath, ...args], exit_code: result.status, signal: result.signal, error: result.error?.message, elapsed_ms: Date.now() - started };
   writeJSON(path.join(evidence, label + '-receipt.json'), receipt); return { ...result, receipt };
 }

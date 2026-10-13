@@ -4,7 +4,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { fileURLToPath } = require('node:url');
 const { syncBuiltinESMExports } = require('node:module');
-const roots = JSON.parse(process.env.WEEBDEX_READONLY_CACHE_ROOTS || '[]').map(root => fs.realpathSync(root));
+if (!process.env.WEEBDEX_READONLY_CACHE_ROOTS) throw Error('Read-only cache guard requires configured protected roots');
+const configuredRoots = JSON.parse(process.env.WEEBDEX_READONLY_CACHE_ROOTS);
+if (!Array.isArray(configuredRoots) || !configuredRoots.length || configuredRoots.some(root => typeof root !== 'string' || !path.isAbsolute(root) || !fs.statSync(root).isDirectory())) throw Error('Read-only cache guard requires a nonempty array of absolute existing cache directories');
+const roots = configuredRoots.map(root => fs.realpathSync(root));
+if (new Set(roots).size !== roots.length) throw Error('Read-only cache guard roots must be distinct');
+const auditDirectory = process.env.WEEBDEX_READONLY_AUDIT_DIR;
+if (!auditDirectory || !path.isAbsolute(auditDirectory) || !fs.statSync(auditDirectory).isDirectory()) throw Error('Read-only cache guard requires an existing absolute audit directory');
+const actualAuditDirectory = fs.realpathSync(auditDirectory);
+if (roots.some(root => actualAuditDirectory === root || actualAuditDirectory.startsWith(root + path.sep))) throw Error('Cache guard audit output cannot be inside a protected cache');
 const original = { realpathSync: fs.realpathSync, existsSync: fs.existsSync, writeFileSync: fs.writeFileSync };
 const fdPaths = new Map();
 const denied = [];
@@ -62,6 +70,5 @@ for (const name of ['write', 'writeSync', 'writev', 'writevSync', 'ftruncate', '
 }
 syncBuiltinESMExports();
 process.on('exit', () => {
-  const directory = process.env.WEEBDEX_READONLY_AUDIT_DIR;
-  if (directory) original.writeFileSync(path.join(directory, `${process.pid}.json`), JSON.stringify({ pid: process.pid, protected_roots: roots, checked_node_mutations: checkedMutations, protected_write_attempts: denied.length, denied }, null, 2) + '\n');
+  original.writeFileSync(path.join(actualAuditDirectory, `${process.pid}.json`), JSON.stringify({ pid: process.pid, protected_roots: roots, checked_node_mutations: checkedMutations, protected_write_attempts: denied.length, denied }, null, 2) + '\n');
 });
