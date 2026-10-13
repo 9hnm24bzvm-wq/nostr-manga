@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FIELDS = {"KillMode", "KillSignal", "SendSIGKILL", "FinalKillSignal", "TimeoutStopSec", "Type", "ExecStart", "SendSIGHUP", "RestartKillSignal", "ExecStop"}
+FIELDS = {"KillMode", "KillSignal", "SendSIGKILL", "FinalKillSignal", "TimeoutStopSec", "TimeoutSec", "Type", "ExecStart", "SendSIGHUP", "RestartKillSignal", "ExecStop"}
 
 
 def seconds(value):
@@ -46,6 +46,8 @@ def check(unit_text, config, default_grace):
     if not isinstance(config, dict):
         raise ValueError("runtime config must be an object")
     fields = service_fields(unit_text)
+    if "TimeoutSec" in fields:
+        raise ValueError("TimeoutSec shorthand is unsupported; use one explicit TimeoutStopSec")
     for key, expected in {"Type": "simple", "KillMode": "mixed", "KillSignal": "SIGTERM"}.items():
         if fields.get(key) != expected:
             raise ValueError(key + " must be " + expected)

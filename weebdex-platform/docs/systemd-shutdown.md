@@ -32,7 +32,10 @@ python3 scripts/check-service-shutdown.py --unit deployment/weebdex.service.exam
 
 The check reads only the deadline field from the runtime configuration for its
 report; it prints no JSON configuration or secrets. It is a deliberately narrow
-unit-file/config contract check, not a complete systemd parser. Check the effective
+unit-file/config contract check, not a complete systemd parser. It rejects
+`TimeoutSec` shorthand anywhere in the service section because that shorthand
+can override the stop budget according to assignment order; supply one explicit
+`TimeoutStopSec` instead. Check the effective
 installed properties and drop-ins separately with `systemctl show weebdex.service
 --property=MainPID,KillMode,KillSignal,SendSIGKILL,FinalKillSignal,TimeoutStopUSec`
 and confirm ExecStart still execs the platform binary. No configuration check

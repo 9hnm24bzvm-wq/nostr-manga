@@ -1,11 +1,11 @@
 {
   "issue": "https://github.com/9hnm24bzvm-wq/nostr-manga/issues/24",
   "baseline_commit": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768",
-  "checked_utc": "2026-10-13T20:25:00Z",
+  "checked_utc": "2026-10-13T20:28:00Z",
   "production_change": "Explicit KillMode=mixed in the example service; no Rust lifecycle changes",
   "focused_contract_and_fixture_tests": {
     "status": "passed",
-    "tests": 10,
+    "tests": 11,
     "command": "python3 -m unittest discover -s tests/contracts -v"
   },
   "example_config_checks": {
@@ -52,5 +52,6 @@
   "host_settings_changed": false,
   "merged": false,
   "deployed": false,
-  "claim_boundary": "Passing contract checks and direct-signaled synthetic fixture tests do not establish real-manager or actual installed-application stop acceptance"
+  "claim_boundary": "Passing contract checks and direct-signaled synthetic fixture tests do not establish real-manager or actual installed-application stop acceptance",
+  "review_followup": "Reject TimeoutSec shorthand anywhere in Service, including a late same-file assignment that would override TimeoutStopSec"
 }

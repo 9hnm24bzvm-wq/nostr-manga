@@ -38,6 +38,13 @@ class ServiceShutdownContract(unittest.TestCase):
                 CONTRACT.check(UNIT.replace("TimeoutStopSec=225", "TimeoutStopSec=" + stop), {}, 210)
         self.assertEqual(CONTRACT.seconds("3min 45s"), 225)
 
+    def test_timeout_shorthand_cannot_hide_a_shorter_same_file_budget(self):
+        for text in (UNIT + "\n[Service]\nTimeoutSec=10\n",
+                     UNIT.replace("TimeoutStopSec=225", "TimeoutSec=10\nTimeoutStopSec=225"),
+                     UNIT.replace("TimeoutStopSec=225", "TimeoutStopSec=225\nTimeoutSec=10")):
+            with self.subTest(text=text), self.assertRaisesRegex(ValueError, "TimeoutSec shorthand"):
+                CONTRACT.check(text, {}, 210)
+
     def test_final_cgroup_cleanup_cannot_be_disabled(self):
         for directive in ("SendSIGKILL=no", "FinalKillSignal=SIGTERM", "KillSignal=SIGINT"):
             text = UNIT.replace("KillSignal=SIGTERM", directive) if directive.startswith("KillSignal=") else UNIT + "\n[Service]\n" + directive
