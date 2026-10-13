@@ -2126,9 +2126,10 @@ async fn offline_full_publisher_backup_restore_fences_auth_and_exact_retry() {
     let bearer = "synthetic-offline-api-client";
     let mail_token = "A".repeat(43);
     let mail_hash = Sha256::digest(mail_token.as_bytes()).to_vec();
+    let recipient_hash = Sha256::digest(format!("{}@fixture.invalid",username.to_ascii_lowercase()).as_bytes()).to_vec();
     let client = f.state.db.client().await.unwrap();
     client.execute("INSERT INTO platform.api_clients(id,user_id,name,secret_hash,scopes) VALUES('offline-backup-client',$1,'Synthetic fixture',$2,'[\"self.library.read\"]')",&[&f.owner_id,&Sha256::digest(bearer.as_bytes()).to_vec()]).await.unwrap();
-    client.execute("INSERT INTO platform.auth_email_tokens(id,kind,user_id,token_hash,recipient_hash,flow_id,return_to,delivery_state,expires_at) SELECT 'offline-backup-mail','recovery',id,$2,decode(repeat('ab',32),'hex'),$3,$4,'sent',clock_timestamp()+interval '15 minutes' FROM platform.users WHERE id=$1",&[&f.owner_id,&mail_hash,&flow_id,&ORIGIN]).await.unwrap();
+    client.execute("INSERT INTO platform.auth_email_tokens(id,kind,user_id,token_hash,recipient_hash,flow_id,return_to,delivery_state,expires_at) SELECT 'offline-backup-mail','recovery',id,$2,$5,$3,$4,'sent',clock_timestamp()+interval '15 minutes' FROM platform.users WHERE id=$1",&[&f.owner_id,&mail_hash,&flow_id,&ORIGIN,&recipient_hash]).await.unwrap();
     drop(client);
     let source_path = storage_root.join("publisher.json"); private_json(&source_path,&source_config);
     let backup_path = storage_root.join("backup");
@@ -2145,6 +2146,12 @@ async fn offline_full_publisher_backup_restore_fences_auth_and_exact_retry() {
     assert_eq!(marker["profile"],"offline-full-publisher-v1");
     assert!(marker["native_media"].as_u64().unwrap()>=4);
     assert_ne!(keys[0].1,keys[1].1,"both independent signing identities must survive");
+    // Consume a genuinely valid source recovery link AFTER the recovery point.
+    // Restore must not revive that now-used snapshot token.
+    let auth_source = AppState::connect(serde_json::from_value(source_config.clone()).unwrap(),dsn.clone()).await.unwrap();
+    let auth_app = weebdex_platform::router::router(auth_source.clone());
+    send(&auth_app,Method::GET,&format!("/auth/self-service/recovery?token={mail_token}"),None,&[],vec![],StatusCode::SEE_OTHER).await;
+    drop(auth_app); drop(auth_source);
     // A wrong operator signer fails before writing another backup.
     let mut wrong = source_config.clone(); wrong["protocol_publication"]["expected_publisher"] = json!(keys[1].1);
     let wrong_path = storage_root.join("wrong-signer.json"); private_json(&wrong_path,&wrong);
