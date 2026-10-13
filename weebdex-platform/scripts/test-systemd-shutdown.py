@@ -18,8 +18,10 @@ SCRIPT = Path(__file__).resolve()
 
 
 def durable(path, value):
-    with path.open("w") as file:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    with temporary.open("w") as file:
         file.write(json.dumps(value)); file.flush(); os.fsync(file.fileno())
+    os.replace(temporary, path)
     descriptor = os.open(path.parent, os.O_DIRECTORY)
     try:
         os.fsync(descriptor)
@@ -39,6 +41,7 @@ def wait_for(predicate, seconds=10):
 def fixture(role, root, mode):
     if role == "child":
         def interrupted(*_):
+            signal.signal(signal.SIGTERM, signal.SIG_IGN)
             durable(root / "child-term.json", {"signal": "SIGTERM"})
             raise SystemExit(74)
         signal.signal(signal.SIGTERM, interrupted)
