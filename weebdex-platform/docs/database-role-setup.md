@@ -119,7 +119,14 @@ synthetic signer, isolated original storage, installed real projection backend
 and supervised native listener. It checks genuine NIP-11 publication capability,
 original startup DML (budget/instance/service-announcement/backend identity),
 both listener shutdowns, immutable histories/policy and absence of simple- or
-extended-protocol DDL. This is startup/grant proof, not signed1002 publication,
+extended-protocol DDL. An owner-provisioned synthetic staff session and signer
+binding then drive real native manga-create, draft-commit and draft-publish HTTP
+routes. The configured original module signs kind1002 and its canonical CBOR
+manifest; the installed backend must genuinely project it. Original event HTTP
+and public platform detail must become visible, with matching event digest,
+publisher, manifest pointer and completed original outbox verified through the
+restricted role. No source publication or projection acknowledgement is seeded.
+This is bounded startup plus one genuine series-publication grant proof, not
 complete publisher-feature acceptance, production TLS/SSO or a deployment.
 
 ## Bounded public-seam acceptance

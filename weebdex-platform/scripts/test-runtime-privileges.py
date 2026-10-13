@@ -180,6 +180,9 @@ class Fixture:
         protected = self.sql("SELECT 'original:'||version||':'||encode(checksum,'hex') FROM public.schema_migrations UNION ALL SELECT 'platform:'||version||':'||name||':'||encode(checksum,'hex') FROM platform.schema_migrations UNION ALL SELECT 'policy:'||version||':'||mode||':'||encode(checksum,'hex') FROM platform.protocol_visibility_policy ORDER BY 1")
         for statement in ["DELETE FROM public.schema_migrations WHERE version=1", "UPDATE platform.schema_migrations SET name='tampered' WHERE version=1", "UPDATE platform.protocol_visibility_policy SET version=2", "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE SQL AS $$ SELECT TRUE $$"]:
             self.sql(statement, RUNTIME, ok=False)
+        token = "fixture-runtime-publisher-session"
+        digest = hashlib.sha256(token.encode()).hexdigest()
+        self.sql(f"INSERT INTO platform.users(id,username,email,password_hash,verified,roles,permissions) VALUES('RtPublish1','RuntimePublisher','publisher@fixture.invalid','fixture-no-password',TRUE,'[\"staff\"]','[\"manga.create\",\"manga.state.update\"]'); INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES('RtPublish1','RtPublish1',decode('{digest}','hex'),clock_timestamp()+interval '1 hour'); INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES('{FIXTURE_PUBLISHER}','RtPublish1');")
         offset = self.pg_log.stat().st_size
         self.action("verify")
         self.start()
@@ -195,6 +198,7 @@ class Fixture:
         require(self.sql(f"SELECT count(*) FROM public.node_identity WHERE service_key=decode('{FIXTURE_PUBLISHER}','hex') AND admin_key=service_key", RUNTIME) == "1", "native startup did not bind the configured instance identity")
         require(self.sql(f"SELECT count(*) FROM public.service_announcements WHERE service_key=decode('{FIXTURE_PUBLISHER}','hex')", RUNTIME) == "1", "native startup did not persist its genuine signed service announcement")
         require(self.sql("SELECT count(*) FROM public.backend_identity", RUNTIME) == "1", "real projection backend did not bind its database identity")
+        self.publisher_publication(native_origin, "weebdex_session=" + token)
         self.stop()
         for port in [self.http_port, native_port]:
             with socket.socket() as sock:
@@ -202,6 +206,60 @@ class Fixture:
         require(not runtime_ddl_logged(self.pg_log.read_bytes()[offset:].decode()), "integrated publisher startup issued runtime DDL")
         require(self.sql("SELECT 'original:'||version||':'||encode(checksum,'hex') FROM public.schema_migrations UNION ALL SELECT 'platform:'||version||':'||name||':'||encode(checksum,'hex') FROM platform.schema_migrations UNION ALL SELECT 'policy:'||version||':'||mode||':'||encode(checksum,'hex') FROM platform.protocol_visibility_policy ORDER BY 1") == protected, "integrated publisher changed protected histories/policy")
         self.passed("restricted integrated publisher/original backend/native NIP-11 startup and two-listener drain; original DML with immutable histories/policy and no DDL")
+
+    def publisher_publication(self, native_origin, cookie):
+        # All content mutation goes through the actual application HTTP routes.
+        # No source rows, outbox acknowledgements or projection results are seeded.
+        title = "Restricted publisher signed series"
+        status, body = self.http("/api/manga", "POST", {
+            "title": title, "year": 2026, "language": "en", "status": "ongoing",
+            "content_rating": "safe", "authors": [], "artists": [],
+        }, cookie)
+        require(status == 201, "restricted publisher HTTP manga creation failed")
+        manga = json.loads(body)
+        manga_id = manga["id"]
+        status, body = self.http(f"/api/manga/draft/{manga_id}/commit", "POST", {"version": manga["version"]}, cookie)
+        require(status == 200, "restricted publisher HTTP draft submission failed")
+        submitted = json.loads(body)
+        status, body = self.http(f"/api/manga/draft/{manga_id}/publish", "POST", {"version": submitted["version"]}, cookie)
+        require(status == 200, "restricted publisher HTTP signed publication failed")
+        receipt = json.loads(body)
+        event_id = receipt.get("protocol_event_id", "")
+        require(receipt.get("publication_scope") == "original-protocol"
+                and receipt.get("publication_status") in ("accepted_pending_projection", "locally_hosted")
+                and re.fullmatch(r"[0-9a-f]{64}", event_id), "publication returned no genuine protocol receipt")
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
+            require(self.server.poll() is None, "integrated publisher exited during real projection")
+            try:
+                response = urllib.request.urlopen(native_origin + f"/events/{event_id}", timeout=3)
+            except urllib.error.HTTPError as response:
+                source_status, source_body = response.code, response.read()
+            else:
+                with response:
+                    source_status, source_body = response.status, response.read()
+            require(source_status in (200, 202, 404), "original event read failed during projection")
+            detail_status, detail_body = self.http(f"/api/manga/{manga_id}")
+            require(detail_status in (200, 404), "public platform detail failed during projection")
+            if source_status == 200 and detail_status == 200:
+                event = json.loads(source_body)
+                detail = json.loads(detail_body)
+                require(event["id"] == event_id and event["kind"] == 1002
+                        and event["pubkey"] == FIXTURE_PUBLISHER
+                        and re.fullmatch(r"[0-9a-f]{128}", event["sig"]), "projected event has wrong signed publication identity")
+                encoded = json.dumps([0, event["pubkey"], event["created_at"], event["kind"], event["tags"], event["content"]], separators=(",", ":"), ensure_ascii=False).encode()
+                require(hashlib.sha256(encoded).hexdigest() == event_id, "projected signed event digest mismatch")
+                pointer = json.loads(event["content"])
+                require(pointer.get("version") == 1 and re.fullmatch(r"[0-9a-f]{64}", pointer.get("manifest", "")), "publication lacks its genuine canonical manifest pointer")
+                require(detail["id"] == manga_id and detail["title"] == title
+                        and detail.get("protocol_event_id") == event_id
+                        and detail.get("is_unavailable") is not True, "signed series did not become public in platform detail")
+                require(self.sql(f"SELECT count(*)>0 AND bool_and(completed_at IS NOT NULL) FROM public.backend_outbox WHERE event_id=decode('{event_id}','hex') AND action='import'", RUNTIME) == "t", "real backend did not acknowledge the publication projection")
+                require(self.sql(f"SELECT platform.protocol_source_is_visible('{event_id}')", RUNTIME) == "t", "genuine projected publication failed canonical visibility")
+                self.passed("restricted publisher signs genuine kind1002/CBOR manifest and real backend projects it to original/platform HTTP visibility")
+                return
+            time.sleep(0.1)
+        raise RuntimeError("genuine signed publication never reached original/platform public visibility")
 
     def start(self):
         self.server = subprocess.Popen([str(self.args.platform_bin), "serve"], env=self.env(RUNTIME),
