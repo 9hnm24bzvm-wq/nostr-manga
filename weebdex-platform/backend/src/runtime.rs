@@ -35,9 +35,26 @@ pub fn acquire_storage_owner(root: &std::path::Path) -> anyhow::Result<std::fs::
     Ok(owner)
 }
 
+/// The synchronous caller retains the native owner beyond runtime destruction.
+/// Cancelling async tasks cannot cancel already-started `tokio::fs` blocking
+/// jobs. Ordinary runtime drop joins those jobs while this guard stays borrowed;
+/// bounded/background runtime shutdown must not replace this scope.
+pub fn with_storage_owner_runtime<F: Future>(
+    _storage_owner: &Option<std::fs::File>,
+    future: F,
+) -> anyhow::Result<F::Output> {
+    let output = {
+        let runtime = tokio::runtime::Builder::new_multi_thread()
+            .enable_all()
+            .build()?;
+        runtime.block_on(future)
+    };
+    Ok(output)
+}
+
 #[cfg(test)]
 mod owner_tests {
-    use super::acquire_storage_owner;
+    use super::{acquire_storage_owner, with_storage_owner_runtime};
 
     #[test]
     fn native_owner_excludes_another_writer_and_releases_on_drop() {
@@ -57,6 +74,69 @@ mod owner_tests {
         std::os::unix::fs::symlink(&target, root.path().join(".platform-owner")).unwrap();
         assert!(acquire_storage_owner(root.path()).is_err());
         assert_eq!(std::fs::read(target).unwrap(), b"unchanged");
+    }
+
+    #[test]
+    fn native_owner_outlives_cancelled_blocking_writer() {
+        use std::{sync::mpsc, time::Duration};
+        // Both successful and error returns must wait for the same late writer.
+        for fail in [false, true] {
+            let root = tempfile::tempdir().unwrap();
+            let path = root.path().to_path_buf();
+            let (started_tx, started_rx) = mpsc::channel();
+            let (release_tx, release_rx) = mpsc::channel();
+            let (cancelled_tx, cancelled_rx) = mpsc::channel();
+            let (finished_tx, finished_rx) = mpsc::channel();
+            let (abort_tx, abort_rx) = tokio::sync::oneshot::channel();
+            let owner_thread = std::thread::spawn(move || {
+                let owner = Some(acquire_storage_owner(&path).unwrap());
+                let output = with_storage_owner_runtime(&owner, async move {
+                    let request = tokio::spawn(async move {
+                        tokio::task::spawn_blocking(move || {
+                            // This job owns only a PathBuf, like Tokio filesystem
+                            // work; the cancelled async request owns no lease.
+                            started_tx.send(()).unwrap();
+                            release_rx
+                                .recv_timeout(Duration::from_secs(5))
+                                .unwrap();
+                            assert!(acquire_storage_owner(&path).is_err());
+                            std::fs::write(path.join("late-write"), b"synthetic").unwrap();
+                        })
+                        .await
+                        .unwrap();
+                    });
+                    abort_rx.await.unwrap();
+                    request.abort();
+                    assert!(request.await.unwrap_err().is_cancelled());
+                    cancelled_tx.send(()).unwrap();
+                    if fail {
+                        Err("synthetic startup/drain error")
+                    } else {
+                        Ok(())
+                    }
+                })
+                .unwrap();
+                assert_eq!(output.is_err(), fail);
+                drop(owner);
+                finished_tx.send(()).unwrap();
+            });
+            started_rx.recv_timeout(Duration::from_secs(5)).unwrap();
+            abort_tx.send(()).unwrap();
+            cancelled_rx.recv_timeout(Duration::from_secs(5)).unwrap();
+            assert!(acquire_storage_owner(root.path()).is_err());
+            assert!(matches!(
+                finished_rx.recv_timeout(Duration::from_millis(100)),
+                Err(mpsc::RecvTimeoutError::Timeout)
+            ));
+            release_tx.send(()).unwrap();
+            finished_rx.recv_timeout(Duration::from_secs(5)).unwrap();
+            owner_thread.join().unwrap();
+            assert_eq!(
+                std::fs::read(root.path().join("late-write")).unwrap(),
+                b"synthetic"
+            );
+            assert!(acquire_storage_owner(root.path()).is_ok());
+        }
     }
 }
 

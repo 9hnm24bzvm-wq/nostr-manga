@@ -16,6 +16,8 @@ DB connection strings and mail credentials stay in external environment files. C
 
 Stop the integrated publisher, original listener, all native/original storage and projection writers, and any independent workers. The updated service holds `uploads_dir/.platform-owner`; the helper must acquire that existing named lock plus original `.volume-owner`, `.projection-owner` and `.command-lock` for the entire copy/snapshot. An older deployment must be started and cleanly stopped once with the updated service to initialize the native owner lock. Never replace or unlink lock files while an owner may be live.
 
+The synchronous service entry point holds its native owner outside the Tokio runtime scope. On success or startup/drain error, runtime teardown joins already-started blocking filesystem jobs before the owner can drop. Cancelling a request/maintenance future alone is insufficient; do not replace this with background/timeout runtime teardown that can leave a late rename/write/remove job alive after the lock is released.
+
 Use absolute normalized paths with no symlink ancestry. Native/original/projection roots must be disjoint. The destination must be new, outside every source data root, with an existing parent. Stop every cooperating writer; arbitrary privileged SQL/filesystem writers are outside this profile. The helper takes both migration advisory locks (697241113 and 697241114) and SHARE table locks in both schemas before exporting the snapshot and copying files. A bounded end-of-copy round-trip must confirm the same live exporter backend, transaction ID and repeatable-read isolation before completion; exporter death or transaction loss fails closed even after a successful pg_dump. A failed operation has no valid completion marker; do not activate or share partial output.
 
 ```sh
@@ -64,6 +66,9 @@ weebdex-platform/.build/hosted-python/bin/python -m pip install \
 export RUSTUP_TOOLCHAIN=1.90.0
 export CARGO_TARGET_DIR="$PWD/weebdex-platform/.build/hosted-native"
 export PLATFORM_TEST_PYTHON="$PWD/weebdex-platform/.build/hosted-python/bin/python"
+# Separate exact unit seam, also included in ordinary --lib tests; require one passed test.
+cargo test --locked --manifest-path weebdex-platform/backend/Cargo.toml --lib \
+  runtime::owner_tests::native_owner_outlives_cancelled_blocking_writer -- --exact --test-threads=1
 python3 weebdex-platform/scripts/run-backup-tests.py --deadline 1800
 ```
 

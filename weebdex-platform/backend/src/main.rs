@@ -2,8 +2,7 @@ use anyhow::{Result, ensure};
 use std::{future::IntoFuture, time::Duration};
 use weebdex_platform::{AppState, Config, domains, router};
 
-#[tokio::main]
-async fn main() -> Result<()> {
+fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .json()
         .with_env_filter(
@@ -38,8 +37,9 @@ async fn main() -> Result<()> {
         );
         return Ok(());
     }
-    // Hold the native mutation owner until requests and all workers are gone.
-    // The offline backup helper acquires this same lock before its snapshot.
+    // The synchronous caller owns this guard outside the Tokio runtime. Runtime
+    // destruction waits for uncancellable blocking filesystem jobs before this
+    // named owner can be released, including on startup/drain errors.
     let _storage_owner = if action == "serve" || action == "migrate" {
         Some(weebdex_platform::runtime::acquire_storage_owner(
             &config.uploads_dir,
@@ -47,6 +47,10 @@ async fn main() -> Result<()> {
     } else {
         None
     };
+    weebdex_platform::runtime::with_storage_owner_runtime(&_storage_owner, run(action, config))?
+}
+
+async fn run(action: String, config: Config) -> Result<()> {
     let state = AppState::connect(config, Config::database_dsn()?).await?;
     if action == "migrate" {
         state.db.migrate(domains::MIGRATIONS).await?;
