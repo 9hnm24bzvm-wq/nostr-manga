@@ -2154,6 +2154,36 @@ async fn offline_full_publisher_backup_restore_fences_auth_and_exact_retry() {
     let auth_app = weebdex_platform::router::router(auth_source.clone());
     send(&auth_app,Method::GET,&format!("/auth/self-service/recovery?token={mail_token}"),None,&[],vec![],StatusCode::SEE_OTHER).await;
     drop(auth_app); drop(auth_source);
+    // Actual exporter backend termination AFTER pg_dump must leave no valid
+    // completion marker, even though its independent dump already completed.
+    let fault_root=storage_root.join("exporter-fault-partial");
+    let fault_code=r#"
+import json,os,sys,tempfile
+from pathlib import Path
+from src import postgres_backup as node
+from src.platform_backup import effective_node,native_owner
+from src.operator_json import read_json,save_json
+platform=read_json(sys.argv[1]);destination=Path(sys.argv[2]);pg=sys.argv[3]
+dsn=os.environ['PLATFORM_DATABASE_URL']+' application_name=publisher_backup_exporter_fault'
+def terminate_after_dump(root,config):
+    killed=node.sql(pg,dsn,"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE application_name='publisher_backup_exporter_fault' AND pid<>pg_backend_pid() AND state='idle in transaction'")
+    if killed!='t': raise RuntimeError('fault did not target exactly one owned exporter')
+    return {}
+try:
+    with native_owner(platform['uploads_dir']),tempfile.TemporaryDirectory() as tmp:
+        config=Path(tmp)/'node.json';save_json(config,effective_node(platform),exclusive=True)
+        node.backup(config,destination,pg,dsn,platform=True,copy_extra=terminate_after_dump)
+except node.BackupError as error:
+    if 'snapshot' not in str(error) or not (destination/'database.dump').is_file() or (destination/'BACKUP_COMPLETE.json').exists(): raise
+    sys.exit(0)
+sys.exit(1)
+"#;
+    let fault=Command::new(std::env::var("PLATFORM_TEST_PYTHON").unwrap_or_else(|_|"python3".into()))
+        .arg("-c").arg(fault_code).arg(&source_path).arg(&fault_root).arg(&pg_bin).current_dir(&lab)
+        .env("PYTHONPATH",format!("{}:{}",lab.join("vendor/pydeps").display(),lab.display()))
+        .env("PLATFORM_DATABASE_URL",&dsn).env_remove("MANGA_DATABASE_URL").output().unwrap();
+    assert!(fault.status.success(),"snapshot exporter-death recovery fault failed: {}",String::from_utf8_lossy(&fault.stderr));
+    assert!(!fault_root.join("BACKUP_COMPLETE.json").exists());
     // A wrong operator signer fails before writing another backup.
     let mut wrong = source_config.clone(); wrong["protocol_publication"]["expected_publisher"] = json!(keys[1].1);
     let wrong_path = storage_root.join("wrong-signer.json"); private_json(&wrong_path,&wrong);

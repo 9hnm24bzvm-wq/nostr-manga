@@ -171,13 +171,14 @@ def snapshot(pg, dsn, log, platform=False):
                 + ("SELECT pg_advisory_xact_lock(697241114);" if platform else "")
                 + "DO $$ DECLARE r record;BEGIN FOR r IN SELECT schemaname,tablename FROM pg_tables WHERE "
                 + ("schemaname IN ('public','platform')" if platform else "schemaname='public'")
-                + " ORDER BY schemaname,tablename LOOP EXECUTE format('LOCK TABLE %I.%I IN SHARE MODE',r.schemaname,r.tablename);END LOOP;END $$;SELECT 'SNAP:'||pg_export_snapshot();SELECT '"
+                + " ORDER BY schemaname,tablename LOOP EXECUTE format('LOCK TABLE %I.%I IN SHARE MODE',r.schemaname,r.tablename);END LOOP;END $$;SELECT 'SNAP:'||pg_export_snapshot();SELECT 'CTRL:'||pg_backend_pid()||':'||txid_current()||':'||current_setting('transaction_isolation');SELECT '"
                 + marker
                 + "';\n"
             )
             p.stdin.write(command.encode())
             p.stdin.flush()
             snap = None
+            control = None
             deadline = time.monotonic() + 15
             buffer = b""
             ready = False
@@ -197,13 +198,49 @@ def snapshot(pg, dsn, log, platform=False):
                     line = line.decode().strip()
                     if line.startswith("SNAP:"):
                         snap = line[5:]
+                    if line.startswith("CTRL:"):
+                        control = line[5:]
                     if line == marker:
                         ready = True
-            if not ready or not snap or not re.fullmatch(r"[0-9A-Fa-f-]+", snap):
+            if not ready or not snap or not re.fullmatch(r"[0-9A-Fa-f-]+", snap) or not control or not re.fullmatch(r"[0-9]{1,10}:[0-9]{1,20}:repeatable read", control):
                 raise BackupError(
                     "could not lock/export stopped-node snapshot; inspect private log"
                 )
             yield snap
+            # pg_dump importing the snapshot does not keep the exporting
+            # transaction's locks alive for later filesystem/inventory work.
+            # Fail closed if its session died, reconnected or lost the exact
+            # repeatable-read transaction at any point during the copy scope.
+            if p.poll() is not None:
+                raise BackupError("snapshot exporter exited before protected copy completed")
+            held_marker = "BACKUP_SNAPSHOT_STILL_HELD"
+            try:
+                p.stdin.write(("SELECT 'CHECK:'||pg_backend_pid()||':'||txid_current()||':'||current_setting('transaction_isolation');SELECT '" + held_marker + "';\n").encode())
+                p.stdin.flush()
+            except BrokenPipeError:
+                raise BackupError("snapshot exporter lost before completion check") from None
+            deadline = time.monotonic() + 15
+            checked = None
+            confirmed = False
+            buffer = b""
+            while time.monotonic() < deadline and not confirmed:
+                if not select.select([p.stdout], [], [], max(0, deadline-time.monotonic()))[0]:
+                    break
+                chunk = os.read(p.stdout.fileno(), 65536)
+                if not chunk:
+                    break
+                buffer += chunk
+                if len(buffer) > 65536:
+                    raise BackupError("snapshot completion control output budget")
+                while b"\n" in buffer:
+                    line, buffer = buffer.split(b"\n", 1)
+                    line = line.decode().strip()
+                    if line.startswith("CHECK:"):
+                        checked = line[6:]
+                    if line == held_marker:
+                        confirmed = True
+            if not confirmed or checked != control or p.poll() is not None:
+                raise BackupError("snapshot transaction/session lost during protected copy; backup incomplete")
         finally:
             if p.poll() is None:
                 try:

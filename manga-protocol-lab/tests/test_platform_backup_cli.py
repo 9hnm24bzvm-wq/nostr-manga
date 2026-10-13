@@ -145,3 +145,35 @@ class PlatformBackupCLI(OperatorCase):
         (source / "files.jsonl").unlink()
         (source / "files.jsonl").symlink_to(source / "native/objects/file")
         self.assertIn("regular completed", self.restore_cli(source).stderr)
+
+    def snapshot_tool(self, mode):
+        pg = self.root / "snapshot-pg"
+        pg.mkdir()
+        psql = pg / "psql"
+        psql.write_text("#!/usr/bin/env python3\nimport os,sys\nfrom pathlib import Path\n"
+            + "Path(" + repr(str(self.root / "exporter.pid")) + ").write_text(str(os.getpid()))\n"
+            + "sys.stdin.readline()\nprint('SNAP:00000001-1',flush=True)\nprint('CTRL:123:456:repeatable read',flush=True)\nprint('BACKUP_SNAPSHOT_READY',flush=True)\n"
+            + "line=sys.stdin.readline()\n"
+            + ("sys.exit(0)\n" if mode == "die" else
+               "print('CHECK:123:" + ("789" if mode == "changed" else "456") + ":repeatable read',flush=True)\nprint('BACKUP_SNAPSHOT_STILL_HELD',flush=True)\nsys.stdin.readline()\n"))
+        psql.chmod(0o700)
+        return pg
+
+    def test_snapshot_exporter_death_after_yield_cannot_complete(self):
+        from src.postgres_backup import snapshot
+        for mode in ("die", "changed"):
+            pg = self.snapshot_tool(mode)
+            completion = self.root / "completion.json"
+            with self.assertRaisesRegex(BackupError, "snapshot"):
+                with snapshot(pg, "host=127.0.0.1 dbname=synthetic user=fixture", self.root / "private-snapshot.log", platform=True):
+                    pass
+                completion.write_text("must not be reached")
+            self.assertFalse(completion.exists())
+            import shutil
+            shutil.rmtree(pg)
+
+    def test_snapshot_same_transaction_round_trip_allows_completion(self):
+        from src.postgres_backup import snapshot
+        pg = self.snapshot_tool("live")
+        with snapshot(pg, "host=127.0.0.1 dbname=synthetic user=fixture", self.root / "private-snapshot.log", platform=True) as value:
+            self.assertEqual(value, "00000001-1")
