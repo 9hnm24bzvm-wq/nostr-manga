@@ -1,5 +1,6 @@
 """Controller/schema checks and short owned OS-process seams; no browser/fixture."""
 import importlib.util
+import copy
 import json
 from pathlib import Path
 import shutil
@@ -15,6 +16,149 @@ spec.loader.exec_module(runner)
 
 
 class HostedBrowserSeams(unittest.TestCase):
+    def diagnostic_inputs(self):
+        spec = importlib.util.spec_from_file_location('startup_seam', ROOT / 'scripts/ci/startup-diagnostics.py')
+        diagnostics = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(diagnostics)
+        private = 'never-export-this@example.invalid'
+        origin = 'http://127.0.0.1:32123'
+        acceptance = {
+            'phase': 'startup', 'origin': origin, 'passed': False,
+            'steps': [{'name': name, 'status': 'failed', 'error': 'Deep link has JavaScript page errors ' + private} for name in diagnostics.CHECK_NAMES],
+            'page_errors': [
+                {'url': origin + '/?token=' + private, 'error': 'process is not defined ' + private, 'error_class': 'ReferenceError'},
+                {'url': origin + '/search?token=' + private, 'error': private + ' is not defined', 'error_class': private},
+                {'url': origin + '/api/' + private, 'error': 'Failed to fetch dynamically imported module https://private.invalid/' + private, 'error_class': 'TypeError'},
+            ],
+            'console_errors': [{'url': origin + '/users/' + private, 'error': 'Refused to execute due to Content Security Policy ' + private}],
+            'csp_violations': [{'page': origin + '/search?token=' + private, 'directive': 'script-src-elem', 'blocked_uri': 'https://private.invalid/' + private, 'disposition': 'enforce'}],
+            'startup_network': [
+                {'url': origin + '/_app/immutable/entry/' + private + '.js?token=' + private, 'resource': 'script', 'status': 200, 'content_type': 'text/html; private=' + private},
+                {'url': origin + '/api/' + private + '?token=' + private, 'resource': 'fetch', 'status': 0, 'failure': 'net::ERR_CONNECTION_REFUSED'},
+            ],
+        }
+        owned = {'fixture_only': True, 'phase': 'startup', 'verified_stopped': True, 'forced': False, 'returncode': 1}
+        spec = importlib.util.spec_from_file_location('startup_validator', ROOT / 'scripts/ci/validate-ci-evidence.py')
+        validator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validator)
+        return diagnostics, validator, acceptance, owned, private
+
+    def test_startup_check_ids_match_actual_harness_and_fixed_fixture_routes(self):
+        import ast
+        import re
+        diagnostics, _, _, _, _ = self.diagnostic_inputs()
+        source = (ROOT / 'scripts/browser-acceptance.mjs').read_text()
+        routes = json.loads(re.search(r'const routes = (\[[^;]+\]);', source)[1])
+        fixture = ast.parse((ROOT / 'tests/runtime/browser_fixture.py').read_text())
+        ids = next(ast.literal_eval(row.value) for row in fixture.body if isinstance(row, ast.Assign) and any(isinstance(target, ast.Name) and target.id == 'IDS' for target in row.targets))
+        routes += [prefix + ids[kind] for kind, prefix in [('manga', '/title/'), ('group', '/group/'), ('chapter', '/chapter/')]]
+        self.assertEqual(diagnostics.ROUTES, ['/', *routes])
+        self.assertEqual(diagnostics.CHECK_NAMES, ['homepage bootstraps under exact generated CSP', *['fresh deep link ' + route for route in routes], 'missing built/static assets produce real 404'])
+        self.assertIn("inputs.batch || 'startup'", (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text())
+
+    def test_startup_projection_serializes_only_closed_diagnostics_and_passes_real_gate(self):
+        diagnostics, validator, acceptance, owned, private = self.diagnostic_inputs()
+        row = runner.project_phase('startup', 'startup', acceptance, owned)
+        value = row['startup_diagnostics']
+        self.assertEqual(row['status'], 'failed')
+        self.assertTrue(all(check['check_identity_verified'] for check in value['check_results']))
+        self.assertEqual(value['page_errors'][0]['category'], 'missing-global')
+        self.assertTrue(any(error['category'] == 'module-fetch' for error in value['page_errors']))
+        self.assertTrue(any(error['category'] == 'reference-error' and error['missing_global'] == 'none' for error in value['page_errors']))
+        self.assertEqual(value['network'][0]['mime'], 'html')
+        self.assertEqual(value['csp_violations'][0]['blocked'], 'other-origin')
+        with tempfile.TemporaryDirectory() as root:
+            directory = Path(root) / 'input'
+            directory.mkdir()
+            canonical = Path(root) / 'canonical'
+            runner.write(directory / 'phases.json', {'schema': 1, 'phases': [row], 'batches': []})
+            self.assertEqual(validator.validate(directory, canonical), 1)
+            encoded = (canonical / 'phases.json').read_text()
+            for token in [private, 'private.invalid', '32123', '?token=', ' is not defined', 'Content Security Policy']:
+                self.assertNotIn(token, encoded)
+            self.assertEqual(json.loads(encoded)['phases'][0], row)
+        self.assertEqual(diagnostics.public_path('/search', ''), '<unavailable>')
+        self.assertEqual(diagnostics.public_path('http://alice:password@127.0.0.1:32123/search', acceptance['origin']), '<other-origin>')
+        self.assertEqual(diagnostics.error_kind('private', ['unexpected'])['error_class'], 'Unknown')
+
+    def test_startup_adverse_serialized_diagnostic_values_fail_closed(self):
+        _, validator, acceptance, owned, private = self.diagnostic_inputs()
+        baseline = runner.project_phase('startup', 'startup', acceptance, owned)
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            cases = [
+                ('check_results', 'check_id', private), ('check_results', 'status', 'passed'),
+                ('page_errors', 'error_class', private), ('page_errors', 'category', private),
+                ('page_errors', 'missing_global', 'a' * 64), ('page_errors', 'path', '/api/' + private),
+                ('page_errors', 'count', 10000), ('network', 'status', True),
+                ('network', 'mime', private), ('network', 'failure', private),
+                ('csp_violations', 'directive', private), ('csp_violations', 'blocked', private),
+                ('page_errors', 'raw_error', private),
+            ]
+            for field, key, value in cases:
+                row = copy.deepcopy(baseline)
+                row['startup_diagnostics'][field][0][key] = value
+                runner.write(directory / 'phases.json', {'schema': 1, 'phases': [row], 'batches': []})
+                with self.subTest(field=field, key=key), self.assertRaises(ValueError):
+                    validator.validate(directory)
+            row = copy.deepcopy(baseline)
+            row['phase'] = 'account'
+            runner.write(directory / 'phases.json', {'schema': 1, 'phases': [row], 'batches': []})
+            with self.assertRaises(ValueError):
+                validator.validate(directory)
+            runner.write(directory / 'phases.json', {'schema': 1, 'phases': [baseline], 'batches': []})
+            path = directory / 'phases.json'
+            path.write_text(path.read_text().replace('"category": "missing-global"', '"category": "' + private + '", "category": "missing-global"', 1))
+            with self.assertRaises(ValueError):
+                validator.validate(directory)
+
+    def test_startup_observation_caps_and_check_identity_are_honest(self):
+        diagnostics, validator, acceptance, owned, _ = self.diagnostic_inputs()
+        acceptance['steps'][0]['name'] = 'unexpected private check name'
+        acceptance['page_errors'] = acceptance['page_errors'][:1] * (diagnostics.LIMIT + 1)
+        acceptance['startup_network'] *= diagnostics.LIMIT
+        row = runner.project_phase('startup', 'startup', acceptance, owned)
+        value = row['startup_diagnostics']
+        self.assertTrue(value['observations_truncated'])
+        self.assertFalse(value['check_results'][0]['check_identity_verified'])
+        self.assertEqual(sum(error['count'] for error in value['page_errors']), diagnostics.LIMIT)
+        self.assertEqual(sum(request['count'] for request in value['network']), diagnostics.LIMIT)
+        validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+
+    def test_startup_error_and_truncation_consistency_uses_actual_serialized_facts(self):
+        diagnostics, validator, acceptance, owned, _ = self.diagnostic_inputs()
+        # Missing exception text still produces Unknown/unknown, never a no-error
+        # claim. This seam does not require free-form exception text to exist.
+        acceptance['steps'][0].pop('error')
+        acceptance['page_errors'] = acceptance['page_errors'][:1] * (diagnostics.LIMIT + 1)
+        row = runner.project_phase('startup', 'startup', acceptance, owned)
+        self.assertEqual(row['startup_diagnostics']['check_results'][0]['category'], 'unknown')
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            runner.write(directory / 'phases.json', {'schema': 1, 'phases': [row], 'batches': []})
+            self.assertEqual(validator.validate(directory), 1)
+            cases = []
+            bad = copy.deepcopy(row)
+            bad['startup_diagnostics']['observations_truncated'] = False
+            cases.append(bad)
+            for field in ['check_results', 'page_errors']:
+                bad = copy.deepcopy(row)
+                bad['startup_diagnostics'][field][0].update(error_class='None', category='none', missing_global='none')
+                cases.append(bad)
+            for bad in cases:
+                runner.write(directory / 'phases.json', {'schema': 1, 'phases': [bad], 'batches': []})
+                with self.assertRaises(ValueError):
+                    validator.validate(directory)
+
+    def test_startup_long_identifier_diagnostics_use_whole_bounded_tokens(self):
+        diagnostics, _, _, _, _ = self.diagnostic_inputs()
+        token = 'a' * 9000
+        self.assertEqual(diagnostics.error_kind(token), {'error_class': 'Unknown', 'category': 'unknown', 'missing_global': 'none'})
+        self.assertEqual(diagnostics.error_kind(token + ' is not defined'), {'error_class': 'ReferenceError', 'category': 'reference-error', 'missing_global': 'none'})
+        self.assertEqual(diagnostics.error_kind(token + 'process is not defined')['missing_global'], 'none')
+        self.assertEqual(diagnostics.error_kind(token + '; process is not defined')['missing_global'], 'process')
+        self.assertEqual(diagnostics.error_kind('$state is not defined')['missing_global'], '$state')
+
     def test_exact_original_38_phases(self):
         handoff = json.loads((ROOT / 'test-evidence/frontend/browser-startup-plan-build19.json').read_text())['phases']
         expected = {'startup'} | {phase for group in handoff.values() for phase in group.get('names', [])}

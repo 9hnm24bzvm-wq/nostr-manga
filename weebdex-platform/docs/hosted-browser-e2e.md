@@ -2,11 +2,18 @@
 
 ## Review status
 
-Prepared on an isolated branch. No workflow has been published or executed by
-this preparation. All 38 real browser phases remain pending. Validator,
-scheduling and short owned OS-process seam checks are separate from browser execution and are never acceptance
-evidence. Original runtime/application source has no change; the only existing
-test-runner change is a narrow, explicitly pinned browser dependency path seam.
+Published on the dedicated CI branch in [draft PR #22](https://github.com/9hnm24bzvm-wq/nostr-manga/pull/22).
+The [first actual hosted run](https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/38458085821)
+prepared the pinned stack and executed Chromium controls on ten fresh fixtures.
+Startup failed on each; zero unique phases passed and the other 37 remain
+pending. All ten physical fixture teardowns verified closed ports, removed
+synthetic keys and zero owned survivors, without forced cleanup. Browser failure
+correctly prevents clean lifecycle/full-suite success. This establishes real
+Chromium IPC, but establishes neither startup acceptance nor pixel parity.
+Validator, scheduling and short owned OS-process seam checks are separate from
+browser execution and are never acceptance evidence. Original runtime/application
+source has no change; test-runner changes are the pinned browser dependency path
+seam and passive startup diagnostics described below.
 All 676 original frontend files remain byte-preserved.
 The three pre-existing reconstructed announcement route additions are separately
 pinned in `scripts/ci/frontend-additions.json`; no other frontend additions are allowed.
@@ -22,8 +29,9 @@ Archive SHA-256 values:
 - Playwright: `1982556a882b246ccb7c16337fab5e4e790292b69f835a2db1011dddc440ed98`
 - Playwright core: `954be1e183d0ddb9748fe0d2d08b0b66a9210c74dd75c397aeb70303b9f08a00`
 The loader still fails closed if installed entry bytes differ. Independent
-review of the implementation passed; workflow publication remains dependent on
-the verified source baseline and authorized workflow-file write support.
+review of the implementation passed. The verified remote source baseline is
+`ffc4e1c2ea2378921d0f4da3a58fa3881f08a768`; workflow publication succeeded without
+expanding App permissions.
 
 ## Authorized publication and runner
 
@@ -38,10 +46,9 @@ the batches sequentially.
 
 The current connector has run, job, log and artifact readers, but no dispatch
 tool. Its generic fetch is GET-only and rejects `/actions/workflows`. The
-installation listing does not expose its permission grants, so workflow-file
-write permission is still unverified. Do not enlarge App permissions, generate a
-token, or route around a rejected workflow write. The reviewed dedicated-branch
-push is the ordinary proposed trigger.
+installation listing does not expose its permission grants. The actual reviewed
+workflow-file write and dedicated-branch push succeeded. Do not enlarge App
+permissions, generate a token, or route around a rejected workflow write.
 
 GitHub documents standard public Ubuntu runners as fresh 4-core/16-GB/14-GB VMs,
 with free standard public-runner minutes. This workflow explicitly skips if the
@@ -142,3 +149,26 @@ methods for narrowly owned forced cleanup. Such a fallback permanently fails
 the batch and stops further fixtures; no late cleanup turns it into a pass.
 Stop-marker and terminal-receipt errors still enter the owned cleanup path,
 retain the partial journal, and block all subsequent fixtures.
+
+## Startup-only failure diagnosis
+
+Until the first startup failure is explained, a dedicated-branch push selects
+only `startup`, using one new fixture. Explicit dispatch still accepts its
+selected batch. This diagnostic subset cannot become a 38-phase pass: its
+summary continues to list the other 37 phases as pending. The original CSP,
+rendering, page-error, missing-asset and cleanup assertions are unchanged.
+
+Passive startup listeners record response status/resource/MIME and failed-request
+categories privately, capped at 256 observations. Private page/console/CSP
+observations are projected into finite error classes and known categories, not
+verbatim error messages. Nineteen fixed check IDs are mapped to the original
+assertion order; each also records whether the private check name matched the
+known original name. Only known synthetic route paths or fixed asset/API path
+classes survive projection. Origin hosts, ports, URLs, query strings, unknown
+route names, module filenames, identifier/error text and response bodies never
+survive. Truncation is explicit, so absence from a capped diagnostic list is not
+proof of no failure. No new assertion, request, CSP allowance or browser option
+is introduced. The upload gate validates every nested diagnostic field, count,
+fixed path and category, binds failed check indices to the phase projection and
+page-error counts to the original count, rejects duplicate keys, and emits fresh
+canonical JSON only after the entire evidence set passes.

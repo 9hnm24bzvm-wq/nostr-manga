@@ -49,6 +49,7 @@ if (!/^[a-zA-Z0-9_-]{1,60}$/.test(runId)) throw new Error("Unsafe evidence run i
 const output = path.join(root, "test-evidence/frontend/browser", `${phase}-${runId}`);
 fs.mkdirSync(output, { recursive: true });
 const report = { phase, origin, browser: browserDescription, source_artifact: "artifacts/frontend", started_utc: new Date().toISOString(), steps: [], pages: [], external_requests_blocked: [], proxy_requests_blocked: [], page_errors: [], console_errors: [], csp_violations: [], response_errors: [], screenshots: [], limitations: ["Supplied archive lacks an independently runnable original-render baseline. Source/DOM/style preservation and browser operation are distinct from pixel parity."] };
+if (phase === "startup") { report.startup_network = []; report.startup_observations_truncated = false; }
 const safeUrl = value => { try { const url = new URL(value); return url.origin + url.pathname + (url.pathname.startsWith("/api/") && !/auth|client/.test(url.pathname) ? url.search : ""); } catch { return "invalid URL"; } };
 const redactions = new Set();
 const safeError = error => {
@@ -94,9 +95,14 @@ try {
 	await context.addInitScript(() => { window.__acceptanceCsp = []; document.addEventListener("securitypolicyviolation", event => { window.__acceptanceCsp.push({ directive: event.effectiveDirective, blocked_uri: event.blockedURI?.split("?")[0], disposition: event.disposition }); }); });
 	context.on("page", page => {
 		page.setDefaultTimeout(7000); page.setDefaultNavigationTimeout(15000);
-		page.on("pageerror", error => report.page_errors.push({ url: safeUrl(page.url()), error: safeError(error) }));
+		page.on("pageerror", error => report.page_errors.push({ url: safeUrl(page.url()), error: safeError(error), error_class: error.name }));
 		page.on("console", message => { if (message.type() === "error") report.console_errors.push({ url: safeUrl(page.url()), error: safeError(message.text()) }); });
 		page.on("response", response => { if (response.status() >= 400) report.response_errors.push({ status: response.status(), method: response.request().method(), url: safeUrl(response.url()) }); });
+		if (phase === "startup") {
+			const observe = value => { if (report.startup_network.length < 256) report.startup_network.push(value); else report.startup_observations_truncated = true; };
+			page.on("response", response => observe({ url: safeUrl(response.url()), resource: response.request().resourceType(), status: response.status(), content_type: response.headers()["content-type"] ?? "" }));
+			page.on("requestfailed", request => observe({ url: safeUrl(request.url()), resource: request.resourceType(), status: 0, failure: request.failure()?.errorText ?? "" }));
+		}
 	});
 	const page = await context.newPage();
 	async function open(route) { const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" }); await page.waitForTimeout(1200); insist(response?.status() === 200, `Navigation returned ${response?.status()}`); return response; }

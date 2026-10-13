@@ -10,6 +10,9 @@ ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('hosted_evidence_contract', ROOT / 'scripts/ci/run-hosted-browser.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
+spec = importlib.util.spec_from_file_location('hosted_diagnostic_contract', ROOT / 'scripts/ci/startup-diagnostics.py')
+diagnostics = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(diagnostics)
 ERRORS = {'RuntimeError', 'TimeoutError', 'InterruptedError', 'FileNotFoundError', 'PermissionError', 'IsADirectoryError', 'NotADirectoryError', 'OSError', 'JSONDecodeError', 'KeyError', 'TypeError', 'ValueError', 'ProcessLookupError', 'ChildProcessError'}
 SCOPE = 'actual browser controls and persisted-result assertions; pixel parity remains unverified'
 
@@ -77,6 +80,58 @@ def preparation(value):
     error_fields(value)
 
 
+def startup_diagnostics(value, phase):
+    fields(value, {'schema', 'check_results', 'private_values_omitted', 'raw_messages_exported', 'observations_truncated', 'page_errors', 'console_errors', 'csp_violations', 'network'})
+    insist(type(value['schema']) is int and value['schema'] == 1)
+    insist(value['private_values_omitted'] is True and value['raw_messages_exported'] is False)
+    boolean(value['observations_truncated'])
+    insist(value['observations_truncated'] or phase['actual_steps'] <= len(diagnostics.CHECKS) and phase['page_error_count'] <= diagnostics.LIMIT)
+    checks = value['check_results']
+    insist(type(checks) is list and len(checks) == min(phase['actual_steps'], len(diagnostics.CHECKS)))
+    for index, row in enumerate(checks):
+        fields(row, {'index', 'check_id', 'check_identity_verified', 'status', 'error_class', 'category', 'missing_global'})
+        integer(row['index'], index, index)
+        insist(row['check_id'] == diagnostics.CHECKS[index] and row['status'] in ['passed', 'failed', 'unresolved'])
+        boolean(row['check_identity_verified'])
+        diagnostic_error(row)
+        if row['status'] == 'passed':
+            insist(row['error_class'] == 'None' and row['category'] == 'none' and row['missing_global'] == 'none')
+        else:
+            insist(row['error_class'] != 'None' and row['category'] != 'none')
+    insist([{'index': row['index'], 'status': row['status']} for row in checks if row['status'] != 'passed'] == [row for row in phase['failed_steps'] if row['index'] < len(checks)])
+    contracts = {
+        'page_errors': {'path', 'error_class', 'category', 'missing_global', 'count'},
+        'console_errors': {'path', 'error_class', 'category', 'missing_global', 'count'},
+        'csp_violations': {'path', 'directive', 'disposition', 'blocked', 'count'},
+        'network': {'path', 'resource', 'status', 'mime', 'failure', 'count'},
+    }
+    for key, required in contracts.items():
+        rows = value[key]
+        insist(type(rows) is list and len(rows) <= diagnostics.LIMIT)
+        for row in rows:
+            fields(row, required)
+            insist(type(row['path']) is str and row['path'] in diagnostics.PATHS)
+            integer(row['count'], 1, diagnostics.LIMIT)
+            if key in ['page_errors', 'console_errors']:
+                diagnostic_error(row)
+                insist(row['error_class'] != 'None' and row['category'] != 'none')
+            elif key == 'csp_violations':
+                insist(type(row['directive']) is str and row['directive'] in diagnostics.DIRECTIVES and row['disposition'] in ['enforce', 'report', 'unknown'] and row['blocked'] in ['inline', 'eval', 'same-origin', 'other-origin'])
+            else:
+                insist(type(row['resource']) is str and row['resource'] in diagnostics.RESOURCES and type(row['mime']) is str and row['mime'] in diagnostics.MIMES and type(row['failure']) is str and row['failure'] in diagnostics.FAILURES)
+                integer(row['status'], 0, 599)
+                insist(row['status'] == 0 or row['status'] >= 100)
+        count = sum(row['count'] for row in rows)
+        insist(count <= diagnostics.LIMIT)
+        if key == 'page_errors':
+            insist(count == min(phase['page_error_count'], diagnostics.LIMIT))
+
+
+def diagnostic_error(row):
+    insist(type(row['error_class']) is str and row['error_class'] in diagnostics.CLASSES and type(row['category']) is str and row['category'] in diagnostics.CATEGORIES and type(row['missing_global']) is str and row['missing_global'] in diagnostics.GLOBALS | {'none'})
+    insist(row['missing_global'] == 'none' or row['category'] == 'missing-global' and row['error_class'] == 'ReferenceError')
+
+
 def phases(value):
     fields(value, {'schema', 'phases', 'batches'}, {'error_class', 'budget_exhausted'})
     insist(value['schema'] == 1 and type(value['schema']) is int)
@@ -85,7 +140,7 @@ def phases(value):
         boolean(value['budget_exhausted'])
     insist(type(value['phases']) is list and len(value['phases']) <= 49 and type(value['batches']) is list and len(value['batches']) <= 10)
     for row in value['phases']:
-        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope'})
+        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope'}, {'startup_diagnostics'})
         insist(row['batch'] in ['startup', *runner.BATCHES] and row['phase'] in runner.ALL_PHASES and row['status'] in ['passed', 'failed'] and row['evidence_scope'] == SCOPE)
         integer(row['actual_steps'])
         integer(row['page_error_count'])
@@ -96,6 +151,9 @@ def phases(value):
             fields(step, {'index', 'status'})
             integer(step['index'], 0, max(0, row['actual_steps'] - 1))
             insist(step['status'] in ['failed', 'unresolved'])
+        if 'startup_diagnostics' in row:
+            insist(row['phase'] == 'startup')
+            startup_diagnostics(row['startup_diagnostics'], row)
         if row['status'] == 'passed':
             insist(row['actual_steps'] > 0 and row['failed_steps'] == [] and row['page_error_count'] == 0 and row['harness_error_observed'] is False and all(row[key] is True for key in ['runner_report_present', 'owned_runner_terminal', 'runner_exit_zero']))
     for row in value['batches']:
