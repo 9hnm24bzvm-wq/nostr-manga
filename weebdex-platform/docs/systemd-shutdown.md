@@ -69,7 +69,11 @@ also bounds units if the harness is interrupted; an interrupted run is not a
 verified cleanup receipt. It never installs/enables services, touches a real
 application database, changes host systemd/network/security settings, or proves
 actual strfry/application transaction correctness. Local fixture tests use direct
-signals and are only sanity checks for the harness.
+signals and are only sanity checks for the harness. They also exercise owner
+crash and failed startup before owner readiness, requiring birth-identity/pidfd
+cleanup and reaping of the exact owned session while preserving an unrelated
+sibling and releasing the actual command lock. User-manager mode must use the
+actual non-root caller identity; UID/GID overrides apply only in system mode.
 
 ## Hosted execution proposal, not performed
 

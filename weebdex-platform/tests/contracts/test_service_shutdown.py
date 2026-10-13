@@ -45,6 +45,11 @@ class ServiceShutdownContract(unittest.TestCase):
             with self.subTest(text=text), self.assertRaisesRegex(ValueError, "TimeoutSec shorthand"):
                 CONTRACT.check(text, {}, 210)
 
+    def test_spaced_assignment_keys_cannot_bypass_policy_checks(self):
+        for directive in ("TimeoutSec =10", "KillMode =control-group", "SendSIGKILL =no", "FinalKillSignal =SIGTERM"):
+            with self.subTest(directive=directive), self.assertRaises(ValueError):
+                CONTRACT.check(UNIT + "\n[Service]\n" + directive, {}, 210)
+
     def test_final_cgroup_cleanup_cannot_be_disabled(self):
         for directive in ("SendSIGKILL=no", "FinalKillSignal=SIGTERM", "KillSignal=SIGINT"):
             text = UNIT.replace("KillSignal=SIGTERM", directive) if directive.startswith("KillSignal=") else UNIT + "\n[Service]\n" + directive

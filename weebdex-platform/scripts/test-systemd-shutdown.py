@@ -157,6 +157,13 @@ def case(args, root, name, kill_mode, mode):
                 raise RuntimeError("fixture cleanup left cgroup members")
 
 
+def validate_identity(args):
+    if args.fixture_uid == 0:
+        raise RuntimeError("fixture processes must run as a non-root user")
+    if args.manager == "user" and (os.geteuid() == 0 or args.fixture_uid != os.geteuid() or args.fixture_gid != os.getegid()):
+        raise RuntimeError("user-manager fixtures must use the actual non-root caller identity")
+
+
 def main():
     if len(sys.argv) == 5 and sys.argv[1] == "--fixture":
         return fixture(sys.argv[2], Path(sys.argv[3]), sys.argv[4])
@@ -170,8 +177,7 @@ def main():
     args.output_dir.mkdir(mode=0o700, parents=False)  # Never reuse an existing fixture.
     report = {"boundary": "real-manager policy seam, synthetic work; no actual application acceptance", "cases": []}
     try:
-        if args.fixture_uid == 0:
-            raise RuntimeError("fixture processes must run as a non-root user")
+        validate_identity(args)
         if args.manager == "system":
             os.chown(args.output_dir, args.fixture_uid, args.fixture_gid)
         command(args, "systemctl", "show", "--property=Version")

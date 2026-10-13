@@ -35,6 +35,7 @@ def service_fields(text):
             section = line
         elif section == "[Service]" and "=" in line:
             key, value = line.split("=", 1)
+            key = key.strip()  # systemd ignores whitespace around the assignment.
             if key in FIELDS:
                 if key in fields:
                     raise ValueError("ambiguous repeated shutdown directive: " + key)
