@@ -2020,3 +2020,247 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
         "Embedded listener remained bound after shutdown"
     );
 }
+
+// Selected independently from the broad bridge/browser suite. All data and keys
+// remain inside the disposable private fixture; no backup is a public artifact.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+#[ignore = "Requires scripts/run-auth-tests.sh, real PostgreSQL/strfry and Python coincurve"]
+async fn offline_full_publisher_backup_restore_fences_auth_and_exact_retry() {
+    use argon2::{Argon2, PasswordHasher, password_hash::SaltString};
+    use std::process::{Command, Output};
+    const PASSWORD: &str = "synthetic-offline-recovery-password";
+    let lab = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../manga-protocol-lab").canonicalize().unwrap();
+    let pg_bin = lab.join("vendor/pgsql/bin");
+    let dsn = format!("{} user={}", std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").unwrap(), std::env::var("USER").unwrap());
+    let cli = |database: &str, args: &[&str]| -> Output {
+        Command::new(std::env::var("PLATFORM_TEST_PYTHON").unwrap_or_else(|_| "python3".into()))
+            .arg("-m").arg("src.platform_backup").arg("--pg-bin").arg(&pg_bin).args(args)
+            .current_dir(&lab).env("PYTHONPATH", format!("{}:{}", lab.join("vendor/pydeps").display(), lab.display()))
+            .env("PLATFORM_DATABASE_URL", database).env_remove("MANGA_DATABASE_URL").output().unwrap()
+    };
+    let private_json = |path: &std::path::Path, value: &Value| {
+        std::fs::write(path, serde_json::to_vec(value).unwrap()).unwrap();
+        #[cfg(unix)] { use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600)).unwrap(); }
+    };
+    let mut f = fixture().await;
+    let storage_root = f._storage.path().to_owned();
+    let native_owner = weebdex_platform::runtime::acquire_storage_owner(&f.state.config.uploads_dir).unwrap();
+    let mut repo = Repository::connect(DbConfig { dsn: dsn.clone(), connections:1,
+        acquisition_timeout:Duration::from_secs(2), cache_weight:1048576, plaintext_local:true }).await.unwrap();
+    repo.pool = f.state.db.pool().clone();
+    repo.migrate().await.unwrap();
+    let mut keys = Vec::new();
+    for label in ["operator", "service"] {
+        let secret = hex::encode(rand::random::<[u8;32]>());
+        let public = auth::sign(&secret, 1, vec![], String::new()).unwrap().pubkey;
+        let path = storage_root.join(format!("SYNTHETIC_{label}.key"));
+        std::fs::write(&path, secret).unwrap();
+        #[cfg(unix)] { use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600)).unwrap(); }
+        keys.push((path, public));
+    }
+    let reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let bind = reservation.local_addr().unwrap(); drop(reservation);
+    let binary = std::env::var_os("STRFRY_BIN").map(PathBuf::from).unwrap_or_else(||lab.join("vendor/strfry/strfry"));
+    let group_root = storage_root.join("enabled-empty-groups");
+    std::fs::create_dir(&group_root).unwrap();
+    let publication = json!({"operator_key_file":keys[0].0,"expected_publisher":keys[0].1,
+        "storage_owner":keys[0].1,"storage_holder":keys[1].1,"group_keys_dir":group_root,"backend":null,
+        "storage":{"path":storage_root.join("originals"),"volume":"BackupOriginalsFixture",
+            "physical_bytes":64*1048576,"staging_bytes":64*1048576,"max_blob_bytes":8*1048576,"upload_slots":2},
+        "native_node":{"bind":bind.to_string(),"base_url":format!("http://{bind}"),
+            "service_key_file":keys[1].0,"admin_pubkey":keys[0].1,"database_plaintext_local":true,
+            "cors_origins":[ORIGIN],"read_policy":"public","storage":null,"group_keys_dir":group_root,
+            "sync_worker_enabled":false,"auto_approve_publication_deletions":false,
+            "backend":{"binary":binary,"data_dir":storage_root.join("projection"),"map_bytes":64*1048576,"timeout_seconds":5}}});
+    let source_config = json!({"public_origin":ORIGIN,"database_plaintext_local":true,"database_connections":4,
+        "uploads_dir":f.state.config.uploads_dir,"registration_enabled":false,"protocol_publication":publication});
+    f.state.config = Arc::new(serde_json::from_value(source_config.clone()).unwrap());
+    repo.set_publisher_admission(id(&keys[0].1),true).await.unwrap();
+    f.state.protocol.verify_schema().await.unwrap();
+    f.state.protocol.install_visibility_function().await.unwrap();
+    f.state.protocol.configure_publication(serde_json::from_value(publication.clone()).unwrap()).await.unwrap();
+    let runtime = f.state.protocol.publication_runtime().await.unwrap();
+    let mut native = runtime.start_native_listener().await.unwrap().unwrap();
+    f.state.db.client().await.unwrap().execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)", &[&keys[0].1,&f.owner_id]).await.unwrap();
+    let password_hash = Argon2::default().hash_password(PASSWORD.as_bytes(), &SaltString::generate(&mut rand::rngs::OsRng)).unwrap().to_string();
+    let username:String = f.state.db.client().await.unwrap().query_one("UPDATE platform.users SET password_hash=$2 WHERE id=$1 RETURNING username", &[&f.owner_id,&password_hash]).await.unwrap().get(0);
+    f.app = weebdex_platform::router::router(f.state.clone());
+    let published = create_covered_manga(&f, "Synthetic backup visible originals").await;
+    let published_mid = published["id"].as_str().unwrap().to_owned();
+    wait_source(&f,published["protocol_event_id"].as_str().unwrap()).await;
+    sweep(&f).await;
+    // A native session with an original and a genuinely smaller derivative.
+    let session = begin(&f,&published_mid).await;
+    let raw = png();
+    let files = file_array(upload(&f,&session,&[image_part("staged.png","image/png",&raw)],Some(&f.owner),StatusCode::OK).await,1);
+    let preview_name = files[0]["file_name"].as_str().unwrap().to_owned();
+    assert!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.upload_file_derivatives WHERE file_id=$1",&[&files[0]["id"].as_str().unwrap()]).await.unwrap().get::<_,i64>(0)>0);
+    // Real durable signed command accepted before native transaction rollback.
+    let draft = create_manga(&f,"Synthetic exact pending backup",false).await;
+    let pending_mid = draft["id"].as_str().unwrap().to_owned();
+    let cover = add_cover(&f,&pending_mid,&raw,StatusCode::OK).await;
+    let derivative_path = format!("/covers/{pending_mid}/{}.256.webp",cover["id"].as_str().unwrap());
+    let derivative_before = send(&f.app,Method::GET,&derivative_path,Some(&f.owner),&[],vec![],StatusCode::OK).await.body;
+    let submitted = api(&f.app,Method::POST,&format!("/api/manga/draft/{pending_mid}/commit"),Some(&f.owner),Some(json!({"version":draft["version"]})),StatusCode::OK).await;
+    let version = submitted["version"].as_i64().unwrap() as i32;
+    let mut headers = HeaderMap::new(); headers.insert("cookie",f.owner.parse().unwrap());
+    let actor = domains::auth::require_principal(&f.state,&headers).await.unwrap();
+    let mut client = f.state.db.client().await.unwrap();
+    let tx = client.transaction().await.unwrap();
+    tx.query_one("SELECT id FROM platform.catalog_manga WHERE id=$1 FOR UPDATE",&[&pending_mid]).await.unwrap();
+    let pending = weebdex_platform::protocol::publication::publish_native_manga(&f.state,&tx,&actor,&pending_mid,version).await.unwrap().unwrap();
+    let pending_event = pending.event.id.clone();
+    tx.rollback().await.unwrap(); drop(client);
+    wait_source(&f,&pending_event).await;
+    let command = format!("manga:{pending_mid}");
+    let input_before:Vec<u8> = f.state.db.client().await.unwrap().query_one("SELECT source_manifest FROM platform.protocol_publication_commands WHERE command_id=$1",&[&command]).await.unwrap().get(0);
+    let canonical_hash:String = f.state.db.client().await.unwrap().query_one("SELECT encode(hash,'hex') FROM publication_blobs WHERE event_id=$1 AND mime LIKE 'image/%' ORDER BY hash LIMIT 1",&[&id(&pending_event).as_slice()]).await.unwrap().get(0);
+    let source_http = reqwest::Client::new();
+    let original_before = source_http.get(format!("http://{bind}/originals/{canonical_hash}")).send().await.unwrap();
+    assert_eq!(original_before.status(),StatusCode::OK);
+    let original_before = original_before.bytes().await.unwrap().to_vec();
+    // Outstanding pre-backup browser flow, API bearer, and unused email link.
+    let flow = send(&f.app,Method::GET,"/auth/self-service/login/browser",None,&[],vec![],StatusCode::OK).await;
+    let flow_id = flow.json()["id"].as_str().unwrap().to_owned();
+    let browser_cookie = flow.header("set-cookie").split(';').next().unwrap().to_owned();
+    let bearer = "synthetic-offline-api-client";
+    let mail_token = "A".repeat(43);
+    let mail_hash = Sha256::digest(mail_token.as_bytes()).to_vec();
+    let recipient_hash = Sha256::digest(format!("{}@fixture.invalid",username.to_ascii_lowercase()).as_bytes()).to_vec();
+    let client = f.state.db.client().await.unwrap();
+    client.execute("INSERT INTO platform.api_clients(id,user_id,name,secret_hash,scopes) VALUES('offline-backup-client',$1,'Synthetic fixture',$2,'[\"self.library.read\"]')",&[&f.owner_id,&Sha256::digest(bearer.as_bytes()).to_vec()]).await.unwrap();
+    client.execute("INSERT INTO platform.auth_email_tokens(id,kind,user_id,token_hash,recipient_hash,flow_id,return_to,delivery_state,expires_at) SELECT 'offline-backup-mail','recovery',id,$2,$5,$3,$4,'sent',clock_timestamp()+interval '15 minutes' FROM platform.users WHERE id=$1",&[&f.owner_id,&mail_hash,&flow_id,&ORIGIN,&recipient_hash]).await.unwrap();
+    drop(client);
+    let source_path = storage_root.join("publisher.json"); private_json(&source_path,&source_config);
+    let backup_path = storage_root.join("backup");
+    let output = cli(&dsn,&["backup",source_path.to_str().unwrap(),backup_path.to_str().unwrap()]);
+    assert!(!output.status.success()); assert!(!backup_path.exists(),"live native owner must refuse before output");
+    drop(native_owner);
+    let output = cli(&dsn,&["backup",source_path.to_str().unwrap(),backup_path.to_str().unwrap()]);
+    assert!(!output.status.success()); assert!(!backup_path.exists(),"live original owner must refuse before output");
+    native.shutdown.take().unwrap().send(()).unwrap(); native.task.await.unwrap().unwrap();
+    drop(runtime); drop(f.app); drop(f.state); drop(repo);
+    let output = cli(&dsn,&["backup",source_path.to_str().unwrap(),backup_path.to_str().unwrap()]);
+    assert!(output.status.success(),"private backup CLI failed: {}",String::from_utf8_lossy(&output.stderr));
+    let marker:Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(marker["profile"],"offline-full-publisher-v1");
+    assert!(marker["native_media"].as_u64().unwrap()>=4);
+    assert_ne!(keys[0].1,keys[1].1,"both independent signing identities must survive");
+    // Consume a genuinely valid source recovery link AFTER the recovery point.
+    // Restore must not revive that now-used snapshot token.
+    let auth_source = AppState::connect(serde_json::from_value(source_config.clone()).unwrap(),dsn.clone()).await.unwrap();
+    let auth_app = weebdex_platform::router::router(auth_source.clone());
+    send(&auth_app,Method::GET,&format!("/auth/self-service/recovery?token={mail_token}"),None,&[],vec![],StatusCode::SEE_OTHER).await;
+    drop(auth_app); drop(auth_source);
+    // Actual exporter backend termination AFTER pg_dump must leave no valid
+    // completion marker, even though its independent dump already completed.
+    let fault_root=storage_root.join("exporter-fault-partial");
+    let fault_code=r#"
+import json,os,sys,tempfile
+from pathlib import Path
+from src import postgres_backup as node
+from src.platform_backup import effective_node,native_owner
+from src.operator_json import read_json,save_json
+platform=read_json(sys.argv[1]);destination=Path(sys.argv[2]);pg=sys.argv[3]
+dsn=os.environ['PLATFORM_DATABASE_URL']+' application_name=publisher_backup_exporter_fault'
+def terminate_after_dump(root,config):
+    killed=node.sql(pg,dsn,"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE application_name='publisher_backup_exporter_fault' AND pid<>pg_backend_pid() AND state='idle in transaction'")
+    if killed!='t': raise RuntimeError('fault did not target exactly one owned exporter')
+    return {}
+try:
+    with native_owner(platform['uploads_dir']),tempfile.TemporaryDirectory() as tmp:
+        config=Path(tmp)/'node.json';save_json(config,effective_node(platform),exclusive=True)
+        node.backup(config,destination,pg,dsn,platform=True,copy_extra=terminate_after_dump)
+except node.BackupError as error:
+    if 'snapshot' not in str(error) or not (destination/'database.dump').is_file() or (destination/'BACKUP_COMPLETE.json').exists(): raise
+    sys.exit(0)
+sys.exit(1)
+"#;
+    let fault=Command::new(std::env::var("PLATFORM_TEST_PYTHON").unwrap_or_else(|_|"python3".into()))
+        .arg("-c").arg(fault_code).arg(&source_path).arg(&fault_root).arg(&pg_bin).current_dir(&lab)
+        .env("PYTHONPATH",format!("{}:{}",lab.join("vendor/pydeps").display(),lab.display()))
+        .env("PLATFORM_DATABASE_URL",&dsn).env_remove("MANGA_DATABASE_URL").output().unwrap();
+    assert!(fault.status.success(),"snapshot exporter-death recovery fault failed: {}",String::from_utf8_lossy(&fault.stderr));
+    assert!(!fault_root.join("BACKUP_COMPLETE.json").exists());
+    // A wrong operator signer fails before writing another backup.
+    let mut wrong = source_config.clone(); wrong["protocol_publication"]["expected_publisher"] = json!(keys[1].1);
+    let wrong_path = storage_root.join("wrong-signer.json"); private_json(&wrong_path,&wrong);
+    let wrong_out = storage_root.join("wrong-backup");
+    assert!(!cli(&dsn,&["backup",wrong_path.to_str().unwrap(),wrong_out.to_str().unwrap()]).status.success());
+    assert!(!wrong_out.exists());
+    // The destination database is new and entirely private to this fixture.
+    let (admin, connection) = tokio_postgres::connect(&dsn,tokio_postgres::NoTls).await.unwrap();
+    let admin_task = tokio::spawn(async move {connection.await.unwrap()});
+    admin.batch_execute("CREATE DATABASE weebdex_platform_backup_restored_test").await.unwrap();
+    let restored_dsn = dsn.replace("dbname=weebdex_platform_test","dbname=weebdex_platform_backup_restored_test");
+    assert_ne!(dsn,restored_dsn);
+    let restored_root = storage_root.join("restored");
+    let args = ["restore",backup_path.to_str().unwrap(),restored_root.to_str().unwrap(),"--source-offline"];
+    assert!(!cli(&dsn,&args).status.success()); assert!(!restored_root.exists(),"nonempty target must refuse before output");
+    let tamper = backup_path.join("operator.key"); let key_before=std::fs::read(&tamper).unwrap();
+    std::fs::write(&tamper,b"tampered").unwrap();
+    assert!(!cli(&restored_dsn,&args).status.success()); assert!(!restored_root.exists());
+    std::fs::write(&tamper,key_before).unwrap();
+    let output = cli(&restored_dsn,&args);
+    assert!(output.status.success(),"private restore CLI failed: {}",String::from_utf8_lossy(&output.stderr));
+    let config_path = restored_root.join("restored-platform-config.json");
+    let mut restored_config:Value = serde_json::from_slice(&std::fs::read(&config_path).unwrap()).unwrap();
+    assert_eq!(restored_config["restore_review_required"],true);
+    assert_eq!(restored_config["protocol_publication"]["native_node"]["storage"],Value::Null);
+    assert!(restored_root.join("groups").is_dir());
+    assert_eq!(std::fs::read_dir(restored_root.join("groups")).unwrap().count(),0);
+    // Real serve entry refuses BEFORE DB, paths, owner or listener activation.
+    let fenced = Command::new(env!("CARGO_BIN_EXE_weebdex-platform")).arg("serve").env("PLATFORM_CONFIG",&config_path)
+        .env("PLATFORM_DATABASE_URL","invalid-and-must-not-be-used").output().unwrap();
+    assert!(!fenced.status.success());
+    assert!(String::from_utf8_lossy(&fenced.stderr).contains("restored publisher is fenced"));
+    assert_eq!(std::fs::read(restored_root.join("operator.key")).unwrap(),std::fs::read(&keys[0].0).unwrap());
+    assert_eq!(std::fs::read(restored_root.join("service.key")).unwrap(),std::fs::read(&keys[1].0).unwrap());
+    // Explicit synthetic operator release; no tool silently clears this fence.
+    restored_config["restore_review_required"]=json!(false);
+    let restored_state = AppState::connect(serde_json::from_value(restored_config.clone()).unwrap(),restored_dsn.clone()).await.unwrap();
+    restored_state.db.verify_schema(domains::MIGRATIONS).await.unwrap();
+    restored_state.protocol.verify_schema().await.unwrap();
+    let app = weebdex_platform::router::router(restored_state.clone());
+    api(&app,Method::GET,"/api/auth/check",Some(&f.owner),None,StatusCode::UNAUTHORIZED).await;
+    send(&app,Method::GET,"/api/user/lists",None,&[("authorization",&format!("Bearer {bearer}"))],vec![],StatusCode::UNAUTHORIZED).await;
+    send(&app,Method::GET,&format!("/auth/self-service/login/flows?id={flow_id}"),Some(&browser_cookie),&[],vec![],StatusCode::GONE).await;
+    send(&app,Method::GET,&format!("/auth/self-service/recovery?token={mail_token}"),None,&[],vec![],StatusCode::BAD_REQUEST).await;
+    let fresh_flow = send(&app,Method::GET,"/auth/self-service/login/browser",None,&[],vec![],StatusCode::OK).await;
+    let fresh_cookie = fresh_flow.header("set-cookie").split(';').next().unwrap().to_owned();
+    let fresh_json=fresh_flow.json();
+    let csrf = fresh_json["ui"]["nodes"].as_array().unwrap().iter().find(|n|n["attributes"]["name"]=="csrf_token").unwrap()["attributes"]["value"].as_str().unwrap();
+    let login = send(&app,Method::POST,&format!("/auth/self-service/login?flow={}",fresh_json["id"].as_str().unwrap()),Some(&fresh_cookie),&[("content-type","application/json")],serde_json::to_vec(&json!({"method":"password","identifier":username,"password":PASSWORD,"csrf_token":csrf})).unwrap(),StatusCode::OK).await;
+    let fresh_session = login.headers.get_all("set-cookie").iter().map(|c|c.to_str().unwrap().split(';').next().unwrap()).find(|c|c.starts_with("weebdex_session=")).unwrap().to_owned();
+    send(&app,Method::GET,&format!("/uploads/{preview_name}"),Some(&fresh_session),&[],vec![],StatusCode::OK).await.body.eq(&raw).then_some(()).expect("native preview bytes must be exact");
+    let derivative_after=send(&app,Method::GET,&derivative_path,Some(&fresh_session),&[],vec![],StatusCode::OK).await.body;
+    assert_eq!(derivative_before,derivative_after);
+    let client=restored_state.db.client().await.unwrap();
+    assert_eq!(client.query_one("SELECT namespace::text FROM platform.catalogue_namespace WHERE singleton",&[]).await.unwrap().get::<_,String>(0),marker["catalogue_namespace"].as_str().unwrap());
+    assert_eq!(client.query_one("SELECT source_manifest FROM platform.protocol_publication_commands WHERE command_id=$1",&[&command]).await.unwrap().get::<_,Vec<u8>>(0),input_before);
+    assert_eq!(client.query_one("SELECT state FROM platform.protocol_publication_commands WHERE command_id=$1",&[&command]).await.unwrap().get::<_,String>(0),"source_accepted");
+    let before:i64=client.query_one("SELECT count(*) FROM events WHERE kind IN(1001,1002)",&[]).await.unwrap().get(0); drop(client);
+    restored_state.protocol.configure_publication(serde_json::from_value(restored_config["protocol_publication"].clone()).unwrap()).await.unwrap();
+    let restored_runtime=restored_state.protocol.publication_runtime().await.unwrap();
+    tokio::time::sleep(Duration::from_secs(2)).await;
+    let mut native=restored_runtime.start_native_listener().await.unwrap().unwrap();
+    let original=source_http.get(format!("http://{bind}/originals/{canonical_hash}")).send().await.unwrap();
+    assert_eq!(original.status(),StatusCode::OK); assert_eq!(original.bytes().await.unwrap().as_ref(),original_before.as_slice());
+    let range=source_http.get(format!("http://{bind}/originals/{canonical_hash}")).header("range","bytes=0-15").send().await.unwrap();
+    assert_eq!(range.status(),StatusCode::PARTIAL_CONTENT); assert_eq!(range.bytes().await.unwrap().as_ref(),&original_before[..16]);
+    for _ in 0..2 {
+        let retried=api(&app,Method::POST,&format!("/api/manga/draft/{pending_mid}/publish"),Some(&fresh_session),Some(json!({"version":version})),StatusCode::OK).await;
+        assert_eq!(retried["protocol_event_id"],pending_event);
+    }
+    let after:i64=restored_state.db.client().await.unwrap().query_one("SELECT count(*) FROM events WHERE kind IN(1001,1002)",&[]).await.unwrap().get(0);
+    assert_eq!(before,after,"explicit exact retry must not allocate duplicate source events");
+    #[cfg(unix)] { use std::os::unix::fs::MetadataExt;
+        let key:String=restored_state.db.client().await.unwrap().query_one("SELECT storage_key FROM platform.media_objects LIMIT 1",&[]).await.unwrap().get(0);
+        let source=source_config["uploads_dir"].as_str().unwrap();
+        assert_ne!(std::fs::metadata(PathBuf::from(source).join("objects").join(&key[..2]).join(&key)).unwrap().ino(),std::fs::metadata(restored_root.join("native/objects").join(&key[..2]).join(&key)).unwrap().ino()); }
+    native.shutdown.take().unwrap().send(()).unwrap(); native.task.await.unwrap().unwrap();
+    drop(restored_runtime); drop(app); drop(restored_state);
+    drop(admin); admin_task.await.unwrap();
+}
