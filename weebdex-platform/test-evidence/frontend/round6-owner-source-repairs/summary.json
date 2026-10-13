@@ -1,0 +1,82 @@
+{
+  "utc": "2026-10-13T06:05:55.884210+00:00",
+  "source_only": true,
+  "runtime_tests_executed": false,
+  "findings": {
+    "UI6-01": "Synchronous form default prevented, dirty metadata cannot enter pages-only staging until save/revert; no automatic mutation.",
+    "UI6-02": "Device list control explicitly admits device mode and same saved scope/list; account list query refuses silent reinterpretation.",
+    "UI6-03": "Captured actor and mutation generation, expected-account header, owned cancellation on account/target/disposal; no stale report row/dialog writes or mutation replay.",
+    "UI6-04": "Reader keys yield to controls, editable ancestors, composed paths and defaultPrevented; owned held RAF stops on focus/blur/disposal."
+  },
+  "files": [
+    {
+      "path": "platform-integrations/frontend-overlays.mjs",
+      "sha256": "4180f3c49560bec6cf2df691a117ab66dba6a6e494dbc373465797237b5160a0"
+    },
+    {
+      "path": "platform-integrations/frontend-reader-overlays.mjs",
+      "sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/authenticated-mutation.ts",
+      "sha256": "feba7952eb231940a3f0cfd5223baee1873c96a923818291c6c91b2694f95fdd"
+    },
+    {
+      "path": "platform-integrations/local-library/MangaFollow.ts",
+      "sha256": "c2b4bc21f6839f2a2a588fd7b0d1c2d38fdc26b390d187193993780b3a213e58"
+    },
+    {
+      "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
+      "sha256": "6074d5567a3caa39cade3921aef045f0cbf13fe803488139ef913ec5583ac7d1"
+    },
+    {
+      "path": "scripts/vite.platform.config.mjs",
+      "sha256": "2f90098ffcdcf787ddb054626fe3749427d015021a2754bc5833552281e3e75d"
+    }
+  ],
+  "overlay_definitions": 309,
+  "anchor_occurrences": 318,
+  "original_paths": 66,
+  "integration_inventory_sha256": "23113af9f205f9fc7cb51f5da2d405d89ceb166350ec54c8b0029aa4dd7ccb62",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T06:05:55.839Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 62,
+    "scripts_syntax_compiled": 31,
+    "shared_sha": "4180f3c49560bec6cf2df691a117ab66dba6a6e494dbc373465797237b5160a0",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "acc47af42d7638f6cc77d2529c71b553f7d1ce73c5b8ebe11b3461fb275a043f",
+    "integration_inventory_sha": "23113af9f205f9fc7cb51f5da2d405d89ceb166350ec54c8b0029aa4dd7ccb62",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "bundle_status": "build7 failed on external axios resolution; exact staged aliases corrected; next guarded bundle pending Cargo release",
+  "browser_status": "not run; fresh review gate held"
+}

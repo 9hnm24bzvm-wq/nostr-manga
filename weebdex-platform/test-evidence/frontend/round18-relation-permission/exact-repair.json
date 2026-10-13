@@ -1,0 +1,8 @@
+{
+  "path": "src/lib/permission/manga.ts",
+  "sha256": "fdf62a1220d8e13f446f4fc070788c78aded93baeef360ae88cee2b67827e799",
+  "count": 1,
+  "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority",
+  "before": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tif (!Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && (manga?.locked || !manga?.deleted_at)) {\r\n\t\treturn false;\r\n\t}\r\n\treturn Session.hasPerm(\"manga.relation.edit\");\r\n};",
+  "after": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tconst actor = get(Session);\r\n\tif (!actor?.identity?.id) return false;\r\n\t// The create form has no saved title yet; its future draft owner needs manga.create.\r\n\tif (!manga) return Session.hasPerm(\"manga.create\");\r\n\tconst current = manga as Manga & { can_mutate?: boolean; is_unavailable?: boolean };\r\n\tif (manga.deleted_at || current.can_mutate === false || current.is_unavailable) return false;\r\n\tif (Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && Session.hasPerm(\"manga.relation.edit\")) return true;\r\n\tif (manga.locked) return false;\r\n\tif (manga.state === State.Published) return Session.hasPerm(\"manga.relation.edit\");\r\n\treturn manga.relationships?.submitter?.id === actor.identity.id && Session.hasPerm(\"manga.create\");\r\n};"
+}

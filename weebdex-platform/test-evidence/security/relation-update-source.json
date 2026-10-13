@@ -1,0 +1,43 @@
+{
+  "updated_utc": "2026-10-13T10:11:49.234175+00:00",
+  "status": "source_frozen_typecheck_codegen_passed_runtime_held",
+  "finding": "Existing changed RelationDraft rows reused duplicate-conflicting POST, so genuine relation edits failed409.",
+  "contract": {
+    "POST": "201 creates only; duplicate409; optional owner-title version",
+    "PUT": "200 updates existing relation; required owner-title version; stale409/missing404; unchanged type200 without version bump",
+    "DELETE": "204 removes; optional owner-title version; actual parent version in x-weebdex-manga-version",
+    "mutation_body_fields": [
+      "related_id",
+      "type",
+      "version"
+    ],
+    "response_additions": {
+      "manga_version": "actual current owner title version, distinct from related DTO version",
+      "relation_scope": "instance-local"
+    }
+  },
+  "signed_source_mutated": false,
+  "migration_required": false,
+  "source_sha256": {
+    "backend/src/domains/catalog/mod.rs": "438a44ffeb1bb56611888e96904fd9d15033f795ea1a4f6aacd4ca6238ef1e11",
+    "backend/src/domains/catalog/mutations.rs": "53e764a999f7fe00b85c122145f1a727588b44be92a90ff09630eecf04ca53d9",
+    "backend/tests/catalog_http.rs": "dc6f2d053fa9915bffac0fe893efbeb19efdf4cfc3185035d830ab2b4ec9fca8"
+  },
+  "acceptance_source": "Public Router plus real disposable PG:201 create and parent version; duplicate409 even different type; missing version400; stale409; anonymous401; actual withdrawn permission403 without persisted effect;200 edit; no-op keeps version; missing relation404; exact single update audit; stale DELETE409;204 deletion version/no-store/body headers.",
+  "runtime_executed": false,
+  "tests_executed": 0,
+  "check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-check-cover-001-result.json",
+    "sha256": "d42cd074822847aab648d6569aff1eeeab32df14c28484d41bc833f797e6de7d",
+    "status": "passed",
+    "completed_utc": "2026-10-13T10:07:54.722037+00:00",
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92"
+  },
+  "codegen": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-codegen-cover-001-result.json",
+    "sha256": "55bec702c2433d00adb51706526da56596bc436aa449070e4639fa4ebd2e1724",
+    "status": "passed",
+    "completed_utc": "2026-10-13T10:09:17.176310+00:00",
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92"
+  }
+}

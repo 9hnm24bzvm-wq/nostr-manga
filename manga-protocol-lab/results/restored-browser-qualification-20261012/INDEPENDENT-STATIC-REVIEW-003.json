@@ -1,0 +1,108 @@
+{
+  "reviewed_utc": "2026-10-12T21:50:41.827295+00:00",
+  "method": "Independent read-only static review of text/diffs and stdlib file hash verification; no helper import, tests, installation, process or browser launch.",
+  "verdict": "no_remaining_static_blocker_identified_for_future_controlled_qualification",
+  "freeze_sha256": "d08074e198665bba32dd8920e0c88ff4d0f3ca675359998f38218fcc4acd1440",
+  "checked_files": 12,
+  "checked_bytes": 97930,
+  "checked_members": [
+    {
+      "path": "BROWSER-PLAN.md",
+      "bytes": 8018,
+      "sha256": "4aaaa90d2724c6adf6562b8dce7ab346c1fd861939d951b04e25ebec3067299f"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 9551,
+      "sha256": "e2172f2040650b18f485be91224301653aa03d7487bb3e81eedc6cc08161f661"
+    },
+    {
+      "path": "fixture-controller.py",
+      "bytes": 28881,
+      "sha256": "0fbf64cfc04944b18cad8cdb64d060731addfe3d6bc59a8ad65e9113d0dcd553"
+    },
+    {
+      "path": "owned-processes.py",
+      "bytes": 4110,
+      "sha256": "21a760b8a27fd57c4303a62bf258e4a9db4b05fb062e294c5579da81e1768e7c"
+    },
+    {
+      "path": "fixture-parent.html",
+      "bytes": 1069,
+      "sha256": "8e5215723ebcd4c108f4852db9bfb5388bf2cfd6bfd00c72e849a1ea277f216a"
+    },
+    {
+      "path": "fixture-bridge.js",
+      "bytes": 1286,
+      "sha256": "58f40778a5c633288dacebd42e721902392fe248f7491888cfc3e0452e47dee6"
+    },
+    {
+      "path": "synthetic-inputs.py",
+      "bytes": 5341,
+      "sha256": "8921718572fbf17e9c8059d2046a64b2ca1aaf2dff71b38e2498acf270a60fff"
+    },
+    {
+      "path": "source-seams.py",
+      "bytes": 14693,
+      "sha256": "eb25fc3171ed0738a37dfac3be9f87e48e9de14ffb3b520b048980dcf33a5563"
+    },
+    {
+      "path": "browser_evidence.py",
+      "bytes": 18675,
+      "sha256": "dc696b2e039efaca1428215f485aa7bc20ac89dcf3af5d8d8f966374b139fcb2"
+    },
+    {
+      "path": "test_browser_evidence_cli.py",
+      "bytes": 2793,
+      "sha256": "9e72ce75886fccde86f552cb507bb7cd78c9628f563456886416b468e4ba45f3"
+    },
+    {
+      "path": "safe-evidence-files.json",
+      "bytes": 865,
+      "sha256": "fc5500ddf61775712aff4ccd3f293ba84a80679c50e818abb11c5e223d758be6"
+    },
+    {
+      "path": "UNEXECUTED-STATUS.md",
+      "bytes": 2648,
+      "sha256": "93bb091caf499c2af8e5143f452ad7522530d24598ac71e30ae79e38a53c95ad"
+    }
+  ],
+  "prior002_preserved_verified": true,
+  "resolved_findings": [
+    {
+      "id": "B1",
+      "initial": "Synchronous HTTP dispatch had only an inactivity timeout, so trickling bytes could suppress owner checks indefinitely.",
+      "revision003": "Each dispatch now has an absolute SIGALRM bound of at most5seconds and no more than remaining owner lifetime. Abort is marked before the raised exception so HTTPServer handling cannot erase it. The timer/handler are restored in finally and aborted owner lifetime exits1. Actual trickle/request/owner/signal process cases are prepared, unexecuted."
+    },
+    {
+      "id": "B2",
+      "initial": "PureSeams asserted private generator and validation helpers.",
+      "revision003": "Those tests are replaced with actual generator CLI artifacts/refusals and signing HTTP cases. Existing independent export CLI cases remain. Large case record fidelity and public-proof negatives remain future qualification."
+    },
+    {
+      "id": "B3",
+      "initial": "Verifier checked key file metadata but not the claimed owned runtime path.",
+      "revision003": "Requires exact unaliased .runtime-final/<bounded-name>/user.key, non-writable-by-others runtime root,0700 current-UID runtime directory, dirfd/O_NOFOLLOW key open and0600 current-UID single-link regular file, bounded size and matching public identity. Proposed real-node valid-owned/identical-outside pair remains unexecuted."
+    }
+  ],
+  "positive_findings": [
+    "Fixed literal loopback listeners and exact Host/Origin/custom-header gates; narrow signing kinds/routes and no generic HTTP control endpoint.",
+    "Private umask and separate runtime files; HTTP exposes only public identities/signatures. No secret literal or private runtime file appears in the reviewed source-only evidence list.",
+    "Bridge only supplies NIP07. Production app assets are unchanged, with no IndexedDB seeding or automatic-publication helper. Explicit UI consent/local default still need observation.",
+    "Ownership uses dedicated same-launch subreaper ancestry and identity-pinned signals; cleanup reports owned remainders, child exits and accepted asset/node changes.",
+    "Independent expected-data verifier checks exact records, duplicates, canonical CBOR/hash buckets/counts, service proofs, publisher signatures and stable heads; exported JSONL and receipts are bounded.",
+    "Freeze/plans/status label all new code/tests/services/browser qualification unexecuted and separate from restored accepted application code."
+  ],
+  "required_before_acceptance": [
+    "Resolve existing unknown npm execution lifecycle and obtain explicit execution release.",
+    "Run the proposed small real CLI/HTTP/process cases, including absolute trickle deadlines and ownership cleanup.",
+    "Add and run actual public-proof negative verifier seams before accepting its signed-public verdict.",
+    "Establish actual cloud-browser reachability, then complete the tiny four-family rendered UI roundtrip and inspect terminal cleanup before any30202/500202 case."
+  ],
+  "limits": [
+    "Static review is not execution clearance or evidence of runtime cleanup, dependency availability, browser correctness or capacity.",
+    "Filesystem/process inspection assumes the controlled fixture host; no blanket hostile concurrent-filesystem or SIGKILL cleanup guarantee.",
+    "Clock/deadline claims require real process evidence; the new absolute request timer is structurally sound but has never run.",
+    "Synthetic signer cannot certify real extension prompts, real accounts, mobile/eviction/power-loss behavior or target mixed-load throughput."
+  ]
+}

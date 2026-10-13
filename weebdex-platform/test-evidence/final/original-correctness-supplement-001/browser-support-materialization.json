@@ -1,0 +1,1686 @@
+{
+  "recorded_utc": "2026-10-13T13:28:23.771133+00:00",
+  "source_023_and_original_server_52migrations_unchanged": true,
+  "new_sibling_runtime_support_only": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/browser-client",
+  "canonical_source_files": {
+    "package.json": "6b3be395fdd081368063ff6c214cdafa14a181517da066fd306749edb9984606",
+    "package-lock.json": "d8acbe16c2334d627d02c9c4d7f43d336746d04897e478349013b6cb6b9719c4",
+    "tests/backend.mjs": "8c949aedbbb58b5ac1975e32740516e74c33d257b08f5978fd6717afaa810fd9",
+    "src/backup.js": "1523359dd73fe16f2b245b1bd77545ff065f97bd495399a1c3e6b601a2389f8f",
+    "src/codec.js": "73610f21767c733fe9945604960413666c851f061cd61efaf789172c0754d24f",
+    "src/indexeddb.js": "098639a2a7c546adafd6419310e86554f633f12bcdecfc372bbb55ef77c826b7",
+    "src/limits.js": "c23e71d1e01380f25f450963bd531d38c817196a2decc748d7256e10f5c8e540",
+    "src/nostr.js": "6fb879046de20efa265afba47000804446c3f728dfb47f3d4d568cde26ce7135",
+    "src/outbox.js": "b065cd96b0e374887d3a7f4f22abe6fe74e63f663cac006a629fa9c2db2216fd",
+    "src/publishing.js": "dde8414497727c2654e5449db4bdd63e8554a6522f72cc3130846954dd46579f",
+    "src/store.js": "4d722b95e24bf6af756b2513e83d79ead5f788a6a1362d27b6c8da6204a77bf0"
+  },
+  "packages": [
+    {
+      "name": "@noble/curves",
+      "version": "2.0.1",
+      "official_lock_integrity_verified": true,
+      "archive_sha256": "1271ac0dfa27c93e464e64b65ff2a255eea52c449ca86c149cfb0b9786dd9029",
+      "archive_bytes": 300596,
+      "extracted_bytes": 1239653,
+      "files": [
+        {
+          "path": "browser-client/node_modules/@noble/curves/LICENSE",
+          "sha256": "4f221aee6e072336700c408c68ab3b96a3fc09f6aebe6f48f1bd99e5ef13faec",
+          "bytes": 1109
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/bls.js",
+          "sha256": "b8c2ca1d8ac728545a284c31c47649186e49e42a5be697bb2bdc409c7ad7850b",
+          "bytes": 16028
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bls12-381.js",
+          "sha256": "ed086bfeb210deaff706381010b062952fe32f6c06f112a9ea5e6f0baceb1215",
+          "bytes": 31835
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bn254.js",
+          "sha256": "1d252a902a3b5b65c77566a380a3fc4360d436894f35b1249fb35ebba1404f63",
+          "bytes": 7532
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/curve.js",
+          "sha256": "0af8761099681b25c9c91353195c94f24e043a4f793d1653c9e12394126f9eec",
+          "bytes": 18375
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed25519.js",
+          "sha256": "f01414ff81438c326c10882d8675a8d2919a1fdf0e610b3cb3412cda19d91057",
+          "bytes": 21883
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed448.js",
+          "sha256": "8cbb6a451c436c3b3da399f41503329e1ed04de9e39ee30515fb90c65ddbb8ef",
+          "bytes": 21227
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/edwards.js",
+          "sha256": "345d84b06e67db847a117806aebc6a9511332aa82804b3167325dfba395842b7",
+          "bytes": 22561
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/fft.js",
+          "sha256": "d55a42994c0357f8fe1aec763af7f78caad0ae7d4a62cedb892166b784991b2e",
+          "bytes": 16107
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/hash-to-curve.js",
+          "sha256": "9066601336e86c06f6efce142105a72da775ff9337334e731154078ec92659c0",
+          "bytes": 8460
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/index.js",
+          "sha256": "2ee3d3ffe8b73427b1e6d29126c1f1dfb68b4220c3d7d7e10fbf1c2b6e44d441",
+          "bytes": 1456
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/misc.js",
+          "sha256": "2207578c8ba0a4ed660dbcefe6dea2142bf88caf475063caa15cc7e9be63abb3",
+          "bytes": 5978
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/modular.js",
+          "sha256": "5c9526d20d2fb88eea54ca77bf869ec7b7bdde154682289dc345e41ec3c2950c",
+          "bytes": 21210
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/montgomery.js",
+          "sha256": "f50a02d30ac3e06f86ade81b9ef7cfe300ad3a952e2c8b86862b34688cbae6bf",
+          "bytes": 6194
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/nist.js",
+          "sha256": "7fac094bf7649cd9a16ecb763d70afb9db987a65e73e3d047ac0d303cd106829",
+          "bytes": 6686
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/oprf.js",
+          "sha256": "9c7157d53d0f8cb4148e83ca5eb2cf1289de65d526c695e0860de9860c504a02",
+          "bytes": 14276
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/poseidon.js",
+          "sha256": "0dfc407aa10de862b068a2b163905e441995cfa1886ff0c605e63844b975da1b",
+          "bytes": 10999
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/secp256k1.js",
+          "sha256": "1e68950f5c26c9b6b380d1389b6acd2c1d6166c1c375c29beef84f143e6b0f6a",
+          "bytes": 11885
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/tower.js",
+          "sha256": "b2d4aed93101ab4653bdc887bd3cb5afb84befce5f31f39cc0cdf0707952345c",
+          "bytes": 25477
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/utils.js",
+          "sha256": "cb31bbe5c4f6ce19593b64aa32fb9f559f3c02cfbb49885beda18deffa7bd4e8",
+          "bytes": 8404
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/webcrypto.js",
+          "sha256": "01830d986887e440fa0905b28d01af9268a0bba55ff2d2fd56b1b3c3bdc40453",
+          "bytes": 11592
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/weierstrass.js",
+          "sha256": "4c6daff9db5674cf9fba182c5581404afbe7792b17d4525b9351c445433eaece",
+          "bytes": 52556
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/package.json",
+          "sha256": "588b510f1b8804bdf820acbd14065126286d92575c45811acef08fe480899469",
+          "bytes": 2938
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/bls.d.ts.map",
+          "sha256": "5a259e57027e2beb71de6fe7ecfc1c179b4ca7abf60a5e79a7de3d800bc88bc9",
+          "bytes": 5488
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/bls.js.map",
+          "sha256": "4f0b11bd834a1949658b7b003882544c26fba25d003449da5662d7a7e79be4ae",
+          "bytes": 15603
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bls12-381.d.ts.map",
+          "sha256": "0d00c6ff474ddfbc87b0fedc8baccc9e415d5b02851864c94dc13ea76e53bbe1",
+          "bytes": 322
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bls12-381.js.map",
+          "sha256": "5af096cf85df1fe70202e21fd85e82b4d491fba6a6299d40411beb261c50fb25",
+          "bytes": 22588
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bn254.d.ts.map",
+          "sha256": "08124a06e60d5e89f30cbb3eee06e859852397a33ec4ffb964955ff000422dd9",
+          "bytes": 432
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bn254.js.map",
+          "sha256": "91cb9208ad90e79727640761155fb48b5f9c6a72a0ac3cf92f215104c4d811f7",
+          "bytes": 4888
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/curve.d.ts.map",
+          "sha256": "1eaf9b7382af518e1e7d91a7e00f3c8733d7b5c5c35b1a402db7b2ed09bfd9cd",
+          "bytes": 5639
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/curve.js.map",
+          "sha256": "a314918c5be205b38dd9e50316b9b0734500b79bafcf270abbe9a7e49f6d33e6",
+          "bytes": 13701
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed25519.d.ts.map",
+          "sha256": "5313cc3cb4e1ff13efdd91ca89618cb61bd6a3d17578ec9783fa5d39821f8f4e",
+          "bytes": 1808
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed25519.js.map",
+          "sha256": "f52d6ea2a34586e5680dccdc07c6b532efb8b1da8f25eaf27d6f4965e8f3ec52",
+          "bytes": 19355
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed448.d.ts.map",
+          "sha256": "dfd5d5ff33ed04d3cd90401fa6e006e1bc811986656f4afbe8a80fc740295a60",
+          "bytes": 1626
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed448.js.map",
+          "sha256": "012bf2ed4583488f11ebbb872907729d0634750356c68a5bc94d86898250637a",
+          "bytes": 19449
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/edwards.d.ts.map",
+          "sha256": "54a36175905153a263d43b219804d06fe5e1df26e9e78b3c408a8f3bc16c981f",
+          "bytes": 4368
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/edwards.js.map",
+          "sha256": "a11caa59e0a637afd78c47742186d3250bfdb8f76dbe889a32d5f945cbe7bb3c",
+          "bytes": 20924
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/fft.d.ts.map",
+          "sha256": "4fe8a2d61a66c9d8ced7d8744c1da72182dac4b10463a2724e88034780eb7d23",
+          "bytes": 4624
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/fft.js.map",
+          "sha256": "c4de540112ab4bc0179cccab7b38a3329aa65c9462fac03e4b54a5a61effae2c",
+          "bytes": 18179
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/hash-to-curve.d.ts.map",
+          "sha256": "9b6f0730f66deb6947a12f6ccf61f9b1d4fa25019bd5546630c701aa7e646aab",
+          "bytes": 2507
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/hash-to-curve.js.map",
+          "sha256": "f32524da0393876aa212d58ab0e0298acb49106520e55cb591aec63e00603468",
+          "bytes": 8507
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/index.d.ts.map",
+          "sha256": "7755bad6a1fd1a6a721ae0bbaac3da2d95847c72f2dff7bdaf44d56cd82ac9d9",
+          "bytes": 101
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/index.js.map",
+          "sha256": "8365fbd6c79b06ab8d81b98a1eca99f655b8a4f1bb62e0375dfb4c9a52899268",
+          "bytes": 179
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/misc.d.ts.map",
+          "sha256": "eadecd34161b9c9b74781e5440fb0647c825da75d8d76d85135c4d36fa155334",
+          "bytes": 613
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/misc.js.map",
+          "sha256": "40dbe99853dd25018e0f710ca63e0bcff919114a30c05a4e99ff5c8ce0e00df1",
+          "bytes": 3645
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/modular.d.ts.map",
+          "sha256": "6820170c725ddcd5e568acd782bb3c9d03582a1055c5e185f7494998099f1c03",
+          "bytes": 4214
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/modular.js.map",
+          "sha256": "cebe33e923e2c8323474bf835b0ba2d3c155b8c2f3f53f199a474395080b684f",
+          "bytes": 17795
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/montgomery.d.ts.map",
+          "sha256": "536aeef270622748e84d3cdf3987c61c554d68ab3e509be2bfdd7f1a8b626a76",
+          "bytes": 980
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/montgomery.js.map",
+          "sha256": "92d5d9227fd33da6eabcd9d9eb837c997504db00cf23d436584c308cb3ef17b4",
+          "bytes": 5674
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/nist.d.ts.map",
+          "sha256": "1633cbd447681802fe89b8c5875b0f1ea1dd5315951cfba295fbc12490d0ca14",
+          "bytes": 815
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/nist.js.map",
+          "sha256": "6ddc677f61eeceb784df52db87405f132cb61526eff212f83227f53300efcaf6",
+          "bytes": 4414
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/oprf.d.ts.map",
+          "sha256": "9e992fdc01d4133902568211ea9a68739647f7070b700608980ed157416358dc",
+          "bytes": 3677
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/oprf.js.map",
+          "sha256": "e83d5ffe982382fe73a2e61b40f243dee3817dd9c752db2d4fe9e36350d3e70c",
+          "bytes": 14025
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/poseidon.d.ts.map",
+          "sha256": "1755b974c89490caf1cdba8e6e066fd17a17762f74886863304b0c1fc35517be",
+          "bytes": 2105
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/poseidon.js.map",
+          "sha256": "3c7ff63745068b79a52878930ca98b4f088d4e7b0dc2165c3d9b4ea53ad63c3d",
+          "bytes": 12455
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/secp256k1.d.ts.map",
+          "sha256": "d428c6d4899acb268d3847a9d2f020e60dab472237c8825fe0094310abebe46b",
+          "bytes": 1462
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/secp256k1.js.map",
+          "sha256": "467b43d5641063f30ecfe636d3ebb7a3ae8fce37f50ab89a3ca349cef49bb953",
+          "bytes": 9529
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/tower.d.ts.map",
+          "sha256": "add1b41234969c3c4f462a26a5c2a823f2891e98ceb220511ad375dbdba00d2c",
+          "bytes": 3825
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/tower.js.map",
+          "sha256": "6679865e41d6090d277f0c8f6d6450aaeee4f684e5bc7b1c6b940d689a470d89",
+          "bytes": 35203
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/utils.d.ts.map",
+          "sha256": "56185796deb33326117888c39ccce314dc071fb3d6711fa63802b8c3589636de",
+          "bytes": 3250
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/utils.js.map",
+          "sha256": "00a340ca01309380e79c4fd7d7fc5d30e8e7cd35b1d0a928843f59e86a66aee1",
+          "bytes": 7822
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/webcrypto.d.ts.map",
+          "sha256": "d4e0c5fa1f45e26eeb946364e885e063161595d7f486cfc389bffc7527bc1423",
+          "bytes": 2295
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/webcrypto.js.map",
+          "sha256": "15c7dc7442d572b92464d0c01773a5ba33065a805f4dad2a87cd573f42fa7f42",
+          "bytes": 9374
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/weierstrass.d.ts.map",
+          "sha256": "d793d9a71602cab3a927974b89d2f46d1ec7bce863acf48bb7761baf12eb5bf6",
+          "bytes": 6757
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/weierstrass.js.map",
+          "sha256": "7bfbf6253edaa4e94ae6b83405fe23dcf179dbc6435cd32fd13141773371ca04",
+          "bytes": 46597
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/README.md",
+          "sha256": "8fa5903c6bcd54bfc08ccdf68c796d3973db255c46266e993499bda2366c6090",
+          "bytes": 42700
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/bls.d.ts",
+          "sha256": "5c90530652f4d65670ef970fc78976a9a8939cd5113028ad86ec3c6aa5c295cf",
+          "bytes": 5124
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/bls.ts",
+          "sha256": "21f0ef1a2d4562203f342e857c2ddecbeadd4bf7385c3b02ddb3158d6586ca1b",
+          "bytes": 21461
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bls12-381.d.ts",
+          "sha256": "8182160a12f54a9c9c45693107000d342ff549c913ecc7bf64f0fed46d706d53",
+          "bytes": 474
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/bls12-381.ts",
+          "sha256": "3b651a27660358e0f02339e0e98bce1495087d0f5bec7d204c68acb5814d9e68",
+          "bytes": 31869
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/bn254.d.ts",
+          "sha256": "08fd751db1904addc6a85e47eb848babb10360124438661cc2e60a92674480eb",
+          "bytes": 2859
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/bn254.ts",
+          "sha256": "e59a386ad3883024d93ae1ec3ea72c04c5d19e454b5caba7dd12b7a7214e81b8",
+          "bytes": 7782
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/curve.d.ts",
+          "sha256": "39d11b217d7e2283c11a3d569cb18f1f87ba5af5eeab425899c7174784b7044b",
+          "bytes": 8364
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/curve.ts",
+          "sha256": "22300d3281e1f6f348d7687489e6c6cd880affb35284109dd8219649ea66daeb",
+          "bytes": 23560
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed25519.d.ts",
+          "sha256": "5dbbd7012c3d76026621ee7d2f7cf584c034c0c952110b6b09c6bf0d2bb31c6c",
+          "bytes": 4140
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/ed25519.ts",
+          "sha256": "a3172d523c996cba6172979bb285a9766bd3d3a933771853e0ed336f0449166f",
+          "bytes": 22377
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/ed448.d.ts",
+          "sha256": "0b56ebe54b3271bd93fb9d99fdf9625e911252af6d743ff621626484625c4597",
+          "bytes": 3636
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/ed448.ts",
+          "sha256": "6cfc9b12cf528a7a606e22b50eb555236d2ab7ce74eee5e744902e256ebfb46b",
+          "bytes": 21659
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/edwards.d.ts",
+          "sha256": "4c0f2e46ef377a7ecafa1d41f83df7f6af8b6a86579be9a1081a942436eb42d5",
+          "bytes": 6952
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/edwards.ts",
+          "sha256": "b3995801aa8563f97e9571c94d8e0c4b8159bb5e6f94c9cd82e2d3f5a3f2fd2e",
+          "bytes": 26822
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/fft.d.ts",
+          "sha256": "4da7e11db73c23e46cd343f13257e7a3748dfd8d0bbe26b5f6a1b0ed28965d28",
+          "bytes": 5208
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/fft.ts",
+          "sha256": "8f4f5a16b7ae9b000b7b3a9c760f67f51dff756c60d21ceb83062b20d6185f3f",
+          "bytes": 18101
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/hash-to-curve.d.ts",
+          "sha256": "02de8b14a4e30d6fc90ad9c7d3e9c27415fe6f06cacb5398d3659586501cd8a2",
+          "bytes": 4044
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/hash-to-curve.ts",
+          "sha256": "9adc6c4a1d9348cd17f19ddde750f5cd5bddab6ae2e5ff9cacfc0859a3e3efae",
+          "bytes": 10788
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/index.d.ts",
+          "sha256": "f667f6b1d66ba55f0dcd27f5ff050063fecfe289bad00e8c5d48344a775c1439",
+          "bytes": 46
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/index.ts",
+          "sha256": "2d324b3d7657aa59af3564428f8baed7a1f85ad27ceeeab75e0f4f02dbc183cf",
+          "bytes": 1412
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/misc.d.ts",
+          "sha256": "9cc9e8ee7eb32752e89a199b6509251c2166cb4f3968bebc29b60c3002d69061",
+          "bytes": 862
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/misc.ts",
+          "sha256": "2e52ee9c9736c7bddaabd5ac0054961c0c393f9e6846f4b7e9450b0bf3e5fcc4",
+          "bytes": 6217
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/modular.d.ts",
+          "sha256": "fcdeeae8e50fefde88fb2f2cd1a29715c1b4c75fc7e85138180bd294b6ca32d6",
+          "bytes": 6611
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/modular.ts",
+          "sha256": "dbd5f9b862664b9689eaf321bd1a187432371e60c3b0cede00bd49a0f5a09b2d",
+          "bytes": 22929
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/montgomery.d.ts",
+          "sha256": "eefc98fc17b3fef501266ff1487116901a51ba4f9d89e57553858b121a800fd0",
+          "bytes": 917
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/montgomery.ts",
+          "sha256": "0e3e940a81dcaaa0588fbd6ca1119736d953da5038a9f7588590f79b94e730e7",
+          "bytes": 6732
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/nist.d.ts",
+          "sha256": "4a64ba73352c546f36338fbdab816cb2f93ce65333d4bef6b94c5632c94de028",
+          "bytes": 1732
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/nist.ts",
+          "sha256": "f965a56cde1ee7a4bfd3cb1debab7bd257471e3efdc11bf1427f08b304f455cd",
+          "bytes": 7151
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/oprf.d.ts",
+          "sha256": "0acb727a89a765525162505afc637dbd6dbbcad02dcd698ad7db84bac367e09b",
+          "bytes": 14534
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/oprf.ts",
+          "sha256": "51dad54bad16c88b90eebae719eb10438b66b32fa5bb8c4e8e3a90cab53a438d",
+          "bytes": 25711
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/poseidon.d.ts",
+          "sha256": "afc484acbf0c52ee2b58e57657bdf6d963b2d38410374d2d25eac50a883e5fe3",
+          "bytes": 2210
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/poseidon.ts",
+          "sha256": "a69496aced97a463024dc40a581f6a9f77d82b29079cd9dcc375f41eae570d15",
+          "bytes": 11453
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/secp256k1.d.ts",
+          "sha256": "123678d7522e1bc902fd11160a645e89ab0b4c3deb11f3f993ddfd30f0650b7d",
+          "bytes": 3081
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/secp256k1.ts",
+          "sha256": "5bfb7ecbaab1060e15f720cca6fe418440b2dcbcf5644574962ed6dfe40eda1b",
+          "bytes": 12661
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/tower.d.ts",
+          "sha256": "9b970858efe9832c5fc07b4af254c5580a42ffbcd51c9aa5915a62bff95780ca",
+          "bytes": 2674
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/tower.ts",
+          "sha256": "6d202f9dd3c2cf5c7b619f53d9661376e5bdc4aecd008d70b478a67ff6edee3b",
+          "bytes": 27706
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/utils.d.ts",
+          "sha256": "1337ffa7b87c44b3fbb1309bd29e63352aeb033c3b0b58a454c9577077ae5e56",
+          "bytes": 4346
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/utils.ts",
+          "sha256": "4aaced821b92986e94dceac12e192118898f0a9cc5dc269af3d6d1bb6e4412d7",
+          "bytes": 9932
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/webcrypto.d.ts",
+          "sha256": "debcbdc6ccd0a5b49b13b80c7957836993e9a8eafa83c02d1bae8e474f87d295",
+          "bytes": 4277
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/webcrypto.ts",
+          "sha256": "418f081ca3b44bf72d9abc80560038b5f126d12e79e3c9c25ce146fd1d92065d",
+          "bytes": 14522
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/abstract/weierstrass.d.ts",
+          "sha256": "2cfb7808a422d093b74843199db34cfa5281751ffaf28acab14d4a43adf3b8f3",
+          "bytes": 12560
+        },
+        {
+          "path": "browser-client/node_modules/@noble/curves/src/abstract/weierstrass.ts",
+          "sha256": "889aa67cd4614937bda37370ac9c2bb1c471754adee9b0b66fcf4bdb95ded42d",
+          "bytes": 59875
+        }
+      ],
+      "install_scripts_executed": false
+    },
+    {
+      "name": "@noble/hashes",
+      "version": "2.0.1",
+      "official_lock_integrity_verified": true,
+      "archive_sha256": "638ffb3053a7e7478c9e54a6e297f3601299ee570a41112e501af7050d086a0a",
+      "archive_bytes": 135794,
+      "extracted_bytes": 670013,
+      "files": [
+        {
+          "path": "browser-client/node_modules/@noble/hashes/LICENSE",
+          "sha256": "4f221aee6e072336700c408c68ab3b96a3fc09f6aebe6f48f1bd99e5ef13faec",
+          "bytes": 1109
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_blake.js",
+          "sha256": "220f7ae8e2aaa0f38f7b1c38028dd5301c2fd6ecf94dc36b003aa74e9edc9c74",
+          "bytes": 1661
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_md.js",
+          "sha256": "a112f0fe1b15db00f2638618c436a17be1c5e13baf19d02fcc29016ae1db2233",
+          "bytes": 5615
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_u64.js",
+          "sha256": "e48c0cfc10810439a4807b46db136ce603a3fa09b62584f513ef2f3ca496af54",
+          "bytes": 3081
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/argon2.js",
+          "sha256": "caa85a3fd1b6396bdd4bd89eadb90295e77ce2089ff35610f84d2bc50d425719",
+          "bytes": 16308
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake1.js",
+          "sha256": "564615991e0aa274f68b9067fc5cea2ca8d194410c211bd9a67e6087be5a1d20",
+          "bytes": 19433
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake2.js",
+          "sha256": "a4859659d19a79acbdac44ecbb5da9fd1a06936b1ea1ab82c10b38a372a954f3",
+          "bytes": 16895
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake3.js",
+          "sha256": "c2d4a8338ee55a35318c0fb1e4a5cd3990c1ae22cd2feedd4ec894f8e6be1bce",
+          "bytes": 9627
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/eskdf.js",
+          "sha256": "3703de30066a0f300b952cbb8fc7ab06bf42b0254f2a53ac893740cbba9f9877",
+          "bytes": 6550
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hkdf.js",
+          "sha256": "adee07d4415fddbc58179acb43bb3b759204dc1253ff7090c957e9fa74607269",
+          "bytes": 3538
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hmac.js",
+          "sha256": "b834a4e7ffecb7847fd87ebd792f7fdd13003d448acee5e8d97a6b77b8620797",
+          "bytes": 2992
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/index.js",
+          "sha256": "0eba253f40dfa51b247d7d8d03cdaeecdf334c986e2a9ae7cada211c32eb7b7c",
+          "bytes": 1162
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/legacy.js",
+          "sha256": "5f80e3f887113607d4c028eee3e3707c961a366a5ce4d427ceb6ee8f41624344",
+          "bytes": 9763
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/pbkdf2.js",
+          "sha256": "d971ad41b21ebfe9c5d61897ef6b3d669e17cf5524c94f03b01c8c2c120caa22",
+          "bytes": 3898
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/scrypt.js",
+          "sha256": "cce8f569bb8000d99e1e747be4ef1e49fed7cfadd2f249ac542ee2854ef359a9",
+          "bytes": 9720
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha2.js",
+          "sha256": "3ddc587c588283cbceed4dd9929cefcce06a0c231b54d4c6f0f99c478c686c00",
+          "bytes": 16773
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3-addons.js",
+          "sha256": "684709a686ff9c9da8d011a870d487860887dd75889bddaf5c519599b4a0cdfc",
+          "bytes": 17028
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3.js",
+          "sha256": "8741330184fd2af27d8805e400888060294ac1e31e7b7038e5347c31e1bb33ca",
+          "bytes": 9199
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/utils.js",
+          "sha256": "11319ec0a8132a0c2ced8c98af33ae9274c001d6baf4f4709c4a6115e031a3c5",
+          "bytes": 9356
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/webcrypto.js",
+          "sha256": "78bbed967e929a86b7f9430949705294a678ec53396e910941a3935966aaec33",
+          "bytes": 5090
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/package.json",
+          "sha256": "ceb30ba96a14786c419db53f2b8d3d59ece7ac5221c198ac03def462cf96ef23",
+          "bytes": 2799
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_blake.d.ts.map",
+          "sha256": "c202ced66c6174006a09da86476d6e57aa3c71ab7bf9e7b844c140660eda46f4",
+          "bytes": 553
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_blake.js.map",
+          "sha256": "373767bfd627e7e994c62c5ec02c9a4eef72cdcd1cc6355a892b71b87f071836",
+          "bytes": 3628
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_md.d.ts.map",
+          "sha256": "3f7079effe93ebf8d7147b464db1e8839e9f78739c1e946544cbf69bccd703cf",
+          "bytes": 1518
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_md.js.map",
+          "sha256": "73d731617a5fad31de88e8b4589af6e56a8af629264359241e1c53476aa1a24a",
+          "bytes": 5065
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_u64.d.ts.map",
+          "sha256": "d4a56ca889b0555e9b0d8911ab1291a1e3acf32d283255aa7d5e4a59468919d2",
+          "bytes": 4314
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_u64.js.map",
+          "sha256": "9e32d7e33f63d4e8e67b48c33c1aefa9d7ff13573039e3119617f3c325f23935",
+          "bytes": 5045
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/argon2.d.ts.map",
+          "sha256": "a28793dc95f0bafce8431f476c521f4136b2af942ef57eaed1c24bd4f3a22d4d",
+          "bytes": 1137
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/argon2.js.map",
+          "sha256": "a4849ce7ac3698de84b76064db24af64a507124d8c249434175e3028d0396689",
+          "bytes": 21113
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake1.d.ts.map",
+          "sha256": "af03718ddbc6454ea1a5ab032e1113e0ae64417bf09469a45c64c2cca63b92e0",
+          "bytes": 3743
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake1.js.map",
+          "sha256": "ff7fac700aa23f1285c11eb5ab60e40b7bb16e5a462c67dde33b8f19032c7181",
+          "bytes": 28454
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake2.d.ts.map",
+          "sha256": "e948c531a61f2361509d6a3bbb77095affe0b09ba246faf7630a7e24e8398ef4",
+          "bytes": 4103
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake2.js.map",
+          "sha256": "8e5da15a364b471cc9669dedfc241d2fa36249dba66e34de38870bc4baf6d37b",
+          "bytes": 25543
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake3.d.ts.map",
+          "sha256": "d4d8d6538e3ddc30e5e0093bd4bde4c69c48c1d0e46352b9fdaf613ad2d88300",
+          "bytes": 1296
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake3.js.map",
+          "sha256": "4f9771a3df3f8baf92cfe23848829066211178227669052d2a80a1bf3eb0badc",
+          "bytes": 10753
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/eskdf.d.ts.map",
+          "sha256": "a9115b31a15a8d31e87bd8fbd7bd661e68664629ffaf453c6dd5e2f1c100e25b",
+          "bytes": 902
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/eskdf.js.map",
+          "sha256": "1b4ab1152b5d33cd5e87a3a8120b72047b8a253180caf58cabfc5e5dee8dd1c3",
+          "bytes": 6007
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hkdf.d.ts.map",
+          "sha256": "518f270857e5ae08ba8e4be400e82533139a77346b20dd32eadb40e24a122ef5",
+          "bytes": 553
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hkdf.js.map",
+          "sha256": "131668fec23758b1d29f9c3a3a564e47b835e9549412b1dc22c982cdebaab42f",
+          "bytes": 2147
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hmac.d.ts.map",
+          "sha256": "91d6594560b8d0ab8ee75ad4571d8b5e4d9575981ee9de0c73b3bfd6b4875f05",
+          "bytes": 934
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hmac.js.map",
+          "sha256": "0db6db0ce57ab1ce136b7e382c3a3aad6fb73078b2db7f7df65ae810af166af1",
+          "bytes": 3067
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/index.d.ts.map",
+          "sha256": "7755bad6a1fd1a6a721ae0bbaac3da2d95847c72f2dff7bdaf44d56cd82ac9d9",
+          "bytes": 101
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/index.js.map",
+          "sha256": "57b03f4e28194d5bffaacc987d0ceb2bec5d44d409280b7a4e2ece2e5a9d6223",
+          "bytes": 180
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/legacy.d.ts.map",
+          "sha256": "3e496c562e06cf8e1b973c29f634079bda6f8e55342f10c998a775bc6a3cd5a6",
+          "bytes": 1888
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/legacy.js.map",
+          "sha256": "cee3bcb5ce08647297b8bb533872d65a16ebed94e789fa3114b569fc1cb583e6",
+          "bytes": 13498
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/pbkdf2.d.ts.map",
+          "sha256": "dc5cce8ddbffaa3786ea5187bb3f91de0f504a3f93c47a47cd4f67c6db42f3af",
+          "bytes": 576
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/pbkdf2.js.map",
+          "sha256": "def25116a3aa1924f065dbc90ff7c30109c1f2884c18f072a61dc8368eb89190",
+          "bytes": 4050
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/scrypt.d.ts.map",
+          "sha256": "ec6871a3aec7c0436b3d3c8582a1c83d679c4a077cbfe50269a6b5cbb55a0f7d",
+          "bytes": 658
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/scrypt.js.map",
+          "sha256": "89827a043986657d2b5e70109434bc42accbf6c60fae9c6891a2cbda7b0d4854",
+          "bytes": 12136
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha2.d.ts.map",
+          "sha256": "8a89baaf9c48d45ae6c5ee8a4859ad43b00482022aaf9672e03c67c5a3475bba",
+          "bytes": 6359
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha2.js.map",
+          "sha256": "d5f96d0a6630b7130b67b710fcc5d4cad4480990fea7e03a87fcf6f117901be1",
+          "bytes": 20062
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3-addons.d.ts.map",
+          "sha256": "6c5ad172117f90eaa73c3715e0ec95dfde0857bd7b4b695d2005e72616f47c09",
+          "bytes": 4419
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3-addons.js.map",
+          "sha256": "4989cd5c44213c68d131658b23232630abb8b4ae3b20c21ea4db196aa1b6cafe",
+          "bytes": 17483
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3.d.ts.map",
+          "sha256": "75a8527cd41bea7fe2913bc25949828afc680af5d87ba0e76651f8353b6d5fca",
+          "bytes": 1933
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3.js.map",
+          "sha256": "473d0ae163c74005c81e468112cafcb4e433ce1144606085ec18a9c51d21b036",
+          "bytes": 10690
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/utils.d.ts.map",
+          "sha256": "142fb50d0bbe579a4b76e81f2dba4a74260c741f67e402e9ff71fdbc43473c66",
+          "bytes": 4117
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/utils.js.map",
+          "sha256": "e81a4a79b408a3059f01cc6c7628e2669f845200226df73cff507b3f2f1062bf",
+          "bytes": 9127
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/webcrypto.d.ts.map",
+          "sha256": "71296c3ecedd30016ef4c38b23a67e134c1145a9222eb12685c6215a2e3a48c2",
+          "bytes": 1099
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/webcrypto.js.map",
+          "sha256": "fef0084ebbd308b92381cbbe17940418ea90c5eaa5d19a50dcb0c4481cd38942",
+          "bytes": 3969
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/README.md",
+          "sha256": "fd00624d481f9ef47dbf1c85733a2ae6e13f6231f70d94b2d027608f00f5a416",
+          "bytes": 24015
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_blake.d.ts",
+          "sha256": "752c7599bbc58e80175df0324b6b5a543b2de6d61f3ad5aef6b632de6ee983c3",
+          "bytes": 474
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/_blake.ts",
+          "sha256": "cafb4ace6b6210786ed1a6a1dc3283387a56947b28f2048d6fe752d6a4917e84",
+          "bytes": 1768
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_md.d.ts",
+          "sha256": "df631652f3f3b2a3a63c95430303a5fc29e7337e43d37492137e235a457d511f",
+          "bytes": 1968
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/_md.ts",
+          "sha256": "1a97097fe990f2832f769d64dcfa47fb1cc68dc89276a2d0e4b6e0d32d94b89d",
+          "bytes": 5783
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/_u64.d.ts",
+          "sha256": "259a1b56e4e26a2df0df38735e19a1dcb7702e1fe334044c1179bb6514c1c758",
+          "bytes": 3129
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/_u64.ts",
+          "sha256": "45b2c85051e99922030ed755fa14c2f0a7887ed9b1e73664af6ea007ef4c93b7",
+          "bytes": 4984
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/argon2.d.ts",
+          "sha256": "043dd09bceca04ca3794ddfc886af2895bf49b08b3c2384bcb427e7d6f2e5c77",
+          "bytes": 1498
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/argon2.ts",
+          "sha256": "f34b94ed111bd1246a3aabdc38f9fbb167918ebe7ea853b71868a715efa76501",
+          "bytes": 17154
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake1.d.ts",
+          "sha256": "5abd6aba8c8d4e2e6d5af320f1479c45ea669d55b4290893d3d9ba21ca43b37f",
+          "bytes": 3624
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/blake1.ts",
+          "sha256": "da6b73433dcc805443de55a68a03b81b737f461ef0692f56bdb1f98fdc6dfbc9",
+          "bytes": 19883
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake2.d.ts",
+          "sha256": "28ecc09d428c2ad9c470d8bd1c4abf3fe0c7e428f9ca737d4cfda87917446731",
+          "bytes": 3907
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/blake2.ts",
+          "sha256": "068ef7ac36c7c37497e2416a4e89105903e4bd725ed3e0df2b4b7f1704453db6",
+          "bytes": 17852
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/blake3.d.ts",
+          "sha256": "b98294a4a70504927599f0cdbdfac64c38e8afe43eccf41ace666496c1e72b00",
+          "bytes": 1837
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/blake3.ts",
+          "sha256": "019c0da2e3dee6b2e36ef5028a2f7aea0c2c85781b7abc2dbd4539025fbf2685",
+          "bytes": 9664
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/eskdf.d.ts",
+          "sha256": "51a600635e7cd4ddbc8ea6cc24d2ba7318d6287eac377c7e2fc02a9419354171",
+          "bytes": 1752
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/eskdf.ts",
+          "sha256": "7d05086a1b309e08c295cbe5f637c4f0d989f4fcf9617c8b08d8c7fab2d20fea",
+          "bytes": 7386
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hkdf.d.ts",
+          "sha256": "97d55fb5fb1562fcc38e551098e4e6eaefb714c80fbdf8820746d3eb01246479",
+          "bytes": 1996
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/hkdf.ts",
+          "sha256": "f8dbc24c8c357d360ac24794cb46f824aaf23b8b4232eee177238c485646c415",
+          "bytes": 3603
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/hmac.d.ts",
+          "sha256": "760b214711c917fea57cdd571f661a66a7ff377caf2b4973cbf7c1df06fa0ea5",
+          "bytes": 1090
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/hmac.ts",
+          "sha256": "5df650dadf39086721ada9ecfcc64b67e08a8acda4eb17a7eaac667ac457b821",
+          "bytes": 3135
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/index.d.ts",
+          "sha256": "f667f6b1d66ba55f0dcd27f5ff050063fecfe289bad00e8c5d48344a775c1439",
+          "bytes": 46
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/index.ts",
+          "sha256": "7fe83557c6d878ce707c3eb392599d7ed4847390aabfa71be6a0839632ce3ef2",
+          "bytes": 1118
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/legacy.d.ts",
+          "sha256": "0ab44cda9526166a04ed1afc03fbdac9897161dcf89dd540649c09d7fd250158",
+          "bytes": 2579
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/legacy.ts",
+          "sha256": "da99a96579d6ba3183d5bf8c1b4d81aa2dead1bdb2662b85b6d84a9c740244f3",
+          "bytes": 9550
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/pbkdf2.d.ts",
+          "sha256": "cbf91da8fbcbd062db814a63cf037b3f7faa4c608a2c0ca70913c6da314070e8",
+          "bytes": 1194
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/pbkdf2.ts",
+          "sha256": "e26d6e827b042dec0a35569e49df2b1574b3df553b8c1039f74d980ffb20f284",
+          "bytes": 4238
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/scrypt.d.ts",
+          "sha256": "4af05f41cbd9de859dcf6dbad24d2faeea79aa3eae38c1a7e88e37e45f921ae6",
+          "bytes": 1337
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/scrypt.ts",
+          "sha256": "b2b0cb19d809de4fd51202bcdc40ccff45e819e98a1114cd2a77bd9b36257763",
+          "bytes": 10232
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha2.d.ts",
+          "sha256": "a329a3e6fa537684cd4c192aac096e967244ede305e5ff07d91041b53503d74b",
+          "bytes": 6512
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/sha2.ts",
+          "sha256": "9acb8a744b27c57b92cb0f3f7725d1c673d3b36272d3a65b8ace4669ef63215c",
+          "bytes": 19135
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3-addons.d.ts",
+          "sha256": "58cfa01c6c0e35c679361e16b50e5e226628d50c008b13ba1d00ba6c89dc613e",
+          "bytes": 6232
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/sha3-addons.ts",
+          "sha256": "22c96d7777f5c523e87d504e616477b4bdc0995d2abe54c4cba2c658991ee844",
+          "bytes": 19177
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/sha3.d.ts",
+          "sha256": "8d7a21d56762d31155096c4d3b9dc5828e9d855d87d2e8c142f1785255051138",
+          "bytes": 2325
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/sha3.ts",
+          "sha256": "2d474e78cd680677bfd1257eed49b4d85d3d91b92d8e9e70b191e179a8335005",
+          "bytes": 9468
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/utils.d.ts",
+          "sha256": "e0a7f739c291bfa769fdf200d5d1502f48ee23036238b8fab6f7485e2c801aaf",
+          "bytes": 6128
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/utils.ts",
+          "sha256": "1271ee3da2b8b56073a5831c8ee3d37d09105e86c1fa982dd63ef95f4cf133c3",
+          "bytes": 11986
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/webcrypto.d.ts",
+          "sha256": "62aa5961fb52567e81a8b8f3a08fefcc2d87f7110a258e74ecadf3afd60b57cc",
+          "bytes": 2718
+        },
+        {
+          "path": "browser-client/node_modules/@noble/hashes/src/webcrypto.ts",
+          "sha256": "0116f6f39d2a459c5452f43d4d0148f00443ba98dfb372d3a7817f3ea0f93410",
+          "bytes": 5719
+        }
+      ],
+      "install_scripts_executed": false
+    },
+    {
+      "name": "fake-indexeddb",
+      "version": "6.2.4",
+      "official_lock_integrity_verified": true,
+      "archive_sha256": "23f193d72c4ab9fa4bba64b0acb02cad29982149ac6c28f2609c073963df6ba3",
+      "archive_bytes": 52246,
+      "extracted_bytes": 338262,
+      "files": [
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/LICENSE",
+          "sha256": "0c2e77addd3045b932ae0de86b7cf66aa1eeed4248d4dab37e851f9e5499d85e",
+          "bytes": 10893
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/binarySearchTree.js",
+          "sha256": "65d5b78adfe4f4bff983f888fd8c3721aebf68d6b77ca474039a22750da59a2a",
+          "bytes": 10312
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/binarySearchTree.js",
+          "sha256": "a1f5fdef0842c338e0636ed8f7db994e39581c18276c27871cf183a8eb72b142",
+          "bytes": 9945
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/canInjectKey.js",
+          "sha256": "088860c6067ab043522accd8581b2569a25e333cef08b0adbf4d662891472c0f",
+          "bytes": 1044
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/canInjectKey.js",
+          "sha256": "4f5edc82747f9fefe5adfda9409c7a9d23c91d1289132378eee14ebd2873d08e",
+          "bytes": 886
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/cloneValueForInsertion.js",
+          "sha256": "0446484e6dfee793e6d3541cd02d4fac27ed18da07aa5d6feb000273cc3d4203",
+          "bytes": 1192
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/cloneValueForInsertion.js",
+          "sha256": "48db0f9802a0310599a795c8911517efb8dc634638b04ed20da53f5ad1d43f19",
+          "bytes": 1062
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/closeConnection.js",
+          "sha256": "1d12d06e3542cfcf86070c672fe0c45ac25d83802b328b99cadbafcf919dae34",
+          "bytes": 1234
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/closeConnection.js",
+          "sha256": "3980e6cc75d681e332e8884e205629b99ca79c88b0ae7ec2374056d127eba70e",
+          "bytes": 935
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/cmp.js",
+          "sha256": "28ab6885d1d495f3a3542bf46d204bd81c61958f27b1fcad104036178b4b62ee",
+          "bytes": 2066
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/cmp.js",
+          "sha256": "bed134465533a67c32385d513bb0eb53cd3f0c345a810f03acec76f9a9d2cd38",
+          "bytes": 1761
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/Database.js",
+          "sha256": "9ead5303d7ef6382e4db632b01b0bb8e1f5aaf146e4a216d388848b7de35902a",
+          "bytes": 2452
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/Database.js",
+          "sha256": "0211ed0b35daea3fcaaec6cfce37e3e467ed77d9c51fbf1e8c3a1274c97a2ac5",
+          "bytes": 2238
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/enforceRange.js",
+          "sha256": "66bcd7c5c2caba331ed7fb8a4c553481d2d9a5877ee57924a35f01ef89f6d171",
+          "bytes": 493
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/enforceRange.js",
+          "sha256": "dd4b01502533d5355f6fd8e347ad57ac21862b82d7fa8cef4f262b3a28dcac2d",
+          "bytes": 335
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/errors.js",
+          "sha256": "ef689beb82ccb161f35369cc7da2fa558d69a3a372ededd684222d44130977d8",
+          "bytes": 4334
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/errors.js",
+          "sha256": "1e388f274166cdda947d59e711dc530528da07fce2805258867dc1935ea37969",
+          "bytes": 3591
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/extractGetAllOptions.js",
+          "sha256": "6ae95572e80b5945eef6db8e6e472eedef246ae38c052d551a990fda2be02b94",
+          "bytes": 1443
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/extractGetAllOptions.js",
+          "sha256": "e79524b8a783907f4654e039fb98afcb2de43dafee1fdcc0ebe2355cba1c31f7",
+          "bytes": 1101
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/extractKey.js",
+          "sha256": "2598dc6b145a8f33aa2152c654fa62e016f2fa3b2427f08c10002c1e3d546e43",
+          "bytes": 2183
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/extractKey.js",
+          "sha256": "0e49ff5cc3d9dd24aa23cbdf31a8538835e4ac919f15e9ff64e0620b4893deff",
+          "bytes": 1897
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/FakeDOMStringList.js",
+          "sha256": "60ad989dae1a14b8d45885402e6eb6daccb13a05f353627d409ff5dd72b2e7b4",
+          "bytes": 1158
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/FakeDOMStringList.js",
+          "sha256": "21227f286a754746088dfa7a099f2899183baacc1b4aa629054e66ace8d53aef",
+          "bytes": 1000
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/FakeEvent.js",
+          "sha256": "03234f9506474bbab67f9226f5deeeb8d26483ea99cbf845217ef2299fb00f71",
+          "bytes": 1083
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/FakeEvent.js",
+          "sha256": "532189b1e822d267cd90720dda2b545ad7bb6f7f9ba84aa2ea9bc5c3681f0f4b",
+          "bytes": 925
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/FakeEventTarget.js",
+          "sha256": "0575911082276e60d9520b32372039297dea92d530f925f3ab2daa87a5ddc84b",
+          "bytes": 3664
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/FakeEventTarget.js",
+          "sha256": "0e171720c1a4d76db05a083b8491a87a2d674afe88c4c4060d8449dda1fdad8e",
+          "bytes": 3509
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/fakeIndexedDB.js",
+          "sha256": "afeb38084602fe187245add39511865de130f381f8b9c9574e100d170b46afa0",
+          "bytes": 392
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/fakeIndexedDB.js",
+          "sha256": "d5e976278c38b011fd4264152b55b3a86cee0bcfaa10edc41e57c3a4f9b7e6ba",
+          "bytes": 111
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBCursor.js",
+          "sha256": "c45d40aefda4c27d4ee90c52216cc333d8ccf81cc6dc1cf3f5d98a0642a22332",
+          "bytes": 16789
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBCursor.js",
+          "sha256": "525914ffc7a506c1f6343325fe45ab2cec35a89dd0b2804eb710c4236d49275d",
+          "bytes": 15824
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBCursor.js",
+          "sha256": "a268ca16e1144bda6f107baa490a139cc08578bb9c9b2d5d779db5a3f07cccc4",
+          "bytes": 52
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBCursorWithValue.js",
+          "sha256": "03f34178ac81e1ac64ff6368fc716a1c5eca2e6a34cab2f25dc275036f67779b",
+          "bytes": 592
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBCursorWithValue.js",
+          "sha256": "df0387f379445153120e3e7e87ef01f463984d91890b2f9e68827911c5f38dc8",
+          "bytes": 311
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBCursorWithValue.js",
+          "sha256": "c6ae10cacef8057e5f1afd4f20afe0e96495f1fe0d8831d73fcb437cec56e53c",
+          "bytes": 61
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBDatabase.js",
+          "sha256": "4650978e151fa59fd8d2caef72aaf553988a0c5f29d9eb8cf20310af854a77e2",
+          "bytes": 7819
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBDatabase.js",
+          "sha256": "4ace3585a0df384db8ba5319c88230bbe357a630c4af0750a8cdef00330fecfd",
+          "bytes": 7297
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBDatabase.js",
+          "sha256": "8ad7d4123e0c0c4ec4138ee056b7108a6bbddf2bd287121137c52e7c182b6d1c",
+          "bytes": 54
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBFactory.js",
+          "sha256": "67bdd1ae8ec3e94c0e6ef89965ccda4c29b31f7fa595a9a357cdcda630590e77",
+          "bytes": 16301
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBFactory.js",
+          "sha256": "5781ee55b81de34969b7f636859142844da57719c22ce394450aa564d98ee024",
+          "bytes": 15392
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBFactory.js",
+          "sha256": "dd9081f586dfc74c0e6b5adc6b91f6b8231968311fd533bf16f53ed3bd6e8ac0",
+          "bytes": 53
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBIndex.js",
+          "sha256": "4bf18e1f8ae4b65e561d43de1ad69fc1a16d98f4a7f0706b601d2e46ecb93ca4",
+          "bytes": 8504
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBIndex.js",
+          "sha256": "9090153289181c0f34071e47a2e8a14a95694a6c1244dfc3ccbc8b72758314ce",
+          "bytes": 7709
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBIndex.js",
+          "sha256": "254d1209de1d98005f0e93e7faacf6ba4a5eef56909516232d65d33509c286f7",
+          "bytes": 51
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBKeyRange.js",
+          "sha256": "b3c26346546b29d7e1c3f0d371f2831d4bfd4de7ee4a0a1d95b397220d465524",
+          "bytes": 2476
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBKeyRange.js",
+          "sha256": "d0560ebcefad8c0e220bb7146940d5d7f42932fe946e7e72a2cff8d7b07bc8f3",
+          "bytes": 2045
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBKeyRange.js",
+          "sha256": "41dd2934adbbf061b586523ee5efe86b9c7b972bc086cd2e7251da3b065459d7",
+          "bytes": 54
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBObjectStore.js",
+          "sha256": "b356c6d741681946a59cf72917e6fdf958e8eddcf26404cb2d84b33d5ffe9576",
+          "bytes": 16141
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBObjectStore.js",
+          "sha256": "0c7a13359542f5e7abfcd6d1f548b93c189f979d7f45835dde69cce862f43b02",
+          "bytes": 14977
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBObjectStore.js",
+          "sha256": "027f2c26de09a028087977fd3123cab59c86f0e56c1335b5c2781fbce2b0f048",
+          "bytes": 57
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBOpenDBRequest.js",
+          "sha256": "51f64560e5519b24f29c41f6d244d8f893ec6deb2c4f01f2c425607bdc26ad69",
+          "bytes": 513
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBOpenDBRequest.js",
+          "sha256": "08de83ff7455795bfa17b4ff6811d6adf926aa2235c743a0890e27d1d6928b3e",
+          "bytes": 232
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBOpenDBRequest.js",
+          "sha256": "67fe428c5875a0d3ebb11f59f702475e768c5b27ab987c00677a7ed0fb3b35a6",
+          "bytes": 59
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBRecord.js",
+          "sha256": "adc567ceeb07b43cdd1b3f7a04d056efc93bbb516736ab29dd8a5eca94f00047",
+          "bytes": 651
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBRecord.js",
+          "sha256": "f311f89d9252f0fdbaf5c5d1ed4e6fb9e24db0b719e21256662eccad144f896c",
+          "bytes": 493
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBRequest.js",
+          "sha256": "2405130edd85a1e2e097d052c43fec4fce474f03767fe9d0a610d981be907508",
+          "bytes": 1024
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBRequest.js",
+          "sha256": "4d87b9c1971258c20e07261ded65bfc82962181bda5f3dcb9f32e935062f9c96",
+          "bytes": 738
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBRequest.js",
+          "sha256": "ad1ee6e7eba9ba445a886cdf4e86c9f97a33fa02581c3c8f9c56671c77a5b495",
+          "bytes": 53
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBTransaction.js",
+          "sha256": "536089ce1f690425cfa354d72433fa968efab48720264b985d1add706263da13",
+          "bytes": 8875
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBTransaction.js",
+          "sha256": "08efb1faf8b1f36c835296ba2513cc3d7828e6894a12f3764d6c16c3c9c417a1",
+          "bytes": 8365
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBTransaction.js",
+          "sha256": "8b88158d8956d96a0d431eff5bfba9376d72f9fd9a061a52a7fb7d3a80e11340",
+          "bytes": 57
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/FDBVersionChangeEvent.js",
+          "sha256": "498338a3be2f885df9e3d672c6d779d4075e614219a8d32689bc31471c6ba16d",
+          "bytes": 720
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/FDBVersionChangeEvent.js",
+          "sha256": "3ef84fd543dd0fb14d478a9ac9b6f3a932e08e907081584fbb39d19410ddaaa2",
+          "bytes": 439
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBVersionChangeEvent.js",
+          "sha256": "8e990e2e494ba4c3400a34450fa748c23e717241a7e9e98de98402fa697a166a",
+          "bytes": 64
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/forceCloseDatabase.js",
+          "sha256": "a08cf545e6907e516aa995bdbf8329df6f67e9efac15afa7e0e44545ef8c9b88",
+          "bytes": 1039
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/forceCloseDatabase.js",
+          "sha256": "be73dfaa8eda15064dbba36dfbc15f6948fa61ddbf85852f50894aec44ddbd13",
+          "bytes": 774
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/getKeyPath.js",
+          "sha256": "7865a6e5df3369d77865d1cd86d3735110cbd5d4a7cb7f25160b1e93e85d969c",
+          "bytes": 656
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/getKeyPath.js",
+          "sha256": "6a08ea6a49ca4f39ff8040b06bd07f9d67fe6dab8249491370d4a2ae99cf46ef",
+          "bytes": 550
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/auto/index.js",
+          "sha256": "321dba5515db66c56b9b634d1e48100a8c835187d9849492183db3e4e3e1274b",
+          "bytes": 2450
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/index.js",
+          "sha256": "aaac0829db0a75ce45760c4b5b8681248b199c98dbc348bf7e19789b42ee9377",
+          "bytes": 3184
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/Index.js",
+          "sha256": "6aa58d8711528191fa5fb50e6496bb07695f8b4f9f4cf48a10d83a928c8dd2a2",
+          "bytes": 5718
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/index.js",
+          "sha256": "45791e33b9247a10f52e8aecb3358adef073505ea0abf3368e2dd1367b1df651",
+          "bytes": 935
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/Index.js",
+          "sha256": "639bf36888401763b619b1f82816211eddb005061ccb9498b946d67d93be87f9",
+          "bytes": 5295
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/intersection.js",
+          "sha256": "8a9dfbb668fe82ff1cd527202c205a1dc6a4686075619b62e4d4a5aa4b3cf0ab",
+          "bytes": 506
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/intersection.js",
+          "sha256": "f9751ee9da6f0e9510a90c868b53be4a4c828fa3f97c13486cee1ff64ffbc650",
+          "bytes": 396
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/isPotentiallyValidKeyRange.js",
+          "sha256": "a548f1ded583f6863d5f065579b60cba4467806bea1b30a5e5bb0b1e60a5f0e0",
+          "bytes": 1563
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/isPotentiallyValidKeyRange.js",
+          "sha256": "71a3be7b6c73c6a8a77384dc560d47ff55454c9a48dd6b577e60f1382fc91e02",
+          "bytes": 616
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/isSharedArrayBuffer.js",
+          "sha256": "d8aa00b85160ca44d8b2f41bc3f8de24d7a802c38311b32c1dc90d7ba97f8c0c",
+          "bytes": 281
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/isSharedArrayBuffer.js",
+          "sha256": "2905b2c5472cc389c3bcb2a2ecd9f2f1694d522277c377fe83e730a6a6d1eb8a",
+          "bytes": 143
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/KeyGenerator.js",
+          "sha256": "0d51771a6a4bbc375e7c0561aada483eb78b63c7b9c0d682b45f851d237855d1",
+          "bytes": 733
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/KeyGenerator.js",
+          "sha256": "d3784ea3d14fab523d670235886d600383c047c5106a89a90e5e308c6aac1e3d",
+          "bytes": 576
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/ObjectStore.js",
+          "sha256": "4868c9a6f64900c16bb59e4358b34964601819a698b733c6f2c00ce533a336bd",
+          "bytes": 8553
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/ObjectStore.js",
+          "sha256": "703e0ef89c9650fd600051233d8f4e9f829efe77c39ead93fadba2726db18300",
+          "bytes": 8151
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/RecordStore.js",
+          "sha256": "df04c3b4025792aaff0441b4cd8d1fdcabfc6b401ba39346f50294f0170e96db",
+          "bytes": 4085
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/RecordStore.js",
+          "sha256": "301d0f824ea68ab593cf9b8bce4e86c3569c0785622225a99710ec8a12d65202",
+          "bytes": 3657
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/scheduling.js",
+          "sha256": "4b85bfcf70bfc2e04f4177c4dd507ec10205ad01a715dceecfa46cd1b52c665a",
+          "bytes": 2233
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/scheduling.js",
+          "sha256": "ccec4db00f46f5fdc1c3d20c01c0e2be57ddf4eb2546acfc5785f12b857f8bfa",
+          "bytes": 2101
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/types.js",
+          "sha256": "5ecf2f4d83e6260dabd6ec48e76d8ddebccf956563f34072221bf960d3b8c255",
+          "bytes": 13
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/types.js",
+          "sha256": "2e29cd9a98755c46896f7a2d56524db2d6d96b248e36db46de14c30bf47c8d05",
+          "bytes": 10
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/validateKeyPath.js",
+          "sha256": "08a243c85891818ecd0777dc633c928425e82a64c14bb97b08f6f4872df0ad55",
+          "bytes": 11267
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/validateKeyPath.js",
+          "sha256": "fc27ce74444a2693e8b259b1abca4411542c33544b92a350f6694abeba5bd5c1",
+          "bytes": 11082
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/validateRequiredArguments.js",
+          "sha256": "e94c6f6ba78bf279f20e9777e9db31b004acc4f4ca546bed33f091352bdd2036",
+          "bytes": 620
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/validateRequiredArguments.js",
+          "sha256": "8e7edeaf1b27b3afd79413e396f2163213605cbae87d0f8ebf6f0a1683795e7b",
+          "bytes": 484
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/valueToKey.js",
+          "sha256": "89468aa610107f95fc0fab93cba4872d4604e68806de88d852ce60714edf8bd6",
+          "bytes": 1481
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/valueToKey.js",
+          "sha256": "b1b14fe186f2129d5ce812ab8f91bbcf2b336f2a89cff9bf764047ac02997222",
+          "bytes": 639
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/valueToKeyRange.js",
+          "sha256": "2e3fbae6d925d3e266c4d381c2b5eea7548a89e0c017e290b6ef0965ea92c10f",
+          "bytes": 944
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/valueToKeyRange.js",
+          "sha256": "e8ba602f7a0fdd98a21106ef82361d7618dbf9dbe453ff07303986af4e134285",
+          "bytes": 599
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/lib/valueToKeyWithoutThrowing.js",
+          "sha256": "788c67a9057f4136dd3b420e9d7762f4d64b11ba106c34a03b687cf0d2341f05",
+          "bytes": 4222
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/esm/lib/valueToKeyWithoutThrowing.js",
+          "sha256": "672e630cade58dce5bf35e1a1bd08492698d0a1038131392f4a073027c9813a9",
+          "bytes": 3876
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/auto/package.json",
+          "sha256": "3d04369a44dc75f6a70dfc51080beb357eb39b395a2db0b6557ce8b9900ceec4",
+          "bytes": 27
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/build/cjs/package.json",
+          "sha256": "dbf8353f77358bc12169b7bb7301e1978d5b503e002ee927229a8993672818fc",
+          "bytes": 20
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/package.json",
+          "sha256": "3d04369a44dc75f6a70dfc51080beb357eb39b395a2db0b6557ce8b9900ceec4",
+          "bytes": 27
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/package.json",
+          "sha256": "5dcf5d05e3c8ff20d2fca6a507420e55490a4c5158b1bbf608103710101413db",
+          "bytes": 5922
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/README.md",
+          "sha256": "48e3fdb697497dfa651ca64a39a59bb014e36c69de6c377b5bd28bed9ac910ee",
+          "bytes": 395
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/README.md",
+          "sha256": "e8ec64e73954bb158215ab18250831d6440fa190be95cdeb7dd74ae828b1b9fe",
+          "bytes": 9685
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/auto/index.mjs",
+          "sha256": "484e2c85b3cafb240317590feab968990dfdbd1257af74f8080031361bf5477a",
+          "bytes": 2385
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/auto.d.ts",
+          "sha256": "1e75fcf97bdaa08cda7f54196ac97f4cee497af18ef723e6c2a48a39a670ce47",
+          "bytes": 38
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/fakeIndexedDB.d.ts",
+          "sha256": "47deee36bdcac968f68630f6123dcd4c9df95ed997c51a460e854cf77d811423",
+          "bytes": 77
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBCursor.d.ts",
+          "sha256": "0e29deb00c6e4a5ebb0b01bdbd828ef1037b4d9f5a8919df22bbe0bfdc309ad3",
+          "bytes": 69
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBCursorWithValue.d.ts",
+          "sha256": "699b18e0868fa4235842949db9b528abd8e9abef824700d96f5c568d08646b6d",
+          "bytes": 96
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBDatabase.d.ts",
+          "sha256": "a72059c97869633d59e4d94ed0514470c0352a9b5dd84e631d5f605453a6fb6e",
+          "bytes": 75
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBFactory.d.ts",
+          "sha256": "31af781829951a769ba18af6e879f72028d9dbe0835b27e351dce4eea23e0384",
+          "bytes": 72
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBIndex.d.ts",
+          "sha256": "e73db5b0ff5057acf9df683f9c0a27e8fa8e86679bc4fe5ce2bb20bb424436e3",
+          "bytes": 66
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBKeyRange.d.ts",
+          "sha256": "a345de9c9967d9790f6e8d98917fddaf7edf3a5089cd89752c627737d5c01b5e",
+          "bytes": 75
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBObjectStore.d.ts",
+          "sha256": "3e369b91b84f635e574707b0bc01ce7167b9841c96285cfcc705808eff0de325",
+          "bytes": 84
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBOpenDBRequest.d.ts",
+          "sha256": "5e2fda2befab9f97424bf82b96d49050b63e1e3230dd5774807c7b7489daffe2",
+          "bytes": 90
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBRequest.d.ts",
+          "sha256": "b676afbeeeb50807b5c74f280fee1a94460429f285a7ffeafb04617d58e22021",
+          "bytes": 72
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBTransaction.d.ts",
+          "sha256": "199a92dc3646f173fbc60c88c8c931973b2c563189268fade18a11130e87d90e",
+          "bytes": 84
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/lib/FDBVersionChangeEvent.d.ts",
+          "sha256": "395e4ee633619539163041a52acf9e616a3f2a22b932e6cd334213fb22c0f6f9",
+          "bytes": 105
+        },
+        {
+          "path": "browser-client/node_modules/fake-indexeddb/types.d.ts",
+          "sha256": "d401ff419b87e7e103828cf80b558156cd0ac4ec480e3cad91943e5b5bffef5e",
+          "bytes": 1285
+        }
+      ],
+      "install_scripts_executed": false
+    }
+  ],
+  "node_version": "24.19.0",
+  "real_browser_execution": false,
+  "purpose": "Unchanged precompiled Node fakeIndexedDB actual-backend interoperability target; not browserrenderingQA."
+}

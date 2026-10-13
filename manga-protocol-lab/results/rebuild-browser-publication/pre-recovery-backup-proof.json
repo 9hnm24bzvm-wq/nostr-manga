@@ -1,0 +1,24 @@
+{
+  "baseline": {
+    "bytes": 656,
+    "sha256": "40e8ba8747d3a294bf9ba127547947a0a7d9722bb6844288d276e2e79115f54c"
+  },
+  "unpublished_edit": {
+    "bytes": 655,
+    "sha256": "1f82b956dc888c7e3e932edc0116f4b6a11be284a605d28e3033b21857733cb4"
+  },
+  "records_each": 4,
+  "other_families_equal": true,
+  "baseline_chapter": {
+    "id": "0101010101010101010101010101010101010101010101010101010101010101",
+    "completed": false,
+    "page": 7,
+    "updated_at": 1791750947
+  },
+  "declined_recovery_chapter": {
+    "id": "0101010101010101010101010101010101010101010101010101010101010101",
+    "completed": true,
+    "page": 9,
+    "updated_at": 1791751420
+  }
+}

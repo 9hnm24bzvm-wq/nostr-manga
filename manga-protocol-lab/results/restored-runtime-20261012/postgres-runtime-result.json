@@ -1,0 +1,27 @@
+{
+  "completed_utc": "2026-10-12T21:11:52.321961+00:00",
+  "command_exit": 0,
+  "abort_reason": null,
+  "monitor_error": null,
+  "cleanup_error": null,
+  "termination_signal": null,
+  "remaining_owned_members": [],
+  "frozen_identity_hashes": {
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/guarded-command.py": "9240004c16b87270bb1b24f74bf31477644ab5b1c5caae55f2e1b1df45587ffb",
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/candidate-source.json": "574aa97dfda6fcd080544f45cc860d952fb156bcd1751a4a2ed70eea53de3ff5",
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/restored-source-protection.json": "01f269aac9f0266c11a38edf4784dde438ddc798f17ea470e47aab4f6a6ebcd5"
+  },
+  "owned_leader_reaped": true,
+  "stop_actions": [],
+  "reaped_descendants": [],
+  "changed_inputs": [],
+  "minimum_free_bytes": 31310843904,
+  "minimum_available_memory_bytes": 8497020928,
+  "final_free_bytes": 31310843904,
+  "final_available_memory_bytes": 8746921984,
+  "command_log_bytes": 163,
+  "telemetry_bytes": 16241,
+  "telemetry_capped": false,
+  "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+  "status": "passed"
+}

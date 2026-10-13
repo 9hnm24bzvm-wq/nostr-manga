@@ -1,0 +1,38 @@
+{
+  "scope": "Supervised disposable native HTTP smoke, prior to SPA fallback correction",
+  "fixture_only": true,
+  "binary_sha256": "ba6bf70c994a2791af62ae995ee3c23c66cb28d6d4ac418bd80b7f528d9fc69b",
+  "observed_failure": "Operational HTTP check failed: client deep link /library",
+  "diagnosis": "The tested navigation helper used tower-http ServeDir.not_found_service, whose implementation forces404 on the fallback response. It was replaced with navigation-constrained ServeDir.fallback and a real-file regression test.",
+  "raw_http_status_retained": false,
+  "browser_started": false,
+  "credentials_or_mail_tokens_recorded": false,
+  "cleanup_receipt": {
+    "fixture_only": true,
+    "status": "verified_stopped",
+    "processes": {
+      "platform": {
+        "pid": 48,
+        "pgid": 48,
+        "returncode": 0,
+        "verified_stopped": true,
+        "forced": false,
+        "already_exited": false
+      },
+      "postgres": {
+        "pid": 19,
+        "pgid": 19,
+        "returncode": 0,
+        "verified_stopped": true,
+        "forced": false,
+        "already_exited": false
+      }
+    },
+    "mail_sink_stopped": true,
+    "mail_links_persisted": false,
+    "mail_accepted": 0,
+    "provisions": 0,
+    "error": "RuntimeError",
+    "finished_unix": 1791861263.6183517
+  }
+}

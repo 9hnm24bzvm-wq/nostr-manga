@@ -1,0 +1,48 @@
+{
+  "status": "source_frozen_typecheck_codegen_passed_runtime_held",
+  "created_utc": "2026-10-13T10:07:43.953556+00:00",
+  "candidate": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/candidate-source.json",
+  "candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92",
+  "source_files": {
+    "backend/migrations/0085_cover_extension_contract.sql": "3668bf28a8032cd4b2d4f485cca06625502aaf173fc3d6d7546f512765cae692",
+    "backend/src/domains/mod.rs": "2fcad35bcf026f6164a925679bd2007b766b05e01e344a5c363b3580d74a8f74",
+    "backend/tests/protocol_bridge_http.rs": "ec99e9bb7b2a7278648a6a5aea0f4634776fec1c52fbd5c5e98018cc932e484b",
+    "backend/tests/upload_http.rs": "3cb49309edbc24966ac7e0da57d4cf64f2dc0a08acbe44b8163f0517baa4a49a"
+  },
+  "frontend_consumers": [
+    "src/lib/components/draft/manga/MangaEdit.svelte:53",
+    "src/routes/(app)/title/Manga.svelte:167",
+    "src/routes/(app)/title/MangaCoversSection.svelte:26",
+    "platform-integrations/frontend-behavior/editor-cover-read.ts:72"
+  ],
+  "contract": "Cover.ext is a dotted external suffix; original URL id+ext; stored ext remains bare. Existing256/512WebP thumbnails unchanged. Both native and imported Cover DTOs use shared SQL projection.",
+  "scope": "Migration85 replaces only c.ext expression of final82 projector. Prior migrations and original52migrations unchanged.",
+  "acceptance_source": [
+    "upload_http: returned dotted ext builds real private/published original URL, bare storage, Get/list/nested parity, GET/HEAD/range/ETag, invalid/wrong suffix denial",
+    "protocol_bridge_http: actual source cover GET/list/nested parity, bare ext, exact original bytes GET/HEAD/range, invalid/wrong suffix denial, fresh canonical source deletion before ETag"
+  ],
+  "runtime_tests_executed": 0,
+  "check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-check-cover-001-result.json",
+    "sha256": "d42cd074822847aab648d6569aff1eeeab32df14c28484d41bc833f797e6de7d",
+    "status": "passed",
+    "completed_utc": "2026-10-13T10:07:54.722037+00:00",
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92"
+  },
+  "codegen": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-codegen-cover-001-result.json",
+    "sha256": "55bec702c2433d00adb51706526da56596bc436aa449070e4639fa4ebd2e1724",
+    "status": "passed",
+    "completed_utc": "2026-10-13T10:09:17.176310+00:00",
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92"
+  },
+  "updated_utc": "2026-10-13T10:11:49.234175+00:00",
+  "runtime_executed": false,
+  "tests_executed": 0,
+  "static_projection_check": {
+    "final82_body_identical_except_ext_expression": true,
+    "migration_registry_strictly_ordered_unique": true,
+    "migration_count": 31,
+    "SQL_executed": false
+  }
+}

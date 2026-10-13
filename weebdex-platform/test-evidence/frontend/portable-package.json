@@ -1,0 +1,10 @@
+{
+  "archive": "artifacts/frontend-static.tar.gz",
+  "sha256": "8ea410b4636a0f1e7bf4e226c60c31f81197b2e0954007972ded8153580721a7",
+  "bytes": 5160835,
+  "verified_regular_members": 412,
+  "ui_files": 401,
+  "independent_of_node_modules_and_build_workspace": true,
+  "contains_runtime_databases_credentials_or_user_records": false,
+  "verification": "Every archived regular member byte-compared and every UI input rehashed after packaging"
+}

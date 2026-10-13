@@ -1,0 +1,7 @@
+{
+  "stage": "official_yarn_distribution",
+  "version": "1.22.22",
+  "endpoint": "https://registry.yarnpkg.com/yarn/-/yarn-1.22.22.tgz",
+  "integrity_verified": true,
+  "terminal_receipt": true
+}

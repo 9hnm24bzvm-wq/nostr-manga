@@ -1,0 +1,114 @@
+{
+  "revision": "9f065a3fde464be893dfba9fb5fc6abc93722cf9",
+  "files": [
+    {
+      "path": "LICENSE",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/LICENSE",
+      "sha256": "d8ba39cc50b2225af52ab9f3d7b74d4020f071549d60b540575da73ce0ab63e7",
+      "bytes": 3831
+    },
+    {
+      "path": "README.md",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/README.md",
+      "sha256": "e373655ad204d4bb3b01b37403544985d48e048eae22fdf642d182e58455a56f",
+      "bytes": 784
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/license_en.txt",
+      "sha256": "d913cdc056048525bc11ae09d36700edf88da3ce0d12f6629a903405dd49fffb",
+      "bytes": 1628
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/license_ja.txt",
+      "sha256": "add20f0e38bade6c32c1f8c22198f9ac39879bdcbc4fd9c823ef4f0b365a0330",
+      "bytes": 2274
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/license_en.txt",
+      "sha256": "41fc0463f3715eb27bd3396f526862965d9e62a3ed28929e95af69e38c459083",
+      "bytes": 1548
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/license_ja.txt",
+      "sha256": "c9686be4cddce9bb97c24251c209c387e90616489b39f9d1ca6a81b37591575b",
+      "bytes": 2122
+    },
+    {
+      "path": "chapters/03/ubunchu03_ja_release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/03/ubunchu03_ja_release/license_en.txt",
+      "sha256": "4150bc77019ae49fe0880978a9eddbd5c4283fc5441d6e1964cb1b7ccee4ca04",
+      "bytes": 1286
+    },
+    {
+      "path": "chapters/03/ubunchu03_ja_release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/03/ubunchu03_ja_release/license_ja.txt",
+      "sha256": "4df028be37078d1e56ea505f72d4f2cbcf50e5fd0076ac0c860b21884a9c18f0",
+      "bytes": 1756
+    },
+    {
+      "path": "chapters/04/ubunchu04_ja-release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/04/ubunchu04_ja-release/license_en.txt",
+      "sha256": "4c0a52badfdc24f85b8cdc9c456e94021de92fbab37d4fb221d3c732c2c393ab",
+      "bytes": 1258
+    },
+    {
+      "path": "chapters/04/ubunchu04_ja-release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/04/ubunchu04_ja-release/license_ja.txt",
+      "sha256": "368f392795d43221869185bdb95fb4078fe1fc67137c47d2b416f8edf85a4950",
+      "bytes": 1738
+    },
+    {
+      "path": "chapters/05/ubunchu05_ja-release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/05/ubunchu05_ja-release/license_en.txt",
+      "sha256": "65d80aa7bb7b2ab27ae34d5f8d6c3b1208523e63386045e7e6dad646a3de6aef",
+      "bytes": 1198
+    },
+    {
+      "path": "chapters/05/ubunchu05_ja-release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/05/ubunchu05_ja-release/license_ja.txt",
+      "sha256": "1215d566a241cffeabc1ec938a3886518b742ae422910ca5151813fc254ca0ac",
+      "bytes": 1601
+    },
+    {
+      "path": "chapters/06/ubunchu06_ja-release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/06/ubunchu06_ja-release/license_en.txt",
+      "sha256": "89f106b87d1d31131cf60acde2255f8c985e49b84946f8d2a9aa26805d410254",
+      "bytes": 1199
+    },
+    {
+      "path": "chapters/06/ubunchu06_ja-release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/06/ubunchu06_ja-release/license_ja.txt",
+      "sha256": "70c19afde9b7c009046c1a25040761c36053251fa553544856862b40fdb6ce03",
+      "bytes": 1604
+    },
+    {
+      "path": "chapters/07/ubunchu07_ja-release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/07/ubunchu07_ja-release/license_en.txt",
+      "sha256": "dbbc520095465cea55320c6d95f0d9e25e12c286c296a827fe64d45f811469ab",
+      "bytes": 1199
+    },
+    {
+      "path": "chapters/07/ubunchu07_ja-release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/07/ubunchu07_ja-release/license_ja.txt",
+      "sha256": "087b3a292492cdf45c6cde636ef5de977314d10acb3ada96a35d88109a94dcbb",
+      "bytes": 1628
+    },
+    {
+      "path": "chapters/08/ubunchu08_ja-release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/08/ubunchu08_ja-release/license_en.txt",
+      "sha256": "a984ee9003c538914a99fc5b2bf55b1ad9f8ed7513ee11d3240b65569749a564",
+      "bytes": 1195
+    },
+    {
+      "path": "chapters/08/ubunchu08_ja-release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/08/ubunchu08_ja-release/license_ja.txt",
+      "sha256": "c6b2dafa66116a5fc0007dfced224dae986f1bc4523b2c3dab2478fd0eca17a0",
+      "bytes": 1610
+    }
+  ],
+  "bytes": 29459
+}

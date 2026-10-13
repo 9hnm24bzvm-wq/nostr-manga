@@ -1,0 +1,119 @@
+{
+  "prepared_utc": "2026-10-13T09:19:40.620804+00:00",
+  "execution_allowed": false,
+  "gate": "Parent must explicitly clear the fresh UI17 source review; fixture owner alone launches/owns services and atomic same-session browser queue",
+  "frontend_generation": "Build17/source516",
+  "frontend_artifact_manifest_sha256": "64ab043c3b847954745cb5b7c5743791e6eb16118747825a4c5fa14cd44f6179",
+  "frontend_index_sha256": "ccb622b32075e0bebd953adb9d26d341e058c5980be5aedbea20c737765ecfcd",
+  "bootstrap_csp_hashes": [
+    "'sha256-R8oBH9EKC81HZwWVE7f7DsWG7lIclPnqnAnJXZ3fHys='"
+  ],
+  "normal_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "8be12f95d3795e4e1ab7135347774c57291b6057f45503659acfe15df4766e1b"
+  },
+  "protocol_provisioner": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "sha256": "729b49b74428ed303c100ca3c796286a91b2b1a5e96f7a5de8d30ca50031e6e9"
+  },
+  "fixture_command_argv": [
+    "python3",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/tests/runtime/browser_fixture.py",
+    "--binary",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "--expected-sha256",
+    "8be12f95d3795e4e1ab7135347774c57291b6057f45503659acfe15df4766e1b",
+    "--protocol-provisioner",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "--provisioner-sha256",
+    "729b49b74428ed303c100ca3c796286a91b2b1a5e96f7a5de8d30ca50031e6e9",
+    "--ui-dir",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/artifacts/frontend",
+    "--frontend-index-sha256",
+    "ccb622b32075e0bebd953adb9d26d341e058c5980be5aedbea20c737765ecfcd",
+    "--frontend-artifact-manifest",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/artifact-manifest.json",
+    "--frontend-artifact-manifest-sha256",
+    "64ab043c3b847954745cb5b7c5743791e6eb16118747825a4c5fa14cd44f6179",
+    "--second-protocol-recipient",
+    "--lifetime-seconds",
+    "3600"
+  ],
+  "first_browser_queue_payload": {
+    "phase": "startup",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform/scripts/browser-acceptance.mjs"
+    ],
+    "timeout_seconds": 150,
+    "env": {
+      "BROWSER_PHASE": "startup",
+      "BROWSER_RUN_ID": "build17-gate1"
+    }
+  },
+  "runtime_origin_source": "Only newly created private supervisor.json; no guessed ports or previous-loopback process reuse",
+  "network_policy": "Exact recorded UI/mail/original HTTP and root WS recipients (maximum two); other browser requests blocked by routing plus owned deny proxy; no original APIs/Google/email",
+  "dataset": "Fresh generated synthetic complete images; no licensed artwork",
+  "phases": {
+    "startup": {
+      "maximum_seconds": 150
+    },
+    "ordinary": {
+      "names": [
+        "account",
+        "account-recovery",
+        "upload",
+        "reader",
+        "announcements",
+        "local-library",
+        "filters",
+        "editorial",
+        "community",
+        "pwa"
+      ],
+      "maximum_seconds": 300
+    },
+    "ui10": {
+      "names": [
+        "ui10-api-client",
+        "ui10-auth-lifetimes",
+        "ui10-recovery-lifetimes",
+        "ui10-preferences",
+        "ui10-reader-transition"
+      ],
+      "maximum_seconds": 300
+    },
+    "signed": {
+      "names": [
+        "signed-library",
+        "signed-profile",
+        "signed-social",
+        "signed-context",
+        "signed-source-controls",
+        "signed-namespace",
+        "signed-recipients",
+        "signed-restart"
+      ],
+      "maximum_seconds": 600,
+      "restart_control_minimum_remaining_seconds": 430
+    }
+  },
+  "phase_modules_wired": true,
+  "source_syntax_checks": "node --check passed four runner/journey modules; no import, browser or application execution",
+  "source_sha256": {
+    "scripts/browser-acceptance.mjs": "27dc18f37ac6c4a7def049f989687f257113f8fc8bd8d870561cb09a0b78fac5",
+    "scripts/browser-journeys.mjs": "65f5e5d115f35d15608e4075957172354978727cead70cfbeea6b64a0c0e5efc",
+    "scripts/browser-signed-journeys.mjs": "af01c43b9753d8cc4d3764afef8adfd25d4762cd5bb8b978c40e8359bbbd19d5",
+    "scripts/browser-ui10-journeys.mjs": "d7376ecc6aca9ebbcbf26f4e077a3c7c7be765d9f19f6397fbe091d1eb5e8ee6",
+    "tests/runtime/browser_fixture.py": "70401b969911da6b44bec5f41531476b5d425fcb1c9b2a4354e46839d2930c59",
+    "backend/examples/browser_fixture_provisioner.rs": "1ee707435069e7c8925efb8247c6b99244d043935cc2b5470c4fb58c556e842a"
+  },
+  "remaining_runtime": [
+    "Real combined readiness/imported-source mapping and exact CSP startup",
+    "All actual user-control journeys and installed SW privacy/revocation scenarios",
+    "Recent UI11-16 acceptance scenarios beyond existing prepared journeys require dedicated evidence",
+    "Actual owned terminal lifetime/drain/ports after every phase; no lost result is cleanup proof"
+  ],
+  "lifetime_note": "Do not assume all23 nonstartup phases fit a3600s fixture at maximum bounds. Prioritize source controls with>=430s remaining; record each actual result and request fresh owned fixture if observation window ends.",
+  "application_cases_executed": 0
+}

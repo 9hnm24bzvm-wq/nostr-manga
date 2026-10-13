@@ -1,0 +1,101 @@
+{
+  "utc": "2026-10-13T05:53:14.884186+00:00",
+  "source_only": true,
+  "runtime_tests_executed": false,
+  "findings": {
+    "UI5-01": "Session final write account and every-write generation fence",
+    "UI5-02": "visible failed/unsent page states; exact owner receipt reads; unknown mutations not replayed; acknowledged pages retained",
+    "UI5-03": "approved explicit staging cancellation confirmation; clears only204;409 retains",
+    "UI5-04": "approved invalid dirty metadata local Revert guard",
+    "restricted-recovery-ui": "approved existing route boundary; reset capability separate from Session; password-only CSRF form and real mail browser source"
+  },
+  "files": [
+    {
+      "path": "platform-integrations/local-library/library.ts",
+      "sha256": "7dba07f8120b85b7d63454bae10e0c255cb16eb775f4d0ab311f92bddf432520"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/upload-batch.ts",
+      "sha256": "b44de9fb648bf7999c59e034501eb1c0236c8c74cee1eeabb2d32901f0d006cc"
+    },
+    {
+      "path": "platform-integrations/frontend-overlays.mjs",
+      "sha256": "cf87726b06b337c37bf941174a1ebcb72995dd85d1cc2d0c864d27d601024f71"
+    },
+    {
+      "path": "scripts/prepare-frontend-integration.mjs",
+      "sha256": "d0cb44bdb14644a3ed2509eecea53e1b9bc00c06fd1cec96f92268bd3aaa0aa8"
+    },
+    {
+      "path": "scripts/browser-acceptance.mjs",
+      "sha256": "b8dfa63cee39816ae01b5bc77404517166caa0d421f7e5caaf8f931388a42b20"
+    },
+    {
+      "path": "scripts/browser-journeys.mjs",
+      "sha256": "8b167f3026c4df574de3628aae7aa512b9761936114e7b176c12f13a2cebf636"
+    },
+    {
+      "path": "scripts/browser-signed-journeys.mjs",
+      "sha256": "6eee74d7dcac17526b0994eea191d4aad08f0aada142e1a0e27c369d02cc0547"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/RecoveryBoundary.svelte",
+      "sha256": "6777bf183bed550fdc800b53fe2bcc568400b60cd905bbe0f356ba4240aa99f3"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/RetainedRecovery.svelte",
+      "sha256": "20ba760776b71854e74c17aef228abd234dd5bded650c4fe863a1a94e1115fcf"
+    },
+    {
+      "path": "scripts/build-frontend.mjs",
+      "sha256": "05c9434e8c55b3611c625edc3c930370f66bac9c4b79913c555fe00f39eefeb8"
+    }
+  ],
+  "overlay_definitions": 295,
+  "anchor_occurrences": 304,
+  "original_paths": 64,
+  "integration_inventory_sha256": "24a50c6e48ab9ef5fb45e2b87825c587fc4d3c20ef84ff37d7b5654c2edf493a",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T05:52:00.185Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 61,
+    "scripts_syntax_compiled": 29,
+    "shared_sha": "cf87726b06b337c37bf941174a1ebcb72995dd85d1cc2d0c864d27d601024f71",
+    "reader_sha": "0fa703b3208a1d0abe210062cf4ec02bb813132a83d687cf331d212aae983dce",
+    "local_sha": "acc47af42d7638f6cc77d2529c71b553f7d1ce73c5b8ebe11b3461fb275a043f",
+    "integration_inventory_sha": "24a50c6e48ab9ef5fb45e2b87825c587fc4d3c20ef84ff37d7b5654c2edf493a",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "artifact_current": false,
+  "latest_built_definitions": 227,
+  "further_gate": "Fresh independent review, aggregate build, then parent-authorized real browser acceptance",
+  "R6_addendum": "Chapter page-edit createUploadSession prevents native submit synchronously before its mutex helper; real control journey prepared"
+}

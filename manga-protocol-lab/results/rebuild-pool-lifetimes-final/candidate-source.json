@@ -1,0 +1,26 @@
+{
+  "captured_utc": "2026-10-12T01:13:45.340350+00:00",
+  "status": "Frozen candidate pending independent static review and compilation; no runtime validation yet",
+  "baseline_node_sha256": "1c3f7769e25ea3bd9f025c0f3d6cad009d7d23de3babe36b1f90a661afc7d713",
+  "baseline_inventory": "results/rebuild-read-phases-final/canonical-source-before.json",
+  "changed_files": {
+    "server/src/upload.rs": {
+      "before": "0a58551980a45e2b1190ebfec9a9f478654b9b444919acfe4ea869b2178ea96c",
+      "candidate": "cda13102ff4255f860a429abb0982e87b71c023fa9e5e90e6c6505d930036f40"
+    },
+    "server/src/library.rs": {
+      "before": "97e544fa71362c7a2a695ecd273fbc5c88001991f9b600f1af63a4f49dc39c07",
+      "candidate": "83b13c7f241542d36b61e3b5df6c08c0beb011470775edcb4e91cb6c913c69bb"
+    },
+    "server/src/node/compatibility_http.rs": {
+      "before": "82580cfd3783715202ae9926b79403a351bb3fa15ccf890a1d1a416a6de2780e",
+      "candidate": "847638ae981a04c05e50bae7b48bedbb337bfe8b7ede157d451981911a7c2c86"
+    },
+    "server/tests/http_pool_lifetimes.rs": {
+      "before": null,
+      "candidate": "ca7bb2d718882dd034c37eac6f026aabf3f295a6dd24f001ed229bfd7375f68f"
+    }
+  },
+  "source_input_count": 392,
+  "limits": "Warm offline release-j1 only after independent patch/fixture review and exact guard clearance; 2GiB disk and1GiB sampled memory floor; no fullgate automatically."
+}

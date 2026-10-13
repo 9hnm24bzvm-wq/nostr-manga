@@ -1,0 +1,53 @@
+{
+  "scope": "Real public-domain Hokusai scanned pages. Four-image hot corpus; not representative cold 100TB storage or complete real production data.",
+  "images": [
+    {
+      "id": 57679,
+      "file": "met-57679.jpg",
+      "bytes": 1201011,
+      "sha256": "16b82401efa796e35da403c594b98c6bf03dfabdb7c7bb1d7122ede7e0417034",
+      "width": 2816,
+      "height": 2112,
+      "source": "https://www.metmuseum.org/art/collection/search/57679",
+      "image_url": "https://images.metmuseum.org/CRDImages/as/original/JIB_81_1_Preface_1_sf.JPG",
+      "public_domain": true,
+      "title": "Transmitting the Spirit, Revealing the Form of Things: Hokusai Sketchbooks, first volume (Denshin kaishu: Hokusai manga, shohen)"
+    },
+    {
+      "id": 57680,
+      "file": "met-57680.jpg",
+      "bytes": 1054267,
+      "sha256": "7345dcddcc0ed4464c061f775c3d33edc10bb6fc8d38c4d10244d16e64c4627b",
+      "width": 2816,
+      "height": 2112,
+      "source": "https://www.metmuseum.org/art/collection/search/57680",
+      "image_url": "https://images.metmuseum.org/CRDImages/as/original/JIB_81_2_Front Cover_sf.JPG",
+      "public_domain": true,
+      "title": "Transmitting the Spirit, Revealing the Form of Things: Hokusai Sketchbooks, volume 2 (Denshin kaishu: Hokusai manga, nihen )"
+    },
+    {
+      "id": 57681,
+      "file": "met-57681.jpg",
+      "bytes": 1163212,
+      "sha256": "94d64b9bc1e5b8f45f809381545f5b201627dec239752deaf98782c71202cd1e",
+      "width": 2816,
+      "height": 2112,
+      "source": "https://www.metmuseum.org/art/collection/search/57681",
+      "image_url": "https://images.metmuseum.org/CRDImages/as/original/JIB_81_3_Preface_2_sf.JPG",
+      "public_domain": true,
+      "title": "Transmitting the Spirit, Revealing the Form of Things: Hokusai Sketchbooks, volume 3 (Denshin kaishu: Hokusai manga, sanpen)"
+    },
+    {
+      "id": 57682,
+      "file": "met-57682.jpg",
+      "bytes": 1227747,
+      "sha256": "3ac595477a047f9fa78166a88fd2a8a0306d3d6698fca655e430b5c4e1b4603a",
+      "width": 2816,
+      "height": 2112,
+      "source": "https://www.metmuseum.org/art/collection/search/57682",
+      "image_url": "https://images.metmuseum.org/CRDImages/as/original/JIB_81_4_Preface_1_sf.JPG",
+      "public_domain": true,
+      "title": "Transmitting the Spirit, Revealing the Form of Things: Hokusai Sketchbooks, volume 4 (Denshin kaishu: Hokusai manga, yonhen)"
+    }
+  ]
+}

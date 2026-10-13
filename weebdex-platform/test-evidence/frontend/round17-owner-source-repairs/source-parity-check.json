@@ -1,0 +1,17 @@
+{
+  "runtime_tests_executed": false,
+  "checks": [
+    {
+      "tree": "frontend",
+      "files": 676,
+      "failures": [],
+      "byte_identical": true
+    },
+    {
+      "tree": ".build/frontend-restore3",
+      "files": 676,
+      "failures": [],
+      "byte_identical": true
+    }
+  ]
+}

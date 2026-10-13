@@ -1,0 +1,80 @@
+{
+  "status": "source_only_native_ui_regression_extension_frozen_runtime_held",
+  "updated_utc": "2026-10-13T10:15:25.325548+00:00",
+  "baseline_reviewed_supervisor_sha256": "70401b969911da6b44bec5f41531476b5d425fcb1c9b2a4354e46839d2930c59",
+  "source_sha256": {
+    "tests/runtime/browser_fixture.py": "69e5827b634925773ee53f03925f6c0f0dca0ad32834ab281b03d7175c2d17a1",
+    "backend/examples/browser_fixture_provisioner.rs": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+    "backend/examples/browser_fixture/ui_regressions.rs": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+    "docs/browser-fixture-contract.md": "c058981918eb6782378300150e94721ac4e654459c6b16be5e562a2e24e8d579"
+  },
+  "python_ast_parse": "passed_without_runtime",
+  "optional_flag": "--ui-regression-controls",
+  "actions": {
+    "ui-regressions-seed": {
+      "scenario": "pagination",
+      "deadline_seconds": 120
+    },
+    "ui-regressions-readers": {
+      "deadline_seconds": 120
+    },
+    "ui-regressions-status": {
+      "deadline_seconds": 30
+    },
+    "ui-regressions-withdraw": {
+      "scenarios": [
+        "terminal",
+        "entity"
+      ],
+      "deadline_seconds": 30
+    }
+  },
+  "runtime_executed": false,
+  "production_files_modified": false,
+  "arbitrary_sql_paths_or_targets": false,
+  "reviewed_baseline_ownership_cleanup_manifest_logic_preserved": true,
+  "requires": [
+    "Final frontend complete manifest/index/hash coordination",
+    "Parent runtime clearance"
+  ],
+  "not_included": "Genuine home-grid503 dependency fault control",
+  "historical_revisions": [
+    {
+      "updated_utc": "2026-10-13T09:36:38.312724+00:00",
+      "source_sha256": {
+        "tests/runtime/browser_fixture.py": "69e5827b634925773ee53f03925f6c0f0dca0ad32834ab281b03d7175c2d17a1",
+        "backend/examples/browser_fixture_provisioner.rs": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+        "backend/examples/browser_fixture/ui_regressions.rs": "86893a0b2d3282c576d405f2ce205e23cad53a7db56943c96688757aad9de6a8",
+        "docs/browser-fixture-contract.md": "c058981918eb6782378300150e94721ac4e654459c6b16be5e562a2e24e8d579"
+      },
+      "runtime_executed": false
+    }
+  ],
+  "four_control_supervisor_sha256": "69e5827b634925773ee53f03925f6c0f0dca0ad32834ab281b03d7175c2d17a1",
+  "source_scope_note": "The four-control supervisor/docs pins are the preserved independently reviewed pre-fault scope. Current optional PG fault extension is separately indexed and requires fresh review.",
+  "compiler": {
+    "candidate": "019",
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92",
+    "build_source_index_path": "test-evidence/final/backend-current-build.json",
+    "build_source_index_sha256": "6c7b406860ba73233cab51274ba5850462694fbbf643e8ae2424068fb1c130e7",
+    "all_target_check": "passed",
+    "test_executable_codegen": "passed",
+    "normal_binary_sha256": "e12349fe5f861b742b8915d3aa6265c5cd2d7fd232d4b12568492f04d46bbf33",
+    "provisioner_binary_sha256": "2871b09f202cfafe8ddd8d6de63837fdec7e7507b0750f1d774a5f0f1fe9af9b",
+    "compiler_owner": "implement_weebdex_catalog_api",
+    "requires_real_migration": 85,
+    "runtime_executed": false
+  },
+  "historical_compilers": [
+    {
+      "candidate": "018",
+      "source_candidate_sha256": "3e2a0976fb1b2fc15d2cb59540b88450db0624e775a4039c505f20df5c015a18",
+      "all_target_check": "passed",
+      "test_executable_codegen": "passed_all_9",
+      "normal_binary_sha256": "c0c7e5bb5005a39ecb4f92552551998de1f634938298b3a22ff64eda4da34dbe",
+      "provisioner_binary_sha256": "05df5685adc9f0cc97dbd4f9866a7a13238ee1bfc50bc7c1b296b0783583f801",
+      "compiler_owner": "implement_weebdex_catalog_api",
+      "runtime_executed": false
+    }
+  ]
+}

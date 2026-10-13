@@ -1,0 +1,22 @@
+{
+  "phase": "startup",
+  "origin": "http://127.0.0.1:58617",
+  "browser": "system Chromium via installed Playwright",
+  "source_artifact": "artifacts/frontend",
+  "started_utc": "2026-10-13T03:11:43.550Z",
+  "steps": [],
+  "pages": [],
+  "external_requests_blocked": [],
+  "proxy_requests_blocked": [],
+  "page_errors": [],
+  "console_errors": [],
+  "csp_violations": [],
+  "response_errors": [],
+  "screenshots": [],
+  "limitations": [
+    "Supplied archive lacks an independently runnable original-render baseline. Source/DOM/style preservation and browser operation are distinct from pixel parity."
+  ],
+  "harness_error": "browserType.launch: Target page, context or browser has been closed\nBrowser logs:\n\n<launching> /usr/bin/chromium --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=p",
+  "completed_utc": "2026-10-13T03:11:43.677Z",
+  "passed": false
+}

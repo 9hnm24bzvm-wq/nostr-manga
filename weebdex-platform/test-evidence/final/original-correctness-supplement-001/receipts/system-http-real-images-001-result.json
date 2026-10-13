@@ -1,0 +1,49 @@
+{
+  "completed_utc": "2026-10-13T13:21:05.802807+00:00",
+  "command_exit": 0,
+  "abort_reason": null,
+  "monitor_error": null,
+  "cleanup_error": null,
+  "termination_signal": null,
+  "remaining_owned_members": [],
+  "frozen_identity_hashes": {
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-correctness-001/guarded-command.py": "9f91c18d582d1ca7cedf64dc1a43f919541fe7a9788e0407283ed4fe366f6da8",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-correctness-001/candidate-source.json": "d94878d178e3b614d72c9ca3ac7f2cf66ea48426d19e0f4ea91ec0870b2bcf37",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/source-baseline.json": "74b53fb3dcdb01fb32a60c33b1d23a4fec5bcccaa89ab3d6869addb15f7ac1bb"
+  },
+  "owned_leader_reaped": true,
+  "stop_actions": [],
+  "reaped_descendants": [
+    {
+      "pid": 704,
+      "start_ticks": 12590415,
+      "group": 617,
+      "session": 617,
+      "wait_status": 0
+    },
+    {
+      "pid": 761,
+      "start_ticks": 12593624,
+      "group": 761,
+      "session": 617,
+      "wait_status": 256
+    },
+    {
+      "pid": 774,
+      "start_ticks": 12593629,
+      "group": 617,
+      "session": 617,
+      "wait_status": 0
+    }
+  ],
+  "changed_inputs": [],
+  "minimum_free_bytes": 14040440832,
+  "minimum_available_memory_bytes": 7083909120,
+  "final_free_bytes": 14047764480,
+  "final_available_memory_bytes": 7237103616,
+  "command_log_bytes": 196,
+  "telemetry_bytes": 5995,
+  "telemetry_capped": false,
+  "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+  "status": "passed"
+}

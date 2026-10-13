@@ -1,0 +1,817 @@
+[
+  {
+    "target": "account_heads",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/account_heads.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "account_replacement_authority_and_ordering"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "audit_gaps",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/audit_gaps.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "characterize_missing_contracts"
+    ],
+    "classification": "diagnostic_observation",
+    "proposed_execute": false,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": "Explicitly records missing-contract observations; status observations are not acceptance assertions."
+  },
+  {
+    "target": "backend_library_batch",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/backend_library_batch.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "mixed_replacements_batch_without_early_retirement"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "backend_projection_independence",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/backend_projection_independence.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "imports_and_four_retirements_progress_before_a_fifth_author_unlocks"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "blob_receipts",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/blob_receipts.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "receipt_and_quota_transactions"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "capacity",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/capacity.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "durable_capacity_credits"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "cleanup_scan_budget",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/cleanup_scan_budget.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "cleanup_advances_a_bounded_candidate_page_past_other_owners"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "credit_lanes",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/credit_lanes.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "idle_lane_credits_rebalance_without_refunding_used_bytes"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "endpoint_dns",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/endpoint_dns.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "resolved_endpoints_obey_destination_policy_and_keep_vetted_dns"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201310 seconds",
+    "estimate_from_design_only": true,
+    "note": "Locally compiles fixture LD_PRELOAD resolver/socket shim usingcc; refuses public connect attempts and pins loopback fake DNS; no external service dependency."
+  },
+  {
+    "target": "enrollment_fences",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/enrollment_fences.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "migration_denials_operator_races_and_budget_rollback"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "group_fences",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/group_fences.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "group_preparation_is_fenced_by_current_membership"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_client_negative",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_client_negative.rs",
+    "case_count_from_source": 2,
+    "cases": [
+      "newer_unavailable_head_is_reported_when_recovering_older_complete_copy",
+      "corrupted_signed_metadata_and_content_never_count_as_success"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_head_snapshot",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_head_snapshot.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "signed_head_reads_are_one_snapshot_during_replacement"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_history_budget",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_history_budget.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "retired_library_history_is_pruned_in_bounded_transactions"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_history_worker",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_history_worker.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "background_history_worker_continues_full_bounded_pages_without_idle_delay"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "3\u201320 seconds",
+    "estimate_from_design_only": true,
+    "note": "258tiny signed root heads to cross16-row maintenance batches;2sec scheduler-progress assertion, explicitly not throughput benchmark."
+  },
+  {
+    "target": "library_prepared_references",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_prepared_references.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "prepared_root_rejects_reclaimed_and_restaged_generations"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_read_isolation",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_read_isolation.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "reads_progress_while_staging_waits_for_another_author"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_reclamation",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_reclamation.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "reclamation_is_reference_lease_receipt_and_generation_fenced"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_roots",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_roots.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "root_commit_retention_projection_and_health"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_staging",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_staging.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "library_objects_are_private_durable_and_epoch_fenced"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "library_validation_reuse",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/library_validation_reuse.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "accepted_unchanged_root_reuses_validation_without_reusing_authority"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "ordinary_deletion",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/ordinary_deletion.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "author_deletion_fences_reordered_and_concurrent_events"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "peer_relocation_fences",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/peer_relocation_fences.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "changed_approval_or_announcement_fences_late_resolution"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "postgres_foundation",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/postgres_foundation.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "postgres_foundation_concurrency_and_cache"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": "32/24/48 finite concurrency races across independently bounded pools; no load benchmark."
+  },
+  {
+    "target": "public_export_health",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/public_export_health.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "health_withdrawal_is_bounded_cancellation_safe_and_repair_fenced"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "actualnginx/Pythonpipehelper",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "2\u201330 seconds",
+    "estimate_from_design_only": true,
+    "note": "70tiny state transitions cross bounded pages, cancellation/repair fences."
+  },
+  {
+    "target": "public_export_holds",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/public_export_holds.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "external_reader_holds_block_refund_and_repair"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "actualnginx/Pythonpipehelper",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "2\u201330 seconds",
+    "estimate_from_design_only": true,
+    "note": "Realnginx/filesystem/strfry exports and bounded cancellation/visibility checks; smallobjects."
+  },
+  {
+    "target": "public_export_positive",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/public_export_positive.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "positive_export_is_verified_idempotent_and_visibility_fenced"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "actualnginx/Pythonpipehelper",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "2\u201330 seconds",
+    "estimate_from_design_only": true,
+    "note": "Realnginx/filesystem/strfry exports and bounded cancellation/visibility checks; smallobjects."
+  },
+  {
+    "target": "public_export_queue",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/public_export_queue.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "durable_queue_backfills_and_follows_publication_visibility"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "actualnginx/Pythonpipehelper",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "2\u201330 seconds",
+    "estimate_from_design_only": true,
+    "note": "Realnginx/filesystem/strfry exports and bounded cancellation/visibility checks; smallobjects."
+  },
+  {
+    "target": "publication_fences",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/publication_fences.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "preparation_is_not_authority_to_commit"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "publication_reclamation",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/publication_reclamation.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "only_acknowledged_approved_last_references_release_originals"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "actualnginx/Pythonpipehelper",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "read_admission_lifecycle",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/read_admission_lifecycle.rs",
+    "case_count_from_source": 3,
+    "cases": [
+      "bounded_burst_waits_without_owning_other_capacity",
+      "cancellation_and_timeout_release_bounded_waiting_places",
+      "validates_actual_runtime_configuration"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "reclamation_parallelism",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/reclamation_parallelism.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "parallel_cleanup_preserves_shared_admission_and_exact_refunds"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": "8finite small object cleanup races;30sec failuredeadline only."
+  },
+  {
+    "target": "reclamation_refund_contention",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/reclamation_refund_contention.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "physical_reclaim_does_not_wait_for_an_already_refunded_staging_grant"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "relay_dispatch_lifecycle",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/relay_dispatch_lifecycle.rs",
+    "case_count_from_source": 4,
+    "cases": [
+      "one_source_response_fans_out_and_filters_then_role_cancellation_signals_loss",
+      "slow_session_overflows_independently_and_discontinuity_requires_resubscribe",
+      "disconnected_sessions_release_registration_capacity",
+      "unresolved_source_deadline_reports_loss_without_delivering_unverified_data"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "relay_queries",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/relay_queries.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "guarded_history_filters_and_notifications"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "actualstrfry",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "relay_source_ownership",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/relay_source_ownership.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "cancelled_source_retains_admission_until_database_work_terminates"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "serving_process",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/serving_process.rs",
+    "case_count_from_source": 4,
+    "cases": [
+      "rust_parent_controls_actual_reader_family",
+      "cancelling_a_drain_closes_the_owner_pipe",
+      "prepared_owner_keeps_listener_closed_until_explicit_activation",
+      "missing_master_is_not_healthy_even_with_multiple_orphan_workers"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "actualnginx/Pythonpipehelper",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "2\u201325 seconds",
+    "estimate_from_design_only": true,
+    "note": "4real Python/nginx process/pipe lifecycle tests; one16MiB response body, no browserIPC."
+  },
+  {
+    "target": "staging_reclamation",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/staging_reclamation.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "abandoned_staging_expires_without_bypassing_grants_or_receipts"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "storage_fairness",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/storage_fairness.rs",
+    "case_count_from_source": 4,
+    "cases": [
+      "scarce_physical_quota_accelerates_cleanup_without_stopping_foreground",
+      "single_slot_cancellation_preserves_cleanup_ownership_and_queued_progress",
+      "stalled_cleanup_preserves_foreground_library_staging",
+      "pressured_cleanup_still_reserves_foreground_library_staging"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "2\u201320 seconds",
+    "estimate_from_design_only": true,
+    "note": "4small quota/single-slot cancellation cases;100k-byte synthetic stores."
+  },
+  {
+    "target": "storage_health_lifecycle",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/storage_health_lifecycle.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "cancelled_health_read_fences_repair_until_its_decision_is_durable"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "storage_lifecycle",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/storage_lifecycle.rs",
+    "case_count_from_source": 7,
+    "cases": [
+      "cancelled_public_read_keeps_real_io_and_volume_fences",
+      "cancelled_public_recovery_keeps_real_io_and_volume_fences",
+      "receipt_requires_verified_exact_bytes_and_recovers_idempotently",
+      "stale_generation_cleanup_preserves_replacement",
+      "corruption_and_oversize_do_not_mint_receipts",
+      "hash_mutations_serialize_without_blocking_other_hashes",
+      "volume_has_one_mutation_owner"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201320 seconds",
+    "estimate_from_design_only": true,
+    "note": "7filesystem correctness tests; two real Linux F_SETLEASE cancellation faults via localPython."
+  },
+  {
+    "target": "submission_review_fences",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/submission_review_fences.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "review_holds_cleanup_and_decisions_are_fenced"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "sync_queue",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/sync_queue.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "bounded_queue_fencing_fairness_and_backoff"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  },
+  {
+    "target": "sync_schedules",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/sync_schedules.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "explicit_schedules_are_bounded_atomic_and_revocable"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": "513small schedule inputs exercises validation cap; no sustained load."
+  },
+  {
+    "target": "sync_skips",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/sync_skips.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "skip_reporting_is_durable_bounded_and_lease_fenced"
+    ],
+    "classification": "large_capacity_boundary_deferred",
+    "proposed_execute": false,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "10\u2013120 seconds estimate, large boundary; not benchmark throughput",
+    "estimate_from_design_only": true,
+    "note": "Two100,000-ID real queue fills, plus300skip acknowledgements; defer large queue-capacity boundary."
+  },
+  {
+    "target": "upload_recovery",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/upload_recovery.rs",
+    "case_count_from_source": 1,
+    "cases": [
+      "restart_recovers_pending_bytes_and_refunds_only_cleaned_files"
+    ],
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "dependencies": [
+      "isolated PostgreSQL",
+      "filesystem/processes"
+    ],
+    "estimated_duration": "1\u201315 seconds",
+    "estimate_from_design_only": true,
+    "note": ""
+  }
+]

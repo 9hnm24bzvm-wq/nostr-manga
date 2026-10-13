@@ -1,0 +1,79 @@
+{
+  "utc": "2026-10-13T12:01:52.663428+00:00",
+  "read_only": true,
+  "checks": [
+    {
+      "name": "platform",
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+      "sha256": "e12349fe5f861b742b8915d3aa6265c5cd2d7fd232d4b12568492f04d46bbf33",
+      "expected": "e12349fe5f861b742b8915d3aa6265c5cd2d7fd232d4b12568492f04d46bbf33"
+    },
+    {
+      "name": "provisioner",
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+      "sha256": "2871b09f202cfafe8ddd8d6de63837fdec7e7507b0750f1d774a5f0f1fe9af9b",
+      "expected": "2871b09f202cfafe8ddd8d6de63837fdec7e7507b0750f1d774a5f0f1fe9af9b"
+    },
+    {
+      "name": "manifest",
+      "sha256": "56dab08d19e57db750a5bbfcb4acb90a17605995bc29aa02f638ea2cc14af429",
+      "expected": "56dab08d19e57db750a5bbfcb4acb90a17605995bc29aa02f638ea2cc14af429"
+    },
+    {
+      "name": "index",
+      "sha256": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+      "expected": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f"
+    }
+  ],
+  "all_binary_manifest_index_hashes_match": true,
+  "complete_ui_membership_matches": true,
+  "bad_ui_files": [],
+  "ui_file_count": 401,
+  "ui_bytes": 7008710,
+  "source_checks": [
+    {
+      "path": "scripts/browser-acceptance.mjs",
+      "sha256": "108efc390e3d43c2333033fd87dbe912329e405004875f51de208b9ad08d57a7",
+      "expected": "108efc390e3d43c2333033fd87dbe912329e405004875f51de208b9ad08d57a7",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-journeys.mjs",
+      "sha256": "65f5e5d115f35d15608e4075957172354978727cead70cfbeea6b64a0c0e5efc",
+      "expected": "65f5e5d115f35d15608e4075957172354978727cead70cfbeea6b64a0c0e5efc",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-signed-journeys.mjs",
+      "sha256": "af01c43b9753d8cc4d3764afef8adfd25d4762cd5bb8b978c40e8359bbbd19d5",
+      "expected": "af01c43b9753d8cc4d3764afef8adfd25d4762cd5bb8b978c40e8359bbbd19d5",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-ui10-journeys.mjs",
+      "sha256": "d7376ecc6aca9ebbcbf26f4e077a3c7c7be765d9f19f6397fbe091d1eb5e8ee6",
+      "expected": "d7376ecc6aca9ebbcbf26f4e077a3c7c7be765d9f19f6397fbe091d1eb5e8ee6",
+      "matched": true
+    },
+    {
+      "path": "tests/runtime/browser_fixture.py",
+      "sha256": "2f5caccde5292d226c2616a9566cb711741bfb6f1589100950700d63419bf434",
+      "expected": "2f5caccde5292d226c2616a9566cb711741bfb6f1589100950700d63419bf434",
+      "matched": true
+    },
+    {
+      "path": "backend/examples/browser_fixture_provisioner.rs",
+      "sha256": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+      "expected": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-ui11-16-journeys.mjs",
+      "sha256": "4a4f31f99e2bcf86485c3aebb26108fd5eff3a9e14800145fa12b4d589e63906",
+      "expected": "4a4f31f99e2bcf86485c3aebb26108fd5eff3a9e14800145fa12b4d589e63906",
+      "matched": true
+    }
+  ],
+  "source_mismatches": [],
+  "runtime_executed": false
+}

@@ -1,0 +1,1773 @@
+--- immutable-prior/platform_bridge.rs
++++ authorized-current/platform_bridge.rs
+@@ -26,8 +26,38 @@
+ #[derive(Debug)]
+ pub struct SourcePage {
+     pub entries: Vec<SourcePublication>,
++    /// Individually invalid/over-budget rows are explicit, durable downstream
++    /// rejections, not an unreadable page that permanently wedges its cursor.
++    pub rejected: Vec<SourceRejection>,
+     pub next_after: Option<Id>,
+     pub exhausted: bool,
++}
++
++#[derive(Debug)]
++pub struct SourceRejection {
++    pub event_id: String,
++    pub source_version: i64,
++    pub reason: String,
++}
++fn byte_bounded_prefix(sizes: &[i64], budget: i64) -> (usize, Vec<usize>, Vec<usize>) {
++    let mut consumed = 0;
++    let mut bytes = 0;
++    let mut selected = Vec::new();
++    let mut rejected = Vec::new();
++    for (index, &size) in sizes.iter().enumerate() {
++        if size <= 0 || size > budget {
++            rejected.push(index);
++            consumed = index + 1;
++            continue;
++        }
++        if bytes + size > budget {
++            break;
++        }
++        bytes += size;
++        selected.push(index);
++        consumed = index + 1;
++    }
++    (consumed, selected, rejected)
+ }
+ 
+ /// Safe SQL predicate for a derived text event-ID column. The only accepted
+@@ -69,25 +99,57 @@
+             .await?;
+         tx.batch_execute("SET LOCAL statement_timeout='2000ms'; SET LOCAL lock_timeout='500ms'")
+             .await?;
+-        let bytes:i64=tx.query_one("SELECT COALESCE(sum(n),0)::bigint FROM (SELECT octet_length(e.raw_event::text)+COALESCE(octet_length(c.metadata::text),0) n FROM events e LEFT JOIN catalogue_metadata c ON c.event_id=e.id WHERE e.kind IN(1001,1002) AND ($1::bytea IS NULL OR e.id>$1) ORDER BY e.id LIMIT $2) page",&[&after,&limit]).await?.get(0);
+-        ensure!(
+-            bytes <= 2 * 1048576,
+-            "platform catalogue page byte budget; reduce limit"
+-        );
+-        let rows=tx.query(&format!("SELECT e.id,e.raw_event,e.version,({VISIBLE}) AND c.event_id IS NOT NULL,c.metadata,COALESCE((SELECT id FROM compatibility_ids i WHERE i.kind=CASE WHEN e.kind=1002 THEN 'manga' ELSE 'chapter' END AND i.target=encode(e.id,'hex') AND i.preferred LIMIT 1),'') FROM events e LEFT JOIN catalogue_metadata c ON c.event_id=e.id WHERE e.kind IN(1001,1002) AND ($1::bytea IS NULL OR e.id>$1) ORDER BY e.id LIMIT $2"),&[&after,&limit]).await?;
++        // Preflight only identities and lengths before loading any JSON bodies.
++        // The bounded prefix adapts to bytes, so valid large siblings cannot wedge
++        // a fixed count page. A single over-budget row is rejected explicitly.
++        let candidates=tx.query("SELECT e.id,e.version,octet_length(e.raw_event::text)::bigint+COALESCE(octet_length(c.metadata::text),0)::bigint FROM events e LEFT JOIN catalogue_metadata c ON c.event_id=e.id WHERE e.kind IN(1001,1002) AND ($1::bytea IS NULL OR e.id>$1) ORDER BY e.id LIMIT $2", &[&after,&limit]).await?;
++        let sizes: Vec<i64> = candidates.iter().map(|r| r.get(2)).collect();
++        let (consumed, selected_positions, oversized_positions) =
++            byte_bounded_prefix(&sizes, 2 * 1048576);
++        let selected: Vec<Vec<u8>> = selected_positions
++            .iter()
++            .map(|&i| candidates[i].get(0))
++            .collect();
++        let mut rejected = Vec::new();
++        for index in oversized_positions {
++            rejected.push(SourceRejection {
++                event_id: hex::encode(candidates[index].get::<_, Vec<u8>>(0)),
++                source_version: candidates[index].get(1),
++                reason: "Original row exceeds the catalogue projection byte budget".into(),
++            });
++        }
++        let rows=tx.query(&format!("SELECT e.id,e.raw_event,e.version,({VISIBLE}) AND c.event_id IS NOT NULL,c.metadata,COALESCE((SELECT id FROM compatibility_ids i WHERE i.kind=CASE WHEN e.kind=1002 THEN 'manga' ELSE 'chapter' END AND i.target=encode(e.id,'hex') AND i.preferred LIMIT 1),'') FROM events e LEFT JOIN catalogue_metadata c ON c.event_id=e.id WHERE e.id=ANY($1) ORDER BY e.id"),&[&selected]).await?;
+         let mut entries = Vec::with_capacity(rows.len());
+-        let mut next_after = None;
+-        for row in &rows {
+-            next_after = Some(
+-                row.get::<_, Vec<u8>>(0)
++        let next_after = if consumed > 0 {
++            Some(
++                candidates[consumed - 1]
++                    .get::<_, Vec<u8>>(0)
+                     .try_into()
+                     .ok()
+                     .context("stored source identity")?,
+-            );
+-            let event: Event = serde_json::from_value(row.get(1))?;
+-            // Even accepted database rows cross an explicit signature boundary.
+-            // Never silently derive a DTO from corrupt authority state.
+-            event.verify().map_err(anyhow::Error::msg)?;
++            )
++        } else {
++            None
++        };
++        for row in &rows {
++            let source_id = hex::encode(row.get::<_, Vec<u8>>(0));
++            let event: Event = match serde_json::from_value::<Event>(row.get(1)) {
++                Ok(event)
++                    if event.id == source_id
++                        && matches!(event.kind, 1001 | 1002)
++                        && event.verify().is_ok() =>
++                {
++                    event
++                }
++                _ => {
++                    rejected.push(SourceRejection {
++                        event_id: source_id,
++                        source_version: row.get(2),
++                        reason: "Invalid stored original publication signature or identity".into(),
++                    });
++                    continue;
++                }
++            };
+             let visible: bool = row.get(3);
+             let alias: String = row.get(5);
+             let kind = if event.kind == 1002 {
+@@ -112,10 +174,14 @@
+                     }
+                 }
+             }
+-            ensure!(
+-                targets.len() <= 385,
+-                "related compatibility identity budget"
+-            );
++            if targets.len() > 385 {
++                rejected.push(SourceRejection {
++                    event_id: source_id,
++                    source_version: row.get(2),
++                    reason: "Original related compatibility identity budget exceeded".into(),
++                });
++                continue;
++            }
+             let mut related_ids = BTreeMap::new();
+             if !targets.is_empty() {
+                 for alias in tx.query("SELECT kind||':'||target,id FROM compatibility_ids WHERE preferred AND kind||':'||target=ANY($1)",&[&targets]).await?{related_ids.insert(alias.get(0),alias.get(1));}
+@@ -136,8 +202,9 @@
+         tx.commit().await?;
+         Ok(SourcePage {
+             entries,
++            rejected,
+             next_after,
+-            exhausted: rows.len() < limit as usize,
++            exhausted: consumed == candidates.len() && candidates.len() < limit as usize,
+         })
+     }
+ }
+@@ -146,6 +213,24 @@
+ pub struct VisibleResource {
+     pub event: Event,
+     pub compatibility_id: String,
++}
++
++/// Original generation and signed body are captured under the caller's source
++/// row lock. Keep that transaction open until its current native request has
++/// been persisted/submitted; restoration cannot silently retarget the intent.
++pub async fn lock_deletion_source<C: tokio_postgres::GenericClient + Sync>(
++    client: &C,
++    target: Id,
++) -> Result<Option<(Event, i64)>> {
++    let Some(row)=client.query_opt(&format!("SELECT e.raw_event,e.version FROM events e WHERE e.id=$1 AND e.kind=1001 AND {VISIBLE} FOR SHARE OF e"),&[&target.as_slice()]).await? else {return Ok(None)};
++    let event: Event = serde_json::from_value(row.get(0))?;
++    event.verify().map_err(anyhow::Error::msg)?;
++    let generation: i64 = row.get(1);
++    ensure!(
++        event.id == hex::encode(target) && event.kind == 1001 && generation > 0,
++        "invalid current original deletion generation"
++    );
++    Ok(Some((event, generation)))
+ }
+ /// Batch signed-resource mapping uses current original catalogue policy for the
+ /// resource and the immutable parent, with a bounded signed-body budget.
+@@ -241,6 +326,25 @@
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++    #[test]
++    fn byte_pages_advance_large_valid_siblings_and_explicitly_reject_single_invalid_rows() {
++        assert_eq!(
++            byte_bounded_prefix(&[1_100_000, 1_100_000, 10], 2_097_152),
++            (1, vec![0], vec![])
++        );
++        assert_eq!(
++            byte_bounded_prefix(&[1_100_000, 10], 2_097_152),
++            (2, vec![0, 1], vec![])
++        );
++        assert_eq!(
++            byte_bounded_prefix(&[3_000_000, 10, 0, 20], 2_097_152),
++            (4, vec![1, 3], vec![0, 2])
++        );
++        assert_eq!(
++            byte_bounded_prefix(&[2_097_152], 2_097_152),
++            (1, vec![0], vec![])
++        );
++    }
+     #[test]
+     fn visibility_is_owned_by_protocol_and_cannot_inject_sql() {
+         let sql = visibility_sql("c.protocol_event_id").unwrap();
+--- immutable-prior/node.rs
++++ authorized-current/node.rs
+@@ -138,6 +138,7 @@
+     endpoint_policy: crate::endpoint_policy::EndpointPolicy,
+     discovery_slots: Arc<tokio::sync::Semaphore>,
+     workers: Arc<crate::background_workers::BackgroundWorkers>,
++    operations: Arc<EmbeddedOperations>,
+     capabilities: Value,
+     cors_origins: Vec<String>,
+     serving_status: Option<Arc<crate::serving_role::ServingStatus>>,
+@@ -368,11 +369,25 @@
+             return (StatusCode::SERVICE_UNAVAILABLE, "connection budget").into_response();
+         };
+         let relay = a.relay.clone();
++        let operations = a.operations.clone();
++        let lease = match operations.acquire() {
++            Ok(lease) => lease,
++            Err(error) => return error.into_response(),
++        };
+         return ws
+             .max_message_size(crate::protocol_limits::WS_MESSAGE_BYTES)
+             .max_frame_size(crate::protocol_limits::WS_MESSAGE_BYTES)
+             .max_write_buffer_size(2_097_152)
+-            .on_upgrade(move |socket| relay.session(socket, slot));
++            .on_upgrade(move |socket| async move {
++                let _lease = lease;
++                if operations.enabled {
++                    OWNED_OPERATIONS
++                        .scope(operations, relay.session(socket, slot))
++                        .await
++                } else {
++                    relay.session(socket, slot).await
++                }
++            });
+     }
+     if headers
+         .get("accept")
+@@ -406,10 +421,24 @@
+         return unavailable().into_response();
+     };
+     let relay = a.peer_relay.clone();
++    let operations = a.operations.clone();
++    let lease = match operations.acquire() {
++        Ok(lease) => lease,
++        Err(error) => return error.into_response(),
++    };
+     ws.max_message_size(crate::protocol_limits::WS_MESSAGE_BYTES)
+         .max_frame_size(crate::protocol_limits::WS_MESSAGE_BYTES)
+         .max_write_buffer_size(2_097_152)
+-        .on_upgrade(move |socket| relay.session(socket, slot))
++        .on_upgrade(move |socket| async move {
++            let _lease = lease;
++            if operations.enabled {
++                OWNED_OPERATIONS
++                    .scope(operations, relay.session(socket, slot))
++                    .await
++            } else {
++                relay.session(socket, slot).await
++            }
++        })
+ }
+ async fn root_options() -> impl axum::response::IntoResponse {
+     (
+@@ -698,16 +727,245 @@
+     })
+     .await
+ }
++// Embedded handler work has an independent terminal lifetime: losing the HTTP
++// caller does not lose the mutations/SQL/spawn_blocking children it must await.
++#[derive(Default)]
++struct OperationState {
++    closed: bool,
++    active: usize,
++    infrastructure: usize,
++    terminal_unconfirmed: bool,
++}
++struct EmbeddedOperations {
++    enabled: bool,
++    state: std::sync::Mutex<OperationState>,
++    closing: tokio::sync::Notify,
++}
++struct OperationLease(Arc<EmbeddedOperations>, bool);
++impl Drop for OperationLease {
++    fn drop(&mut self) {
++        let mut state = self.0.state.lock().unwrap_or_else(|e| e.into_inner());
++        let count = if self.1 {
++            &mut state.infrastructure
++        } else {
++            &mut state.active
++        };
++        *count = count.checked_sub(1).expect("owned native operation lease");
++    }
++}
++impl EmbeddedOperations {
++    fn new(enabled: bool) -> Arc<Self> {
++        Arc::new(Self {
++            enabled,
++            state: Default::default(),
++            closing: Default::default(),
++        })
++    }
++    fn acquire(self: &Arc<Self>) -> Result<Option<OperationLease>, ApiError> {
++        if !self.enabled {
++            return Ok(None);
++        }
++        let mut state = self.state.lock().unwrap_or_else(|e| e.into_inner());
++        if state.closed || state.active >= 128 {
++            return Err(unavailable());
++        }
++        state.active += 1;
++        Ok(Some(OperationLease(self.clone(), false)))
++    }
++    fn inherited(self: &Arc<Self>, infrastructure: bool) -> OperationLease {
++        // Only an existing admitted task-local parent can reach this method.
++        // Its bounded child may finish after new public admissions close.
++        let mut state = self.state.lock().unwrap_or_else(|e| e.into_inner());
++        if infrastructure {
++            state.infrastructure += 1;
++        } else {
++            state.active += 1;
++        }
++        OperationLease(self.clone(), infrastructure)
++    }
++    fn close(&self) {
++        if self.enabled {
++            self.state.lock().unwrap_or_else(|e| e.into_inner()).closed = true;
++            self.closing.notify_waiters();
++        }
++    }
++    async fn drain_kind(&self, deadline: Duration, all: bool) -> Result<()> {
++        if !self.enabled {
++            return Ok(());
++        }
++        self.close();
++        tokio::time::timeout(deadline,async {
++            loop {
++                let done={let state=self.state.lock().unwrap_or_else(|e|e.into_inner());state.active==0 && (!all || state.infrastructure==0)};
++                if done {break;}
++                tokio::time::sleep(Duration::from_millis(10)).await;
++            }
++        }).await.context("embedded original owned-operation drain unconfirmed; durable mutation outcome may require reconciliation")?;
++        ensure!(
++            !self
++                .state
++                .lock()
++                .unwrap_or_else(|e| e.into_inner())
++                .terminal_unconfirmed,
++            "embedded original subprocess cleanup unconfirmed; durable projection requires reconciliation"
++        );
++        Ok(())
++    }
++    async fn drain(&self, deadline: Duration) -> Result<()> {
++        self.drain_kind(deadline, true).await
++    }
++}
++tokio::task_local! {static OWNED_OPERATIONS:Arc<EmbeddedOperations>;}
++/// Capture a bounded child lease synchronously before its executor fork. No
++/// task handles are retained by the owner, so detached caller handles cannot
++/// form ownership cycles. The child guard drops only with the actual future.
++pub(crate) fn owned_future_scope<F>(
++    future: F,
++) -> impl std::future::Future<Output = F::Output> + Send
++where
++    F: std::future::Future + Send,
++    F::Output: Send,
++{
++    let inherited = OWNED_OPERATIONS
++        .try_with(|operations| (operations.clone(), operations.inherited(false)))
++        .ok();
++    async move {
++        if let Some((operations, lease)) = inherited {
++            let _lease = lease;
++            OWNED_OPERATIONS.scope(operations, future).await
++        } else {
++            future.await
++        }
++    }
++}
++pub(crate) fn spawn_owned_scope<F>(future: F) -> tokio::task::JoinHandle<F::Output>
++where
++    F: std::future::Future + Send + 'static,
++    F::Output: Send + 'static,
++{
++    tokio::spawn(owned_future_scope(future))
++}
++pub(crate) fn spawn_blocking_owned_scope<F, T>(operation: F) -> tokio::task::JoinHandle<T>
++where
++    F: FnOnce() -> T + Send + 'static,
++    T: Send + 'static,
++{
++    let lease = OWNED_OPERATIONS
++        .try_with(|operations| operations.inherited(false))
++        .ok();
++    tokio::task::spawn_blocking(move || {
++        let _lease = lease;
++        operation()
++    })
++}
++pub(crate) fn spawn_infrastructure_owned_scope<F>(future: F) -> tokio::task::JoinHandle<F::Output>
++where
++    F: std::future::Future + Send + 'static,
++    F::Output: Send + 'static,
++{
++    let inherited = OWNED_OPERATIONS
++        .try_with(|operations| (operations.clone(), operations.inherited(true)))
++        .ok();
++    tokio::spawn(async move {
++        if let Some((operations, lease)) = inherited {
++            let _lease = lease;
++            OWNED_OPERATIONS.scope(operations, future).await
++        } else {
++            future.await
++        }
++    })
++}
++pub(crate) fn owned_context_active() -> bool {
++    OWNED_OPERATIONS
++        .try_with(|operations| operations.enabled)
++        .unwrap_or(false)
++}
++/// A failed process-group terminal observation must remain a shutdown failure
++/// even if its Rust task has returned and dropped its ordinary operation lease.
++pub(crate) fn owned_terminal_unconfirmed() {
++    let _ = OWNED_OPERATIONS.try_with(|operations| {
++        if operations.enabled {
++            operations
++                .state
++                .lock()
++                .unwrap_or_else(|e| e.into_inner())
++                .terminal_unconfirmed = true;
++            operations.close();
++        }
++    });
++}
++pub(crate) struct AbortChildOnDrop(pub(crate) tokio::task::AbortHandle);
++impl Drop for AbortChildOnDrop {
++    fn drop(&mut self) {
++        self.0.abort();
++    }
++}
++/// Relay observes shutdown only between commands; an already admitted signed
++/// mutation and its scoped children finish before the session closes.
++pub(crate) async fn embedded_shutdown() {
++    let operations = OWNED_OPERATIONS.try_with(Clone::clone).ok();
++    let Some(operations) = operations.filter(|o| o.enabled) else {
++        std::future::pending::<()>().await;
++        return;
++    };
++    loop {
++        let notified = operations.closing.notified();
++        tokio::pin!(notified);
++        notified.as_mut().enable();
++        if operations
++            .state
++            .lock()
++            .unwrap_or_else(|e| e.into_inner())
++            .closed
++        {
++            return;
++        }
++        notified.await;
++    }
++}
++async fn owned_operation_guard(
++    State(a): State<Shared>,
++    request: Request,
++    next: axum::middleware::Next,
++) -> Result<axum::response::Response, ApiError> {
++    let operations = a.operations.clone();
++    let Some(lease) = operations.acquire()? else {
++        return Ok(next.run(request).await);
++    };
++    let read = matches!(
++        *request.method(),
++        axum::http::Method::GET | axum::http::Method::HEAD
++    ) || request.method() == axum::http::Method::POST
++        && matches!(request.uri().path(), "/library/read" | "/reconcile");
++    if read {
++        // The original outer read-admission worker already owns cancellation and
++        // its RESPONSE task-local deadline. Preserve both while retaining ours.
++        let _lease = lease;
++        Ok(OWNED_OPERATIONS.scope(operations, next.run(request)).await)
++    } else {
++        // Retain the whole mutation future (including every awaited nested task),
++        // rather than tracking only a subset of today's internal spawn sites.
++        tokio::spawn(async move {
++            let _lease = lease;
++            OWNED_OPERATIONS.scope(operations, next.run(request)).await
++        })
++        .await
++        .map_err(|_| unavailable())
++    }
++}
++
+ // Only the injected path owns cancellation of its original background tasks.
+ // Dropping its listener future cannot leave detached mutation workers running.
+ struct EmbeddedWorkerOwner {
++    operations: Arc<EmbeddedOperations>,
+     registry: Arc<crate::background_workers::BackgroundWorkers>,
+-    handles: std::sync::Mutex<Vec<tokio::task::AbortHandle>>,
++    handles: std::sync::Mutex<Vec<(&'static str, tokio::task::AbortHandle)>>,
+     cancel_on_drop: bool,
+ }
+ impl EmbeddedWorkerOwner {
+     fn new(cancel_on_drop: bool) -> Self {
+         Self {
++            operations: EmbeddedOperations::new(cancel_on_drop),
+             registry: Arc::new(Default::default()),
+             handles: Default::default(),
+             cancel_on_drop,
+@@ -718,14 +976,21 @@
+         name: &'static str,
+         future: impl std::future::Future<Output = ()> + Send + 'static,
+     ) -> tokio::task::AbortHandle {
+-        let handle = self.registry.spawn(name, future);
++        let operations = self.operations.clone();
++        let handle = self.registry.spawn(name, async move {
++            if operations.enabled {
++                OWNED_OPERATIONS.scope(operations, future).await
++            } else {
++                future.await
++            }
++        });
+         self.handles
+             .lock()
+             .unwrap_or_else(|e| e.into_inner())
+-            .push(handle.clone());
++            .push((name, handle.clone()));
+         handle
+     }
+-    async fn shutdown(&self) -> Result<()> {
++    async fn stop_workers(&self, all: bool) -> Result<()> {
+         if !self.cancel_on_drop {
+             return Ok(());
+         }
+@@ -733,8 +998,16 @@
+             .handles
+             .lock()
+             .unwrap_or_else(|e| e.into_inner())
+-            .clone();
+-        for handle in &handles {
++            .iter()
++            .filter(|(name, _)| {
++                all || !matches!(
++                    *name,
++                    "backend_projection" | "relay_notifications" | "relay_dispatch"
++                )
++            })
++            .cloned()
++            .collect::<Vec<_>>();
++        for (_, handle) in &handles {
+             handle.abort();
+         }
+         // The original registry's observers await the actual JoinHandles. Wait
+@@ -743,9 +1016,14 @@
+         tokio::time::timeout(Duration::from_secs(5), async {
+             loop {
+                 let snapshot = self.registry.snapshot();
+-                if handles.iter().all(tokio::task::AbortHandle::is_finished)
++                if handles.iter().all(|(_, handle)| handle.is_finished())
+                     && snapshot["workers"].as_array().is_some_and(|workers| {
+-                        workers.iter().all(|worker| worker["state"] != "running")
++                        workers
++                            .iter()
++                            .filter(|worker| {
++                                handles.iter().any(|(name, _)| worker["name"] == *name)
++                            })
++                            .all(|worker| worker["state"] != "running")
+                     })
+                 {
+                     break;
+@@ -757,9 +1035,44 @@
+         .context("embedded original worker termination unconfirmed")?;
+         Ok(())
+     }
++    async fn shutdown(&self) -> Result<()> {
++        self.stop_workers(true).await
++    }
++    async fn finish(&self, serving: Option<&mut crate::serving_role::ServingRole>) -> Result<()> {
++        self.operations.close();
++        // Stop admitting maintenance quanta, but keep projection/feed services
++        // available while finite accepted mutations and storage children settle.
++        let maintenance = self.stop_workers(false).await;
++        let finite = self
++            .operations
++            .drain_kind(Duration::from_secs(5), false)
++            .await;
++        // Stop cooperative serving before the infrastructure drain. Its actual
++        // loop retains an infrastructure lease, and any timed-out/cancelled
++        // storage descendant retains a separate finite terminal lease.
++        let serving = if let Some(role) = serving {
++            role.shutdown().await
++        } else {
++            Ok(())
++        };
++        let infrastructure = self.shutdown().await;
++        let terminal = self.operations.drain(Duration::from_secs(5)).await;
++        maintenance?;
++        finite?;
++        serving?;
++        infrastructure?;
++        terminal
++    }
+     async fn unexpected_exit(&self) {
+         loop {
+-            if self.registry.snapshot()["unexpected_exit"] == true {
++            if self.registry.snapshot()["unexpected_exit"] == true
++                || self
++                    .operations
++                    .state
++                    .lock()
++                    .unwrap_or_else(|e| e.into_inner())
++                    .terminal_unconfirmed
++            {
+                 return;
+             }
+             tokio::time::sleep(Duration::from_millis(100)).await;
+@@ -769,7 +1082,7 @@
+ impl Drop for EmbeddedWorkerOwner {
+     fn drop(&mut self) {
+         if self.cancel_on_drop {
+-            for handle in self.handles.get_mut().unwrap_or_else(|e| e.into_inner()) {
++            for (_, handle) in self.handles.get_mut().unwrap_or_else(|e| e.into_inner()) {
+                 handle.abort();
+             }
+         }
+@@ -799,7 +1112,7 @@
+     shutdown_receiver: Option<tokio::sync::oneshot::Receiver<()>>,
+ ) -> Result<()> {
+     let worker_owner = EmbeddedWorkerOwner::new(injected_storage.is_some());
+-    let result = serve_prepared_inner(
++    let operation = serve_prepared_inner(
+         config,
+         repo,
+         serving,
+@@ -807,9 +1120,17 @@
+         ready,
+         shutdown_receiver,
+         &worker_owner,
+-    )
+-    .await;
+-    let cleanup = worker_owner.shutdown().await;
++    );
++    let result = if worker_owner.cancel_on_drop {
++        OWNED_OPERATIONS
++            .scope(worker_owner.operations.clone(), operation)
++            .await
++    } else {
++        operation.await
++    };
++    worker_owner.operations.close();
++    // Mutation infrastructure stays alive until admitted durable work terminates.
++    let cleanup = worker_owner.finish(None).await;
+     result?;
+     cleanup
+ }
+@@ -1402,6 +1723,7 @@
+         endpoint_policy,
+         discovery_slots: Arc::new(tokio::sync::Semaphore::new(4)),
+         workers,
++        operations: worker_owner.operations.clone(),
+         capabilities,
+         cors_origins: config.cors_origins,
+         serving_status: serving.as_ref().map(|s| s.status()),
+@@ -1437,6 +1759,10 @@
+         ))
+         .layer(axum::middleware::from_fn_with_state(
+             state.clone(),
++            owned_operation_guard,
++        ))
++        .layer(axum::middleware::from_fn_with_state(
++            state.clone(),
+             federation_response_proof,
+         ))
+         .layer(axum::middleware::from_fn_with_state(
+@@ -1458,12 +1784,14 @@
+     }
+     if worker_owner.cancel_on_drop {
+         let failure_registry = worker_owner.registry.clone();
++        let closing_operations = worker_owner.operations.clone();
+         let server=axum::serve(listener,app).with_graceful_shutdown(async move {
+             let stop=async move { if let Some(receiver)=shutdown_receiver {let _=receiver.await;} else {shutdown().await;} };
+             tokio::select! {
+                 _=stop=>{},
+-                _=async { loop {if failure_registry.snapshot()["unexpected_exit"]==true {break;} tokio::time::sleep(Duration::from_millis(100)).await;} }=>{},
++                _=async { loop {if failure_registry.snapshot()["unexpected_exit"]==true || closing_operations.state.lock().unwrap_or_else(|e|e.into_inner()).terminal_unconfirmed {break;} tokio::time::sleep(Duration::from_millis(100)).await;} }=>{},
+             }
++            closing_operations.close();
+         });
+         let server = std::future::IntoFuture::into_future(server);
+         tokio::pin!(server);
+@@ -1477,13 +1805,10 @@
+                 Err(anyhow::anyhow!("required embedded original worker exited unexpectedly"))
+             },
+         };
+-        let serving_result = if let Some(role) = serving.as_mut() {
+-            role.shutdown().await
+-        } else {
+-            Ok(())
+-        };
++        worker_owner.operations.close();
++        let operation_drain = worker_owner.finish(serving.as_mut()).await;
+         result?;
+-        serving_result?;
++        operation_drain?;
+     } else {
+         // The standalone node retains its original shutdown behavior.
+         axum::serve(listener, app)
+@@ -1593,7 +1918,7 @@
+         return Err(bad("body hash or size mismatch"));
+     }
+     // Owned task retains the permit and hash guard even if the HTTP client leaves.
+-    let intent = tokio::spawn(async move {
++    let intent = spawn_owned_scope(async move {
+         let _permit = permit;
+         storage.put_for_publisher(&authority, hash_id, &body).await
+     })
+@@ -1841,7 +2166,7 @@
+     }
+     consume_authorization(&a, &authorization).await?;
+     let hash = id(&event.id).map_err(|_| bad("invalid event ID"))?;
+-    let inserted = tokio::spawn(async move {
++    let inserted = spawn_owned_scope(async move {
+         let _permit = permit;
+         publisher.publish_with_permit(&event, authority).await
+     })
+@@ -2156,7 +2481,7 @@
+             Json(json!({"error":"sync_slots_busy"})),
+         )
+     })?;
+-    let result = tokio::spawn(async move {
++    let result = spawn_owned_scope(async move {
+         let _permit = permit;
+         sync.synchronize(request).await
+     })
+@@ -2229,7 +2554,7 @@
+         serde_json::from_slice(&body).map_err(|_| bad("invalid reconciliation request"))?;
+     consume_authorization(&a, &authorization).await?;
+     let snapshots = a.snapshots.clone();
+-    tokio::spawn(async move {
++    spawn_owned_scope(async move {
+         let _permit = permit;
+         snapshots.reconcile(peer, approval.version, request).await
+     })
+@@ -2358,7 +2683,7 @@
+         .map(id)
+         .transpose()
+         .map_err(|_| bad("invalid expected profile head"))?;
+-    let event = tokio::spawn(async move {
++    let event = spawn_owned_scope(async move {
+         groups
+             .profile(group, actor, version, profile.metadata, expected)
+             .await
+@@ -2401,7 +2726,7 @@
+     let administrator =
+         id(&request.administrator).map_err(|_| bad("invalid administrator public key"))?;
+     let groups = a.groups.clone().ok_or_else(unavailable)?;
+-    let group = tokio::spawn(async move { groups.create(administrator).await })
++    let group = spawn_owned_scope(async move { groups.create(administrator).await })
+         .await
+         .map_err(|_| unavailable())?
+         .map_err(|_| bad("group creation failed"))?;
+@@ -2612,7 +2937,7 @@
+     if size == 0 || auth::hash(&bytes) != hash {
+         return Err(bad("body hash or size mismatch"));
+     }
+-    tokio::spawn(async move {
++    spawn_owned_scope(async move {
+         let _permit = permit;
+         groups.upload(group, actor, version, hash_id, &bytes).await
+     })
+@@ -2668,7 +2993,7 @@
+     let body = group_body(&a, &uri, &event, request, 65536).await?;
+     let request: crate::groups::GroupPublication = serde_json::from_slice(&body)
+         .map_err(|_| bad("only kind, manifest, version and optional created_at are accepted"))?;
+-    let event = tokio::spawn(async move {
++    let event = spawn_owned_scope(async move {
+         let _permit = permit;
+         groups.publish(group, actor, version, request).await
+     })
+@@ -3022,7 +3347,7 @@
+         .process(receipt)
+         .await
+         .map_err(|e| library_error(e, StatusCode::TOO_MANY_REQUESTS))?;
+-    let (parsed, slot) = tokio::task::spawn_blocking(move || -> Result<_> {
++    let (parsed, slot) = spawn_blocking_owned_scope(move || -> Result<_> {
+         let input = body.to_vec();
+         drop(body);
+         let decoded = crate::library_wire::decode_body(input, gzip)?;
+@@ -3037,7 +3362,7 @@
+     crate::library_manifest::pointer(&parsed.event)
+         .map_err(|e| library_error(e, StatusCode::BAD_REQUEST))?;
+     let event_id = parsed.event.id.clone();
+-    let outcome = tokio::spawn(async move {
++    let outcome = spawn_owned_scope(async move {
+         let _slot = slot;
+         for (kind, bytes) in parsed.objects {
+             library.stage(authority.clone(), kind, bytes).await?;
+@@ -3099,7 +3424,7 @@
+         .process(receipt)
+         .await
+         .map_err(|e| library_error(e, StatusCode::TOO_MANY_REQUESTS))?;
+-    let (objects, slot) = tokio::task::spawn_blocking(move || -> Result<_> {
++    let (objects, slot) = spawn_blocking_owned_scope(move || -> Result<_> {
+         let input = body.to_vec();
+         drop(body);
+         let decoded = crate::library_wire::decode_body(input, gzip)?;
+@@ -3108,7 +3433,7 @@
+     .await
+     .map_err(|_| unavailable())?
+     .map_err(|e| library_error(e, StatusCode::BAD_REQUEST))?;
+-    let hashes = tokio::spawn(async move {
++    let hashes = spawn_owned_scope(async move {
+         let _slot = slot;
+         let mut hashes = vec![];
+         for (kind, bytes) in objects {
+@@ -3283,14 +3608,14 @@
+         .clone()
+         .try_acquire_many_owned((2 * bound + 1_000_000) as u32)
+         .map_err(|e| library_error(e.into(), StatusCode::TOO_MANY_REQUESTS))?;
+-    let (bytes, lease) = tokio::spawn(async move {
++    let (bytes, lease) = spawn_owned_scope(async move {
+         let _slot = slot;
+         let mut objects = Vec::with_capacity(hashes.len());
+         for hash in hashes {
+             let bytes = library.public_object(hash).await?;
+             objects.push(json!({"hash":hex::encode(hash),"data":STANDARD.encode(bytes)}));
+         }
+-        tokio::task::spawn_blocking(move || -> Result<_> {
++        spawn_blocking_owned_scope(move || -> Result<_> {
+             let mut bytes = Vec::with_capacity(bound);
+             serde_json::to_writer(&mut bytes, &json!({"objects":objects}))?;
+             ensure!(bytes.len() <= bound, "response encoding budget");
+@@ -3480,7 +3805,7 @@
+             Json(json!({"error":"sync_slots_busy"})),
+         )
+     })?;
+-    let result = tokio::spawn(async move {
++    let result = spawn_owned_scope(async move {
+         let _permit = permit;
+         tokio::time::timeout(
+             Duration::from_secs(600),
+@@ -3548,7 +3873,7 @@
+             Json(json!({"error":"sync_slots_busy"})),
+         )
+     })?;
+-    let repaired = tokio::spawn(async move {
++    let repaired = spawn_owned_scope(async move {
+         let _permit = permit;
+         sync.repair_original(request).await
+     })
+@@ -3621,7 +3946,7 @@
+             Json(json!({"error":"sync_slots_busy"})),
+         )
+     })?;
+-    let result = tokio::spawn(async move {
++    let result = spawn_owned_scope(async move {
+         let _permit = permit;
+         sync.synchronize_account_event(request).await
+     })
+@@ -3836,11 +4161,64 @@
+ 
+ #[cfg(test)]
+ mod injected_worker_owner_tests {
+-    use super::EmbeddedWorkerOwner;
++    use super::{EmbeddedOperations, EmbeddedWorkerOwner, OWNED_OPERATIONS, spawn_owned_scope};
+     use std::sync::{
+         Arc,
+         atomic::{AtomicBool, Ordering},
+     };
++    #[tokio::test]
++    async fn disconnected_owned_work_and_nested_children_remain_in_drain_until_terminal() {
++        let operations = EmbeddedOperations::new(true);
++        let parent = operations.acquire().unwrap().unwrap();
++        let (started, ready) = tokio::sync::oneshot::channel();
++        let (finish, released) = tokio::sync::oneshot::channel();
++        let task = OWNED_OPERATIONS
++            .scope(operations.clone(), async {
++                spawn_owned_scope(async move {
++                    let _ = started.send(());
++                    let _ = released.await;
++                })
++            })
++            .await;
++        ready.await.unwrap();
++        drop(task); // A disconnected caller loses only its JoinHandle.
++        drop(parent);
++        operations.close();
++        assert!(operations.acquire().is_err());
++        assert!(
++            operations
++                .drain(std::time::Duration::from_millis(20))
++                .await
++                .is_err()
++        );
++        finish.send(()).unwrap();
++        operations
++            .drain(std::time::Duration::from_secs(1))
++            .await
++            .unwrap();
++        assert_eq!(operations.state.lock().unwrap().active, 0);
++    }
++    #[tokio::test]
++    async fn panic_drops_owned_operation_lease_without_a_handle_cycle() {
++        let operations = EmbeddedOperations::new(true);
++        let parent = operations.acquire().unwrap().unwrap();
++        let task = OWNED_OPERATIONS
++            .scope(operations.clone(), async {
++                spawn_owned_scope(async {
++                    panic!("Synthetic owned operation panic");
++                })
++            })
++            .await;
++        assert!(task.await.unwrap_err().is_panic());
++        drop(parent);
++        operations
++            .drain(std::time::Duration::from_secs(1))
++            .await
++            .unwrap();
++        let standalone = EmbeddedOperations::new(false);
++        standalone.close();
++        assert!(standalone.acquire().unwrap().is_none());
++    }
+     #[tokio::test]
+     async fn injected_shutdown_observes_actual_worker_termination() {
+         struct Finished(Arc<AtomicBool>);
+@@ -3868,6 +4246,111 @@
+         );
+     }
+     #[tokio::test]
++    async fn cancelled_background_and_async_parent_do_not_hide_running_blocking_child() {
++        let owner = EmbeddedWorkerOwner::new(true);
++        let (ready, started) = tokio::sync::oneshot::channel();
++        let (release, released) = std::sync::mpsc::channel::<()>();
++        let (child_ready, child_started) = tokio::sync::oneshot::channel();
++        let terminal = Arc::new(AtomicBool::new(false));
++        let child_terminal = terminal.clone();
++        owner.spawn("synthetic_storage_audit", async move {
++            let child = spawn_owned_scope(async move {
++                super::spawn_blocking_owned_scope(move || {
++                    let _ = ready.send(());
++                    released.recv().unwrap();
++                    child_terminal.store(true, Ordering::Release);
++                })
++                .await
++                .unwrap();
++            });
++            let _ = child_ready.send(child.abort_handle());
++            let _ = child.await;
++        });
++        let child = child_started.await.unwrap();
++        started.await.unwrap();
++        owner.shutdown().await.unwrap(); // actual audit parent has terminated
++        child.abort(); // cancelling an await cannot cancel already-running blocking work
++        assert!(
++            owner
++                .operations
++                .drain(std::time::Duration::from_millis(20))
++                .await
++                .is_err()
++        );
++        assert!(!terminal.load(Ordering::Acquire));
++        release.send(()).unwrap();
++        owner
++            .operations
++            .drain(std::time::Duration::from_secs(1))
++            .await
++            .unwrap();
++        assert!(terminal.load(Ordering::Acquire));
++        assert_eq!(owner.operations.state.lock().unwrap().active, 0);
++    }
++    #[tokio::test]
++    async fn infrastructure_parent_closes_its_idle_descendant_before_terminal_drain() {
++        let owner = EmbeddedWorkerOwner::new(true);
++        let (ready, started) = tokio::sync::oneshot::channel();
++        owner.spawn("relay_notifications", async move {
++            let child = super::spawn_infrastructure_owned_scope(std::future::pending::<()>());
++            let _child = super::AbortChildOnDrop(child.abort_handle());
++            let _ = ready.send(());
++            std::future::pending::<()>().await;
++        });
++        started.await.unwrap();
++        assert_eq!(owner.operations.state.lock().unwrap().infrastructure, 1);
++        owner.finish(None).await.unwrap();
++        let state = owner.operations.state.lock().unwrap();
++        assert_eq!(state.active, 0);
++        assert_eq!(state.infrastructure, 0);
++    }
++    #[tokio::test]
++    async fn unconfirmed_process_cleanup_cannot_be_hidden_by_rust_task_completion() {
++        let operations = EmbeddedOperations::new(true);
++        OWNED_OPERATIONS
++            .scope(operations.clone(), async {
++                super::owned_terminal_unconfirmed();
++            })
++            .await;
++        assert!(operations.acquire().is_err());
++        assert_eq!(operations.state.lock().unwrap().active, 0);
++        assert!(
++            operations
++                .drain(std::time::Duration::from_secs(1))
++                .await
++                .is_err()
++        );
++    }
++    #[tokio::test]
++    async fn idle_session_shutdown_signal_and_already_closed_scope_both_terminate() {
++        let operations = EmbeddedOperations::new(true);
++        let (ready, started) = tokio::sync::oneshot::channel();
++        let task = OWNED_OPERATIONS
++            .scope(operations.clone(), async {
++                spawn_owned_scope(async move {
++                    let _ = ready.send(());
++                    super::embedded_shutdown().await;
++                })
++            })
++            .await;
++        started.await.unwrap();
++        operations.close();
++        tokio::time::timeout(std::time::Duration::from_secs(1), task)
++            .await
++            .unwrap()
++            .unwrap();
++        tokio::time::timeout(
++            std::time::Duration::from_secs(1),
++            OWNED_OPERATIONS.scope(operations.clone(), super::embedded_shutdown()),
++        )
++        .await
++        .unwrap();
++        operations
++            .drain(std::time::Duration::from_secs(1))
++            .await
++            .unwrap();
++    }
++    #[tokio::test]
+     async fn injected_worker_failure_is_observed_and_standalone_default_is_preserved() {
+         let owner = EmbeddedWorkerOwner::new(true);
+         owner.spawn("synthetic_unexpected_return", async {});
+--- immutable-prior/relay.rs
++++ authorized-current/relay.rs
+@@ -66,7 +66,7 @@
+     ) -> tokio::task::JoinHandle<Result<bool>> {
+         let relay = self.clone();
+         let keys = keys.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _permit = permit;
+             relay.can_read(&keys).await
+         })
+@@ -101,6 +101,11 @@
+         tokio::pin!(authentication_deadline);
+         loop {
+             tokio::select! {
++                     biased;
++                     _=crate::node::embedded_shutdown()=>{
++                      let _=tokio::time::timeout(Duration::from_secs(1),socket.send(Message::Close(None))).await;
++                      return Ok(());
++                     }
+                      _=&mut authentication_deadline, if self.peer_only && keys.is_empty()=>{anyhow::bail!("peer authentication deadline");}
+                      _=policy_check.tick(), if !subscriptions.is_empty() || (self.peer_only && !keys.is_empty())=>{
+              let Ok(_query)=self.reads.acquire(crate::read_admission::Class::Live).await else {continue;};
+--- immutable-prior/upload.rs
++++ authorized-current/upload.rs
+@@ -498,7 +498,7 @@
+         let intent = intent.clone();
+         let limit = self.max_blob_bytes;
+         let fault = self.public_fault.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _slot = slot;
+             let observation = if background {
+                 volume.background_observation(intent.key.hash).await
+@@ -558,7 +558,7 @@
+     ) -> Result<()> {
+         let slot = self.slots.clone().try_acquire_owned()?;
+         let this = self.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _slot = slot;
+             let mutation = this.volume.mutation(hash).await;
+             let key = this
+@@ -589,7 +589,7 @@
+         let mutation = self.volume.background_mutation(key.hash).await;
+         waiting.mark("storage_slot");
+         drop(waiting);
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let mut trace = crate::perf::Trace::new("reclaim");
+             trace.mark("mutation");
+             if !this
+@@ -667,13 +667,13 @@
+                     .context("reclaim generation")?,
+             };
+             let this = self.clone();
+-            jobs.spawn(async move {
++            jobs.spawn(crate::node::owned_future_scope(async move {
+                 if let Err(error)=this.reclaim_library(key.clone()).await {
+                     tracing::warn!(error=%error,"retired object cleanup deferred; charges retained");
+                     this.repo.pool.get().await?.execute("UPDATE blob_reclaims SET retry_after=clock_timestamp()+interval '5 seconds',failures=LEAST(failures+1,1000000) WHERE hash=$1 AND generation=$2",&[&key.hash.as_slice(),&key.generation.as_slice()]).await?;
+                 }
+                 Ok::<_,anyhow::Error>(())
+-            });
++            }));
+             if jobs.len() >= self.reclamation_slots {
+                 jobs.join_next().await.unwrap()??;
+             }
+@@ -698,7 +698,7 @@
+     pub async fn audit_page(self: &Arc<Self>, limit: usize) -> Result<AuditResult> {
+         ensure!((1..=64).contains(&limit), "audit page bounds");
+         let this = self.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _audit=this.audit_lock.lock().await;
+             let c=this.repo.pool.get().await?;
+             c.execute("INSERT INTO storage_audit_cursors(owner,volume) VALUES($1,$2) ON CONFLICT DO NOTHING",&[&this.owner.as_slice(),&this.name]).await?;
+@@ -742,7 +742,7 @@
+         );
+         let this = self.clone();
+         let mutation = self.volume.background_mutation(intent.key.hash).await;
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let current = this
+                 .repo
+                 .blob_intent(intent.key.hash)
+@@ -798,7 +798,7 @@
+     ) -> Result<bool> {
+         let this = self.clone();
+         let mutation = self.volume.background_mutation(key.hash).await;
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let intent = this
+                 .repo
+                 .blob_intent(key.hash)
+@@ -830,7 +830,7 @@
+         );
+         let guard = self.export_drain_lock.clone().lock_owned().await;
+         let this = self.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _guard = guard;
+             let pending = this
+                 .repo
+@@ -863,7 +863,7 @@
+     ) -> Result<()> {
+         let this = self.clone();
+         let mutation = self.volume.background_mutation(key.hash).await;
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let intent = this
+                 .repo
+                 .blob_intent(key.hash)
+@@ -918,7 +918,7 @@
+     ) -> Result<crate::export_queue::ExportStep> {
+         let guard = self.export_work_lock.clone().lock_owned().await;
+         let this = self.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _guard = guard;
+             this.reconcile_public_exports_owned().await
+         })
+--- immutable-prior/library.rs
++++ authorized-current/library.rs
+@@ -87,7 +87,7 @@
+         waiting.mark("commit_slot");
+         drop(waiting);
+         let this = self.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _slot = slot;
+             this.commit_inner(permit, event, expected, root_hash).await
+         })
+@@ -128,7 +128,7 @@
+         } else {
+             trace.count("root_decode_reused", 0);
+             Arc::new(
+-                tokio::task::spawn_blocking(move || Root::decode(&bytes, &Limits::default()))
++                crate::node::spawn_blocking_owned_scope(move || Root::decode(&bytes, &Limits::default()))
+                     .await??,
+             )
+         };
+--- immutable-prior/library_storage.rs
++++ authorized-current/library_storage.rs
+@@ -126,10 +126,10 @@
+         waiting.mark("storage_slot");
+         drop(waiting);
+         let this = self.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _slot = slot;
+             let mut trace = crate::perf::Trace::new("stage");
+-            let (bytes, summary) = tokio::task::spawn_blocking(move || -> Result<_> {
++            let (bytes, summary) = crate::node::spawn_blocking_owned_scope(move || -> Result<_> {
+                 let summary = match kind {
+                     ObjectType::Chunk => {
+                         let (_, summary) = Chunk::decode(&bytes, &limits)?;
+--- immutable-prior/storage.rs
++++ authorized-current/storage.rs
+@@ -80,7 +80,7 @@
+         let key = key.clone();
+         let permit = self.permit.clone();
+         let inner = self.inner.clone();
+-        tokio::task::spawn_blocking(move || {
++        crate::node::spawn_blocking_owned_scope(move || {
+             let _pin = pin;
+             let _permit = permit;
+             inner.withdraw_public(key)
+@@ -99,7 +99,7 @@
+         let key = key.clone();
+         let permit = self.permit.clone();
+         let inner = self.inner.clone();
+-        tokio::task::spawn_blocking(move || {
++        crate::node::spawn_blocking_owned_scope(move || {
+             let _pin = pin;
+             let _permit = permit;
+             inner.read_verified(&key, expected, limit)
+@@ -162,7 +162,7 @@
+     }
+     pub(crate) async fn update_cleanup_headroom(&self, quota: (u64, u64)) -> Result<()> {
+         let inner = self.inner.clone();
+-        let filesystem = tokio::task::spawn_blocking(move || {
++        let filesystem = crate::node::spawn_blocking_owned_scope(move || {
+             use std::os::fd::AsRawFd;
+             let mut stats = std::mem::MaybeUninit::<libc::statvfs>::uninit();
+             // The live owner descriptor identifies this exact opened volume;
+@@ -434,7 +434,7 @@
+         let inner = self.inner.clone();
+         let guard = self.guard.clone();
+         let hash = self.hash;
+-        tokio::task::spawn_blocking(move || {
++        crate::node::spawn_blocking_owned_scope(move || {
+             let _guard = guard;
+             let _permit = permit;
+             operation(inner, hash)
+--- immutable-prior/catalogue.rs
++++ authorized-current/catalogue.rs
+@@ -262,7 +262,7 @@
+                 continue;
+             }
+         };
+-        let parsed=tokio::task::spawn_blocking(move||->Result<serde_json::Value>{if kind==1002{Ok(serde_json::to_value(crate::series_metadata::parse(&bytes).map_err(anyhow::Error::msg)?)?)}else{let m=crate::manifest::chapter(&bytes).map_err(anyhow::Error::msg)?;Ok(json!({"series":m.series,"language":m.language,"chapter":m.chapter,"volume":m.volume,"title":m.title,"pages":m.pages}))}}).await?;
++        let parsed=crate::node::spawn_blocking_owned_scope(move||->Result<serde_json::Value>{if kind==1002{Ok(serde_json::to_value(crate::series_metadata::parse(&bytes).map_err(anyhow::Error::msg)?)?)}else{let m=crate::manifest::chapter(&bytes).map_err(anyhow::Error::msg)?;Ok(json!({"series":m.series,"language":m.language,"chapter":m.chapter,"volume":m.volume,"title":m.title,"pages":m.pages}))}}).await?;
+         match parsed {
+             Ok(value) => {
+                 if kind == 1001 {
+--- immutable-prior/inventory.rs
++++ authorized-current/inventory.rs
+@@ -300,7 +300,7 @@
+         let input_size = input.len();
+         // The responder resets its timestamp decoder on each frame; immutable storage
+         // is sufficient to resume a session on a different API process after restart.
+-        let output = tokio::task::spawn_blocking(move || -> Result<Vec<u8>> {
++        let output = crate::node::spawn_blocking_owned_scope(move || -> Result<Vec<u8>> {
+             let mut neg = Negentropy::borrowed(&*snapshot, FRAME_BYTES as u64)?;
+             Ok(neg.reconcile(&input)?)
+         })
+--- immutable-prior/publication.rs
++++ authorized-current/publication.rs
+@@ -271,7 +271,7 @@
+         }
+         let (blob, bytes) = self.storage.snapshot(manifest_id, staging_owner).await?;
+         let kind = event.kind;
+-        let (chapter, series_metadata) = tokio::task::spawn_blocking(move || -> Result<(Option<Manifest>, Option<crate::series_metadata::SeriesMetadata>)> {
++        let (chapter, series_metadata) = crate::node::spawn_blocking_owned_scope(move || -> Result<(Option<Manifest>, Option<crate::series_metadata::SeriesMetadata>)> {
+             if kind == 1001 {
+                 Ok((Some(manifest::chapter(&bytes).map_err(anyhow::Error::msg)?),None))
+             } else {
+@@ -322,7 +322,7 @@
+                 }
+                 let (blob, bytes) = self.storage.snapshot(hash, staging_owner).await?;
+                 let descriptor = page.clone();
+-                tokio::task::spawn_blocking(move || {
++                crate::node::spawn_blocking_owned_scope(move || {
+                     manifest::validate_image(&bytes, &descriptor).map_err(anyhow::Error::msg)
+                 })
+                 .await??;
+--- immutable-prior/groups.rs
++++ authorized-current/groups.rs
+@@ -144,7 +144,7 @@
+     pub async fn create(&self, administrator: Id) -> Result<Id> {
+         secp256k1::XOnlyPublicKey::from_slice(&administrator)?;
+         let keys = self.keys.clone();
+-        let group = tokio::task::spawn_blocking(move || keys.create()).await??;
++        let group = crate::node::spawn_blocking_owned_scope(move || keys.create()).await??;
+         let mut client = self.repo.pool.get().await?;
+         let tx = client.transaction().await?;
+         tx.execute(
+@@ -169,7 +169,7 @@
+     }
+     pub async fn register_recovered_key(&self, group: Id) -> Result<()> {
+         let keys = self.keys.clone();
+-        tokio::task::spawn_blocking(move || keys.read(group)).await??;
++        crate::node::spawn_blocking_owned_scope(move || keys.read(group)).await??;
+         self.repo.pool.get().await?.execute("INSERT INTO managed_groups(group_key,key_ref,enabled) VALUES($1,$2,FALSE) ON CONFLICT(group_key) DO NOTHING", &[&group.as_slice(),&hex::encode(group)]).await?;
+         Ok(())
+     }
+@@ -365,7 +365,7 @@
+         let content = serde_json::to_string(&metadata)?;
+         ensure!(content.len() <= 16384, "profile metadata byte budget");
+         let keys = self.keys.clone();
+-        let secret = tokio::task::spawn_blocking(move || keys.read(group)).await??;
++        let secret = crate::node::spawn_blocking_owned_scope(move || keys.read(group)).await??;
+         let mut c = self.repo.pool.get().await?;
+         let tx = c.transaction().await?;
+         check_group_tx(&tx, group, member, version, "profile").await?;
+@@ -431,7 +431,7 @@
+         );
+         id(&request.manifest)?;
+         let keys = self.keys.clone();
+-        let secret = tokio::task::spawn_blocking(move || keys.read(group)).await??;
++        let secret = crate::node::spawn_blocking_owned_scope(move || keys.read(group)).await??;
+         let created_at = request.created_at.unwrap_or_else(auth::now);
+         ensure!(
+             created_at <= auth::now().saturating_add(60),
+@@ -469,7 +469,7 @@
+             id(target)?;
+         }
+         let keys = self.keys.clone();
+-        let secret = tokio::task::spawn_blocking(move || keys.read(group)).await??;
++        let secret = crate::node::spawn_blocking_owned_scope(move || keys.read(group)).await??;
+         let event = auth::sign(
+             &secret,
+             5,
+--- immutable-prior/peers.rs
++++ authorized-current/peers.rs
+@@ -606,7 +606,7 @@
+             if let Ok((intent, existing)) = self.storage.snapshot(hash, self.storage.owner()).await
+                 && existing.len() as u64 == page.size
+             {
+-                tokio::task::spawn_blocking(move || manifest::validate_image(&existing, &page))
++                crate::node::spawn_blocking_owned_scope(move || manifest::validate_image(&existing, &page))
+                     .await?
+                     .map_err(|_| Reject::invalid(Why::Original))?;
+                 self.repo.hold_staging_original(operation, &intent).await?;
+@@ -622,7 +622,7 @@
+                     &mut used,
+                 )
+                 .await?;
+-            let bytes = tokio::task::spawn_blocking(move || -> Result<Vec<u8>> {
++            let bytes = crate::node::spawn_blocking_owned_scope(move || -> Result<Vec<u8>> {
+                 manifest::validate_image(&bytes, &page)
+                     .map_err(|_| Reject::invalid(Why::Original))?;
+                 Ok(bytes)
+--- immutable-prior/library_view.rs
++++ authorized-current/library_view.rs
+@@ -85,7 +85,7 @@
+         let bytes = self.public_object(root_hash).await?;
+         let root = crate::read_diagnostics::during(
+             crate::read_diagnostics::Phase::DecodeResponse,
+-            tokio::task::spawn_blocking(move || Root::decode(&bytes, &Limits::default())),
++            crate::node::spawn_blocking_owned_scope(move || Root::decode(&bytes, &Limits::default())),
+         )
+         .await??;
+         let view = View {
+@@ -128,7 +128,7 @@
+         ensure!(bytes.len() as u64 == d.size, "chunk size mismatch");
+         let (chunk, summary) = crate::read_diagnostics::during(
+             crate::read_diagnostics::Phase::DecodeResponse,
+-            tokio::task::spawn_blocking(move || Chunk::decode(&bytes, &Limits::default())),
++            crate::node::spawn_blocking_owned_scope(move || Chunk::decode(&bytes, &Limits::default())),
+         )
+         .await??;
+         ensure!(
+--- immutable-prior/relay_dispatch.rs
++++ authorized-current/relay_dispatch.rs
+@@ -42,7 +42,7 @@
+         let pending = self.pending.clone().acquire_owned().await?;
+         let repo = self.repo.clone();
+         let reads = self.reads.clone();
+-        tokio::spawn(async move {
++        crate::node::spawn_owned_scope(async move {
+             let _pending = pending;
+             let _permit = tokio::time::timeout(Duration::from_secs(2), async {
+                 loop {
+--- immutable-prior/relay_feed.rs
++++ authorized-current/relay_feed.rs
+@@ -72,7 +72,7 @@
+         T: AsyncRead + AsyncWrite + Unpin + Send + 'static,
+     {
+         let sender = self.sender.clone();
+-        let mut driver = tokio::spawn(async move {
++        let mut driver = crate::node::spawn_infrastructure_owned_scope(async move {
+             while let Some(message) = poll_fn(|cx| connection.poll_message(cx)).await {
+                 if let tokio_postgres::AsyncMessage::Notification(n) = message?
+                     && n.channel() == "manga_events"
+--- immutable-prior/sync_jobs.rs
++++ authorized-current/sync_jobs.rs
+@@ -455,7 +455,7 @@
+                     let _slot = slot;
+                     let repo = self.repo.clone();
+                     let lease = work.lease.clone();
+-                    let heartbeat = tokio::spawn(async move {
++                    let heartbeat = crate::node::spawn_infrastructure_owned_scope(async move {
+                         loop {
+                             tokio::time::sleep(Duration::from_secs(10)).await;
+                             if !repo
+@@ -467,6 +467,9 @@
+                             }
+                         }
+                     });
++                    // Cancellation of the sync parent must stop its private
++                    // renewal loop; its actual termination stays lifecycle-owned.
++                    let _heartbeat_owner=crate::node::AbortChildOnDrop(heartbeat.abort_handle());
+                     let outcome =
+                         tokio::time::timeout(Duration::from_secs(600), self.quantum(&work))
+                             .await
+--- immutable-prior/node/read_admission.rs
++++ authorized-current/node/read_admission.rs
+@@ -55,7 +55,7 @@
+     let observation = permit.observation();
+     // Only admitted reads spawn work. Disconnect drops the receiver, never the
+     // handler, its pooled SQL futures, or the admission credits they own.
+-    tokio::spawn(RESPONSE.scope(
++    crate::node::spawn_owned_scope(RESPONSE.scope(
+         std::sync::Mutex::new(Some(sender)),
+         crate::read_diagnostics::scope(observation, async move {
+             let _permit = permit;
+--- immutable-prior/bounded_response.rs
++++ authorized-current/bounded_response.rs
+@@ -12,7 +12,7 @@
+     deadline: Duration,
+ ) -> mpsc::Receiver<Result<Bytes, io::Error>> {
+     let (tx, rx) = mpsc::channel(1);
+-    tokio::spawn(async move {
++    crate::node::spawn_owned_scope(async move {
+         let _lease = lease;
+         let expires = tokio::time::Instant::now() + deadline;
+         for chunk in bytes.chunks(8192) {
+--- immutable-prior/serving_role.rs
++++ authorized-current/serving_role.rs
+@@ -175,7 +175,7 @@
+         let mut stopping = self.stop.subscribe();
+         let fault = store.public_faults();
+         let mut fault_changes = fault.clone();
+-        self.task = Some(tokio::spawn(async move {
++        self.task = Some(crate::node::spawn_infrastructure_owned_scope(async move {
+             let operation = async {
+                 let mut active = false;
+                 let mut heartbeat = tokio::time::Instant::now();
+--- immutable-prior/node/blossom_http.rs
++++ authorized-current/node/blossom_http.rs
+@@ -125,7 +125,7 @@
+         _ => "bin",
+     };
+     let hash_id = id(&hash).map_err(|_| bad("invalid hash"))?;
+-    let outcome = tokio::spawn(async move {
++    let outcome = crate::node::spawn_owned_scope(async move {
+         let _permit = permit;
+         storage
+             .put_for_publisher_detailed(&authority, hash_id, &body)
+--- immutable-prior/node/review_http.rs
++++ authorized-current/node/review_http.rs
+@@ -70,7 +70,7 @@
+         .decode(&request.manifest)
+         .map_err(|_| bad("manifest base64"))?;
+     let id = request.event.id.clone();
+-    let inserted = tokio::spawn(async move {
++    let inserted = crate::node::spawn_owned_scope(async move {
+         let _slot = slot;
+         review.declare(&account, request.event, &bytes).await
+     })
+@@ -110,7 +110,7 @@
+         .try_acquire_owned()
+         .map_err(|_| unavailable())?;
+     let bytes = group_body(&a, &uri, &authorization, request, size).await?;
+-    tokio::spawn(async move {
++    crate::node::spawn_owned_scope(async move {
+         let _slot = slot;
+         review.upload(&account, submission, hash, &bytes).await
+     })
+@@ -272,7 +272,7 @@
+                 .clone()
+                 .try_acquire_owned()
+                 .map_err(|_| unavailable())?;
+-            tokio::spawn(async move {
++            crate::node::spawn_owned_scope(async move {
+                 let _slot = slot;
+                 review.approve(key, moderator).await
+             })
+--- immutable-prior/backend.rs
++++ authorized-current/backend.rs
+@@ -29,6 +29,116 @@
+     timeout: u64,
+     command_lock: PathBuf,
+     _owner: std::fs::File,
++}
++// Observe the leader without reaping, retaining its process-group identity
++// until actual descendants terminate. The command task also joins every pipe.
++struct OwnedCommand {
++    child: tokio::process::Child,
++    embedded: bool,
++}
++impl OwnedCommand {
++    async fn wait_terminal(&mut self) -> Result<std::process::ExitStatus> {
++        if !self.embedded {
++            return Ok(self.child.wait().await?);
++        }
++        let pid = self
++            .child
++            .id()
++            .context("backend command process identity")? as i32;
++        let terminal = async {
++            loop {
++                let mut info: libc::siginfo_t = unsafe { std::mem::zeroed() };
++                let result = unsafe {
++                    libc::waitid(
++                        libc::P_PID,
++                        pid as u32,
++                        &mut info,
++                        libc::WEXITED | libc::WNOHANG | libc::WNOWAIT,
++                    )
++                };
++                if result == -1 {
++                    let error = std::io::Error::last_os_error();
++                    if error.kind() == std::io::ErrorKind::Interrupted {
++                        continue;
++                    }
++                    return Err(error.into());
++                }
++                if unsafe { info.si_pid() } != 0 {
++                    break;
++                }
++                tokio::time::sleep(Duration::from_millis(10)).await;
++            }
++            // Failed commands can leave descendants retaining pipes or writable
++            // projection handles. The zombie leader still reserves this group ID.
++            if unsafe { libc::kill(-pid, libc::SIGKILL) } == -1 {
++                let error = std::io::Error::last_os_error();
++                if error.raw_os_error() != Some(libc::ESRCH) {
++                    return Err(error.into());
++                }
++            }
++            loop {
++                if !process_group_running(pid)? {
++                    break;
++                }
++                tokio::time::sleep(Duration::from_millis(10)).await;
++            }
++            Ok::<(), anyhow::Error>(())
++        }
++        .await;
++        if terminal.is_err() {
++            crate::node::owned_terminal_unconfirmed();
++            unsafe {
++                libc::kill(-pid, libc::SIGKILL);
++            }
++        }
++        // A nonterminal kernel task retains this actual lease until completion;
++        // the supervisor's bounded drain then reports uncertainty, not success.
++        let status = self.child.wait().await?;
++        terminal?;
++        Ok(status)
++    }
++}
++impl Drop for OwnedCommand {
++    fn drop(&mut self) {
++        if self.embedded
++            && let Some(pid) = self.child.id()
++        {
++            // Forced runtime cancellation is not a successful join observation.
++            crate::node::owned_terminal_unconfirmed();
++            unsafe {
++                libc::kill(-(pid as i32), libc::SIGKILL);
++            }
++        }
++    }
++}
++fn process_group_running(group: i32) -> Result<bool> {
++    for entry in std::fs::read_dir("/proc")? {
++        let entry = entry?;
++        if !entry
++            .file_name()
++            .as_encoded_bytes()
++            .iter()
++            .all(u8::is_ascii_digit)
++        {
++            continue;
++        }
++        let stat = match std::fs::read_to_string(entry.path().join("stat")) {
++            Ok(stat) => stat,
++            Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
++            Err(error) => return Err(error.into()),
++        };
++        let fields = stat
++            .rsplit_once(')')
++            .context("process stat identity")?
++            .1
++            .split_whitespace()
++            .collect::<Vec<_>>();
++        ensure!(fields.len() >= 3, "process stat fields");
++        if fields[2].parse::<i32>()? == group && !matches!(fields[0], "Z" | "X" | "x") {
++            return Ok(true);
++        }
++    }
++    Ok(false)
+ }
+ struct Item {
+     id: i64,
+@@ -124,61 +234,81 @@
+         input: Vec<u8>,
+         output_limit: usize,
+     ) -> Result<Vec<u8>> {
+-        // GNU timeout supervises a process group including descendants. Stdout/stderr
+-        // capture is bounded independently of input; no DB transaction spans this I/O.
+-        let mut child = tokio::process::Command::new("timeout")
+-            .args([
+-                "--signal=TERM",
+-                "--kill-after=1s",
+-                &format!("{}s", self.timeout),
+-            ])
+-            .arg("flock")
+-            .arg("--exclusive")
+-            .arg(&self.command_lock)
+-            .arg(&self.binary)
+-            .arg("--config")
+-            .arg(&self.config)
+-            .args(args)
+-            .stdin(Stdio::piped())
+-            .stdout(Stdio::piped())
+-            .stderr(Stdio::piped())
+-            .spawn()?;
+-        let mut stdin = child.stdin.take().context("backend input")?;
+-        let stdout = child.stdout.take().context("backend output")?;
+-        let stderr = child.stderr.take().context("backend error output")?;
+-        let write = async move {
+-            stdin.write_all(&input).await?;
+-            stdin.shutdown().await?;
+-            Ok::<_, std::io::Error>(())
++        let embedded = crate::node::owned_context_active();
++        let timeout = self.timeout;
++        let command_lock = self.command_lock.clone();
++        let binary = self.binary.clone();
++        let config = self.config.clone();
++        let args = args.to_vec();
++        let operation = async move {
++            // GNU timeout supervises a process group including descendants. Stdout/stderr
++            // capture is bounded independently of input; no DB transaction spans this I/O.
++            let mut command = tokio::process::Command::new("timeout");
++            command
++                .args(["--signal=TERM", "--kill-after=1s", &format!("{}s", timeout)])
++                .arg("flock")
++                .arg("--exclusive")
++                .arg(&command_lock)
++                .arg(&binary)
++                .arg("--config")
++                .arg(&config)
++                .args(args)
++                .stdin(Stdio::piped())
++                .stdout(Stdio::piped())
++                .stderr(Stdio::piped());
++            if embedded {
++                command.process_group(0);
++            }
++            let mut child = OwnedCommand {
++                child: command.spawn()?,
++                embedded,
++            };
++            let mut stdin = child.child.stdin.take().context("backend input")?;
++            let stdout = child.child.stdout.take().context("backend output")?;
++            let stderr = child.child.stderr.take().context("backend error output")?;
++            let write = async move {
++                stdin.write_all(&input).await?;
++                stdin.shutdown().await?;
++                Ok::<_, std::io::Error>(())
++            };
++            let read = async move {
++                let mut bytes = Vec::new();
++                stdout
++                    .take(output_limit as u64 + 1)
++                    .read_to_end(&mut bytes)
++                    .await?;
++                Ok::<_, std::io::Error>(bytes)
++            };
++            let errors = async move {
++                let mut bytes = Vec::new();
++                stderr.take(65537).read_to_end(&mut bytes).await?;
++                Ok::<_, std::io::Error>(bytes)
++            };
++            let (written, out, err, status) =
++                tokio::join!(write, read, errors, child.wait_terminal());
++            let out = out?;
++            let err = err?;
++            let status = status?;
++            ensure!(
++                status.success(),
++                "strfry exited unsuccessfully or timed out: {status}"
++            );
++            written?;
++            ensure!(
++                out.len() <= output_limit && err.len() <= 65536,
++                "backend output budget exceeded"
++            );
++            Ok(out)
+         };
+-        let read = async move {
+-            let mut bytes = Vec::new();
+-            stdout
+-                .take(output_limit as u64 + 1)
+-                .read_to_end(&mut bytes)
+-                .await?;
+-            Ok::<_, std::io::Error>(bytes)
+-        };
+-        let errors = async move {
+-            let mut bytes = Vec::new();
+-            stderr.take(65537).read_to_end(&mut bytes).await?;
+-            Ok::<_, std::io::Error>(bytes)
+-        };
+-        let (written, out, err, status) = tokio::join!(write, read, errors, child.wait());
+-        let out = out?;
+-        let err = err?;
+-        let status = status?;
+-        ensure!(
+-            status.success(),
+-            "strfry exited unsuccessfully or timed out: {status}"
+-        );
+-        written?;
+-        ensure!(
+-            out.len() <= output_limit && err.len() <= 65536,
+-            "backend output budget exceeded"
+-        );
+-        Ok(out)
+-    }
++        if embedded {
++            crate::node::spawn_owned_scope(operation)
++                .await
++                .context("owned backend command task failed")?
++        } else {
++            operation.await
++        }
++    }
++
+     async fn batch(&self, client: &mut deadpool_postgres::ClientWrapper) -> Result<usize> {
+         let rows=client.query("SELECT o.id,o.event_id,o.payload,o.action,o.event_version,e.version,e.state FROM backend_outbox o JOIN events e ON e.id=o.event_id WHERE o.completed_at IS NULL ORDER BY o.id LIMIT 64",&[]).await?;
+         let mut items = Vec::new();
+@@ -402,3 +532,44 @@
+         }
+     }
+ }
++
++#[cfg(test)]
++mod owned_command_tests {
++    use super::*;
++    #[tokio::test]
++    async fn failed_leader_cannot_leave_writable_process_group_descendant_running() {
++        use tokio::io::AsyncBufReadExt;
++        let mut command = tokio::process::Command::new("/bin/sh");
++        command
++            .arg("-c")
++            .arg("sleep 30 & printf '%s\n' $!; wait")
++            .process_group(0)
++            .stdout(Stdio::piped())
++            .stderr(Stdio::null());
++        let mut owned = OwnedCommand {
++            child: command.spawn().unwrap(),
++            embedded: true,
++        };
++        let pid = owned.child.id().unwrap() as i32;
++        let mut line = String::new();
++        tokio::time::timeout(
++            Duration::from_secs(1),
++            tokio::io::BufReader::new(owned.child.stdout.take().unwrap()).read_line(&mut line),
++        )
++        .await
++        .unwrap()
++        .unwrap();
++        let descendant = line.trim().parse::<i32>().unwrap();
++        assert_eq!(unsafe { libc::getpgid(descendant) }, pid);
++        assert!(process_group_running(pid).unwrap());
++        // Synthetic timeout/error: only the supervisor leader exits first.
++        assert_eq!(unsafe { libc::kill(pid, libc::SIGTERM) }, 0);
++        let status = tokio::time::timeout(Duration::from_secs(2), owned.wait_terminal())
++            .await
++            .unwrap()
++            .unwrap();
++        assert!(!status.success());
++        assert!(!process_group_running(pid).unwrap());
++        assert!(owned.child.id().is_none());
++    }
++}

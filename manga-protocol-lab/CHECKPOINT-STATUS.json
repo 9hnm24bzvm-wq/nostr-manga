@@ -1,0 +1,170 @@
+{
+  "artifacts": {
+    "build-artifacts/linux-x86_64/manga-demo": {
+      "bytes": 8574560,
+      "sha256": "803af60b4c19db3f8c5dbcd3110e120ad58ea142f96a05e25cb5b5cc10195e2d"
+    },
+    "build-artifacts/linux-x86_64/manga-key-tool": {
+      "bytes": 1331528,
+      "sha256": "226d370a807fd78f6718b3937cf897389648280006c478d1e1ed91ccdb69ace5"
+    },
+    "build-artifacts/linux-x86_64/manga-node": {
+      "bytes": 25125128,
+      "sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a"
+    }
+  },
+  "canonical_acceptance": {
+    "available_memory_stop_floor_bytes": 1073741824,
+    "browser_assets": 56,
+    "browser_build": "e4f4862bd75c26bb",
+    "cargo_incremental": 0,
+    "cargo_jobs": 1,
+    "changed_during_gate": [],
+    "command_exit": 0,
+    "completed_utc": "2026-10-12T02:00:32.753093+00:00",
+    "counts": {
+      "browser_model": 91,
+      "integration_cases_passed": 108,
+      "integration_executables": 89,
+      "packaging": 6,
+      "python": 58,
+      "rust_module_intentional_ignores": 2,
+      "rust_module_passed": 74
+    },
+    "diagnostics_default": "off; MANGA_READ_ADMISSION_DIAGNOSTICS unset in gate environment except fixture-owned explicit controls",
+    "disk_stop_floor_bytes": 2147483648,
+    "evidence": {
+      "candidate-source.json": "7a78ee9fbe6b03ff0f9b2aceca992c7d74e82d17cfac9cae575fb58d50afe01d",
+      "canonical-command.json": "90528c3e04b054ac6a30ec848784dc621f6e445ac68415f6c40a7fa3007979ce",
+      "canonical-environment.json": "257056438013001e8d98652c54108b7d5f7adf0e269760fbb23203ec84013e79",
+      "canonical-result.json": "e2461d5c51324aac79df00dc4e7f6530afa839e2383ec96eb5264aa37b0d68d9",
+      "canonical-source-after.json": "a26e31ca2d65abfb8bdb500249ebab4c3c68f9c55a90823e686b6c8388b2e763",
+      "canonical-source-before.json": "77dfdc5bd28eee19192f4eb1b81a00563cd496d96c39152bcc549af9b2ffdb37",
+      "canonical.log": "55c6ab99b26e54c8862d7e83a2a60e76aba4950566811b08f19a711ab54aaf0e",
+      "integration-inventory.json": "8a3456cc307b2903d15dbc117c4c3773adc61e2b943f32f58118085b48f495b5",
+      "integration-results.json": "c0b3cd9f82b6dc7e94ce52eeb7eb438e7e3ce7d6e41da91c12f550dfc78aeb3e",
+      "postgres-multiprocess.json": "882d5c2354f447732666fd499b97d0747426d28b6008f4e8ee0d4bb50e38540a",
+      "runner-sha256.json": "cbc9c5117c7830a579cf2c21d430b412c7ba4ad17671fcfe8656fec3da7b93be"
+    },
+    "execution": "canonical-equivalent serialized runner adaptation; source root anchors and four -j2 to -j1 Cargo flags only; unchanged Python/package/browser steps and PostgreSQL inventory/settings",
+    "format_check": "passed cargo fmt --check before Rust tests",
+    "guard": {
+      "abort_reason": null,
+      "cleanup_error": null,
+      "command_log_bytes": 57935,
+      "final_free_bytes": 5174222848,
+      "minimum_available_memory_bytes": 2906476544,
+      "minimum_free_bytes": 4413169664,
+      "monitor_error": null,
+      "remaining_owned_members": [],
+      "telemetry_bytes": 190836
+    },
+    "input_file_count": 392,
+    "intentional_ignores": [
+      {
+        "reason": "child-process harness; invoked by the crash parent",
+        "test": "library_client_outbox::tests::outbox_child_process"
+      },
+      {
+        "reason": "large codec fixture; run explicitly in release mode; not executed by this canonical invocation",
+        "test": "library_manifest::tests::half_million_records_fit_chunked_root"
+      }
+    ],
+    "node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+    "offline_dependencies": true,
+    "optional_exclusion": "audit_gaps characterization is excluded from the correctness gate",
+    "postgres_durability": {
+      "fsync": "on",
+      "synchronous_commit": "on"
+    },
+    "postgres_multiprocess": {
+      "fresh_process_read_after_recovery": true,
+      "jobs_per_process": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "not_claimed": "No full manga API, strfry projection, blob admission or target-scale capacity validation.",
+      "postgresql_immediate_stop_and_restart": {
+        "outage_failed_closed": true,
+        "pool_recovered": true
+      },
+      "scope": "Separate Rust processes against a real ephemeral PostgreSQL database.",
+      "unique_event_inserts": 1,
+      "unique_jobs_completed": 32,
+      "worker_processes": 4,
+      "writer_processes": 12
+    },
+    "prior_accepted_input_count": 391,
+    "prior_accepted_node_sha256": "1c3f7769e25ea3bd9f025c0f3d6cad009d7d23de3babe36b1f90a661afc7d713",
+    "prior_input_changes": {
+      "server/src/library.rs": {
+        "after": "83b13c7f241542d36b61e3b5df6c08c0beb011470775edcb4e91cb6c913c69bb",
+        "before": "97e544fa71362c7a2a695ecd273fbc5c88001991f9b600f1af63a4f49dc39c07"
+      },
+      "server/src/node/compatibility_http.rs": {
+        "after": "847638ae981a04c05e50bae7b48bedbb337bfe8b7ede157d451981911a7c2c86",
+        "before": "82580cfd3783715202ae9926b79403a351bb3fa15ccf890a1d1a416a6de2780e"
+      },
+      "server/src/upload.rs": {
+        "after": "cda13102ff4255f860a429abb0982e87b71c023fa9e5e90e6c6505d930036f40",
+        "before": "0a58551980a45e2b1190ebfec9a9f478654b9b444919acfe4ea869b2178ea96c"
+      },
+      "server/tests/http_pool_lifetimes.rs": {
+        "after": "ca7bb2d718882dd034c37eac6f026aabf3f295a6dd24f001ed229bfd7375f68f",
+        "before": null
+      }
+    },
+    "profile": "release",
+    "runner_hashes_after": {
+      "results/rebuild-pool-lifetimes-final/guarded-command.py": "64b3c99114c9d1e64f486412d1b68b8fa754316856a5c869fc27e24c196d7b96",
+      "results/rebuild-pool-lifetimes-final/run-serialized-canonical.sh": "194da1c6bc979f7b86549c3ae61c9433c84a0c85bcc9eb6748c96721df2a4556",
+      "results/rebuild-pool-lifetimes-final/test-postgres-serialized.sh": "41af3a18d3e14303375cf9fa0df3878ad31ee6f371cb2e46337c75a7c254c028",
+      "scripts/test-postgres.sh": "180f04ce79f3a5b2f5771c10882dd61ac8c090050920ee3bb7fb9ecbff96b67d",
+      "scripts/test.sh": "813308f181e7f1a176fccd1334ca0351d1981c7ea51652d1a9a6f291f1766888"
+    },
+    "scope": [
+      "Functional regression acceptance for exact392-input candidate4c499 and three release-only connection-lifetime corrections; prior accepted1c3 remains preserved.",
+      "No new mixed-load, sustained-capacity or causal explanation of the prior rejection wave is established. The audit and compatibility collection paths were not used in that mixed trial.",
+      "Browser counts are model/build and existing real-backend interoperability evidence; no new rendered-browser UI acceptance is inferred.",
+      "Two public pool1 regressions genuinely failed on1c3 and passed on this candidate. Later audit controls not reached on baseline are not separate causal reds. Postcommit Moka release is source-proven plus public regressions without a private pause hook or invented timing red.",
+      "Focused acceptance remains separately frozen in results/rebuild-pool-lifetimes/acceptance.json. No full-build recovery upload is claimed by this receipt."
+    ],
+    "status": "passed",
+    "strict_all_target_clippy": {
+      "command": "cargo clippy --release --locked --manifest-path server/Cargo.toml -j1 --all-targets -- -D warnings",
+      "observed_elapsed": "43.79s",
+      "status": "passed",
+      "warnings": "-D warnings"
+    }
+  },
+  "checkpoint": "current-build-4c499f72-20261012",
+  "created_utc": "2026-10-12T02:11:51.455361+00:00",
+  "dependencies": "PostgreSQL/strfry/nginx/toolchains remain external; not a self-contained runtime installation.",
+  "frozen_hashes": {
+    "docs/rebuild/ARCHITECTURE.md": "3b40d512d1dbfaa7c88681b11377dd99b80fd48dd7d61cbe39e519a1257e0ed5",
+    "docs/rebuild/FEATURE-COVERAGE.md": "17e88e2ebbefae24a767301ab04b86443121729445eca5954040d6b069ef0682",
+    "docs/rebuild/NATIVE-BROWSER-QUALIFICATION.md": "c25df8ed250d418e17c4e85eeaeb3f18c4133a842d8a366056d896d781bc1603",
+    "docs/rebuild/PARITY-COMPLETION-REPORT-2026-10-12-POOL-LIFETIMES.md": "088f2e449d1ca887992de9d18be0ec1fc1340d57e70ee0322ce3b28e38def467",
+    "docs/rebuild/PARITY-REQUIREMENTS.md": "f16a74567bcb1a5174fa597ac9fd5b92ddf2a32662ab1a19d053bac656a781b8",
+    "docs/rebuild/STATUS.md": "2dcf24b8f996d53c9c60a1ad4a34a1ed4f77828657bd44b94893b5fcc8e316c6",
+    "results/rebuild-pool-lifetimes-final/canonical-acceptance.json": "656aa030c83f239bde726813cefb6f6c49ffe9d3cd55e18ca1be38f9779cd6d5",
+    "results/rebuild-pool-lifetimes-final/canonical-source-after.json": "a26e31ca2d65abfb8bdb500249ebab4c3c68f9c55a90823e686b6c8388b2e763",
+    "results/rebuild-pool-lifetimes-final/document-freeze.json": "c82a70e3ca4b9b282ffbda5828b09aa6b030c30d9aaa4c79b6df85303ba194c6",
+    "results/rebuild-pool-lifetimes-final/recovery-evidence-allowlist.json": "f27e261c2ede07c04855531ff2296a0353134b6d664e3e0584fb89176ca14071",
+    "results/rebuild-pool-lifetimes-final/recovery-review-supplement.json": "b0e7b0cd119c41a324da518db3c4943ac7fa2907872babfe8479885eb4541a9a",
+    "results/rebuild-pool-lifetimes/recovery-evidence-allowlist.json": "5a7f4a7d9d09b038da465a34357e91462fe31335cba452275605b02f89bf3e8b",
+    "results/rebuild-pool-lifetimes/recovery-review-supplement.json": "9341bb14e96c6c4303bd9428eddd6cde08aa9ae2bb98cf8f46cbc4f36b2c8c3a"
+  },
+  "historical_scope": "Prior full checkpoints/addenda remain unchanged. Historical load results retain their tested-build identities. The failed phase-load evidence tested1c3f7769, not4c499f72. No mixed load has qualified the new node; prior failures remain failures.",
+  "included": "Current accepted source/config/templates/migrations/locks, three optimized executables/browser, current pool-lifetime report/status and requirements docs, reviewed lifetime focused red/green/ownership proof and final gate/audit, reviewed historical failed phase load and safe previous waiting32/waiting64/native-browser evidence, public archival summaries.",
+  "kind": "FULL SOURCE/BUILD/DOCS/TEST-EVIDENCE CHECKPOINT; not a delta",
+  "pending_and_excluded": "Large30k/500k native action approval remains pending. Unaccepted fast PostgreSQL sampler, owned fixture supervisor, new launch wiring and their unaccepted result trees are deliberately excluded; later helper acceptance is separate.",
+  "private_exclusions": "Actual credentials/private keys/passwords/personal data, generated runtime/database/private archive contents, raw traffic/private per-member restore maps, screenshots/key-bearing browser fixture scripts/configs, old executable copies/caches/dependencies/retired history. Reviewed synthetic browser backups/public records and small resource telemetry remain included.",
+  "recovery": "Full code/build/docs/safe-evidence checkpoint independent of previous addenda. Frozen documents precede delivery; subsequent append-only receipt establishes save/message status. Preserve older checkpoints and passwords.",
+  "remote_verification": "Local authenticated AES/member and part-reassembly verification only. Known-denied Library/Catbox readback routes are not retried or bypassed.",
+  "runtime_templates": "Only four previously reviewed launcher/template documents; no actual runtime state. Synthetic demo code must not be exposed publicly.",
+  "source_identity": "All392 accepted inputs matched; selected source/docs/evidence unchanged during capture.",
+  "status": "POOL-LIFETIME FIXES PASSED FULL SERIALIZED CANONICAL-EQUIVALENT GATE; performance qualification unresolved"
+}

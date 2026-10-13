@@ -1,0 +1,116 @@
+{
+  "utc": "2026-10-13T08:57:53.374824+00:00",
+  "production_source_frozen": true,
+  "finite_assigned_findings": 5,
+  "overlay_definitions": 503,
+  "anchor_occurrences": 512,
+  "original_paths": 100,
+  "inventory_sha256": "7da41e12d128f19ba20c0baeeae0332239669c9f11518b54a315ba873fd740f9",
+  "shared_overlay_sha256": "33603abdad89027de86946577cac3956213dff8ce5ca93478c6944f232650bfa",
+  "reader_overlay_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+  "local_overlay_sha256": "eb9924d05454a24ce86d03b54da4c8615b307abf49a0fc6389fce69b89e2ee89",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T08:57:53.318Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 88,
+    "scripts_syntax_compiled": 54,
+    "shared_sha": "33603abdad89027de86946577cac3956213dff8ce5ca93478c6944f232650bfa",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "eb9924d05454a24ce86d03b54da4c8615b307abf49a0fc6389fce69b89e2ee89",
+    "integration_inventory_sha": "7da41e12d128f19ba20c0baeeae0332239669c9f11518b54a315ba873fd740f9",
+    "warnings": [
+      {
+        "path": ".build/frontend-restore3/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/routes/(app)/group/[id]/Group.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/routes/(app)/user/[id]/User.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/lib/components/ChapterListFilter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "runtime_tests_executed": false,
+  "original_attachment_files_byte_identical": 676,
+  "approved_reader_selector_exceptions": [
+    {
+      "path": "src/lib/components/reader/reader-page-selector.svelte",
+      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+      "count": 1,
+      "before": "onValueChange={value => reader.changePage(Number(value))}",
+      "after": "onValueChange={selectReaderPage}",
+      "approved_reader_selector_exception": "existing_page_selector_handler"
+    }
+  ],
+  "approved_recommendation_exceptions": [
+    {
+      "path": "src/routes/(app)/title/MangaRecommendationsSection.svelte",
+      "sha256": "26b2d29077bf3a8b05593bf8a9abe0d4e30920b3824f42ef9a0c41af816bc7e4",
+      "count": 1,
+      "before": "\t<ErrorComponent {error} />",
+      "after": "\t<ErrorComponent {error} />\r\n\t<Button variant=\"outline\" disabled={isLoading} onclick={queueRecommendations}>Retry recommendations</Button>",
+      "approved_recommendation_exception": "truthful_recommendations_retry"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaRecommendationsSection.svelte",
+      "sha256": "26b2d29077bf3a8b05593bf8a9abe0d4e30920b3824f42ef9a0c41af816bc7e4",
+      "count": 1,
+      "before": "{:else}\r\n\t<Empty.Root>\r\n\t\t<Spinner class=\"size-10\" />",
+      "after": "{:else if isMounted}\r\n\t<Empty.Root>\r\n\t\t<Empty.Title>No recommendations found</Empty.Title>\r\n\t</Empty.Root>\r\n{:else}\r\n\t<Empty.Root>\r\n\t\t<Spinner class=\"size-10\" />",
+      "approved_recommendation_exception": "acknowledged_recommendations_empty"
+    }
+  ],
+  "changes": [
+    "Title chapter filter raw applied baseline and editable draft follow actual title/query navigation; unchanged URL preserves unsaved edits",
+    "Automatic account reader history requires actual200body acknowledgement, current-owned truthful failures; no replay and no false completion",
+    "Displayed spread ordinal maps to validated actual first page index; single raw index and containing-spread display preserved",
+    "Single/double tap geometry derives actual current reading surface, ignores interactive/default-prevented clicks, preserves RTL/long-strip tap-off",
+    "Recommendations real acknowledged empty settles to empty state; owned current-only read errors and explicit Retry, no invented data or unscoped history DTO reuse"
+  ],
+  "previous_artifact": "Build15/source496 remains historical byte-verified; build16 required",
+  "bundle": {
+    "terminal_evidence": "final-build16/build-result.json",
+    "status": "passed",
+    "artifact_manifest_sha256": "0d211721e9bbb9b758e7994ee0ec3236e35d34e39f81c040f8b2f650d375c840",
+    "spa_fallback_sha256": "9ffc9ded8255863c4958839ad508e65100728c8bd4996cdf9debf2ac291eb3bc",
+    "file_count": 401,
+    "total_bytes": 6993753,
+    "bootstrap_csp_hashes": [
+      "'sha256-zZN9F4ZbtwNWOfNABsLzTSnJvZ0DCfbtTDptsQVR8sg='"
+    ],
+    "source_static_assets_byte_identical": 111
+  }
+}

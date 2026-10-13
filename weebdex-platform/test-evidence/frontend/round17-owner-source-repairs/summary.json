@@ -1,0 +1,112 @@
+{
+  "utc": "2026-10-13T09:55:36.487Z",
+  "production_source_frozen": true,
+  "finite_assigned_families": [
+    "editor incremental cover acknowledgements",
+    "private initial/boundary cover reads",
+    "owner-found created-title/cover/relation partial acknowledgement recovery",
+    "versioned existing relation edit and per-step owner version acknowledgement"
+  ],
+  "overlay_definitions": 533,
+  "anchor_occurrences": 542,
+  "original_paths": 105,
+  "shared_overlay_sha256": "6c2324801226db03d8671303a64d96548d789c1fe37768e3777f83fb418ac017",
+  "reader_overlay_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+  "local_overlay_sha256": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473",
+  "integration_inventory_sha256": "ed86937126cb4a7895dd6ab7b68d416dadce96e409dcea67f30fc62284473c22",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T09:55:36.332Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 93,
+    "scripts_syntax_compiled": 56,
+    "shared_sha": "6c2324801226db03d8671303a64d96548d789c1fe37768e3777f83fb418ac017",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473",
+    "integration_inventory_sha": "ed86937126cb4a7895dd6ab7b68d416dadce96e409dcea67f30fc62284473c22",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/ChapterListFilter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "original_attachment_files_byte_identical": 676,
+  "runtime_tests_executed": false,
+  "browser_acceptance_executed": 0,
+  "previous_artifact": "Build17/source516 is stale; build18 required",
+  "approved_create_recovery_exceptions": [
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "before": "\t\t{:else if mutexState === STATE.Error}\r\n\t\t\t<Empty.Content>\r\n\t\t\t\t<div class=\"flex flex-wrap items-center justify-center gap-2\">\r\n\t\t\t\t\t<a class={buttonVariants({ class: \"border-none\", variant: \"outline\" })} href=\"/drafts/title\">",
+      "after": "\t\t{:else if mutexState === STATE.Error}\r\n\t\t\t<Empty.Content>\r\n\t\t\t\t<div class=\"flex flex-wrap items-center justify-center gap-2\">\r\n\t\t\t\t\t{#if manga}\r\n\t\t\t\t\t\t<Button variant=\"outline\" disabled={$mutex || !isValid || !canRetryCreatedDraft} onclick={() => onSubmit()}>Retry remaining draft steps</Button>\r\n\t\t\t\t\t\t<a class={buttonVariants({ class: \"border-none\", variant: \"outline\" })} href={`/title/${encodeURIComponent(manga.id)}/edit?draft=true`}>Edit saved draft</a>\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t\t<a class={buttonVariants({ class: \"border-none\", variant: \"outline\" })} href=\"/drafts/title\">",
+      "approved_create_recovery_exception": "acknowledged_draft_recovery_controls"
+    }
+  ],
+  "file_hashes": {
+    "platform-integrations/frontend-behavior/editor-cover-read.ts": "aa902b85a7b50e8399b8952e5103717786df081e64a5905ee97f3345003bfca0",
+    "platform-integrations/frontend-behavior/MangaEditBoundary.svelte": "e1bde9c6271fd7fb72f78c368156c1fe76bb28a19101ff9b70828d7c2eb41ffe",
+    "scripts/prepare-frontend-integration.mjs": "868e871de0803d959f9c4a98c849670780da517279d8931f0237d56f0ce44d07",
+    "scripts/record-frontend-artifacts.py": "4bd7115f70d60dffe63526bf848848972647b93c03b8bbdfe833c41c2e98f00d"
+  },
+  "native_success_contracts": {
+    "manga_create": 201,
+    "cover_upload": 200,
+    "relation_create": 201,
+    "relation_update": 200,
+    "relation_delete": 204,
+    "relation_owner_version": "actual body manga_version or delete x-weebdex-manga-version"
+  },
+  "remaining_parent_coordination": "No frontend source gap remains in the finite UI17 patchset. Fresh independent review/build18 and updated backend binary are required; runtime remains unrun.",
+  "bundle": {
+    "status": "passed",
+    "terminal_evidence": "final-build18/build-result.json",
+    "file_count": 401,
+    "total_bytes": 7008454,
+    "spa_fallback_sha256": "8280bdcfcb0761b8048dd262230deea5a46dd7ea4d5a135b46ced9f81bfde2c0",
+    "bootstrap_csp_hashes": [
+      "'sha256-LTpYGRLg0kxk8iSUlwrFkozRBB7DRt/Kay9EBQZbbG0='"
+    ],
+    "source_static_assets_byte_identical": 111,
+    "artifact_manifest_sha256": "e4b4448c3c7e366dc4bc2e9f5c91cbdf0d3ae9f84ac5d0a050ab23a7a9a78c8d"
+  }
+}

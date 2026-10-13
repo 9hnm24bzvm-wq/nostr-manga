@@ -1,0 +1,31 @@
+{
+  "author": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+  "chapter": "49af2812651e2f3ae238b80cf9262112c25f31ccd763b7a3dfd582f4104e87e5",
+  "checks": [
+    "signed series and chapter publication",
+    "chapter discovery",
+    "bilaterally approved synchronization",
+    "exact original bytes self-hosted by both nodes",
+    "public reading progress saved to both instances",
+    "complete library recovered from second instance",
+    "reader progress views and authenticated identity on both instances",
+    "administrator-managed group profile signed by group identity",
+    "closed signup on first node and scoped reader self-registration on second node"
+  ],
+  "first_library_acceptance": 1,
+  "instances": [
+    "http://127.0.0.1:55091",
+    "http://127.0.0.1:43389"
+  ],
+  "library": "d44a39e6deeb1c5c39183fc02b08e25fd43ad3445082fd6f71c2c46c5ac0003f",
+  "library_replicas": 2,
+  "mode": "loopback_only_synthetic_keys",
+  "not_claimed": [
+    "website UI",
+    "production deployment hardening",
+    "target traffic or100TB capacity certification"
+  ],
+  "original": "4d82b65bf7ccdc22ce014f7e282288ff3af7d4db22dfa94e775303c33bda45f2",
+  "passed": true,
+  "series": "2a6f25d1035e5cc27006aae6826f5eb5e8c53552f6bc3c79b040427a6064c8ab"
+}

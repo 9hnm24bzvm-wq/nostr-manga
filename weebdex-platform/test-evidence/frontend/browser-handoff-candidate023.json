@@ -1,0 +1,78 @@
+{
+  "utc": "2026-10-13T13:04:57.026772+00:00",
+  "scope": "Current transfer documentation/plan pins only; original/application source and all historical evidence untouched",
+  "backend_candidate": "023",
+  "verified_backend_inputs": [
+    {
+      "name": "source_candidate",
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/candidate-source.json",
+      "sha256": "d94878d178e3b614d72c9ca3ac7f2cf66ea48426d19e0f4ea91ec0870b2bcf37",
+      "matched": true
+    },
+    {
+      "name": "current_normal_and_example_build_result",
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-build-current-server-001-result.json",
+      "sha256": "1c77865e6beb7857f2e637da4b0d77cc9eedcc3fc9028409f9deaf43d8599b8d",
+      "matched": true
+    },
+    {
+      "name": "source_bound023_all_target_check",
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-check-current-all-targets-001-result.json",
+      "sha256": "808d525c2dfec4c0bd4ff95950b3850e082dfc3826d87dd3b157fdc265980779",
+      "matched": true
+    },
+    {
+      "name": "normal_binary",
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+      "sha256": "60c0ba20bc0ac3aef27dd70a0b9fad8fe7dfe8ff92913182d0dd38cb761bd0e6",
+      "matched": true
+    },
+    {
+      "name": "example_binary",
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+      "sha256": "7b82dc67f1a5b00a1af89b70e74e48c11b99ff89991017ab5965326e01a0f013",
+      "matched": true
+    }
+  ],
+  "backend_current_receipt_sha256": "b7a22edf5cea2bbe4f388b0264d1f131188a3dcdb2e0b0047d1388a70217a74d",
+  "current_plan": {
+    "path": "test-evidence/frontend/browser-startup-plan-build19.json",
+    "sha256": "fc01b87eca54aae91fb206bd14cea3a0dccc52cdb5d5c7a6d9e0a2ef2fe8e8a6",
+    "execution_allowed": false
+  },
+  "transfer_doc": {
+    "path": "docs/browser-e2e-transfer.md",
+    "sha256": "e9b65edec706ff29dbb71669acbf8af46f58fbce3e31688a65d4c8af6b093567"
+  },
+  "frontend_generation": "Build19/source534",
+  "ui_file_count": 401,
+  "ui_total_bytes": 7008710,
+  "ui_complete_file_membership_and_hashes_match": true,
+  "ui_manifest_sha256": "56dab08d19e57db750a5bbfcb4acb90a17605995bc29aa02f638ea2cc14af429",
+  "ui_index_sha256": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+  "original_frontend_files_byte_identical": 676,
+  "staged_original_files_byte_identical": 676,
+  "integration_files_hash_identical": 63,
+  "overlay_definitions": 534,
+  "integration_inventory_sha256": "08b4788aa51bdec2919f05596a76dc366b0785a7c66f38c0f8c4b3ad43af2e2c",
+  "portable_ui_archive": {
+    "archive": "artifacts/frontend-static.tar.gz",
+    "sha256": "8ea410b4636a0f1e7bf4e226c60c31f81197b2e0954007972ded8153580721a7",
+    "bytes": 5160835,
+    "verified_regular_members": 412,
+    "ui_files": 401,
+    "independent_of_node_modules_and_build_workspace": true,
+    "contains_runtime_databases_credentials_or_user_records": false,
+    "verification": "Every archived regular member byte-compared and every UI input rehashed after packaging"
+  },
+  "browser_application_steps_executed": 0,
+  "browser_phases_prepared": 38,
+  "browser_phases_blocked": 38,
+  "runtime_or_build_executed": false,
+  "historical_evidence_changed": false,
+  "frontend_source_changed": false,
+  "fast_mode": false,
+  "protected_build19_inputs_rehashed": 1632,
+  "changed_protected_build19_inputs": [],
+  "integration_complete_file_membership_match": true
+}

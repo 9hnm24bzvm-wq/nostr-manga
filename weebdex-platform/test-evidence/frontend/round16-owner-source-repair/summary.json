@@ -1,0 +1,151 @@
+{
+  "utc": "2026-10-13T09:12:31.003474+00:00",
+  "production_source_frozen": true,
+  "finite_assigned_findings": 3,
+  "overlay_definitions": 516,
+  "anchor_occurrences": 525,
+  "original_paths": 104,
+  "inventory_sha256": "4cc4d72c2e998cb1a89762645bf114466447d3b5491ae796e1ef9d352f8c2e0b",
+  "shared_overlay_sha256": "33603abdad89027de86946577cac3956213dff8ce5ca93478c6944f232650bfa",
+  "reader_overlay_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+  "local_overlay_sha256": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T09:12:30.892Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 92,
+    "scripts_syntax_compiled": 55,
+    "shared_sha": "33603abdad89027de86946577cac3956213dff8ce5ca93478c6944f232650bfa",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473",
+    "integration_inventory_sha": "4cc4d72c2e998cb1a89762645bf114466447d3b5491ae796e1ef9d352f8c2e0b",
+    "warnings": [
+      {
+        "path": ".build/frontend-restore3/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/routes/(app)/group/[id]/Group.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/routes/(app)/user/[id]/User.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": ".build/frontend-restore3/src/lib/components/ChapterListFilter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "pagination_source_assertion_cases": 36,
+  "runtime_tests_executed": false,
+  "original_attachment_files_byte_identical": 676,
+  "approved_search_pagination_exceptions": [
+    {
+      "path": "src/lib/components/MangaSearchPagination.svelte",
+      "sha256": "fdcdc1c9e185a494b55b1fc2af721f54546f698b72432478f31ee30163684111",
+      "count": 1,
+      "before": "count={isFollows ? feed.total : Math.min(feed.total, 10000 - feed.limit)}",
+      "after": "count={isFollows ? feed.total : Math.min(feed.total, 10000)}",
+      "approved_search_pagination_exception": "consistent_existing_search_count"
+    }
+  ],
+  "approved_cover_read_exceptions": [
+    {
+      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+      "count": 1,
+      "before": "\t<ErrorComponent {error} />",
+      "after": "\t<ErrorComponent {error} />\r\n\t<Button variant=\"outline\" disabled={isLoading} onclick={queueCovers}>Retry covers</Button>",
+      "approved_cover_read_exception": "truthful_covers_retry"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+      "count": 1,
+      "before": "{:else}\r\n\t<Empty.Root>\r\n\t\t<Spinner class=\"size-10\" />",
+      "after": "{:else if isMounted}\r\n\t<Empty.Root>\r\n\t\t<Empty.Title>No covers found</Empty.Title>\r\n\t</Empty.Root>\r\n{:else}\r\n\t<Empty.Root>\r\n\t\t<Spinner class=\"size-10\" />",
+      "approved_cover_read_exception": "acknowledged_covers_empty"
+    }
+  ],
+  "approved_public_carousel_exceptions": [
+    {
+      "path": "src/lib/components/MostReadCarousel.svelte",
+      "sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c",
+      "count": 1,
+      "before": "{#if !isMounted || feed?.data?.length}",
+      "after": "{#if !isMounted || feed?.data?.length || error}",
+      "approved_public_carousel_exception": "public_carousel_error_visibility"
+    },
+    {
+      "path": "src/lib/components/MostReadCarousel.svelte",
+      "sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c",
+      "count": 1,
+      "before": "\t\t{#if isMounted && feed?.data?.length}",
+      "after": "\t\t{#if error}\r\n\t\t\t<ErrorComponent {error} />\r\n\t\t\t<Button variant=\"outline\" disabled={isLoading} onclick={widget.retry}>Retry titles</Button>\r\n\t\t{:else if isMounted && feed?.data?.length}",
+      "approved_public_carousel_exception": "public_carousel_error_retry"
+    },
+    {
+      "path": "src/lib/components/RecentlyAddedCarousel.svelte",
+      "sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf",
+      "count": 1,
+      "before": "{#if !isMounted || feed?.data?.length}",
+      "after": "{#if !isMounted || feed?.data?.length || error}",
+      "approved_public_carousel_exception": "public_carousel_error_visibility"
+    },
+    {
+      "path": "src/lib/components/RecentlyAddedCarousel.svelte",
+      "sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf",
+      "count": 1,
+      "before": "\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t{#if isMounted && feed?.data?.length}\r\n\t\t\t\t{#each feed.data as manga (manga)}\r\n\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t<MangaSearchEntryCard {manga} isGrid />\r\n\t\t\t\t\t</article>\r\n\t\t\t\t{/each}\r\n\t\t\t{:else}\r\n\t\t\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t\t\t{#each Array.from({ length: 10 })}\r\n\t\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t\t<MangaSearchEntrySkeleton isGrid />\r\n\t\t\t\t\t\t</article>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Carousel>\r\n\t\t\t{/if}\r\n\t\t</Carousel>",
+      "after": "\t\t{#if error}\r\n\t\t\t<ErrorComponent {error} />\r\n\t\t\t<Button variant=\"outline\" disabled={isLoading} onclick={widget.retry}>Retry titles</Button>\r\n\t\t{:else}\r\n\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t{#if isMounted && feed?.data?.length}\r\n\t\t\t\t{#each feed.data as manga (manga)}\r\n\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t<MangaSearchEntryCard {manga} isGrid />\r\n\t\t\t\t\t</article>\r\n\t\t\t\t{/each}\r\n\t\t\t{:else}\r\n\t\t\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t\t\t{#each Array.from({ length: 10 })}\r\n\t\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t\t<MangaSearchEntrySkeleton isGrid />\r\n\t\t\t\t\t\t</article>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Carousel>\r\n\t\t\t{/if}\r\n\t\t</Carousel>\r\n\t\t{/if}",
+      "approved_public_carousel_exception": "public_carousel_error_retry"
+    }
+  ],
+  "backend_result_offset_cap_claimed": false,
+  "previous_artifact": "Build16/source503 historical byte-verified; build17 required",
+  "provisional_receipt": "09:05 one-finding receipt was superseded before handoff/bundling after parent assigned Covers and public widgets",
+  "file_hashes": {
+    "platform-integrations/frontend-behavior/public-manga-widget-read.ts": "f5763b7cc436ea44ea320fa0a24043da42e381a6a63b893dccec83a82531ac86",
+    "scripts/prepare-frontend-integration.mjs": "bb1a5874b39c9216eaf1f64146836052e7539af75cad5d608bd2d2eadf0ee847",
+    "scripts/record-frontend-artifacts.py": "a72869edb5ea0d8e8f698ac01ac99b1992b49bb61080fdd675c9a8a79e581577"
+  },
+  "bundle": {
+    "terminal_evidence": "final-build17/build-result.json",
+    "status": "passed",
+    "artifact_manifest_sha256": "64ab043c3b847954745cb5b7c5743791e6eb16118747825a4c5fa14cd44f6179",
+    "spa_fallback_sha256": "ccb622b32075e0bebd953adb9d26d341e058c5980be5aedbea20c737765ecfcd",
+    "file_count": 401,
+    "total_bytes": 6996663,
+    "bootstrap_csp_hashes": [
+      "'sha256-R8oBH9EKC81HZwWVE7f7DsWG7lIclPnqnAnJXZ3fHys='"
+    ],
+    "source_static_assets_byte_identical": 111
+  }
+}

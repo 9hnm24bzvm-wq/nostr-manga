@@ -1,0 +1,13 @@
+{
+  "frozen_utc": "2026-10-12T21:14:08.220943+00:00",
+  "files": {
+    "scripts/package.py": {
+      "before_sha256": "bd553cda3299bda8c2ae8a3f341b795b88556e01a8ad6835c17d4fcda7b2e938",
+      "candidate_sha256": "04fd9f8c00153dde5b109891025af59b953ea8f891b12a5f25b57a44b8fb8b1b"
+    },
+    "scripts/tests/test_package_cli.py": {
+      "before_sha256": "49db9f02695a6b16952bcabab72240d9a978d881878e2da4c1fc0277d2aa92a2",
+      "candidate_sha256": "56dbd25c521277c669fab1bd3ce5b8d3dbf38eb37d2b220edc74fb08d8628f92"
+    }
+  }
+}

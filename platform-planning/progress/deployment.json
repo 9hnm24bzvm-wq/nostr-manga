@@ -1,0 +1,55 @@
+{
+  "owner": "complete_deployment_security_configuration",
+  "status": "implemented_awaiting_final_validation",
+  "implementation_date": "2026-10-13",
+  "implemented": [
+    "Explicit production and limited protocol-read-only configuration validation",
+    "Loopback listeners, bounded original shared PostgreSQL pool, migration-only bounded transaction budget",
+    "Streaming HTTP body byte and total intake deadlines without cancellation of in-flight SQL",
+    "Same-origin credentialed CORS, production Host validation and security/no-store headers",
+    "Explicit retained frontend auth deep-link routes and real missing-static-asset errors",
+    "Read-only configuration and schema preflight commands, explicit platform-only migrations",
+    "Supervised single-owner original native listener and shared projection backend lifecycle",
+    "Observable liveness/readiness, bounded dual-listener shutdown and detached request permit drain",
+    "Owned bounded periodic native cleanup and private expired uncommitted temporary-file cleanup",
+    "Locked release/runtime entrypoints, runtime-secret-only examples and reverse proxy/systemd templates",
+    "Production-readiness checklist separating implementation, operator provisioning and unvalidated gates"
+  ],
+  "source_paths": [
+    "weebdex-platform/backend/src/config.rs",
+    "weebdex-platform/backend/src/db.rs",
+    "weebdex-platform/backend/src/main.rs",
+    "weebdex-platform/backend/src/router.rs",
+    "weebdex-platform/backend/src/runtime.rs",
+    "weebdex-platform/backend/src/state.rs",
+    "weebdex-platform/deployment",
+    "weebdex-platform/scripts/build-release.sh",
+    "weebdex-platform/scripts/run-platform.sh",
+    "weebdex-platform/docs/production-readiness.md"
+  ],
+  "tests_executed_by_this_worker": true,
+  "compiler_owner": "implement_weebdex_catalog_api",
+  "operator_prerequisites": [
+    "PostgreSQL/TLS trust, migration staging, least-privilege roles and verified backup/restore",
+    "Existing admitted publisher/service/admin identities and group/account bindings",
+    "Original projection backend and exclusive physical-volume ownership",
+    "Real mail delivery, sender domain, credential and roundtrip verification",
+    "DNS/TLS/reverse proxy/management network/service manager/private storage/log policies"
+  ],
+  "unvalidated": [
+    "Final compiler revalidation after operational audit deltas and authored test execution",
+    "Native listener lifecycle and original module regression suites",
+    "Fresh/upgrade/checksummed migrations and isolated real PostgreSQL feature contracts",
+    "Browser UI/source parity and repeated/expired/error flows",
+    "Actual mail, proxy/TLS/WebSocket/range and shutdown/recovery drills",
+    "Representative bounded load measurements and measured production performance"
+  ],
+  "public_deployment_performed": false,
+  "keys_or_accounts_created": false,
+  "validation_evidence": {
+    "catalog_compilation": "All-targets and normal binary passed; latest normal binary SHA256 0bdb6dda61557ee59190bff1918ddaa0a37ba76c9753783aa2316880b29a8579 before reserved-original-route audit fix. Compiler owner must revalidate final source.",
+    "supervised_http_smoke": "Disposable PG/native fixture started. A real deep-link HTTP404 was found, fixed in SPA service fallback, and regression test source added. Corrected final fixture run remains paused under user audit-before-E2E direction.",
+    "owned_fixture_cleanup": "Both owned fixture attempts verified stopped, native process exit0, PostgreSQL exit0, no forced process cleanup, no browser launched.",
+    "browser_acceptance": "Pending audit clearance and same-session supervised browser launch."
+  }
+}

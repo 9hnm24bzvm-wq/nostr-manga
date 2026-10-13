@@ -1,0 +1,453 @@
+{
+  "additional_scope_omissions": [
+    "All nonselected raw logs/telemetry and intermediate evidence",
+    "Native/toolchain vendor sources/dependencies, installed toolchains, caches/node_modules and entire target caches",
+    "All private runtime databases, generated fixture identities/keys/passwords/cookies/tokens, credential directories, recovery passwords and any chat PAT",
+    "Ubunchu noncommercial source image bytes in .cache",
+    "Unrelated uploaded/user files",
+    "Other native test executables and verified dependency runtime binaries/libraries; supported-host transfer must restore them from their own reviewed provenance"
+  ],
+  "all_selected_canonical_inputs_present_and_byte_identical": true,
+  "build_status": {
+    "current_build_bound_by_exact_candidate023_terminal_receipts": true,
+    "fresh_build_executed_by_checkpoint": false,
+    "frontend_artifact_files": 401,
+    "frontend_build": "Build19/source534",
+    "frontend_build19_source_receipt": "weebdex-platform/test-evidence/frontend/final-build19/source-baseline.json",
+    "frontend_current_transform_receipt": "weebdex-platform/test-evidence/frontend/integration-source-manifest.json",
+    "frontend_execution_status": {
+      "announcement_routes_reconstructed": 3,
+      "approved_event_handler_exceptions": 1,
+      "artifact_is_latest_frozen_overlay": true,
+      "changed_inputs": [],
+      "command_exit": 0,
+      "current_source_build": "Build19/source534 passed against frozen relation eligibility repair",
+      "current_source_repairs": 534,
+      "last_attempt": {
+        "diagnostic": "External RecoveryBoundary could not resolve axios",
+        "owned_cleanup": true,
+        "status": "failed",
+        "terminal_evidence": "final-build7/build-result.json"
+      },
+      "overlay_original_paths": 106,
+      "overlay_repairs": 534,
+      "portable_output": "artifacts/frontend",
+      "remaining_owned_members": [],
+      "source_patchset": "Finite relation eligibility repair bundled; fresh independent source review/runtime gate pending",
+      "spa_fallback_sha256": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+      "status": "passed",
+      "terminal_evidence": "final-build19/build-result.json"
+    },
+    "frontend_output_matches_exact_artifact_receipt": true,
+    "historical_original_binaries": {
+      "manga-protocol-lab/build-artifacts/linux-x86_64/manga-demo": {
+        "bytes": 8574560,
+        "category": "historical-original-binary",
+        "mode": 493,
+        "sha256": "803af60b4c19db3f8c5dbcd3110e120ad58ea142f96a05e25cb5b5cc10195e2d"
+      },
+      "manga-protocol-lab/build-artifacts/linux-x86_64/manga-key-tool": {
+        "bytes": 1331528,
+        "category": "historical-original-binary",
+        "mode": 493,
+        "sha256": "226d370a807fd78f6718b3937cf897389648280006c478d1e1ed91ccdb69ace5"
+      },
+      "manga-protocol-lab/build-artifacts/linux-x86_64/manga-node": {
+        "bytes": 25125128,
+        "category": "historical-original-binary",
+        "mode": 493,
+        "sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a"
+      }
+    },
+    "historical_original_binary_gate": "manga-protocol-lab/results/rebuild-pool-lifetimes-final/canonical-acceptance.json",
+    "historical_original_binary_source_receipt": "manga-protocol-lab/results/rebuild-pool-lifetimes-final/canonical-source-after.json",
+    "native_candidate023": {
+      "bytes": 81311,
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/candidate-source.json",
+      "sha256": "d94878d178e3b614d72c9ca3ac7f2cf66ea48426d19e0f4ea91ec0870b2bcf37"
+    },
+    "native_compiled_source_inputs_matched": 99,
+    "native_normal": {
+      "bytes": 75362344,
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+      "sha256": "60c0ba20bc0ac3aef27dd70a0b9fad8fe7dfe8ff92913182d0dd38cb761bd0e6"
+    },
+    "native_provisioner": {
+      "bytes": 58565312,
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+      "sha256": "7b82dc67f1a5b00a1af89b70e74e48c11b99ff89991017ab5965326e01a0f013"
+    },
+    "other_test_executables_not_bundled": true
+  },
+  "excluded": [
+    {
+      "path": "recovery/restore-stage-4c499/checkpoint-tools/test_checkpoint_workflow.py",
+      "reason": "historical-tooling-negative-token-fixture-not-required-project-source"
+    },
+    {
+      "path": "manga-protocol-lab/src/__pycache__/",
+      "reason": "excluded-dependency-cache-private-or-runtime-root"
+    },
+    {
+      "path": "manga-protocol-lab/tests/__pycache__/",
+      "reason": "excluded-dependency-cache-private-or-runtime-root"
+    },
+    {
+      "path": "manga-protocol-lab/scripts/tests/__pycache__/",
+      "reason": "excluded-dependency-cache-private-or-runtime-root"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/node_modules/",
+      "reason": "excluded-dependency-cache-private-or-runtime-root"
+    },
+    {
+      "path": "weebdex-platform/scripts/__pycache__/",
+      "reason": "excluded-dependency-cache-private-or-runtime-root"
+    }
+  ],
+  "external_backup": {
+    "github_pushed": false,
+    "recovery_link_created": false,
+    "uploaded": false
+  },
+  "historical392": {
+    "changed": [
+      {
+        "historical_sha256": "f49a6b0ad769ed464f7906dbcea401b0010338ba99838fc1adcca9f44d1f87f3",
+        "path": "server/src/backend.rs",
+        "snapshot_sha256": "57edc3a8546ffc1592f76acbc6aded66a3a4990fb8c80df27bc0c1761fb6de43"
+      },
+      {
+        "historical_sha256": "f2d2bcb4e107ad4ef32157d533d5e1aa7ea5a4123057f706ef25076fae5f6cce",
+        "path": "server/src/bounded_response.rs",
+        "snapshot_sha256": "7fabe62848fb369b4c5a9c7f6c0dd4f7dab5aabaae74f3d852103692a0fa68bd"
+      },
+      {
+        "historical_sha256": "7f9589ad3fa05d06b8deeea924958cd3ac007e6da5772f85e0bb556f0a8ba51a",
+        "path": "server/src/catalogue.rs",
+        "snapshot_sha256": "4e8f3e3471ae6517b46ce653a86d555322804584a8d8b5b60564351ada6e1a84"
+      },
+      {
+        "historical_sha256": "dec15c22c9205c0bb19ac96e123955f25c02a7d10f8984f2eb2f2ed6be8d17e7",
+        "path": "server/src/groups.rs",
+        "snapshot_sha256": "48281729cc8a6a8640fee1385edceef40eadce91a982f34bf39d0098f37e68b3"
+      },
+      {
+        "historical_sha256": "01def25585b6b4cc96ac3c33147af19cf1053eb15b8fd72c7bfdde7fee8c717a",
+        "path": "server/src/inventory.rs",
+        "snapshot_sha256": "10951dd32c76e1b4d1e39aa22db5a494ee707275dd5dee471a8bb8d1327af8a5"
+      },
+      {
+        "historical_sha256": "761f9c0ef3052530f85ee070b662404494ac671a8e4021eb7f9358be1abe9533",
+        "path": "server/src/lib.rs",
+        "snapshot_sha256": "88d8f9b9603a0611784cd8ed2ba6e66469402dd25c9b0a9d117750c8944d6c02"
+      },
+      {
+        "historical_sha256": "83b13c7f241542d36b61e3b5df6c08c0beb011470775edcb4e91cb6c913c69bb",
+        "path": "server/src/library.rs",
+        "snapshot_sha256": "d076b7c19f139077c7f2b36cbb4ecac232496ff0b867755a6bce7d6203305dc8"
+      },
+      {
+        "historical_sha256": "ad7efab494dfab1ec476823830d3d29a1dcbc18055df2da673191dbd021c342f",
+        "path": "server/src/library_storage.rs",
+        "snapshot_sha256": "67b72b41a826967f78724b78f0ae917fc367721b77b153b03a283f99382cf866"
+      },
+      {
+        "historical_sha256": "aa4d226a24f4e058980883d2380f9a2bf3ebd00c19931552fb9677ce57fdc268",
+        "path": "server/src/library_view.rs",
+        "snapshot_sha256": "99f49b53925df7abaddd2c52ae8a65e93bdcd478a5182ef3bfc6f4b2fefbd532"
+      },
+      {
+        "historical_sha256": "ef245419de23a255876862308912c20f3c01a69cd9011c94918befb897bc4e57",
+        "path": "server/src/node/blossom_http.rs",
+        "snapshot_sha256": "ff130af70d6aa68e1857ff859c0c2e7c0823e01732eed00d6c4b6222d17adca8"
+      },
+      {
+        "historical_sha256": "b0cd43603c4d6fffee23b541ed91be0bb66f0da4491258fbd8a4735358838820",
+        "path": "server/src/node/read_admission.rs",
+        "snapshot_sha256": "63bbf3de850d922a781752ee27a3afebfcd9e01c001786a76d4435c7aa3e5e9c"
+      },
+      {
+        "historical_sha256": "d8d58a0ef5d35fa4565e11071ab1f47bba6a34c65f0a18fe6cbd507d4a0d5697",
+        "path": "server/src/node/review_http.rs",
+        "snapshot_sha256": "c83ecd8d193b428808ec7a1950c2fb78dc324a2f1970d9804e351a4d4f672ff7"
+      },
+      {
+        "historical_sha256": "ca717dfd2e8485e2d4e4146058bfefce708110d49a1fc3f74c0c80903a27e7fa",
+        "path": "server/src/node.rs",
+        "snapshot_sha256": "9e2d09fda7e05a8bbc740879b9ed5622a189e853eec66ceda8c1c7daec4024a3"
+      },
+      {
+        "historical_sha256": "d1b9a69d65538e96de744b3dd7424ff4de72d5ace92a1ba582457387cf5c6508",
+        "path": "server/src/peers.rs",
+        "snapshot_sha256": "15928a16624655079830566fa3b470b0da876dd6b47e3912df85b9fb8bb4a3f7"
+      },
+      {
+        "historical_sha256": "2f5a7b5f2df4e1ef3aec0d8d0d80a46722db890fc2630eb043d9e5dff23bf978",
+        "path": "server/src/publication.rs",
+        "snapshot_sha256": "6fb7ebf4fbf7ee2537f9bc04546c416ac00205a392ae31d91892bc410b3a6fd6"
+      },
+      {
+        "historical_sha256": "d8abe99f2309740688ce70cc19e3515cdd23567cacc67e673f0792f77634f3e0",
+        "path": "server/src/relay.rs",
+        "snapshot_sha256": "cfc1cd5d5b7bd4e4c1263b79fe82a58cd2a49f942673db0b17a9cdefcbfcc8a5"
+      },
+      {
+        "historical_sha256": "ebbbac585f29e9d4a254e337fedd90b9e2e7fedfca00afca28b35db862029a7c",
+        "path": "server/src/relay_dispatch.rs",
+        "snapshot_sha256": "53606a4cf6ad33833e85102df0721c35dd6b5b05bdcbae99d07755caac213b8f"
+      },
+      {
+        "historical_sha256": "a3917f9bbc6dff3991d3a22034eebae68bb6a1bbe0247a34a7b38f53decac914",
+        "path": "server/src/relay_feed.rs",
+        "snapshot_sha256": "de40a4fe6c192c7aca5474bfd4135839f7addb63ccc16004d9210d5e72f41026"
+      },
+      {
+        "historical_sha256": "4ca27dea6d90812d463c95ce2f2ff839d14022ce399cc265489ba00462068c10",
+        "path": "server/src/serving_role.rs",
+        "snapshot_sha256": "334cde8061cca308103bd4c3fa699b6108b8630bf9d8127c5ad816d41bf474ff"
+      },
+      {
+        "historical_sha256": "9bc74e72457853e33960f30f790c3388005db0544632871f5cbec42719a271f2",
+        "path": "server/src/storage.rs",
+        "snapshot_sha256": "ae37007e1b329492e59b4442f7f2d26d91f1ad153d3ee82b39d25a1916998f80"
+      },
+      {
+        "historical_sha256": "561edb780e2ad05fb942930173a079f4d87fd81abce5a6ac4cf9c53274dab63e",
+        "path": "server/src/sync_jobs.rs",
+        "snapshot_sha256": "fdd55c47a8a41ad7d2cf5f87fdfa331a5096816e61f5f8bda0a988c6752f7b48"
+      },
+      {
+        "historical_sha256": "cda13102ff4255f860a429abb0982e87b71c023fa9e5e90e6c6505d930036f40",
+        "path": "server/src/upload.rs",
+        "snapshot_sha256": "390c2304dfa1c490ab5802b8216eb9f6173011d3b18e203d7c3f4df4f5abd87b"
+      },
+      {
+        "historical_sha256": "bd553cda3299bda8c2ae8a3f341b795b88556e01a8ad6835c17d4fcda7b2e938",
+        "path": "scripts/package.py",
+        "snapshot_sha256": "04fd9f8c00153dde5b109891025af59b953ea8f891b12a5f25b57a44b8fb8b1b"
+      },
+      {
+        "historical_sha256": "49db9f02695a6b16952bcabab72240d9a978d881878e2da4c1fc0277d2aa92a2",
+        "path": "scripts/tests/test_package_cli.py",
+        "snapshot_sha256": "56dbd25c521277c669fab1bd3ce5b8d3dbf38eb37d2b220edc74fb08d8628f92"
+      }
+    ],
+    "claim": "Five original historical diagnostic inputs remain missing; no perfect historical completeness claim.",
+    "expected": 392,
+    "manifest_sha256": "a26e31ca2d65abfb8bdb500249ebab4c3c68f9c55a90823e686b6c8388b2e763",
+    "matching": 363,
+    "missing": [
+      {
+        "historical_sha256": "d480aa1c6d9ef1d8e93d6cb3c9a70ab19ff94b748578dd018b9a541e6a8377fb",
+        "path": "server/diagnostics/managed-group-key-storage-check.rs.txt"
+      },
+      {
+        "historical_sha256": "c95e4775edc775bb964a76574954ca20f12d2af05577224c51251b5e44efe43c",
+        "path": "server/diagnostics/rebuild-oct8/README.md"
+      },
+      {
+        "historical_sha256": "d7db9b451566f4685d29123be095fd1d2d37950a5c854b6d29edf0a5ce46c3b4",
+        "path": "server/diagnostics/rebuild-oct8/library_ref_index.rs"
+      },
+      {
+        "historical_sha256": "65c2d4ae27b79f91078cc6b64b315c120ecb43d245c37f8855d396496635447e",
+        "path": "server/diagnostics/rebuild-oct8/reclamation_reference_index.rs"
+      },
+      {
+        "historical_sha256": "ddd1c9aafe809d7976e67bfbf99ee8823326e206b6841c24cabee61339246f76",
+        "path": "server/diagnostics/rebuild-oct8/retention_index.rs"
+      }
+    ]
+  },
+  "original52migrations_historical_hashes_unchanged": true,
+  "original_delta_manifest_sha256": "cacc69e88bbc4fcd6e3faad25b9ad38d3d518078654e8ad93e230e7240772b3a",
+  "original_delta_paths_matched": 23,
+  "original_frontend_attachment_files_exactly_preserved": 676,
+  "source_inputs": 1574,
+  "status": "reviewed-selected-snapshot-coverage-local-only",
+  "synthetic_source_review": {
+    "authorized_local_fixture_expressions": true,
+    "classification": "Public source test/demo fixtures, parameter names and environment-constructed test DSNs; no selected evidence has a literal credential marker. Actual generated credentials/keys/private runtime directories were not selected/read. Original public .env/.npmrc inputs matched all676 original-parity hashes and a bounded non-secret key validation.",
+    "literal_marker_paths": [
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          38
+        ],
+        "path": "manga-protocol-lab/bench/library-node/fixture.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          38
+        ],
+        "path": "manga-protocol-lab/bench/library-node/load-control-fixture.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          38
+        ],
+        "path": "manga-protocol-lab/bench/library-node/load-fixture.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          71,
+          72
+        ],
+        "path": "manga-protocol-lab/bench/library-node/mixed-fixture.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          197,
+          305
+        ],
+        "path": "manga-protocol-lab/bench/library-node/test_pg_diagnostics.py"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          38
+        ],
+        "path": "manga-protocol-lab/bench/library-node/versions/load-fixture-before-gc.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          38
+        ],
+        "path": "manga-protocol-lab/bench/library-node/versions/load-fixture-before-process-metrics.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          38
+        ],
+        "path": "manga-protocol-lab/bench/library-node/versions/load-fixture-checkpoint20.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          57,
+          58
+        ],
+        "path": "manga-protocol-lab/runtime/run-demo.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          36
+        ],
+        "path": "manga-protocol-lab/scripts/test-postgres.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          58,
+          87,
+          133,
+          179,
+          206
+        ],
+        "path": "manga-protocol-lab/tests/test_backup_cli.py"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          71,
+          77,
+          92
+        ],
+        "path": "platform-planning/auth-flow-contract.json"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          78
+        ],
+        "path": "platform-planning/build_ticket_graph.py"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          967,
+          1011,
+          1014,
+          1453,
+          1497,
+          1762
+        ],
+        "path": "weebdex-platform/backend/tests/auth_http.rs"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          35
+        ],
+        "path": "weebdex-platform/scripts/run-auth-tests.sh"
+      },
+      {
+        "category": "source-input",
+        "literal_marker_lines": [
+          14
+        ],
+        "path": "weebdex-platform/scripts/run-original-tests-in-fixture.sh"
+      }
+    ],
+    "values_disclosed": false
+  },
+  "test_evidence": {
+    "browser_capability_and_transfer_docs_preserved": true,
+    "browser_phases_executed": 0,
+    "browser_planned_phases": 38,
+    "browser_status": "blocked supported browser environment; no first page reached",
+    "browser_user_control_steps_passed": 0,
+    "http_pg_distinct_case_index": {
+      "bridge_test_only_revision": 23,
+      "distinct_cases": 14,
+      "failed": 0,
+      "groups": {
+        "auth": 3,
+        "catalog": 1,
+        "community_moderation_analytics": 1,
+        "library": 1,
+        "protocol_bridge": 1,
+        "uploads": 7
+      },
+      "ignored": 0,
+      "licensed_real_images": {
+        "attribution_preserved": true,
+        "chapter_sessions": 2,
+        "cover_original_uploaded_and_served": 1,
+        "manifest": {
+          "bytes": 25509,
+          "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/tests/fixtures/ubunchu-manifest.json",
+          "sha256": "279dff36348bfef4b60b2923c33b82de80c4ee812756eb53567be4ac64afeb92"
+        },
+        "no_external_publication": true,
+        "original_pngs_uploaded_and_served": 24
+      },
+      "passed": 14,
+      "production_revision": 22,
+      "receipts": [
+        "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003",
+        "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/protocol-bridge-http-003-result.json"
+      ]
+    },
+    "limits": "These are preserved owner execution receipts, not new tests or complete feature/performance/production acceptance. Historical failed attempts remain preserved; raw logs are deliberately absent.",
+    "original_system_runtime": "pending focused regressions",
+    "production_readiness_claimed": false,
+    "unit_contract_tests": {
+      "failed": 0,
+      "ignored": 0,
+      "library": 64,
+      "main": 0,
+      "passed": 67,
+      "receipts": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004",
+      "upload_storage_contract": 3
+    }
+  }
+}

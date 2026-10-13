@@ -1,0 +1,33 @@
+{
+  "created_utc": "2026-10-12T21:19:59.148762+00:00",
+  "files": {
+    "results/rebuild-package-coverage-20261012/INDEPENDENT-REVIEW.json": "e7e393f49f8c2a96450644baba213851d4cff54e27e06718d465f7fd3cf2e6b8",
+    "results/rebuild-package-coverage-20261012/INDEPENDENT-REVIEW.md": "db3d4e22727057233421afaa04c13ca85c8d865effbf90b45313c85e604c242f",
+    "results/rebuild-package-coverage-20261012/RESTORE-AUDIT.md": "22d07bda95dbc124b7ef408c3432685cf7b5b63909cbea0d59fe38105b725e9d",
+    "results/rebuild-package-coverage-20261012/baseline-wrong-success.json": "dde1b4f91b5b90c7987b1310da81bb48a6f3aec6174b41f70406d85f565e5df6",
+    "results/rebuild-package-coverage-20261012/before/package.py": "bd553cda3299bda8c2ae8a3f341b795b88556e01a8ad6835c17d4fcda7b2e938",
+    "results/rebuild-package-coverage-20261012/before/test_package_cli.py": "49db9f02695a6b16952bcabab72240d9a978d881878e2da4c1fc0277d2aa92a2",
+    "results/rebuild-package-coverage-20261012/before-browser-extension.py": "ecccf5f99c2086cc0006cf8c16f25716aecd98261fd811ab55c2d4a20bdcf275",
+    "results/rebuild-package-coverage-20261012/candidate-source.json": "0c75135c26efc00c9e2b6d859177df6e360a4247642d7197b5fbd3569fcfb966",
+    "results/rebuild-package-coverage-20261012/coverage-audit.json": "b908edf1691999afa6179f61fd75a9f9a25999b1e78868174adc0737c9ebcb1b",
+    "results/rebuild-package-coverage-20261012/green-cli-001.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "results/rebuild-package-coverage-20261012/green-cli-001.log": "4a8e12da028bc4c976882e6cfd390d01e9e3b6b454a9e066a6528af71e70ca04",
+    "results/rebuild-package-coverage-20261012/green-cli-002.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "results/rebuild-package-coverage-20261012/green-cli-002.log": "86bdbc036ad6b0477ea31e88f56d763b70291ed27f4dcbeebc56f840fb9f1930",
+    "results/rebuild-package-coverage-20261012/green-cli-003.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "results/rebuild-package-coverage-20261012/green-cli-003.log": "60c72a809a46fd4ee738dcfb430b09cc263f71167a2f6795646ead3091ff2603",
+    "results/rebuild-package-coverage-20261012/red-browser-assets.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "results/rebuild-package-coverage-20261012/red-browser-assets.log": "792941b5233d15d77ea1b69b9d26014b52d67b1962aff778df655997d9fa1063",
+    "results/rebuild-package-coverage-20261012/red-cli.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "results/rebuild-package-coverage-20261012/red-cli.log": "e06fd49b7aecffbd3521b2f555f41f271d98428db1708ec304b3e1ad51aa3c95",
+    "results/rebuild-package-coverage-20261012/red-test-source.py": "0242a7ac05d56c79885f79ebbf18ab3f664ef8d51237048cfd14cffb3bc4f42d",
+    "results/rebuild-package-coverage-20261012/restored-coverage-refusal-002.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "results/rebuild-package-coverage-20261012/restored-coverage-refusal-002.log": "c6d8aae3e2ee44509dac66b574c5cd716600674787937f1e954825a7d406e2ab",
+    "results/rebuild-package-coverage-20261012/restored-coverage-refusal.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "results/rebuild-package-coverage-20261012/restored-coverage-refusal.log": "111b87e13c17f89249abc61a141314893f763e543d9b3ad941faeb9086e6fd4d",
+    "results/rebuild-package-coverage-20261012/scripts__package.py.patch": "4e19e3702e0007de0dde63df0fc6004696b551eb9b1b3bc873817bd8968f4bac",
+    "results/rebuild-package-coverage-20261012/scripts__tests__test_package_cli.py.patch": "b8e4552b33e5997dad03c2e3d0f520f079e6768b5752df14e785edc098a9fa5c",
+    "docs/rebuild/RESTORATION-STATUS-2026-10-12.md": "f5d210f1a4913d603c1139fc0d85b76494c9f45dc105ecc322e14a4874a69ab9",
+    "results/rebuild-package-coverage-20261012/acceptance.json": "0ffb7c099ebaa370b0eb581b6ad37a98e112b7033f59501a29cf307d58e86dba"
+  }
+}

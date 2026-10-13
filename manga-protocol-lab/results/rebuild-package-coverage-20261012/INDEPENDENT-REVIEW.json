@@ -1,0 +1,36 @@
+{
+  "reviewed_utc": "2026-10-12T21:16:31.890088+00:00",
+  "verdict": "approved_with_explicit_coverage_scope",
+  "method": "Independent read-only source/diff/test/evidence review; no duplicate CLI tests, builds or application traffic.",
+  "checked_hashes": {
+    "results/rebuild-package-coverage-20261012/candidate-source.json": "0c75135c26efc00c9e2b6d859177df6e360a4247642d7197b5fbd3569fcfb966",
+    "results/rebuild-package-coverage-20261012/baseline-wrong-success.json": "dde1b4f91b5b90c7987b1310da81bb48a6f3aec6174b41f70406d85f565e5df6",
+    "results/rebuild-package-coverage-20261012/coverage-audit.json": "b908edf1691999afa6179f61fd75a9f9a25999b1e78868174adc0737c9ebcb1b",
+    "results/rebuild-package-coverage-20261012/red-cli.log": "e06fd49b7aecffbd3521b2f555f41f271d98428db1708ec304b3e1ad51aa3c95",
+    "results/rebuild-package-coverage-20261012/red-browser-assets.log": "792941b5233d15d77ea1b69b9d26014b52d67b1962aff778df655997d9fa1063",
+    "results/rebuild-package-coverage-20261012/green-cli-003.log": "60c72a809a46fd4ee738dcfb430b09cc263f71167a2f6795646ead3091ff2603",
+    "results/rebuild-package-coverage-20261012/restored-coverage-refusal-002.log": "c6d8aae3e2ee44509dac66b574c5cd716600674787937f1e954825a7d406e2ab",
+    "results/rebuild-package-coverage-20261012/scripts__package.py.patch": "4e19e3702e0007de0dde63df0fc6004696b551eb9b1b3bc873817bd8968f4bac",
+    "results/rebuild-package-coverage-20261012/scripts__tests__test_package_cli.py.patch": "b8e4552b33e5997dad03c2e3d0f520f079e6768b5752df14e785edc098a9fa5c",
+    "scripts/package.py": "04fd9f8c00153dde5b109891025af59b953ea8f891b12a5f25b57a44b8fb8b1b",
+    "scripts/tests/test_package_cli.py": "56dbd25c521277c669fab1bd3ce5b8d3dbf38eb37d2b220edc74fb08d8628f92"
+  },
+  "historical_manifest_unchanged": true,
+  "historical_acceptance_unchanged": true,
+  "findings": [
+    "Required paths are a coverage requirement; only exact manifest-required historical diagnostic/static public asset paths may extend the usual selection.",
+    "Required hashes are matched to streamed copied-byte hashes after the temporary ZIP itself passes CRC and SHA verification, before atomic replacement.",
+    "Prior outputs are preserved on observed omitted/mismatched/private-path/input failures; temporary cleanup remains in finally.",
+    "Tests exercise the actual CLI and reopened archives; private helper return values are not outcome oracles.",
+    "Twelve methods pass in the frozen CLI log. New-option absence failures are correctly separate from three legacy wrong-success observations and the later genuine static-browser-asset refusal regression.",
+    "Current original392-input packaging is correctly refused because five historical diagnostic files are absent; the fix does not recreate them."
+  ],
+  "limits": [
+    "Completeness is relative to a trusted independently reviewed supplied manifest. An incomplete or changed manifest cannot certify unavailable source parity.",
+    "The option is opt-in; calls without it report checked=false and must not claim accepted canonical coverage.",
+    "Path allow/deny rules do not inspect arbitrary file contents for secrets. Exact selection, reviewed manifests/evidence and existing privacy review remain required.",
+    "The archived checkpoint helper was not modified by this patch. Future checkpoint assembly must invoke the new coverage check or an equivalent independently enforced gate.",
+    "Existing symlink checks and O_NOFOLLOW are preserved; this is not a claim of a hostile concurrent-filesystem race-proof sandbox.",
+    "No fresh full project gate, missing-diagnostic recovery, new archive delivery or performance qualification was established."
+  ]
+}

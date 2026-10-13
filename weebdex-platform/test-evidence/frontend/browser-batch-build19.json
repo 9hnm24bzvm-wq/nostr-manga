@@ -1,0 +1,237 @@
+{
+  "prepared_utc": "2026-10-13T12:07:58.969301+00:00",
+  "parent_runtime_gate": "Explicitly opened2026-10-13T12:07UTC after fresh independent BF08 PASS",
+  "fast_mode": false,
+  "frontend_generation": "Build19/source534",
+  "startup_plan_sha256": "eb06edc33636383117f4bfa3801e0069267abf081d0b883faf06a9a75974ec41",
+  "planned_phases": 38,
+  "executed_phases": 0,
+  "passed_phases": 0,
+  "failed_phases": 0,
+  "phases": [
+    {
+      "name": "startup",
+      "status": "blocked_environment_before_page",
+      "browser_launch_attempts": 1,
+      "completed_utc": "2026-10-13T12:18:59.412Z",
+      "evidence": "test-evidence/frontend/browser/startup-build19-gate1/acceptance.json",
+      "owned_phase": "test-runtime/browser-final-bim32hyi/browser-phase-startup.json",
+      "application_steps_executed": 0
+    },
+    {
+      "name": "account",
+      "status": "unrun"
+    },
+    {
+      "name": "account-recovery",
+      "status": "unrun"
+    },
+    {
+      "name": "upload",
+      "status": "unrun"
+    },
+    {
+      "name": "reader",
+      "status": "unrun"
+    },
+    {
+      "name": "announcements",
+      "status": "unrun"
+    },
+    {
+      "name": "local-library",
+      "status": "unrun"
+    },
+    {
+      "name": "filters",
+      "status": "unrun"
+    },
+    {
+      "name": "editorial",
+      "status": "unrun"
+    },
+    {
+      "name": "community",
+      "status": "unrun"
+    },
+    {
+      "name": "pwa",
+      "status": "unrun"
+    },
+    {
+      "name": "ui10-api-client",
+      "status": "unrun"
+    },
+    {
+      "name": "ui10-auth-lifetimes",
+      "status": "unrun"
+    },
+    {
+      "name": "ui10-recovery-lifetimes",
+      "status": "unrun"
+    },
+    {
+      "name": "ui10-preferences",
+      "status": "unrun"
+    },
+    {
+      "name": "ui10-reader-transition",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-library",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-profile",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-social",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-context",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-source-controls",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-namespace",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-recipients",
+      "status": "unrun"
+    },
+    {
+      "name": "signed-restart",
+      "status": "unrun"
+    },
+    {
+      "name": "ui11-device-navigation",
+      "status": "unrun"
+    },
+    {
+      "name": "ui11-device-progress",
+      "status": "unrun"
+    },
+    {
+      "name": "ui12-compact-feed",
+      "status": "unrun"
+    },
+    {
+      "name": "ui13-terminal-feed",
+      "status": "unrun"
+    },
+    {
+      "name": "ui13-feed-authority",
+      "status": "unrun"
+    },
+    {
+      "name": "ui14-entity-pagination",
+      "status": "unrun"
+    },
+    {
+      "name": "ui14-account-failures",
+      "status": "unrun"
+    },
+    {
+      "name": "ui14-home-failures",
+      "status": "unrun"
+    },
+    {
+      "name": "ui15-chapter-filter",
+      "status": "unrun"
+    },
+    {
+      "name": "ui15-reader-feedback",
+      "status": "unrun"
+    },
+    {
+      "name": "ui15-reader-geometry",
+      "status": "unrun"
+    },
+    {
+      "name": "ui15-16-empty-tabs",
+      "status": "unrun"
+    },
+    {
+      "name": "ui16-home-preferences",
+      "status": "unrun"
+    },
+    {
+      "name": "ui16-search-cap",
+      "status": "unrun"
+    }
+  ],
+  "lifecycle_owner": "complete_deployment_security_configuration",
+  "browser_owner": "preserve_weebdex_frontend",
+  "runtime_databases_credentials_and_private_keys_excluded_from_evidence": true,
+  "known_scope_limit": "A phase pass is concrete journey coverage, not all475 visible anchors or pixel parity.",
+  "updated_utc": "2026-10-13T12:33:05.805213+00:00",
+  "fixture_launch_attempts": [
+    {
+      "runtime": "test-runtime/browser-final-yd9pkz0k",
+      "outcome": "failed_before_app_or_browser",
+      "blocker": "Real protocol fixture provisioner signed seed action failed",
+      "browser_queue_submitted": false,
+      "cleanup_owner_report": "verified_stopped; all children/ports gone, ephemeral keys removed, no forced cleanup; root exit1",
+      "actual_browser_phases_executed": 0
+    },
+    {
+      "runtime": "test-runtime/browser-final-88v1u8um",
+      "variant": "native-only protocol_enabled:false",
+      "outcome": "app_reached_operational_checks_but_browser_not_queued",
+      "blocker": "Fixture expected404 for a source-declared POST-only dynamic auth route; actual405 is legitimate",
+      "browser_queue_submitted": false,
+      "cleanup_owner_report": "all native runtimechildren and3ports closed; no force",
+      "actual_browser_phases_executed": 0
+    },
+    {
+      "runtime": "test-runtime/browser-final-64o5q1ry",
+      "variant": "full combined",
+      "outcome": "real_canonical_seed_projected_both_original_listeners_ready_browser_unqueued",
+      "blocker": "Fixture expected404 for malformed seven-character media ID; actual400 is legitimate",
+      "browser_queue_submitted": false,
+      "cleanup_owner_report": "all runtimechildren/ports/keys stopped; no force",
+      "actual_browser_phases_executed": 0
+    },
+    {
+      "runtime": "test-runtime/browser-final-bim32hyi",
+      "variant": "full combined",
+      "outcome": "ready32_real_operational_checks_and_protocol_projected",
+      "browser_queue_submitted": true,
+      "startup_chromium_launch": "failed_before_first_page",
+      "blocker": "process_singleton socket() EPERM / Chromium SIGABRT",
+      "owned_browser_terminal": "returncode1 verified_stopped true forced false",
+      "actual_browser_user_control_steps_executed": 0
+    }
+  ],
+  "batch_status": "blocked_supported_browser_environment",
+  "browser_launch_attempts": 1,
+  "first_chromium_fixture_cleanup": {
+    "evidence": "test-runtime/browser-final-bim32hyi/cleanup.json",
+    "status": "verified_stopped",
+    "final_teardown_clean": true,
+    "lifecycle_clean": false,
+    "closed_ports": null,
+    "keypairs_absent": null
+  },
+  "cloud_browser_probe": {
+    "documented_route_available": true,
+    "single_navigation": "http://127.0.0.1:45515/",
+    "outcome": "net::ERR_CONNECTION_REFUSED",
+    "error_page_inspection": "blocked by browser URL security policy; no bypass",
+    "documented_port_forward_or_private_preview": "not advertised",
+    "application_user_control_steps": 0
+  },
+  "final_fixture_execution_evidence": {
+    "path": "test-evidence/security/fixture-execution-20261013.json",
+    "sha256": "bbb12f89de4162b6cc2f4ffe3423dfb49151a5d37ef7bd9041992d31f1da3008",
+    "owner_summary": "all six fixtures fully stopped, keys removed, no surviving children;32 real HTTP checks passed including original startup/projection"
+  },
+  "remaining_required": "Run all38 real browser phases in a supported browser-accessible fixture environment; retain current source/artifact pins and read-only transfer instructions."
+}

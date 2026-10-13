@@ -1,0 +1,417 @@
+{
+  "qualification": "Source-prepared real-control journeys and explicitly separate remaining requirements. No browser application runtime executions/accepted outcomes exist. Independent source gate remains open.",
+  "shared_repairs": 181,
+  "local_repairs": 87,
+  "cases": [
+    {
+      "name": "register and verify synthetic account using real forms and local email",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "preference save uses authoritative version and persists after reload",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "SPA logout, rejected login, successful login refresh real Session",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "lost successful begin response is not replayed and owner staging reconciles",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "corrupt image and corrupt archive release upload controls without fake success",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "real image upload privately saves metadata and exact order then resumes on reload",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "commit actual image pages using form then read ordered published images",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "reader image failures expose real Retry and recover genuine decoded bytes",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "reader keyboard navigation and real image byte range retain correct order",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "staff creates private announcement with visible form and anonymous isolation",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "staff edits publishes pins and deletes exact versioned announcement",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "empty explicit ratings emit sentinel and genuinely return zero results",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "safe rating title and has-chapters controls produce real nonempty narrowed feed",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "reset and back-forward use initialized query semantics without double question marks",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "staff creates real title draft with author artist and original cover controls",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "submit reject revise submit preserve actual authoritative transition versions",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "publish local scope and repeated lock unlock controls refresh actual versions",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "real comment create edit and persisted reload controls",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "real group creation and ownership claim stays pending before moderation",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "moderator accepts exact claim using report control and actual leadership effect",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "comment deletion hides body without pretending hard peer deletion",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "anonymous default device follow persists without account or automatic publication",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "real reader progress persists locally and survives password identity changes",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "custom list controls and reviewed scoped backup export/import persist actual device rows",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "explicit account mode and account import preserve independent device state",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "optional signer requires explicit selection and dismissal does not queue publication",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "installed service worker purges exact poisoned legacy caches without local database loss",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "authority routes win adversarial favicon IDs/query and never fall back offline",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "replacement rejects invalid images before mutation and reconciles one lost atomic response",
+      "status": "not_run",
+      "qualification": "Actual user-control journey source prepared; runtime not run.",
+      "source_journey_implemented": true
+    },
+    {
+      "name": "double-spread second-page deep link stays visible after reload and quality changes",
+      "status": "not_run",
+      "qualification": "Actual user-control journey source prepared; runtime not run.",
+      "source_journey_implemented": true
+    },
+    {
+      "name": "same-title alternative language reader uses current aggregate without stale navigation",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "width10 to100 long strip progresses with real tall page geometry",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "hold scroll key then SPA navigation or blur stops owned RAF",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "report draft private history A logout B Back cannot show A DTOs",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "whole-file CSV MAL import stops before next batch after destination change",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "canonical family switch drops late rows and removes only captured family key",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "title chapter editors and upload switch target without reusing old draft or staged files",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "follow response after device to account switch does not update the account cache",
+      "status": "not_run",
+      "qualification": "Source regression acceptance requirement; detailed harness preparation pending where not yet implemented.",
+      "source_journey_implemented": false
+    },
+    {
+      "name": "held keyboard scrolling stops after reader destruction and blur",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "long-strip width slider refreshes actual tall-page geometry and progress",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "same-title language change rejects an old pending reader aggregate",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "Actual user-control journey source prepared; runtime not run."
+    },
+    {
+      "name": "real mail recovery mounts reset-only UI without personal account or library authority",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "password-only CSRF form rotates session and only the new password authenticates",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "single failed batch remains visibly recoverable and cancellation409 preserves staging",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "invalid dirty chapter metadata can Revert without a mutation or navigation trap",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "genuine original module fixture and current canonical aliases are browser-visible",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "anonymous device controls persist mapped and native-only records without signer or publication",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "external signer and actual service recipient require explicit independent selection",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "reviewed snapshot signer denial preserves all independent local rows",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "denied authentication proof and actual unadmitted key retain one exact approved snapshot",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "explicit original account admission and exact approved retry reach genuine public projection",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "lost genuine library acceptance response retains exact-event retry through ordinary reload",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "verified real relay recovery restores portable canonical rows while native rows remain separate",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "ordinary reload and reviewed canonical backup import preserve scope and never autopublish",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "public action fixture admission and dynamic target panel remain independent from password identity",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "authored metadata withdrawal uses visible exact-event review and real original kind5 endpoint",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "real canonical source conversation supports reviewed signed comment and reaction",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "visible reply review signs canonical root and immediate verified parent exactly",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "lost actual social acceptance response reconciles exact public counterpart without replay",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "failed transport remains unknown after missing counterpart and explicit retry sends only saved event",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "authored source comment withdrawal is verified through real endpoint and public feed",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "target change during a real pending read cannot attach old source or conversation",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "unsent review cancellation and target changes discard consent without signing",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "signer-return target race saves exact original intent and cancellation stops every transport",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "explicit exact-body retry remains bound to original recipient and source after target change",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    },
+    {
+      "name": "a genuinely signed altered NIP07 result is rejected by application exact-template validation",
+      "status": "not_run",
+      "source_journey_implemented": true,
+      "qualification": "User-control journey source prepared; no runtime outcome exists."
+    }
+  ],
+  "missing_fixture_requirements": [
+    "Real original service + currently authorized source mappings for signed pending publication/recovery/relay acceptance",
+    "Selected ephemeral external synthetic signer with keys only in harness memory",
+    "Warm installed-worker real revoke/delete/logout/account-switch cases beyond adversarial stale-cache marker checks"
+  ],
+  "reader_repairs": 26,
+  "source_only": true,
+  "signed_journey_phases": [
+    "signed-library",
+    "signed-profile",
+    "signed-social",
+    "signed-context"
+  ],
+  "account_recovery_phase": "account-recovery"
+}

@@ -1,0 +1,67 @@
+{
+  "updated_utc": "2026-10-13T12:18:09.050883+00:00",
+  "status": "repaired_seed_and_mapping_verified_in_owned_actual_runtime_browser_pending",
+  "failure_root": "test-runtime/browser-final-yd9pkz0k",
+  "failure_observation": "Seed exit1 before canonical-seed/store-open. Masked error did not assert source acceptance. Cleanup verified stopped with no owned remainder.",
+  "root_cause": "Fixture underscores violate unchanged original UploadStore volume grammar alphanumeric or hyphen. Both source and recipient fixture volume names corrected.",
+  "source_path": "backend/examples/browser_fixture_provisioner.rs",
+  "source_sha256": "dcfe71335710e5ac5f9e201a06c533005417823508cf5b676fff002c90d3d559",
+  "candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6",
+  "production_original_source_changed": false,
+  "normal_binary_unchanged": true,
+  "safe_diagnostic": "Only fixed stage/reason labels. No raw errors, paths, request/config, signed body or credential output.",
+  "source_tests": [
+    "synthetic_volumes_match_original_upload_store_grammar",
+    "safe_seed_diagnostics_emit_only_static_stage_and_reason"
+  ],
+  "runtime_tests_executed": 0,
+  "successful_signed_seed": true,
+  "check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/cargo-check-fixture-repair-001-result.json",
+    "sha256": "93cc420014f6b40ad71b727803ebd594ef6989391b2ed160549e87919ef88883",
+    "status": "passed",
+    "source_candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6",
+    "completed_utc": "2026-10-13T12:12:27.455165+00:00"
+  },
+  "example_build": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/cargo-build-fixture-006-result.json",
+    "sha256": "db69b09e78fa58c5beb41de4ff6f6c9be0b755f46a4e11588a1ae0b25d146b36",
+    "status": "passed",
+    "source_candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6",
+    "completed_utc": "2026-10-13T12:12:44.936135+00:00"
+  },
+  "example_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "sha256": "639d83407e2b7e72b3b1d3a21a254c5416f1d5910f10d40c321183db413f5f8f",
+    "bytes": 58565240,
+    "executed": false,
+    "compiled_current_source": true
+  },
+  "example_unit_test_execution": 0,
+  "actual_runtime": {
+    "root": "test-runtime/browser-final-64o5q1ry",
+    "seed_receipt": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-runtime/browser-final-64o5q1ry/protocol-seed.json",
+      "sha256": "19257f4470df967c8a56b6da27cb2d2f5e316d7adbc7ee24e8b9a2f2c67b9e89"
+    },
+    "supervisor_receipt": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-runtime/browser-final-64o5q1ry/supervisor.json",
+      "sha256": "f90e61b9788c803079a5e0011ee285d11450d51338595d8113f148a2de8ededd"
+    },
+    "cleanup_receipt": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-runtime/browser-final-64o5q1ry/cleanup.json",
+      "sha256": "9db4bbf61494c7b92075ef735c0c791c1cdb086cf63eeb7f993e8ca1eb54691d"
+    },
+    "compiled_provisioner_sha256": "639d83407e2b7e72b3b1d3a21a254c5416f1d5910f10d40c321183db413f5f8f",
+    "canonical_series_hosted": true,
+    "canonical_chapters_hosted": 2,
+    "canonical_snapshots": 3,
+    "actual_projection_resources_fully_ready": true,
+    "all_owned_processes_stopped": true,
+    "all_ports_closed": true,
+    "server_keys_removed": true,
+    "browser_started": false,
+    "complete_E2E_pass": false,
+    "subsequent_blocker": "Separate fixture-only invalid seven-character media path expected404 although actual validation correctly returns400. Owner is correcting its assertion."
+  }
+}

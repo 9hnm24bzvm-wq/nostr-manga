@@ -1,0 +1,33 @@
+{
+  "utc": "2026-10-13T12:22:30.938164+00:00",
+  "probe": "Python socket creation and immediate close; no bind/listen/connect",
+  "default_exec": {
+    "AF_UNIX_STREAM": {
+      "allowed": false,
+      "errno": 1,
+      "error": "Operation not permitted"
+    },
+    "AF_INET_STREAM": {
+      "allowed": true
+    }
+  },
+  "supported_require_escalated_exec": {
+    "tool_request": "accepted_and_executed",
+    "AF_UNIX_STREAM": {
+      "allowed": false,
+      "errno": 1,
+      "error": "Operation not permitted"
+    },
+    "AF_INET_STREAM": {
+      "allowed": true
+    }
+  },
+  "external_connections": 0,
+  "listeners_created": 0,
+  "security_or_network_settings_changed": false,
+  "browser_flags_added": false,
+  "available_registered_environments": [],
+  "available_saved_coding_environments": [],
+  "interpretation": "The supported escalation route does not supply Chromium-required AF_UNIX IPC in this execution environment. No repeated Chromium launch is justified by these capabilities.",
+  "browser_application_user_control_steps_executed": 0
+}

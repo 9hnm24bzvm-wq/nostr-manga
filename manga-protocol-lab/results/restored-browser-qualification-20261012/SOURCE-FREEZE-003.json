@@ -1,0 +1,73 @@
+{
+  "schema": "restored-browser-source-freeze-v3",
+  "status": "unexecuted",
+  "tests_run": 0,
+  "services_launched": 0,
+  "browser_qualification_started": false,
+  "node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+  "browser_build": "e4f4862bd75c26bb",
+  "files": [
+    {
+      "path": "BROWSER-PLAN.md",
+      "bytes": 8018,
+      "sha256": "4aaaa90d2724c6adf6562b8dce7ab346c1fd861939d951b04e25ebec3067299f"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 9551,
+      "sha256": "e2172f2040650b18f485be91224301653aa03d7487bb3e81eedc6cc08161f661"
+    },
+    {
+      "path": "fixture-controller.py",
+      "bytes": 28881,
+      "sha256": "0fbf64cfc04944b18cad8cdb64d060731addfe3d6bc59a8ad65e9113d0dcd553"
+    },
+    {
+      "path": "owned-processes.py",
+      "bytes": 4110,
+      "sha256": "21a760b8a27fd57c4303a62bf258e4a9db4b05fb062e294c5579da81e1768e7c"
+    },
+    {
+      "path": "fixture-parent.html",
+      "bytes": 1069,
+      "sha256": "8e5215723ebcd4c108f4852db9bfb5388bf2cfd6bfd00c72e849a1ea277f216a"
+    },
+    {
+      "path": "fixture-bridge.js",
+      "bytes": 1286,
+      "sha256": "58f40778a5c633288dacebd42e721902392fe248f7491888cfc3e0452e47dee6"
+    },
+    {
+      "path": "synthetic-inputs.py",
+      "bytes": 5341,
+      "sha256": "8921718572fbf17e9c8059d2046a64b2ca1aaf2dff71b38e2498acf270a60fff"
+    },
+    {
+      "path": "source-seams.py",
+      "bytes": 14693,
+      "sha256": "eb25fc3171ed0738a37dfac3be9f87e48e9de14ffb3b520b048980dcf33a5563"
+    },
+    {
+      "path": "browser_evidence.py",
+      "bytes": 18675,
+      "sha256": "dc696b2e039efaca1428215f485aa7bc20ac89dcf3af5d8d8f966374b139fcb2"
+    },
+    {
+      "path": "test_browser_evidence_cli.py",
+      "bytes": 2793,
+      "sha256": "9e72ce75886fccde86f552cb507bb7cd78c9628f563456886416b468e4ba45f3"
+    },
+    {
+      "path": "safe-evidence-files.json",
+      "bytes": 865,
+      "sha256": "fc5500ddf61775712aff4ccd3f293ba84a80679c50e818abb11c5e223d758be6"
+    },
+    {
+      "path": "UNEXECUTED-STATUS.md",
+      "bytes": 2648,
+      "sha256": "93bb091caf499c2af8e5143f452ad7522530d24598ac71e30ae79e38a53c95ad"
+    }
+  ],
+  "prior_freeze_sha256": "db5488f1640fca2aafde87e5d78f796ccf8967b44c5ba505e6f7f43697a20d81",
+  "prior_members_verified": true
+}

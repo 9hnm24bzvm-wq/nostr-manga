@@ -1,0 +1,127 @@
+{
+  "updated_utc": "2026-10-13T12:14:33.895019+00:00",
+  "source_candidate_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/candidate-source.json",
+  "source_candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6",
+  "normal_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "e12349fe5f861b742b8915d3aa6265c5cd2d7fd232d4b12568492f04d46bbf33",
+    "bytes": 75368184,
+    "executed": false,
+    "compiled_current_source": true,
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92"
+  },
+  "result_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-build-normal-006-result.json",
+  "result_sha256": "2a5645adeb9448ff9d270cdbdaae2d5739cc1685e60dd6ca5a54a0fa86885fa2",
+  "command_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-build-normal-006-command.json",
+  "resource_budget_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-009/resource-budget.json",
+  "runtime_executed": false,
+  "current_all_target_check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/cargo-check-fixture-repair-001-result.json",
+    "sha256": "93cc420014f6b40ad71b727803ebd594ef6989391b2ed160549e87919ef88883",
+    "status": "passed",
+    "source_candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6",
+    "completed_utc": "2026-10-13T12:12:27.455165+00:00"
+  },
+  "example_codegen": {
+    "status": "passed",
+    "source_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/backend/examples/browser_fixture_provisioner.rs",
+    "source_sha256": "dcfe71335710e5ac5f9e201a06c533005417823508cf5b676fff002c90d3d559",
+    "submodule_source_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/backend/examples/browser_fixture/ui_regressions.rs",
+    "submodule_source_sha256": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+    "receipt": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/cargo-build-fixture-006-result.json",
+    "receipt_sha256": "db69b09e78fa58c5beb41de4ff6f6c9be0b755f46a4e11588a1ae0b25d146b36",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+      "sha256": "639d83407e2b7e72b3b1d3a21a254c5416f1d5910f10d40c321183db413f5f8f",
+      "bytes": 58565240,
+      "executed": false,
+      "compiled_current_source": true
+    },
+    "source_candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6"
+  },
+  "test_codegen": {
+    "status": "passed",
+    "receipt": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-codegen-cover-001-result.json",
+    "receipt_sha256": "55bec702c2433d00adb51706526da56596bc436aa449070e4639fa4ebd2e1724",
+    "binaries": [
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/weebdex_platform-c6de6df8301139ee",
+        "sha256": "f06fbffbdc4abcbf81b2d157ecdd61bf5847e1c785bf00e1a31c2557769314fb",
+        "bytes": 18777312,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/weebdex_platform-d79c03cd898b2889",
+        "sha256": "769e1d65e405592b818def459931e2197573ddecc24c244559984a462f859bd0",
+        "bytes": 1092712,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/auth_http-275c1e0a055cf5cc",
+        "sha256": "57985b3118754fa35803fdb5e3b4ed7ed4a15017d38767043e94bb302218f6f3",
+        "bytes": 45737728,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/catalog_http-15123d1cbcf43891",
+        "sha256": "09f9d13368655cfa73f61bcf1e31bf2622ff21ee3f9361f613fd81e1c78affbb",
+        "bytes": 44381712,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/community_http-77711564597d0705",
+        "sha256": "12b98b7153c126f206a88aa8ef23a8ebf71ac32d639fe32befd80d74989a058a",
+        "bytes": 44258736,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/library_http-3b2d89cc07dfd675",
+        "sha256": "7e97b6c5df7ed00ef44da4fad87b6fe5efca880529ba8fee223b348476e638c0",
+        "bytes": 44193872,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/protocol_bridge_http-3f936b335b360daf",
+        "sha256": "4347fa8a7999015c9cc27f562dfe4752b25220e4bbd00336e44370f99e961c39",
+        "bytes": 72665592,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/upload_http-cd07e6bff9519e2c",
+        "sha256": "2f5cb1e600bdd17d666a6871a6189d3c539ab79cf9479bf2ddf45cd068068b4f",
+        "bytes": 46119984,
+        "executed": false,
+        "compiled_current_source": true
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/upload_storage_contract-759552f3c13f4702",
+        "sha256": "bfd896b0d6d358dfe3242090c401dc8b07b5a87aa59c6782918dde4553b20768",
+        "bytes": 4036496,
+        "executed": false,
+        "compiled_current_source": true
+      }
+    ],
+    "executable_targets": 9,
+    "executed_tests": 0,
+    "warnings": [
+      "Unused generated GIF fixture helper in protocol_bridge_http.rs:352; unsuppressed; test source compiles and is not executed."
+    ],
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92"
+  },
+  "gate": "E2E phase opened. Repaired combined fixture awaits scoped startup review. First launch failed before signed seed/browser; no source acceptance claimed. System suites follow E2E.",
+  "historical_index": "backend-current-build-019.json",
+  "production_changes_since_candidate017": [
+    "Explicit versioned instance-local Relation PUT + parent version feedback",
+    "Additive migration85 outward dotted Cover.ext contract with preserved source visibility; storage extensions unchanged"
+  ],
+  "SQL_migration85_executed": false,
+  "fixture_only_repair": "Correct original volume grammar; static safe seed diagnostic; source tests. No production or original source change.",
+  "production_inputs_identical_since_candidate019": true
+}

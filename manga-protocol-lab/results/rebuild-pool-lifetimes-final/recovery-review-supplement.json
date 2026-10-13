@@ -1,0 +1,8 @@
+{
+  "scope": "Final independent terminal audit only; supplements the unchanged explicit completed-gate evidence allowlist.",
+  "base_allowlist_sha256": "f27e261c2ede07c04855531ff2296a0353134b6d664e3e0584fb89176ca14071",
+  "files": {
+    "results/rebuild-pool-lifetimes-final/INDEPENDENT-AUDIT.json": "28341472d10cdbbae5b55086a4e049554afa0c5dde20b4852190362009fc9314",
+    "results/rebuild-pool-lifetimes-final/INDEPENDENT-AUDIT.md": "403bebdbea0c6e09f545e8507930839b29b1b26dc2dd32f36a4333847225415f"
+  }
+}

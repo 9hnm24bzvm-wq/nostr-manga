@@ -1,0 +1,52 @@
+{
+  "recorded_utc": "2026-10-13T12:26:56.391084+00:00",
+  "scope": "Actual ignored public HTTP/PG auth seam binary; no browser session or107-operation acceptance claim.",
+  "result": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-001/auth-http-001-result.json",
+    "sha256": "1552038e15207d1d6a6715c0d82f32f1cabc957935f6d8a6c6f0f7e6d2bf0213"
+  },
+  "binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/auth_http-275c1e0a055cf5cc",
+    "sha256": "57985b3118754fa35803fdb5e3b4ed7ed4a15017d38767043e94bb302218f6f3",
+    "bytes": 45737728,
+    "executed": false,
+    "compiled_current_source": true
+  },
+  "tests": {
+    "executed": 3,
+    "passed": 2,
+    "failed": 1,
+    "ignored": 0,
+    "elapsed_seconds": 7.83
+  },
+  "case_results": [
+    {
+      "name": "actual_browser_flows_sessions_csrf_expiry_preferences_and_client_revocation",
+      "status": "ok"
+    },
+    {
+      "name": "actual_email_delivery_one_time_verification_and_restricted_recovery",
+      "status": "ok"
+    },
+    {
+      "name": "password_rotation_revokes_outstanding_recovery_links_and_overlapping_redemption",
+      "status": "FAILED"
+    }
+  ],
+  "failure": {
+    "source": "backend/tests/auth_http.rs:1520",
+    "classification": "Test setup violates original unchanged count>=1 constraint by inserting0.",
+    "SQLSTATE": "23514",
+    "repair": "Fixture literal1; no production schema or authority changes.",
+    "repair_source_sha256": "2675a5a30ec560afbedcae24ac0eda54b6fb294e6c920ea2bec7ec6f97bfe00b",
+    "rerun_pending": true
+  },
+  "cleanup": {
+    "guard_owned_leader_reaped": true,
+    "remaining_owned_members": [],
+    "postgres_fixture": "test-runtime/auth-nnNzSN",
+    "postgres_cleanup": "verified_stopped"
+  },
+  "private_raw_log": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-001/auth-http-001.log",
+  "private_raw_log_sharing": "Review/redact before external archive or sharing; summary contains no transient credentials."
+}

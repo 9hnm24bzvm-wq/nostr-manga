@@ -1,0 +1,17 @@
+[
+  {
+    "target": "staging_reclamation",
+    "expected_output_parent": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/results/rebuild-admission",
+    "created_only_missing_directory": true
+  },
+  {
+    "target": "http_real_images",
+    "expected_output_parent": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/results/rebuild-real-images",
+    "created_only_missing_directory": true
+  },
+  {
+    "target": "credit_lanes",
+    "expected_output_parent": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/results/rebuild-capacity-seams",
+    "created_only_missing_directory": true
+  }
+]

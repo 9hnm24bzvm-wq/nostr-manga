@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-13T12:58:52.767457+00:00",
+  "command": [
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/run-original-tests.sh",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_peers-387fee1dc036baa9",
+    "--ignored",
+    "--test-threads=1"
+  ],
+  "environment": {
+    "CARGO_HOME": null,
+    "RUSTUP_HOME": null,
+    "RUSTUP_TOOLCHAIN": null,
+    "CARGO_TARGET_DIR": null,
+    "CARGO_INCREMENTAL": null,
+    "CARGO_NET_OFFLINE": null,
+    "MANGA_TEST_NODE_BIN": null,
+    "CARGO_PROFILE_DEV_DEBUG": null,
+    "CARGO_PROFILE_TEST_DEBUG": null
+  },
+  "start_floor_bytes": 10737418240,
+  "disk_stop_floor_bytes": 8589934592,
+  "memory_stop_floor_bytes": 2147483648,
+  "maximum_seconds": 300,
+  "command_log_limit_bytes": 33554432,
+  "telemetry_limit_bytes": 8388608,
+  "initial_free_bytes": 19052417024,
+  "initial_available_memory_bytes": 7344988160
+}

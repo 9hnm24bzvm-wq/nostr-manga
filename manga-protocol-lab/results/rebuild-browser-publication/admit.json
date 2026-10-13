@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "data": {
+    "allowed": true,
+    "publisher": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  "service_proof_verified": true,
+  "public_request_id": "e8e439415b60447aa4121d20d0a03e6030bbd80e7578559a05cc91b9fbf2e20c",
+  "response_body_sha256": "7833870a76f466e54939103e09cf46386b9a795c12132d8a40688793574e8103"
+}

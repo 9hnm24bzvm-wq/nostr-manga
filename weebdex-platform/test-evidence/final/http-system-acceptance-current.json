@@ -1,0 +1,401 @@
+{
+  "updated_utc": "2026-10-13T13:02:41.608414+00:00",
+  "source_candidate": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/candidate-source.json",
+    "sha256": "d94878d178e3b614d72c9ca3ac7f2cf66ea48426d19e0f4ea91ec0870b2bcf37"
+  },
+  "normal_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "60c0ba20bc0ac3aef27dd70a0b9fad8fe7dfe8ff92913182d0dd38cb761bd0e6"
+  },
+  "example_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "sha256": "7b82dc67f1a5b00a1af89b70e74e48c11b99ff89991017ab5965326e01a0f013"
+  },
+  "platform_HTTP_PG": {
+    "distinct_executed": 14,
+    "passed": 14,
+    "failed": 0,
+    "ignored": 0,
+    "note": "All production022 inputs unchanged in test-only023. Source-bound023 bridge rerun replaces failed022 bridge outcome; historical failures retained."
+  },
+  "platform_unit_contract": {
+    "executed": 67,
+    "passed": 67,
+    "failed": 0,
+    "ignored": 0
+  },
+  "original_unit": {
+    "executed": 85,
+    "passed": 85,
+    "failed": 0,
+    "ignored": 2,
+    "ignored_reasons": [
+      "Child-process harness invoked by its crash parent, not a standalone case",
+      "Half-million-record codec scale fixture intentionally deferred, no performance test run"
+    ]
+  },
+  "original_focused_HTTP_system": {
+    "executed": 6,
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "compiled_source_snapshot": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/source-manifest.json",
+      "sha256": "038d3471f678c7463755b8b89daa4f79402caa2eaff3a0edbfe3d1abfcf89bac"
+    },
+    "targets_codegen_total": 95,
+    "targets_runtime_executed_in_this_group": 6,
+    "not_full_90_integration_target_runtime": true
+  },
+  "results": [
+    {
+      "group": "platform_auth",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:44:27.142540+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/auth-http-003-result.json",
+        "sha256": "a2857efb7f9cece4d841e4896f7e917c9321593c61b2157f870ec8c54ef148e7"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/auth-http-003-command.json",
+        "sha256": "f5f5e73787eaa25e8e720a5a7aa050ab2c5e2816ccdff987a8c072491d73c63f"
+      },
+      "raw_log_sha256": "4a5d904e90bb6bb45ac3c20610db6b25459b45791e13f008089b557ef3b61246",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_catalog",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:44:28.278980+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/catalog-http-002-result.json",
+        "sha256": "ebe7d489de94dbf155dfbeed76d7f7355f71507ea27c05a5f1b505caca0cfc3f"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/catalog-http-002-command.json",
+        "sha256": "4c60194864e5b6e7d20b45f0ab021648cee207c61ec649b227d7e48a75c5215b"
+      },
+      "raw_log_sha256": "147a8d139918b277ae657b5a9fd4b6f8bbf86d9e5af299562bb202b833033b9b",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_library",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:44:29.536806+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/library-http-002-result.json",
+        "sha256": "fb5fa574f98c0b6e46b72d945a5971db5495c117df1b886e6c008c762753a489"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/library-http-002-command.json",
+        "sha256": "8fd8dcfad3edbff99624b10e3b8b4ed7c037ccf88ea1def0c57ceaf41265f86a"
+      },
+      "raw_log_sha256": "bfd0c2c67187d8000fc8c85045188a2c51427319b04ae751a0e9dfbd3727706b",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_community",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:44:30.583013+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/community-http-002-result.json",
+        "sha256": "eea62138733cc17389d8b273c40b653bd4fe5d9228e79b7f3c483067123523e1"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/community-http-002-command.json",
+        "sha256": "7f31b41ab59191e49648c7faf99e6841437c415b22dd2c2e353e690582a63298"
+      },
+      "raw_log_sha256": "6edb3d433d41df9e109667aa5f87d27f02690ff8ffb3f43302ee0998c7d0e5f2",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_uploads",
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:45:07.202893+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/upload-http-002-result.json",
+        "sha256": "3c95e8a1664406f9f47e37a0ebb8637245da03f22d6eec66de12a9a488dc5d4e"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003/upload-http-002-command.json",
+        "sha256": "76770c43505e732d0789bb7008044c3a6482f22d9aaa754fa7ab58d8b3afe0e7"
+      },
+      "raw_log_sha256": "c9d2ff2df157a414806517c453ab48eeadd5d15375f6c01e3514fc48da97134b",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_protocol_bridge",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:53:46.351082+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/protocol-bridge-http-003-result.json",
+        "sha256": "c1a64bb2574e870c38cf51893783017067e6de6cfcd9c7894517e91bbaee7395"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/protocol-bridge-http-003-command.json",
+        "sha256": "c346ede3331b5cfac3678c618eb09a20d1610faceecb658c00d385dcf75d3b1c"
+      },
+      "raw_log_sha256": "c93b309521e47244d10452c6989a9423d8bcb5ef7a831ad6e71733b9dabcb648",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_units",
+      "passed": 64,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:55:16.196350+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/platform-unit-001-result.json",
+        "sha256": "c0ff800ff8140fac1a5ccd90db9f7c9ce582ac4ae2f6378121dd7dd88b9ffee6"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/platform-unit-001-command.json",
+        "sha256": "649fd4fce3cf6de3beca048f4acb8983f1ab6a54a3f794e07f01a77db1a53209"
+      },
+      "raw_log_sha256": "49e6d14b31a0b57690b20ffcc883b84e7efabd2653ed12c6badcccab9bdd791f",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_main_units",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:55:16.401016+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/platform-main-unit-001-result.json",
+        "sha256": "c247230400ca77d94ca8bdec76066a1019a0807046d2d7b9dfb92998c53f8245"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/platform-main-unit-001-command.json",
+        "sha256": "dcef6374d66f108a73b61c1d65ceec320c710a839cac187da02701b180dd9fe5"
+      },
+      "raw_log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "platform_storage_contract",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:55:16.625135+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/upload-storage-unit-001-result.json",
+        "sha256": "4e429121d6bae30a3cab56b7d4223e6116987abe653832e13c97140079c0ccd7"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/upload-storage-unit-001-command.json",
+        "sha256": "5d1a7e2570d2296a2277826243b70524ff4cda4fbac35173107f40922e956f57"
+      },
+      "raw_log_sha256": "e4a873cd69f16de2526cfdeb7d5017e9b66300f490053be191fddc8ca6313a3c",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "original_units",
+      "passed": 85,
+      "failed": 0,
+      "ignored": 2,
+      "completed_utc": "2026-10-13T12:57:49.742226+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-unit-001-result.json",
+        "sha256": "60f71fbe4f8809e3ab68948522bdc99fc9d5bc61d25109a3d511f166cb1fa428"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-unit-001-command.json",
+        "sha256": "9769358cfba2c34ddb49409c51f296a7d8e1f8593380a9dad4d8b4a5024dc328"
+      },
+      "raw_log_sha256": "d7f99cc1397ef2ebc89c896d056bb44f51b5a9a79de1d2df2f4316de19dc1229",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "original_node",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:58:14.478241+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-node-001-result.json",
+        "sha256": "4e856d42e7a15b7d8ae73dbde771b6277046c160bd1b2f7770ff82f3fc0c6fb1"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-node-001-command.json",
+        "sha256": "1981886a4f75f68af6616e6bcd8ad725c17f6684151f9855c63db6296bc9714d"
+      },
+      "raw_log_sha256": "dee81ab7d3b83d80d216db11184e4b175d2239f707ccbe07e46a7bc1d400fed1",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "original_publication",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:58:18.275710+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-publication-001-result.json",
+        "sha256": "cdf24d9a3e5b9b8c7c5c0ad101a7fee8c7d57a96627268add1c6d866226a513a"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-publication-001-command.json",
+        "sha256": "6bffa983eea1533f96a9029162060830c7dfcef4415432802b3e3c1e8742da54"
+      },
+      "raw_log_sha256": "bb1d169607e667b63d6ebebe7311ca977a7dc707463cc22f39ae7ec7f1465d2e",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "original_moderation",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:58:22.299120+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-moderation-001-result.json",
+        "sha256": "a70613b47346316dc391dab788e13f8839f6de3b95a70e5911dedf17e1b630e2"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-moderation-001-command.json",
+        "sha256": "5662a6dcef31de1257f0e9aefafa1c18badfd1cf0118d250a2b836f0b7cd7d46"
+      },
+      "raw_log_sha256": "f6be56de766d2168f3c35cf5551f9ebed473ad02c2ded6939703d0f75cb7b3cc",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "original_group-retry",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:58:25.025688+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-group-retry-001-result.json",
+        "sha256": "380ae92794bbd4d1548f78686cea53e56ce64d06c5777fb2e6942d6d92fe3923"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-group-retry-001-command.json",
+        "sha256": "2363da625d947cd68a59e88e41b6dc29e384663056f5c61080fd3373a5487f8b"
+      },
+      "raw_log_sha256": "816f0beccbea14b4c9059fbe0a5c189e691d3341d70ef6890b5af6c43c0f1650",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "original_read-ownership",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:58:52.633654+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-read-ownership-001-result.json",
+        "sha256": "e517ebfdfd2e095791fdc160d71ca9f25edff11c30b430b7446dabb0566dea00"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-read-ownership-001-command.json",
+        "sha256": "aca3f668be777aaaebf9394ea6d5f9f690738baf837e44466e0c730763e97d22"
+      },
+      "raw_log_sha256": "0b31248dce585f4de14618a007b988550dbf83dec3f1d1f695dc713b300efab1",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    },
+    {
+      "group": "original_peers",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "completed_utc": "2026-10-13T12:59:00.277428+00:00",
+      "guard_result": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-peers-001-result.json",
+        "sha256": "d28422d09dfd1c4487efcb30a984f7f2eaa0690ef89c038b7072a7a3050ab92c"
+      },
+      "command_receipt": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/original-http-peers-001-command.json",
+        "sha256": "900eb0d89f99a4ed15c0fbefddb54a87b357a0153a585f71644c58435fd3ebec"
+      },
+      "raw_log_sha256": "da13be501977bbb12998d01324f90db98e1d83deec1b049defaeb7a56a7a4761",
+      "raw_log_private": true,
+      "owned_cleanup_confirmed": true,
+      "sources_unchanged_during_command": true
+    }
+  ],
+  "licensed_ubunchu": {
+    "manifest": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/tests/fixtures/ubunchu-manifest.json",
+      "sha256": "279dff36348bfef4b60b2923c33b82de80c4ee812756eb53567be4ac64afeb92"
+    },
+    "actual_originals_uploaded_served": 24,
+    "chapters": 2,
+    "actual_original_cover_uploaded_served": 1,
+    "attribution_preserved": true,
+    "licensing": "CC BY-NC3.0 English notice and CC BY-NC2.1JP Japanese notice",
+    "storage_local_only": true,
+    "assets_excluded_from_archives": true
+  },
+  "browser": {
+    "executed_steps": 0,
+    "blockers": [
+      "Chromium AF_UNIX IPC EPERM in default and admitted escalated probe",
+      "Supported cloud CDP browser cannot reach fixture loopback"
+    ]
+  },
+  "limits": [
+    "No browser reader/render/navigation evidence",
+    "No blanket107operation acceptance or production readiness claim",
+    "Original90integration targets not all executed",
+    "No performance tests or refactor acceptance"
+  ],
+  "fixture_provisioner_units": {
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0,
+    "guard_result": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/provisioner-unit-001-result.json",
+      "sha256": "3efe4c27f6508fe6f81bbe332ffdcfc767e52845b95f8959ea5d6236b52cd60c"
+    },
+    "cases": [
+      "synthetic_volumes_match_original_upload_store_grammar",
+      "safe_seed_diagnostics_emit_only_static_stage_and_reason"
+    ]
+  },
+  "current_final_all_target_check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-check-current-all-targets-001-result.json",
+    "sha256": "808d525c2dfec4c0bd4ff95950b3850e082dfc3826d87dd3b157fdc265980779"
+  }
+}

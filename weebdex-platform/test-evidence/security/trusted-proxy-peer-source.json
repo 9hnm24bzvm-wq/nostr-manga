@@ -1,0 +1,38 @@
+{
+  "reviewed_at": "2026-10-13T05:14:30Z",
+  "status": "source_frozen_awaiting_fresh_review_and_compiler",
+  "source_sha256": {
+    "backend/src/client_peer.rs": "e0155eee3d37f4a514571b8575640acee1f54d1c39884f093737d7847e8fefa2",
+    "backend/src/config.rs": "6150dfa4a5f820410d0b41e4f5ce1d3df5df21e99d3d058bedac60d2c4b760e4",
+    "backend/src/lib.rs": "8c17f723978f4bfbc95e47a63c0098b62b9f1c91eef193fd524992cd93e10444",
+    "backend/src/router.rs": "544a69ff1466f7a6231b062c6631a17f35b71a48ef5409aa8bea45489634087b",
+    "backend/src/domains/analytics/mod.rs": "543a563930a923766604997f35f6fdc3e89354f0c211a422a288957e81747d41",
+    "backend/tests/community_http.rs": "b17b4948e4e3fab33d212b00111ca63c5cdc04063122a2d7670131fd1edec755",
+    "deployment/nginx.example.conf": "2db5ed17defdc93d859672639268d83d0c49a8b9012275258d11a7ed91036320",
+    "deployment/platform.read-only.example.json": "34703b77068e4e4d71e4f7f5cbc466f27f4f0812f7559d9d8f0b80389d3cb7ba",
+    "deployment/platform.publisher.example.json": "41821ec822a21adc167bc20e713e824c92188de2117d37da31217cfaf9dce470",
+    "docs/trusted-proxy-peers.md": "fc97083a9dd2940d97fd03dca3865eb107342d03af51fc97658e59aaff66d56a",
+    "docs/production-readiness.md": "f8d9f0c84d5d4a7a404d4e1a629f37d10a856bdef27f52fb7d56d77dcc10ffab",
+    "scripts/run-platform.sh": "ed3e851129f06798c59ec0613fbe288548fdda805f864d70ca9da5bd203abd77"
+  },
+  "runtime_executed": false,
+  "compiler_executed": false,
+  "default": "actual socket identity; all forwarded headers ignored unless configured immediate transport is trusted",
+  "policy": "max32unique exact normalized unicast proxy IPs; exact1\u20138hops; single512byte XFF field; every intermediate hop trusted; duplicate/malformed chain400",
+  "consumers": [
+    "central request middleware",
+    "analytics peer-rate limiter"
+  ],
+  "auth_review": "No transport-derived peer throttle exists; intentional global/browser/identifier/email budgets preserved",
+  "acceptance_source": [
+    "Actual middleware: direct/trusted/untrusted/missing/duplicate/malformed/IPv4-mappedIPv6/exact multi-hop",
+    "Actual public Router+PG analytics: independent clients behind proxy; exhausted client remains bounded; untrusted XFF rotation cannot evade"
+  ],
+  "remaining": [
+    "Fresh source review",
+    "Sole compiler all-targets pass",
+    "Authorized unit/PG execution",
+    "Real nginx multipart >1MiB replacement and client-identity acceptance"
+  ],
+  "operational_delta": "Runtime entrypoint now changes to project root, matching the reviewed ParentDir-free project-relative artifact/upload defaults."
+}

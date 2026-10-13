@@ -1,0 +1,281 @@
+{
+  "files": {
+    "results/restored-runtime-20261012/PLAN.md": {
+      "bytes": 8778,
+      "sha256": "73d69bea1d66af88185d5fc68c8ed6227726a80fa1cb304544c24f2cae791082"
+    },
+    "results/restored-runtime-20261012/candidate-source.json": {
+      "bytes": 119,
+      "sha256": "574aa97dfda6fcd080544f45cc860d952fb156bcd1751a4a2ed70eea53de3ff5"
+    },
+    "results/restored-runtime-20261012/guarded-command.py": {
+      "bytes": 13639,
+      "sha256": "9240004c16b87270bb1b24f74bf31477644ab5b1c5caae55f2e1b1df45587ffb"
+    },
+    "results/restored-runtime-20261012/native-command-sha256.json": {
+      "bytes": 136,
+      "sha256": "2ddd39f139336d1fb2e818b3d74b3c9cb9b98637e4f6789b6af127b192f02855"
+    },
+    "results/restored-runtime-20261012/native-runtime-clearance.json": {
+      "bytes": 580,
+      "sha256": "5932ba7313346b2770268efedf4ce90eae5bc59a584d106d878b053a6895950d"
+    },
+    "results/restored-runtime-20261012/native-runtime-command.json": {
+      "bytes": 677,
+      "sha256": "b29b70948b965da50b39dc8cb6071cd29279ed18f2629ac9b80659954e4a8e63"
+    },
+    "results/restored-runtime-20261012/native-runtime-process.json": {
+      "bytes": 152,
+      "sha256": "16958003362112b28601e7f6140878cd1078d07bfcdb1ed04c993ca576a7de01"
+    },
+    "results/restored-runtime-20261012/native-runtime-resources.jsonl": {
+      "bytes": 31610,
+      "sha256": "f7f436e4a93bc7e2a1ec36f5df8371a15d4d90d7eb04594e083ee5cd663a6288"
+    },
+    "results/restored-runtime-20261012/native-runtime-result.json": {
+      "bytes": 1315,
+      "sha256": "44f8e39601afe81bc5a75e1bdac5854a0c047af712602ee7ce032743adef5ebd"
+    },
+    "results/restored-runtime-20261012/native-runtime.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "results/restored-runtime-20261012/native-runtime.log": {
+      "bytes": 92704,
+      "sha256": "4968830fc31b1c01532ccc235e344a1ac24d51d3964471ca6ce4ac1f927e5226"
+    },
+    "results/restored-runtime-20261012/postgres-runtime-clearance.json": {
+      "bytes": 550,
+      "sha256": "46d215e752991e54546f00e16a1f720cd4c47a715691ca97e78ba274502ca2ae"
+    },
+    "results/restored-runtime-20261012/postgres-runtime-command.json": {
+      "bytes": 647,
+      "sha256": "42f2a6740e00a81b924e5e4bc2c38aa431b1e372a86ab66d0cf8368dde0ff434"
+    },
+    "results/restored-runtime-20261012/postgres-runtime-process.json": {
+      "bytes": 152,
+      "sha256": "f69ce05bbf6a9bbd39d29a912705c085c4b6aff94d48b66e70ed3ad70635037a"
+    },
+    "results/restored-runtime-20261012/postgres-runtime-resources.jsonl": {
+      "bytes": 16241,
+      "sha256": "021f59ee1df5d51b492018986987b8686bfe3ff108fca0b5a5aeb90a8bca1463"
+    },
+    "results/restored-runtime-20261012/postgres-runtime-result.json": {
+      "bytes": 1313,
+      "sha256": "a56ccbb59808e092e52cf268cb1bce54f0129c35a70272ea5db2bc43ac414f4e"
+    },
+    "results/restored-runtime-20261012/postgres-runtime.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "results/restored-runtime-20261012/postgres-runtime.log": {
+      "bytes": 163,
+      "sha256": "12cd30c02febc7880cc01a8178be47dba5e8f98ee89afeacbcebe2facc0aeeb3"
+    },
+    "results/restored-runtime-20261012/python-installed.json": {
+      "bytes": 313,
+      "sha256": "0cbd5b1be7118140ca32509e3985651f99c4833331c004b9ad7390d046b318ab"
+    },
+    "results/restored-runtime-20261012/python-runtime-clearance.json": {
+      "bytes": 562,
+      "sha256": "500ab6fc94bca4bb76154e4dfaabd0863168ed315227a876a0e9067435f8bd79"
+    },
+    "results/restored-runtime-20261012/python-runtime-command.json": {
+      "bytes": 659,
+      "sha256": "3d7701ac41b3b2a884c3fbbdea79fbe778ddb5c1ebd2cc72993c0ca0d85642b8"
+    },
+    "results/restored-runtime-20261012/python-runtime-process.json": {
+      "bytes": 152,
+      "sha256": "9217dd5017d604e4aa6a152f531c9de3d2a2fbaf4ec2b979684d52f1ef795626"
+    },
+    "results/restored-runtime-20261012/python-runtime-resources.jsonl": {
+      "bytes": 1526,
+      "sha256": "176efa45407985c9b08df2ee6eeaff8c8286fcb25de21a80c3a5e50c42a55761"
+    },
+    "results/restored-runtime-20261012/python-runtime-result.json": {
+      "bytes": 1313,
+      "sha256": "12e1fe05af108aadfdac761728d625af5133275fae1b017b5e745e90c59b271a"
+    },
+    "results/restored-runtime-20261012/python-runtime.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "results/restored-runtime-20261012/python-runtime.log": {
+      "bytes": 4614,
+      "sha256": "98d8897101ae3cd83a49035c8038d7bd814d435b7529d167e783b2a64a2c64b9"
+    },
+    "results/restored-runtime-20261012/restore-native-runtime.sh": {
+      "bytes": 3256,
+      "sha256": "9b23e7206b1ab34557deda725d9d1dbecc849e93875dac8abba0bbca8737a156"
+    },
+    "results/restored-runtime-20261012/restored-source-protection.json": {
+      "bytes": 43982,
+      "sha256": "01f269aac9f0266c11a38edf4784dde438ddc798f17ea470e47aab4f6a6ebcd5"
+    },
+    "results/restored-runtime-20261012/runtime-acceptance.json": {
+      "bytes": 13037,
+      "sha256": "28f64952e37561f8e9672cb082cde1eefc3e95b4e5039b3fababe360f2a5dca5"
+    },
+    "results/restored-service-smoke-20261012/REPORT.md": {
+      "bytes": 4988,
+      "sha256": "f721b95148b18571efdd204dcc577ae24dc32dd837c29280dd97d88cec8e6ed5"
+    },
+    "results/restored-service-smoke-20261012/acceptance.json": {
+      "bytes": 7979,
+      "sha256": "3af1dfbcff77a5cda2af3c2bd5d2d8c838ff9daf89fa971e965c9cf9dd10fd1e"
+    },
+    "results/restored-service-smoke-20261012/candidate-source.json": {
+      "bytes": 116,
+      "sha256": "8bd4cf9bc53df31fbdfd17311ab00a544dfc8340be2a9a49c818523d43a2b4cd"
+    },
+    "results/restored-service-smoke-20261012/commands.json": {
+      "bytes": 910,
+      "sha256": "c0e6092bfa5731c872afb78e7457babf3e6458258dce5eff8210c2e330042396"
+    },
+    "results/restored-service-smoke-20261012/demo-clearance.json": {
+      "bytes": 588,
+      "sha256": "fdf67d5eec1d216ee628ffff2ee699ab9f786049d639472ec7d27d06e6603dfa"
+    },
+    "results/restored-service-smoke-20261012/demo-command.json": {
+      "bytes": 695,
+      "sha256": "4cd8e72c8595d9c8e4e301221272da6f5ae4af4eb5c8a7afbf933ebfc4350763"
+    },
+    "results/restored-service-smoke-20261012/demo-process.json": {
+      "bytes": 152,
+      "sha256": "9362231240c0b07f1cb15e036bc8061aa5c1c9a53a10dda11457b655600e3e46"
+    },
+    "results/restored-service-smoke-20261012/demo-report.json": {
+      "bytes": 1263,
+      "sha256": "0539c966092555eaf99aa8a21825944c3a4077e5ac6722b7386f81ede6a232df"
+    },
+    "results/restored-service-smoke-20261012/demo-resources.jsonl": {
+      "bytes": 327,
+      "sha256": "20e461164109bdfa37039bdaee3167e872c40a22f450e7d58071e369f5f4d42f"
+    },
+    "results/restored-service-smoke-20261012/demo-result.json": {
+      "bytes": 1446,
+      "sha256": "261a479c7d97a0f256341d4162ff27ca0372e840c62d784a9a8e551f625d3600"
+    },
+    "results/restored-service-smoke-20261012/demo.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "results/restored-service-smoke-20261012/demo.log": {
+      "bytes": 1380,
+      "sha256": "48d6f245549cf0c2d45c10767b8dbdf79225393a48defa896a617b7f8da16698"
+    },
+    "results/restored-service-smoke-20261012/guard.diff": {
+      "bytes": 1020,
+      "sha256": "935ea2f2890c97711c8be00a30ed19e7a8394857c487aedada07743a9ce6c8ee"
+    },
+    "results/restored-service-smoke-20261012/guarded-command-before.py.txt": {
+      "bytes": 13639,
+      "sha256": "9240004c16b87270bb1b24f74bf31477644ab5b1c5caae55f2e1b1df45587ffb"
+    },
+    "results/restored-service-smoke-20261012/guarded-command.py": {
+      "bytes": 13590,
+      "sha256": "0e0227c662b8b78b50e7eefbfef6e1875552e7041c7b731ac82277ae305136fb"
+    },
+    "results/restored-service-smoke-20261012/nginx-clearance.json": {
+      "bytes": 801,
+      "sha256": "57aa7340d23bd23544a91da355cc4ed91c1d262334e4d4db91d2c959abd5944f"
+    },
+    "results/restored-service-smoke-20261012/nginx-command.json": {
+      "bytes": 908,
+      "sha256": "7868454deace8bbf2b30d71870b0b8325e6e3066d1d8700bb65dd9feb93f4930"
+    },
+    "results/restored-service-smoke-20261012/nginx-process.json": {
+      "bytes": 152,
+      "sha256": "ca75d2d3d23948993cc4d9345e9b401ee19dc4db69ab9db3f1307df6db0f9f96"
+    },
+    "results/restored-service-smoke-20261012/nginx-resources.jsonl": {
+      "bytes": 218,
+      "sha256": "d7e4e882d343119d17262db3af5766fe95f8de35048c8e5d4e37b30afcc05dd6"
+    },
+    "results/restored-service-smoke-20261012/nginx-result.json": {
+      "bytes": 1320,
+      "sha256": "e52b884443bd571eb79a4a2a1aa1cbb4cc32e0853d10af9818d853c584c629f2"
+    },
+    "results/restored-service-smoke-20261012/nginx.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "results/restored-service-smoke-20261012/nginx.log": {
+      "bytes": 406,
+      "sha256": "293046accfa57b1509b2a93550afe6bd5c02b4f03ff6913f6c8608c799ed44f3"
+    },
+    "results/restored-service-smoke-20261012/ownership-clean-clearance.json": {
+      "bytes": 626,
+      "sha256": "242ed07a8e09081cd80bdd6737a7e1ad826a6c5b3beaf5da43bb61539ad15bda"
+    },
+    "results/restored-service-smoke-20261012/ownership-clean-command.json": {
+      "bytes": 733,
+      "sha256": "f66b4f35d89bda1d0e878239c84703a31af1bdb476d1dfcb17eeefe635fae5bc"
+    },
+    "results/restored-service-smoke-20261012/ownership-clean-process.json": {
+      "bytes": 152,
+      "sha256": "cbc914bb0b17bdeff1b71332253002a16ab6fce2d8fb27c36b30c5509501afb2"
+    },
+    "results/restored-service-smoke-20261012/ownership-clean-resources.jsonl": {
+      "bytes": 109,
+      "sha256": "0c025075c9a931d714b8b22ae1f309b47b089bf1cbf478ff61a374d916c88c73"
+    },
+    "results/restored-service-smoke-20261012/ownership-clean-result.json": {
+      "bytes": 1319,
+      "sha256": "5eab44b0a0e67492857401ea04a6a0af15d9d5b302ccb4037b1db2674e5cea16"
+    },
+    "results/restored-service-smoke-20261012/ownership-clean.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "results/restored-service-smoke-20261012/ownership-clean.log": {
+      "bytes": 27,
+      "sha256": "47348669bfbc6a9660e057a815a9d91e85678765bcbcc0202b2fbae61648097d"
+    },
+    "results/restored-service-smoke-20261012/ownership-seams-acceptance.json": {
+      "bytes": 175,
+      "sha256": "0341c44824c9c17ef3d549a224b0a54a473eb9533c9f4fe5f40bb818e8380780"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid-clearance.json": {
+      "bytes": 764,
+      "sha256": "9cd3b90c66263ba5126252567756773972f93cd0dea358d17930d179a1ed7043"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid-command.json": {
+      "bytes": 871,
+      "sha256": "9b06fe39d77eca50cd42e408ebbdffebae220abccbdce4130f7a04c4a043e686"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid-guard.exit": {
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid-process.json": {
+      "bytes": 152,
+      "sha256": "247bb5ec0a55178ea3130300a46076f240b059a2ae87e09c81c7c968ef7a2523"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid-resources.jsonl": {
+      "bytes": 327,
+      "sha256": "ceffb15562f976cb4e38a841d41942bf5bf8c86df1059ad6c365babbae0b4a02"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid-result.json": {
+      "bytes": 1617,
+      "sha256": "e16422a3f0f592788b0d57ff96666b1c8ffb10ee406e534df62a0486633e5f9e"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "results/restored-service-smoke-20261012/ownership-setsid.log": {
+      "bytes": 33,
+      "sha256": "af50fb7f97ec55f71ac412355194478c1e29575477f14c12822d7c07ee5fd1b6"
+    },
+    "results/restored-service-smoke-20261012/source-protection.json": {
+      "bytes": 44739,
+      "sha256": "4d0b92c711c5c5a9552ced3b0608d068c89dc6d7143135e61461817c4b4b71d0"
+    },
+    "results/postgres-build.log": {
+      "bytes": 1053960,
+      "sha256": "3a6b8207295842622c67c9f5c0c51665856f960673497b51b2fc2b96b547de5c"
+    }
+  },
+  "excluded": "Toolchain install trees, symlink runtime layout and ephemeral private runtime; no lost raw history."
+}

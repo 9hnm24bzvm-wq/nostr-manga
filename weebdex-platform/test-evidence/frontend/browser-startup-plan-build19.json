@@ -1,0 +1,189 @@
+{
+  "prepared_utc": "2026-10-13T13:04:57.026772+00:00",
+  "execution_allowed": false,
+  "gate": "Parent runtime authorization is retained, but this execution environment lacks Chromium-required AF_UNIX even through supported escalation; documented cloud browser cannot reach the private fixture. Reuse only on a supported browser-accessible fixture host after current pins/capabilities are checked.",
+  "frontend_generation": "Build19/source534",
+  "frontend_artifact_manifest_sha256": "56dab08d19e57db750a5bbfcb4acb90a17605995bc29aa02f638ea2cc14af429",
+  "frontend_index_sha256": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+  "bootstrap_csp_hashes": [
+    "'sha256-H3VNEClwf0njzAHy9TDF13XtJzCF1acNCLiLIpJ3mnA='"
+  ],
+  "normal_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "60c0ba20bc0ac3aef27dd70a0b9fad8fe7dfe8ff92913182d0dd38cb761bd0e6"
+  },
+  "protocol_provisioner": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "sha256": "7b82dc67f1a5b00a1af89b70e74e48c11b99ff89991017ab5965326e01a0f013"
+  },
+  "fixture_command_argv": [
+    "python3",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/tests/runtime/browser_fixture.py",
+    "--binary",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "--expected-sha256",
+    "60c0ba20bc0ac3aef27dd70a0b9fad8fe7dfe8ff92913182d0dd38cb761bd0e6",
+    "--protocol-provisioner",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "--provisioner-sha256",
+    "7b82dc67f1a5b00a1af89b70e74e48c11b99ff89991017ab5965326e01a0f013",
+    "--ui-dir",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/artifacts/frontend",
+    "--frontend-index-sha256",
+    "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+    "--frontend-artifact-manifest",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/artifact-manifest.json",
+    "--frontend-artifact-manifest-sha256",
+    "56dab08d19e57db750a5bbfcb4acb90a17605995bc29aa02f638ea2cc14af429",
+    "--second-protocol-recipient",
+    "--ui-regression-controls",
+    "--pg-home-fault-controls",
+    "--lifetime-seconds",
+    "3600"
+  ],
+  "first_browser_queue_payload": {
+    "phase": "startup",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform/scripts/browser-acceptance.mjs"
+    ],
+    "timeout_seconds": 150,
+    "env": {
+      "BROWSER_PHASE": "startup",
+      "BROWSER_RUN_ID": "build19-gate1"
+    }
+  },
+  "runtime_origin_source": "Only newly created private supervisor.json; no guessed ports or previous-loopback process reuse",
+  "network_policy": "Exact recorded UI/mail/original HTTP and root WS recipients (maximum two); other browser requests blocked by routing plus owned deny proxy; no original APIs/Google/email",
+  "dataset": "Fresh generated synthetic complete images; no licensed artwork",
+  "phases": {
+    "startup": {
+      "maximum_seconds": 150
+    },
+    "ordinary": {
+      "names": [
+        "account",
+        "account-recovery",
+        "upload",
+        "reader",
+        "announcements",
+        "local-library",
+        "filters",
+        "editorial",
+        "community",
+        "pwa"
+      ],
+      "maximum_seconds": 300
+    },
+    "ui10": {
+      "names": [
+        "ui10-api-client",
+        "ui10-auth-lifetimes",
+        "ui10-recovery-lifetimes",
+        "ui10-preferences",
+        "ui10-reader-transition"
+      ],
+      "maximum_seconds": 300
+    },
+    "signed": {
+      "names": [
+        "signed-library",
+        "signed-profile",
+        "signed-social",
+        "signed-context",
+        "signed-source-controls",
+        "signed-namespace",
+        "signed-recipients",
+        "signed-restart"
+      ],
+      "maximum_seconds": 600,
+      "restart_control_minimum_remaining_seconds": 430
+    },
+    "ui11_to16": {
+      "names": [
+        "ui11-device-navigation",
+        "ui11-device-progress",
+        "ui12-compact-feed",
+        "ui13-terminal-feed",
+        "ui13-feed-authority",
+        "ui14-entity-pagination",
+        "ui14-account-failures",
+        "ui14-home-failures",
+        "ui15-chapter-filter",
+        "ui15-reader-feedback",
+        "ui15-reader-geometry",
+        "ui15-16-empty-tabs",
+        "ui16-home-preferences",
+        "ui16-search-cap"
+      ],
+      "maximum_seconds": 300
+    }
+  },
+  "phase_modules_wired": true,
+  "source_syntax_checks": "node --check passed all five runner/journey modules; no module import, browser or application execution",
+  "source_sha256": {
+    "scripts/browser-acceptance.mjs": "108efc390e3d43c2333033fd87dbe912329e405004875f51de208b9ad08d57a7",
+    "scripts/browser-journeys.mjs": "65f5e5d115f35d15608e4075957172354978727cead70cfbeea6b64a0c0e5efc",
+    "scripts/browser-signed-journeys.mjs": "af01c43b9753d8cc4d3764afef8adfd25d4762cd5bb8b978c40e8359bbbd19d5",
+    "scripts/browser-ui10-journeys.mjs": "d7376ecc6aca9ebbcbf26f4e077a3c7c7be765d9f19f6397fbe091d1eb5e8ee6",
+    "tests/runtime/browser_fixture.py": "00c5edf0fb1f0afc2808a078d79b2a2bc688690a60652c69d1c746f6771c42d5",
+    "backend/examples/browser_fixture_provisioner.rs": "dcfe71335710e5ac5f9e201a06c533005417823508cf5b676fff002c90d3d559",
+    "scripts/browser-ui11-16-journeys.mjs": "4a4f31f99e2bcf86485c3aebb26108fd5eff3a9e14800145fa12b4d589e63906",
+    "tests/runtime/browser_pg_fault_watchdog.py": "8ba6cc309eef8242da35b7d843c29e4349081c3f7eab1a9073b3358c93bbedef",
+    "docs/browser-fixture-contract.md": "4fa6aed771dad1e6a082dc71ece5c96556203c5b6ed302d897f12943dc27f3de"
+  },
+  "remaining_runtime": [
+    "Real combined readiness/imported-source mapping and exact CSP startup",
+    "All38 prepared phase results and actual user-control persistence, including installed SW privacy/revocation",
+    "Known source534 relation control eligibility and full original-cover URL/range behavior need genuine browser evidence",
+    "Actual owned terminal lifetime/drain/ports after every phase; no lost result is cleanup proof"
+  ],
+  "lifetime_note": "All38 phases cannot be assumed to fit one3600second fixture at their maximum bounds. Fixture owner schedules bounded batches and verifies full owned cleanup before each fresh fixture. No runtime result is implied by this launch plan.",
+  "application_cases_executed": 0,
+  "phase_order_constraints": [
+    "Baseline actual cover checks before ui15-16-empty-tabs, which deliberately deletes a disposable native cover",
+    "Named pagination seed must precede compact/terminal/entity checks and reader activation",
+    "Run restart-bearing signed phases early with at least430seconds remaining; allocate600seconds each",
+    "ui14-home-failures requires the exact registered15second PG fault and independent watchdog terminal cleanup proof"
+  ],
+  "optional_pg_fault_source_index": {
+    "path": "test-evidence/security/pg-home-fault-fixture-source.json",
+    "sha256": "55525f2999e4814b8ae6a3ccb819ea05c8a7903dc20db7ea042c2f836f1d6057",
+    "runtime_executed": false,
+    "fresh_independent_review": "pending"
+  },
+  "source_only_plan_history": {
+    "previous_startup_plan_sha256": "eb06edc33636383117f4bfa3801e0069267abf081d0b883faf06a9a75974ec41",
+    "previous_execution_allowed": false,
+    "prior_two_fixture_launches_browser_unqueued": true
+  },
+  "actual_execution_history": {
+    "previous_approved_plan_sha256": "d1023c6b2ac872a7015a9cf2437079c54c7299561a2dd97fe6d9998b4d3c6af8",
+    "parent_runtime_gate_opened": "2026-10-13T12:07UTC and narrow fixture repairs cleared12:13UTC",
+    "combined_fixture_ready": true,
+    "real_operational_http_cases_passed": 32,
+    "browser_launcher_attempts": 1,
+    "browser_user_control_steps_executed": 0,
+    "browser_application_phases_passed": 0,
+    "all_owned_fixtures_terminal": true
+  },
+  "current_handoff_refresh": {
+    "utc": "2026-10-13T13:04:57.026772+00:00",
+    "backend_candidate": "023",
+    "backend_receipt_path": "test-evidence/final/backend-current-build.json",
+    "backend_receipt_sha256": "b7a22edf5cea2bbe4f388b0264d1f131188a3dcdb2e0b0047d1388a70217a74d",
+    "previous_current_plan_sha256": "aa8a9b1161291d95b000206f2ab8839c4140e14248d2c4895f46fb95bf461cdb",
+    "current_normal_and_example_build_result": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-build-current-server-001-result.json",
+      "sha256": "1c77865e6beb7857f2e637da4b0d77cc9eedcc3fc9028409f9deaf43d8599b8d",
+      "bytes": 1365
+    },
+    "current_all_target_check": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-check-current-all-targets-001-result.json",
+      "sha256": "808d525c2dfec4c0bd4ff95950b3850e082dfc3826d87dd3b157fdc265980779"
+    },
+    "frontend_changed": false,
+    "browser_execution_blocked": true,
+    "historical_runtime_evidence_rewritten": false
+  }
+}

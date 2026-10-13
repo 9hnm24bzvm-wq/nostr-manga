@@ -1,0 +1,197 @@
+[
+  {
+    "path": "/",
+    "source": "src/lib/components/AppHeader.svelte",
+    "line": 63
+  },
+  {
+    "path": "/",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 52
+  },
+  {
+    "path": "/library",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 59
+  },
+  {
+    "path": "/settings/library",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 61
+  },
+  {
+    "path": "/library/updates",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 63
+  },
+  {
+    "path": "/history",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 64
+  },
+  {
+    "path": "/drafts/title",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 69
+  },
+  {
+    "path": "/search",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 71
+  },
+  {
+    "path": "/search",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 72
+  },
+  {
+    "path": "/updates",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 73
+  },
+  {
+    "path": "/popular",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 74
+  },
+  {
+    "path": "/title/random",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 75
+  },
+  {
+    "path": "/groups",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 83
+  },
+  {
+    "path": "/create/group",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 85
+  },
+  {
+    "path": "/users",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 87
+  },
+  {
+    "path": "/about",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 93
+  },
+  {
+    "path": "/announcements",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 94
+  },
+  {
+    "path": "/guidelines",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 95
+  },
+  {
+    "path": "/privacy",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 96
+  },
+  {
+    "path": "/terms",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 97
+  },
+  {
+    "path": "/my/reports",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 205
+  },
+  {
+    "path": "/settings",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 225
+  },
+  {
+    "path": "/auth/logout",
+    "source": "src/lib/components/AppSidebar.svelte",
+    "line": 245
+  },
+  {
+    "path": "/updates",
+    "source": "src/lib/components/LatestUpdatesSection.svelte",
+    "line": 52
+  },
+  {
+    "path": "/popular",
+    "source": "src/lib/components/MostReadCarousel.svelte",
+    "line": 47
+  },
+  {
+    "path": "/library/updates",
+    "source": "src/lib/components/MyUpdatesCarousel.svelte",
+    "line": 67
+  },
+  {
+    "path": "/search",
+    "source": "src/lib/components/RecentlyAddedCarousel.svelte",
+    "line": 46
+  },
+  {
+    "path": "/drafts/title",
+    "source": "src/lib/components/draft/manga/MangaCreate.svelte",
+    "line": 334
+  },
+  {
+    "path": "/drafts/title",
+    "source": "src/lib/components/draft/manga/MangaCreate.svelte",
+    "line": 342
+  },
+  {
+    "path": "/",
+    "source": "src/lib/components/reader/reader-last-page.svelte",
+    "line": 62
+  },
+  {
+    "path": "/",
+    "source": "src/lib/components/reader/reader-last-page.svelte",
+    "line": 207
+  },
+  {
+    "path": "/",
+    "source": "src/lib/components/reader/reader-pagination.svelte",
+    "line": 52
+  },
+  {
+    "path": "/",
+    "source": "src/lib/components/reader/reader-panel.svelte",
+    "line": 74
+  },
+  {
+    "path": "/terms",
+    "source": "src/lib/components/upload/UploadChapter.svelte",
+    "line": 238
+  },
+  {
+    "path": "/guidelines",
+    "source": "src/lib/components/upload/UploadChapter.svelte",
+    "line": 250
+  },
+  {
+    "path": "/create/title",
+    "source": "src/routes/(app)/drafts/title/+page.svelte",
+    "line": 69
+  },
+  {
+    "path": "/",
+    "source": "src/routes/(app)/forums/threads/[id]/Thread.svelte",
+    "line": 51
+  },
+  {
+    "path": "/settings/account",
+    "source": "src/routes/(app)/user/[id]/settings/+page.svelte",
+    "line": 136
+  },
+  {
+    "path": "/",
+    "source": "src/routes/+error.svelte",
+    "line": 26
+  }
+]

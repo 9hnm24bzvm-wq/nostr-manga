@@ -1,0 +1,369 @@
+{
+  "status": "passed",
+  "scope": "Composed source and installed Bits formula assertions only; no rendered links, app or browser executed",
+  "backend_result_offset_cap_claimed": false,
+  "ui_cap": 10000,
+  "cases": [
+    {
+      "total": 9999,
+      "limit": 10,
+      "mode": "public-search",
+      "count": 9999,
+      "path_pages": 1000,
+      "bits_pages": 1000,
+      "last_link": 1000,
+      "last_offset": 9990
+    },
+    {
+      "total": 9999,
+      "limit": 10,
+      "mode": "account-follows",
+      "count": 9999,
+      "path_pages": 1000,
+      "bits_pages": 1000,
+      "last_link": 1000,
+      "last_offset": 9990
+    },
+    {
+      "total": 9999,
+      "limit": 20,
+      "mode": "public-search",
+      "count": 9999,
+      "path_pages": 500,
+      "bits_pages": 500,
+      "last_link": 500,
+      "last_offset": 9980
+    },
+    {
+      "total": 9999,
+      "limit": 20,
+      "mode": "account-follows",
+      "count": 9999,
+      "path_pages": 500,
+      "bits_pages": 500,
+      "last_link": 500,
+      "last_offset": 9980
+    },
+    {
+      "total": 9999,
+      "limit": 30,
+      "mode": "public-search",
+      "count": 9999,
+      "path_pages": 334,
+      "bits_pages": 334,
+      "last_link": 334,
+      "last_offset": 9990
+    },
+    {
+      "total": 9999,
+      "limit": 30,
+      "mode": "account-follows",
+      "count": 9999,
+      "path_pages": 334,
+      "bits_pages": 334,
+      "last_link": 334,
+      "last_offset": 9990
+    },
+    {
+      "total": 9999,
+      "limit": 50,
+      "mode": "public-search",
+      "count": 9999,
+      "path_pages": 200,
+      "bits_pages": 200,
+      "last_link": 200,
+      "last_offset": 9950
+    },
+    {
+      "total": 9999,
+      "limit": 50,
+      "mode": "account-follows",
+      "count": 9999,
+      "path_pages": 200,
+      "bits_pages": 200,
+      "last_link": 200,
+      "last_offset": 9950
+    },
+    {
+      "total": 9999,
+      "limit": 100,
+      "mode": "public-search",
+      "count": 9999,
+      "path_pages": 100,
+      "bits_pages": 100,
+      "last_link": 100,
+      "last_offset": 9900
+    },
+    {
+      "total": 9999,
+      "limit": 100,
+      "mode": "account-follows",
+      "count": 9999,
+      "path_pages": 100,
+      "bits_pages": 100,
+      "last_link": 100,
+      "last_offset": 9900
+    },
+    {
+      "total": 10000,
+      "limit": 10,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 1000,
+      "bits_pages": 1000,
+      "last_link": 1000,
+      "last_offset": 9990
+    },
+    {
+      "total": 10000,
+      "limit": 10,
+      "mode": "account-follows",
+      "count": 10000,
+      "path_pages": 1000,
+      "bits_pages": 1000,
+      "last_link": 1000,
+      "last_offset": 9990
+    },
+    {
+      "total": 10000,
+      "limit": 20,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 500,
+      "bits_pages": 500,
+      "last_link": 500,
+      "last_offset": 9980
+    },
+    {
+      "total": 10000,
+      "limit": 20,
+      "mode": "account-follows",
+      "count": 10000,
+      "path_pages": 500,
+      "bits_pages": 500,
+      "last_link": 500,
+      "last_offset": 9980
+    },
+    {
+      "total": 10000,
+      "limit": 30,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 334,
+      "bits_pages": 334,
+      "last_link": 334,
+      "last_offset": 9990
+    },
+    {
+      "total": 10000,
+      "limit": 30,
+      "mode": "account-follows",
+      "count": 10000,
+      "path_pages": 334,
+      "bits_pages": 334,
+      "last_link": 334,
+      "last_offset": 9990
+    },
+    {
+      "total": 10000,
+      "limit": 50,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 200,
+      "bits_pages": 200,
+      "last_link": 200,
+      "last_offset": 9950
+    },
+    {
+      "total": 10000,
+      "limit": 50,
+      "mode": "account-follows",
+      "count": 10000,
+      "path_pages": 200,
+      "bits_pages": 200,
+      "last_link": 200,
+      "last_offset": 9950
+    },
+    {
+      "total": 10000,
+      "limit": 100,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 100,
+      "bits_pages": 100,
+      "last_link": 100,
+      "last_offset": 9900
+    },
+    {
+      "total": 10000,
+      "limit": 100,
+      "mode": "account-follows",
+      "count": 10000,
+      "path_pages": 100,
+      "bits_pages": 100,
+      "last_link": 100,
+      "last_offset": 9900
+    },
+    {
+      "total": 10001,
+      "limit": 10,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 1000,
+      "bits_pages": 1000,
+      "last_link": 1000,
+      "last_offset": 9990
+    },
+    {
+      "total": 10001,
+      "limit": 10,
+      "mode": "account-follows",
+      "count": 10001,
+      "path_pages": 1001,
+      "bits_pages": 1001,
+      "last_link": 1001,
+      "last_offset": 10000
+    },
+    {
+      "total": 10001,
+      "limit": 20,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 500,
+      "bits_pages": 500,
+      "last_link": 500,
+      "last_offset": 9980
+    },
+    {
+      "total": 10001,
+      "limit": 20,
+      "mode": "account-follows",
+      "count": 10001,
+      "path_pages": 501,
+      "bits_pages": 501,
+      "last_link": 501,
+      "last_offset": 10000
+    },
+    {
+      "total": 10001,
+      "limit": 30,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 334,
+      "bits_pages": 334,
+      "last_link": 334,
+      "last_offset": 9990
+    },
+    {
+      "total": 10001,
+      "limit": 30,
+      "mode": "account-follows",
+      "count": 10001,
+      "path_pages": 334,
+      "bits_pages": 334,
+      "last_link": 334,
+      "last_offset": 9990
+    },
+    {
+      "total": 10001,
+      "limit": 50,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 200,
+      "bits_pages": 200,
+      "last_link": 200,
+      "last_offset": 9950
+    },
+    {
+      "total": 10001,
+      "limit": 50,
+      "mode": "account-follows",
+      "count": 10001,
+      "path_pages": 201,
+      "bits_pages": 201,
+      "last_link": 201,
+      "last_offset": 10000
+    },
+    {
+      "total": 10001,
+      "limit": 100,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 100,
+      "bits_pages": 100,
+      "last_link": 100,
+      "last_offset": 9900
+    },
+    {
+      "total": 10001,
+      "limit": 100,
+      "mode": "account-follows",
+      "count": 10001,
+      "path_pages": 101,
+      "bits_pages": 101,
+      "last_link": 101,
+      "last_offset": 10000
+    },
+    {
+      "total": 9999,
+      "limit": 98,
+      "mode": "public-search",
+      "count": 9999,
+      "path_pages": 103,
+      "bits_pages": 103,
+      "last_link": 103,
+      "last_offset": 9996
+    },
+    {
+      "total": 9999,
+      "limit": 98,
+      "mode": "account-follows",
+      "count": 9999,
+      "path_pages": 103,
+      "bits_pages": 103,
+      "last_link": 103,
+      "last_offset": 9996
+    },
+    {
+      "total": 10000,
+      "limit": 98,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 103,
+      "bits_pages": 103,
+      "last_link": 103,
+      "last_offset": 9996
+    },
+    {
+      "total": 10000,
+      "limit": 98,
+      "mode": "account-follows",
+      "count": 10000,
+      "path_pages": 103,
+      "bits_pages": 103,
+      "last_link": 103,
+      "last_offset": 9996
+    },
+    {
+      "total": 10001,
+      "limit": 98,
+      "mode": "public-search",
+      "count": 10000,
+      "path_pages": 103,
+      "bits_pages": 103,
+      "last_link": 103,
+      "last_offset": 9996
+    },
+    {
+      "total": 10001,
+      "limit": 98,
+      "mode": "account-follows",
+      "count": 10001,
+      "path_pages": 103,
+      "bits_pages": 103,
+      "last_link": 103,
+      "last_offset": 9996
+    }
+  ],
+  "real_ui_setting_98_trace": "At10000 total and98/page, allowed/rendered page103 begins at offset9996, exposing the final4 rows."
+}

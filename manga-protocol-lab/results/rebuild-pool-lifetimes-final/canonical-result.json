@@ -1,0 +1,105 @@
+{
+  "completed_utc": "2026-10-12T02:00:32.753093+00:00",
+  "command_exit": 0,
+  "abort_reason": null,
+  "monitor_error": null,
+  "cleanup_error": null,
+  "termination_signal": null,
+  "remaining_owned_members": [],
+  "frozen_identity_hashes": {
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/rebuild-pool-lifetimes-final/guarded-command.py": "64b3c99114c9d1e64f486412d1b68b8fa754316856a5c869fc27e24c196d7b96",
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/rebuild-pool-lifetimes-final/candidate-source.json": "7a78ee9fbe6b03ff0f9b2aceca992c7d74e82d17cfac9cae575fb58d50afe01d",
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/rebuild-read-phases-final/canonical-source-before.json": "04120b4af9634067f9adc75819880777dde33fb75bf917b4a0a2456874653e40"
+  },
+  "owned_leader_reaped": true,
+  "stop_actions": [],
+  "reaped_descendants": [
+    {
+      "pid": 3069,
+      "start_ticks": 13369004,
+      "group": 3069,
+      "session": 6,
+      "wait_status": 256
+    },
+    {
+      "pid": 4077,
+      "start_ticks": 13381143,
+      "group": 4077,
+      "session": 6,
+      "wait_status": 0
+    },
+    {
+      "pid": 4122,
+      "start_ticks": 13381209,
+      "group": 6,
+      "session": 6,
+      "wait_status": 0
+    },
+    {
+      "pid": 4171,
+      "start_ticks": 13381561,
+      "group": 6,
+      "session": 6,
+      "wait_status": 256
+    },
+    {
+      "pid": 4446,
+      "start_ticks": 13384411,
+      "group": 4446,
+      "session": 6,
+      "wait_status": 0
+    },
+    {
+      "pid": 5463,
+      "start_ticks": 13393922,
+      "group": 6,
+      "session": 6,
+      "wait_status": 9
+    },
+    {
+      "pid": 5486,
+      "start_ticks": 13393943,
+      "group": 6,
+      "session": 6,
+      "wait_status": 0
+    },
+    {
+      "pid": 5553,
+      "start_ticks": 13393986,
+      "group": 6,
+      "session": 6,
+      "wait_status": 9
+    },
+    {
+      "pid": 5583,
+      "start_ticks": 13394089,
+      "group": 6,
+      "session": 6,
+      "wait_status": 0
+    },
+    {
+      "pid": 6577,
+      "start_ticks": 13406922,
+      "group": 6,
+      "session": 6,
+      "wait_status": 0
+    },
+    {
+      "pid": 6641,
+      "start_ticks": 13407047,
+      "group": 6,
+      "session": 6,
+      "wait_status": 0
+    }
+  ],
+  "changed_inputs": [],
+  "minimum_free_bytes": 4413169664,
+  "minimum_available_memory_bytes": 2906476544,
+  "final_free_bytes": 5174222848,
+  "final_available_memory_bytes": 3859693568,
+  "command_log_bytes": 57935,
+  "telemetry_bytes": 190836,
+  "telemetry_capped": false,
+  "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+  "status": "passed"
+}

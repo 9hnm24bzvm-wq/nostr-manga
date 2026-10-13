@@ -1,0 +1,39 @@
+{
+  "files": [
+    "acceptance.json",
+    "baseline.jsonl",
+    "declined-recovery.jsonl",
+    "recovered.jsonl",
+    "recovered-after-reload.jsonl",
+    "pre-recovery-backup-proof.json",
+    "setup.json",
+    "head-before.json",
+    "head-before-retry.json",
+    "head-accepted.json",
+    "head-local-edit.json",
+    "head-recovered.json",
+    "admit.json",
+    "wrong-pin.txt",
+    "consent-refusal.txt",
+    "outage-outbox.txt",
+    "outbox-after-reload.txt",
+    "retry-accepted.txt",
+    "unpublished-local-edit.txt",
+    "recovery-preview.txt",
+    "recovery-declined.txt",
+    "recovery-approved.txt",
+    "recovered-after-reload.txt",
+    "host-controller.log",
+    "stopped.json",
+    "README.md",
+    "safe-evidence-files.json"
+  ],
+  "exclude": [
+    "fixture-controller.py",
+    "public-operator.py",
+    "public-seam-driver.py",
+    "all .runtime-final/native-publication-* contents",
+    "runtime configurations, passwords and service keys",
+    "screenshots unless separately requested"
+  ]
+}

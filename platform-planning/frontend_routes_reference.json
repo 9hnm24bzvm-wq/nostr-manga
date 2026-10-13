@@ -1,0 +1,307 @@
+[
+  {
+    "route": "/",
+    "source": "src/routes/(app)/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/about",
+    "source": "src/routes/(app)/about/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/auth/error",
+    "source": "src/routes/(app)/auth/error/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/auth/login",
+    "source": "src/routes/(app)/auth/login/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/auth/logout",
+    "source": "src/routes/(app)/auth/logout/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/auth/recovery",
+    "source": "src/routes/(app)/auth/recovery/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/auth/register",
+    "source": "src/routes/(app)/auth/register/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/auth/verification",
+    "source": "src/routes/(app)/auth/verification/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/author/[id]",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/author/[id]/settings",
+    "source": "src/routes/(app)/author/[id]/settings/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/author/[id]/uploads",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/chapter/[id]",
+    "source": "src/routes/(app)/chapter/[id]/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/chapter/[id]",
+    "source": "src/routes/(app)/chapter/[id]/+page@.svelte",
+    "kind": "+page@.svelte"
+  },
+  {
+    "route": "/chapter/[id]/[page]",
+    "source": "src/routes/(app)/chapter/[id]/[page]/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/chapter/[id]/[page]",
+    "source": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+    "kind": "+page@.svelte"
+  },
+  {
+    "route": "/chapter/[id]/edit",
+    "source": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/chapter/[id]/edit",
+    "source": "src/routes/(app)/chapter/[id]/edit/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/create/group",
+    "source": "src/routes/(app)/create/group/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/create/title",
+    "source": "src/routes/(app)/create/title/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/drafts/title",
+    "source": "src/routes/(app)/drafts/title/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/forums/threads/[id]",
+    "source": "src/routes/(app)/forums/threads/[id]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/forums/threads/[id]",
+    "source": "src/routes/(app)/forums/threads/[id]/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/forums/threads/[id]/[postId]",
+    "source": "src/routes/(app)/forums/threads/[id]/[postId]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/forums/threads/[id]/[postId]",
+    "source": "src/routes/(app)/forums/threads/[id]/[postId]/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/group/[id]",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/group/[id]/comments",
+    "source": "src/routes/(app)/group/[id]/comments/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/group/[id]/settings",
+    "source": "src/routes/(app)/group/[id]/settings/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/group/[id]/uploads",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/groups",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/guidelines",
+    "source": "src/routes/(app)/guidelines/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/history",
+    "source": "src/routes/(app)/history/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/library",
+    "source": "src/routes/(app)/library/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/library/updates",
+    "source": "src/routes/(app)/library/updates/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/my/reports",
+    "source": "src/routes/(app)/my/reports/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/popular",
+    "source": "src/routes/(app)/popular/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/privacy",
+    "source": "src/routes/(app)/privacy/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/search",
+    "source": "src/routes/(app)/search/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/settings",
+    "source": "src/routes/(app)/settings/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/settings/[key]",
+    "source": "src/routes/(app)/settings/[key]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/settings/account",
+    "source": "src/routes/(app)/settings/account/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/settings/client",
+    "source": "src/routes/(app)/settings/client/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/settings/library",
+    "source": "src/routes/(app)/settings/library/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/settings/preferences",
+    "source": "src/routes/(app)/settings/preferences/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/terms",
+    "source": "src/routes/(app)/terms/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/title/[id]",
+    "source": "src/routes/(app)/title/[id]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/title/[id]",
+    "source": "src/routes/(app)/title/[id]/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/title/[id]/[slug]",
+    "source": "src/routes/(app)/title/[id]/[slug]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/title/[id]/[slug]",
+    "source": "src/routes/(app)/title/[id]/[slug]/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/title/[id]/edit",
+    "source": "src/routes/(app)/title/[id]/edit/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/title/[id]/edit",
+    "source": "src/routes/(app)/title/[id]/edit/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/title/[id]/upload",
+    "source": "src/routes/(app)/title/[id]/upload/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/title/[id]/upload",
+    "source": "src/routes/(app)/title/[id]/upload/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/title/random",
+    "source": "src/routes/(app)/title/random/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/title/random",
+    "source": "src/routes/(app)/title/random/+page.ts",
+    "kind": "+page.ts"
+  },
+  {
+    "route": "/trending",
+    "source": "src/routes/(app)/trending/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/updates",
+    "source": "src/routes/(app)/updates/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/user/[id]",
+    "source": "src/routes/(app)/user/[id]/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/user/[id]/comments",
+    "source": "src/routes/(app)/user/[id]/comments/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/user/[id]/settings",
+    "source": "src/routes/(app)/user/[id]/settings/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/user/[id]/uploads",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "kind": "+page.svelte"
+  },
+  {
+    "route": "/users",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "kind": "+page.svelte"
+  }
+]

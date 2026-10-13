@@ -1,0 +1,128 @@
+[
+  {
+    "path": "manga-protocol-lab/bench/library-node/fixture.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      38
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/bench/library-node/load-control-fixture.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      38
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/bench/library-node/load-fixture.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      38
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/bench/library-node/mixed-fixture.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      71,
+      72
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/bench/library-node/test_pg_diagnostics.py",
+    "category": "source-input",
+    "literal_marker_lines": [
+      197,
+      305
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/bench/library-node/versions/load-fixture-before-gc.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      38
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/bench/library-node/versions/load-fixture-before-process-metrics.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      38
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/bench/library-node/versions/load-fixture-checkpoint20.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      38
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/runtime/run-demo.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      57,
+      58
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/scripts/test-postgres.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      36
+    ]
+  },
+  {
+    "path": "manga-protocol-lab/tests/test_backup_cli.py",
+    "category": "source-input",
+    "literal_marker_lines": [
+      58,
+      87,
+      133,
+      179,
+      206
+    ]
+  },
+  {
+    "path": "platform-planning/auth-flow-contract.json",
+    "category": "source-input",
+    "literal_marker_lines": [
+      71,
+      77,
+      92
+    ]
+  },
+  {
+    "path": "platform-planning/build_ticket_graph.py",
+    "category": "source-input",
+    "literal_marker_lines": [
+      78
+    ]
+  },
+  {
+    "path": "weebdex-platform/backend/tests/auth_http.rs",
+    "category": "source-input",
+    "literal_marker_lines": [
+      967,
+      1011,
+      1014,
+      1453,
+      1497,
+      1762
+    ]
+  },
+  {
+    "path": "weebdex-platform/scripts/run-auth-tests.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      35
+    ]
+  },
+  {
+    "path": "weebdex-platform/scripts/run-original-tests-in-fixture.sh",
+    "category": "source-input",
+    "literal_marker_lines": [
+      14
+    ]
+  }
+]

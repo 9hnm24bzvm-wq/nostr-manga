@@ -1,0 +1,7 @@
+{
+  "owned_runtime_only": true,
+  "removed_ephemeral_fixture_keys": 6,
+  "remaining_named_key_files": 0,
+  "contents_never_read_or_output": true,
+  "private_cleanup_receipt_sha256": "d6dc9e436b47d6a0d2864b761de60093ccb6db857c078334cddd1ecd170ea4f5"
+}

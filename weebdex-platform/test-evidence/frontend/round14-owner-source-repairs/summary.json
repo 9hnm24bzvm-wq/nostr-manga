@@ -1,0 +1,151 @@
+{
+  "utc": "2026-10-13T08:42:15.809671+00:00",
+  "production_source_frozen": true,
+  "finite_assigned_findings": 3,
+  "overlay_definitions": 496,
+  "anchor_occurrences": 505,
+  "original_paths": 97,
+  "inventory_sha256": "81b210edf3924854ccdde6df9e1d6ae9b1a5cb0be9eafb33fa3b846fd208ba18",
+  "local_overlay_sha256": "9960c36dd1ba3d7523f9be0905a47557efab48a6b7ab045aaf94cc83ab87f1f9",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T08:42:15.694Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 85,
+    "scripts_syntax_compiled": 54,
+    "shared_sha": "6fc8cd9fae676606b2b6a5d6df36ba68f905f622ad3d64a4c7e5c27640a01894",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "9960c36dd1ba3d7523f9be0905a47557efab48a6b7ab045aaf94cc83ab87f1f9",
+    "integration_inventory_sha": "81b210edf3924854ccdde6df9e1d6ae9b1a5cb0be9eafb33fa3b846fd208ba18",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "runtime_tests_executed": false,
+  "original_attachment_files_byte_identical": 676,
+  "approved_feed_exceptions": [
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "before": "\t\t\t\t\t{/if}\r\n\t\t\t\t</footer>",
+      "after": "\t\t\t\t\t{/if}\r\n\t\t\t\t\t{#if paginationPaused}\r\n\t\t\t\t\t\t<Button variant=\"outline\" class=\"w-full\" disabled={isLoading} onclick={() => continuation?.resume()}>{paginationFailed ? \"Retry loading updates\" : \"Load more updates\"}</Button>\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</footer>",
+      "approved_feed_pagination_exception": "bounded_continuation_resume"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "before": "\t{#if feed.data?.length}",
+      "after": "\t{#if entries.length}",
+      "approved_feed_pagination_exception": "accumulated_acknowledged_results_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "before": "\t<ErrorComponent {error} />",
+      "after": "\t<ErrorComponent {error} />\r\n\t{#if !isEntity}\r\n\t\t<Button variant=\"outline\" disabled={isLoading} onclick={retryFeed}>Retry feed</Button>\r\n\t{/if}",
+      "approved_feed_pagination_exception": "initial_feed_retry_control"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "before": "\t\t{#if feed && feed.limit * feed.page < feed.total}",
+      "after": "\t\t{#if feed && (isEntity ? (feed.total > feed.limit || feed.page > 1) : feed.limit * feed.page < feed.total)}",
+      "approved_feed_pagination_exception": "entity_last_page_pagination_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "before": "\t\t</Empty.Root>\r\n\t{/if}\r\n{:else}",
+      "after": "\t\t</Empty.Root>\r\n\t{/if}\r\n\t{#if isEntity && !entries.length && (feed.total > feed.limit || feed.page > 1)}\r\n\t\t<footer>\r\n\t\t\t<GenericPagination {feed} />\r\n\t\t</footer>\r\n\t{/if}\r\n{:else}",
+      "approved_feed_pagination_exception": "entity_empty_page_existing_paginator"
+    }
+  ],
+  "approved_widget_error_exceptions": [
+    {
+      "path": "src/lib/components/LatestUpdatesGrid.svelte",
+      "sha256": "a8c52cc549ac4d7b32521104fdbeb27f53d61f55323bc047365f2056e2ebe481",
+      "count": 1,
+      "before": "\t<ErrorComponent {error} />\r\n{:else if isMounted}",
+      "after": "\t<ErrorComponent {error} />\r\n\t<Button variant=\"outline\" disabled={isLoading} onclick={retryUpdates}>Retry updates</Button>\r\n{/if}\r\n{#if isMounted}",
+      "approved_widget_error_exception": "public_updates_error_retry"
+    },
+    {
+      "path": "src/lib/components/LatestUpdatesGrid.svelte",
+      "sha256": "a8c52cc549ac4d7b32521104fdbeb27f53d61f55323bc047365f2056e2ebe481",
+      "count": 1,
+      "before": "\t{:else}\r\n\t\t<Empty.Root>",
+      "after": "\t{:else if !error}\r\n\t\t<Empty.Root>",
+      "approved_widget_error_exception": "public_updates_truthful_empty_guard"
+    },
+    {
+      "path": "src/lib/components/MyUpdatesCarousel.svelte",
+      "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+      "count": 1,
+      "before": "{#if !isMounted || entries.length}",
+      "after": "{#if !isMounted || entries.length || error}",
+      "approved_widget_error_exception": "personal_updates_error_visibility_guard"
+    },
+    {
+      "path": "src/lib/components/MyUpdatesCarousel.svelte",
+      "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+      "count": 1,
+      "before": "\t\t\t{#if isMounted && entries.length}",
+      "after": "\t\t\t{#if error}\r\n\t\t\t\t<ErrorComponent {error} />\r\n\t\t\t\t<Button variant=\"outline\" disabled={isLoading} onclick={queueUpdates}>Retry updates</Button>\r\n\t\t\t{:else if isMounted && entries.length}",
+      "approved_widget_error_exception": "personal_updates_error_retry"
+    }
+  ],
+  "file_hashes": {
+    "platform-integrations/frontend-behavior/mutation-feedback.ts": "4241f752c978f4681aed346ab987f7713b3f603d97d08f3b19614fec098a9b3f",
+    "platform-integrations/frontend-behavior/safe-read-owner.ts": "791040778e3fd841cc1d30ad35c88c438c40fe7ce886e041e144736098868628",
+    "platform-integrations/local-library/MangaFollow.ts": "6e28bc272124f56324fa32fd988e051c2dd5e4aa3966b2a77fc9e891637b844a",
+    "platform-integrations/local-library/overlays.mjs": "9960c36dd1ba3d7523f9be0905a47557efab48a6b7ab045aaf94cc83ab87f1f9",
+    "scripts/prepare-frontend-integration.mjs": "f9c8a9f840a0e528772a24f0174d568317fa722f447011a411eb3209e7b5c95d",
+    "scripts/record-frontend-artifacts.py": "cf80f0951b81b5eb0e9126ccd1a297bd84927f67aa05f7ee556a220010d6c801"
+  },
+  "previous_artifact": "Build14/source476 historical/stale; build15 required",
+  "changes": [
+    "Existing entity paginator remains reachable on last and empty requested page with no duplicate normal paginator",
+    "Five handlers acknowledge account nonOK or uncertainty visibly for still-owned target only; pre-await library admission preserved. Device storage errors were already in panel and remain regression coverage",
+    "Mounted public LatestUpdatesGrid distinguishes service errors from valid empty; MyUpdatesCarousel settles account-read failures instead of perpetual skeleton; explicit safe Retry and private latest-context coalescing"
+  ]
+}

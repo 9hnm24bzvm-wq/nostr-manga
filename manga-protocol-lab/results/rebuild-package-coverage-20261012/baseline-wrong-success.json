@@ -1,0 +1,32 @@
+[
+  {
+    "case": "present_but_excluded",
+    "legacy_cli_exit": 0,
+    "archive_crc_passed": true,
+    "missing_required": [
+      "server/diagnostics/rebuild-oct8/retention_index.rs"
+    ],
+    "mismatched_required": [],
+    "observation": "Legacy subset-only success lacks independent canonical-coverage validation; this is separate from the new-option regression reds."
+  },
+  {
+    "case": "missing",
+    "legacy_cli_exit": 0,
+    "archive_crc_passed": true,
+    "missing_required": [
+      "server/diagnostics/rebuild-oct8/retention_index.rs"
+    ],
+    "mismatched_required": [],
+    "observation": "Legacy subset-only success lacks independent canonical-coverage validation; this is separate from the new-option regression reds."
+  },
+  {
+    "case": "altered",
+    "legacy_cli_exit": 0,
+    "archive_crc_passed": true,
+    "missing_required": [],
+    "mismatched_required": [
+      "server/src/lib.rs"
+    ],
+    "observation": "Legacy subset-only success lacks independent canonical-coverage validation; this is separate from the new-option regression reds."
+  }
+]

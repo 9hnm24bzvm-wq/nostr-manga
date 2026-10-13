@@ -1,0 +1,41 @@
+[package]
+name = "manga-node"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+
+[dependencies]
+negentropy = "=0.5.1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+anyhow = "1"
+async-trait = "0.1"
+axum = { version = "0.8", features = ["ws"] }
+base64 = "0.22"
+ciborium = "0.2"
+deadpool-postgres = "=0.14.2"
+futures-util = "0.3"
+hex = "0.4"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+language-tags = "=0.3.2"
+libc = "0.2"
+moka = { version = "=0.12.16", features = ["future"] }
+rand = "0.8"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+secp256k1 = { version = "0.29", features = ["rand", "global-context"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+sha2 = "0.10"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+tokio-postgres-rustls = { version = "=0.14.0", features = ["ring", "native-certs"] }
+tokio-postgres = { version = "0.7", features = ["with-serde_json-1"] }
+url = "2"
+zeroize = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+flate2 = "1"
+
+[dev-dependencies]
+tokio-tungstenite = "0.29"
+tempfile = "3"

@@ -1,0 +1,17 @@
+{
+  "captured_utc": "2026-10-12T01:30:45.743015+00:00",
+  "free_bytes": 5176958976,
+  "available_memory_bytes": 3923353600,
+  "node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+  "runner_sha256": {
+    "scripts/test.sh": "813308f181e7f1a176fccd1334ca0351d1981c7ea51652d1a9a6f291f1766888",
+    "scripts/test-postgres.sh": "180f04ce79f3a5b2f5771c10882dd61ac8c090050920ee3bb7fb9ecbff96b67d",
+    "results/rebuild-pool-lifetimes-final/run-serialized-canonical.sh": "194da1c6bc979f7b86549c3ae61c9433c84a0c85bcc9eb6748c96721df2a4556",
+    "results/rebuild-pool-lifetimes-final/test-postgres-serialized.sh": "41af3a18d3e14303375cf9fa0df3878ad31ee6f371cb2e46337c75a7c254c028",
+    "results/rebuild-pool-lifetimes-final/guarded-command.py": "64b3c99114c9d1e64f486412d1b68b8fa754316856a5c869fc27e24c196d7b96"
+  },
+  "budget": "Prior same full-j1 gate temporary disk growth1.459GB; reserve1.9GB estimate including additional one-fixture cluster objects/temporary relinks. Freshfree minus estimate remains above2GiB. Sampling may overshoot; stop safely if floor crossed.",
+  "estimated_peak_additional_bytes": 1900000000,
+  "expected_free_after_estimate": 3276958976,
+  "window_release": "All sampler controlledprocess/PG/overhead commands terminal; no remaining service or heavyI/O, per loadworker01:29:32UTC."
+}

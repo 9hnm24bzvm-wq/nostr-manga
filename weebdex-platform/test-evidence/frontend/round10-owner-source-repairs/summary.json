@@ -1,0 +1,85 @@
+{
+  "utc": "2026-10-13T07:30:34.596217+00:00",
+  "production_source_frozen": true,
+  "runtime_tests_executed": false,
+  "overlay_definitions": 444,
+  "anchor_occurrences": 453,
+  "original_paths": 96,
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T07:29:15.109Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 84,
+    "scripts_syntax_compiled": 49,
+    "shared_sha": "6fc8cd9fae676606b2b6a5d6df36ba68f905f622ad3d64a4c7e5c27640a01894",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "85b7aad688a47f459b4bd993d6956bc2d68f881fb52a0c12bbac9426d39aa344",
+    "integration_inventory_sha": "f7b20453c22c8ccc7122cb5dc064969bf786cdd5d421ff08bb7275f90b918650",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "approved_auth_settings_requested_flow_key_anchors": 2,
+  "anonymous_recovery_derivation": {
+    "original": "src/routes/(app)/auth/recovery/+page.svelte",
+    "preserved_byte_copy": "platform-integrations/frontend-behavior/RetainedRecovery.svelte",
+    "executed_script_derivative": "platform-integrations/frontend-behavior/RecoveryRequest.svelte",
+    "original_sha256": "20ba760776b71854e74c17aef228abd234dd5bded650c4fe863a1a94e1115fcf",
+    "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
+    "original_markup_styles_identical": true
+  },
+  "previous_artifact": "Historical build10/source420 preserved; superseded by clean current build11/source444",
+  "application_browser_journeys_executed": 0,
+  "build11": {
+    "status": "passed",
+    "receipt": "final-build11/build-result.json",
+    "artifact_files": 398,
+    "artifact_bytes": 6980458,
+    "artifact_manifest_sha256": "be2ea0d54eb43ddcb44c7cc6e09983d82f085a550b67e7e1633ac1354e63d9cd",
+    "bootstrap": {
+      "ui_index_sha256": "d4432dac58401eb35635a635b018382b59117844f48d9f7b5a01cbed43cec90b",
+      "hash_sources": [
+        "'sha256-X65FR/CWeS39bS2G092vwhrC+8MYNSn/Tb9KYXcydj0='"
+      ],
+      "recognized_bootstrap_count": 1,
+      "external_analytics_allowed": false,
+      "script_unsafe_inline_allowed": false,
+      "runtime_startup_checked": false
+    }
+  }
+}

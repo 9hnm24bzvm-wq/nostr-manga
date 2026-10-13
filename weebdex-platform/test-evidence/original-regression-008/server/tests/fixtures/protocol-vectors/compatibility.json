@@ -1,0 +1,37 @@
+{
+  "uuids": [
+    {
+      "kind": "manga",
+      "target": "test",
+      "uuid": "c805fec8-04d8-8bd2-8a66-151871c7f29c"
+    },
+    {
+      "kind": "chapter",
+      "target": "test",
+      "uuid": "bb68f465-2837-838f-8070-cd21d3a69835"
+    },
+    {
+      "kind": "manga",
+      "target": "漫画",
+      "uuid": "f0d33c88-25ea-82d2-b0bd-6f48715db927"
+    }
+  ],
+  "dates": [
+    {
+      "text": "1970-01-01T00:00:00",
+      "seconds": 0
+    },
+    {
+      "text": "2000-02-29T12:34:56",
+      "seconds": 951827696
+    },
+    {
+      "text": "2026-10-10T00:00:00",
+      "seconds": 1791590400
+    },
+    {
+      "text": "9999-12-31T23:59:59",
+      "seconds": 253402300799
+    }
+  ]
+}

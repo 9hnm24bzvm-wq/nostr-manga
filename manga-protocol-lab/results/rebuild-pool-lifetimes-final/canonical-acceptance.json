@@ -1,0 +1,126 @@
+{
+  "status": "passed",
+  "completed_utc": "2026-10-12T02:00:32.753093+00:00",
+  "command_exit": 0,
+  "execution": "canonical-equivalent serialized runner adaptation; source root anchors and four -j2 to -j1 Cargo flags only; unchanged Python/package/browser steps and PostgreSQL inventory/settings",
+  "profile": "release",
+  "offline_dependencies": true,
+  "cargo_jobs": 1,
+  "cargo_incremental": 0,
+  "node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+  "prior_accepted_node_sha256": "1c3f7769e25ea3bd9f025c0f3d6cad009d7d23de3babe36b1f90a661afc7d713",
+  "input_file_count": 392,
+  "changed_during_gate": [],
+  "prior_accepted_input_count": 391,
+  "prior_input_changes": {
+    "server/src/library.rs": {
+      "before": "97e544fa71362c7a2a695ecd273fbc5c88001991f9b600f1af63a4f49dc39c07",
+      "after": "83b13c7f241542d36b61e3b5df6c08c0beb011470775edcb4e91cb6c913c69bb"
+    },
+    "server/src/node/compatibility_http.rs": {
+      "before": "82580cfd3783715202ae9926b79403a351bb3fa15ccf890a1d1a416a6de2780e",
+      "after": "847638ae981a04c05e50bae7b48bedbb337bfe8b7ede157d451981911a7c2c86"
+    },
+    "server/src/upload.rs": {
+      "before": "0a58551980a45e2b1190ebfec9a9f478654b9b444919acfe4ea869b2178ea96c",
+      "after": "cda13102ff4255f860a429abb0982e87b71c023fa9e5e90e6c6505d930036f40"
+    },
+    "server/tests/http_pool_lifetimes.rs": {
+      "before": null,
+      "after": "ca7bb2d718882dd034c37eac6f026aabf3f295a6dd24f001ed229bfd7375f68f"
+    }
+  },
+  "runner_hashes_after": {
+    "scripts/test.sh": "813308f181e7f1a176fccd1334ca0351d1981c7ea51652d1a9a6f291f1766888",
+    "scripts/test-postgres.sh": "180f04ce79f3a5b2f5771c10882dd61ac8c090050920ee3bb7fb9ecbff96b67d",
+    "results/rebuild-pool-lifetimes-final/run-serialized-canonical.sh": "194da1c6bc979f7b86549c3ae61c9433c84a0c85bcc9eb6748c96721df2a4556",
+    "results/rebuild-pool-lifetimes-final/test-postgres-serialized.sh": "41af3a18d3e14303375cf9fa0df3878ad31ee6f371cb2e46337c75a7c254c028",
+    "results/rebuild-pool-lifetimes-final/guarded-command.py": "64b3c99114c9d1e64f486412d1b68b8fa754316856a5c869fc27e24c196d7b96"
+  },
+  "counts": {
+    "python": 58,
+    "packaging": 6,
+    "browser_model": 91,
+    "rust_module_passed": 74,
+    "rust_module_intentional_ignores": 2,
+    "integration_executables": 89,
+    "integration_cases_passed": 108
+  },
+  "intentional_ignores": [
+    {
+      "test": "library_client_outbox::tests::outbox_child_process",
+      "reason": "child-process harness; invoked by the crash parent"
+    },
+    {
+      "test": "library_manifest::tests::half_million_records_fit_chunked_root",
+      "reason": "large codec fixture; run explicitly in release mode; not executed by this canonical invocation"
+    }
+  ],
+  "optional_exclusion": "audit_gaps characterization is excluded from the correctness gate",
+  "browser_build": "e4f4862bd75c26bb",
+  "browser_assets": 56,
+  "strict_all_target_clippy": {
+    "status": "passed",
+    "warnings": "-D warnings",
+    "observed_elapsed": "43.79s",
+    "command": "cargo clippy --release --locked --manifest-path server/Cargo.toml -j1 --all-targets -- -D warnings"
+  },
+  "format_check": "passed cargo fmt --check before Rust tests",
+  "postgres_multiprocess": {
+    "scope": "Separate Rust processes against a real ephemeral PostgreSQL database.",
+    "writer_processes": 12,
+    "unique_event_inserts": 1,
+    "worker_processes": 4,
+    "unique_jobs_completed": 32,
+    "jobs_per_process": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "postgresql_immediate_stop_and_restart": {
+      "outage_failed_closed": true,
+      "pool_recovered": true
+    },
+    "fresh_process_read_after_recovery": true,
+    "not_claimed": "No full manga API, strfry projection, blob admission or target-scale capacity validation."
+  },
+  "postgres_durability": {
+    "fsync": "on",
+    "synchronous_commit": "on"
+  },
+  "diagnostics_default": "off; MANGA_READ_ADMISSION_DIAGNOSTICS unset in gate environment except fixture-owned explicit controls",
+  "guard": {
+    "abort_reason": null,
+    "monitor_error": null,
+    "cleanup_error": null,
+    "remaining_owned_members": [],
+    "minimum_free_bytes": 4413169664,
+    "minimum_available_memory_bytes": 2906476544,
+    "final_free_bytes": 5174222848,
+    "command_log_bytes": 57935,
+    "telemetry_bytes": 190836
+  },
+  "disk_stop_floor_bytes": 2147483648,
+  "available_memory_stop_floor_bytes": 1073741824,
+  "evidence": {
+    "canonical.log": "55c6ab99b26e54c8862d7e83a2a60e76aba4950566811b08f19a711ab54aaf0e",
+    "canonical-result.json": "e2461d5c51324aac79df00dc4e7f6530afa839e2383ec96eb5264aa37b0d68d9",
+    "canonical-source-before.json": "77dfdc5bd28eee19192f4eb1b81a00563cd496d96c39152bcc549af9b2ffdb37",
+    "canonical-source-after.json": "a26e31ca2d65abfb8bdb500249ebab4c3c68f9c55a90823e686b6c8388b2e763",
+    "candidate-source.json": "7a78ee9fbe6b03ff0f9b2aceca992c7d74e82d17cfac9cae575fb58d50afe01d",
+    "integration-results.json": "c0b3cd9f82b6dc7e94ce52eeb7eb438e7e3ce7d6e41da91c12f550dfc78aeb3e",
+    "integration-inventory.json": "8a3456cc307b2903d15dbc117c4c3773adc61e2b943f32f58118085b48f495b5",
+    "runner-sha256.json": "cbc9c5117c7830a579cf2c21d430b412c7ba4ad17671fcfe8656fec3da7b93be",
+    "postgres-multiprocess.json": "882d5c2354f447732666fd499b97d0747426d28b6008f4e8ee0d4bb50e38540a",
+    "canonical-environment.json": "257056438013001e8d98652c54108b7d5f7adf0e269760fbb23203ec84013e79",
+    "canonical-command.json": "90528c3e04b054ac6a30ec848784dc621f6e445ac68415f6c40a7fa3007979ce"
+  },
+  "scope": [
+    "Functional regression acceptance for exact392-input candidate4c499 and three release-only connection-lifetime corrections; prior accepted1c3 remains preserved.",
+    "No new mixed-load, sustained-capacity or causal explanation of the prior rejection wave is established. The audit and compatibility collection paths were not used in that mixed trial.",
+    "Browser counts are model/build and existing real-backend interoperability evidence; no new rendered-browser UI acceptance is inferred.",
+    "Two public pool1 regressions genuinely failed on1c3 and passed on this candidate. Later audit controls not reached on baseline are not separate causal reds. Postcommit Moka release is source-proven plus public regressions without a private pause hook or invented timing red.",
+    "Focused acceptance remains separately frozen in results/rebuild-pool-lifetimes/acceptance.json. No full-build recovery upload is claimed by this receipt."
+  ]
+}

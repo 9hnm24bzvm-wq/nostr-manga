@@ -1,0 +1,799 @@
+{
+  "metadata": {
+    "created_utc": "2026-10-13T01:30:00Z",
+    "platform_root": "/workspace/scratch/3eafc9756ff3/weebdex-platform",
+    "planning_root": "/workspace/scratch/3eafc9756ff3/platform-planning",
+    "source_root": "/workspace/scratch/3eafc9756ff3/weebdex_attachment_inspection/extracted",
+    "source_archive_sha256": "845aa9bb7964cc02cc3353144c97ae42e64e09c5128e98076fa090f833f6cadd",
+    "unique_ui_paths": 51,
+    "observed_HTTP_operations": 107,
+    "methods": {
+      "POST": 32,
+      "GET": 49,
+      "PUT": 8,
+      "DELETE": 18
+    },
+    "actual_active_limit": "six child slots, including waiting GitHub browser; no promise of 20–100 workers",
+    "shared_interface": "feature router() -> axum::Router<AppState>; handlers Result<_, ApiError>; PgStore shared deadpool pool; pool() -> &deadpool_postgres::Pool; client() async -> Result<Object,ApiError>; fully qualified platform.* tables; own platform.schema_migrations; router resolves .with_state exactly once",
+    "status_policy": "All 107 implementation/API/UI operation statuses remain pending or not run until verified. inventory_complete is not implementation_complete.",
+    "critical_path": [
+      "WD-003",
+      "WD-004",
+      "WD-006",
+      "WD-008",
+      "WD-002",
+      "WD-018",
+      "WD-019"
+    ],
+    "repository_publication": "pending secure browser login and private repository creation; local tickets only",
+    "working_build_window_utc": "2026-10-13 01:25 to 02:25 UTC, best-effort target; all API completeness remains separately gated",
+    "auth_router_interface": "auth::browser_router() -> Router<AppState> additionally mounted at /auth",
+    "media_router_interface": "uploads::media_router() -> Router<AppState> for /covers /data /uploads as applicable"
+  },
+  "tickets": [
+    {
+      "id": "WD-001",
+      "title": "Freeze source and capabilities",
+      "owner": "inspect_weebdex_attachment",
+      "status": "inventory_complete",
+      "priority": "P0",
+      "depends_on": [],
+      "owned_files": [
+        "Inspection reports only"
+      ],
+      "acceptance": [
+        "Archive baseline has exact bytes and hashes; unsafe paths rejected during extraction",
+        "51 distinct UI route paths and 107 observed HTTP operations recorded",
+        "Archive has no backend, existing tests, LICENSE, or verified upstream identity; those remain unknown"
+      ],
+      "sources": [
+        "reports/frontend_file_hash_baseline.json",
+        "reports/frontend_routes.json",
+        "reports/frontend_api_contract_inventory.json"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-002",
+      "title": "Preserve and build frontend",
+      "owner": "preserve_weebdex_frontend",
+      "status": "source_preserved_build_pending",
+      "priority": "P0",
+      "depends_on": [
+        "WD-001"
+      ],
+      "owned_files": [
+        "weebdex-platform/frontend/**",
+        "weebdex-platform/scripts/frontend-*"
+      ],
+      "acceptance": [
+        "All existing archive source, static, HTML, CSS/Sass/SCSS, Svelte, and TypeScript bytes remain identical",
+        "Build-time PUBLIC_* endpoints supplied by additive config/environment override; original .env files unchanged",
+        "No formatter run on source; build/check/lint evidence reported separately; toolchain/dependency failures disclosed",
+        "Static fallback serves all 51 verified route paths and PWA/service-worker assets without redesign"
+      ],
+      "sources": [
+        "package.json",
+        "svelte.config.js",
+        "vite.config.ts",
+        "src/routes/+layout.ts",
+        "src/service-worker.ts"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run",
+        "source_parity": "676/676 files identical per preservation worker report; test-evidence/frontend/source-parity.json"
+      }
+    },
+    {
+      "id": "WD-003",
+      "title": "Create platform runtime foundation",
+      "owner": "design_protocol_module_boundary",
+      "status": "pending",
+      "priority": "P0",
+      "depends_on": [
+        "WD-001"
+      ],
+      "owned_files": [
+        "weebdex-platform/backend/Cargo.toml",
+        "weebdex-platform/backend/src/{lib,main,config,state,router,error,db}.rs",
+        "weebdex-platform/backend/src/domains/mod.rs",
+        "weebdex-platform/backend/src/contracts/mod.rs",
+        "weebdex-platform/backend/src/protocol/**"
+      ],
+      "acceptance": [
+        "Separate Rust crate depends on unchanged manga-node library by path; no protocol domain copy",
+        "AppState Clone fields db: PgStore, config: Arc<Config>, protocol: Arc<ProtocolFacade>, reads: Arc<manga_node::read_admission::Admission>; same shared deadpool_postgres pool; feature router() -> Router<AppState> and Result<_,ApiError>",
+        "API nested under /api; native Ory-compatible flows configured under /auth; static/asset fallback never masks API errors",
+        "Platform schema and migration history separate from exact 52 protocol migration checksums",
+        "One application runtime and graceful shutdown owns workers/relay/storage; no duplicated worker lifecycle",
+        "Loopback default, explicit allowed origins, bounded body/time/concurrency limits, structured error bodies and observable health readiness"
+      ],
+      "sources": [
+        "manga-protocol-lab/server/src/lib.rs",
+        "manga-protocol-lab/server/src/node.rs:676-1335",
+        "manga-protocol-lab/server/src/db.rs:292-355"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-004",
+      "title": "Implement catalog read APIs",
+      "owner": "implement_catalog_api",
+      "status": "pending",
+      "priority": "P0",
+      "depends_on": [
+        "WD-001",
+        "WD-003"
+      ],
+      "owned_files": [
+        "backend/src/domains/catalog/**",
+        "backend/src/contracts/catalog.rs",
+        "backend/migrations/0001_* through 0009_*"
+      ],
+      "acceptance": [
+        "Match flat Manga/Chapter/Author/Group/Tag DTOs plus relationships, version and RFC3339 timestamps; no MangaDex attributes wrappers",
+        "Every catalog-read operation in capability matrix yields actual persisted results or accurate empty feed with total/limit/page; no constant successful placeholders",
+        "Search implements actual title/year/language/status/content-rating/tag include-exclude/AND-OR/author/artist/chapter availability filters and stable paging/sorts",
+        "Title detail includes covers, relations, recommendations, languages/groups, thread references; chapter aggregate and feeds have exact mapped envelopes",
+        "Seeded synthetic fixture proves homepage -> search -> title -> chapter navigation; missing id returns source-compatible failure"
+      ],
+      "sources": [
+        "src/lib/API/{Manga,Chapter,Author,Group,Tag}.ts",
+        "src/@types/{Manga,Chapter,ChapterAggregate,Response}.d.ts"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-005",
+      "title": "Implement catalog editorial state",
+      "owner": "implement_catalog_api",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-004",
+        "WD-006"
+      ],
+      "owned_files": [
+        "Same catalog-owned module/migrations as WD-004"
+      ],
+      "acceptance": [
+        "Create/edit author, group, title and relations persist with authenticated permission/ownership checks",
+        "Draft get/search/commit/publish/reject follow state enums and optimistic version checks; locked-title permissions enforced",
+        "Invalid edits cannot silently overwrite newer version; transaction rollback leaves no partial relationship update",
+        "CatalogRepository is sole platform catalog writer; uploads publishes chapters through an explicit service seam"
+      ],
+      "sources": [
+        "src/lib/API/{Manga,Author,Group}.ts",
+        "src/lib/constants/Manga.ts",
+        "src/lib/permission/{manga,author,group}.ts",
+        "src/lib/components/draft/**"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-006",
+      "title": "Implement secure native auth flows",
+      "owner": "implement_platform_auth",
+      "status": "pending",
+      "priority": "P0",
+      "depends_on": [
+        "WD-001",
+        "WD-003"
+      ],
+      "owned_files": [
+        "backend/src/domains/auth/**",
+        "backend/src/contracts/auth.rs",
+        "backend/migrations/0010_* through 0019_*"
+      ],
+      "acceptance": [
+        "Rust flow facade satisfies actual @ory/client browser SDK methods without external Kratos dependency or source rewrites",
+        "Login/register flow create/get/update returns exact consumed id/return_to/ui.nodes/ui.messages and active-session result fields; contract in auth-flow-contract.json",
+        "Password hashes use vetted adaptive hashing; session cookies HttpOnly, secure in production, SameSite, expiry and revocation; never fake successful authentication",
+        "CSRF is flow/session bound and validated; flow expiry emits 410 with return_to; invalid payload produces UI error nodes; safe redirect allowlist",
+        "/api/auth/check returns identity, preferences, follows, groups, roles and permissions only from authenticated persisted state",
+        "SessionPrincipal + permission helper published for feature modules; anonymous, unverified, owner, moderator and staff tests deny unauthorized writes"
+      ],
+      "sources": [
+        "src/lib/Kratos.ts",
+        "src/lib/API/Auth.ts",
+        "src/@types/Response.d.ts",
+        "src/routes/(app)/auth/{login,register,logout}/+page.svelte",
+        "src/lib/stores/Session.ts",
+        "src/lib/permission/**"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-007",
+      "title": "Implement account recovery verification",
+      "owner": "implement_platform_auth",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-006"
+      ],
+      "owned_files": [
+        "Same auth-owned module/migrations as WD-006"
+      ],
+      "acceptance": [
+        "Recovery/verification link flows and settings profile/password flows satisfy SDK and UI contracts",
+        "Recovery tokens one-use, expiry-bounded, hash-stored; email enumeration resisted; privilege refresh for sensitive settings",
+        "No account marked verified without proved link; no recovery marked successful without actual delivery path",
+        "Configured delivery may use local development outbox with explicitly labeled non-production behavior; production SMTP/domain/provider unresolved until verified",
+        "OIDC provider/link/unlink nodes only advertised for configured working providers; none invent successful external login"
+      ],
+      "sources": [
+        "src/routes/(app)/auth/{recovery,verification,error}/+page.svelte",
+        "src/routes/(app)/settings/account/+page.svelte"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-008",
+      "title": "Implement chapter media reader",
+      "owner": "implement_upload_reader",
+      "status": "pending",
+      "priority": "P0",
+      "depends_on": [
+        "WD-003",
+        "WD-004"
+      ],
+      "owned_files": [
+        "backend/src/domains/uploads/**",
+        "backend/src/contracts/uploads.rs",
+        "backend/migrations/0020_* through 0029_*"
+      ],
+      "acceptance": [
+        "Chapter node and data/data_optimized filenames resolve exact GET ${node}/data/${chapter.id}/${page.name}",
+        "Images have genuine validated dimensions/media type; optimized variants use same media URL route",
+        "Reader first/last page, next chapter, group/language aggregate, single/double/webtoon, data-saver and repeated navigation work with unchanged UI",
+        "Public page delivery preserves bounded protocol admission if protocol-backed; no unrestricted raw Repository pool access",
+        "Media paths cannot traverse roots; cache keys/ETags and conditional reads correct; interrupted reads release owned permits"
+      ],
+      "sources": [
+        "src/@types/Chapter.d.ts",
+        "src/lib/components/reader/{reader-provider,reader-queue,reader-pages,reader-pagination}.svelte",
+        "manga-protocol-lab/server/src/node/read_admission.rs"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-009",
+      "title": "Implement chapter upload sessions",
+      "owner": "implement_upload_reader",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-004",
+        "WD-006",
+        "WD-008"
+      ],
+      "owned_files": [
+        "Same uploads-owned module/migrations as WD-008"
+      ],
+      "acceptance": [
+        "Begin/begin-edit/get/delete/commit/file-delete/batch-delete/approval-required operations persist owner-scoped session state",
+        "Multipart accepts repeated file fields and returns ordered UploadSessionFile[] with per-file errors and exact field types",
+        "Chapter metadata, page_order and groups are validated; atomic commit creates actual chapter + ordered files through CatalogRepository",
+        "Cancellation/retry/edit/reorder/delete cannot leak another user files or publish a partial upload; duplicate commit idempotency tested",
+        "Extension, content sniffing, dimensions, file count/bytes/decompression/pixel budgets bounded; quarantine/process lifecycle visible"
+      ],
+      "sources": [
+        "src/lib/API/UploadSession.ts",
+        "src/lib/components/upload/**",
+        "src/@types/Upload.d.ts",
+        "src/lib/API/Chapter.ts",
+        "src/lib/permission/{upload,chapter}.ts"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-010",
+      "title": "Implement covers and guarded image proxy",
+      "owner": "implement_upload_reader",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-004",
+        "WD-006"
+      ],
+      "owned_files": [
+        "Same uploads-owned module/migrations as WD-008"
+      ],
+      "acceptance": [
+        "Cover upload/list/get/update/delete serve original and .256.webp/.512.webp variants at ${PUBLIC_COVER_URL}/${mangaId}/${coverId} suffixes",
+        "Cover DTO ext/dimensions/volume/language/version matches source; ownership/version checks enforced",
+        "PUBLIC_UPLOAD_URL preview URLs resolve actual session media with authorized lifetime",
+        "PUBLIC_PROXY_URL?image=encoded is bounded; only vetted public http(s) targets, redirect revalidation, private/link-local/metadata address denial, MIME/byte limits"
+      ],
+      "sources": [
+        "src/lib/API/Cover.ts",
+        "src/@types/Cover.d.ts",
+        "src/routes/(app)/title/MangaCoversSection.svelte",
+        "src/routes/+layout.ts",
+        "src/lib/components/upload/UploadChapterEdit.svelte"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-011",
+      "title": "Implement personal library and history",
+      "owner": "implement_personal_library",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-004",
+        "WD-006"
+      ],
+      "owned_files": [
+        "backend/src/domains/library/**",
+        "backend/src/contracts/library.rs",
+        "backend/migrations/0030_* through 0039_*"
+      ],
+      "acceptance": [
+        "Manga reading status/private flag follow update/unfollow/import/export matches exact source payloads and real persisted rows",
+        "Group/user follow list/status/follow/unfollow and followed chapter feed/updates honor session and private preferences",
+        "History search/list/feed/read-unread batch supports exact nested records and mapped feed DTOs; repeated requests safe",
+        "Settings fields content filters/languages/translated languages/tags/uploaders/groups/items_per_page/data_saver and optimistic version persist",
+        "Library import/export roundtrip survives duplicates and invalid entries; export returns real download and never leaks other accounts"
+      ],
+      "sources": [
+        "src/lib/API/{MangaFollow,ChapterHistory,Settings}.ts",
+        "src/lib/API/{User,Group}.ts follows functions",
+        "src/@types/{MangaFollow,ChapterHistory,UserPreference,Response}.d.ts",
+        "src/routes/(app)/{library,history,settings/library}/**"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-012",
+      "title": "Implement profiles and discussions",
+      "owner": "implement_community_api",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-004",
+        "WD-006"
+      ],
+      "owned_files": [
+        "backend/src/domains/community/**",
+        "backend/src/contracts/community.rs",
+        "backend/migrations/0040_* through 0049_*"
+      ],
+      "acceptance": [
+        "Public user search/get, authenticated user profile edit and actual relationship stats match source User DTO",
+        "Thread get/replies/get-reply/create/edit/soft-remove/hard-delete/vote/unvote implemented with exact integer reply id versus string route inputs",
+        "Owner/version/moderator permissions enforced; self-cross-thread reply id misuse denied; vote uniqueness and unvote idempotency",
+        "Deleted/reported content behavior and pagination anchor links match forum/comment flows; no unsanitized server-rendered markup"
+      ],
+      "sources": [
+        "src/lib/API/{User,Thread}.ts",
+        "src/@types/{User,Thread,Reply}.d.ts",
+        "src/lib/components/comments/**",
+        "src/lib/permission/{reply,user}.ts"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-013",
+      "title": "Implement moderation and report actions",
+      "owner": "implement_moderation_api",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-005",
+        "WD-006",
+        "WD-009",
+        "WD-012"
+      ],
+      "owned_files": [
+        "backend/src/domains/moderation/**",
+        "backend/src/contracts/moderation.rs",
+        "backend/migrations/0050_* through 0059_*"
+      ],
+      "acceptance": [
+        "Report reasons/create/search/delete/accept/reject match Report DTOs and entity reason enums",
+        "Ordinary user can see own permitted reports; staff/moderator permissions required for review/actions; UI guards mirrored on server",
+        "Accept/reject notes and actions audited with identity and timestamps, version/state conflicts blocked",
+        "Group claims/title publish/reject/locks/chapter claims use shared role/permission decisions with feature owner; no unconditional approval"
+      ],
+      "sources": [
+        "src/lib/API/Report.ts",
+        "src/@types/Report.d.ts",
+        "src/lib/constants/Report.ts",
+        "src/lib/permission/report.ts",
+        "src/routes/(app)/my/reports/+page.svelte"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-014",
+      "title": "Implement API client lifecycle",
+      "owner": "implement_platform_auth",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-006"
+      ],
+      "owned_files": [
+        "Same auth-owned module/migrations as WD-006"
+      ],
+      "acceptance": [
+        "Client list/create/rename/delete/regenerate-secret exact routes including POST rename; proper APIClient DTO",
+        "Secret generated securely, disclosed only once at issuance/rotation; persist hash and bounded scopes; revoked/rotated credentials stop working",
+        "No real user credential generated during automated demonstration; tests use isolated synthetic credentials",
+        "Client feature is security-critical and cannot be declared production-ready until auth/rate-limit/revocation tests pass"
+      ],
+      "sources": [
+        "src/lib/API/Client.ts",
+        "src/@types/Client.d.ts",
+        "src/routes/(app)/settings/client/**",
+        "src/lib/permission/client.ts"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-015",
+      "title": "Implement statistics and rankings",
+      "owner": "implement_analytics_api",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-004",
+        "WD-006",
+        "WD-011",
+        "WD-012"
+      ],
+      "owned_files": [
+        "backend/src/domains/analytics/**",
+        "backend/src/contracts/analytics.rs",
+        "backend/migrations/0060_* through 0069_*"
+      ],
+      "acceptance": [
+        "Manga/chapter view POSTs and user/manga/chapter/group/thread statistics GETs persist and return actual counters",
+        "Trending/most-read daily/weekly/monthly/all-time sorts use documented source-driven time windows and tie-breaking",
+        "Public analytics bounded and abuse-controlled; duplicate/retried UI loads do not inflate counts without policy",
+        "No fabricated popularity/history used to claim functionality"
+      ],
+      "sources": [
+        "src/lib/API/{Analytics,Statistics}.ts",
+        "src/routes/(app)/popular/**",
+        "src/lib/components/{MostReadCarousel,RecentlyAddedCarousel}.svelte"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-016",
+      "title": "Verify locale mobile and PWA parity",
+      "owner": "verify_frontend_seams",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-002",
+        "WD-008",
+        "WD-011",
+        "WD-012"
+      ],
+      "owned_files": [
+        "weebdex-platform/tests/ui/**",
+        "weebdex-platform/test-evidence/ui/**"
+      ],
+      "acceptance": [
+        "Exact existing language codes incl zh-hk/pt-br/es-la used in filters/uploads/metadata; UTF-8 alternate titles/descriptions roundtrip",
+        "Source has language metadata and flags, but no proven translated application-string catalogs; full UI i18n explicitly remains unspecified",
+        "Responsive sidebar/header, search, library, upload reorder and reader checked at desktop and narrow widths without HTML/CSS edits",
+        "PWA/service-worker navigation/cache/update behavior checked offline and after repeated route changes; no claim universal mobile coverage"
+      ],
+      "sources": [
+        "src/lib/Locale.ts",
+        "src/lib/hooks/is-mobile.svelte.ts",
+        "src/service-worker.ts",
+        "src/lib/components/{AppHeader,AppSidebar}.svelte"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-017",
+      "title": "Verify security performance and isolation",
+      "owner": "verify_platform_security",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-005",
+        "WD-007",
+        "WD-009",
+        "WD-010",
+        "WD-011",
+        "WD-013",
+        "WD-014",
+        "WD-015"
+      ],
+      "owned_files": [
+        "weebdex-platform/tests/security/**",
+        "weebdex-platform/tests/performance/**",
+        "weebdex-platform/test-evidence/security/**",
+        "weebdex-platform/test-evidence/performance/**"
+      ],
+      "acceptance": [
+        "Authorization matrix and CSRF/redirect/session expiry/upload SSRF/path traversal/admission cancellation regressions pass",
+        "Platform migrations upgrade/fresh install/rollback boundaries do not change protocol schema checksum or authority/storage semantics",
+        "Measure representative persisted query and media load under bounded concurrency; record hardware/dataset/p50/p95/error/memory with no invented speedup",
+        "Index actual filter/sort/follow/history/upload ownership queries; avoid N+1 relationship queries and per-request blocking image transforms",
+        "NIP98 exact URL/method/body binding, per-instance policy, guarded relay and cancellation permit tests remain passed"
+      ],
+      "sources": [
+        "manga-protocol-lab/server/src/{node.rs,db.rs}",
+        "manga-protocol-lab/server/src/node/read_admission.rs",
+        "src/lib/HTTP.ts"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-018",
+      "title": "Verify complete API UI seams",
+      "owner": "verify_frontend_seams",
+      "status": "pending",
+      "priority": "P0",
+      "depends_on": [
+        "WD-002",
+        "WD-005",
+        "WD-007",
+        "WD-008",
+        "WD-009",
+        "WD-010",
+        "WD-011",
+        "WD-012",
+        "WD-013",
+        "WD-014",
+        "WD-015",
+        "WD-016"
+      ],
+      "owned_files": [
+        "weebdex-platform/tests/contracts/**",
+        "weebdex-platform/test-evidence/contracts/**",
+        "weebdex-platform/test-evidence/end-to-end/**"
+      ],
+      "acceptance": [
+        "Every one of 107 observed operations has method/path/status/payload/envelope/auth contract result and associated UI seam evidence",
+        "SDK auth flows validated against installed pinned @ory/client request paths; interrupted/back/forward/expired/repeated flows covered",
+        "Synthetic account/title/chapter/pages/covers/thread/report/library fixture makes real end-to-end roundtrip; mocked constant 200 endpoint responses do not qualify",
+        "All 51 paths reachable, including error/empty/forbidden/not-found states; not-run/failed checks explicitly retained",
+        "Reader source load handler currently accepts any HTTP status as a blob: record this unchanged-frontend inherited limitation rather than silently claiming robust errors"
+      ],
+      "sources": [
+        "reports/frontend_api_contract_inventory.json",
+        "src/routes/(app)/auth/**",
+        "src/lib/components/reader/reader-queue.svelte"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-019",
+      "title": "Gate immutable frontend parity",
+      "owner": "verify_frontend_seams",
+      "status": "pending",
+      "priority": "P0",
+      "depends_on": [
+        "WD-002",
+        "WD-018"
+      ],
+      "owned_files": [
+        "weebdex-platform/test-evidence/frontend-parity/**"
+      ],
+      "acceptance": [
+        "Recompute every baseline source/static file hash at final integration; additions separated and no baseline file mismatch",
+        "HTML/CSS/Svelte byte parity required even after frontend build, metadata post-build and integration tests",
+        "Generated output tracked separately from source; screenshot comparison proves broad appearance but cannot substitute for source hashes",
+        "Any required source change is a disclosed blocker against unchanged frontend requirement, never silently accepted"
+      ],
+      "sources": [
+        "reports/frontend_file_hash_baseline.json",
+        "scripts/post_build.js"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-020",
+      "title": "Package verified project checkpoint",
+      "owner": "coordinate_release_checkpoint",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-017",
+        "WD-018",
+        "WD-019"
+      ],
+      "owned_files": [
+        "weebdex-platform/docs/**",
+        "weebdex-platform/recovery/**"
+      ],
+      "acceptance": [
+        "Working-build target is best effort within one hour, not a completion guarantee; release reports which checks passed/failed/not run",
+        "Local docs include startup/env/migration/runtime architecture and complete capability status table",
+        "GitHub ticket/commit publication remains blocked until private repository exists and authorized authenticated route verified; no local ticket called remote",
+        "Checkpoint includes source/build/docs/test evidence only, excludes credentials/private keys/personal data/runtime databases; encrypted archive download/recovery verification handled by authorized checkpoint owner",
+        "Source licensing/upstream provenance remains unknown until established; no license invented"
+      ],
+      "sources": [
+        "reports/archive_inventory.json",
+        "reports/frontend_api_contract_inventory.json"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    },
+    {
+      "id": "WD-021",
+      "title": "Recover missing announcement contract",
+      "owner": "preserve_weebdex_frontend",
+      "status": "pending",
+      "priority": "P1",
+      "depends_on": [
+        "WD-001",
+        "WD-002"
+      ],
+      "owned_files": [
+        "weebdex-platform/frontend-integration/**"
+      ],
+      "acceptance": [
+        "Original homepage imports missing announcement data/Entry components and sidebar links /announcements absent from supplied archive",
+        "Parent authorized additive reconstruction fallbacks only; keep original frontend files hash-identical",
+        "Empty announcement data and minimal reconstructed Entry are explicitly unverified fallbacks, not completed announcement functionality",
+        "Recover real original announcement DTO/content/rendering and missing route contract before claiming full UI parity; do not invent content"
+      ],
+      "sources": [
+        "src/routes/(app)/+page.svelte:8-21",
+        "src/lib/components/AppSidebar.svelte:94"
+      ],
+      "verification": {
+        "implementation": "not established",
+        "API_tests": "not run",
+        "UI_tests": "not run"
+      }
+    }
+  ],
+  "unknowns": [
+    {
+      "id": "U-01",
+      "subject": "Frontend license and exact upstream commit",
+      "status": "unknown",
+      "impact": "Do not invent reuse/publication licensing terms."
+    },
+    {
+      "id": "U-02",
+      "subject": "Installed SDK-generated request URL paths",
+      "status": "pending dependency materialization",
+      "impact": "Native auth facade must pass actual @ory/client requests; method names alone do not prove route compatibility."
+    },
+    {
+      "id": "U-03",
+      "subject": "Production verification/recovery email transport",
+      "status": "unconfigured",
+      "impact": "Cannot call those flows production-complete without delivery and one-use link proof."
+    },
+    {
+      "id": "U-04",
+      "subject": "External OIDC providers",
+      "status": "unconfigured",
+      "impact": "No fake provider nodes or successful login. Source conditionally renders nodes."
+    },
+    {
+      "id": "U-05",
+      "subject": "Same-origin original protocol/SPA dispatch",
+      "status": "pending foundation choice",
+      "impact": "Protocol GET / and /{blob} conflict with SPA root. Preserve exact signed URLs; separate protocol origin is the reversible safe default."
+    },
+    {
+      "id": "U-06",
+      "subject": "Authenticated GitHub publication",
+      "status": "pending",
+      "impact": "No repository exists yet; source candidate fixture-sharing consent is separate."
+    },
+    {
+      "id": "U-07",
+      "subject": "Production infrastructure/config/security defaults",
+      "status": "unverified",
+      "impact": "Local working build does not imply production deployment readiness."
+    },
+    {
+      "id": "U-08",
+      "subject": "Full translated application interface",
+      "status": "not present in verified inventory",
+      "impact": "Language metadata/flags are present; multilingual UI-string translation is not established."
+    },
+    {
+      "id": "U-09",
+      "subject": "Build/check/test execution",
+      "status": "not run by planner; owner must report",
+      "impact": "No compile, frontend build or speed claim follows from planning."
+    },
+    {
+      "id": "U-10",
+      "subject": "Protocol interoperability mapping",
+      "status": "pending service facade implementation",
+      "impact": "WeebDex ids/catalog/public reader and protocol canonical event/storage identities must be mapped, not guessed."
+    },
+    {
+      "id": "U-11",
+      "subject": "Missing announcement components and case-sensitive imports",
+      "status": "verified attachment defects reported by preservation/inspection workers",
+      "impact": "Source remains unchanged; missing announcement source blocks truthful exact complete UI until resolved within user constraints."
+    }
+  ]
+}

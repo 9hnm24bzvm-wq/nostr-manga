@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-10-12T02:00:43.857517+00:00",
+  "roots": [
+    ".runtime-pool-lifetimes",
+    ".runtime-pool-lifetimes-final"
+  ],
+  "postmaster_pid_files": [],
+  "guard_remaining_owned_members": [],
+  "scope": "Only owned fixture paths inspected; no listener or shared-service inventory."
+}

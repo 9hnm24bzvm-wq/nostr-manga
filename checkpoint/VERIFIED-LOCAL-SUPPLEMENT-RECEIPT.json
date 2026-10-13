@@ -1,0 +1,17 @@
+{
+  "archive": "/workspace/scratch/3eafc9756ff3/local-source-checkpoints/checkpoint-evidence-supplement-20261013T1302Z/weebdex-later-system-evidence-20261013T1302Z-local.zip",
+  "bytes": 170688,
+  "canonical_sanitized_evidence_files": 56,
+  "external_uploads": 0,
+  "extracted_hash_size_mode_checks": 60,
+  "independent_canonical_inputs_verified": true,
+  "linked_source_archive_sha256": "1533718799dd1d4100766ceacf494a88482873509562cebefa9e8957f0a3b6d0",
+  "members": 61,
+  "new_tests_builds_runtime": 0,
+  "not_external_backup": true,
+  "separate_extract_verified": true,
+  "sha256": "bf9980c5e3e91b742129e348b0049b0df043751d6b71be591e348076ca2300b7",
+  "status": "local-later-evidence-atomic-archive-independently-extracted-verified",
+  "zip_crc_checked": true,
+  "zip_store": true
+}

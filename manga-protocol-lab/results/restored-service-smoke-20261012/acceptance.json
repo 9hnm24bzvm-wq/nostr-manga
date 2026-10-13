@@ -1,0 +1,176 @@
+{
+  "completed_utc": "2026-10-12T21:23:04.551127+00:00",
+  "status": "passed",
+  "scope": "Restored accepted binary functional runtime smoke only; no capacity or full-new-gate claim.",
+  "node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+  "demo_checks": [
+    "signed series and chapter publication",
+    "chapter discovery",
+    "bilaterally approved synchronization",
+    "exact original bytes self-hosted by both nodes",
+    "public reading progress saved to both instances",
+    "complete library recovered from second instance",
+    "reader progress views and authenticated identity on both instances",
+    "administrator-managed group profile signed by group identity",
+    "closed signup on first node and scoped reader self-registration on second node"
+  ],
+  "library_replicas": 2,
+  "nginx_real_cases": 2,
+  "ownership_positive_case": true,
+  "ownership_expected_failure_cleaned": true,
+  "all_actual_guard_results": {
+    "ownership-clean": {
+      "completed_utc": "2026-10-12T21:20:42.276849+00:00",
+      "command_exit": 0,
+      "abort_reason": null,
+      "monitor_error": null,
+      "cleanup_error": null,
+      "termination_signal": null,
+      "remaining_owned_members": [],
+      "frozen_identity_hashes": {
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/guarded-command.py": "0e0227c662b8b78b50e7eefbfef6e1875552e7041c7b731ac82277ae305136fb",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/candidate-source.json": "8bd4cf9bc53df31fbdfd17311ab00a544dfc8340be2a9a49c818523d43a2b4cd",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/source-protection.json": "4d0b92c711c5c5a9552ced3b0608d068c89dc6d7143135e61461817c4b4b71d0"
+      },
+      "owned_leader_reaped": true,
+      "stop_actions": [],
+      "reaped_descendants": [],
+      "changed_inputs": [],
+      "minimum_free_bytes": 30944022528,
+      "minimum_available_memory_bytes": 8912683008,
+      "final_free_bytes": 30944022528,
+      "final_available_memory_bytes": 8912683008,
+      "command_log_bytes": 27,
+      "telemetry_bytes": 109,
+      "telemetry_capped": false,
+      "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+      "status": "passed",
+      "elapsed_s": 0.073517
+    },
+    "ownership-setsid": {
+      "completed_utc": "2026-10-12T21:20:57.995859+00:00",
+      "command_exit": 0,
+      "abort_reason": "descendant_or_output_after_leader_exit",
+      "monitor_error": null,
+      "cleanup_error": null,
+      "termination_signal": null,
+      "remaining_owned_members": [],
+      "frozen_identity_hashes": {
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/guarded-command.py": "0e0227c662b8b78b50e7eefbfef6e1875552e7041c7b731ac82277ae305136fb",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/candidate-source.json": "8bd4cf9bc53df31fbdfd17311ab00a544dfc8340be2a9a49c818523d43a2b4cd",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/source-protection.json": "4d0b92c711c5c5a9552ced3b0608d068c89dc6d7143135e61461817c4b4b71d0"
+      },
+      "owned_leader_reaped": true,
+      "stop_actions": [
+        {
+          "pid": 8,
+          "start_ticks": 6833905,
+          "group": 8,
+          "session": 8,
+          "signal": 15,
+          "pidfd": true
+        }
+      ],
+      "reaped_descendants": [
+        {
+          "pid": 8,
+          "start_ticks": 6833905,
+          "group": 8,
+          "session": 8,
+          "wait_status": 15
+        }
+      ],
+      "changed_inputs": [],
+      "minimum_free_bytes": 30943997952,
+      "minimum_available_memory_bytes": 8912224256,
+      "final_free_bytes": 30943997952,
+      "final_available_memory_bytes": 8916660224,
+      "command_log_bytes": 33,
+      "telemetry_bytes": 327,
+      "telemetry_capped": false,
+      "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+      "status": "failed",
+      "elapsed_s": 2.394976
+    },
+    "demo": {
+      "completed_utc": "2026-10-12T21:21:16.645331+00:00",
+      "command_exit": 0,
+      "abort_reason": null,
+      "monitor_error": null,
+      "cleanup_error": null,
+      "termination_signal": null,
+      "remaining_owned_members": [],
+      "frozen_identity_hashes": {
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/guarded-command.py": "0e0227c662b8b78b50e7eefbfef6e1875552e7041c7b731ac82277ae305136fb",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/candidate-source.json": "8bd4cf9bc53df31fbdfd17311ab00a544dfc8340be2a9a49c818523d43a2b4cd",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/source-protection.json": "4d0b92c711c5c5a9552ced3b0608d068c89dc6d7143135e61461817c4b4b71d0"
+      },
+      "owned_leader_reaped": true,
+      "stop_actions": [],
+      "reaped_descendants": [
+        {
+          "pid": 71,
+          "start_ticks": 6835775,
+          "group": 71,
+          "session": 71,
+          "wait_status": 0
+        }
+      ],
+      "changed_inputs": [],
+      "minimum_free_bytes": 30874517504,
+      "minimum_available_memory_bytes": 8767459328,
+      "final_free_bytes": 30943961088,
+      "final_available_memory_bytes": 8844939264,
+      "command_log_bytes": 1380,
+      "telemetry_bytes": 327,
+      "telemetry_capped": false,
+      "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+      "status": "passed",
+      "elapsed_s": 2.8699
+    },
+    "nginx": {
+      "completed_utc": "2026-10-12T21:21:43.805291+00:00",
+      "command_exit": 0,
+      "abort_reason": null,
+      "monitor_error": null,
+      "cleanup_error": null,
+      "termination_signal": null,
+      "remaining_owned_members": [],
+      "frozen_identity_hashes": {
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/guarded-command.py": "0e0227c662b8b78b50e7eefbfef6e1875552e7041c7b731ac82277ae305136fb",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/candidate-source.json": "8bd4cf9bc53df31fbdfd17311ab00a544dfc8340be2a9a49c818523d43a2b4cd",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-service-smoke-20261012/source-protection.json": "4d0b92c711c5c5a9552ced3b0608d068c89dc6d7143135e61461817c4b4b71d0"
+      },
+      "owned_leader_reaped": true,
+      "stop_actions": [],
+      "reaped_descendants": [],
+      "changed_inputs": [],
+      "minimum_free_bytes": 30933004288,
+      "minimum_available_memory_bytes": 8860532736,
+      "final_free_bytes": 30943862784,
+      "final_available_memory_bytes": 8899330048,
+      "command_log_bytes": 406,
+      "telemetry_bytes": 218,
+      "telemetry_capped": false,
+      "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+      "status": "passed",
+      "elapsed_s": 1.794044
+    }
+  },
+  "ephemeral_tmp_empty": true,
+  "services_terminal_same_context_proof": true,
+  "final_free_bytes": 30943854592,
+  "runtime_acceptance_sha256": "28f64952e37561f8e9672cb082cde1eefc3e95b4e5039b3fababe360f2a5dca5",
+  "missing_historical_canonical_inputs": 5,
+  "approved_concurrent_source_edit_exceptions": [
+    "scripts/package.py",
+    "scripts/tests/test_package_cli.py"
+  ],
+  "not_measured": [
+    "per-process CPU/RSS/IO for these short smokes",
+    "target traffic",
+    "browser-rendered30k/500k acceptance",
+    "durability crash/power-loss in this smoke",
+    "full restored392-input gate"
+  ]
+}

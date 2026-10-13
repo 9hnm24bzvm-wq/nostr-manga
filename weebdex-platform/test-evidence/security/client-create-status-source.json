@@ -1,0 +1,25 @@
+{
+  "created_utc": "2026-10-13T07:14:52.643714+00:00",
+  "status": "source_compiled_full_codegen_complete_runtime_pending",
+  "finding": "Retained ClientCreateDialog accepts201 plus actual APIClient body, while backend committed creation then returned200. This caused Unknown feedback and discarded displayed one-time key despite real DB creation.",
+  "patch": "Set201 only on successfully committed client creation, retaining the shared no-store response and real one-time secret.",
+  "unchanged_contracts": {
+    "list": 200,
+    "rename": 200,
+    "secret_rotation": 200,
+    "delete": 204
+  },
+  "retained_ui_sources": {
+    "weebdex-platform/frontend/src/routes/(app)/settings/client/ClientCreateDialog.svelte": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+    "weebdex-platform/frontend/src/routes/(app)/settings/client/ClientEntry.svelte": "cc119d9bd6ce9ee00809e83b5d9292d53704953695459b82e08bc931647415da"
+  },
+  "backend_source": {
+    "weebdex-platform/backend/src/domains/auth/clients.rs": "3d5f109601d0064fc7b11d4f4ccc3e74de38c2f5f0d45c703fc0713b88c39d94",
+    "weebdex-platform/backend/tests/auth_http.rs": "3e8f39632d9ad32a8cc3218fbf5fd3fc953da7acb05a8b7a0bf65e96199550e4"
+  },
+  "acceptance_source": "Both real authenticated successful POST/client assertions require201 and consume actual returned IDs/one-time keys; Browser harness verifies no-store for every reply; later list/rename do not return keys, rotation stays200. Fresh visible UI acceptance remains deferred.",
+  "authority_changed": false,
+  "runtime_tests_executed": 0,
+  "current_check": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-014/cargo-check-current-002-result.json",
+  "current_test_codegen": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-014/cargo-codegen-tests-004-result.json"
+}

@@ -1,0 +1,1114 @@
+{
+  "project_id": 468079,
+  "repository": "https://gitlab.com/ubunchu-translators/ubunchu",
+  "revision": "9f065a3fde464be893dfba9fb5fc6abc93722cf9",
+  "inspected_at": "2026-10-13",
+  "tree": [
+    {
+      "id": "2a66dd20fa8becb860f4a117fe05d8d2dd146144",
+      "name": "chapters",
+      "type": "tree",
+      "path": "chapters",
+      "mode": "040000"
+    },
+    {
+      "id": "a14f026e9a61ac78be9aeb5c95f1fbec416c9b67",
+      "name": "01",
+      "type": "tree",
+      "path": "chapters/01",
+      "mode": "040000"
+    },
+    {
+      "id": "9a7cf29047cd17ef0f6b321f71d9b2ba44a09eea",
+      "name": "ubunchu-01_en-releases",
+      "type": "tree",
+      "path": "chapters/01/ubunchu-01_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "f3c8c73cc264ac40367230a487c00a93ee891c3c",
+      "name": "ubunchu01_ja_release",
+      "type": "tree",
+      "path": "chapters/01/ubunchu01_ja_release",
+      "mode": "040000"
+    },
+    {
+      "id": "392896339c3f910e622d33dc2ad04e8c30473913",
+      "name": "02",
+      "type": "tree",
+      "path": "chapters/02",
+      "mode": "040000"
+    },
+    {
+      "id": "9217bcb826329246b5b9c94b2fdc43782d700fad",
+      "name": "ubunchu-02_en-releases",
+      "type": "tree",
+      "path": "chapters/02/ubunchu-02_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "084af39b3a22cd6173f35f8290300f81fc5b7e48",
+      "name": "ubunchu02_ja_release",
+      "type": "tree",
+      "path": "chapters/02/ubunchu02_ja_release",
+      "mode": "040000"
+    },
+    {
+      "id": "e04f7da7bbdc7f78a919d2b778b5a6fb31bc4a61",
+      "name": "03",
+      "type": "tree",
+      "path": "chapters/03",
+      "mode": "040000"
+    },
+    {
+      "id": "299dbfbe0f6417ab13601f39027b704e9ba0bb99",
+      "name": "ubunchu-03_en-releases",
+      "type": "tree",
+      "path": "chapters/03/ubunchu-03_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "d4586097e319b7695273b98000997f7b1acda48c",
+      "name": "ubunchu03_ja_release",
+      "type": "tree",
+      "path": "chapters/03/ubunchu03_ja_release",
+      "mode": "040000"
+    },
+    {
+      "id": "e9594abc7e5dc6548302b8d630f4a0e0c9b6c70c",
+      "name": "04",
+      "type": "tree",
+      "path": "chapters/04",
+      "mode": "040000"
+    },
+    {
+      "id": "68ce27f2bc6b764c5645d44150f36129aa02abd7",
+      "name": "ubunchu-04_en-releases",
+      "type": "tree",
+      "path": "chapters/04/ubunchu-04_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "b897dbf3a7edbcd8659e34c560d579129c39db99",
+      "name": "ubunchu04_ja-release",
+      "type": "tree",
+      "path": "chapters/04/ubunchu04_ja-release",
+      "mode": "040000"
+    },
+    {
+      "id": "967aecd2bec93c3353644ca0d06e40061872461e",
+      "name": "05",
+      "type": "tree",
+      "path": "chapters/05",
+      "mode": "040000"
+    },
+    {
+      "id": "66a33ee52950c8fc6a4529cd65300eccf79f5beb",
+      "name": "ubunchu-05_en-releases",
+      "type": "tree",
+      "path": "chapters/05/ubunchu-05_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "3db6f52d412fcdb79171959f510c69dc96ec06b7",
+      "name": "ubunchu05_ja-release",
+      "type": "tree",
+      "path": "chapters/05/ubunchu05_ja-release",
+      "mode": "040000"
+    },
+    {
+      "id": "318999ab3a1a97d5eb0dd7ab9c52e1eeac38edff",
+      "name": "06",
+      "type": "tree",
+      "path": "chapters/06",
+      "mode": "040000"
+    },
+    {
+      "id": "cc6d7054531f29935cba31498ad9b4dca2e91b1d",
+      "name": "ubunchu-06_en-releases",
+      "type": "tree",
+      "path": "chapters/06/ubunchu-06_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "e788baeb485280d20baa10c2e1593eeb08097d47",
+      "name": "ubunchu06_ja-release",
+      "type": "tree",
+      "path": "chapters/06/ubunchu06_ja-release",
+      "mode": "040000"
+    },
+    {
+      "id": "3ae15fcb1cfcc3d8e6082bb36a93bd97cfb77299",
+      "name": "07",
+      "type": "tree",
+      "path": "chapters/07",
+      "mode": "040000"
+    },
+    {
+      "id": "65e2d43890c3be4f86dd214eeb9e983d0ec10d1f",
+      "name": "ubunchu-07_en-releases",
+      "type": "tree",
+      "path": "chapters/07/ubunchu-07_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "933cede38df052a6caa62d62e9e43c83435d5df7",
+      "name": "ubunchu07_ja-release",
+      "type": "tree",
+      "path": "chapters/07/ubunchu07_ja-release",
+      "mode": "040000"
+    },
+    {
+      "id": "0bb942367ef23f0af82ebc8e959386d0c1023f48",
+      "name": "08",
+      "type": "tree",
+      "path": "chapters/08",
+      "mode": "040000"
+    },
+    {
+      "id": "6a579a88a9604f7405b61263a3156a993a52f815",
+      "name": "ubunchu-08_en-releases",
+      "type": "tree",
+      "path": "chapters/08/ubunchu-08_en-releases",
+      "mode": "040000"
+    },
+    {
+      "id": "1eff6e3f6f57f7c572fa3e99dc4da0849fb0f92a",
+      "name": "ubunchu08_ja-release",
+      "type": "tree",
+      "path": "chapters/08/ubunchu08_ja-release",
+      "mode": "040000"
+    },
+    {
+      "id": "b8357623e65953982a4c00dbb42972299a42e32a",
+      "name": "LICENSE",
+      "type": "blob",
+      "path": "LICENSE",
+      "mode": "100644"
+    },
+    {
+      "id": "3426f69c3b7e34352c7d55a56f25eb8f2d03258b",
+      "name": "README.md",
+      "type": "blob",
+      "path": "README.md",
+      "mode": "100644"
+    },
+    {
+      "id": "e234e6d6e09e428f6676008009d3c275d044d990",
+      "name": "Ubunchu_English_01_RtL_Edition_by_C_quel.pdf",
+      "type": "blob",
+      "path": "chapters/01/ubunchu-01_en-releases/Ubunchu_English_01_RtL_Edition_by_C_quel.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "f9c4b699e08c661a45c0593bb85e1579a66ae2d6",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "432f4b46c21b070fae7aeede2cfc70f8acb9a559",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "f6a2d018010592a40b97a9b989db04e45bf99a0f",
+      "name": "ubunchu01_00.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_00.png",
+      "mode": "100644"
+    },
+    {
+      "id": "d652cce3e3599ade3017aeeb2725e466e837b594",
+      "name": "ubunchu01_01.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_01.png",
+      "mode": "100644"
+    },
+    {
+      "id": "e12d4d9dcdcb2b68b9acc7215e13a3c533db50ed",
+      "name": "ubunchu01_02.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_02.png",
+      "mode": "100644"
+    },
+    {
+      "id": "282c3f9e1dbd89b1c7b836d3bd7901abc76135fd",
+      "name": "ubunchu01_03.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_03.png",
+      "mode": "100644"
+    },
+    {
+      "id": "0bf5f5458a8fa1de1ca9a7ecd6ef673636a830b1",
+      "name": "ubunchu01_04.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_04.png",
+      "mode": "100644"
+    },
+    {
+      "id": "8964a63abf48c9c21db7ba5d890afe329faaf45d",
+      "name": "ubunchu01_05.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_05.png",
+      "mode": "100644"
+    },
+    {
+      "id": "abd0954fb18c3109a81812278615983e6ca25b54",
+      "name": "ubunchu01_06.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_06.png",
+      "mode": "100644"
+    },
+    {
+      "id": "dcce0568fed03a4c4e3676df47d3078e4a7681fa",
+      "name": "ubunchu01_07.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_07.png",
+      "mode": "100644"
+    },
+    {
+      "id": "cb9b02116319e5d8cb6ec40ce36fafadb0c6ec64",
+      "name": "ubunchu01_08.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_08.png",
+      "mode": "100644"
+    },
+    {
+      "id": "daf1b2461d635c95c0e70f3b11aee6acc71a0b91",
+      "name": "ubunchu01_09.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_09.png",
+      "mode": "100644"
+    },
+    {
+      "id": "fbf5aa095c85762fb6ae5c0185f9bbff53a83b37",
+      "name": "ubunchu01_10.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_10.png",
+      "mode": "100644"
+    },
+    {
+      "id": "269492a9565b001f40323375e7afb3607c72248f",
+      "name": "ubunchu01_11.png",
+      "type": "blob",
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_11.png",
+      "mode": "100644"
+    },
+    {
+      "id": "4d678a7a1b766d6756d86b9c8b6c2c4b19fae6f3",
+      "name": "Ubunchu_Ep02___English_RtL_Ed__by_C_quel.pdf",
+      "type": "blob",
+      "path": "chapters/02/ubunchu-02_en-releases/Ubunchu_Ep02___English_RtL_Ed__by_C_quel.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "0b41a7f7993689312f55d3c542ac33b0ff38ff5d",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "9b10ff1d217ef88b8131c1deeef8e5ad6e093cd3",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "06d333490d29f653cb3818f774751c698768617e",
+      "name": "ubunchu01_00.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu01_00.png",
+      "mode": "100644"
+    },
+    {
+      "id": "94aea022e746a42a18427c74c25d9516a02b7356",
+      "name": "ubunchu02_01.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_01.png",
+      "mode": "100644"
+    },
+    {
+      "id": "49d48e92d5c8e499e2d1d812d2425d1b7b6a5172",
+      "name": "ubunchu02_02.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_02.png",
+      "mode": "100644"
+    },
+    {
+      "id": "cdcb80aff390d277b29784ac895df50b3288b19e",
+      "name": "ubunchu02_03.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_03.png",
+      "mode": "100644"
+    },
+    {
+      "id": "3adb0960f86688a68454fdcf2045ef055fc1c6a0",
+      "name": "ubunchu02_04.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_04.png",
+      "mode": "100644"
+    },
+    {
+      "id": "e5815ad159540a1ca7973b72b9482bc555469e45",
+      "name": "ubunchu02_05.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_05.png",
+      "mode": "100644"
+    },
+    {
+      "id": "f1c9af446bcddda16ce16afbc736310e7f36b7a2",
+      "name": "ubunchu02_06.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_06.png",
+      "mode": "100644"
+    },
+    {
+      "id": "c83feeb672e5297b0977cf5556c91540d85a4302",
+      "name": "ubunchu02_07.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_07.png",
+      "mode": "100644"
+    },
+    {
+      "id": "415e0f7d55e21add727b3e8c1e39a914328d39b3",
+      "name": "ubunchu02_08.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_08.png",
+      "mode": "100644"
+    },
+    {
+      "id": "1163bf503e8d22a078b50e7f6c10975f9776a22e",
+      "name": "ubunchu02_09.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_09.png",
+      "mode": "100644"
+    },
+    {
+      "id": "90f00fcf98369a2a1c588818d7ad95f3469bb513",
+      "name": "ubunchu02_10.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_10.png",
+      "mode": "100644"
+    },
+    {
+      "id": "b5e2966e5721f668f53c917bfee07b184a765c2c",
+      "name": "ubunchu02_11.png",
+      "type": "blob",
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_11.png",
+      "mode": "100644"
+    },
+    {
+      "id": "ca11dbcca328fbe687119bc70291374666b38561",
+      "name": "ubunchu03_english_rtl.pdf",
+      "type": "blob",
+      "path": "chapters/03/ubunchu-03_en-releases/ubunchu03_english_rtl.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "6f4199d30a55c12b1817f244dcac4054347e8d69",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "f00af2ba4457f02ecbfea1c24effbc07535c9ee4",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "eeea3c96c33156585b89df5825d5e05f056d2f9d",
+      "name": "ubunchu03_0000.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0000.png",
+      "mode": "100644"
+    },
+    {
+      "id": "9aae4c788fd7f1cf30db65e4d6f907d6e39d07b1",
+      "name": "ubunchu03_0001.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0001.png",
+      "mode": "100644"
+    },
+    {
+      "id": "11cb2407a588616fa28ddb1858212829c24d7713",
+      "name": "ubunchu03_0002.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0002.png",
+      "mode": "100644"
+    },
+    {
+      "id": "a1c60f39380eeb24f655a547254785aa90d914cc",
+      "name": "ubunchu03_0003.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0003.png",
+      "mode": "100644"
+    },
+    {
+      "id": "8b501fd8b49dcc48c5bf36da8a1623bb3a0608ca",
+      "name": "ubunchu03_0004.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0004.png",
+      "mode": "100644"
+    },
+    {
+      "id": "69bc9b7c7887a63c5562e50b8a8c6b08b9e31a80",
+      "name": "ubunchu03_0005.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0005.png",
+      "mode": "100644"
+    },
+    {
+      "id": "5d27e20792fbd25ff6f072767e6c1d2fc1da6e96",
+      "name": "ubunchu03_0006.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0006.png",
+      "mode": "100644"
+    },
+    {
+      "id": "adbf479a09d5dac8a49c7afb8654609ebf8df516",
+      "name": "ubunchu03_0007.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0007.png",
+      "mode": "100644"
+    },
+    {
+      "id": "0ad619aaa2f8cb8f7c3d9f486d3dbab75268bca0",
+      "name": "ubunchu03_0008.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0008.png",
+      "mode": "100644"
+    },
+    {
+      "id": "eb8af8f9367fbe626baa6db12fbbbe42642ec724",
+      "name": "ubunchu03_0009.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0009.png",
+      "mode": "100644"
+    },
+    {
+      "id": "ae57e9dbb650fcf50479c43a1e1f5fb2b1f11863",
+      "name": "ubunchu03_0010.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0010.png",
+      "mode": "100644"
+    },
+    {
+      "id": "2073c1c08925f9f446b7f7629efa9bc8cca22190",
+      "name": "ubunchu03_0011.png",
+      "type": "blob",
+      "path": "chapters/03/ubunchu03_ja_release/ubunchu03_0011.png",
+      "mode": "100644"
+    },
+    {
+      "id": "3fb4c13c81f504b20c7276bab4805818f3e1104f",
+      "name": "ubunchu-04-rtl_en.pdf",
+      "type": "blob",
+      "path": "chapters/04/ubunchu-04_en-releases/ubunchu-04-rtl_en.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "1de41c3964f57653192d1e84a13e71bf0cba4de0",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "518cb5919e3b29b9cddb20f7815cf4eabf51cb25",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "61480ddeca2d53bcb88db0ba4046a9eef54382df",
+      "name": "ubunchu04_0000.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0000.png",
+      "mode": "100644"
+    },
+    {
+      "id": "bb58bbf9465aab975c629f59cb192b57abebc583",
+      "name": "ubunchu04_0001.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0001.png",
+      "mode": "100644"
+    },
+    {
+      "id": "d53a844746c373bd271984c1687570b8ea2157b1",
+      "name": "ubunchu04_0002.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0002.png",
+      "mode": "100644"
+    },
+    {
+      "id": "6a7ad8f62425e6148a47bb151c569f32f9d0fbac",
+      "name": "ubunchu04_0003.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0003.png",
+      "mode": "100644"
+    },
+    {
+      "id": "4797f50d1bd72945ad5a340a4891494e01a03565",
+      "name": "ubunchu04_0004.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0004.png",
+      "mode": "100644"
+    },
+    {
+      "id": "da0ccaab32991e04672c94add8713ed92c13f018",
+      "name": "ubunchu04_0005.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0005.png",
+      "mode": "100644"
+    },
+    {
+      "id": "5269fffbb01b4e494761b6ec76db2ac95d57641a",
+      "name": "ubunchu04_0006.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0006.png",
+      "mode": "100644"
+    },
+    {
+      "id": "9abb66cdf27f896fac0cff2f655b0012aa70a81f",
+      "name": "ubunchu04_0007.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0007.png",
+      "mode": "100644"
+    },
+    {
+      "id": "5ce4b920a50a2780e0de521c3f4466389fc64248",
+      "name": "ubunchu04_0008.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0008.png",
+      "mode": "100644"
+    },
+    {
+      "id": "2df350e41fc109e15b568acfaa6fd264b712330a",
+      "name": "ubunchu04_0009.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0009.png",
+      "mode": "100644"
+    },
+    {
+      "id": "465aa40be14474eb139744228d73e55a1359fdb6",
+      "name": "ubunchu04_0010.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0010.png",
+      "mode": "100644"
+    },
+    {
+      "id": "906e757539636dbbe94459cee633cf58a4285501",
+      "name": "ubunchu04_0011.png",
+      "type": "blob",
+      "path": "chapters/04/ubunchu04_ja-release/ubunchu04_0011.png",
+      "mode": "100644"
+    },
+    {
+      "id": "91ed12fc2c15ce1f4ab5b988639f8f64c3573a91",
+      "name": "ubunchu-05-rtl.pdf",
+      "type": "blob",
+      "path": "chapters/05/ubunchu-05_en-releases/ubunchu-05-rtl.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "d6c9839a26e1bbc90c09d530bbea890c7ef7c583",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "da61719cd4dd9f1deb27a0a0e6340aa7c3ad72e4",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "de13f13df105867f816982511c222a442763a2aa",
+      "name": "ubunchu05_0000.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0000.png",
+      "mode": "100644"
+    },
+    {
+      "id": "dc693c7f6ca44f2d0469bc3cbd9d888062d1f4cd",
+      "name": "ubunchu05_0001.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0001.png",
+      "mode": "100644"
+    },
+    {
+      "id": "3f5df1345febf299228f53311206c4d7cf8844da",
+      "name": "ubunchu05_0002.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0002.png",
+      "mode": "100644"
+    },
+    {
+      "id": "79582ca511701dafcda4fea717f59858b50b6696",
+      "name": "ubunchu05_0003.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0003.png",
+      "mode": "100644"
+    },
+    {
+      "id": "abc9bf5b4a449939ab02d118abcab2ca0d9f98a9",
+      "name": "ubunchu05_0004.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0004.png",
+      "mode": "100644"
+    },
+    {
+      "id": "38a1e7a3741c487196ef46f75c5519be203215d7",
+      "name": "ubunchu05_0005.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0005.png",
+      "mode": "100644"
+    },
+    {
+      "id": "56b4649950fee1e61363c10d5e2d4568ade92e19",
+      "name": "ubunchu05_0006.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0006.png",
+      "mode": "100644"
+    },
+    {
+      "id": "31f197ac658ce7724cc2328acc4ca7137ce8c348",
+      "name": "ubunchu05_0007.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0007.png",
+      "mode": "100644"
+    },
+    {
+      "id": "21ec0ae6a588d001beea6f9d410eb93613a19641",
+      "name": "ubunchu05_0008.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0008.png",
+      "mode": "100644"
+    },
+    {
+      "id": "db46679bd3a08538b5eb730b665e9e3f58b1705b",
+      "name": "ubunchu05_0009.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0009.png",
+      "mode": "100644"
+    },
+    {
+      "id": "b5fbbc8bcf507138e75bf1cb687c9b668902c338",
+      "name": "ubunchu05_0010.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0010.png",
+      "mode": "100644"
+    },
+    {
+      "id": "6dca0193410bc2fb1ec2ac028a5a56a3673717c2",
+      "name": "ubunchu05_0011.png",
+      "type": "blob",
+      "path": "chapters/05/ubunchu05_ja-release/ubunchu05_0011.png",
+      "mode": "100644"
+    },
+    {
+      "id": "8d70da6354f13c99c38c1ab95dc458c715074534",
+      "name": "ubunchu-06-ltr.pdf",
+      "type": "blob",
+      "path": "chapters/06/ubunchu-06_en-releases/ubunchu-06-ltr.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "2a33af121c92a1a5e5d11ee4e1881e26707eec1f",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "680611245d59e11b2cd895ec55ad6e3bc6f78d93",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "d5868bf84599a5d80bac2e77eada6bf73513d159",
+      "name": "ubunchu06_0000.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0000.png",
+      "mode": "100644"
+    },
+    {
+      "id": "d39aa64d14e4ad973a645b627c409f79c8f7e9c3",
+      "name": "ubunchu06_0001.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0001.png",
+      "mode": "100644"
+    },
+    {
+      "id": "9d84320aa5cf4da73719cac1834b4f3659b2ebb0",
+      "name": "ubunchu06_0002.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0002.png",
+      "mode": "100644"
+    },
+    {
+      "id": "ae86075c6c75e91776628b68e679b3b853c1b686",
+      "name": "ubunchu06_0003.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0003.png",
+      "mode": "100644"
+    },
+    {
+      "id": "c45678af3c70e1294cd3aee60e86df89f1c06ff7",
+      "name": "ubunchu06_0004.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0004.png",
+      "mode": "100644"
+    },
+    {
+      "id": "f8e596ac846da61b21653e7edb858b4ae2130652",
+      "name": "ubunchu06_0005.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0005.png",
+      "mode": "100644"
+    },
+    {
+      "id": "1c667ea97f24eaf2ebf4e8f6b2773a248f7820f9",
+      "name": "ubunchu06_0006.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0006.png",
+      "mode": "100644"
+    },
+    {
+      "id": "e27af46bea7e82f008e158d3495e386b0699fc6f",
+      "name": "ubunchu06_0007.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0007.png",
+      "mode": "100644"
+    },
+    {
+      "id": "108fead7005d85fafc7177d39b789a4bba29f758",
+      "name": "ubunchu06_0008.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0008.png",
+      "mode": "100644"
+    },
+    {
+      "id": "3181ff763d66bbef4972606d358b42be20dc7a29",
+      "name": "ubunchu06_0009.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0009.png",
+      "mode": "100644"
+    },
+    {
+      "id": "049684aca0fcdb3fb3cc238abe5de42f38ad2f89",
+      "name": "ubunchu06_0010.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0010.png",
+      "mode": "100644"
+    },
+    {
+      "id": "d350300d8c63350f36f39506315d2058b878f792",
+      "name": "ubunchu06_0011.png",
+      "type": "blob",
+      "path": "chapters/06/ubunchu06_ja-release/ubunchu06_0011.png",
+      "mode": "100644"
+    },
+    {
+      "id": "6a31454458e46d1c8f5e6bce64dcade1cf049bf2",
+      "name": "ubunchu-07-ltr.pdf",
+      "type": "blob",
+      "path": "chapters/07/ubunchu-07_en-releases/ubunchu-07-ltr.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "656a68c3d3fdd6e1bfc669a12097d872d3a853db",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "1232dfb491d318274c58f6bc89463134d75c7736",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "4dc6bdb5ef1e43e5f15641fe33465fc47b6c86c3",
+      "name": "ubunchu07_0000.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0000.png",
+      "mode": "100644"
+    },
+    {
+      "id": "5c8af5adbf65bf22c70158c61cc2a1041be915e6",
+      "name": "ubunchu07_0001.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0001.png",
+      "mode": "100644"
+    },
+    {
+      "id": "6597c57bec0ae7b331680ccbedf6242d4a9426d6",
+      "name": "ubunchu07_0002.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0002.png",
+      "mode": "100644"
+    },
+    {
+      "id": "23a1efa7c7e5cb1dc2a049a53cc8834cc6f27eff",
+      "name": "ubunchu07_0003.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0003.png",
+      "mode": "100644"
+    },
+    {
+      "id": "14bd56d60c0791a7e8f6ae317a2213c7dd14de9a",
+      "name": "ubunchu07_0004.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0004.png",
+      "mode": "100644"
+    },
+    {
+      "id": "6e1d96397523f6d671306d12031ca7a2fa3f5a2b",
+      "name": "ubunchu07_0005.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0005.png",
+      "mode": "100644"
+    },
+    {
+      "id": "396ad1f65a58d8dccd7ea02b75f9fedb4ce7650c",
+      "name": "ubunchu07_0006.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0006.png",
+      "mode": "100644"
+    },
+    {
+      "id": "a347657cf2c520e115f0bbf81fcb15a24be06561",
+      "name": "ubunchu07_0007.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0007.png",
+      "mode": "100644"
+    },
+    {
+      "id": "de919af945a6a0882f22f2da0bb6993cf392976d",
+      "name": "ubunchu07_0008.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0008.png",
+      "mode": "100644"
+    },
+    {
+      "id": "7a6ba49e5f7f289dd0d3a6a9dba1f312cf52a02e",
+      "name": "ubunchu07_0009.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0009.png",
+      "mode": "100644"
+    },
+    {
+      "id": "577496f3215778e429311dc1cfaea1f77da4304e",
+      "name": "ubunchu07_0010.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0010.png",
+      "mode": "100644"
+    },
+    {
+      "id": "8085720c965ec7a9b2bf9009df5a2d0120e9df7c",
+      "name": "ubunchu07_0011.png",
+      "type": "blob",
+      "path": "chapters/07/ubunchu07_ja-release/ubunchu07_0011.png",
+      "mode": "100644"
+    },
+    {
+      "id": "61f0c73a07c1259b776fd737e7ba3ab858d04f56",
+      "name": "ubunchu08_0001.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0001.png",
+      "mode": "100644"
+    },
+    {
+      "id": "7e10af880d7b22e27539ddda63bcddd279933c47",
+      "name": "ubunchu08_0002.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0002.png",
+      "mode": "100644"
+    },
+    {
+      "id": "1f978829875461cfa93b9efc1c3791ae7aaf31ec",
+      "name": "ubunchu08_0003.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0003.png",
+      "mode": "100644"
+    },
+    {
+      "id": "7d55149c1c2c15a63a6b295af28a4dc057a6a511",
+      "name": "ubunchu08_0004.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0004.png",
+      "mode": "100644"
+    },
+    {
+      "id": "82bef5c9e6dd133e198f001e6ed874c0d285be0b",
+      "name": "ubunchu08_0005.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0005.png",
+      "mode": "100644"
+    },
+    {
+      "id": "d34a5fe03f9808ea3ad1ea8e1dd473a23cd7d1d4",
+      "name": "ubunchu08_0006.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0006.png",
+      "mode": "100644"
+    },
+    {
+      "id": "87f78325f423f6ed97e636c9cc7ea00f163737d1",
+      "name": "ubunchu08_0007.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0007.png",
+      "mode": "100644"
+    },
+    {
+      "id": "eeeff15ac51bbb7e93128ad6da230d0424e807a6",
+      "name": "ubunchu08_0008.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0008.png",
+      "mode": "100644"
+    },
+    {
+      "id": "8e07d5eb36af60afc8d39ef7bc806a83db80e97d",
+      "name": "ubunchu08_0009.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0009.png",
+      "mode": "100644"
+    },
+    {
+      "id": "7242d53a2fb5c530308330512d6427c8a2cd4038",
+      "name": "ubunchu08_0010.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0010.png",
+      "mode": "100644"
+    },
+    {
+      "id": "0d3646bfe4557b01466012cdb2e0e95e0f9bc133",
+      "name": "ubunchu08_0011.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_0011.png",
+      "mode": "100644"
+    },
+    {
+      "id": "87fd5f207b32b9d956edd94a274ba34a4f8ce84b",
+      "name": "ubunchu08_96ppi.pdf",
+      "type": "blob",
+      "path": "chapters/08/ubunchu-08_en-releases/ubunchu08_96ppi.pdf",
+      "mode": "100644"
+    },
+    {
+      "id": "45a6e79d14092cb89170a3b7320a6a93ea7b32a9",
+      "name": "license_en.txt",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/license_en.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "7932ac3c21207a516fe8d832201317162784b668",
+      "name": "license_ja.txt",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/license_ja.txt",
+      "mode": "100644"
+    },
+    {
+      "id": "2bccb65297c2d6a04dd87978f8c0e3354e16f43e",
+      "name": "ubunchu08_0000.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0000.png",
+      "mode": "100644"
+    },
+    {
+      "id": "63d925373129d0f817848cbec1eb5e909d74991c",
+      "name": "ubunchu08_0001.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0001.png",
+      "mode": "100644"
+    },
+    {
+      "id": "bcc3e1186aa7684a347c78799b4ab1ec06289eca",
+      "name": "ubunchu08_0002.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0002.png",
+      "mode": "100644"
+    },
+    {
+      "id": "32b2019060bfd37eb032a9a699968231da709389",
+      "name": "ubunchu08_0003.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0003.png",
+      "mode": "100644"
+    },
+    {
+      "id": "e879d6ff7cfe968b23c4765abbba8ab39c0149fe",
+      "name": "ubunchu08_0004.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0004.png",
+      "mode": "100644"
+    },
+    {
+      "id": "5347a49e3b83948fff634571fa361f87f9e8b3f7",
+      "name": "ubunchu08_0005.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0005.png",
+      "mode": "100644"
+    },
+    {
+      "id": "b5d24ba712fecb3122fba373810cfa4db7ef1607",
+      "name": "ubunchu08_0006.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0006.png",
+      "mode": "100644"
+    },
+    {
+      "id": "e0defdb62f6e64c70ced67c6fb7b2d9518a8df7b",
+      "name": "ubunchu08_0007.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0007.png",
+      "mode": "100644"
+    },
+    {
+      "id": "95def1aa07cee36f32009b158bcefdcab01639ae",
+      "name": "ubunchu08_0008.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0008.png",
+      "mode": "100644"
+    },
+    {
+      "id": "ffe51ca89b66eafe14d12da92269995ddf7e4cd8",
+      "name": "ubunchu08_0009.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0009.png",
+      "mode": "100644"
+    },
+    {
+      "id": "c496e3c2e162100c79db7e89850fa543f4dc2c7b",
+      "name": "ubunchu08_0010.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0010.png",
+      "mode": "100644"
+    },
+    {
+      "id": "9ea68726b8b8d211c9c9367df744155f01757afc",
+      "name": "ubunchu08_0011.png",
+      "type": "blob",
+      "path": "chapters/08/ubunchu08_ja-release/ubunchu08_0011.png",
+      "mode": "100644"
+    }
+  ]
+}

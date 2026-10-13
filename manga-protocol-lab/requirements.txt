@@ -1,0 +1,4 @@
+aiohttp==3.13.5
+cbor2==5.6.5
+coincurve==21.0.0
+Pillow==12.3.0

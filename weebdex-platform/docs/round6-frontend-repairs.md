@@ -1,0 +1,14 @@
+# Finite round6 frontend repair handoff
+
+The four independent UI findings are implemented externally; no original attachment bytes changed. Owner hashes and exact anchored source transformations are in `test-evidence/frontend/round6-owner-source-repairs/summary.json` and the integration manifest. Independent review remains separate from these owner assertions. No application/browser tests have run.
+
+- UI6-01: page-admission synchronously prevents native form navigation. A dirty metadata/group draft shows Save or revert guidance and sends no Begin. Invalid metadata can already be locally reverted. This gates the internal pages transition rather than silently freezing or resetting displayed edits.
+- UI6-02: clicking an existing custom device-list link explicitly selects device mode, validates the saved scope/list before and after switching, then navigates. Account-mode list URLs fail with switch-required guidance, rather than forwarding a device ID to account follows. Back/forward never silently interprets that ID as an account list.
+- UI6-03: the common authenticated mutation helper binds report Create/Delete/Accept/Reject to the admitted actor and authority generation with `X-WeebDex-Expected-Account`. Session changes cancel limiter waits/network; subject or row changes and destruction abort their owned controllers. Captured payloads/IDs are never rebound to a later account or target. Completions cannot change another row/dialog. Already-sent uncertain writes retain no-replay/reload guidance in HTTP; cancellation never proves server rejection.
+- UI6-04: global reader shortcuts skip default-prevented events, native input/textarea/select/button/link controls, editable ancestors and supported ARIA controls along the actual composed event path. A focus transition into these controls stops a held reader RAF, as do blur/disposal. Canvas shortcuts retain their original behavior.
+
+## Deferred real acceptance
+
+Use actual controls and persisted responses: dirty title/language/groups -> Edit/Replace -> no Begin/no native navigation -> Revert/Save -> actual staging; device-list member A versus account-follow B -> click -> only device A, then back/forward; queued A report create/decision/delete -> logout/B or A/logout/A -> no B audit actor and no stale row/dialog completion; native chapter-route panel selects/editables keyboard operation without reader scroll/navigation, then canvas shortcuts. Ambiguous already-sent report writes require read-only current-state reconciliation before explicit retry. These are test requirements, not passing evidence.
+
+The next bundle retries build7's independently verified clean application failure (external RecoveryBoundary bare axios resolution). Exact official staged axios/http-status-codes aliases are added outside immutable frontend configuration. Resource lifecycle ownership and Cargo/Vite serialization remain enforced.

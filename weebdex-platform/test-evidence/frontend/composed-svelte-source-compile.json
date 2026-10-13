@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "utc": "2026-10-13T10:17:04.717Z",
+  "runtime_tests_executed": false,
+  "components_compiled": 93,
+  "scripts_syntax_compiled": 57,
+  "shared_sha": "1d69c7b365e9730e5d1ee6308ffa5d4b3cd273db38a4fdf414f9835922bbd3bc",
+  "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+  "local_sha": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473",
+  "integration_inventory_sha": "08b4788aa51bdec2919f05596a76dc366b0785a7c66f38c0f8c4b3ad43af2e2c",
+  "warnings": [
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    },
+    {
+      "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    },
+    {
+      "path": "frontend/src/lib/components/ChapterListFilter.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "code": "state_referenced_locally",
+      "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+    }
+  ],
+  "failures": []
+}

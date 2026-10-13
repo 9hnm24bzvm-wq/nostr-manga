@@ -1,0 +1,75 @@
+{
+  "utc": "2026-10-13T05:22:42.620500+00:00",
+  "qualification": "Owner source repair/compile receipt; requires fresh independent review and real browser acceptance. No application runtime executed.",
+  "findings": {
+    "UI4-01": {
+      "source_repair": "frozen mutation context and one matched account cache seam",
+      "files": [
+        "platform-integrations/local-library/MangaFollow.ts",
+        "platform-integrations/local-library/library.ts",
+        "platform-integrations/local-library/overlays.mjs"
+      ]
+    },
+    "UI4-02": {
+      "source_repair": "fresh per-attempt aggregate; query/preferences/library generation+disposal invalidation",
+      "files": [
+        "platform-integrations/frontend-overlays.mjs"
+      ]
+    },
+    "UI4-03": {
+      "source_repair": "exact keyed target lifetimes, current parent user lookup, shared target-owner requests, owned staging restore/autosave/cancel and metadata navigation guard",
+      "files": [
+        "platform-integrations/frontend-overlays.mjs",
+        "platform-integrations/frontend-behavior/target-owner.ts",
+        "platform-integrations/frontend-behavior/upload-resume.ts",
+        "scripts/prepare-frontend-integration.mjs"
+      ]
+    }
+  },
+  "overlay_definitions": 262,
+  "exact_anchor_occurrences": 271,
+  "original_paths": 63,
+  "integration_source_inventory_sha256": "8caf92dca314014798d98844406c69a15de19bac2eda42e2a5bad1148ee5ffbd",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T05:17:19.118Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 58,
+    "scripts_syntax_compiled": 28,
+    "shared_sha": "93ae7a1b35f84923e1c2f2bd5f731a01563b079b1cb844b3806e8dafb271fe91",
+    "reader_sha": "0fa703b3208a1d0abe210062cf4ec02bb813132a83d687cf331d212aae983dce",
+    "local_sha": "acc47af42d7638f6cc77d2529c71b553f7d1ce73c5b8ebe11b3461fb275a043f",
+    "integration_inventory_sha": "8caf92dca314014798d98844406c69a15de19bac2eda42e2a5bad1148ee5ffbd",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "original_bytes_preserved": 676,
+  "prior_artifact": "final-build6 passed227definitions but stale for this262definition candidate",
+  "runtime_browser_tests_executed": false
+}

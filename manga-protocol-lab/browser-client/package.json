@@ -1,0 +1,22 @@
+{
+  "name": "manga-local-browser-client",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Local-first browser library and explicit Nostr publication",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "build": "node build.mjs",
+    "test:backup-large": "node --max-old-space-size=4096 tests/backup-large.mjs",
+    "format:check": "prettier --check src tests build.mjs package.json"
+  },
+  "dependencies": {
+    "@noble/curves": "2.0.1",
+    "@noble/hashes": "2.0.1"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.4",
+    "jsdom": "27.0.1",
+    "prettier": "3.6.2"
+  }
+}

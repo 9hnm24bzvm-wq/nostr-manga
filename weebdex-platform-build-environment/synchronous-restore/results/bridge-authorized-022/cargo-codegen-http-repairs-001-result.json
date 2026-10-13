@@ -1,0 +1,27 @@
+{
+  "completed_utc": "2026-10-13T12:43:12.398159+00:00",
+  "command_exit": 0,
+  "abort_reason": null,
+  "monitor_error": null,
+  "cleanup_error": null,
+  "termination_signal": null,
+  "remaining_owned_members": [],
+  "frozen_identity_hashes": {
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-022/guarded-command.py": "9f91c18d582d1ca7cedf64dc1a43f919541fe7a9788e0407283ed4fe366f6da8",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-022/candidate-source.json": "8c49013586f460260074cb2d92435b826412ab9e1604100d8b8f88e3d62d4cb6",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/source-baseline.json": "74b53fb3dcdb01fb32a60c33b1d23a4fec5bcccaa89ab3d6869addb15f7ac1bb"
+  },
+  "owned_leader_reaped": true,
+  "stop_actions": [],
+  "reaped_descendants": [],
+  "changed_inputs": [],
+  "minimum_free_bytes": 19908575232,
+  "minimum_available_memory_bytes": 6050979840,
+  "final_free_bytes": 19985981440,
+  "final_available_memory_bytes": 7150579712,
+  "command_log_bytes": 1314,
+  "telemetry_bytes": 7739,
+  "telemetry_capped": false,
+  "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+  "status": "passed"
+}

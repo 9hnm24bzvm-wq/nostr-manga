@@ -1,0 +1,9 @@
+{
+  "approved_by": "Parent2026-10-13T06:30:57UTC",
+  "launch_disk_bytes": 10737418240,
+  "stop_disk_bytes": 8589934592,
+  "available_memory_floor_bytes": 2147483648,
+  "maximum_seconds": 90,
+  "provenance": "Existing verified dependencies; no install. Old22GiB bootstrap reserve superseded by measured normal-build budget.",
+  "owned_runner": "Dedicated subreaper + exact ancestry/startticks/pidfd signals and terminal descendant reaping; no preexisting process controls"
+}

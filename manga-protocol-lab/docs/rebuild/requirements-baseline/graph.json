@@ -1,0 +1,1057 @@
+{
+  "spec": "spec.md",
+  "updated_at": "2026-10-08T22:59:00Z",
+  "tickets": [
+    {
+      "id": 1,
+      "title": "Demonstrate durable multi-process foundations",
+      "file": "issues/01-demonstrate-durable-multi-process-foundations.md",
+      "depends_on": [],
+      "status": "done",
+      "stories": [
+        1,
+        2,
+        4,
+        23,
+        33
+      ],
+      "acceptance": [
+        "Independent processes produce one event and one projection intent for duplicate submission.",
+        "Warm cached bodies cannot bypass current removal state or a database outage.",
+        "Worker claims and quota reservations survive contention with conservation and stale-owner rejection."
+      ],
+      "evidence": [
+        "results/postgres-foundation.json",
+        "results/postgres-capacity.json",
+        "results/postgres-multiprocess.json"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Boot an authenticated PostgreSQL node",
+      "file": "issues/02-boot-an-authenticated-postgresql-node.md",
+      "depends_on": [
+        1
+      ],
+      "status": "done",
+      "stories": [
+        1,
+        2,
+        5,
+        32,
+        34
+      ],
+      "acceptance": [
+        "A second process can use the same intended instance database; a mismatched service key fails startup.",
+        "Identity proof binds nonce and configured endpoint; secrets are not returned or logged.",
+        "NIP98 URL/method/body/freshness/replay checks reject unauthorized requests at the public HTTP seam.",
+        "Missing/newer/inconsistent schema fails clearly instead of silently mutating startup state."
+      ],
+      "evidence": [
+        "results/postgres-http-node.json",
+        "results/postgres-node-tests.log"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Upload and retrieve a verified original",
+      "file": "issues/03-upload-and-retrieve-a-verified-original.md",
+      "depends_on": [
+        2
+      ],
+      "status": "done",
+      "stories": [
+        3,
+        4,
+        6,
+        10,
+        11
+      ],
+      "acceptance": [
+        "Invalid authorization is rejected before unbounded body receipt.",
+        "Hash/size failures, interrupted writes and duplicate retries cannot falsely register or double-charge an object.",
+        "Space is reserved atomically and only confirmed outcomes settle/refund it.",
+        "Stale cleanup cannot delete a newer generation; unregistered/staged objects are not anonymously exposed."
+      ],
+      "evidence": [
+        "results/postgres-http-upload.json",
+        "results/postgres-blob-receipts.json",
+        "results/postgres-http-upload-tests.log"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Project signed events through strfry",
+      "file": "issues/04-project-signed-events-through-strfry.md",
+      "depends_on": [
+        2
+      ],
+      "status": "done",
+      "stories": [
+        8,
+        16,
+        32
+      ],
+      "acceptance": [
+        "Signature and identity validation precede persistence.",
+        "Duplicate events produce one durable intent; backend failure is reported with recoverable pending work.",
+        "Projection ordering and deletion/replaceable barriers are preserved without holding a database transaction across a subprocess.",
+        "Protected kind5 requests never enter the raw automatic-deletion import path."
+      ],
+      "evidence": [
+        "results/postgres-http-backend.json",
+        "results/postgres-backend-tests.log"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Publish a complete immutable chapter",
+      "file": "issues/05-publish-a-complete-immutable-chapter.md",
+      "depends_on": [
+        3,
+        4
+      ],
+      "status": "done",
+      "stories": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "acceptance": [
+        "Canonical CBOR, hash/version, descriptor and actual-image checks enforce the experimental profile.",
+        "Every unique original is verified, and conflicting repeated descriptors are rejected.",
+        "Deletion, eviction or revocation during preparation cannot cause stale completion.",
+        "A reader receives exact original bytes; static delivery can fall back safely while serving projections catch up."
+      ],
+      "evidence": [
+        "results/postgres-http-publication.json",
+        "results/postgres-publication-fences.json",
+        "results/postgres-publication-tests.log"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Discover chapters with accepted filters",
+      "file": "issues/06-discover-chapters-with-accepted-filters.md",
+      "depends_on": [
+        5
+      ],
+      "status": "done",
+      "stories": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "acceptance": [
+        "Live offset/limit and inclusive signed-created_at bounds work together.",
+        "Exact non-language comparisons, RFC4647 basic ranges, unknown-under-NOT and explicit exists/missing agree across node and database evaluation.",
+        "Invalid, overbudget or oversized queries fail explicitly without partial-page success.",
+        "Explicit sort directions work; Q93/Q94 defaults remain provisional until answered."
+      ],
+      "evidence": [
+        "results/postgres-http-discovery.json",
+        "results/postgres-discovery-tests.log"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Moderate protected publication removal",
+      "file": "issues/07-moderate-protected-publication-removal.md",
+      "depends_on": [
+        4,
+        5
+      ],
+      "status": "done",
+      "stories": [
+        9,
+        16,
+        17,
+        18
+      ],
+      "acceptance": [
+        "Receipt alone does not auto-delete protected manga content.",
+        "Approval is local, deletion does not cascade automatically from series, and shared originals remain retained.",
+        "Completed withdrawal accounts for owned serving projections; interruption/retry is recoverable.",
+        "Replacement is a new upload/event, with no protocol revision/equivalence link."
+      ],
+      "evidence": [
+        "results/postgres-http-moderation.json",
+        "results/postgres-moderation-tests.log"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Synchronize one approved peer chapter",
+      "file": "issues/08-synchronize-one-approved-peer-chapter.md",
+      "depends_on": [
+        5,
+        6,
+        7
+      ],
+      "status": "done",
+      "stories": [
+        5,
+        19,
+        20,
+        21
+      ],
+      "acceptance": [
+        "An unapproved peer or changed service key does not inherit access.",
+        "Signed event and manifest metadata are checked before downloading out-of-filter originals.",
+        "Only complete verified local originals become hosted on the receiver.",
+        "An independently approved fallback can repair a failed origin; arbitrary endpoints are not silently trusted."
+      ],
+      "evidence": [
+        "results/postgres-http-peers.json",
+        "results/postgres-peer-tests.log"
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Resume bounded large synchronization",
+      "file": "issues/09-resume-bounded-large-synchronization.md",
+      "depends_on": [
+        8
+      ],
+      "status": "done",
+      "stories": [
+        22,
+        23,
+        34
+      ],
+      "acceptance": [
+        "Discovery pages remain separate from bounded inventory snapshots.",
+        "Large/equal-timestamp inventories reconcile through validated partitions and explicit resource ceilings.",
+        "Lease loss, cancellation, retry and restart fence stale work and preserve idempotent admitted results.",
+        "Backoff, fairness and queue limits produce bounded behavior."
+      ],
+      "evidence": [
+        "results/postgres-http-inventory.json",
+        "results/postgres-sync-queue.json",
+        "results/postgres-http-sync-jobs.json",
+        "results/postgres-owned-io-tests.log",
+        "results/postgres-sync-tests.log"
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Publish for groups through member keys",
+      "file": "issues/10-publish-for-groups-through-member-keys.md",
+      "depends_on": [
+        2,
+        5,
+        7
+      ],
+      "status": "done",
+      "stories": [
+        25,
+        26,
+        27
+      ],
+      "acceptance": [
+        "Publish and deletion-request signing use current role authorization, without exposing an arbitrary signing oracle.",
+        "Revocation persists after restart and is not reseeded from bootstrap configuration.",
+        "Signer references do not require plaintext private keys in PostgreSQL.",
+        "Key-only recovery preserves identity but does not recreate missing membership policy."
+      ],
+      "evidence": [
+        "results/postgres-http-groups.json",
+        "results/postgres-group-fences.json",
+        "results/postgres-groups-tests.log"
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Maintain public libraries and social actions",
+      "file": "issues/11-maintain-public-libraries-and-social-actions.md",
+      "depends_on": [
+        4,
+        8
+      ],
+      "status": "done",
+      "stories": [
+        28,
+        29,
+        30
+      ],
+      "acceptance": [
+        "Replaceable snapshots and timestamp/ID ties behave deterministically.",
+        "Ordinary library/social NIP09 handling stays separate from protected-publication moderation.",
+        "Progress references exact publication IDs and public exposure is explicit.",
+        "No private-library or master-key subsystem is introduced."
+      ],
+      "evidence": [
+        "results/discovery-peer-repair-full-regression-2.log",
+        "results/library-peer-http.json",
+        "results/account-peer-http.json",
+        "results/ordinary-deletion-races.json",
+        "docs/public-social-api.md",
+        "docs/ordinary-deletion-api.md",
+        "docs/library-peer-transfer.md"
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Repair and reclaim stored originals",
+      "file": "issues/12-repair-and-reclaim-stored-originals.md",
+      "depends_on": [
+        3,
+        5,
+        7,
+        8
+      ],
+      "status": "done",
+      "stories": [
+        6,
+        17,
+        21,
+        24
+      ],
+      "acceptance": [
+        "Known corrupt/missing bytes cannot remain advertised as healthy through stale caches.",
+        "Shared references and active reservations/pins prevent unsafe reclamation.",
+        "Cleanup is fenced and idempotent; expiry alone does not refund uncertain writes.",
+        "Rotating bounded maintenance makes progress across the collection."
+      ],
+      "evidence": [
+        "results/publication-reclamation.json",
+        "results/publication-reclamation-full-regression.log",
+        "results/storage-audit-repair-http.json",
+        "results/migration-backup-full-regression.log"
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Import MangaDex-shaped exports",
+      "file": "issues/13-import-mangadex-shaped-exports.md",
+      "depends_on": [
+        5,
+        10,
+        11
+      ],
+      "status": "done",
+      "stories": [
+        31
+      ],
+      "acceptance": [
+        "Dry-run output identifies unsupported or ambiguous mappings before applying them.",
+        "Exact originals and chapter order are preserved without guessed associations.",
+        "Imported publications can be read and synchronized through the new node.",
+        "No real account access or catalogue scraping is required for the synthetic acceptance fixture."
+      ],
+      "evidence": [
+        "results/postgres-migration-plan-tests.log",
+        "results/postgres-migration-http.json",
+        "results/postgres-migration-http-regression-2.log",
+        "docs/postgres-migration.md"
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Restore an interrupted instance",
+      "file": "issues/14-restore-an-interrupted-instance.md",
+      "depends_on": [
+        7,
+        9,
+        10,
+        11,
+        12
+      ],
+      "status": "done",
+      "stories": [
+        6,
+        23,
+        26,
+        27,
+        32
+      ],
+      "acceptance": [
+        "Service identity, originals, tombstones, group revocations and public library state are preserved.",
+        "Old job ownership cannot resume against a newer restoration epoch without validation.",
+        "Accounting is reconciled and projection work resumes without duplicate publication.",
+        "Restore tests remain isolated and do not create an unintended live duplicate service."
+      ],
+      "evidence": [
+        "results/postgres-backup-restore.json",
+        "results/postgres-backup-restore-regression-5.log",
+        "results/postgres-backup-unit.log",
+        "results/migration-backup-full-regression.log",
+        "docs/postgres-backup-restore.md"
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Operate scalable serving roles",
+      "file": "issues/15-operate-scalable-serving-roles.md",
+      "depends_on": [
+        2,
+        3,
+        5,
+        8
+      ],
+      "status": "done",
+      "stories": [
+        1,
+        2,
+        30,
+        33,
+        34,
+        35
+      ],
+      "acceptance": [
+        "Ordinary public image reads bypass PostgreSQL and Moka; guarded policies remain fail-closed.",
+        "Pool, worker, queue, body, decode and cache limits are explicit and observable.",
+        "Storage mutation ownership, generation fencing and API role separation do not rely on a global metadata mutex.",
+        "TLS/access-policy configuration fails safely; overload and backend outage have tested responses."
+      ],
+      "evidence": [
+        "results/serving-role-full-final-2.log",
+        "results/http-public-serving.json",
+        "results/serving-prepared-regression-2.log",
+        "docs/managed-public-serving.md"
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Verify PostgreSQL behavior end to end",
+      "file": "issues/16-verify-postgresql-behavior-end-to-end.md",
+      "depends_on": [
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "status": "done",
+      "stories": [
+        1,
+        2,
+        7,
+        16,
+        22,
+        24,
+        32,
+        33,
+        34,
+        35
+      ],
+      "acceptance": [
+        "Legacy behavior contracts are rerun on the new stack rather than credited from SQLite results.",
+        "Cold/warm caches, competing writes, interrupted projections, corruption and restart are covered.",
+        "Experimental profile limits and remaining unsupported behavior are documented accurately.",
+        "The delivered archive rebuilds and its dependency graph contains no SQLx or SQLite in the selected server."
+      ],
+      "evidence": [
+        "results/serving-role-full-final-2.log",
+        "results/http-public-serving.json",
+        "results/serving-prepared-regression-2.log",
+        "docs/managed-public-serving.md",
+        "results/serving-role-archive-rebuild.log",
+        "results/serving-role-dependency-check.txt",
+        "results/serving-role-python.log"
+      ]
+    },
+    {
+      "id": 17,
+      "title": "Finalize pending discovery defaults",
+      "file": "issues/17-finalize-pending-discovery-defaults.md",
+      "depends_on": [
+        6
+      ],
+      "status": "done",
+      "stories": [
+        13,
+        15
+      ],
+      "acceptance": [
+        "Accepted Q93D requires explicit order; Q94A provides optional exact totals with explicit budget errors.",
+        "Implementation, documentation and conformance tests match the chosen defaults."
+      ],
+      "evidence": [
+        "results/postgres-http-discovery.json",
+        "results/discovery-final-contract.log",
+        "results/discovery-peer-repair-full-regression-2.log"
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Validate deployment capacity honestly",
+      "file": "issues/18-validate-deployment-capacity-honestly.md",
+      "depends_on": [
+        16,
+        17,
+        30
+      ],
+      "status": "deferred-browser-features",
+      "stories": [
+        1,
+        35
+      ],
+      "acceptance": [
+        "Reusable workload drivers and acceptance metrics are ready and locally checked.",
+        "Cold/warm and concurrent read/write results identify hardware, dataset, network and cache assumptions.",
+        "Actual target-scale results require suitable infrastructure and permission; no synthetic result is labeled100TB validation.",
+        "Outstanding production/security/operational gates are reported rather than hidden."
+      ],
+      "note": "User requested complete features before further performance work. Prior local load gates failed; infrastructure and production capacity remain unproven.",
+      "evidence": [
+        "docs/checkpoint20-capacity-check.md",
+        "results/reclamation-index-comparison.json",
+        "docs/query-cache-results.md",
+        "results/query-cache-gate.json",
+        "results/query-cache-full.log"
+      ],
+      "qualification": "Owner reiterated all features first on8October2026 at04:35UTC; further tuning paused.",
+      "next_validation": "Thirty-minute capacity run interrupted by owner local-first/browser request at14:00UTC; no completed result."
+    },
+    {
+      "id": 19,
+      "title": "Restore admitted publisher workflows",
+      "file": "issues/19-restore-admitted-publisher-workflows.md",
+      "depends_on": [
+        3,
+        5
+      ],
+      "status": "done",
+      "audit_findings": [
+        "B1",
+        "R1"
+      ],
+      "acceptance": [
+        "An admitted non-admin publisher uploads a manifest and originals and publishes through signed HTTP; WS uses the same publication authority rules.",
+        "Logical publisher grants are independent of physical mutation ownership and bind the exact blob generation; another author cannot consume an ungranted staged original.",
+        "Permission epoch and grant validity are rechecked at the final commit; revocation, cancellation, duplicate uploads and shared hashes have negative/race tests.",
+        "Administrator, managed-group and approved-peer publication regressions still pass."
+      ],
+      "evidence": [
+        "results/audit-publisher-regression-2.log",
+        "results/publisher-authority.json",
+        "results/audit-publisher-full-regression.log",
+        "docs/publisher-authority.md"
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Complete staged blob lifecycle",
+      "file": "issues/20-complete-staged-blob-lifecycle.md",
+      "depends_on": [
+        19,
+        12
+      ],
+      "status": "done",
+      "audit_findings": [
+        "B2",
+        "B3",
+        "R2"
+      ],
+      "acceptance": [
+        "Bounded maintenance selects expired available never-published uploads; resumed work is idempotent and observable.",
+        "Authorized direct deletion of unreferenced uploads uses the existing durable receipt and accounting path.",
+        "Hosted publications, retained library objects, live grants, mutation generations and external-reader holds prevent premature deletion or refund.",
+        "Publisher and group grant expiry/release policies are explicit and tested; interrupted unlink/fsync/receipt and active publication races retain safety."
+      ],
+      "evidence": [
+        "results/audit-transfer-holds-regression.log",
+        "results/staging-reclamation.json",
+        "results/audit-staging-full-regression.log",
+        "docs/staging-reclamation.md",
+        "results/audit-direct-delete-full-regression.log",
+        "results/audit-direct-delete-domain.log",
+        "results/audit-direct-delete-http.log",
+        "results/http-staged-deletion.json",
+        "docs/staged-deletion.md"
+      ]
+    },
+    {
+      "id": 21,
+      "title": "Isolate unsupported synchronization items",
+      "file": "issues/21-isolate-unsupported-synchronization-items.md",
+      "depends_on": [
+        8,
+        9
+      ],
+      "status": "done",
+      "audit_findings": [
+        "B4",
+        "R3"
+      ],
+      "acceptance": [
+        "Typed per-item outcomes distinguish unsupported contract, local-policy rejection, invalid content and retryable failures without matching error strings.",
+        "A mixed supported/unsupported inventory continues supported items and records durable bounded reasons for skipped items.",
+        "Batch status exposes skips/partial completion; unsupported items cannot exhaust retries and cancel unrelated partitions.",
+        "Lease, peer-revocation, cancellation, queue accounting and transient failure behavior retain explicit tests."
+      ],
+      "evidence": [
+        "results/audit-sync-mixed-peer-4.log",
+        "results/audit-sync-skip-accounting.log",
+        "results/http-sync-skips.json",
+        "docs/synchronization-item-outcomes.md",
+        "results/audit-sync-full-regression.log",
+        "results/audit-sync-python.log"
+      ]
+    },
+    {
+      "id": 22,
+      "title": "Complete Blossom browser interoperability",
+      "file": "issues/22-complete-blossom-browser-interoperability.md",
+      "depends_on": [
+        19,
+        20
+      ],
+      "status": "done",
+      "audit_findings": [
+        "B3"
+      ],
+      "acceptance": [
+        "A documented supported BUD subset defines standard upload, lookup and authorized deletion routes and signed-token scope.",
+        "Browser preflight, allowed origins and response-proof header exposure are configurable and tested.",
+        "Cross-origin handling does not grant publication, operator or deletion authority; negative origin and authentication tests pass.",
+        "A real client contract fixture exercises original upload/read/delete plus authenticated library requests."
+      ],
+      "evidence": [
+        "docs/blossom-profile.md",
+        "results/http-blossom.json",
+        "results/audit-blossom-http-4.log",
+        "results/audit-blossom-full-regression.log"
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Unify capability advertisements",
+      "file": "issues/23-unify-capability-advertisements.md",
+      "depends_on": [
+        17
+      ],
+      "status": "done",
+      "audit_findings": [
+        "F2",
+        "R5"
+      ],
+      "acceptance": [
+        "One typed registry drives namespaced NIP11 and HTTP application capabilities.",
+        "Endpoint, API/schema version, configured original format and query/body/admission limits match actual runtime behavior.",
+        "Unsupported versions and budget overruns produce explicit stable responses; advertised support has positive and negative contract tests."
+      ],
+      "evidence": [
+        "results/audit-capabilities-http-2.log",
+        "results/http-capabilities.json",
+        "docs/capability-registry.md",
+        "results/audit-capabilities-full-regression.log"
+      ]
+    },
+    {
+      "id": 24,
+      "title": "Implement signed service discovery",
+      "file": "issues/24-implement-signed-service-discovery.md",
+      "depends_on": [
+        23
+      ],
+      "status": "done",
+      "audit_findings": [
+        "F1"
+      ],
+      "acceptance": [
+        "A service-key-signed replaceable endpoint list uses deterministic timestamp/ID selection and peer caching/exchange.",
+        "Expected keys are verified; first possession-verified identity is remembered when no expected key is supplied; a new key never inherits peer permissions.",
+        "URL safety, expiration/staleness and replay rules are explicitly resolved before implementing automatic endpoint use.",
+        "Domain move, transferred domain, old announcement replay and cold-peer discovery have tests."
+      ],
+      "evidence": [
+        "results/audit-service-resolution-http.log",
+        "results/http-service-announcements.json",
+        "docs/service-identity-remembrance.md",
+        "results/audit-service-resolution-full-regression.log",
+        "results/audit-peer-relocation-http.log",
+        "results/peer-relocation-fences.json",
+        "results/audit-peer-relocation-transport.log",
+        "results/audit-discovery-integration-full.log"
+      ],
+      "remaining": "Automatic configured-peer relocation and relay projection are not implemented."
+    },
+    {
+      "id": 25,
+      "title": "Deliver multi-relay library clients",
+      "file": "issues/25-deliver-multi-relay-library-clients.md",
+      "depends_on": [
+        11,
+        22,
+        24
+      ],
+      "status": "done",
+      "audit_findings": [
+        "F3",
+        "R7"
+      ],
+      "acceptance": [
+        "A signer-agnostic client discovers selected write relays from NIP65 and sends identical signed chunked-library heads plus required objects.",
+        "First acceptance completes the initial save while other recipients retain separate bounded retries and visible outcomes.",
+        "A fresh device recovers the newest valid library from surviving write relays with deterministic replacement validation.",
+        "Offline recipients, conflicting heads, interrupted object delivery, revoked access and corrupted responses are tested without private-library scope."
+      ],
+      "evidence": [
+        "docs/library-client-delivery-contract.md",
+        "results/audit-library-client-relays-http.log",
+        "results/audit-library-client-negative-2.log",
+        "results/audit-library-client-outbox-process-2.log",
+        "results/http-library-client-large.json",
+        "results/audit-library-client-large-full-final.log",
+        "results/audit-client-binding-http.log",
+        "results/audit-discovery-integration-full.log",
+        "results/audit-cold-bootstrap-pipeline-2.log"
+      ],
+      "remaining": "Automatic NIP65 route-to-service binding remains open. Large30k/500k interrupted multi-batch recovery is verified."
+    },
+    {
+      "id": 26,
+      "title": "Complete series metadata discovery",
+      "file": "issues/26-complete-series-metadata-discovery.md",
+      "depends_on": [
+        6,
+        23
+      ],
+      "status": "done",
+      "audit_findings": [
+        "F5",
+        "R6"
+      ],
+      "acceptance": [
+        "Typed series/title/category contracts preserve accepted free-form categories and instance-local synonyms.",
+        "Public series and chapter discovery use parameterized bounded queries with accepted timestamp, ordering and three-valued filter semantics.",
+        "Cover and remaining metadata contracts are resolved explicitly; optional unknown fields are not silently reclassified as invalid.",
+        "Import round trips and positive/negative filter/search fixtures cover supported metadata."
+      ],
+      "evidence": [
+        "docs/catalogue-and-covers.md",
+        "results/catalogue-full-regression.log",
+        "results/catalogue-upgrade-guard.log",
+        "results/catalogue-cover-review.log",
+        "results/catalogue-migration-python.log",
+        "results/http-catalogue.json"
+      ]
+    },
+    {
+      "id": 27,
+      "title": "Implement submission review workflows",
+      "file": "issues/27-implement-submission-review-workflows.md",
+      "depends_on": [
+        19,
+        20
+      ],
+      "status": "done",
+      "audit_findings": [
+        "F6"
+      ],
+      "acceptance": [
+        "Unadmitted submissions have a bounded validated review path under local policy rather than automatic publishing authority.",
+        "Approval, rejection and expiry enforce publisher authority, original possession, storage budgets and durable audit outcomes.",
+        "Managed group backup and recovered-public-key registration have a usable offline runbook and verification fixture.",
+        "Action attribution requirements are resolved; portable membership export is not introduced as a mandatory protocol feature."
+      ],
+      "evidence": [
+        "docs/group-key-backup-recovery.md",
+        "results/audit-offline-keys-unit.log",
+        "results/audit-offline-keys-http.log",
+        "docs/group-action-audit.md",
+        "results/audit-group-attribution-http.log",
+        "results/audit-group-attribution-fences.log",
+        "docs/submission-review-proposal.md",
+        "results/http-submission-review.json",
+        "results/submission-review-fences.json",
+        "results/audit-submission-review-full.log"
+      ],
+      "remaining": "Admitted-account one-off submission review remains unimplemented; group action attribution is local operator-only."
+    },
+    {
+      "id": 28,
+      "title": "Build MangaDex compatibility surface",
+      "file": "issues/28-build-mangadex-compatibility-surface.md",
+      "depends_on": [
+        25,
+        26,
+        27
+      ],
+      "status": "done",
+      "audit_findings": [
+        "F4"
+      ],
+      "acceptance": [
+        "An explicit supported-client/endpoint matrix covers agreed browse/search/chapter/images, account/list/progress and publishing/group launch workflows.",
+        "Authentication and IDs are translated without reusing MangaDex credentials or inferring group control from display names.",
+        "Existing supplied-export migration retains exact originals and explicit public-history consent.",
+        "End-to-end compatibility fixtures establish advertised behavior; unsupported endpoints have honest explicit responses."
+      ],
+      "evidence": [
+        "docs/mangadex-compatibility.md",
+        "results/compatibility-full-final.log",
+        "results/http-mangadex-compat.json",
+        "results/compatibility-python.log"
+      ]
+    },
+    {
+      "id": 29,
+      "title": "Harden restore serving defaults",
+      "file": "issues/29-harden-restore-serving-defaults.md",
+      "depends_on": [
+        14,
+        15
+      ],
+      "status": "done",
+      "audit_findings": [
+        "O1",
+        "O2"
+      ],
+      "acceptance": [
+        "Restored configuration disables managed public serving until deliberate review/re-enable, alongside existing worker reset conventions.",
+        "An enabled-source serving backup/restore fixture covers path/port changes and preserves reader-hold safety.",
+        "Fault recovery distinctions are typed and observable; no timer alone clears holds or reopens serving.",
+        "Foreign host/namespace recovery limits remain documented unless a separately tested safe transition is implemented."
+      ],
+      "evidence": [
+        "results/audit-restore-policy-unit.log",
+        "results/audit-restore-policy-regression.log",
+        "results/audit-recovery-tls-full.log",
+        "results/audit-recovery-diagnostics-http.log",
+        "results/audit-recovery-supervisor.log"
+      ]
+    },
+    {
+      "id": 30,
+      "title": "Verify complete backend contracts",
+      "file": "issues/30-verify-complete-backend-contracts.md",
+      "depends_on": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "status": "done",
+      "audit_findings": [
+        "R4",
+        "R8",
+        "R9",
+        "O3"
+      ],
+      "acceptance": [
+        "A requirement-to-wire-contract-to-implementation-to-evidence matrix covers every accepted in-scope feature and keeps unresolved choices explicit.",
+        "Large HTTP-module extraction and supervised-worker changes follow tested domain boundaries rather than speculative rewrites.",
+        "Functional regression, security-negative, crash/restart, TLS/reverse-proxy and cold-device recovery scenarios cover final code.",
+        "A source checkpoint rebuilds and is backed up; incomplete features and unproven capacity remain explicitly stated."
+      ],
+      "evidence": [
+        "docs/RELEASE-20261008.md",
+        "docs/mangadex-compatibility.md",
+        "results/compatibility-full-final.log",
+        "results/compatibility-archive-rebuild.log",
+        "results/compatibility-demo.log",
+        "results/backend-mvp-final-full.log",
+        "results/backend-mvp-archive-rebuild.log",
+        "results/backend-mvp-runtime-recovery.log"
+      ]
+    },
+    {
+      "id": 31,
+      "title": "Complete reader account and library interfaces",
+      "status": "done",
+      "depends_on": [
+        11,
+        25,
+        28
+      ],
+      "acceptance": [
+        "Account/profile, list and reading-state compatibility uses existing public signed identities and library graph.",
+        "Snapshot pinning, query budgets, read policy and signed write authority are preserved.",
+        "Actual HTTP tests exercise create/update/remove and access/replay/error cases."
+      ],
+      "evidence": [
+        "docs/FEATURE-COMPLETION-20261008.md",
+        "results/reader-state-focused-2.log",
+        "results/http-reader-state.json",
+        "results/features-combined-20261008.log",
+        "results/features-runtime-demo.log"
+      ],
+      "file": "issues/31-complete-reader-account-and-library-interfaces.md"
+    },
+    {
+      "id": 32,
+      "title": "Complete managed group public profiles",
+      "status": "done",
+      "depends_on": [
+        10,
+        28
+      ],
+      "acceptance": [
+        "Administrator-only kind0 profile updates retain protected group identity.",
+        "Revocation, compare-and-set, replay and atomic private audit are exercised.",
+        "Recovered group signing identity resumes with explicitly bootstrapped local administrator."
+      ],
+      "evidence": [
+        "results/group-profile-focused-2.log",
+        "results/http-group-profile.json",
+        "results/features-combined-20261008.log",
+        "results/features-runtime-demo.log"
+      ],
+      "file": "issues/32-complete-managed-group-public-profiles.md"
+    },
+    {
+      "id": 33,
+      "title": "Make group publication retries stable",
+      "depends_on": [
+        10,
+        28,
+        32
+      ],
+      "status": "done",
+      "acceptance": [
+        "Persisted caller timestamp and fixed publication payload retain Nostr event ID.",
+        "Retry after temporary grant expiry returns committed event without new storage or audit.",
+        "Current authority, review verdict and local removal remain enforced.",
+        "Checked API index includes all wrapper routes and current feature contract links."
+      ],
+      "evidence": [
+        "results/group-retry-focused.log",
+        "results/http-group-retry.json",
+        "results/features-api-index-python.log",
+        "docs/API-INDEX.md",
+        "docs/group-publication-retries.md",
+        "results/group-retry-shared-full.log",
+        "results/group-retry-shared-release-http.log",
+        "results/group-retry-shared-demo.log"
+      ],
+      "file": "issues/33-make-group-publication-retries-stable.md"
+    },
+    {
+      "id": 34,
+      "title": "Implement optional reader enrollment",
+      "depends_on": [
+        31
+      ],
+      "status": "done",
+      "acceptance": [
+        "Disabled by default; only personal account permission granted.",
+        "Existing operator denials and mixed-version revocations cannot be undone.",
+        "Admission and signup-budget counters commit atomically with tested races.",
+        "Public policy discovery and signed metadata/library workflows verified."
+      ],
+      "evidence": [
+        "results/enrollment-final-full.log",
+        "results/enrollment-upgrade-fences.log",
+        "results/enrollment-python.log",
+        "docs/reader-enrollment.md",
+        "deliverables/checkpoint25-receipt.json"
+      ],
+      "file": "issues/34-implement-optional-reader-enrollment.md"
+    },
+    {
+      "id": 35,
+      "title": "Add approved peer WebSocket transport",
+      "depends_on": [
+        8,
+        24
+      ],
+      "status": "done",
+      "acceptance": [
+        "NIP42 and approved-peer allowlist protect a distinct read-only peer event interface.",
+        "Normal reader policy and publication/group signing authority remain unchanged.",
+        "Revocation, unauthenticated/unapproved keys and attempted writes are exercised."
+      ],
+      "evidence": [
+        "docs/requirement-evidence-matrix.md",
+        "results/peer-websocket-focused.log",
+        "results/peer-websocket-release-http.log",
+        "results/peer-websocket-tls.log",
+        "results/backend-mvp-final-full.log"
+      ],
+      "file": "issues/35-add-approved-peer-websocket-transport.md"
+    },
+    {
+      "id": 36,
+      "title": "Preserve retryable admission failures",
+      "depends_on": [
+        31,
+        34,
+        35
+      ],
+      "status": "done",
+      "acceptance": [
+        "True missing/revoked authority stays403.",
+        "Account, group and peer permission database errors return503.",
+        "Metadata transaction failures are not invalid-client400 errors.",
+        "Fresh authorization retry succeeds after service-store recovery."
+      ],
+      "evidence": [
+        "results/admission-error-focused.log",
+        "results/admission-errors.json",
+        "results/backend-mvp-final-full.log"
+      ],
+      "file": "issues/36-preserve-retryable-admission-failures.md"
+    },
+    {
+      "id": 37,
+      "title": "Save libraries locally by default",
+      "status": "implemented-model-tests",
+      "depends_on": [
+        31
+      ],
+      "acceptance": [
+        "IndexedDB local library without account or network",
+        "export/import and multi-tab revision fence",
+        "local save never publishes"
+      ]
+    },
+    {
+      "id": 38,
+      "title": "Publish browser snapshots explicitly",
+      "status": "real-backend-focused-pass",
+      "depends_on": [
+        37
+      ],
+      "acceptance": [
+        "public opt-in and pinned relay identity",
+        "external signer and durable snapshot retries",
+        "verified public recovery and no silent local overwrite"
+      ]
+    },
+    {
+      "id": 39,
+      "title": "Verify browser client end to end",
+      "status": "partial-browser-pass",
+      "depends_on": [
+        37,
+        38
+      ],
+      "acceptance": [
+        "rendered desktop/mobile browser flows",
+        "offline/reload/multi-tab behavior",
+        "package client with honest test boundaries"
+      ],
+      "evidence": [
+        "results/browser-client-dom.json",
+        "results/browser-client-all-models.log",
+        "results/browser-client-backend-final.log",
+        "results/browser-client-rendered-qa.json"
+      ],
+      "remaining": "Confirmed import restoration, real offline emulation,mobile layout and signer-extension interaction unverified; tool interrupted. Temporary public copy returned owner-only."
+    }
+  ],
+  "scope_note": "Local-first browser candidate saved. Owner-private static preview deployed.13JS/DOM/modeltests pass;actualbackend72-group gate passed. Real-browser testing needs a supported account-free route; separate public copy proposal pending. Capacity remains deferred."
+}

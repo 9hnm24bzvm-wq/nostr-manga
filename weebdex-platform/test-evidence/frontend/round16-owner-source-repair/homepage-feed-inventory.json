@@ -1,0 +1,37 @@
+{
+  "mounted_home_route": "src/routes/(app)/+page.svelte",
+  "public_carousels": [
+    {
+      "component": "MostReadCarousel",
+      "controller": "public-manga-widget-read",
+      "request": "Manga.Trending",
+      "query": "applyMangaPreferences before rank=read,time=30d; no hard-coded Safe",
+      "cache": "none across mounts; effective-query/API-origin/current-route key",
+      "privacy": "no library/password identity coupling"
+    },
+    {
+      "component": "RecentlyAddedCarousel",
+      "controller": "public-manga-widget-read",
+      "request": "Manga.Search",
+      "query": "applyMangaPreferences before sort=createdAt,limit=10",
+      "cache": "none across mounts; effective-query/API-origin/current-route key",
+      "privacy": "no library/password identity coupling"
+    }
+  ],
+  "private_carousel": {
+    "component": "MyUpdatesCarousel",
+    "already_repaired": "UI14 owner latest private context reads, no module feed cache; current mode/account/library view ownership",
+    "not_modified_in_UI16": true
+  },
+  "public_latest_updates": {
+    "components": [
+      "LatestUpdatesSection/LatestUpdatesGrid",
+      "LatestUpdatesSection/ChapterFeed"
+    ],
+    "already_repaired": "UI14 grid errors/current query and UI13 feed public scope",
+    "not_modified_in_UI16": true
+  },
+  "all_false_ratings": "existing mounted applyMangaPreferences emits sole contentRating=__none__; same shared server contract",
+  "failure_behavior": "shared truthful read errors, loading-disabled explicit Retry; no stable-error auto retry; acknowledged empty settles/hides existing optional carousel section",
+  "runtime_verified": false
+}

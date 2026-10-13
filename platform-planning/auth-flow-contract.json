@@ -1,0 +1,138 @@
+{
+  "status": "source-derived contract; installed SDK path verification pending",
+  "base": "PUBLIC_KRATOS_PUBLIC_API configured to Rust /auth facade; PUBLIC_API_URL configured /api",
+  "SDK_methods": [
+    "createBrowserLoginFlow",
+    "getLoginFlow",
+    "updateLoginFlow",
+    "createBrowserRegistrationFlow",
+    "getRegistrationFlow",
+    "updateRegistrationFlow",
+    "createBrowserRecoveryFlow",
+    "getRecoveryFlow",
+    "updateRecoveryFlow",
+    "createBrowserVerificationFlow",
+    "getVerificationFlow",
+    "updateVerificationFlow",
+    "createBrowserSettingsFlow",
+    "getSettingsFlow",
+    "updateSettingsFlow",
+    "createBrowserLogoutFlow",
+    "updateLogoutFlow",
+    "getFlowError"
+  ],
+  "flow_consumed_fields": {
+    "id": "string",
+    "return_to": "optional safe URL string",
+    "ui": {
+      "nodes": [
+        {
+          "type": "string",
+          "group": "string",
+          "attributes": {
+            "name": "string",
+            "node_type": "string",
+            "type": "optional input type",
+            "value": "string",
+            "disabled": "optional boolean",
+            "required": "optional boolean",
+            "autocomplete": "optional string"
+          },
+          "messages": [
+            {
+              "id": "number",
+              "text": "string",
+              "type": "string"
+            }
+          ],
+          "meta": {
+            "label": {
+              "id": "number",
+              "text": "string",
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "messages": [
+        {
+          "id": "number",
+          "text": "string",
+          "type": "success|info|error"
+        }
+      ]
+    }
+  },
+  "request_fields": {
+    "login": {
+      "method": "password|oidc",
+      "csrf_token": "flow-bound string",
+      "identifier": "string for password",
+      "password": "string for password",
+      "provider/link/unlink": "conditional configured OIDC string"
+    },
+    "registration": {
+      "method": "password|oidc",
+      "csrf_token": "flow-bound string",
+      "password": "string",
+      "traits": {
+        "email": "string",
+        "username": "string"
+      }
+    },
+    "recovery_and_verification": {
+      "method": "link",
+      "csrf_token": "flow-bound string",
+      "email": "string"
+    },
+    "settings": {
+      "method": "profile|password|oidc",
+      "csrf_token": "flow-bound string",
+      "traits": "profile email/username",
+      "password": "password change",
+      "link/unlink": "configured provider action"
+    },
+    "logout": "create returns logout_token, then update consumes token"
+  },
+  "response_variants": {
+    "success": "session.active true for login/registration",
+    "browser_redirect": "redirect_browser_to validated safe URL",
+    "validation": "flow.ui with node and global messages",
+    "error": "error.reason and/or error.message; session_already_available id for expected 400",
+    "expired": "410 Gone with return_to allows frontend to create a fresh flow",
+    "settings_unauthenticated": "401 Unauthorized triggers UI login redirect"
+  },
+  "required_node_names": {
+    "login": [
+      "csrf_token",
+      "identifier",
+      "password"
+    ],
+    "registration": [
+      "csrf_token",
+      "traits.email",
+      "traits.username",
+      "password"
+    ],
+    "recovery": [
+      "csrf_token",
+      "email"
+    ],
+    "verification": [
+      "csrf_token",
+      "email"
+    ],
+    "settings": [
+      "csrf_token",
+      "traits.email",
+      "traits.username",
+      "password"
+    ]
+  },
+  "security_gates": [
+    "No successful dummy authentication",
+    "CSRF session binding, redirect allowlist, flow expiry, adaptive password hash, revocable cookies, rate limits",
+    "No unconditional verification/recovery success without delivery",
+    "No advertised unconfigured OIDC provider"
+  ]
+}

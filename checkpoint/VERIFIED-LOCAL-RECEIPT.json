@@ -1,0 +1,42 @@
+{
+  "actual_builds_tests_downloads_uploads": 0,
+  "archive": "/workspace/scratch/3eafc9756ff3/local-source-checkpoints/checkpoint-final-batch-20261013T1257Z/weebdex-original-final-batch-20261013T1257Z-local.zip",
+  "archive_bytes": 210468654,
+  "archive_sha256": "1533718799dd1d4100766ceacf494a88482873509562cebefa9e8957f0a3b6d0",
+  "canonical_selected_files": 2403,
+  "canonical_source_input_files": 1574,
+  "deterministic_timestamps_and_sorted_members": true,
+  "external_input_manifest_sha256": "9b6af13c00fa0ffa90778ed72a5135eb02ace6b53b2cea5d47f0844804faab12",
+  "extracted_in_separate_temporary_directory": true,
+  "extraction_file_hash_size_mode_checks": 2409,
+  "historical392_changed": 24,
+  "historical392_matching": 363,
+  "historical392_missing": [
+    {
+      "historical_sha256": "d480aa1c6d9ef1d8e93d6cb3c9a70ab19ff94b748578dd018b9a541e6a8377fb",
+      "path": "server/diagnostics/managed-group-key-storage-check.rs.txt"
+    },
+    {
+      "historical_sha256": "c95e4775edc775bb964a76574954ca20f12d2af05577224c51251b5e44efe43c",
+      "path": "server/diagnostics/rebuild-oct8/README.md"
+    },
+    {
+      "historical_sha256": "d7db9b451566f4685d29123be095fd1d2d37950a5c854b6d29edf0a5ce46c3b4",
+      "path": "server/diagnostics/rebuild-oct8/library_ref_index.rs"
+    },
+    {
+      "historical_sha256": "65c2d4ae27b79f91078cc6b64b315c120ecb43d245c37f8855d396496635447e",
+      "path": "server/diagnostics/rebuild-oct8/reclamation_reference_index.rs"
+    },
+    {
+      "historical_sha256": "ddd1c9aafe809d7976e67bfbf99ee8823326e206b6841c24cabee61339246f76",
+      "path": "server/diagnostics/rebuild-oct8/retention_index.rs"
+    }
+  ],
+  "independent_external_canonical_input_gate": true,
+  "not_external_backup": true,
+  "status": "local-atomic-archive-extracted-and-independently-verified",
+  "zip_crc_checked": true,
+  "zip_members": 2410,
+  "zip_store": true
+}

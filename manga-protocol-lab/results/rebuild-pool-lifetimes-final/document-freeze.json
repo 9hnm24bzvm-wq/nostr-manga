@@ -1,0 +1,54 @@
+{
+  "frozen_utc": "2026-10-12T02:10:12.095307+00:00",
+  "status": "frozen",
+  "source_node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+  "source_inputs": 392,
+  "documents": {
+    "docs/rebuild/STATUS.md": {
+      "sha256": "2dcf24b8f996d53c9c60a1ad4a34a1ed4f77828657bd44b94893b5fcc8e316c6",
+      "bytes": 71448,
+      "words": 6434,
+      "links_checked": 106,
+      "missing": []
+    },
+    "docs/rebuild/PARITY-COMPLETION-REPORT-2026-10-12-POOL-LIFETIMES.md": {
+      "sha256": "088f2e449d1ca887992de9d18be0ec1fc1340d57e70ee0322ce3b28e38def467",
+      "bytes": 13411,
+      "words": 1550,
+      "links_checked": 21,
+      "missing": []
+    },
+    "docs/rebuild/ARCHITECTURE.md": {
+      "sha256": "3b40d512d1dbfaa7c88681b11377dd99b80fd48dd7d61cbe39e519a1257e0ed5",
+      "bytes": 18255,
+      "words": 2091,
+      "links_checked": 57,
+      "missing": []
+    },
+    "docs/rebuild/PARITY-REQUIREMENTS.md": {
+      "sha256": "f16a74567bcb1a5174fa597ac9fd5b92ddf2a32662ab1a19d053bac656a781b8",
+      "bytes": 8102,
+      "words": 949,
+      "links_checked": 2,
+      "missing": []
+    },
+    "docs/rebuild/NATIVE-BROWSER-QUALIFICATION.md": {
+      "sha256": "c25df8ed250d418e17c4e85eeaeb3f18c4133a842d8a366056d896d781bc1603",
+      "bytes": 6255,
+      "words": 748,
+      "links_checked": 0,
+      "missing": []
+    },
+    "docs/rebuild/FEATURE-COVERAGE.md": {
+      "sha256": "17e88e2ebbefae24a767301ab04b86443121729445eca5954040d6b069ef0682",
+      "bytes": 36722,
+      "words": 4218,
+      "links_checked": 11,
+      "missing": []
+    }
+  },
+  "history_tail_sha256": "bcdcc3fc72f2090af8a6cd86765c194138b1cc5de5b9a82dbab6049425021e59",
+  "earlier_reports_unchanged": true,
+  "scope": "New full gate, latest historical phase FAIL and helper qualification; no 4c499 mixed load or matching recovery delivery at freeze; large native approval remains pending",
+  "issues": []
+}

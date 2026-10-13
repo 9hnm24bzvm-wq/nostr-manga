@@ -1,0 +1,353 @@
+{
+  "checked_utc": "2026-10-12T21:01:17.399121+00:00",
+  "scope": "Minimal restored-build CLI and published-module smoke, not a full gate or running application service",
+  "inputs": {
+    "expected": 392,
+    "matched": 387,
+    "missing": [
+      "server/diagnostics/managed-group-key-storage-check.rs.txt",
+      "server/diagnostics/rebuild-oct8/README.md",
+      "server/diagnostics/rebuild-oct8/library_ref_index.rs",
+      "server/diagnostics/rebuild-oct8/reclamation_reference_index.rs",
+      "server/diagnostics/rebuild-oct8/retention_index.rs"
+    ],
+    "mismatched": []
+  },
+  "commands": [
+    {
+      "name": "node-no-args",
+      "command": [
+        "build-artifacts/linux-x86_64/manga-node"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "node-no-args.log"
+    },
+    {
+      "name": "node-help-unsupported",
+      "command": [
+        "build-artifacts/linux-x86_64/manga-node",
+        "--help"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "node-help-unsupported.log"
+    },
+    {
+      "name": "keytool-no-args",
+      "command": [
+        "build-artifacts/linux-x86_64/manga-key-tool"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "keytool-no-args.log"
+    },
+    {
+      "name": "keytool-help-unsupported",
+      "command": [
+        "build-artifacts/linux-x86_64/manga-key-tool",
+        "--help"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "keytool-help-unsupported.log"
+    },
+    {
+      "name": "demo-public-fixture-keys",
+      "command": [
+        "build-artifacts/linux-x86_64/manga-demo",
+        "--fixture-public-keys"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "demo-public-fixture-keys.log"
+    },
+    {
+      "name": "browser-published-codec",
+      "command": [
+        "node",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-4c499-smoke-20261012/browser-codec-smoke.mjs"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "browser-published-codec.log"
+    },
+    {
+      "name": "local-migration-help",
+      "command": [
+        "python3",
+        "-m",
+        "src.local_library_migration",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "local-migration-help.log"
+    },
+    {
+      "name": "mangadex-migration-help",
+      "command": [
+        "python3",
+        "-m",
+        "src.mangadex_migration",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "mangadex-migration-help.log"
+    },
+    {
+      "name": "postgres-migration-help",
+      "command": [
+        "python3",
+        "-m",
+        "src.postgres_migration",
+        "--help"
+      ],
+      "exit": 1,
+      "expected_exit": 0,
+      "expected_output_present": false,
+      "passed": false,
+      "log": "postgres-migration-help.log"
+    },
+    {
+      "name": "postgres-backup-help",
+      "command": [
+        "python3",
+        "-m",
+        "src.postgres_backup",
+        "--help"
+      ],
+      "exit": 1,
+      "expected_exit": 0,
+      "expected_output_present": false,
+      "passed": false,
+      "log": "postgres-backup-help.log"
+    },
+    {
+      "name": "serving-supervisor-help",
+      "command": [
+        "python3",
+        "-m",
+        "src.serving_supervisor",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "serving-supervisor-help.log"
+    },
+    {
+      "name": "package-cli-help",
+      "command": [
+        "python3",
+        "scripts/package.py",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "package-cli-help.log"
+    },
+    {
+      "name": "api-index-cli-help",
+      "command": [
+        "python3",
+        "scripts/api_index.py",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "expected_output_present": true,
+      "passed": true,
+      "log": "api-index-cli-help.log"
+    }
+  ],
+  "python_packages": {
+    "aiohttp": {
+      "required": "3.13.5",
+      "installed": "3.14.4",
+      "exact_match": false
+    },
+    "cbor2": {
+      "required": "5.6.5",
+      "installed": null,
+      "exact_match": false
+    },
+    "coincurve": {
+      "required": "21.0.0",
+      "installed": null,
+      "exact_match": false
+    },
+    "Pillow": {
+      "required": "12.3.0",
+      "installed": "12.3.0",
+      "exact_match": true
+    },
+    "black": {
+      "required": "25.1.0",
+      "installed": null,
+      "exact_match": false
+    }
+  },
+  "tool_paths": {
+    "python3": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "node": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "npm": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/npm",
+    "cargo": null,
+    "rustc": null,
+    "rustup": null,
+    "psql": null,
+    "pg_ctl": null,
+    "initdb": null,
+    "strfry": null,
+    "nginx": null,
+    "git": "/usr/local/bin/git",
+    "make": "/usr/bin/make",
+    "g++": "/usr/bin/g++",
+    "cmake": null,
+    "pkg-config": "/usr/bin/pkg-config",
+    "bison": null,
+    "flex": null,
+    "m4": null
+  },
+  "platform": {
+    "machine": "x86_64",
+    "libc": [
+      "glibc",
+      "2.41"
+    ]
+  },
+  "published_browser": {
+    "build": "e4f4862bd75c26bb",
+    "cached_assets": 56,
+    "missing_assets": [],
+    "module_smoke_only": true
+  },
+  "artifact_hashes": {
+    "build-artifacts/linux-x86_64/manga-demo": "803af60b4c19db3f8c5dbcd3110e120ad58ea142f96a05e25cb5b5cc10195e2d",
+    "build-artifacts/linux-x86_64/manga-node": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+    "build-artifacts/linux-x86_64/manga-key-tool": "226d370a807fd78f6718b3937cf897389648280006c478d1e1ed91ccdb69ace5"
+  },
+  "source_changes_by_smoke": [],
+  "host_versions": {
+    "python": {
+      "exit": 0,
+      "stdout": "Python 3.12.14",
+      "stderr": ""
+    },
+    "node": {
+      "exit": 0,
+      "stdout": "v24.19.0",
+      "stderr": ""
+    },
+    "npm": {
+      "exit": 0,
+      "stdout": "11.9.0",
+      "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm."
+    },
+    "g++": {
+      "exit": 0,
+      "stdout": "g++ (Debian 14.2.0-19) 14.2.0",
+      "stderr": ""
+    },
+    "openssl": {
+      "exit": 0,
+      "stdout": "3.5.7"
+    },
+    "zlib": {
+      "exit": 0,
+      "stdout": "1.3.1"
+    },
+    "libpcre2-8": {
+      "exit": 0,
+      "stdout": "10.46"
+    }
+  },
+  "elf_and_runtime_libraries": {
+    "all_x86_64_elf": true,
+    "all_shared_dependencies_resolved": true,
+    "executable_modes": {
+      "manga-demo": "0o755",
+      "manga-node": "0o755",
+      "manga-key-tool": "0o755"
+    },
+    "log": "elf-and-runtime-libraries.log"
+  },
+  "project_dependency_paths": {
+    "vendor": false,
+    "browser-client/node_modules": false,
+    ".build-release": false,
+    "prototype/target": false
+  },
+  "checkpoint_exclusions": "Large30k/500k native action approval remains pending. Unaccepted fast PostgreSQL sampler, owned fixture supervisor, new launch wiring and their unaccepted result trees are deliberately excluded; later helper acceptance is separate.",
+  "restored_bench_files": [
+    "MIXED.md",
+    "README.md",
+    "analyze_profile.py",
+    "check_results.py",
+    "diagnostic_observer.py",
+    "disk_guard.py",
+    "fixture.sh",
+    "fixture_config.py",
+    "gate.py",
+    "image_shards.py",
+    "load-control-fixture.sh",
+    "load-fixture.sh",
+    "load.py",
+    "mixed-fixture.sh",
+    "mixed.py",
+    "mixed_metrics.py",
+    "pg_diagnostics.py",
+    "process_metrics.py",
+    "run.py",
+    "scheduler_probe.py",
+    "test-pg-diagnostics.sh",
+    "test_compact.py",
+    "test_diagnostic_observer.py",
+    "test_diagnostic_process.py",
+    "test_disk_guard.py",
+    "test_head_verification.py",
+    "test_image_shards.py",
+    "test_mixed.py",
+    "test_mixed_fixture_config.py",
+    "test_mixed_reads.py",
+    "test_pg_diagnostics.py",
+    "test_process_metrics.py",
+    "test_scheduler_probe.py",
+    "test_wire_security.py",
+    "verify_heads.py",
+    "versions"
+  ],
+  "resource_observation": {
+    "utc": "2026-10-12T21:02:46.720964+00:00",
+    "free_bytes": 31656513536,
+    "mem_available_kib": 8783088,
+    "scope": "Fresh global observation for bootstrap planning; no attribution or reserved resources"
+  },
+  "historical_acceptance_evidence": {
+    "receipt_sha256": "656aa030c83f239bde726813cefb6f6c49ffe9d3cd55e18ca1be38f9779cd6d5",
+    "referenced_files": 11,
+    "missing": [],
+    "mismatched": [],
+    "meaning": "Recovered prior gate evidence; no full gate executed after this reset"
+  }
+}

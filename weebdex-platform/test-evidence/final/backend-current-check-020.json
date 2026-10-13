@@ -1,0 +1,49 @@
+{
+  "UTC": "2026-10-13T12:12:27.455165+00:00",
+  "updated_utc": "2026-10-13T12:14:33.895019+00:00",
+  "verification": "cargo check --offline --all-targets; type-check only. Separate no-run codegen and normal/example build receipts attached.",
+  "compiled": true,
+  "test_codegen_completed": true,
+  "runtime_executed": false,
+  "result_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/cargo-check-fixture-repair-001-result.json",
+  "result_sha256": "93cc420014f6b40ad71b727803ebd594ef6989391b2ed160549e87919ef88883",
+  "candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6",
+  "current_check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/cargo-check-fixture-repair-001-result.json",
+    "sha256": "93cc420014f6b40ad71b727803ebd594ef6989391b2ed160549e87919ef88883",
+    "status": "passed",
+    "source_candidate_sha256": "2ad64f53953f9dd78b5c9203ad64840989e5f429e15aa64eb89580abd77eaae6",
+    "completed_utc": "2026-10-13T12:12:27.455165+00:00"
+  },
+  "normal_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "e12349fe5f861b742b8915d3aa6265c5cd2d7fd232d4b12568492f04d46bbf33",
+    "bytes": 75368184,
+    "executed": false,
+    "compiled_current_source": true,
+    "receipt": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-build-normal-006-result.json"
+  },
+  "example_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "sha256": "639d83407e2b7e72b3b1d3a21a254c5416f1d5910f10d40c321183db413f5f8f",
+    "bytes": 58565240,
+    "executed": false,
+    "compiled_current_source": true,
+    "receipt": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-020/cargo-build-fixture-006-result.json"
+  },
+  "test_codegen": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-019/cargo-codegen-cover-001-result.json",
+    "sha256": "55bec702c2433d00adb51706526da56596bc436aa449070e4639fa4ebd2e1724",
+    "status": "passed",
+    "completed_utc": "2026-10-13T10:09:17.176310+00:00",
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92"
+  },
+  "warnings": [
+    "Unused generated GIF fixture helper in protocol_bridge_http.rs:352; unsuppressed; test source compiles and is not executed."
+  ],
+  "source_manifest": "test-evidence/final/backend-source-manifest-020.json",
+  "runtime_gate": "E2E phase opened. Repaired combined fixture awaits scoped startup review. First launch failed before signed seed/browser; no source acceptance claimed. System suites follow E2E.",
+  "historical_index": "backend-current-check-019.json",
+  "defensive_auth_guard_refactor": "Prior GET/client already denied recovery via require_principal and bearers via route guard; shared helper consolidation has no substantiated prior bypass.",
+  "production_inputs_identical_since_candidate019": true
+}

@@ -1,0 +1,536 @@
+[
+  {
+    "executable": "account_heads.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "backend_library_batch.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "backend_projection_independence.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "blob_receipts.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "capacity.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "cleanup_scan_budget.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "credit_lanes.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "endpoint_dns.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "enrollment_fences.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "group_fences.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_accounts.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_admission_errors.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_backend.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_blossom.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_browser_client.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_capabilities.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_catalogue.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_discovery.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_download_lifecycle.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_enrollment.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_group_profile.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_group_retry.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_groups.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_inventory.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_library_client.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_library_gc_crash.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_live_dispatch.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_migration.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_mixed_downloads.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_moderation.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_node.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_peer_transient.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_peer_websocket.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_peers.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_pool_lifetimes.rs",
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_public_serving.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_publication.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_publishers.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_read_admission_diagnostics.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_read_classes.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_read_ownership.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_reader_state.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_real_images.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_relay.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_remembered_identity.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_service_announcements.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_service_proof.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_staged_delete.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_submission_review.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_sync_jobs.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_sync_skips.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_tls_proxy.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_upload.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "http_upload_admission.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_client_negative.rs",
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_head_snapshot.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_history_budget.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_history_worker.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_prepared_references.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_read_isolation.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_reclamation.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_roots.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_staging.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "library_validation_reuse.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "ordinary_deletion.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "peer_relocation_fences.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "postgres_foundation.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "public_export_health.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "public_export_holds.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "public_export_positive.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "public_export_queue.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "publication_fences.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "publication_reclamation.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "read_admission_lifecycle.rs",
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "reclamation_parallelism.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "reclamation_refund_contention.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "relay_dispatch_lifecycle.rs",
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "relay_queries.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "relay_source_ownership.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "serving_process.rs",
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "staging_reclamation.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "storage_fairness.rs",
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "storage_health_lifecycle.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "storage_lifecycle.rs",
+    "passed": 7,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "submission_review_fences.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "sync_queue.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "sync_schedules.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "sync_skips.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "executable": "upload_recovery.rs",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  }
+]

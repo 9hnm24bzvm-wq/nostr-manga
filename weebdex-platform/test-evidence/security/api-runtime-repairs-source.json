@@ -1,0 +1,71 @@
+{
+  "created_utc": "2026-10-13T12:41:49.986981+00:00",
+  "status": "source_reviewed_compiled_affected_runtime_passed",
+  "candidate_sha256": "8c49013586f460260074cb2d92435b826412ab9e1604100d8b8f88e3d62d4cb6",
+  "production_diff": "Narrow Report.Search status vocabulary supplied to shared bounded parser; default manga vocabulary remains unchanged. No schema or authority change.",
+  "test_diff": "Upload media saturation expects actual429; signed source drain uploads to actual original /upload/{hash}. Added bounded24real-PNG/twochapter/attributedcover Ubunchu local HTTP acceptance with pinned notices; no assets copied into source or external archives.",
+  "source_hashes": {
+    "backend/src/domains/catalog/query.rs": "2c8f14d8728af6158223f8de1faa7b2d60d53b53bc2020a846a40f867153bd22",
+    "backend/src/domains/moderation/mod.rs": "81da9ea523f8c8b75a06b398598f765d83864117777fa801ada2e814ad8f3346",
+    "backend/tests/community_http.rs": "078e0bfd17806c3b1dbf33aff3b731c834795aab4504a856b519962234b06c42",
+    "backend/tests/protocol_bridge_http.rs": "40e3fa63864e68efe6a3a4f734a8c7bbf172b4643c368f7c98454cf9aa8f8dee",
+    "backend/tests/upload_http.rs": "f1d43510e3236a5bff9c0080d696def6ce11a7698938290bca83be7af5520957"
+  },
+  "prior_runtime_counts": {
+    "candidate021_executed": 13,
+    "passed": 10,
+    "failed": 3,
+    "ignored": 0
+  },
+  "current_runtime_cases_expected": 14,
+  "browser_executed": false,
+  "Ubunchu_images_external_publication": false,
+  "private_raw_failure_logs": "results/http-end-to-end-001/ and002/ retain exact failed receipts; review/redact raw logs before sharing.",
+  "current_source_candidate": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/candidate-source.json",
+    "sha256": "d94878d178e3b614d72c9ca3ac7f2cf66ea48426d19e0f4ea91ec0870b2bcf37",
+    "bytes": 81311
+  },
+  "http_pg_current_results": {
+    "distinct_cases": 14,
+    "passed": 14,
+    "failed": 0,
+    "ignored": 0,
+    "groups": {
+      "auth": 3,
+      "catalog": 1,
+      "library": 1,
+      "community_moderation_analytics": 1,
+      "uploads": 7,
+      "protocol_bridge": 1
+    },
+    "production_revision": 22,
+    "bridge_test_only_revision": 23,
+    "receipts": [
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003",
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/protocol-bridge-http-003-result.json"
+    ],
+    "licensed_real_images": {
+      "manifest": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/tests/fixtures/ubunchu-manifest.json",
+        "sha256": "279dff36348bfef4b60b2923c33b82de80c4ee812756eb53567be4ac64afeb92",
+        "bytes": 25509
+      },
+      "original_pngs_uploaded_and_served": 24,
+      "cover_original_uploaded_and_served": 1,
+      "chapter_sessions": 2,
+      "attribution_preserved": true,
+      "no_external_publication": true
+    }
+  },
+  "independent_review": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/security/api-runtime-repair-review.md",
+    "sha256": "e894d9e0fba87053693737d7e27a6dd52eec000315a29fade6d4d0bc7afbb17c",
+    "bytes": 4271
+  },
+  "signed_fixture_review": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/security/signed-fixture-freshness-independent-review.md",
+    "sha256": "7a78e8644a91d0ef60316ee1531b827f29a5933e375a738059c613159011e4ad",
+    "bytes": 3961
+  }
+}

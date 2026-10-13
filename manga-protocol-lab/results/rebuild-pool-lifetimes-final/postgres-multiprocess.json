@@ -1,0 +1,19 @@
+{
+  "scope": "Separate Rust processes against a real ephemeral PostgreSQL database.",
+  "writer_processes": 12,
+  "unique_event_inserts": 1,
+  "worker_processes": 4,
+  "unique_jobs_completed": 32,
+  "jobs_per_process": [
+    8,
+    8,
+    8,
+    8
+  ],
+  "postgresql_immediate_stop_and_restart": {
+    "outage_failed_closed": true,
+    "pool_recovered": true
+  },
+  "fresh_process_read_after_recovery": true,
+  "not_claimed": "No full manga API, strfry projection, blob admission or target-scale capacity validation."
+}

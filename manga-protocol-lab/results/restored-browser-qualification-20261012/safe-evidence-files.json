@@ -1,0 +1,25 @@
+{
+  "status": "source-only-unexecuted",
+  "files": [
+    "BROWSER-PLAN.md",
+    "PLAN.md",
+    "fixture-controller.py",
+    "owned-processes.py",
+    "fixture-parent.html",
+    "fixture-bridge.js",
+    "synthetic-inputs.py",
+    "source-seams.py",
+    "browser_evidence.py",
+    "test_browser_evidence_cli.py",
+    "safe-evidence-files.json",
+    "source.sha256",
+    "SOURCE-FREEZE-003.json",
+    "UNEXECUTED-STATUS.md"
+  ],
+  "exclude": [
+    "all .runtime-final contents, including runtime status/setup until separately reviewed",
+    "all private keys, passwords, credentials, runtime databases and private process logs",
+    "all unreviewed future output, screenshots and browser downloads"
+  ],
+  "boundary": "New helper source contains no key literals; no runtime or test execution is claimed. Prior excluded native fixture controllers were not restored."
+}

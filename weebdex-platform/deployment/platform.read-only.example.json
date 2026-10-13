@@ -1,0 +1,28 @@
+{
+  "production": true,
+  "protocol_read_only": true,
+  "bind": "127.0.0.1:8080",
+  "trusted_proxy_peers": ["127.0.0.1"],
+  "trusted_proxy_hops": 1,
+  "public_origin": "https://weebdex.example.invalid",
+  "protocol_origin": "https://weebdex.example.invalid",
+  "protocol_origin_self_hosted": true,
+  "ui_dir": "/opt/weebdex/weebdex-platform/artifacts/frontend",
+  "uploads_dir": "/var/lib/weebdex/native-uploads",
+  "database_connections": 8,
+  "database_wait_ms": 500,
+  "database_plaintext_local": false,
+  "maximum_requests": 32,
+  "maximum_json_bytes": 1048576,
+  "cache_bytes": 16777216,
+  "json_body_timeout_seconds": 30,
+  "upload_body_timeout_seconds": 180,
+  "shutdown_grace_seconds": 210,
+  "registration_enabled": false,
+  "auth_mail": {
+    "endpoint": "https://mail-provider.example.invalid/send",
+    "from": "noreply@example.invalid",
+    "bearer_token_env": "WEEBDEX_MAIL_TOKEN",
+    "allow_loopback_test_sink": false
+  }
+}

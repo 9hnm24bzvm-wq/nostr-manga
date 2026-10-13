@@ -1,0 +1,401 @@
+{
+  "scope": "Live isolated Rust native HTTP checks; combined mode additionally observes genuine original projection and importer mappings; excludes public deployment/browser behavior",
+  "fixture_only": true,
+  "production": false,
+  "binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "e12349fe5f861b742b8915d3aa6265c5cd2d7fd232d4b12568492f04d46bbf33"
+  },
+  "frontend_index_sha256": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+  "protocol_fixture": {
+    "catalog_namespace": "abaa188f-5da7-4455-95ca-8c49907c9687",
+    "chapters": [
+      {
+        "canonical_kind": 1001,
+        "chapter": 1,
+        "event_id": "a1a9e12c6d15da42a3b48a7881459059904e446540a63891694193283f2cd1f7",
+        "mapped": true,
+        "native_id": "IMibUbanUv",
+        "projected": true,
+        "visible": true
+      },
+      {
+        "canonical_kind": 1001,
+        "chapter": 2,
+        "event_id": "65afb8e9969ad13257e739421482a4bc9b7384b78f31977de85ce0d1b554e0b4",
+        "mapped": true,
+        "native_id": "XLCrOzaUaW",
+        "projected": true,
+        "visible": true
+      }
+    ],
+    "fixture_only": true,
+    "fully_ready": true,
+    "series": {
+      "canonical_kind": 1002,
+      "chapter": null,
+      "event_id": "d9625ee70cb9ab9f5aae646328aec4a5bb5707cd3ec85275eeace9445509deec",
+      "mapped": true,
+      "native_id": "gF8vNQGp94",
+      "projected": true,
+      "visible": true
+    }
+  },
+  "checks": [
+    {
+      "name": "probe /livez",
+      "method": "GET",
+      "path": "/livez",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 18,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "probe /readyz",
+      "method": "GET",
+      "path": "/readyz",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 113,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "probe /healthz",
+      "method": "GET",
+      "path": "/healthz",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 66,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "probe /api/health",
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 66,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "client deep link /",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1798,
+      "cache_control": null,
+      "content_type": "text/html"
+    },
+    {
+      "name": "client deep link /library",
+      "method": "GET",
+      "path": "/library",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1798,
+      "cache_control": null,
+      "content_type": "text/html"
+    },
+    {
+      "name": "client deep link /auth/login",
+      "method": "GET",
+      "path": "/auth/login",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1798,
+      "cache_control": "no-store",
+      "content_type": "text/html"
+    },
+    {
+      "name": "client deep link /auth/register",
+      "method": "GET",
+      "path": "/auth/register",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1798,
+      "cache_control": "no-store",
+      "content_type": "text/html"
+    },
+    {
+      "name": "client deep link /auth/recovery",
+      "method": "GET",
+      "path": "/auth/recovery",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1798,
+      "cache_control": "no-store",
+      "content_type": "text/html"
+    },
+    {
+      "name": "client deep link /auth/verification",
+      "method": "GET",
+      "path": "/auth/verification",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1798,
+      "cache_control": "no-store",
+      "content_type": "text/html"
+    },
+    {
+      "name": "client deep link /auth/error",
+      "method": "GET",
+      "path": "/auth/error",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1798,
+      "cache_control": "no-store",
+      "content_type": "text/html"
+    },
+    {
+      "name": "reserved/missing /api/nonexistent",
+      "method": "GET",
+      "path": "/api/nonexistent",
+      "status": 404,
+      "expected_status": 404,
+      "passed": true,
+      "bytes": 51,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "reserved/missing /_app/nonexistent.js",
+      "method": "GET",
+      "path": "/_app/nonexistent.js",
+      "status": 404,
+      "expected_status": 404,
+      "passed": true,
+      "bytes": 0,
+      "cache_control": null,
+      "content_type": null
+    },
+    {
+      "name": "reserved/missing /fonts/nonexistent",
+      "method": "GET",
+      "path": "/fonts/nonexistent",
+      "status": 404,
+      "expected_status": 404,
+      "passed": true,
+      "bytes": 0,
+      "cache_control": null,
+      "content_type": null
+    },
+    {
+      "name": "reserved/missing /templates/index.html",
+      "method": "GET",
+      "path": "/templates/index.html",
+      "status": 404,
+      "expected_status": 404,
+      "passed": true,
+      "bytes": 46,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "reserved/missing /data/Unknown000/Unknown001.png",
+      "method": "GET",
+      "path": "/data/Unknown000/Unknown001.png",
+      "status": 404,
+      "expected_status": 404,
+      "passed": true,
+      "bytes": 53,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "malformed media name",
+      "method": "GET",
+      "path": "/data/Unknown000/unknown.png",
+      "status": 400,
+      "expected_status": 400,
+      "passed": true,
+      "bytes": 55,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "POST-only auth flow rejects GET",
+      "method": "GET",
+      "path": "/auth/self-service/nonexistent",
+      "status": 405,
+      "expected_status": 405,
+      "passed": true,
+      "bytes": 0,
+      "cache_control": "no-store",
+      "content_type": null
+    },
+    {
+      "name": "unknown browser flow",
+      "method": "GET",
+      "path": "/auth/self-service/nonexistent/browser",
+      "status": 404,
+      "expected_status": 404,
+      "passed": true,
+      "bytes": 104,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "cross-origin rejection",
+      "method": "GET",
+      "path": "/api/manga",
+      "status": 403,
+      "expected_status": 403,
+      "passed": true,
+      "bytes": 76,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "null-origin rejection",
+      "method": "GET",
+      "path": "/api/manga",
+      "status": 403,
+      "expected_status": 403,
+      "passed": true,
+      "bytes": 61,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "same-origin preflight",
+      "method": "OPTIONS",
+      "path": "/api/manga",
+      "status": 204,
+      "expected_status": 204,
+      "passed": true,
+      "bytes": 0,
+      "cache_control": "no-store",
+      "content_type": null
+    },
+    {
+      "name": "unsupported preflight",
+      "method": "OPTIONS",
+      "path": "/api/manga",
+      "status": 403,
+      "expected_status": 403,
+      "passed": true,
+      "bytes": 71,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "bounded oversized JSON",
+      "method": "POST",
+      "path": "/api/manga",
+      "status": 413,
+      "expected_status": 413,
+      "passed": true,
+      "bytes": 72,
+      "cache_control": "no-store",
+      "content_type": "application/json"
+    },
+    {
+      "name": "real reader original",
+      "method": "GET",
+      "path": "/data/SeedChapt1/SeedPg1001.png",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 17947,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/png"
+    },
+    {
+      "name": "reader single range",
+      "method": "GET",
+      "path": "/data/SeedChapt1/SeedPg1001.png",
+      "status": 206,
+      "expected_status": 206,
+      "passed": true,
+      "bytes": 4,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/png"
+    },
+    {
+      "name": "reader invalid range",
+      "method": "GET",
+      "path": "/data/SeedChapt1/SeedPg1001.png",
+      "status": 416,
+      "expected_status": 416,
+      "passed": true,
+      "bytes": 0,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/png"
+    },
+    {
+      "name": "reader head",
+      "method": "HEAD",
+      "path": "/data/SeedChapt1/SeedPg1001.png",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 0,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/png"
+    },
+    {
+      "name": "reader conditional ETag",
+      "method": "GET",
+      "path": "/data/SeedChapt1/SeedPg1001.png",
+      "status": 304,
+      "expected_status": 304,
+      "passed": true,
+      "bytes": 0,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/png"
+    },
+    {
+      "name": "genuine optimized page",
+      "method": "GET",
+      "path": "/data/SeedChapt1/FastPg1001.jpg",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 12953,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/jpeg"
+    },
+    {
+      "name": "genuine cover WebP 256",
+      "method": "GET",
+      "path": "/covers/SeedManga1/SeedCover1.256.webp",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 542,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/webp"
+    },
+    {
+      "name": "genuine cover WebP 512",
+      "method": "GET",
+      "path": "/covers/SeedManga1/SeedCover1.512.webp",
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "bytes": 1182,
+      "cache_control": "no-cache, must-revalidate",
+      "content_type": "image/webp"
+    }
+  ],
+  "passed": 32,
+  "failed": 0,
+  "credentials_or_mail_tokens_recorded": false
+}

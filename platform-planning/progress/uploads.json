@@ -1,0 +1,209 @@
+{
+  "owner": "implement_weebdex_upload_reader",
+  "tickets": [
+    "WD-008",
+    "WD-009",
+    "WD-010"
+  ],
+  "updated_utc": "2026-10-13T01:56:00Z",
+  "implementation": "source-written; integration and compiler verification pending",
+  "compiled": "first session/storage/media pass compiled as part of integrated cargo check at2026-10-13T01:54:04Z; GIF/proxy/deadline additions pending recompilation",
+  "tests": "not run",
+  "UI_tests": "not run",
+  "operations": [
+    {
+      "operation": "Chapter.Update",
+      "method": "PUT",
+      "path": "/chapter/${id}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "Chapter.Claim",
+      "method": "POST",
+      "path": "/chapter/${id}/claim",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "Chapter.Delete",
+      "method": "DELETE",
+      "path": "/chapter/${id}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "Cover.Get",
+      "method": "GET",
+      "path": "/cover/${id}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "Cover.Upload",
+      "method": "POST",
+      "path": "/cover/${mangaId}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "Cover.Update",
+      "method": "PUT",
+      "path": "/cover/${id}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "Cover.Delete",
+      "method": "DELETE",
+      "path": "/cover/${id}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.Get",
+      "method": "GET",
+      "path": "/upload",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.Begin",
+      "method": "POST",
+      "path": "/upload/begin",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.BeginEdit",
+      "method": "POST",
+      "path": "/upload/begin/${chapterId}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.Delete",
+      "method": "DELETE",
+      "path": "/upload/${id}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.Commit",
+      "method": "POST",
+      "path": "/upload/${id}/commit",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.DeleteFile",
+      "method": "DELETE",
+      "path": "/upload/${sessionId}/${fileId}",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.DeleteFiles",
+      "method": "DELETE",
+      "path": "/upload/${sessionId}/batch",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    },
+    {
+      "operation": "UploadSession.CheckApprovalRequired",
+      "method": "POST",
+      "path": "/upload/check-approval-required",
+      "source_implemented": true,
+      "compiled": "initial implementation compiled; final additions pending recompilation",
+      "API_tested": "not run",
+      "UI_tested": "not run"
+    }
+  ],
+  "additional_routes": [
+    "POST /upload/{session}: repeated multipart file fields",
+    "GET/HEAD /data/{chapter}/{name}",
+    "GET/HEAD /uploads/{name}",
+    "GET/HEAD /covers/{manga}/{name}",
+    "GET/HEAD /proxy?image=encoded: bounded validated discussion-image proxy",
+    "GET/HEAD /og-image/{manga|chapter|group}/{id}: authorized bounded local SVG previews"
+  ],
+  "migrations": [
+    "0020_upload_sessions.sql",
+    "0021_upload_objects.sql",
+    "0022_chapter_media.sql",
+    "0023_chapter_derivatives.sql"
+  ],
+  "budgets": {
+    "file_bytes": 33554432,
+    "session_bytes": 524288000,
+    "session_files": 500,
+    "request_files": 5,
+    "image_pixels": 20000000,
+    "decode_bytes": 100663296,
+    "decode_workers": 2,
+    "multipart_body_bytes": 100663296,
+    "GIF_frames": 100,
+    "GIF_aggregate_pixels": 20000000,
+    "proxy_bytes": 8388608,
+    "proxy_deadline_seconds": 20,
+    "proxy_workers": 4,
+    "file_upload_stream_deadline_seconds": 120,
+    "multipart_next_field_deadline_seconds": 30
+  },
+  "protocol_source_modified": false,
+  "protocol_publication": "New native uploads use original canonical publication runtime when explicitly configured and authorized; disabled runtime returns instance-local; signed source immutable, instance annotations separate",
+  "limitations": [
+    "500 MiB/session,32 MiB/file and20Mpixel bounds may reject input accepted by frontend",
+    "Cover original and256/512lossless WebP generated at upload, no per-read transforms",
+    "Approval check reflects local chapter.create grant, no unimplemented moderation queue advertised",
+    "No independent cleanup worker: startup recover_storage plus ordinary upload mutations retry durable pending-key/media cleanup",
+    "Public image proxy source is implemented, security regressions defined, actual public-network/redirect fetch tests not run",
+    "Protocol imported covers 256/512 and source-linked derivative media integration remain bridge-owner acceptance items until frozen source evidence confirms them"
+  ],
+  "tests_defined": [
+    "file ID source guard",
+    "safe fixed-width object paths",
+    "image dimension overflow/budgets",
+    "genuine decode and truncated header rejection",
+    "uncommitted file drop cleanup",
+    "exact page_order set validation",
+    "source language variants",
+    "single HTTP range/ETag/conditional/HEAD",
+    "stream and cancellation release owned admission/request permits",
+    "durable non-sensitive pending-key journal protects uncertain COMMIT; advisory-lock recovery verifies object row before unlink",
+    "GIF genuine all-frame decoder and aggregate budgets",
+    "public proxy destination private/metadata/transition/DNS policy and URL credential/port rejection",
+    "proxy temporary-data interruption cleanup"
+  ],
+  "audit_source_update_utc": "2026-10-13T02:44:03.202157+00:00",
+  "audit_source_status": "New upload GET contract, critical script overlays, complete real instance derivatives and explicitly configured original signed-publication hook implemented; final compile/API/UI gates remain separate",
+  "derivatives": "Real smaller static JPEG/WebP, full ordered set only; unsupported animation has no optimized capability, exact originals retained"
+}

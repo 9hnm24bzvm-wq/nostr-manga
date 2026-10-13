@@ -1,0 +1,3643 @@
+{
+  "source_changed": false,
+  "command": "node scripts/build-frontend.mjs",
+  "environment": {
+    "PUBLIC_SITE_NAME": "WeebDex",
+    "PUBLIC_API_URL": "/api",
+    "PUBLIC_KRATOS_PUBLIC_API": "/auth",
+    "PUBLIC_COVER_URL": "/covers",
+    "PUBLIC_DATA_URL": "/data",
+    "PUBLIC_UPLOAD_URL": "/uploads",
+    "PUBLIC_PROXY_URL": "/proxy",
+    "PUBLIC_OPENGRAPH_URL": "/og-image"
+  },
+  "spa_fallback_sha256": "8280bdcfcb0761b8048dd262230deea5a46dd7ea4d5a135b46ced9f81bfde2c0",
+  "original_post_build_script_executed": true,
+  "source_import_case_repaired_externally": [
+    "$lib/utils.js -> src/lib/Utils.ts",
+    "stores/./session -> stores/Session.ts"
+  ],
+  "missing_announcements_reconstructed_externally": true,
+  "reconstructed_routes": [
+    {
+      "source": "platform-integrations/frontend-reconstruction/announcements/routes/+page.svelte",
+      "target": "src/routes/(app)/announcements/+page.svelte",
+      "sha256": "7ac91824c310f09f7516075c95e414e9300a3810bfe7e0ae31c1777d080e5c36",
+      "reconstruction": true
+    },
+    {
+      "source": "platform-integrations/frontend-reconstruction/announcements/routes/[id]/+page.svelte",
+      "target": "src/routes/(app)/announcements/[id]/+page.svelte",
+      "sha256": "989cbda910a76e46a5306c5fdc4631c4d9955124b126c54d3ad61d16f3244a2a",
+      "reconstruction": true
+    },
+    {
+      "source": "platform-integrations/frontend-reconstruction/announcements/routes/manage/+page.svelte",
+      "target": "src/routes/(app)/announcements/manage/+page.svelte",
+      "sha256": "0b8e1fb9939652dcd1ae964bcc85b0d215cceff577e9357906665fd0790b006e",
+      "reconstruction": true
+    }
+  ],
+  "script_overlay_module_sha256": "6c2324801226db03d8671303a64d96548d789c1fe37768e3777f83fb418ac017",
+  "reader_overlay_module_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+  "integration_source_inventory_sha256": "ed86937126cb4a7895dd6ab7b68d416dadce96e409dcea67f30fc62284473c22",
+  "external_component_extensions": [
+    {
+      "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "sha256": "e1bde9c6271fd7fb72f78c368156c1fe76bb28a19101ff9b70828d7c2eb41ffe",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/RecoveryBoundary.svelte",
+      "sha256": "2fcb388c33b31d5c1bb6e13781039be7ecee0f028271b229d59e3bbb797da604",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
+      "sha256": "fa384eb25f3702e4bbcc7fec694620dfc6f4ac37d3f4a95bb9e35da5b713cff3",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
+      "sha256": "1f9da0538967206a6fef07e4c59fa1b25b05807f9e1bc7f48cd05766c583785e",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryProtected.svelte",
+      "sha256": "bfa325f8b7ce8cfc27e72e42d8f353828277d264d2cbbddb15bad4368e5670f5",
+      "intentional_rendered_extension": true
+    }
+  ],
+  "local_library_overlay_module_sha256": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473",
+  "approved_local_protocol_extensions": [
+    {
+      "path": "src/routes/(app)/+layout.svelte",
+      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
+      "count": 1,
+      "before": "\t\t\t{@render children()}",
+      "after": "\t\t\t<LocalLibraryPanel />\r\n\t\t\t<ProtocolIdentityPanel />\r\n\t\t\t{@render children()}",
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1,
+      "before": "</svelte:head>",
+      "after": "</svelte:head>\r\n\r\n<ProtocolIdentityPanel resourceKind=\"manga\" resourceId={manga.id} />",
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "before": "\t{#if data.chapter}",
+      "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "before": "\t{#if data.chapter}",
+      "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1,
+      "before": "{#if $Session}",
+      "after": "{#if $libraryIdentity.canUse}",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1,
+      "before": "{#if $Session && !isEdit}",
+      "after": "{#if $libraryIdentity.canUse && !isEdit}",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1,
+      "before": "{#if $Session}",
+      "after": "{#if $libraryIdentity.canUse}",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1,
+      "before": "$Session && !isRead",
+      "after": "$libraryIdentity.canUse && !isRead",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1,
+      "before": "{#if $Session}",
+      "after": "{#if $libraryIdentity.canUse}",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1,
+      "before": "$Session && !isRead",
+      "after": "$libraryIdentity.canUse && !isRead",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1,
+      "before": "{#if $Session}",
+      "after": "{#if $libraryIdentity.canUse}",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/routes/(app)/+page.svelte",
+      "sha256": "9829b73f4767505d3187c913b95e645c6af6f34884684463f2210a296efb205d",
+      "count": 1,
+      "before": "{#if $Session}",
+      "after": "{#if $libraryIdentity.canUse}",
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/routes/(app)/+page.svelte",
+      "sha256": "9829b73f4767505d3187c913b95e645c6af6f34884684463f2210a296efb205d",
+      "count": 1,
+      "before": "\t\t<MyUpdatesCarousel />",
+      "after": "\t\t{#key $libraryViewKey}\n\t\t<MyUpdatesCarousel />\n\t\t{/key}",
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 2,
+      "before": "{#key page.url.search}",
+      "after": "{#key page.url.search + \":\" + $libraryViewKey}",
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/library/updates/+page.svelte",
+      "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
+      "count": 1,
+      "before": "\t<ChapterFeed",
+      "after": "\t{#key $libraryViewKey}\r\n\t<ChapterFeed",
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/library/updates/+page.svelte",
+      "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
+      "count": 1,
+      "before": "\t/>\r\n</section>",
+      "after": "\t/>\r\n\t{/key}\r\n</section>",
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/history/+page.svelte",
+      "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
+      "count": 1,
+      "before": "\t<ChapterFeed",
+      "after": "\t{#key $libraryViewKey}\r\n\t<ChapterFeed",
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/history/+page.svelte",
+      "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
+      "count": 1,
+      "before": "\t/>\r\n</section>",
+      "after": "\t/>\r\n\t{/key}\r\n</section>",
+      "approved_library_exception": "library_reactivity_key"
+    }
+  ],
+  "approved_title_context_exceptions": [
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1,
+      "before": "\t\t\t<MangaEdit data={{ manga: data.manga, covers }} />",
+      "after": "\t\t\t{#key data.manga.id}\r\n\t\t\t\t<MangaEdit data={{ manga: data.manga, covers }} />\r\n\t\t\t{/key}",
+      "approved_title_context_exception": "title_target_key"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "count": 1,
+      "before": "\t<UploadChapterEdit bind:chapter manga={chapter.relationships.manga} {user} />",
+      "after": "\t{#key data.chapter.id}\r\n\t\t<UploadChapterEdit bind:chapter manga={chapter.relationships.manga} {user} />\r\n\t{/key}",
+      "approved_title_context_exception": "chapter_edit_target_key"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1,
+      "before": "\t<UploadChapter manga={data.manga} {user} />",
+      "after": "\t{#key data.manga.id}\r\n\t\t<UploadChapter manga={data.manga} {user} />\r\n\t{/key}",
+      "approved_title_context_exception": "upload_target_key"
+    }
+  ],
+  "approved_discussion_context_exceptions": [
+    {
+      "path": "src/lib/components/comments/comments-provider.svelte",
+      "sha256": "741c156112cb90a69b090ad8e3a4f2c1ec7f5ba47d43331ad7f8caabef9e6b41",
+      "count": 1,
+      "before": "{@render children()}",
+      "after": "{#key JSON.stringify([thread.id, $nativeAuthority.actor, $nativeAuthority.epoch])}\r\n\t{@render children()}\r\n{/key}",
+      "approved_discussion_context_exception": "discussion_target_authority_key"
+    }
+  ],
+  "approved_share_control_exceptions": [
+    {
+      "path": "src/routes/(app)/forums/threads/[id]/Thread.svelte",
+      "sha256": "31d385f93ec915026be432686bd211af76df1301314e17349ae55af76cb1f3bf",
+      "count": 1,
+      "before": "\t\t\t\t\t\t<button>\r\n\t\t\t\t\t\t\t<Share2 size=\"14\" />",
+      "after": "\t\t\t\t\t\t<button type=\"button\" title=\"Share thread\" aria-label=\"Share thread\" onclick={shareCurrentThread}>\r\n\t\t\t\t\t\t\t<Share2 size=\"14\" />",
+      "approved_share_control_exception": "existing_thread_share_behavior"
+    }
+  ],
+  "approved_client_name_exceptions": [
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "before": "minlength={5}",
+      "after": "minlength={1}",
+      "approved_client_name_exception": "supported_client_name_validation"
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "before": "maxlength={255}",
+      "after": "maxlength={128}",
+      "approved_client_name_exception": "supported_client_name_validation"
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "before": "Must be between 5 and 255 characters.",
+      "after": "Must contain 1 to 64 printable Unicode characters after trimming whitespace.",
+      "approved_client_name_exception": "supported_client_name_validation"
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "before": "disabled={$mutex || name.length < 5 || name.length > 255}",
+      "after": "disabled={$mutex || !validClientName(name)}",
+      "approved_client_name_exception": "supported_client_name_validation"
+    }
+  ],
+  "approved_search_callback_exceptions": [
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1,
+      "before": "onSearch={async query => {\r\n\t\t\t\t\t\t\t\t\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\t\t\t\t\t\t\t\t\tq.set(\"name\", query);\r\n\t\t\t\t\t\t\t\t\t\t\t\tq.set(\"limit\", \"100\");\r\n\r\n\t\t\t\t\t\t\t\t\t\t\t\tconst res = await API.User.Search(q);\r\n\t\t\t\t\t\t\t\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t\t\t\t\t\t\t\treturn res.body;\r\n\t\t\t\t\t\t\t\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\t\t\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t\t\t\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t\t\t\t\t\t\t\t}}",
+      "after": "onSearch={async (query, signal) => {\r\n\t\t\t\t\t\t\t\t\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\t\t\t\t\t\t\t\t\tq.set(\"name\", query);\r\n\t\t\t\t\t\t\t\t\t\t\t\tq.set(\"limit\", \"100\");\r\n\r\n\t\t\t\t\t\t\t\t\t\t\t\tconst res = await API.User.Search(q, signal);\r\n\t\t\t\t\t\t\t\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t\t\t\t\t\t\t\treturn res.body;\r\n\t\t\t\t\t\t\t\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\t\t\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t\t\t\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t\t\t\t\t\t\t\t}}",
+      "approved_search_callback_exception": "existing_entity_search_cancellation"
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1,
+      "before": "onSearch={async query => {\r\n\t\t\t\t\t\t\t\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\t\t\t\t\t\t\t\tq.set(\"name\", query);\r\n\t\t\t\t\t\t\t\t\t\t\tq.set(\"limit\", \"100\");\r\n\r\n\t\t\t\t\t\t\t\t\t\t\tconst res = await API.Group.Search(q);\r\n\t\t\t\t\t\t\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t\t\t\t\t\t\treturn res.body;\r\n\t\t\t\t\t\t\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\t\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t\t\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t\t\t\t\t\t\t}}",
+      "after": "onSearch={async (query, signal) => {\r\n\t\t\t\t\t\t\t\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\t\t\t\t\t\t\t\tq.set(\"name\", query);\r\n\t\t\t\t\t\t\t\t\t\t\tq.set(\"limit\", \"100\");\r\n\r\n\t\t\t\t\t\t\t\t\t\t\tconst res = await API.Group.Search(q, signal);\r\n\t\t\t\t\t\t\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t\t\t\t\t\t\treturn res.body;\r\n\t\t\t\t\t\t\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\t\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t\t\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t\t\t\t\t\t\t}}",
+      "approved_search_callback_exception": "existing_entity_search_cancellation"
+    }
+  ],
+  "approved_auth_flow_key_exceptions": [
+    {
+      "path": "src/routes/(app)/auth/+layout.svelte",
+      "sha256": "dddbb202e26095ba9f348e2892d67366b570f40c4e84e0e4062128cc0cbd59b2",
+      "count": 1,
+      "before": "\t\t{@render children()}",
+      "after": "\t\t{#key JSON.stringify([page.url.pathname, page.url.searchParams.get(\"flow\")])}\r\n\t\t{@render children()}\r\n\t\t{/key}",
+      "approved_auth_flow_key_exception": "auth_settings_requested_flow_key"
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1,
+      "before": "\t\t{@render children?.()}",
+      "after": "\t\t{#key JSON.stringify([page.url.pathname, page.url.searchParams.get(\"flow\")])}\r\n\t\t{@render children?.()}\r\n\t\t{/key}",
+      "approved_auth_flow_key_exception": "auth_settings_requested_flow_key"
+    }
+  ],
+  "anonymous_recovery_derivation": {
+    "original": "src/routes/(app)/auth/recovery/+page.svelte",
+    "preserved_byte_copy": "platform-integrations/frontend-behavior/RetainedRecovery.svelte",
+    "executed_script_derivative": "platform-integrations/frontend-behavior/RecoveryRequest.svelte",
+    "original_sha256": "20ba760776b71854e74c17aef228abd234dd5bded650c4fe863a1a94e1115fcf",
+    "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
+    "original_markup_styles_identical": true
+  },
+  "approved_upload_recovery_exceptions": [
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1,
+      "before": "\t\t\t{#if uploadSession}\r\n\t\t\t\t<Button class=\"w-50 border-none\"",
+      "after": "\t\t\t{#if uploadSession}\r\n\t\t\t\t{#if uploadSession.can_cancel === true && !uploadSession.is_committed}\r\n\t\t\t\t\t<ConfirmDialog title=\"Cancel staged upload?\" description=\"Discard this private staging session and its files? Prepared publications cannot be cancelled here.\" confirmText=\"Cancel staged upload\" onConfirm={dialogMutex => dialogMutex.exec(cancelCurrentUpload)} disabled={$mutex}>\r\n\t\t\t\t\t\t{#snippet child({ props })}<Button class=\"border-none\" variant=\"outline\" type=\"button\" {...props}>Cancel staged upload</Button>{/snippet}\r\n\t\t\t\t\t</ConfirmDialog>\r\n\t\t\t\t{/if}\r\n\t\t\t\t<Button class=\"w-50 border-none\"",
+      "approved_upload_recovery_exception": "cancel_staged_upload_control"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1,
+      "before": "\t\t\t\t\t\t\ttype=\"reset\"\r\n\t\t\t\t\t\t\tdisabled={$mutex || !isValid || !isChanged}",
+      "after": "\t\t\t\t\t\t\ttype=\"reset\"\r\n\t\t\t\t\t\t\tdisabled={$mutex || !isChanged || !!uploadSession}",
+      "approved_upload_recovery_exception": "invalid_metadata_reset_guard"
+    }
+  ],
+  "approved_recovery_boundary_exceptions": [
+    {
+      "path": "src/routes/(app)/auth/recovery/+page.svelte",
+      "sha256": "20ba760776b71854e74c17aef228abd234dd5bded650c4fe863a1a94e1115fcf",
+      "count": 1,
+      "before": "<script lang=\"ts\">\r\n\timport { goto, replaceState } from \"$app/navigation\";\r\n\timport { page } from \"$app/state\";\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport { Constants, Kratos, Mutex } from \"$lib\";\r\n\timport { Button } from \"$lib/components/ui/button\";\r\n\timport * as Card from \"$lib/components/ui/card\";\r\n\timport * as Field from \"$lib/components/ui/field\";\r\n\timport { Input } from \"$lib/components/ui/input\";\r\n\timport Spinner from \"$lib/components/ui/spinner/spinner.svelte\";\r\n\timport { ErrorSessionAlreadyAvailable, type UINode } from \"$lib/Kratos\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport type {\r\n\t\tFrontendApiUpdateRecoveryFlowRequest,\r\n\t\tGenericError,\r\n\t\tNeedsPrivilegedSessionError,\r\n\t\tRecoveryFlow,\r\n\t\tUiNode\r\n\t} from \"@ory/client\";\r\n\timport { AxiosError, type AxiosResponse } from \"axios\";\r\n\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { onMount } from \"svelte\";\r\n\timport { toast } from \"svelte-sonner\";\r\n\timport { fade } from \"svelte/transition\";\r\n\r\n\tconst id = $props.id();\r\n\tconst mutex = new Mutex();\r\n\tconst { pathname } = window.location;\r\n\r\n\tlet isMounted = $state(false);\r\n\tlet ref = $state<HTMLFormElement>();\r\n\tlet flow = $state<RecoveryFlow>();\r\n\tlet nodes = $state<{\r\n\t\tcsrf_token?: UINode;\r\n\t\temail?: UINode;\r\n\t}>({});\r\n\r\n\tonMount(async () => {\r\n\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");\r\n\t\tif (await Session.isValid()) {\r\n\t\t\treturn goto(redirect);\r\n\t\t}\r\n\r\n\t\ttry {\r\n\t\t\tlet promise: Promise<AxiosResponse<RecoveryFlow>>;\r\n\t\t\tif (page.url.searchParams.has(\"flow\")) {\r\n\t\t\t\tpromise = Kratos.getRecoveryFlow({ id: page.url.searchParams.get(\"flow\")! });\r\n\t\t\t} else {\r\n\t\t\t\tpromise = Kratos.createBrowserRecoveryFlow({ returnTo: redirect });\r\n\t\t\t}\r\n\r\n\t\t\tconst res = await promise.catch(async (err: AxiosError<RecoveryFlow & GenericError>) => {\r\n\t\t\t\tif (\r\n\t\t\t\t\terr.status === StatusCodes.BAD_REQUEST &&\r\n\t\t\t\t\t<string>err.response?.data.error?.id === ErrorSessionAlreadyAvailable\r\n\t\t\t\t) {\r\n\t\t\t\t\tthrow ErrorSessionAlreadyAvailable;\r\n\t\t\t\t}\r\n\t\t\t\treturn err.status === StatusCodes.GONE && err.response?.data\r\n\t\t\t\t\t? Kratos.createBrowserRecoveryFlow({ returnTo: err.response.data.return_to || redirect })\r\n\t\t\t\t\t: err;\r\n\t\t\t});\r\n\t\t\tif (window.location.pathname !== pathname) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tif (res instanceof AxiosError) {\r\n\t\t\t\tif (res.response?.data.error?.message) {\r\n\t\t\t\t\ttoast.error(res.response.data.error.message, { duration: 10000 });\r\n\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t} else if (res.status === StatusCodes.OK && res.data) {\r\n\t\t\t\tconst q = new URLSearchParams(window.location.search);\r\n\t\t\t\tq.set(\"flow\", res.data.id);\r\n\t\t\t\tq.delete(\"redirect\");\r\n\r\n\t\t\t\tflow = res.data;\r\n\t\t\t\treplaceState(window.location.pathname + q.toString(), page.state);\r\n\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t} catch (e) {\r\n\t\t\tif (e === ErrorSessionAlreadyAvailable) goto(redirect);\r\n\t\t\telse if (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\telse {\r\n\t\t\t\tconsole.error(e);\r\n\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t}\r\n\t\t}\r\n\t\tisMounted = true;\r\n\t});\r\n\r\n\t$effect(() => {\r\n\t\tflow?.ui.messages?.forEach(message => {\r\n\t\t\tswitch (message.type) {\r\n\t\t\t\tcase \"success\":\r\n\t\t\t\t\ttoast.success(message.text, { duration: 10000 });\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tcase \"info\":\r\n\t\t\t\t\ttoast.info(message.text, { duration: 10000 });\r\n\t\t\t\t\tbreak;\r\n\t\t\t\tdefault:\r\n\t\t\t\t\ttoast.error(message.text, { duration: 10000 });\r\n\t\t\t\t\tbreak;\r\n\t\t\t}\r\n\t\t});\r\n\t});\r\n\r\n\t$effect(() => {\r\n\t\tif (flow?.ui.nodes) {\r\n\t\t\tnodes = flow.ui.nodes.reduce(\r\n\t\t\t\t(acc, node) => {\r\n\t\t\t\t\tconst name = <string>(<any>node.attributes).name;\r\n\t\t\t\t\tif ([\"csrf_token\", \"email\"].includes(name)) {\r\n\t\t\t\t\t\t(<UiNode>acc[<keyof typeof nodes>name.replaceAll(\"traits.\", \"\")]) = node;\r\n\t\t\t\t\t}\r\n\t\t\t\t\treturn acc;\r\n\t\t\t\t},\r\n\t\t\t\t{} as typeof nodes\r\n\t\t\t);\r\n\t\t}\r\n\t});\r\n\r\n\tconst updateFlow = async (method: \"link\", body: any) => {\r\n\t\tif (!flow || !ref) {\r\n\t\t\treturn;\r\n\t\t}\r\n\r\n\t\tconst request: FrontendApiUpdateRecoveryFlowRequest = {\r\n\t\t\tflow: flow.id,\r\n\t\t\tupdateRecoveryFlowBody: {\r\n\t\t\t\tmethod: method,\r\n\t\t\t\tcsrf_token: ref.csrf_token.value,\r\n\t\t\t\t...body\r\n\t\t\t}\r\n\t\t};\r\n\r\n\t\ttry {\r\n\t\t\ttype T =\r\n\t\t\t\t| AxiosResponse<RecoveryFlow & NeedsPrivilegedSessionError>\r\n\t\t\t\t| AxiosError<RecoveryFlow & NeedsPrivilegedSessionError>;\r\n\t\t\tconst res: T = await Kratos.updateRecoveryFlow(request).catch(err => err);\r\n\t\t\tif (window.location.pathname !== pathname) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tconst data = res instanceof AxiosError ? res.response?.data : res.data;\r\n\t\t\tif (data?.redirect_browser_to) {\r\n\t\t\t\twindow.location.href = data.redirect_browser_to;\r\n\t\t\t} else if (data?.ui) {\r\n\t\t\t\tflow = data;\r\n\t\t\t} else if (data?.error?.reason) {\r\n\t\t\t\ttoast.error(data.error.reason, { duration: 10000 });\r\n\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t} catch (e) {\r\n\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\telse {\r\n\t\t\t\tconsole.error(e);\r\n\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t}\r\n\t\t}\r\n\t};\r\n\r\n\tconst onSubmit = async (ev: SubmitEvent) => {\r\n\t\tev.preventDefault();\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tif (!ref) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\t\t\treturn updateFlow(\"link\", {\r\n\t\t\t\temail: ref.email.value\r\n\t\t\t});\r\n\t\t});\r\n\t};\r\n</script>\r\n\r\n<svelte:head>\r\n\t<title>Account Recovery - {PUBLIC_SITE_NAME}</title>\r\n</svelte:head>\r\n\r\n{#if isMounted}\r\n\t<Card.Root class=\"relative rounded\">\r\n\t\t<Card.Header class=\"text-center\">\r\n\t\t\t<Card.Title class=\"text-xl\">Account Recovery</Card.Title>\r\n\t\t\t<Card.Description>Enter your email address to receive a recovery link</Card.Description>\r\n\t\t</Card.Header>\r\n\t\t<Card.Content>\r\n\t\t\t<form onsubmit={onSubmit} bind:this={ref}>\r\n\t\t\t\t<Field.Group>\r\n\t\t\t\t\t{#if nodes.email}\r\n\t\t\t\t\t\t{@const isInvalid = !!nodes.email.messages?.length}\r\n\t\t\t\t\t\t<Field.Field data-invalid={isInvalid}>\r\n\t\t\t\t\t\t\t<Field.Label for=\"email-{id}\">Email</Field.Label>\r\n\t\t\t\t\t\t\t<Input\r\n\t\t\t\t\t\t\t\tclass=\"border-none !ring-0 !ring-transparent\"\r\n\t\t\t\t\t\t\t\tid=\"email-{id}\"\r\n\t\t\t\t\t\t\t\ttype=\"email\"\r\n\t\t\t\t\t\t\t\tname=\"email\"\r\n\t\t\t\t\t\t\t\tvalue={nodes.email.attributes.value}\r\n\t\t\t\t\t\t\t\tautocomplete={nodes.email.attributes.autocomplete}\r\n\t\t\t\t\t\t\t\tminlength={3}\r\n\t\t\t\t\t\t\t\tmaxlength={320}\r\n\t\t\t\t\t\t\t\trequired={nodes.email.attributes.required}\r\n\t\t\t\t\t\t\t\tdisabled={nodes.email.attributes.type === \"hidden\" || $mutex}\r\n\t\t\t\t\t\t\t\taria-invalid={isInvalid}\r\n\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t{#each nodes.email.messages as message}\r\n\t\t\t\t\t\t\t\t<Field.Error>{message.text}</Field.Error>\r\n\t\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t\t</Field.Field>\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t\t<Field.Field>\r\n\t\t\t\t\t\t<Button type=\"submit\" disabled={$mutex}>Send Recovery Link</Button>\r\n\t\t\t\t\t</Field.Field>\r\n\t\t\t\t</Field.Group>\r\n\t\t\t\t{#if nodes.csrf_token}\r\n\t\t\t\t\t<input type=\"hidden\" name=\"csrf_token\" value={nodes.csrf_token.attributes.value} required />\r\n\t\t\t\t{/if}\r\n\t\t\t</form>\r\n\t\t</Card.Content>\r\n\t\t{#if $mutex}\r\n\t\t\t<div class=\"absolute inset-0 flex bg-black/25\" transition:fade={{ duration: 100 }}>\r\n\t\t\t\t<Spinner class=\"m-auto size-10\" />\r\n\t\t\t</div>\r\n\t\t{/if}\r\n\t</Card.Root>\r\n{:else}\r\n\t<Spinner class=\"m-auto size-10\" />\r\n{/if}\r\n",
+      "after": "<script lang=\"ts\">\r\n\timport RecoveryBoundary from \"$platform/RecoveryBoundary.svelte\";\r\n</script>\r\n\r\n<RecoveryBoundary />\r\n",
+      "approved_recovery_extension": "reset_only_boundary"
+    }
+  ],
+  "script_repairs": [
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "weebdex import acknowledges persisted result",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "myanimelist import acknowledges persisted result",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "page replacement refreshes chapter version",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/prefs.ts",
+      "label": "all unchecked content preferences encode empty discovery",
+      "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientEntry.svelte",
+      "label": "clipboard success follows actual copy",
+      "sha256": "cc119d9bd6ce9ee00809e83b5d9292d53704953695459b82e08bc931647415da",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ui/RichTextarea.svelte",
+      "label": "formatting an empty biography has no undefined prefix",
+      "sha256": "ed7a0573680a285cc64a8a7ee90ccbda7358fe1c734eb5487d327e6acb099fd6",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ui/RichTextarea.svelte",
+      "label": "embedding into empty biography starts with an image",
+      "sha256": "ed7a0573680a285cc64a8a7ee90ccbda7358fe1c734eb5487d327e6acb099fd6",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "public search reset preserves configured ratings",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "initial rating selection is not duplicated",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "empty rating sentinel renders as no selected options",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "explicitly clearing public ratings yields empty results",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/global.ts",
+      "label": "tag selectors load the complete paginated catalog",
+      "sha256": "cb8a1eda7fae685c3fd62164080e3852a074406e98d1477acd494f76f0483671",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/MangaFollow.ts",
+      "label": "LatestFeed honors followed-tag preference exemption",
+      "sha256": "f97aa38ea7465c95a9e0667b41c3cc85df7e5ba3483c121c2a99e2f971df357b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/MangaFollow.ts",
+      "label": "LatestUpdates honors followed-tag preference exemption",
+      "sha256": "f97aa38ea7465c95a9e0667b41c3cc85df7e5ba3483c121c2a99e2f971df357b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/Mutex.ts",
+      "label": "queued mutex wait preserves ownership and always releases",
+      "sha256": "e2b96e03790cba7460ed48e023264e75f3924250b097799837bb57ff8df9f3c3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/Mutex.ts",
+      "label": "mutex queue is independent of observable locked state",
+      "sha256": "e2b96e03790cba7460ed48e023264e75f3924250b097799837bb57ff8df9f3c3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/Mutex.ts",
+      "label": "mutex exec releases on callback rejection",
+      "sha256": "e2b96e03790cba7460ed48e023264e75f3924250b097799837bb57ff8df9f3c3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "account preference hydration reads scoped store directly",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "session initialization supports explicit post-auth refresh",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "hydrate only authoritative account preferences without changing browser library",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "login accesses session refresh seam",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "successful authentication refreshes account controls before SPA navigation",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "successful authentication refreshes account controls before SPA navigation",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/account/+page.svelte",
+      "label": "account settings refreshes authoritative identity after updates",
+      "sha256": "ff92851ff500757d698401a06c0f213092bbb853219bd7992546cae427d3646c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/account/+page.svelte",
+      "label": "settings response rehydrates current session before flow rendering",
+      "sha256": "ff92851ff500757d698401a06c0f213092bbb853219bd7992546cae427d3646c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-queue.svelte",
+      "label": "reader queue cancels requests when closed or retried",
+      "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-queue.svelte",
+      "label": "reader HTTP failures expose real retry and bounded requests",
+      "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-provider.svelte",
+      "label": "reader provider releases owned page blob URLs on exit",
+      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-provider.svelte",
+      "label": "quality changes release prior blobs and cancel obsolete queue",
+      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-provider.svelte",
+      "label": "reader exit releases downloaded object URLs",
+      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "signed upload receipt exposes pending or instance-local availability truthfully",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+      "label": "group claim verification copy acknowledges actual clipboard result",
+      "sha256": "46723e0f934c3070727a9e1398918b977abab55ea8209648c5c279d7c1192f30",
+      "count": 1,
+      "approved_event_handler_exception": true
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "chapter deletion feedback distinguishes local hide and pending signed review",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "HTTP retries only GET and settles cancellation or uncertain mutation exactly once",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/service-worker.ts",
+      "label": "service worker imports network-only authority checks",
+      "sha256": "9176298fc05fb1d60c9281ea67f0927abe41ee95c9eed7558346614819ab7cbc",
+      "count": 1
+    },
+    {
+      "path": "src/service-worker.ts",
+      "label": "authority-sensitive media is network-only and activation purges exact legacy covers cache",
+      "sha256": "9176298fc05fb1d60c9281ea67f0927abe41ee95c9eed7558346614819ab7cbc",
+      "count": 1
+    },
+    {
+      "path": "src/@types/Upload.d.ts",
+      "label": "resumable upload fields are explicit owner-only DTO extensions",
+      "sha256": "a5579edd66f0af5efe63f226e00912fbbd996fbae52b1ea30a09a70b9358db83",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/UploadSession.ts",
+      "label": "GET upload returns complete authorized resumable DTO",
+      "sha256": "cba4ff41e2098df2e3668c9d726387c9fba774e71e2ecdd656c50e364dcd734e",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "upload page never deletes staged work on navigation",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "remove obsolete automatic upload deletion path",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "upload restoration imports private versioned adapter",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "upload unsaved navigation guard uses existing app lifecycle",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "upload restoration imports private versioned adapter",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "upload unsaved navigation guard uses existing app lifecycle",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "new chapter restoration lifecycle import",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "new chapter initial GET must resolve before staging starts",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "immutable or unavailable publication cannot be edited/recommitted",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "begin waits for restoration rather than race-delete staged work",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "restore autosave and durable receipt reconciliation without markup changes",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "commit flushes private autosave or exact immutable durable payload",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "committed uploads stop private autosave and duplicate submission",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "ambiguous begin or commit reconciles real session without replay",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 2
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "chapter page edit restores existing staging on mount",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "restored page edit respects retry eligibility",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "page edit begins only after authoritative restore",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "page edit never destroys another resumable session",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "cancellation requires server204 and never discards409 state",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "page commit flushes saved order or exact durable immutable payload",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+      "label": "metadata derives authority lock through existing disabled prop",
+      "sha256": "c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+      "label": "prepared publication locks existing editing controls",
+      "sha256": "c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+      "label": "metadata uses context mutation authority without DOM change",
+      "sha256": "c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "prepared publication locks existing editing controls",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "page controls use context mutation authority without DOM change",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "prepared publication locks existing editing controls",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "page controls use context mutation authority without DOM change",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/service-worker.ts",
+      "label": "network-only authority route precedes all broad legacy cache predicates",
+      "sha256": "9176298fc05fb1d60c9281ea67f0927abe41ee95c9eed7558346614819ab7cbc",
+      "count": 1
+    },
+    {
+      "path": "src/lib/hooks/persistent-store.svelte.ts",
+      "label": "device preferences tolerate corrupt storage and persist update callbacks",
+      "sha256": "60a856fb50feba335c96517c5a8e419038b758ff12a15aeb73f0bc3bbde810fc",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader.svelte",
+      "label": "reader data JSON escapes script-breaking characters without changing template",
+      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/+layout.ts",
+      "label": "all external Markdown images use bounded proxy and local media retains authority checks",
+      "sha256": "8e56aba992c24f457df79e2345a62fc9a819d31976290ee8a5fb8fbf9ce14c65",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "page removal shares parent upload mutex with autosave and commit",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "page removal cannot race parent commit",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "page mutation rechecks prepared authority even for programmatic events",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "prepared uploads cannot reorder through retained drag handlers",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "drag enable obeys authority-disabled without markup changes",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.ts",
+      "label": "private upload loader restores only current owner staging when public target unavailable",
+      "sha256": "861dd8ef4f908b988334787a74652cda308697a94ef767821fe97bbdd801ef7f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
+      "label": "verified owner can view retained staging without acquiring new publishing permissions",
+      "sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
+      "label": "private resume permission facade never replaces auth Session",
+      "sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "archive admission bounds compressed bytes entries streamed output and remaining page budget",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "untrusted image processing is sequential dimensions-admitted and session-bounded",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "folder scans share one bounded admission budget across every browser batch",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "directory drop roots are scanned sequentially with shared budget",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "split PNG filenames retain actual extension for backend MIME validation",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 2
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "untrusted aggregate bytes use finite staged file size fallback",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "upload batch transport failures remain visible and are never treated as successful files",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "label": "draft publish consumes actual200 receipt and truthful pending or local scope",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "label": "draft rejection consumes authoritative200 body and updated version",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "label": "lock mutation consumes authoritative body rather than stale optimistic flag",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/+layout.svelte",
+      "label": "explicit local and protocol panels import without auth Session substitution",
+      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/+layout.svelte",
+      "label": "mount opt-in collapsed local library and signed identity panels",
+      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
+      "count": 1,
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "source-bound title conversation imports explicit panel",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "title source discussion has explicit target-specific opt-in panel",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1,
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+      "label": "source-bound reader conversation imports explicit panel",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+      "label": "reader retains original provider and adds explicit local/source panels",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+      "label": "source-bound reader conversation imports explicit panel",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+      "label": "reader retains original provider and adds explicit local/source panels",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "approved_ui_extension": "explicit_local_protocol_panel"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "label": "pending title receipt uses scoped external editor boundary",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "label": "minimal pending title receipt does not fetch public covers",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.ts",
+      "label": "owner-authorized minimal pending receipt remains read-only instead of full editor permission claim",
+      "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "label": "publication outcome triggers authoritative parent boundary reconciliation",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-provider.svelte",
+      "label": "aggregate is component-owned rather than stale manga-only shared state",
+      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-provider.svelte",
+      "label": "aggregate request context and lifecycle are explicit per reader",
+      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-provider.svelte",
+      "label": "aggregate exact language context rejects late results and last page uses one-based state",
+      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement validates all image budgets and swaps durable pages atomically without prior delete",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportSearch.svelte",
+      "label": "private feed ignores all historical DTOs and reloads on actual account authority",
+      "sha256": "f94201eb8724cd15ee05401376549896f4698a5853206faf6c375b6177f25edd",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportSearch.svelte",
+      "label": "private feed authority subscription",
+      "sha256": "f94201eb8724cd15ee05401376549896f4698a5853206faf6c375b6177f25edd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/my/reports/+page.svelte",
+      "label": "private feed read seam uses fresh matched browser authority",
+      "sha256": "8a5ddb5387ecf78a376d2cffe6d5b0214ea8359895e7c438730156b811363f5a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/my/reports/+page.svelte",
+      "label": "capture private request generation before any await",
+      "sha256": "8a5ddb5387ecf78a376d2cffe6d5b0214ea8359895e7c438730156b811363f5a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/my/reports/+page.svelte",
+      "label": "private feed request is account pinned",
+      "sha256": "8a5ddb5387ecf78a376d2cffe6d5b0214ea8359895e7c438730156b811363f5a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/my/reports/+page.svelte",
+      "label": "late old private feed cannot attach to current page",
+      "sha256": "8a5ddb5387ecf78a376d2cffe6d5b0214ea8359895e7c438730156b811363f5a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/my/reports/+page.svelte",
+      "label": "navigation history retains no private feed DTO",
+      "sha256": "8a5ddb5387ecf78a376d2cffe6d5b0214ea8359895e7c438730156b811363f5a",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/DraftSearch.svelte",
+      "label": "private feed ignores all historical DTOs and reloads on actual account authority",
+      "sha256": "8fb57e167d33566febc60403cc5ad7667257c395c2cead532e74530333ee99bb",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/DraftSearch.svelte",
+      "label": "private feed authority subscription",
+      "sha256": "8fb57e167d33566febc60403cc5ad7667257c395c2cead532e74530333ee99bb",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/drafts/title/+page.svelte",
+      "label": "private feed read seam uses fresh matched browser authority",
+      "sha256": "495a4e72a3c9098d6b67f9dbb0cdbb01bf3692bb2849430f2547cad02fda22fd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/drafts/title/+page.svelte",
+      "label": "capture private request generation before any await",
+      "sha256": "495a4e72a3c9098d6b67f9dbb0cdbb01bf3692bb2849430f2547cad02fda22fd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/drafts/title/+page.svelte",
+      "label": "private feed request is account pinned",
+      "sha256": "495a4e72a3c9098d6b67f9dbb0cdbb01bf3692bb2849430f2547cad02fda22fd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/drafts/title/+page.svelte",
+      "label": "late old private feed cannot attach to current page",
+      "sha256": "495a4e72a3c9098d6b67f9dbb0cdbb01bf3692bb2849430f2547cad02fda22fd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/drafts/title/+page.svelte",
+      "label": "navigation history retains no private feed DTO",
+      "sha256": "495a4e72a3c9098d6b67f9dbb0cdbb01bf3692bb2849430f2547cad02fda22fd",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "report close timer and reason reads belong to exact open subject generation",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "report dialog lifecycle import",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "report submission captures original subject generation",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "accepted old report cannot close newly opened subject",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "label": "title edit covers load only for current target generation",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "label": "title edit cover lifecycle import",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "label": "remove unused unfenced edit cover read",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "label": "retained editor is keyed by actual title target",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1,
+      "approved_title_context_exception": "title_target_key"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "start read query is scoped to full current preferences URL and library",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "start read component disposal import",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "start read fetches current authority and rejects stale query completions",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "label": "key upload/editor by immutable actual target",
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "count": 1,
+      "approved_title_context_exception": "chapter_edit_target_key"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "key upload/editor by immutable actual target",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1,
+      "approved_title_context_exception": "upload_target_key"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "upload keyed lifetime uses one immutable target browser owner",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "upload immutable target and actor constructor",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "upload begin captures immutable target and browser actor",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "approval read stays in live editor owner",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "chapter commit captures session id and actor without mutation replay",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "upload keyed lifetime uses one immutable target browser owner",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "upload immutable target and actor constructor",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "metadata save stays bound to old chapter and browser actor",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "chapter claim stays bound to old chapter and browser actor",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "chapter deletion stays bound to old chapter and browser actor",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "page edit begin captures immutable chapter and saved version",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "chapter commit captures session id and actor without mutation replay",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "metadata dirty state and active operations cannot silently switch chapter",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "label": "editor actor initialization belongs only to current target and account",
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "label": "editor parent async lookup lifecycle import",
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "label": "remove unused unfenced parent actor lookup",
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "editor actor initialization belongs only to current target and account",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "editor parent async lookup lifecycle import",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "remove unused unfenced parent actor lookup",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "parent supplies immutable upload actor context",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "upload actor context is set before child staging controls",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "parent supplies immutable upload actor context",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "upload actor context is set before child staging controls",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "upload recovery shares owned actor and terminal batch state",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "private page uploads capture parent actor lifetime",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "batch failure resolves exact receipts or leaves visible nonreplayable errors",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "later unattempted chunks become removable local errors instead of spinners",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "unknown local replacements must reconcile before any new POST",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement uncertainty retains actual new candidate receipt context",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "bulk removal reconciles ambiguous batch receipts before clearing pages",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "bulk removal uses captured browser authority",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "per-item recovery shares upload actor",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "per-item recovery uses parent actor lifetime",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "unknown per-item deletion resolves actual durable file without replay",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "local page discard asserts current owner before changing bound staging",
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "cancel staged upload reuses supplied confirmation dialog",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "explicit cancel captures session actor and only clears after204",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "parent-approved explicit mutable staging cancel control",
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "count": 1,
+      "approved_upload_recovery_exception": "cancel_staged_upload_control"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "parent-approved Revert remains available for invalid dirty local metadata",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1,
+      "approved_upload_recovery_exception": "invalid_metadata_reset_guard"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "existing replacement reads current expected actor staging",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "atomic replacement request remains bound to current actor",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement result cannot attach after editor authority disposal",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "lost replacement response reconciliation pins browser actor",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "bulk local discard cannot mutate disposed staging",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "duplicate removal cannot discard unresolved accepted-upload placeholders",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "duplicate deletion uses captured upload actor",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/recovery/+page.svelte",
+      "label": "parent-approved recovery-only route boundary delegates retained anonymous form",
+      "sha256": "20ba760776b71854e74c17aef228abd234dd5bded650c4fe863a1a94e1115fcf",
+      "count": 1,
+      "approved_recovery_extension": "reset_only_boundary"
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "Session reads reject reset-only capability and malformed identity",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "reset-only capability is cleared rather than hydrated as Session",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "session initializer tracks newer writes across awaited authority checks",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "initializer never restores a prelogout response or its private preferences",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "round6 page-edit submit prevents native navigation before mutex or awaits",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+      "label": "round6 dirty metadata cannot silently enter pages-only staging",
+      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Report.ts",
+      "label": "round6 report API uses captured actor transport",
+      "sha256": "469d4ecec0ae2ab0229b57c5e0e59e9c176d5fe6ebce0c3a73c5f449d3d951d8",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Report.ts",
+      "label": "round6 every report mutation is actor-bound without replay",
+      "sha256": "469d4ecec0ae2ab0229b57c5e0e59e9c176d5fe6ebce0c3a73c5f449d3d951d8",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportSearchEntry.svelte",
+      "label": "round6 report row owns mutation lifetime",
+      "sha256": "dcbb141a5dbb92d29f15996544b4e02070ef32d1200aaf84392487ae32961e2d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportSearchEntry.svelte",
+      "label": "round6 report row invalidates target changes",
+      "sha256": "dcbb141a5dbb92d29f15996544b4e02070ef32d1200aaf84392487ae32961e2d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportSearchEntry.svelte",
+      "label": "round6 report results cannot mutate another row or account",
+      "sha256": "dcbb141a5dbb92d29f15996544b4e02070ef32d1200aaf84392487ae32961e2d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "round6 report dialog owns authenticated mutation context",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "round6 report dialog actor subject lifetime",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "round6 changing report subject cancels unsent intent",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "round6 report submission freezes actor payload and completion target",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "round7 pure native mutation authority binding import",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "round7 register synchronous actual Session authority before initialization",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 native mutation transport imports pure authority registry",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 capture native actor and immutable payload before limiter wait",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 terminal cleanup releases native authority listener",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 native mutation authority observer cannot survive terminal request",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 reject stale native authority before response body attachment",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 reject stale actor before consuming request budget",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 send only admission-snapshotted payload",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 final native actor fence immediately before actual send",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 native authority changes settle and cancel queued or sent mutation once",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/HTTP.ts",
+      "label": "round7 authority mismatch settles before authority listener registration",
+      "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread transport imports explicit actor and personal read seams",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread GetThreadVote exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread VoteThread exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread UnvoteThread exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread Replies exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread GetReply exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread CreateReply exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread UpdateReply exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread RemoveReply exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread DeleteReply exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread VoteReply exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Thread.ts",
+      "label": "round7 Thread UnvoteReply exact context transport",
+      "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/context.svelte.ts",
+      "label": "round7 discussion context reads actual current thread prop",
+      "sha256": "4a89adcfd64a02938626298baf56ef7230f3323fcc8124ee38367f29a082d452",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/context.svelte.ts",
+      "label": "round7 discussion context getter cannot retain previous prop snapshot",
+      "sha256": "4a89adcfd64a02938626298baf56ef7230f3323fcc8124ee38367f29a082d452",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-provider.svelte",
+      "label": "round7 discussion provider observes actual browser authority",
+      "sha256": "741c156112cb90a69b090ad8e3a4f2c1ec7f5ba47d43331ad7f8caabef9e6b41",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-provider.svelte",
+      "label": "round7 discussion provider exposes current thread without snapshot",
+      "sha256": "741c156112cb90a69b090ad8e3a4f2c1ec7f5ba47d43331ad7f8caabef9e6b41",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-provider.svelte",
+      "label": "round7 current discussion prop retained as getter",
+      "sha256": "741c156112cb90a69b090ad8e3a4f2c1ec7f5ba47d43331ad7f8caabef9e6b41",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-provider.svelte",
+      "label": "round7 discussion target and authority reset private transient state",
+      "sha256": "741c156112cb90a69b090ad8e3a4f2c1ec7f5ba47d43331ad7f8caabef9e6b41",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-provider.svelte",
+      "label": "approved round7 discussion child lifetime keyed by actual target and authority",
+      "sha256": "741c156112cb90a69b090ad8e3a4f2c1ec7f5ba47d43331ad7f8caabef9e6b41",
+      "count": 1,
+      "approved_discussion_context_exception": "discussion_target_authority_key"
+    },
+    {
+      "path": "src/lib/components/comments/comments-feed.svelte",
+      "label": "round7 discussion feed owns read completion lifetime",
+      "sha256": "d698d665298f64fb076715779fe998a38556c67f63564a635cc2a05ce08831cd",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-feed.svelte",
+      "label": "round7 discussion feed full target query authority generation without private history cache",
+      "sha256": "d698d665298f64fb076715779fe998a38556c67f63564a635cc2a05ce08831cd",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments.svelte",
+      "label": "round7 discussion statistics owns lifetime",
+      "sha256": "09c5e198006e3e6f6b12821edb467e8446b29de8fe0c4e2a0627846335a8648f",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments.svelte",
+      "label": "round7 fresh statistics cannot attach to previous discussion",
+      "sha256": "09c5e198006e3e6f6b12821edb467e8446b29de8fe0c4e2a0627846335a8648f",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-create.svelte",
+      "label": "round7 component owns discussion mutation authority",
+      "sha256": "df005e448d2fddc2741024d421d31c20c89160ff05fd8dd70979ff93b8d28db1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-create.svelte",
+      "label": "round7 discussion target change aborts unsent component intents",
+      "sha256": "df005e448d2fddc2741024d421d31c20c89160ff05fd8dd70979ff93b8d28db1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-edit-dialog.svelte",
+      "label": "round7 component owns discussion mutation authority",
+      "sha256": "a2fdd2c5d036caded65638461b17fa95c3d8b1da55b4b0ef7dedf902e38972ac",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-edit-dialog.svelte",
+      "label": "round7 edit actor is a real browser Session",
+      "sha256": "a2fdd2c5d036caded65638461b17fa95c3d8b1da55b4b0ef7dedf902e38972ac",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-edit-dialog.svelte",
+      "label": "round7 discussion target change aborts unsent component intents",
+      "sha256": "a2fdd2c5d036caded65638461b17fa95c3d8b1da55b4b0ef7dedf902e38972ac",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-entry.svelte",
+      "label": "round7 component owns discussion mutation authority",
+      "sha256": "1bc293dfc50ca3456ffa25ed37348302e538f96876d0e1b88c58b61443b05b36",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-entry.svelte",
+      "label": "round7 discussion target change aborts unsent component intents",
+      "sha256": "1bc293dfc50ca3456ffa25ed37348302e538f96876d0e1b88c58b61443b05b36",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-votes.svelte",
+      "label": "round7 component owns discussion mutation authority",
+      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-votes.svelte",
+      "label": "round7 thread vote target includes navigation context",
+      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-votes.svelte",
+      "label": "round7 discussion target change aborts unsent component intents",
+      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-create.svelte",
+      "label": "round7 CreateReply admission and completion bind target actor payload",
+      "sha256": "df005e448d2fddc2741024d421d31c20c89160ff05fd8dd70979ff93b8d28db1",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-edit-dialog.svelte",
+      "label": "round7 UpdateReply admission and completion bind target actor payload",
+      "sha256": "a2fdd2c5d036caded65638461b17fa95c3d8b1da55b4b0ef7dedf902e38972ac",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-entry.svelte",
+      "label": "round7 reply vote delete and rollback data stay in admitted context",
+      "sha256": "1bc293dfc50ca3456ffa25ed37348302e538f96876d0e1b88c58b61443b05b36",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-votes.svelte",
+      "label": "round9 stable personal vote read and acknowledged authoritative counts",
+      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/comments/comments-votes.svelte",
+      "label": "round7 thread vote read cleanup import",
+      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Settings.ts",
+      "label": "round7 preference API accepts explicit original actor intent",
+      "sha256": "c44c225d9bf9b3a7b17836dfbe100daa1bf533e6a9d09b4055887222175b956e",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Settings.ts",
+      "label": "round7 preferences update actor transport",
+      "sha256": "c44c225d9bf9b3a7b17836dfbe100daa1bf533e6a9d09b4055887222175b956e",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "round7 settings preference response uses guarded application seam",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "round7 settings page owns preference intent and resets draft on authority switch",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "round7 settings response cannot restore previous account preferences",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "round7 group preference block owns actor target and apply seam",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "round7 group preference mutation target lifetime",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "round7 group blocked arrays stay unchanged before real current acknowledgement",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "round7 user preference block owns actor target and apply seam",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "round7 user preference mutation target lifetime",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "round7 user blocked arrays stay unchanged before real current acknowledgement",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "round7 thumbnail resources are discarded only after acknowledged removal",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "round7 duplicate deletion failure keeps original pages and working thumbnails",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Group.ts",
+      "label": "round8 Group follow API explicit action admission",
+      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Group.ts",
+      "label": "round8 Group Follow admitted actor target transport",
+      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Group.ts",
+      "label": "round8 Group Unfollow admitted actor target transport",
+      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Group.ts",
+      "label": "round8 Group private follow status current authority read",
+      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "round8 Group follow freezes user action before every await",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "round8 Group follow read cannot attach to disposed or switched owner",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/User.ts",
+      "label": "round8 User follow API explicit action admission",
+      "sha256": "b4762d35d1b4033e2550641a64c9fd6ab565fa6fc374eaf326415732c5593f90",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/User.ts",
+      "label": "round8 User Follow admitted actor target transport",
+      "sha256": "b4762d35d1b4033e2550641a64c9fd6ab565fa6fc374eaf326415732c5593f90",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/User.ts",
+      "label": "round8 User Unfollow admitted actor target transport",
+      "sha256": "b4762d35d1b4033e2550641a64c9fd6ab565fa6fc374eaf326415732c5593f90",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/User.ts",
+      "label": "round8 User private follow status current authority read",
+      "sha256": "b4762d35d1b4033e2550641a64c9fd6ab565fa6fc374eaf326415732c5593f90",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "round8 User follow freezes user action before every await",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "round8 User follow read cannot attach to disposed or switched owner",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/forums/threads/[id]/Thread.svelte",
+      "label": "round8 existing thread share behavior import",
+      "sha256": "31d385f93ec915026be432686bd211af76df1301314e17349ae55af76cb1f3bf",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/forums/threads/[id]/Thread.svelte",
+      "label": "round8 canonical same-instance share honest user gesture",
+      "sha256": "31d385f93ec915026be432686bd211af76df1301314e17349ae55af76cb1f3bf",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/forums/threads/[id]/Thread.svelte",
+      "label": "approved round8 existing share button handler and accessible name",
+      "sha256": "31d385f93ec915026be432686bd211af76df1301314e17349ae55af76cb1f3bf",
+      "count": 1,
+      "approved_share_control_exception": "existing_thread_share_behavior"
+    },
+    {
+      "path": "src/lib/API/Manga.ts",
+      "label": "round9 Manga search accepts owned cancellation",
+      "sha256": "774f88cdb48ae17ddd08dfc532082ce59069b3263525db9ee21b8e5ab4466193",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Manga.ts",
+      "label": "round9 Manga search cancellation import",
+      "sha256": "774f88cdb48ae17ddd08dfc532082ce59069b3263525db9ee21b8e5ab4466193",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Author.ts",
+      "label": "round9 Author search accepts owned cancellation",
+      "sha256": "48a8f9f7aaac6a5562044118a5242e72f1ba05e057ebf371bd08251e87192360",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Author.ts",
+      "label": "round9 Author search cancellation import",
+      "sha256": "48a8f9f7aaac6a5562044118a5242e72f1ba05e057ebf371bd08251e87192360",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Group.ts",
+      "label": "round9 Group search accepts owned cancellation",
+      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Group.ts",
+      "label": "round9 Group search cancellation import",
+      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/User.ts",
+      "label": "round9 User search accepts owned cancellation",
+      "sha256": "b4762d35d1b4033e2550641a64c9fd6ab565fa6fc374eaf326415732c5593f90",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/User.ts",
+      "label": "round9 User search cancellation import",
+      "sha256": "b4762d35d1b4033e2550641a64c9fd6ab565fa6fc374eaf326415732c5593f90",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/SearchDialog.svelte",
+      "label": "round9 global search latest-query owner import",
+      "sha256": "5c85175c8fb0a34e31e975ea22dbe6f89cbcf0868ea80c72e6d37474e813ba9a",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/SearchDialog.svelte",
+      "label": "round9 global search aborts old query and never drops latest",
+      "sha256": "5c85175c8fb0a34e31e975ea22dbe6f89cbcf0868ea80c72e6d37474e813ba9a",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/SearchDialog.svelte",
+      "label": "round9 global open effect untracks query-only callbacks",
+      "sha256": "5c85175c8fb0a34e31e975ea22dbe6f89cbcf0868ea80c72e6d37474e813ba9a",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/EntitySearchDialog.svelte",
+      "label": "round9 entity query owner import",
+      "sha256": "924445fe539f874b355a7e20c134e4df8f52b29442b24119c1857f31ed41e4e2",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/EntitySearchDialog.svelte",
+      "label": "round9 entity query callback cancellation",
+      "sha256": "924445fe539f874b355a7e20c134e4df8f52b29442b24119c1857f31ed41e4e2",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/EntitySearchDialog.svelte",
+      "label": "round9 entity search latest result and lifetime ownership",
+      "sha256": "924445fe539f874b355a7e20c134e4df8f52b29442b24119c1857f31ed41e4e2",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/MetadataSection.svelte",
+      "label": "round9 entity selector accepts signal",
+      "sha256": "d0b045bb394261124b66a8e387f8e6215000de77e1fea2d831833515c2776041",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/draft/manga/MetadataSection.svelte",
+      "label": "round9 entity selector forwards cancellation",
+      "sha256": "d0b045bb394261124b66a8e387f8e6215000de77e1fea2d831833515c2776041",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+      "label": "round9 entity selector accepts signal",
+      "sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+      "label": "round9 entity selector forwards cancellation",
+      "sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/settings/+page.svelte",
+      "label": "round9 entity selector accepts signal",
+      "sha256": "9d7319ce7ccae8203e4b79c01453257cb009db0696e9c85080188e26e41a4a98",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/settings/+page.svelte",
+      "label": "round9 entity selector forwards cancellation",
+      "sha256": "9d7319ce7ccae8203e4b79c01453257cb009db0696e9c85080188e26e41a4a98",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Client.ts",
+      "label": "round9 client name exact backend validation import",
+      "sha256": "011d557b6998176b61a260ca7c2b580181d18c7bbb88b589ce290f324d29a662",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Client.ts",
+      "label": "round9 client name create validation",
+      "sha256": "011d557b6998176b61a260ca7c2b580181d18c7bbb88b589ce290f324d29a662",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Client.ts",
+      "label": "round9 client name rename validation",
+      "sha256": "011d557b6998176b61a260ca7c2b580181d18c7bbb88b589ce290f324d29a662",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client dialog semantic validation import",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client sends normalized supported name",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client actionable400 response",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client semantic error surface",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client name minimum",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "approved_client_name_exception": "supported_client_name_validation"
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client name maximum UTF16 guard",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "approved_client_name_exception": "supported_client_name_validation"
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client name supported disclosure",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "approved_client_name_exception": "supported_client_name_validation"
+    },
+    {
+      "path": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "label": "round9 client name semantic submit guard",
+      "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1",
+      "count": 1,
+      "approved_client_name_exception": "supported_client_name_validation"
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "round9 approved existing inline search callback cancellation User",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1,
+      "approved_search_callback_exception": "existing_entity_search_cancellation"
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "round9 approved existing inline search callback cancellation Group",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1,
+      "approved_search_callback_exception": "existing_entity_search_cancellation"
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "round10 login form lifetime and concrete flow operation fences",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "round10 register form lifetime and concrete flow operation fences",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/verification/+page.svelte",
+      "label": "round10 verification form lifetime and concrete flow operation fences",
+      "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/account/+page.svelte",
+      "label": "round10 account form lifetime and concrete flow operation fences",
+      "sha256": "ff92851ff500757d698401a06c0f213092bbb853219bd7992546cae427d3646c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "label": "round10 settings route lifetime helper",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "label": "round10 settings owns route admission",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "label": "round10 settings delayed validation cannot redirect a later route",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "label": "round10 logout route lifetime helper",
+      "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "label": "round10 logout captures its own route before waiting",
+      "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "label": "round10 logout owned initial admission",
+      "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "label": "round10 logout current validation continuation",
+      "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "label": "round10 logout actual request admission",
+      "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "label": "round10 logout acknowledged UI lifetime",
+      "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "label": "round10 logout stale error is not current UI",
+      "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/context.svelte.ts",
+      "label": "round10 reader navigation intent import",
+      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/context.svelte.ts",
+      "label": "round10 remove unowned reader last-page boolean",
+      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/context.svelte.ts",
+      "label": "round10 only matching successful reader consumes last-page intent",
+      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/context.svelte.ts",
+      "label": "round10 previous-page freezes exact destination",
+      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/+layout.svelte",
+      "label": "round10 global reader navigation boundary import",
+      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/+layout.svelte",
+      "label": "round10 global boundary clears last-page intent on different navigation",
+      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "round10 preferences initialize once per authority and preserve dirty baseline",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/+layout.svelte",
+      "label": "round10 auth layout watches requested route/flow",
+      "sha256": "dddbb202e26095ba9f348e2892d67366b570f40c4e84e0e4062128cc0cbd59b2",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/+layout.svelte",
+      "label": "round10 exact requested flow owns rendered form lifetime",
+      "sha256": "dddbb202e26095ba9f348e2892d67366b570f40c4e84e0e4062128cc0cbd59b2",
+      "count": 1,
+      "approved_auth_flow_key_exception": "auth_settings_requested_flow_key"
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "label": "round10 exact requested flow owns rendered form lifetime",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1,
+      "approved_auth_flow_key_exception": "auth_settings_requested_flow_key"
+    },
+    {
+      "path": "src/lib/components/reader/context.svelte.ts",
+      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+      "count": 1,
+      "label": "UI15 reader tap halves use actual page surface geometry and ignore owned interactive controls"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1,
+      "label": "UI17 editor draft cover read uses explicit current actor and private flag"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1,
+      "label": "UI17 cover batch owns actor before awaits and uses shared authoritative cover reader"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1,
+      "label": "UI17 cover upload uncertainty is not blindly replayed and reconciliation remains owned"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1,
+      "label": "UI17 uncertain pending cover Files fence save without replacing retained controls"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1,
+      "label": "UI17 sequential title cover batch captures lifetime before mutation admission"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1,
+      "label": "UI17 existing Revert discards pending Files only after authoritative reconciliation"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1,
+      "label": "UI17 each cover acknowledgement commits immediately with truthful owned failure reconciliation"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 created draft recovery imports use actor-owned real requests and acknowledgements"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 creation keeps acknowledged title identity and independently acknowledged remaining steps"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 user-owned retry retains created title and never repeats acknowledged steps"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 title creation accepts frozen metadata for one owned create command"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 acknowledged title ID/version survives every later cover or relation failure"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 created draft uploads retain real cover identities and skip prior acknowledged Files"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 created relation acknowledgements survive later failure without replaying accepted relations"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaCreate.svelte",
+      "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149",
+      "count": 1,
+      "label": "UI17 acknowledged title error screen exposes exact remaining-step retry and saved-draft recovery",
+      "approved_create_recovery_exception": "acknowledged_draft_recovery_controls"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+      "count": 1,
+      "label": "UI17 private editor head and child attach only a freshly owned title DTO"
+    },
+    {
+      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+      "count": 1,
+      "label": "UI17 existing relation types use versioned PUT and each mutation commits actual owner acknowledgement"
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "selected second page keeps its double spread visible",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "derive spread visibility only after reader context is initialized",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "scroll observer cannot reattach after disposal",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "abandon a mount tick that completed after disposal",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "observe resize after switching from paged to scroll layout",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "attach one lifetime-owned resize listener in either initial layout",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "release and fence scroll observers on disposal",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "ignore queued resize and preference observer work after disposal",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "ignore a queued intersection notification after disposal",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "long strip intersection threshold fits inside the viewport",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "scroll observer cannot reattach after disposal",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "abandon a mount tick that completed after disposal",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "observe resize after switching from paged to scroll layout",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "attach one lifetime-owned resize listener in either initial layout",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "release and fence scroll observers on disposal",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "ignore queued resize and preference observer work after disposal",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "ignore a queued intersection notification after disposal",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "long strip intersection threshold fits inside the viewport",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "reader image geometry observer owns bounded threshold refresh",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "actual reader page resize recomputes its reachable threshold",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-single.svelte",
+      "label": "release reader geometry observer and queued frame on disposal",
+      "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "reader image geometry observer owns bounded threshold refresh",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "actual reader page resize recomputes its reachable threshold",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-pages-double.svelte",
+      "label": "release reader geometry observer and queued frame on disposal",
+      "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+      "label": "keyboard animation frame has component lifetime ownership",
+      "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+      "label": "stop keyboard scrolling on blur and component destruction",
+      "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+      "label": "round6 reader recognizes control-owned keyboard paths",
+      "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+      "label": "round6 reader does not steal native or already handled shortcuts",
+      "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+      "label": "round6 focused control terminates a held reader animation",
+      "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+      "label": "round6 focus transition stops owned reader scroll frame",
+      "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+layout.svelte",
+      "label": "device availability scoped layout import",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/history/+layout.svelte",
+      "label": "device availability scoped layout import",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+layout.svelte",
+      "label": "device availability scoped layout import",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "independent library imports",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "reactive follows from selected independent library",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "local save availability guards",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 2
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "account cache mutations remain account only",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "account unfollow cache mutation remains account only",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "follow card buttons usable without account",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "grid follow button usable without account",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "follow card failures displayed",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "follow catch before unfollow",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "unfollow catch start",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "unfollow catch end",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
+      "label": "independent library imports",
+      "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
+      "label": "reactive selected-library follow indicator",
+      "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "label": "independent library imports",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "label": "anonymous progress button visibility",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "label": "anonymous unread border visibility",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "label": "reactive local chapter history",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "label": "independent library imports",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "label": "anonymous progress button visibility",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "label": "anonymous unread border visibility",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "label": "reactive local chapter history",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "independent library imports",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "local chapter history fetch",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "local chapter history query",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "independent library imports",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "local follow initialization",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "selected library follow status lookup",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "anonymous follow status guard",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "anonymous notification guard",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "anonymous unfollow guard",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "account status cache writes only in account mode",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 2
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "account unfollow cache only in account mode",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "anonymous follow control visibility",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "reactive follow controls before action definition",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader-history.svelte",
+      "label": "UI15 automatic reader history requires actual acknowledgement and current-owned failure feedback",
+      "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "independent library imports",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "device export is scoped browser backup",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "device export branch",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppSidebar.svelte",
+      "label": "independent library imports",
+      "sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppSidebar.svelte",
+      "label": "library settings independent access",
+      "sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/+page.svelte",
+      "label": "independent library imports",
+      "sha256": "9829b73f4767505d3187c913b95e645c6af6f34884684463f2210a296efb205d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/+page.svelte",
+      "label": "device updates carousel visibility",
+      "sha256": "9829b73f4767505d3187c913b95e645c6af6f34884684463f2210a296efb205d",
+      "count": 1,
+      "approved_library_exception": "library_availability_guard"
+    },
+    {
+      "path": "src/routes/(app)/+page.svelte",
+      "label": "home update source boundary",
+      "sha256": "9829b73f4767505d3187c913b95e645c6af6f34884684463f2210a296efb205d",
+      "count": 1,
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/lib/components/MangaSearch.svelte",
+      "label": "private library bypasses unscoped history cache",
+      "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "private history bypasses unscoped history cache",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MyUpdatesCarousel.svelte",
+      "label": "source-specific carousel state is instance local",
+      "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MyUpdatesCarousel.svelte",
+      "label": "carousel instance caches",
+      "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "label": "independent library imports",
+      "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "label": "selected library search cache invalidation",
+      "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 2,
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/library/updates/+page.svelte",
+      "label": "independent library imports",
+      "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/updates/+page.svelte",
+      "label": "selected library mode boundary",
+      "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
+      "count": 1,
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/library/updates/+page.svelte",
+      "label": "selected library mode boundary end",
+      "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
+      "count": 1,
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/history/+page.svelte",
+      "label": "independent library imports",
+      "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/history/+page.svelte",
+      "label": "selected library mode boundary",
+      "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
+      "count": 1,
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/history/+page.svelte",
+      "label": "selected library mode boundary end",
+      "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
+      "count": 1,
+      "approved_library_exception": "library_reactivity_key"
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "CSV exporter and retained importer agree with explicit scope metadata",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "importWeebDex captures one whole-file import destination",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "importMAL captures one whole-file import destination",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "weebdex batch retains frozen mode scope and account",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "myanimelist batch retains frozen mode scope and account",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "label": "read control captures intended state and library generation before update",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "label": "read mutation uses captured intended chapter state",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "label": "read response updates only original current library context",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "label": "read control captures intended state and library generation before update",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "label": "read mutation uses captured intended chapter state",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "label": "read response updates only original current library context",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "title read history clears reloads and rejects late library ownership changes",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "title history source context import",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "only reactive effect owns title private history reads",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "chapter feed cached public metadata never restores private history",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "one reactive owner reloads chapter feed private flags without navigation cache",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "chapter feed private history has context and lifetime ownership",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "chapter feed history invalidates across all current source selections",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "follow mutation captures stable selected library and target",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 2
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "follow results cannot attach across selected authority or title",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 3
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "matched account follow cache update [readingStatus, currentNotificationStatus ? 1 : 0]",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "matched account follow cache update [currentReadingStatus, notificationStatus ? 1 : 0]",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "matched account unfollow cache only",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "search follow captures immutable target and selected library",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "search unfollow captures immutable target and selected library",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "search follow result ownership fence",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 2
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "search matched account follow cache only",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "label": "search matched account unfollow cache only",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "label": "notification mutation captures stable selected library and target",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 feed continuation imports ownership and DOM-settle helpers"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 DOM layout settles before the next visible-footer read"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 feed read lifetime starts before its request"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 destroyed feed cancels continuation and invalidates safe read attachment"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 initial read does not mount a disposed feed"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 feed captures route/library/request ownership before yielding"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 reject stale or nonadvancing feed response before appending"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 successful page explicitly allows one bounded next read"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 stale safe-read errors have no UI side effects"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 bounded continuation consumes truthful failure and final loading state"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 sequential visible-footer continuation with explicit bounded resume"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI12 approved nonentity pagination resume control",
+      "approved_feed_pagination_exception": "bounded_continuation_resume"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 history cache records its route and selected-library context"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 only restore a coherent current-context accumulated feed"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 inconsistent empty-before-end stops before state/history commit"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 history stores accumulated acknowledgements with coherent map and context"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 approved accumulated-results guard retains acknowledged cards after terminal empty",
+      "approved_feed_pagination_exception": "accumulated_acknowledged_results_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 private read readiness and stable authority subscriptions"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 classify personal feeds without binding public updates to local discovery"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 destroyed private read wakes its coalesced drain without new requests"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 private initial load is driven by current readiness instead of stale mount admission"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 public history cache uses its actual route instead of unrelated library scope"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 an interrupted initial public read exposes recovery instead of a spinner"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 each private request captures view revision; public safe reads own only route and query callback"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 public response cannot be discarded by independent scope or Session initialization"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 personal feed DTOs never enter navigation history cache"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 accumulated public cache matches current actual URL"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 read settlement releases only sequential owned refreshes"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 one latest-context private read coalesces initialization and authority switches"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 continuation public/private context classification"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "label": "UI13 approved explicit initial-feed retry in existing nonentity error branch",
+      "approved_feed_pagination_exception": "initial_feed_retry_control"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "UI13 initial and retry errors keep their actual error surface",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "UI14 approved entity paginator remains on actual final page",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "approved_feed_pagination_exception": "entity_last_page_pagination_guard"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "label": "UI14 approved unchanged entity paginator also follows empty-state results",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "approved_feed_pagination_exception": "entity_empty_page_existing_paginator"
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1,
+      "label": "UI14 ChapterFeedChapterEntry shared owned action and truthful mutation feedback"
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1,
+      "label": "UI14 ChapterFeedChapterEntry chapter lifetime belongs to the original read action"
+    },
+    {
+      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+      "count": 1,
+      "label": "UI14 ChapterFeedChapterEntry current actor gets real rejection uncertainty or storage failure"
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1,
+      "label": "UI14 ChapterListEntry shared owned action and truthful mutation feedback"
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1,
+      "label": "UI14 ChapterListEntry chapter lifetime belongs to the original read action"
+    },
+    {
+      "path": "src/lib/components/ChapterListEntry.svelte",
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+      "count": 1,
+      "label": "UI14 ChapterListEntry current actor gets real rejection uncertainty or storage failure"
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1,
+      "label": "UI14 card follows share owned acknowledgement feedback"
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1,
+      "label": "UI14 card action captures component target lifetime"
+    },
+    {
+      "path": "src/lib/components/MangaSearchEntryCard.svelte",
+      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+      "count": 1,
+      "label": "UI14 card follow or unfollow rejection is visible only to its owned intent"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1,
+      "label": "UI14 title unfollow uses shared truthful owned feedback"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1,
+      "label": "UI14 title unfollow target lifetime is owned"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaActions.svelte",
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+      "count": 1,
+      "label": "UI14 title unfollow catches actual rejected acknowledgement and uncertain outcome"
+    },
+    {
+      "path": "src/lib/components/LatestUpdatesGrid.svelte",
+      "sha256": "a8c52cc549ac4d7b32521104fdbeb27f53d61f55323bc047365f2056e2ebe481",
+      "count": 1,
+      "label": "UI14 mounted public grid owns real response errors and explicit safe recovery"
+    },
+    {
+      "path": "src/lib/components/LatestUpdatesGrid.svelte",
+      "sha256": "a8c52cc549ac4d7b32521104fdbeb27f53d61f55323bc047365f2056e2ebe481",
+      "count": 1,
+      "label": "UI14 approved public widget error keeps acknowledged rows and reachable retry",
+      "approved_widget_error_exception": "public_updates_error_retry"
+    },
+    {
+      "path": "src/lib/components/LatestUpdatesGrid.svelte",
+      "sha256": "a8c52cc549ac4d7b32521104fdbeb27f53d61f55323bc047365f2056e2ebe481",
+      "count": 1,
+      "label": "UI14 approved failed grid read cannot render a false successful empty state",
+      "approved_widget_error_exception": "public_updates_truthful_empty_guard"
+    },
+    {
+      "path": "src/lib/components/MyUpdatesCarousel.svelte",
+      "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+      "count": 1,
+      "label": "UI14 mounted personal carousel settles failures and coalesces only current owned reads"
+    },
+    {
+      "path": "src/lib/components/MyUpdatesCarousel.svelte",
+      "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+      "count": 1,
+      "label": "UI14 approved personal-widget error remains visible instead of hiding or skeleton loop",
+      "approved_widget_error_exception": "personal_updates_error_visibility_guard"
+    },
+    {
+      "path": "src/lib/components/MyUpdatesCarousel.svelte",
+      "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+      "count": 1,
+      "label": "UI14 approved personal-widget error has explicit bounded retry",
+      "approved_widget_error_exception": "personal_updates_error_retry"
+    },
+    {
+      "path": "src/lib/components/ChapterListFilter.svelte",
+      "sha256": "2f38ac6741bb02cff665ec0885929ce721082eae1afbc05ce8a3f1bd6f3db6fa",
+      "count": 1,
+      "label": "UI15 title chapter filter applied baseline follows actual title query navigation and back-forward"
+    },
+    {
+      "path": "src/lib/components/reader/reader-page-selector.svelte",
+      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+      "count": 1,
+      "label": "UI15 reader selector validates displayed spread ordinal and maps to actual first page"
+    },
+    {
+      "path": "src/lib/components/reader/reader-page-selector.svelte",
+      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+      "count": 1,
+      "label": "UI15 approved existing reader selector handler uses canonical page mapping",
+      "approved_reader_selector_exception": "existing_page_selector_handler"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaRecommendationsSection.svelte",
+      "sha256": "26b2d29077bf3a8b05593bf8a9abe0d4e30920b3824f42ef9a0c41af816bc7e4",
+      "count": 1,
+      "label": "UI15 recommendations owns latest read and acknowledges real empty feed instead of perpetual loading"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaRecommendationsSection.svelte",
+      "sha256": "26b2d29077bf3a8b05593bf8a9abe0d4e30920b3824f42ef9a0c41af816bc7e4",
+      "count": 1,
+      "label": "UI15 approved recommendations error retry control",
+      "approved_recommendation_exception": "truthful_recommendations_retry"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaRecommendationsSection.svelte",
+      "sha256": "26b2d29077bf3a8b05593bf8a9abe0d4e30920b3824f42ef9a0c41af816bc7e4",
+      "count": 1,
+      "label": "UI15 approved acknowledged empty recommendations branch",
+      "approved_recommendation_exception": "acknowledged_recommendations_empty"
+    },
+    {
+      "path": "src/lib/components/MangaSearchPagination.svelte",
+      "sha256": "fdcdc1c9e185a494b55b1fc2af721f54546f698b72432478f31ee30163684111",
+      "count": 1,
+      "label": "UI16 existing search count matches retained result cap and path page math",
+      "approved_search_pagination_exception": "consistent_existing_search_count"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+      "count": 1,
+      "label": "UI16 cover read imports owned current-target controller and existing Retry button"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+      "count": 1,
+      "label": "UI16 cover read settles actual empty and only latest target navigation context"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+      "count": 1,
+      "label": "UI16 approved cover read error retry control",
+      "approved_cover_read_exception": "truthful_covers_retry"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+      "count": 1,
+      "label": "UI16 approved acknowledged empty covers branch",
+      "approved_cover_read_exception": "acknowledged_covers_empty"
+    },
+    {
+      "path": "src/lib/components/MostReadCarousel.svelte",
+      "sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c",
+      "count": 1,
+      "label": "UI16 MostReadCarousel has no unscoped module feed cache"
+    },
+    {
+      "path": "src/lib/components/MostReadCarousel.svelte",
+      "sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c",
+      "count": 1,
+      "label": "UI16 MostReadCarousel shares latest-query public read lifecycle and actual configured ratings"
+    },
+    {
+      "path": "src/lib/components/MostReadCarousel.svelte",
+      "sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c",
+      "count": 1,
+      "label": "UI16 approved MostReadCarousel failed section stays visible",
+      "approved_public_carousel_exception": "public_carousel_error_visibility"
+    },
+    {
+      "path": "src/lib/components/MostReadCarousel.svelte",
+      "sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c",
+      "count": 1,
+      "label": "UI16 approved MostReadCarousel explicit current public-feed retry",
+      "approved_public_carousel_exception": "public_carousel_error_retry"
+    },
+    {
+      "path": "src/lib/components/RecentlyAddedCarousel.svelte",
+      "sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf",
+      "count": 1,
+      "label": "UI16 RecentlyAddedCarousel has no unscoped module feed cache"
+    },
+    {
+      "path": "src/lib/components/RecentlyAddedCarousel.svelte",
+      "sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf",
+      "count": 1,
+      "label": "UI16 RecentlyAddedCarousel shares latest-query public read lifecycle and actual configured ratings"
+    },
+    {
+      "path": "src/lib/components/RecentlyAddedCarousel.svelte",
+      "sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf",
+      "count": 1,
+      "label": "UI16 approved RecentlyAddedCarousel failed section stays visible",
+      "approved_public_carousel_exception": "public_carousel_error_visibility"
+    },
+    {
+      "path": "src/lib/components/RecentlyAddedCarousel.svelte",
+      "sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf",
+      "count": 1,
+      "label": "UI16 approved RecentlyAddedCarousel explicit current public-feed retry",
+      "approved_public_carousel_exception": "public_carousel_error_retry"
+    }
+  ],
+  "approved_event_handler_exceptions": [
+    {
+      "path": "src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+      "sha256": "46723e0f934c3070727a9e1398918b977abab55ea8209648c5c279d7c1192f30",
+      "count": 1,
+      "before": "onclick={() => {\r\n\t\t\t\t\t\t\t\t\t\tnavigator.clipboard.writeText(`${$Session!.identity.id}+${group.id}`);\r\n\t\t\t\t\t\t\t\t\t\ttoast.success(\"Verification code has been successfully copied to the clipboard\", {\r\n\t\t\t\t\t\t\t\t\t\t\tcloseButton: false\r\n\t\t\t\t\t\t\t\t\t\t});\r\n\t\t\t\t\t\t\t\t\t}}",
+      "after": "onclick={async () => {\r\n\t\t\t\t\t\t\t\t\t\ttry {\r\n\t\t\t\t\t\t\t\t\t\t\tawait navigator.clipboard.writeText(`${$Session!.identity.id}+${group.id}`);\r\n\t\t\t\t\t\t\t\t\t\t\ttoast.success(\"Verification code has been successfully copied to the clipboard\", { closeButton: false });\r\n\t\t\t\t\t\t\t\t\t\t} catch {\r\n\t\t\t\t\t\t\t\t\t\t\ttoast.error(\"Could not copy verification code\", { description: \"Allow clipboard access or copy the displayed code manually.\" });\r\n\t\t\t\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t\t\t\t}}"
+    }
+  ],
+  "reconstruction_limit": "Public announcement listing/detail, pinned homepage data, and staff management are additive reconstruction against the new persisted Rust contract. Original missing announcement HTML/CSS and rendered parity remain unknown.",
+  "portable_ui_directory": "artifacts/frontend",
+  "original_go_templates_preserved": [
+    "templates/index.html",
+    "templates/manga.html",
+    "templates/chapter.html",
+    "templates/group.html"
+  ],
+  "visual_parity": "Not asserted. Explicit local/protocol panels, scoped library guards, staging-cancel control and restricted-reset boundary are intentional UI extensions. Unrelated supplied markup/styles are preserved by exact exception comparison."
+}

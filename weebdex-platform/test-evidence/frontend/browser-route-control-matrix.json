@@ -1,0 +1,649 @@
+{
+  "supplied_unique_routes": 51,
+  "route_count_with_reconstruction": 54,
+  "routes": [
+    {
+      "route": "/",
+      "source_files": [
+        "src/routes/(app)/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/about",
+      "source_files": [
+        "src/routes/(app)/about/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/announcements",
+      "source_files": [
+        "platform-integrations/frontend-reconstruction/announcements/routes/+page.svelte"
+      ],
+      "supplied_route": false,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/announcements/[id]",
+      "source_files": [
+        "platform-integrations/frontend-reconstruction/announcements/routes/[id]/+page.svelte"
+      ],
+      "supplied_route": false,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/announcements/manage",
+      "source_files": [
+        "platform-integrations/frontend-reconstruction/announcements/routes/manage/+page.svelte"
+      ],
+      "supplied_route": false,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/auth/error",
+      "source_files": [
+        "src/routes/(app)/auth/error/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/auth/login",
+      "source_files": [
+        "src/routes/(app)/auth/login/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/auth/logout",
+      "source_files": [
+        "src/routes/(app)/auth/logout/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/auth/recovery",
+      "source_files": [
+        "src/routes/(app)/auth/recovery/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/auth/register",
+      "source_files": [
+        "src/routes/(app)/auth/register/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/auth/verification",
+      "source_files": [
+        "src/routes/(app)/auth/verification/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/author/[id]",
+      "source_files": [
+        "src/routes/(app)/author/[id]/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/author/[id]/settings",
+      "source_files": [
+        "src/routes/(app)/author/[id]/settings/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/author/[id]/uploads",
+      "source_files": [
+        "src/routes/(app)/author/[id]/uploads/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/chapter/[id]",
+      "source_files": [
+        "src/routes/(app)/chapter/[id]/+page.ts",
+        "src/routes/(app)/chapter/[id]/+page@.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/chapter/[id]/[page]",
+      "source_files": [
+        "src/routes/(app)/chapter/[id]/[page]/+page.ts",
+        "src/routes/(app)/chapter/[id]/[page]/+page@.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/chapter/[id]/edit",
+      "source_files": [
+        "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+        "src/routes/(app)/chapter/[id]/edit/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/create/group",
+      "source_files": [
+        "src/routes/(app)/create/group/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/create/title",
+      "source_files": [
+        "src/routes/(app)/create/title/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/drafts/title",
+      "source_files": [
+        "src/routes/(app)/drafts/title/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/forums/threads/[id]",
+      "source_files": [
+        "src/routes/(app)/forums/threads/[id]/+page.svelte",
+        "src/routes/(app)/forums/threads/[id]/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/forums/threads/[id]/[postId]",
+      "source_files": [
+        "src/routes/(app)/forums/threads/[id]/[postId]/+page.svelte",
+        "src/routes/(app)/forums/threads/[id]/[postId]/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/group/[id]",
+      "source_files": [
+        "src/routes/(app)/group/[id]/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/group/[id]/comments",
+      "source_files": [
+        "src/routes/(app)/group/[id]/comments/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/group/[id]/settings",
+      "source_files": [
+        "src/routes/(app)/group/[id]/settings/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/group/[id]/uploads",
+      "source_files": [
+        "src/routes/(app)/group/[id]/uploads/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/groups",
+      "source_files": [
+        "src/routes/(app)/groups/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/guidelines",
+      "source_files": [
+        "src/routes/(app)/guidelines/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/history",
+      "source_files": [
+        "src/routes/(app)/history/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/library",
+      "source_files": [
+        "src/routes/(app)/library/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/library/updates",
+      "source_files": [
+        "src/routes/(app)/library/updates/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/my/reports",
+      "source_files": [
+        "src/routes/(app)/my/reports/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/popular",
+      "source_files": [
+        "src/routes/(app)/popular/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/privacy",
+      "source_files": [
+        "src/routes/(app)/privacy/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/search",
+      "source_files": [
+        "src/routes/(app)/search/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/settings",
+      "source_files": [
+        "src/routes/(app)/settings/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/settings/[key]",
+      "source_files": [
+        "src/routes/(app)/settings/[key]/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/settings/account",
+      "source_files": [
+        "src/routes/(app)/settings/account/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/settings/client",
+      "source_files": [
+        "src/routes/(app)/settings/client/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/settings/library",
+      "source_files": [
+        "src/routes/(app)/settings/library/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/settings/preferences",
+      "source_files": [
+        "src/routes/(app)/settings/preferences/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/terms",
+      "source_files": [
+        "src/routes/(app)/terms/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/title/[id]",
+      "source_files": [
+        "src/routes/(app)/title/[id]/+page.svelte",
+        "src/routes/(app)/title/[id]/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/title/[id]/[slug]",
+      "source_files": [
+        "src/routes/(app)/title/[id]/[slug]/+page.svelte",
+        "src/routes/(app)/title/[id]/[slug]/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/title/[id]/edit",
+      "source_files": [
+        "src/routes/(app)/title/[id]/edit/+page.svelte",
+        "src/routes/(app)/title/[id]/edit/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/title/[id]/upload",
+      "source_files": [
+        "src/routes/(app)/title/[id]/upload/+page.svelte",
+        "src/routes/(app)/title/[id]/upload/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/title/random",
+      "source_files": [
+        "src/routes/(app)/title/random/+page.svelte",
+        "src/routes/(app)/title/random/+page.ts"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/trending",
+      "source_files": [
+        "src/routes/(app)/trending/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/updates",
+      "source_files": [
+        "src/routes/(app)/updates/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/user/[id]",
+      "source_files": [
+        "src/routes/(app)/user/[id]/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/user/[id]/comments",
+      "source_files": [
+        "src/routes/(app)/user/[id]/comments/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/user/[id]/settings",
+      "source_files": [
+        "src/routes/(app)/user/[id]/settings/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/user/[id]/uploads",
+      "source_files": [
+        "src/routes/(app)/user/[id]/uploads/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    },
+    {
+      "route": "/users",
+      "source_files": [
+        "src/routes/(app)/users/+page.svelte"
+      ],
+      "supplied_route": true,
+      "browser_status": "not_run",
+      "visible_control_checks": [],
+      "notes": "Requires real Chromium and persisted fixture; source/HTTP checks do not count as browser acceptance."
+    }
+  ],
+  "control_journeys": [
+    {
+      "area": "startup",
+      "route": "/",
+      "acceptance": "CSP bootstrap, CSS/font loading, navigation and no analytics delivery",
+      "status": "not_run"
+    },
+    {
+      "area": "auth",
+      "route": "/auth/register",
+      "acceptance": "Real signup, local mail verification and session hydration",
+      "status": "not_run"
+    },
+    {
+      "area": "auth",
+      "route": "/auth/login",
+      "acceptance": "Rejected password, correct login, session refresh, logout and repeat login",
+      "status": "not_run"
+    },
+    {
+      "area": "auth",
+      "route": "/auth/recovery",
+      "acceptance": "Local mail recovery links and invalid/expired flow feedback",
+      "status": "not_run"
+    },
+    {
+      "area": "preferences",
+      "route": "/settings/preferences",
+      "acceptance": "Hydrated authoritative version, save/reset, all ratings false and persistence",
+      "status": "not_run"
+    },
+    {
+      "area": "filters",
+      "route": "/search",
+      "acceptance": "Empty selection sentinel, safe selection, year/tag/order/page changes and Reset",
+      "status": "not_run"
+    },
+    {
+      "area": "library",
+      "route": "/settings/library",
+      "acceptance": "Known CSV import, rejected unknown CSV, MAL mapping rejection and export download",
+      "status": "not_run"
+    },
+    {
+      "area": "library",
+      "route": "/library",
+      "acceptance": "Persisted followed titles, reading-status changes and unfollow",
+      "status": "not_run"
+    },
+    {
+      "area": "upload",
+      "route": "/title/[id]/upload",
+      "acceptance": "Actual PNG pages, corrupt PNG rejection, ZIP failure, mutex recovery and instance-local receipt",
+      "status": "not_run"
+    },
+    {
+      "area": "reader",
+      "route": "/chapter/[id]",
+      "acceptance": "Actual decoded images, range206, failed page/retry, page navigation and cleanup",
+      "status": "not_run"
+    },
+    {
+      "area": "community",
+      "route": "/group/[id]",
+      "acceptance": "Claim form, truthful clipboard denial, submitted report and staff moderation",
+      "status": "not_run"
+    },
+    {
+      "area": "community",
+      "route": "/forums/threads/[id]",
+      "acceptance": "New reply, revision/history/removal and role fences",
+      "status": "not_run"
+    },
+    {
+      "area": "announcements",
+      "route": "/announcements/manage",
+      "acceptance": "Staff draft/create/edit/publish/pin/delete and anonymous forbidden behavior",
+      "status": "not_run"
+    },
+    {
+      "area": "pwa",
+      "route": "/",
+      "acceptance": "Ordinary service-worker registration, reload/update and offline assets behavior",
+      "status": "not_run"
+    },
+    {
+      "area": "native_delete",
+      "route": "/chapter/[id]/edit",
+      "acceptance": "Instance-local hide versus signed deletion-request pending feedback; no peer removal guarantee",
+      "status": "not_run"
+    }
+  ],
+  "scope": "Source-bound browser matrix; no completion inferred from a homepage screenshot or backend-only seam tests."
+}

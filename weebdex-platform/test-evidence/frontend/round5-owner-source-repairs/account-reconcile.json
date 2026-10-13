@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-13T05:28:34.086936+00:00",
+  "source_only": true,
+  "runtime_tests_executed": false,
+  "finding": "Round5 delayed authoritativeAccount reconciliation overwrites newer selected Session",
+  "path": "platform-integrations/local-library/library.ts",
+  "before_sha256": "453e7dc49c80c7093062d989aa182d343595fb1290fda4448b0d08d8765fea77",
+  "after_sha256": "7dba07f8120b85b7d63454bae10e0c255cb16eb775f4d0ab311f92bddf432520",
+  "behavior": "Capture selected library context, expected account ID and all-Session-write generation before awaited validity; reject old responses at body/reconciliation boundaries, final synchronous fence immediately before Session.set. Same-ID writes and A-B-A transitions invalidate too. Accepted mutation uncertainty is surfaced and no write is replayed."
+}

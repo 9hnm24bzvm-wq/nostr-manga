@@ -1,0 +1,13 @@
+# Local managed-group action attribution
+
+Schema44 implements local-only attribution for successful managed-group publication and deletion-request commits; schema51 adds administrator-managed profile commits. Each record contains the group key, authenticated acting member, operation, signed event ID, checked permission version and database timestamp. The insert shares the transaction with the hosted publication transition, first deletion-request insertion, or profile-head change. Failure to record attribution rolls that operation back and returns a retryable HTTP503. Failed authorization attempts do not create successful-action records.
+
+Attribution identifies the first successful local commit. Retrying the same signed event cannot replace its original actor. Already-hosted or imported events receive no inferred/backfilled member attribution. Public group events retain ordinary group-key signatures and unchanged tags; these rows are not projected into strfry or federation inventories.
+
+Only the instance operator may GET `/admin/groups/{key}/audit`, using NIP98 authorization bound to the complete request URI. Group administrators, publishers and removal members do not gain this operator privilege. The endpoint accepts `limit` (1..100, default50) and optional positive `before_id`. Results are descending local IDs; `next_before_id` is present when another page exists. This is a live keyset view, not a fixed retained snapshot. Unknown groups return an empty page. No API allows modifying attribution.
+
+Rows persist through service restart and ordinary database backups. They contain member identities and must be treated as private operator data. They are not tamper-proof against a database administrator and are not a complete security log of uploads, permission changes or failed requests. No automatic retention deletion has been added; operators should account for table growth in their storage plan. Public portable group-membership export remains outside the accepted requirement.
+
+Evidence: `http_groups` exercises operator-only access, pagination, bounds, restart, unchanged public tags, and injected audit-write failures rolling back publication/deletion. `group_fences` checks denied actions leave no rows and duplicate publication commits preserve the first actor. Check current regression logs before treating either fixture as passed for a checkpoint.
+
+Profile audit rollback and revocation are covered by `http_group_profile`. Retry-safe group publication acknowledgment preserves the first actor and is covered by `http_group_retry`; see [retry contract](group-publication-retries.md).

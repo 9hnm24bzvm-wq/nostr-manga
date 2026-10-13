@@ -1,0 +1,32 @@
+# Private state, credentials, dependencies and build outputs
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.db
+*.sqlite*
+*.log
+*.jsonl
+*.har
+*.trace
+*.enc
+*.zip
+node_modules/
+target/
+__pycache__/
+*.pyc
+.venv/
+.cache/
+.build/
+vendor/
+test-runtime/
+build-artifacts/
+artifacts/
+# Supplied, public-only original frontend configuration is intentionally tracked
+!weebdex-platform/frontend/.env.development
+!weebdex-platform/frontend/.env.production
+# Reviewed original browser assets are part of the preserved checkpoint source scope
+!manga-protocol-lab/browser-client/public/vendor/
+!manga-protocol-lab/browser-client/public/vendor/**

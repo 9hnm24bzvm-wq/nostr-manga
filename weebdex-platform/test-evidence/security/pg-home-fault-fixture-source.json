@@ -1,0 +1,148 @@
+{
+  "status": "source_only_optional_pg_availability_fault_frozen_pending_independent_review",
+  "updated_utc": "2026-10-13T12:17:26.028693+00:00",
+  "reviewed_four_control_supervisor_sha256": "69e5827b634925773ee53f03925f6c0f0dca0ad32834ab281b03d7175c2d17a1",
+  "source_sha256": {
+    "tests/runtime/browser_fixture.py": "00c5edf0fb1f0afc2808a078d79b2a2bc688690a60652c69d1c746f6771c42d5",
+    "tests/runtime/browser_pg_fault_watchdog.py": "8ba6cc309eef8242da35b7d843c29e4349081c3f7eab1a9073b3358c93bbedef",
+    "backend/examples/browser_fixture_provisioner.rs": "dcfe71335710e5ac5f9e201a06c533005417823508cf5b676fff002c90d3d559",
+    "backend/examples/browser_fixture/ui_regressions.rs": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+    "docs/browser-fixture-contract.md": "4fa6aed771dad1e6a082dc71ece5c96556203c5b6ed302d897f12943dc27f3de"
+  },
+  "python_ast_parse": "passed_without_runtime",
+  "optional_flag": "--pg-home-fault-controls",
+  "actions": [
+    "pg-home-fault-begin",
+    "pg-home-fault-resume"
+  ],
+  "allowed_browser_kind": "ui14-home-failures",
+  "maximum_faults": 1,
+  "outage_seconds": 15,
+  "recovery_observation_budget_seconds": 60,
+  "phase_reserve_seconds": 20,
+  "minimum_phase_and_fixture_remaining_seconds": 80,
+  "independent_watchdog_maximum_seconds": 4200,
+  "watchdog_teardown_budget_seconds": 30,
+  "actual_application_dependency_fault": true,
+  "authentication_or_network_policy_modified": false,
+  "fixed_same_cluster_executable_arguments_config": true,
+  "arbitrary_targets_sql_pids_commands_paths_allowed": false,
+  "production_files_modified": false,
+  "runtime_executed": false,
+  "parent_runtime_gate": "closed",
+  "requires": [
+    "Fresh independent fault seam source review",
+    "Fresh final backend/frontend pins",
+    "Parent runtime clearance",
+    "Real 503/recovery assertions and watchdog terminal cleanup evidence"
+  ],
+  "historical_revisions": [
+    {
+      "updated_utc": "2026-10-13T10:06:44.049707+00:00",
+      "source_sha256": {
+        "tests/runtime/browser_fixture.py": "a05a0979804e17c15d06eb1528138d18a9b54a328a45c18097f6e821f748b697",
+        "tests/runtime/browser_pg_fault_watchdog.py": "0624c7a9bdc4ea7853983a63fe1c31c0509f006703bf29e8d351989644f50b92",
+        "backend/examples/browser_fixture_provisioner.rs": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+        "backend/examples/browser_fixture/ui_regressions.rs": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+        "docs/browser-fixture-contract.md": "ae04859326ed6ab9e467afcff4e856c10530dbd13411fbc8b3b14529adefb8a9"
+      }
+    },
+    {
+      "updated_utc": "2026-10-13T10:15:25.325548+00:00",
+      "source_sha256": {
+        "tests/runtime/browser_fixture.py": "2f5caccde5292d226c2616a9566cb711741bfb6f1589100950700d63419bf434",
+        "tests/runtime/browser_pg_fault_watchdog.py": "0624c7a9bdc4ea7853983a63fe1c31c0509f006703bf29e8d351989644f50b92",
+        "backend/examples/browser_fixture_provisioner.rs": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+        "backend/examples/browser_fixture/ui_regressions.rs": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+        "docs/browser-fixture-contract.md": "3f498c668e277b359991de8d4acdd9b63de53b2e4cc04cd6c12384b1c846b1bb"
+      },
+      "runtime_executed": false,
+      "source_scope_note": "BF-07 supervisor terminal predicates; subsequent finite review reported BF-08 in watchdog pre-stop classification."
+    },
+    {
+      "updated_utc": "2026-10-13T12:04:27.946209+00:00",
+      "source_sha256": {
+        "tests/runtime/browser_fixture.py": "2f5caccde5292d226c2616a9566cb711741bfb6f1589100950700d63419bf434",
+        "tests/runtime/browser_pg_fault_watchdog.py": "8ba6cc309eef8242da35b7d843c29e4349081c3f7eab1a9073b3358c93bbedef",
+        "backend/examples/browser_fixture_provisioner.rs": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+        "backend/examples/browser_fixture/ui_regressions.rs": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+        "docs/browser-fixture-contract.md": "4fa6aed771dad1e6a082dc71ece5c96556203c5b6ed302d897f12943dc27f3de"
+      }
+    },
+    {
+      "updated_utc": "2026-10-13T12:11:46.156968+00:00",
+      "source_sha256": {
+        "tests/runtime/browser_fixture.py": "c7af1cc05ffb88d19a8741819daa3800d9430ba7f308e0b76f38536fbd071627",
+        "tests/runtime/browser_pg_fault_watchdog.py": "8ba6cc309eef8242da35b7d843c29e4349081c3f7eab1a9073b3358c93bbedef",
+        "backend/examples/browser_fixture_provisioner.rs": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+        "backend/examples/browser_fixture/ui_regressions.rs": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+        "docs/browser-fixture-contract.md": "4fa6aed771dad1e6a082dc71ece5c96556203c5b6ed302d897f12943dc27f3de"
+      }
+    },
+    {
+      "updated_utc": "2026-10-13T12:16:08.270791+00:00",
+      "source_sha256": {
+        "tests/runtime/browser_fixture.py": "a7fbce8d049ed8aeabec84d39b4bf95219594df286ccaba8e93561bcbb67033b",
+        "tests/runtime/browser_pg_fault_watchdog.py": "8ba6cc309eef8242da35b7d843c29e4349081c3f7eab1a9073b3358c93bbedef",
+        "backend/examples/browser_fixture_provisioner.rs": "dcfe71335710e5ac5f9e201a06c533005417823508cf5b676fff002c90d3d559",
+        "backend/examples/browser_fixture/ui_regressions.rs": "98b2a1be4c85fcb5152ba0ad395b4e92fb5d09c0680e2333a11428f2551ee944",
+        "docs/browser-fixture-contract.md": "4fa6aed771dad1e6a082dc71ece5c96556203c5b6ed302d897f12943dc27f3de"
+      }
+    }
+  ],
+  "compiler": {
+    "candidate": "019",
+    "source_candidate_sha256": "4e696538df1490f81246470a7db9ba17ffdeb8c7c42ab9fa57251ac75229ad92",
+    "build_source_index_path": "test-evidence/final/backend-current-build.json",
+    "build_source_index_sha256": "6c7b406860ba73233cab51274ba5850462694fbbf643e8ae2424068fb1c130e7",
+    "all_target_check": "passed",
+    "test_executable_codegen": "passed",
+    "normal_binary_sha256": "e12349fe5f861b742b8915d3aa6265c5cd2d7fd232d4b12568492f04d46bbf33",
+    "provisioner_binary_sha256": "639d83407e2b7e72b3b1d3a21a254c5416f1d5910f10d40c321183db413f5f8f",
+    "compiler_owner": "implement_weebdex_catalog_api",
+    "requires_real_migration": 85,
+    "runtime_executed": false,
+    "provisioner_candidate": "020"
+  },
+  "browser_source_sha256": {
+    "scripts/browser-acceptance.mjs": "108efc390e3d43c2333033fd87dbe912329e405004875f51de208b9ad08d57a7",
+    "scripts/browser-ui11-16-journeys.mjs": "4a4f31f99e2bcf86485c3aebb26108fd5eff3a9e14800145fa12b4d589e63906"
+  },
+  "terminal_provenance_requires": [
+    "actual PG returncode0",
+    "registered watchdog returncode0",
+    "explicit watchdog error:null",
+    "forced:false",
+    "empty owned descendants",
+    "closed ports",
+    "parent cumulative history retained",
+    "no replacement PG terminal observation at the watchdog pre-stop poll"
+  ],
+  "watchdog_pre_stop_terminal_guard": {
+    "finding": "BF-08",
+    "prior_review": "test-evidence/security/pg-watchdog-terminal-review.md",
+    "classification": "Single initial cleanup PG poll classifies already-terminal replacement before watchdog stop; all cleanup return paths retain the flag; finally retains RuntimeError without overwriting an existing error.",
+    "watchdog_outcome": "nonzero for already-terminal replacement, including actual PG returncode0",
+    "disarmed_original_preserved": true,
+    "runtime_executed": false,
+    "independent_review": "pending"
+  },
+  "operational_http_expectation_correction": {
+    "source_route": "backend/src/domains/auth/flows.rs:39",
+    "post_only_dynamic_flow_get": 405,
+    "unknown_kind_browser_get": 404,
+    "no_store_and_non_spa_required": true,
+    "runtime_validation_pending": true
+  },
+  "operational_missing_media_expectation_correction": {
+    "source_validator": "backend/src/domains/uploads/media.rs:253-261",
+    "valid_absent_page_uri": "/data/Unknown000/Unknown001.png",
+    "expected_status": 404,
+    "malformed_name_uri": "/data/Unknown000/unknown.png",
+    "malformed_status": 400,
+    "malformed_json_no_store_required": true,
+    "remaining_operational_route_expectations_source_checked": true,
+    "runtime_validation_pending": true,
+    "malformed_json_code": "invalid_request"
+  }
+}

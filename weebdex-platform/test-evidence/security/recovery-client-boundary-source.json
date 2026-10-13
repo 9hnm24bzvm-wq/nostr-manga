@@ -1,0 +1,24 @@
+{
+  "updated_utc": "2026-10-13T06:51:57.363679+00:00",
+  "status": "defensive_source_refactor_compiled_codegen_complete_runtime_pending",
+  "source_hashes": {
+    "weebdex-platform/backend/src/domains/auth/clients.rs": "3537f7634a74d83d4a9416ebdb0dd9eb76d6d5d0fe14e730772b5a968bda172d",
+    "weebdex-platform/backend/tests/auth_http.rs": "f8f2644713905fe3b0601ab1490706cea7123c5fa49275cc4fd3013729eef558"
+  },
+  "finding": "Earlier recovery/client-leak claim was incorrect: the prepatch require_principal already rejected recovery cookies, and its local is_api_client branch rejected bearers. No prepatch GET/client bypass was substantiated.",
+  "patch": "Defensive consolidation onto existing require_browser_session, preserving prior normal-browser-only behavior; additional actual recovery-cookie and normal-browser positive-control regression assertions.",
+  "reviewed_private_auth_gets": {
+    "GET/api/client": "Prior require_principal excluded recovery and local is_api_client branch excluded bearers. Shared browser helper retains both boundaries.",
+    "GET/auth/sessions/whoami": "Existing normal-browser guard, no recovery identity.",
+    "GET/api/auth/check": "Recovery returns only reset capability and empty roles/permissions; no personal DB projection. Normal browser receives authorized private projection; API bearer denied.",
+    "GET/auth/self-service/settings/browser and settings/flows": "Only session-bound normal browser or explicitly restricted recovery password flow; recovery nodes omit identity traits.",
+    "Other browser flow creation/reads": "Recovery denied outside settings; logout may revoke its own limited capability and returns no personal projection. Browser-bound flow-error returns generic flow error only.",
+    "Verification/recovery token redemption": "Unexpired delivered one-time hashed capability, not a private account projection; recovery issues reset-only cookie."
+  },
+  "acceptance_source": "Genuine mail-delivered recovery cookie and actual normal-browser client creation/list positive control; supported private GET/client,user/follows/manga,whoami must deny recovery without client metadata. GET/settings is not a supported route and is not counted as authorization evidence.",
+  "prior_security_verdict_scope_invalidated": false,
+  "fresh_independent_review_required": true,
+  "runtime_tests_executed": 0,
+  "current_check": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-013/cargo-check-current-001-result.json",
+  "current_test_codegen": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-013/cargo-codegen-tests-003-result.json"
+}

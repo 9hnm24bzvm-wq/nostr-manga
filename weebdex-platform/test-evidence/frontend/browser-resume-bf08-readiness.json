@@ -1,0 +1,63 @@
+{
+  "utc": "2026-10-13T12:06:45.622066+00:00",
+  "startup_plan_sha256": "eb06edc33636383117f4bfa3801e0069267abf081d0b883faf06a9a75974ec41",
+  "execution_allowed": false,
+  "checks": [
+    {
+      "path": "scripts/browser-acceptance.mjs",
+      "expected": "108efc390e3d43c2333033fd87dbe912329e405004875f51de208b9ad08d57a7",
+      "actual": "108efc390e3d43c2333033fd87dbe912329e405004875f51de208b9ad08d57a7",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-journeys.mjs",
+      "expected": "65f5e5d115f35d15608e4075957172354978727cead70cfbeea6b64a0c0e5efc",
+      "actual": "65f5e5d115f35d15608e4075957172354978727cead70cfbeea6b64a0c0e5efc",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-signed-journeys.mjs",
+      "expected": "af01c43b9753d8cc4d3764afef8adfd25d4762cd5bb8b978c40e8359bbbd19d5",
+      "actual": "af01c43b9753d8cc4d3764afef8adfd25d4762cd5bb8b978c40e8359bbbd19d5",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-ui10-journeys.mjs",
+      "expected": "d7376ecc6aca9ebbcbf26f4e077a3c7c7be765d9f19f6397fbe091d1eb5e8ee6",
+      "actual": "d7376ecc6aca9ebbcbf26f4e077a3c7c7be765d9f19f6397fbe091d1eb5e8ee6",
+      "matched": true
+    },
+    {
+      "path": "tests/runtime/browser_fixture.py",
+      "expected": "2f5caccde5292d226c2616a9566cb711741bfb6f1589100950700d63419bf434",
+      "actual": "2f5caccde5292d226c2616a9566cb711741bfb6f1589100950700d63419bf434",
+      "matched": true
+    },
+    {
+      "path": "backend/examples/browser_fixture_provisioner.rs",
+      "expected": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+      "actual": "59a3fcbbf65a096c82f61ca0b1d51c790b49543c9130026effba2eb4b2ae7845",
+      "matched": true
+    },
+    {
+      "path": "scripts/browser-ui11-16-journeys.mjs",
+      "expected": "4a4f31f99e2bcf86485c3aebb26108fd5eff3a9e14800145fa12b4d589e63906",
+      "actual": "4a4f31f99e2bcf86485c3aebb26108fd5eff3a9e14800145fa12b4d589e63906",
+      "matched": true
+    },
+    {
+      "path": "tests/runtime/browser_pg_fault_watchdog.py",
+      "expected": "8ba6cc309eef8242da35b7d843c29e4349081c3f7eab1a9073b3358c93bbedef",
+      "actual": "8ba6cc309eef8242da35b7d843c29e4349081c3f7eab1a9073b3358c93bbedef",
+      "matched": true
+    },
+    {
+      "path": "docs/browser-fixture-contract.md",
+      "expected": "4fa6aed771dad1e6a082dc71ece5c96556203c5b6ed302d897f12943dc27f3de",
+      "actual": "4fa6aed771dad1e6a082dc71ece5c96556203c5b6ed302d897f12943dc27f3de",
+      "matched": true
+    }
+  ],
+  "all_match": true,
+  "runtime_executed": false
+}

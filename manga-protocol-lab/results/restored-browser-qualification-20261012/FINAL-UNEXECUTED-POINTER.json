@@ -1,0 +1,29 @@
+{
+  "status": "static-review-complete-execution-held",
+  "source_manifest": {
+    "path": "SOURCE-FREEZE-003.json",
+    "sha256": "d08074e198665bba32dd8920e0c88ff4d0f3ca675359998f38218fcc4acd1440"
+  },
+  "independent_review": {
+    "markdown": "INDEPENDENT-STATIC-REVIEW-003.md",
+    "markdown_sha256": "63a2937638da628537024f56b18455188e2567d29499bab41621b308720f9ada",
+    "json": "INDEPENDENT-STATIC-REVIEW-003.json",
+    "json_sha256": "e3b6571ab4bb5c30cdc02a21e376318d95166b85f76adf23814daee2aeffc69d",
+    "scope": "Static source review only; no remaining identified blocker for future controlled qualification."
+  },
+  "preserved_previous_revision": "revisions/002/",
+  "current_helper_tests_run": 0,
+  "current_helper_services_launched": 0,
+  "current_browser_qualification_started": false,
+  "execution_hold": "The separate npm session88480 has no verified terminal cleanup receipt. No new processes, tests, services or browser qualification may launch until the parent resolves that lifecycle hold.",
+  "backup_status": "No remote upload of this bundle was performed; no configured authorized GitHub destination is established.",
+  "remaining_qualification": [
+    "Actual generator/export CLI and controller HTTP/process seams",
+    "Absolute slow-trickle, owner deadline, signal and joined cleanup cases",
+    "Owned signer path and signing-scope HTTP cases",
+    "Signed public proof negative cases",
+    "Fresh browser-host reachability and four-record actual UI roundtrip",
+    "Review small-case evidence before larger30202/500202-record cases"
+  ],
+  "prior_completed_service_smoke": "../restored-service-smoke-20261012/REPORT.md"
+}

@@ -1,0 +1,2107 @@
+[
+  {
+    "operation": "Analytics.Manga",
+    "method": "POST",
+    "url_template": "/analytics/manga/${id}/views",
+    "source": "src/lib/API/Analytics.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Analytics.Manga",
+        "source": "src/routes/(app)/title/Analytics.svelte",
+        "line": 21
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Analytics.Chapter",
+    "method": "POST",
+    "url_template": "/analytics/chapter/${id}/views",
+    "source": "src/lib/API/Analytics.ts",
+    "line": 9,
+    "ui_call_sites": [
+      {
+        "operation": "Analytics.Chapter",
+        "source": "src/lib/components/reader/reader-analytics.svelte",
+        "line": 21
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Auth.Check",
+    "method": "GET",
+    "url_template": "/auth/check",
+    "source": "src/lib/API/Auth.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Auth.Check",
+        "source": "src/lib/stores/Session.ts",
+        "line": 12
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Author.Search",
+    "method": "GET",
+    "url_template": "/author${searchParams.toString()}",
+    "source": "src/lib/API/Author.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Author.Search",
+        "source": "src/lib/components/SearchDialog.svelte",
+        "line": 48
+      },
+      {
+        "operation": "Author.Search",
+        "source": "src/lib/components/draft/manga/MetadataSection.svelte",
+        "line": 41
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Author.Get",
+    "method": "GET",
+    "url_template": "/author/${id}",
+    "source": "src/lib/API/Author.ts",
+    "line": 9,
+    "ui_call_sites": [
+      {
+        "operation": "Author.Get",
+        "source": "src/routes/(app)/author/[id]/+layout.ts",
+        "line": 6
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Author.Create",
+    "method": "POST",
+    "url_template": "/author",
+    "source": "src/lib/API/Author.ts",
+    "line": 14,
+    "ui_call_sites": [
+      {
+        "operation": "Author.Create",
+        "source": "src/lib/components/draft/manga/AuthorCreateDialog.svelte",
+        "line": 33
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Author.Update",
+    "method": "PUT",
+    "url_template": "/author/${id}",
+    "source": "src/lib/API/Author.ts",
+    "line": 36,
+    "ui_call_sites": [
+      {
+        "operation": "Author.Update",
+        "source": "src/routes/(app)/author/[id]/settings/+page.svelte",
+        "line": 97
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Author.Delete",
+    "method": "DELETE",
+    "url_template": "/author/${id}",
+    "source": "src/lib/API/Author.ts",
+    "line": 42,
+    "ui_call_sites": [
+      {
+        "operation": "Author.Delete",
+        "source": "src/routes/(app)/author/[id]/settings/+page.svelte",
+        "line": 133
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.Search",
+    "method": "GET",
+    "url_template": "/chapter${searchParams.toString()}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.Search",
+        "source": "src/routes/(app)/author/[id]/Author.svelte",
+        "line": 71
+      },
+      {
+        "operation": "Chapter.Search",
+        "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+        "line": 70
+      },
+      {
+        "operation": "Chapter.Search",
+        "source": "src/routes/(app)/group/[id]/Group.svelte",
+        "line": 113
+      },
+      {
+        "operation": "Chapter.Search",
+        "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+        "line": 70
+      },
+      {
+        "operation": "Chapter.Search",
+        "source": "src/routes/(app)/user/[id]/User.svelte",
+        "line": 111
+      },
+      {
+        "operation": "Chapter.Search",
+        "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+        "line": 71
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.LatestUpdates",
+    "method": "GET",
+    "url_template": "/chapter/updates${searchParams.toString()}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 9,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.LatestUpdates",
+        "source": "src/lib/components/LatestUpdatesGrid.svelte",
+        "line": 60
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.LatestFeed",
+    "method": "GET",
+    "url_template": "/chapter/feed${searchParams.toString()}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 14,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.LatestFeed",
+        "source": "src/lib/components/LatestUpdatesSection.svelte",
+        "line": 70
+      },
+      {
+        "operation": "Chapter.LatestFeed",
+        "source": "src/routes/(app)/updates/+page.svelte",
+        "line": 25
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.Trending",
+    "method": "GET",
+    "url_template": "/chapter/top${searchParams.toString()}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 19,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.Trending",
+        "source": "src/routes/(app)/popular/MostReadChapter.svelte",
+        "line": 46
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.Get",
+    "method": "GET",
+    "url_template": "/chapter/${id}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 24,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.Get",
+        "source": "src/routes/(app)/chapter/[id]/+page.ts",
+        "line": 6
+      },
+      {
+        "operation": "Chapter.Get",
+        "source": "src/routes/(app)/chapter/[id]/[page]/+page.ts",
+        "line": 6
+      },
+      {
+        "operation": "Chapter.Get",
+        "source": "src/routes/(app)/chapter/[id]/edit/+page.ts",
+        "line": 12
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.List",
+    "method": "GET",
+    "url_template": "/manga/${mangaId}/chapters${searchParams.toString()}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 43,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.List",
+        "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+        "line": 33
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.Aggregate",
+    "method": "GET",
+    "url_template": "/manga/${mangaId}/aggregate${searchParams.toString()}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 48,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.Aggregate",
+        "source": "src/lib/components/reader/reader-provider.svelte",
+        "line": 78
+      },
+      {
+        "operation": "Chapter.Aggregate",
+        "source": "src/routes/(app)/title/MangaActions.svelte",
+        "line": 182
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.Update",
+    "method": "PUT",
+    "url_template": "/chapter/${id}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 65,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.Update",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 98
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.Claim",
+    "method": "POST",
+    "url_template": "/chapter/${id}/claim",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 71,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.Claim",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 131
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Chapter.Delete",
+    "method": "DELETE",
+    "url_template": "/chapter/${id}",
+    "source": "src/lib/API/Chapter.ts",
+    "line": 77,
+    "ui_call_sites": [
+      {
+        "operation": "Chapter.Delete",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 160
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "ChapterHistory.Search",
+    "method": "GET",
+    "url_template": "/user/history/manga${searchParams.toString()}",
+    "source": "src/lib/API/ChapterHistory.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "ChapterHistory.Search",
+        "source": "src/lib/components/ChapterFeed.svelte",
+        "line": 112
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "ChapterHistory.List",
+    "method": "GET",
+    "url_template": "/user/history/manga/${mangaId}",
+    "source": "src/lib/API/ChapterHistory.ts",
+    "line": 12,
+    "ui_call_sites": [
+      {
+        "operation": "ChapterHistory.List",
+        "source": "src/routes/(app)/title/Manga.svelte",
+        "line": 133
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "ChapterHistory.Feed",
+    "method": "GET",
+    "url_template": "/user/history/manga/feed${searchParams.toString()}",
+    "source": "src/lib/API/ChapterHistory.ts",
+    "line": 18,
+    "ui_call_sites": [
+      {
+        "operation": "ChapterHistory.Feed",
+        "source": "src/routes/(app)/history/+page.svelte",
+        "line": 25
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "ChapterHistory.UpdateBatch",
+    "method": "POST",
+    "url_template": "/user/history/manga/${mangaId}",
+    "source": "src/lib/API/ChapterHistory.ts",
+    "line": 31,
+    "ui_call_sites": [
+      {
+        "operation": "ChapterHistory.UpdateBatch",
+        "source": "src/lib/components/ChapterFeedChapterEntry.svelte",
+        "line": 42
+      },
+      {
+        "operation": "ChapterHistory.UpdateBatch",
+        "source": "src/lib/components/ChapterListEntry.svelte",
+        "line": 44
+      },
+      {
+        "operation": "ChapterHistory.UpdateBatch",
+        "source": "src/lib/components/reader/reader-history.svelte",
+        "line": 10
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Client.List",
+    "method": "GET",
+    "url_template": "/client",
+    "source": "src/lib/API/Client.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Client.List",
+        "source": "src/routes/(app)/settings/client/+page.svelte",
+        "line": 24
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Client.Create",
+    "method": "POST",
+    "url_template": "/client",
+    "source": "src/lib/API/Client.ts",
+    "line": 10,
+    "ui_call_sites": [
+      {
+        "operation": "Client.Create",
+        "source": "src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+        "line": 31
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Client.Update",
+    "method": "POST",
+    "url_template": "/client/${id}",
+    "source": "src/lib/API/Client.ts",
+    "line": 16,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Client.Delete",
+    "method": "DELETE",
+    "url_template": "/client/${id}",
+    "source": "src/lib/API/Client.ts",
+    "line": 22,
+    "ui_call_sites": [
+      {
+        "operation": "Client.Delete",
+        "source": "src/routes/(app)/settings/client/ClientEntry.svelte",
+        "line": 62
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Client.RegenerateSecret",
+    "method": "POST",
+    "url_template": "/client/${id}/secret",
+    "source": "src/lib/API/Client.ts",
+    "line": 28,
+    "ui_call_sites": [
+      {
+        "operation": "Client.RegenerateSecret",
+        "source": "src/routes/(app)/settings/client/ClientEntry.svelte",
+        "line": 32
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Cover.List",
+    "method": "GET",
+    "url_template": "/manga/${mangaId}/covers",
+    "source": "src/lib/API/Cover.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Cover.List",
+        "source": "src/routes/(app)/title/MangaCoversSection.svelte",
+        "line": 34
+      },
+      {
+        "operation": "Cover.List",
+        "source": "src/routes/(app)/title/[id]/edit/+page.svelte",
+        "line": 39
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Cover.Get",
+    "method": "GET",
+    "url_template": "/cover/${id}",
+    "source": "src/lib/API/Cover.ts",
+    "line": 9,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Cover.Upload",
+    "method": "POST",
+    "url_template": "/cover/${mangaId}",
+    "source": "src/lib/API/Cover.ts",
+    "line": 14,
+    "ui_call_sites": [
+      {
+        "operation": "Cover.Upload",
+        "source": "src/lib/components/draft/manga/MangaCreate.svelte",
+        "line": 202
+      },
+      {
+        "operation": "Cover.Upload",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 289
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Cover.Update",
+    "method": "PUT",
+    "url_template": "/cover/${id}",
+    "source": "src/lib/API/Cover.ts",
+    "line": 28,
+    "ui_call_sites": [
+      {
+        "operation": "Cover.Update",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 345
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Cover.Delete",
+    "method": "DELETE",
+    "url_template": "/cover/${id}",
+    "source": "src/lib/API/Cover.ts",
+    "line": 34,
+    "ui_call_sites": [
+      {
+        "operation": "Cover.Delete",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 309
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Search",
+    "method": "GET",
+    "url_template": "/group${searchParams.toString()}",
+    "source": "src/lib/API/Group.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Group.Search",
+        "source": "src/lib/components/SearchDialog.svelte",
+        "line": 63
+      },
+      {
+        "operation": "Group.Search",
+        "source": "src/lib/components/upload/UploadChapterGroups.svelte",
+        "line": 30
+      },
+      {
+        "operation": "Group.Search",
+        "source": "src/routes/(app)/groups/+page.svelte",
+        "line": 23
+      },
+      {
+        "operation": "Group.Search",
+        "source": "src/routes/(app)/settings/preferences/+page.svelte",
+        "line": 412
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Get",
+    "method": "GET",
+    "url_template": "/group/${id}",
+    "source": "src/lib/API/Group.ts",
+    "line": 9,
+    "ui_call_sites": [
+      {
+        "operation": "Group.Get",
+        "source": "src/routes/(app)/group/[id]/+layout.ts",
+        "line": 6
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Create",
+    "method": "POST",
+    "url_template": "/group",
+    "source": "src/lib/API/Group.ts",
+    "line": 25,
+    "ui_call_sites": [
+      {
+        "operation": "Group.Create",
+        "source": "src/routes/(app)/create/group/+page.svelte",
+        "line": 54
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Update",
+    "method": "PUT",
+    "url_template": "/group/${id}",
+    "source": "src/lib/API/Group.ts",
+    "line": 52,
+    "ui_call_sites": [
+      {
+        "operation": "Group.Update",
+        "source": "src/routes/(app)/group/[id]/settings/+page.svelte",
+        "line": 137
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Delete",
+    "method": "DELETE",
+    "url_template": "/group/${id}",
+    "source": "src/lib/API/Group.ts",
+    "line": 58,
+    "ui_call_sites": [
+      {
+        "operation": "Group.Delete",
+        "source": "src/routes/(app)/group/[id]/settings/+page.svelte",
+        "line": 173
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Follows",
+    "method": "GET",
+    "url_template": "/user/follows/groups${searchParams.toString()}",
+    "source": "src/lib/API/Group.ts",
+    "line": 64,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Follow",
+    "method": "POST",
+    "url_template": "/user/follows/groups/${id}",
+    "source": "src/lib/API/Group.ts",
+    "line": 70,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.Unfollow",
+    "method": "DELETE",
+    "url_template": "/user/follows/groups/${id}",
+    "source": "src/lib/API/Group.ts",
+    "line": 76,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Group.GetFollowStatus",
+    "method": "GET",
+    "url_template": "/user/follows/groups/${id}",
+    "source": "src/lib/API/Group.ts",
+    "line": 82,
+    "ui_call_sites": [
+      {
+        "operation": "Group.GetFollowStatus",
+        "source": "src/routes/(app)/group/[id]/Group.svelte",
+        "line": 102
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Search",
+    "method": "GET",
+    "url_template": "/manga${searchParams.toString()}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 33,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Search",
+        "source": "src/lib/components/RecentlyAddedCarousel.svelte",
+        "line": 27
+      },
+      {
+        "operation": "Manga.Search",
+        "source": "src/lib/components/SearchDialog.svelte",
+        "line": 33
+      },
+      {
+        "operation": "Manga.Search",
+        "source": "src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+        "line": 46
+      },
+      {
+        "operation": "Manga.Search",
+        "source": "src/routes/(app)/author/[id]/+page.svelte",
+        "line": 51
+      },
+      {
+        "operation": "Manga.Search",
+        "source": "src/routes/(app)/group/[id]/+page.svelte",
+        "line": 52
+      },
+      {
+        "operation": "Manga.Search",
+        "source": "src/routes/(app)/search/+page.svelte",
+        "line": 24
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Get",
+    "method": "GET",
+    "url_template": "/manga/${id}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 38,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Get",
+        "source": "src/routes/(app)/title/[id]/+page.ts",
+        "line": 12
+      },
+      {
+        "operation": "Manga.Get",
+        "source": "src/routes/(app)/title/[id]/[slug]/+page.ts",
+        "line": 12
+      },
+      {
+        "operation": "Manga.Get",
+        "source": "src/routes/(app)/title/[id]/edit/+page.ts",
+        "line": 13
+      },
+      {
+        "operation": "Manga.Get",
+        "source": "src/routes/(app)/title/[id]/upload/+page.ts",
+        "line": 6
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Random",
+    "method": "GET",
+    "url_template": "/manga/random${searchParams.toString()}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 43,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Random",
+        "source": "src/routes/(app)/title/random/+page.ts",
+        "line": 11
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Trending",
+    "method": "GET",
+    "url_template": "/manga/top${searchParams.toString()}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 48,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Trending",
+        "source": "src/lib/components/MostReadCarousel.svelte",
+        "line": 30
+      },
+      {
+        "operation": "Manga.Trending",
+        "source": "src/routes/(app)/popular/MostReadGrid.svelte",
+        "line": 43
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Relations",
+    "method": "GET",
+    "url_template": "/manga/${id}/relations",
+    "source": "src/lib/API/Manga.ts",
+    "line": 53,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Relations",
+        "source": "src/routes/(app)/title/MangaRelatedSection.svelte",
+        "line": 42
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Recommendations",
+    "method": "GET",
+    "url_template": "/manga/${id}/recommendations",
+    "source": "src/lib/API/Manga.ts",
+    "line": 58,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Recommendations",
+        "source": "src/routes/(app)/title/MangaRecommendationsSection.svelte",
+        "line": 29
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.SearchDrafts",
+    "method": "GET",
+    "url_template": "/manga/draft${searchParams.toString()}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 63,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.SearchDrafts",
+        "source": "src/routes/(app)/drafts/title/+page.svelte",
+        "line": 19
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.GetDraft",
+    "method": "GET",
+    "url_template": "/manga/draft/${id}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 69,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.GetDraft",
+        "source": "src/routes/(app)/title/[id]/+page.ts",
+        "line": 12
+      },
+      {
+        "operation": "Manga.GetDraft",
+        "source": "src/routes/(app)/title/[id]/[slug]/+page.ts",
+        "line": 12
+      },
+      {
+        "operation": "Manga.GetDraft",
+        "source": "src/routes/(app)/title/[id]/edit/+page.ts",
+        "line": 12
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Create",
+    "method": "POST",
+    "url_template": "/manga",
+    "source": "src/lib/API/Manga.ts",
+    "line": 94,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Create",
+        "source": "src/lib/components/draft/manga/MangaCreate.svelte",
+        "line": 170
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Update",
+    "method": "PUT",
+    "url_template": "/manga/${id}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 104,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Update",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 253
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Commit",
+    "method": "POST",
+    "url_template": "/manga/draft/${id}/commit",
+    "source": "src/lib/API/Manga.ts",
+    "line": 110,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Commit",
+        "source": "src/lib/components/draft/manga/DraftSearchEntry.svelte",
+        "line": 25
+      },
+      {
+        "operation": "Manga.Commit",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 424
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Publish",
+    "method": "POST",
+    "url_template": "/manga/draft/${id}/publish",
+    "source": "src/lib/API/Manga.ts",
+    "line": 116,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Publish",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 455
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Reject",
+    "method": "POST",
+    "url_template": "/manga/draft/${id}/reject",
+    "source": "src/lib/API/Manga.ts",
+    "line": 122,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Reject",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 486
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Lock",
+    "method": "POST",
+    "url_template": "/manga/${id}/lock",
+    "source": "src/lib/API/Manga.ts",
+    "line": 128,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Unlock",
+    "method": "POST",
+    "url_template": "/manga/${id}/unlock",
+    "source": "src/lib/API/Manga.ts",
+    "line": 134,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.Delete",
+    "method": "DELETE",
+    "url_template": "/manga/${id}",
+    "source": "src/lib/API/Manga.ts",
+    "line": 140,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.Delete",
+        "source": "src/lib/components/draft/manga/DraftSearchEntry.svelte",
+        "line": 51
+      },
+      {
+        "operation": "Manga.Delete",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 538
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.CreateRelation",
+    "method": "POST",
+    "url_template": "/manga/${id}/relations",
+    "source": "src/lib/API/Manga.ts",
+    "line": 151,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.CreateRelation",
+        "source": "src/lib/components/draft/manga/MangaCreate.svelte",
+        "line": 230
+      },
+      {
+        "operation": "Manga.CreateRelation",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 401
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Manga.DeleteRelation",
+    "method": "DELETE",
+    "url_template": "/manga/${id}/relations",
+    "source": "src/lib/API/Manga.ts",
+    "line": 161,
+    "ui_call_sites": [
+      {
+        "operation": "Manga.DeleteRelation",
+        "source": "src/lib/components/draft/manga/MangaEdit.svelte",
+        "line": 377
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "MangaFollow.Search",
+    "method": "GET",
+    "url_template": "/user/follows/manga${searchParams.toString()}",
+    "source": "src/lib/API/MangaFollow.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "MangaFollow.Search",
+        "source": "src/routes/(app)/library/+page.svelte",
+        "line": 23
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "MangaFollow.LatestFeed",
+    "method": "GET",
+    "url_template": "/user/follows/chapter/feed${searchParams.toString()}",
+    "source": "src/lib/API/MangaFollow.ts",
+    "line": 10,
+    "ui_call_sites": [
+      {
+        "operation": "MangaFollow.LatestFeed",
+        "source": "src/routes/(app)/library/updates/+page.svelte",
+        "line": 25
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "MangaFollow.LatestUpdates",
+    "method": "GET",
+    "url_template": "/user/follows/chapter/updates${searchParams.toString()}",
+    "source": "src/lib/API/MangaFollow.ts",
+    "line": 18,
+    "ui_call_sites": [
+      {
+        "operation": "MangaFollow.LatestUpdates",
+        "source": "src/lib/components/MyUpdatesCarousel.svelte",
+        "line": 32
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "MangaFollow.Update",
+    "method": "POST",
+    "url_template": "/user/follows/manga/${id}",
+    "source": "src/lib/API/MangaFollow.ts",
+    "line": 31,
+    "ui_call_sites": [
+      {
+        "operation": "MangaFollow.Update",
+        "source": "src/lib/components/MangaSearchEntryCard.svelte",
+        "line": 44
+      },
+      {
+        "operation": "MangaFollow.Update",
+        "source": "src/routes/(app)/title/MangaActions.svelte",
+        "line": 59
+      },
+      {
+        "operation": "MangaFollow.Update",
+        "source": "src/routes/(app)/title/MangaActions.svelte",
+        "line": 99
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "MangaFollow.Unfollow",
+    "method": "DELETE",
+    "url_template": "/user/follows/manga/${id}",
+    "source": "src/lib/API/MangaFollow.ts",
+    "line": 37,
+    "ui_call_sites": [
+      {
+        "operation": "MangaFollow.Unfollow",
+        "source": "src/lib/components/MangaSearchEntryCard.svelte",
+        "line": 63
+      },
+      {
+        "operation": "MangaFollow.Unfollow",
+        "source": "src/routes/(app)/title/MangaActions.svelte",
+        "line": 137
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "MangaFollow.Import",
+    "method": "POST",
+    "url_template": "/user/follows/manga/import",
+    "source": "src/lib/API/MangaFollow.ts",
+    "line": 43,
+    "ui_call_sites": [
+      {
+        "operation": "MangaFollow.Import",
+        "source": "src/routes/(app)/settings/library/+page.svelte",
+        "line": 59
+      },
+      {
+        "operation": "MangaFollow.Import",
+        "source": "src/routes/(app)/settings/library/+page.svelte",
+        "line": 117
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Report.Search",
+    "method": "GET",
+    "url_template": "/report${searchParams.toString()}",
+    "source": "src/lib/API/Report.ts",
+    "line": 12,
+    "ui_call_sites": [
+      {
+        "operation": "Report.Search",
+        "source": "src/routes/(app)/my/reports/+page.svelte",
+        "line": 18
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Report.Reasons",
+    "method": "GET",
+    "url_template": "/report/reasons/${entity}",
+    "source": "src/lib/API/Report.ts",
+    "line": 18,
+    "ui_call_sites": [
+      {
+        "operation": "Report.Reasons",
+        "source": "src/lib/components/ReportDialog.svelte",
+        "line": 69
+      },
+      {
+        "operation": "Report.Reasons",
+        "source": "src/lib/components/ReportSearchFilter.svelte",
+        "line": 49
+      },
+      {
+        "operation": "Report.Reasons",
+        "source": "src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+        "line": 46
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Report.Create",
+    "method": "POST",
+    "url_template": "/report",
+    "source": "src/lib/API/Report.ts",
+    "line": 30,
+    "ui_call_sites": [
+      {
+        "operation": "Report.Create",
+        "source": "src/lib/components/ReportDialog.svelte",
+        "line": 103
+      },
+      {
+        "operation": "Report.Create",
+        "source": "src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+        "line": 70
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Report.Delete",
+    "method": "DELETE",
+    "url_template": "/report/${id}",
+    "source": "src/lib/API/Report.ts",
+    "line": 36,
+    "ui_call_sites": [
+      {
+        "operation": "Report.Delete",
+        "source": "src/lib/components/ReportSearchEntry.svelte",
+        "line": 58
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Report.Accept",
+    "method": "POST",
+    "url_template": "/report/${id}/accept",
+    "source": "src/lib/API/Report.ts",
+    "line": 42,
+    "ui_call_sites": [
+      {
+        "operation": "Report.Accept",
+        "source": "src/lib/components/ReportSearchEntry.svelte",
+        "line": 91
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Report.Reject",
+    "method": "POST",
+    "url_template": "/report/${id}/reject",
+    "source": "src/lib/API/Report.ts",
+    "line": 48,
+    "ui_call_sites": [
+      {
+        "operation": "Report.Reject",
+        "source": "src/lib/components/ReportSearchEntry.svelte",
+        "line": 90
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Settings.Update",
+    "method": "PUT",
+    "url_template": "/settings",
+    "source": "src/lib/API/Settings.ts",
+    "line": 19,
+    "ui_call_sites": [
+      {
+        "operation": "Settings.Update",
+        "source": "src/routes/(app)/group/[id]/Group.svelte",
+        "line": 167
+      },
+      {
+        "operation": "Settings.Update",
+        "source": "src/routes/(app)/settings/preferences/+page.svelte",
+        "line": 72
+      },
+      {
+        "operation": "Settings.Update",
+        "source": "src/routes/(app)/user/[id]/User.svelte",
+        "line": 168
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Statistics.User",
+    "method": "GET",
+    "url_template": "/user/${id}/statistics",
+    "source": "src/lib/API/Statistics.ts",
+    "line": 4,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Statistics.Manga",
+    "method": "GET",
+    "url_template": "/manga/${id}/statistics",
+    "source": "src/lib/API/Statistics.ts",
+    "line": 9,
+    "ui_call_sites": [
+      {
+        "operation": "Statistics.Manga",
+        "source": "src/routes/(app)/title/Manga.svelte",
+        "line": 141
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Statistics.Chapter",
+    "method": "GET",
+    "url_template": "/chapter/${id}/statistics",
+    "source": "src/lib/API/Statistics.ts",
+    "line": 14,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Statistics.Group",
+    "method": "GET",
+    "url_template": "/group/${id}/statistics",
+    "source": "src/lib/API/Statistics.ts",
+    "line": 19,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Statistics.Thread",
+    "method": "GET",
+    "url_template": "/thread/${id}/statistics",
+    "source": "src/lib/API/Statistics.ts",
+    "line": 24,
+    "ui_call_sites": [
+      {
+        "operation": "Statistics.Thread",
+        "source": "src/lib/components/comments/comments.svelte",
+        "line": 30
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Tag.Search",
+    "method": "GET",
+    "url_template": "/manga/tag${searchParams.toString()}",
+    "source": "src/lib/API/Tag.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Tag.Search",
+        "source": "src/lib/stores/global.ts",
+        "line": 13
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.Get",
+    "method": "GET",
+    "url_template": "/thread/${id}",
+    "source": "src/lib/API/Thread.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.Get",
+        "source": "src/routes/(app)/forums/threads/[id]/+page.ts",
+        "line": 6
+      },
+      {
+        "operation": "Thread.Get",
+        "source": "src/routes/(app)/forums/threads/[id]/[postId]/+page.ts",
+        "line": 7
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.GetThreadVote",
+    "method": "GET",
+    "url_template": "/thread/${threadId}/vote",
+    "source": "src/lib/API/Thread.ts",
+    "line": 9,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.GetThreadVote",
+        "source": "src/lib/components/comments/comments-votes.svelte",
+        "line": 24
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.VoteThread",
+    "method": "POST",
+    "url_template": "/thread/${threadId}/vote",
+    "source": "src/lib/API/Thread.ts",
+    "line": 15,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.VoteThread",
+        "source": "src/lib/components/comments/comments-votes.svelte",
+        "line": 59
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.UnvoteThread",
+    "method": "DELETE",
+    "url_template": "/thread/${threadId}/vote",
+    "source": "src/lib/API/Thread.ts",
+    "line": 21,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.UnvoteThread",
+        "source": "src/lib/components/comments/comments-votes.svelte",
+        "line": 96
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.Replies",
+    "method": "GET",
+    "url_template": "/thread/${threadId}/replies${searchParams.toString()}",
+    "source": "src/lib/API/Thread.ts",
+    "line": 27,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.Replies",
+        "source": "src/lib/components/comments/comments-feed.svelte",
+        "line": 32
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.GetReply",
+    "method": "GET",
+    "url_template": "/thread/${threadId}/replies/${replyId}",
+    "source": "src/lib/API/Thread.ts",
+    "line": 33,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.GetReply",
+        "source": "src/routes/(app)/forums/threads/[id]/[postId]/+page.ts",
+        "line": 13
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.CreateReply",
+    "method": "POST",
+    "url_template": "/thread/${threadId}/replies",
+    "source": "src/lib/API/Thread.ts",
+    "line": 44,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.CreateReply",
+        "source": "src/lib/components/comments/comments-create.svelte",
+        "line": 92
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.UpdateReply",
+    "method": "PUT",
+    "url_template": "/thread/${threadId}/replies/${replyId}",
+    "source": "src/lib/API/Thread.ts",
+    "line": 50,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.UpdateReply",
+        "source": "src/lib/components/comments/comments-edit-dialog.svelte",
+        "line": 74
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.RemoveReply",
+    "method": "DELETE",
+    "url_template": "/thread/${threadId}/replies/${replyId}",
+    "source": "src/lib/API/Thread.ts",
+    "line": 56,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.RemoveReply",
+        "source": "src/lib/components/comments/comments-entry.svelte",
+        "line": 153
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.DeleteReply",
+    "method": "DELETE",
+    "url_template": "/thread/${threadId}/replies/${replyId}/hard",
+    "source": "src/lib/API/Thread.ts",
+    "line": 62,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.DeleteReply",
+        "source": "src/lib/components/comments/comments-entry.svelte",
+        "line": 183
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.VoteReply",
+    "method": "POST",
+    "url_template": "/thread/${threadId}/replies/${replyId}/vote",
+    "source": "src/lib/API/Thread.ts",
+    "line": 68,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.VoteReply",
+        "source": "src/lib/components/comments/comments-entry.svelte",
+        "line": 86
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Thread.UnvoteReply",
+    "method": "DELETE",
+    "url_template": "/thread/${threadId}/replies/${replyId}/vote",
+    "source": "src/lib/API/Thread.ts",
+    "line": 74,
+    "ui_call_sites": [
+      {
+        "operation": "Thread.UnvoteReply",
+        "source": "src/lib/components/comments/comments-entry.svelte",
+        "line": 119
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.Get",
+    "method": "GET",
+    "url_template": "/upload",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.Get",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 281
+      },
+      {
+        "operation": "UploadSession.Get",
+        "source": "src/routes/(app)/title/[id]/upload/+page.svelte",
+        "line": 43
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.Begin",
+    "method": "POST",
+    "url_template": "/upload/begin",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 10,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.Begin",
+        "source": "src/lib/components/upload/UploadChapter.svelte",
+        "line": 64
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.BeginEdit",
+    "method": "POST",
+    "url_template": "/upload/begin/${chapterId}",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 16,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.BeginEdit",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 201
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.Delete",
+    "method": "DELETE",
+    "url_template": "/upload/${id}",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 28,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.Delete",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 283
+      },
+      {
+        "operation": "UploadSession.Delete",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 299
+      },
+      {
+        "operation": "UploadSession.Delete",
+        "source": "src/routes/(app)/title/[id]/upload/+page.svelte",
+        "line": 45
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.Commit",
+    "method": "POST",
+    "url_template": "/upload/${id}/commit",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 34,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.Commit",
+        "source": "src/lib/components/upload/UploadChapter.svelte",
+        "line": 110
+      },
+      {
+        "operation": "UploadSession.Commit",
+        "source": "src/lib/components/upload/UploadChapterEdit.svelte",
+        "line": 248
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.DeleteFile",
+    "method": "DELETE",
+    "url_template": "/upload/${sessionId}/${fileId}",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 40,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.DeleteFile",
+        "source": "src/lib/components/upload/UploadChapterPages.svelte",
+        "line": 231
+      },
+      {
+        "operation": "UploadSession.DeleteFile",
+        "source": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+        "line": 51
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.DeleteFiles",
+    "method": "DELETE",
+    "url_template": "/upload/${sessionId}/batch",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 46,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.DeleteFiles",
+        "source": "src/lib/components/upload/UploadChapterPages.svelte",
+        "line": 385
+      },
+      {
+        "operation": "UploadSession.DeleteFiles",
+        "source": "src/lib/components/upload/UploadChapterPages.svelte",
+        "line": 432
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "UploadSession.CheckApprovalRequired",
+    "method": "POST",
+    "url_template": "/upload/check-approval-required",
+    "source": "src/lib/API/UploadSession.ts",
+    "line": 52,
+    "ui_call_sites": [
+      {
+        "operation": "UploadSession.CheckApprovalRequired",
+        "source": "src/lib/components/upload/UploadChapter.svelte",
+        "line": 155
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "User.Search",
+    "method": "GET",
+    "url_template": "/user${searchParams.toString()}",
+    "source": "src/lib/API/User.ts",
+    "line": 4,
+    "ui_call_sites": [
+      {
+        "operation": "User.Search",
+        "source": "src/routes/(app)/group/[id]/settings/+page.svelte",
+        "line": 195
+      },
+      {
+        "operation": "User.Search",
+        "source": "src/routes/(app)/settings/preferences/+page.svelte",
+        "line": 349
+      },
+      {
+        "operation": "User.Search",
+        "source": "src/routes/(app)/users/+page.svelte",
+        "line": 23
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "User.Get",
+    "method": "GET",
+    "url_template": "/user/${id}",
+    "source": "src/lib/API/User.ts",
+    "line": 10,
+    "ui_call_sites": [
+      {
+        "operation": "User.Get",
+        "source": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+        "line": 35
+      },
+      {
+        "operation": "User.Get",
+        "source": "src/routes/(app)/title/[id]/upload/+page.svelte",
+        "line": 34
+      },
+      {
+        "operation": "User.Get",
+        "source": "src/routes/(app)/user/[id]/+layout.ts",
+        "line": 6
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "User.Update",
+    "method": "PUT",
+    "url_template": "/user/${id}",
+    "source": "src/lib/API/User.ts",
+    "line": 23,
+    "ui_call_sites": [
+      {
+        "operation": "User.Update",
+        "source": "src/routes/(app)/user/[id]/settings/+page.svelte",
+        "line": 86
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "User.Follows",
+    "method": "GET",
+    "url_template": "/user/follows/users${searchParams.toString()}",
+    "source": "src/lib/API/User.ts",
+    "line": 29,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "User.Follow",
+    "method": "POST",
+    "url_template": "/user/follows/users/${id}",
+    "source": "src/lib/API/User.ts",
+    "line": 35,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "User.Unfollow",
+    "method": "DELETE",
+    "url_template": "/user/follows/users/${id}",
+    "source": "src/lib/API/User.ts",
+    "line": 41,
+    "ui_call_sites": [],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "API source only; no corresponding promised control observed",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "User.GetFollowStatus",
+    "method": "GET",
+    "url_template": "/user/follows/users/${id}",
+    "source": "src/lib/API/User.ts",
+    "line": 47,
+    "ui_call_sites": [
+      {
+        "operation": "User.GetFollowStatus",
+        "source": "src/routes/(app)/user/[id]/User.svelte",
+        "line": 96
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Direct.ChapterPageUpload",
+    "method": "POST",
+    "url_template": "/upload/${uploadSession.id}",
+    "source": "src/lib/components/upload/UploadChapterPages.svelte",
+    "line": 192,
+    "ui_call_sites": [
+      {
+        "operation": "Direct.ChapterPageUpload",
+        "source": "src/lib/components/upload/UploadChapterPages.svelte",
+        "line": 192,
+        "call_form": "direct HTTP multipart"
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  },
+  {
+    "operation": "Direct.LibraryExport",
+    "method": "GET",
+    "url_template": "/user/follows/manga/export",
+    "source": "src/routes/(app)/settings/library/+page.svelte",
+    "line": 157,
+    "ui_call_sites": [
+      {
+        "operation": "Direct.LibraryExport",
+        "source": "src/routes/(app)/settings/library/+page.svelte",
+        "line": 157,
+        "call_form": "authenticated download href"
+      }
+    ],
+    "status": "implementation owner source status separate; API/UI verification remains unestablished in this static audit",
+    "UI_presence": "observed caller",
+    "API_tested": "deferred final gate; consult owner receipts",
+    "UI_tested": "not established by this audit"
+  }
+]

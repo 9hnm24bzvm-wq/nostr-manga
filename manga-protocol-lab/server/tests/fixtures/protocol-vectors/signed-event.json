@@ -1,0 +1,14 @@
+{
+  "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+  "created_at": 1700000000,
+  "kind": 1,
+  "tags": [
+    [
+      "t",
+      "manga"
+    ]
+  ],
+  "content": "Hello, 漫画",
+  "id": "fc4459a563bf110a9fca0683982380cb80b6fb5875d95f550169e91e0c8d46b0",
+  "sig": "47b9eaecd16abd287033e7120e73194f9dd0aa7417c4d5fa4c4b88b8d7dabcea9ac89dc954878c00bfb1cbe54012113cfdc977c89ccc3919ab5af5c5c11871f3"
+}

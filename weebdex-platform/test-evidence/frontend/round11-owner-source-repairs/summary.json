@@ -1,0 +1,115 @@
+{
+  "utc": "2026-10-13T07:52:00.360683+00:00",
+  "production_source_frozen": true,
+  "finite_findings_closed_in_source": [
+    "UI11 device-list opening owns click/lifetime/navigation-start epoch before storage/mode awaits; acknowledged mode change remains, stale navigation suppressed",
+    "UI11 progress dedup includes selected-library admission/context epoch; returning device selection admits fresh current page, no old queued replay"
+  ],
+  "original_attachment_files_unchanged": 676,
+  "executed_source_not_identical": true,
+  "new_markup_style_exceptions": 0,
+  "overlay_definitions": 444,
+  "anchor_occurrences": 453,
+  "original_paths": 96,
+  "inventory_sha": "e49b500490f92f13434d73af1c63a7d715dde1fd417696705d5c72421f851344",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T07:52:00.308Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 84,
+    "scripts_syntax_compiled": 51,
+    "shared_sha": "6fc8cd9fae676606b2b6a5d6df36ba68f905f622ad3d64a4c7e5c27640a01894",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "0f08079f49c0af3672792855f7aee9f7dde931f13ad83af9d2ab1ac5f69639c5",
+    "integration_inventory_sha": "e49b500490f92f13434d73af1c63a7d715dde1fd417696705d5c72421f851344",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "runtime_tests_executed": false,
+  "previous_artifact": "Historical build11/source444 superseded by clean current build12/source444 UI11 revision",
+  "files": {
+    "platform-integrations/frontend-behavior/navigation-authority.ts": "aa8a2c99e5ebce309fc7673d3d380d3d39d4dda924f99ccbbd07acfeab30d8f2",
+    "platform-integrations/frontend-behavior/route-action-owner.ts": "49327a7794a38e43d2d7eb7c9c924bff6fd28c65b84908268192540328506349",
+    "platform-integrations/frontend-behavior/reader-navigation.ts": "58120d8cc91c0c80344b933db97e8e30cd412e1583db59c2f5cc427ea1e8967f",
+    "platform-integrations/frontend-behavior/auth-form-owner.ts": "0999a37c2dc816d2a6b8bf602428ed029776c3828521f04d8079a7054dd11c59",
+    "platform-integrations/local-library/LocalLibraryPanel.svelte": "fa384eb25f3702e4bbcc7fec694620dfc6f4ac37d3f4a95bb9e35da5b713cff3",
+    "platform-integrations/local-library/action-owner.ts": "c623b27a489eb45dd92f46e47e95622d2c015c07254375fd74ca37b4b9a5fd3d",
+    "platform-integrations/local-library/overlays.mjs": "0f08079f49c0af3672792855f7aee9f7dde931f13ad83af9d2ab1ac5f69639c5",
+    "scripts/browser-acceptance.mjs": "27dc18f37ac6c4a7def049f989687f257113f8fc8bd8d870561cb09a0b78fac5",
+    "scripts/browser-ui10-journeys.mjs": "d7376ecc6aca9ebbcbf26f4e077a3c7c7be765d9f19f6397fbe091d1eb5e8ee6"
+  },
+  "new_journeys": {
+    "phases": [
+      "ui10-api-client",
+      "ui10-auth-lifetimes",
+      "ui10-recovery-lifetimes",
+      "ui10-preferences",
+      "ui10-reader-transition"
+    ],
+    "source_steps": 30,
+    "executed": 0
+  },
+  "build12": {
+    "status": "passed",
+    "receipt": "final-build12/build-result.json",
+    "artifact_files": 399,
+    "artifact_bytes": 6981342,
+    "artifact_manifest_sha256": "d995117e70c4d7992badd3b2cde3e5045ffc1253f08aa79c7498bf3df09ffdee",
+    "bootstrap": {
+      "ui_index_sha256": "4b5f26cacaa82c579fdb092ba6760f7df8d7d6892b2773014e6d63a0cc01cb22",
+      "hash_sources": [
+        "'sha256-UGYmESMwkNxqrJ3sm3KfIqGEP4/pA06OfHZn2HZ2zoQ='"
+      ],
+      "recognized_bootstrap_count": 1,
+      "external_analytics_allowed": false,
+      "script_unsafe_inline_allowed": false,
+      "runtime_startup_checked": false
+    },
+    "portable": {
+      "archive": "artifacts/frontend-static.tar.gz",
+      "sha256": "b1731c94b9ad5da653f30cb0518f7cfa28897f89c154d0af10681d69aab6f7a6",
+      "bytes": 5143501,
+      "verified_regular_members": 410,
+      "ui_files": 399,
+      "independent_of_node_modules_and_build_workspace": true,
+      "contains_runtime_databases_credentials_or_user_records": false,
+      "verification": "Every archived regular member byte-compared and every UI input rehashed after packaging"
+    }
+  }
+}

@@ -1,0 +1,883 @@
+[
+  {
+    "target": "http_accounts",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_accounts.rs",
+    "source_sha256": "c553f37c8631b9e6cb8e2b0bceecaa32f6e20d7f80cd9123e330d289c3268602",
+    "cases": [
+      "personal_metadata_http_authority"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_accounts-92ff522b3737c105",
+      "sha256": "a0f92e052b490fcdce3bc2c40d22d24baeb7c5b40eb3280721cb95fbba926435",
+      "bytes": 19670448,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_admission_errors",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_admission_errors.rs",
+    "source_sha256": "67abde7adb18b3f953edeff5e7357bd0b4b1d744f1d46b9474bc4a0247279ddb",
+    "cases": [
+      "database_faults_are_retryable_not_role_denials"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_admission_errors-97b5b8c528796dfd",
+      "sha256": "fff6762465a9b625406eabaf2dc072d60f445cafdc48a48c5d164f4228188f59",
+      "bytes": 19859360,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_backend",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_backend.rs",
+    "source_sha256": "6232b48c3a18324ebf18bb7e783dc81b86597ff27206b3d00138530653fbb167",
+    "cases": [
+      "durable_real_strfry_projection"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_backend-cd9ef8c4dc4be8aa",
+      "sha256": "6de0f513bed70b0342164b162cb1994cdd914bf2d885818d6bddd93f86048b42",
+      "bytes": 21002104,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_blossom",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_blossom.rs",
+    "source_sha256": "b9022dc8a2058aef6aa1fee527600c030f229d0887c1f5362c5ee8759d860912",
+    "cases": [
+      "blossom_routes_preserve_scopes_grants_and_retention"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_blossom-411e027bd64b4dc6",
+      "sha256": "dc7d90022e5f3ced21b288d46b752ca6fca3740106a2cf76cc7bbc56b4f148bb",
+      "bytes": 21703424,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_browser_client",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_browser_client.rs",
+    "source_sha256": "5c42fc916735f14d7dca654bfde08aec3d4173c88ee2229dec44b62cb128208f",
+    "cases": [
+      "browser_modules_interoperate_with_real_backend"
+    ],
+    "case_count": 1,
+    "classification": "support_dependency_blocked",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "Protected browser-client support absent; original root missing pinned fake-indexeddb and @noble/curves packages",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_browser_client-d5acda0cc84b0c1b",
+      "sha256": "cf4e0f8eae20259e013811ac0fd1711416876f0d28bb2105e8d97a69f2a14e92",
+      "bytes": 17739192,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_capabilities",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_capabilities.rs",
+    "source_sha256": "88ef191cdb30d16d2112913f5f787b08f167abda3e74d83a156de1d5f364358e",
+    "cases": [
+      "unified_public_registry_matches_role_and_enforced_limits"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_capabilities-a37ef6781c68e4a0",
+      "sha256": "99b0b79e25b975f0f0127ff10c2de060a6433a43acb26c292ebdb61a5fea97f0",
+      "bytes": 18088008,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_catalogue",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_catalogue.rs",
+    "source_sha256": "72c0d04112b131afc6569a8f887d8f0ff13ddc6ab4dacab2cf4ab896ede7ca53",
+    "cases": [
+      "catalogue_and_original_cover_survive_replication_and_deletion"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_catalogue-6aec61eeaf377346",
+      "sha256": "6bf6d4d87759348b1e80adf3ee94812463547af7aa27c755c694e1446b09e96d",
+      "bytes": 21714136,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_discovery",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_discovery.rs",
+    "source_sha256": "e3b3d5f866e4ef97a8332347f0eb1caf81f3f496748649dc31697658d5283b87",
+    "cases": [
+      "accepted_query_semantics_over_http"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_discovery-236236812ecf0d6c",
+      "sha256": "350f1388d5964f57f3c00b556c756e371dda52943d631774529f830ab600e983",
+      "bytes": 19880536,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_download_lifecycle",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_download_lifecycle.rs",
+    "source_sha256": "c42d41860a796a3885b4a2f1227490125d0a4eb8ee73b486182b95f3de9c37ce",
+    "cases": [
+      "downloads_are_bounded_until_disconnect_or_deadline_and_do_not_block_uploads"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "130\u2013210seconds",
+    "note": "Real122sec deadline wait,8MiBbody/fourclients; ordinary deadline/admission correctness, not throughputbenchmark.",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_download_lifecycle-68fbf29914a0df6d",
+      "sha256": "55059c24df980da87fbccc21566e4a9822b469bf2344b7fe9294d475e0f4e332",
+      "bytes": 17839064,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_enrollment",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_enrollment.rs",
+    "source_sha256": "ad3229288f6e65b8e31b5145c7b3f544347756accd4acf80d5f2638d3d513774",
+    "cases": [
+      "closed_default_scoped_enrollment_limits_and_revocation"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_enrollment-c170f0586ca6b256",
+      "sha256": "5b31d15e10ea390f514bf545df8c034bf09a7ccedbef12e81419729c2ba57cbb",
+      "bytes": 22163680,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_group_profile",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_group_profile.rs",
+    "source_sha256": "bc64f3919cac5d17d6b2ebcd93a164a84e5b5f70d5f5c1c1e89b70c8cc68d542",
+    "cases": [
+      "group_profiles_are_admin_fenced_signed_and_privately_audited"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_group_profile-77a35a24cbdd2d64",
+      "sha256": "e5bf2a4ae334d93ded8e27ce3c0f983a345072dd89b7df822ad7f8f888c23358",
+      "bytes": 21385112,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_group_retry",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_group_retry.rs",
+    "source_sha256": "9fd798770d54a19def954deb3ffa94bcd15772c8577891515e93add3e24e0365",
+    "cases": [
+      "group_retry_retains_event_after_response_loss_and_grant_expiry"
+    ],
+    "case_count": 1,
+    "classification": "already_passed",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_group_retry-64921c6db43cab18",
+      "sha256": "cfaa815e0491405b2b951aa941de1aa056abd68a4a26df098a5ca1d7335063a0",
+      "bytes": 21303904,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_groups",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_groups.rs",
+    "source_sha256": "7fe6917782afb8d73cd0e9451cd8698cdc6caccc096bb4ecbd3937f8c6f063a1",
+    "cases": [
+      "member_roles_signing_restart_and_key_only_recovery"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_groups-1f7f0aa44de22651",
+      "sha256": "48aa984a40e7cfd4682964db174ea2a9b7c31542a20dc65416150130affbd0d7",
+      "bytes": 22069632,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_inventory",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_inventory.rs",
+    "source_sha256": "b100d0f8f28a451556b0a7827f734e613edf0a95ec3b212c8c18f82edb8cdda0",
+    "cases": [
+      "durable_snapshots_and_equal_timestamp_partitions"
+    ],
+    "case_count": 1,
+    "classification": "large_scale_functional_deferred",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "100k stable and120k live signed event inventory",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_inventory-97790f1800fced16",
+      "sha256": "5ed640b937cb8a5610d8fc8c466829deb5513d637e8d5e171512b98b5fec6298",
+      "bytes": 18872192,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_library_client",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_library_client.rs",
+    "source_sha256": "ff648da242e1c6e783be80a378d5dc3e3290a8b9835dcbe543b37b7a0548e107",
+    "cases": [
+      "first_acceptance_retry_supersession_and_cold_recovery"
+    ],
+    "case_count": 1,
+    "classification": "large_scale_functional_deferred",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "30k and500k full library record bundles in inseparable test",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_library_client-32849d5f3b58f0b4",
+      "sha256": "1b5653ccac5e95030d9025f42e2bccc3ff18f287adb2270182ad2045aafcb532",
+      "bytes": 23411440,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_library_gc_crash",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_library_gc_crash.rs",
+    "source_sha256": "7cecd927908c4624286c91f593d0670105bcd2ce53c147ad085f833bcdaa92f4",
+    "cases": [
+      "real_node_recovers_unlinked_library_without_early_or_double_refund"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_library_gc_crash-5f6a90b3f81dc97d",
+      "sha256": "f6827eb19d777779317e45df7879945250ec3445354dd798bac3ad17027756df",
+      "bytes": 22336592,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_live_dispatch",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_live_dispatch.rs",
+    "source_sha256": "98b3f35361038d4f4d1103f57ab5d1e45115aa85ff265c3af6096e20eda8b1ca",
+    "cases": [
+      "live_fanout_survives_transient_read_pressure"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "120events\u00d760KB\u22487.2MB; bounded fanout/revocation pressure and6sec loss deadline; correctnessnotthroughput.",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_live_dispatch-b05fc46759d0ab05",
+      "sha256": "0b269d873eeda9fc4d68cb6bcf17bd670ac920960e101996e1bf5d9b41632e0b",
+      "bytes": 21525776,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_migration",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_migration.rs",
+    "source_sha256": "3b8949166af6c1a3926be9889113ed10676c0e43c71074b9fbf1fbec71eea529",
+    "cases": [
+      "reviewed_export_import_is_retryable_and_portable"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "120\u2013600seconds designestimate; initial ownedguard300sec",
+    "note": "Small actual backup/restore/migration workflow, multiple isolatednodes; no large dataset.",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_migration-ad42c82a23420a96",
+      "sha256": "cae9f165c1965900f86f5f77d05dd333d9ada2868b2e16709fa5f23193ac2d0c",
+      "bytes": 22813880,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_mixed_downloads",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_mixed_downloads.rs",
+    "source_sha256": "db625d26220163bac2acbb9f081e9cab690229ba337a3a53f3358eaf8e3e3ffd",
+    "cases": [
+      "mixed_routes_share_download_capacity_without_bypassing_policy_or_uploads"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "45\u2013180seconds",
+    "note": "Defaultcount mode generates2approximately8MiBincompressiblePNGs; no optional40MiBbytecase included.",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_mixed_downloads-b7158374cac25fd6",
+      "sha256": "93011d734440736ed060ca3bdb6c4e65a0f8b432db8b5ec6ed14e655788b2322",
+      "bytes": 20173072,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_moderation",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_moderation.rs",
+    "source_sha256": "ec9a533863f08757a60952a911fb9e24580859e7db10c36344942705fe7008df",
+    "cases": [
+      "local_moderation_and_orphaned_projection"
+    ],
+    "case_count": 1,
+    "classification": "already_passed",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_moderation-096a822d007c1f02",
+      "sha256": "19e23ae487653be4b4da0c3adc2fee2273cdbe49bb3865f67ceb10f07a57c356",
+      "bytes": 21602656,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_node",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_node.rs",
+    "source_sha256": "21d2348629e471e2c7fc3d0651a8bff6fdc2c289a9e78d16f589483ff3b0e906",
+    "cases": [
+      "authenticated_node_boot"
+    ],
+    "case_count": 1,
+    "classification": "already_passed",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_node-b243b045d54497bb",
+      "sha256": "74bf989a1104a093247f82d769cf766e9dd8f1f0d66b9bf663d4c7aaedd62c39",
+      "bytes": 19765376,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_peer_transient",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_peer_transient.rs",
+    "source_sha256": "2fb7dee4d527d474367676389fb88bf69beb4de6d2d89c2f186140aaa402d2af",
+    "cases": [
+      "transient_sources_are_retryable_without_replaying_writes"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_peer_transient-aa7066103a1d3ff1",
+      "sha256": "9196165eb5190226d41d0facf04a660d752d46b76d62287e56876d1fbb6552ed",
+      "bytes": 22161504,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_peer_websocket",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_peer_websocket.rs",
+    "source_sha256": "4979d23edb90f130c93d855a7794406d745df3c6ecfc28f1d03b9c2c5eae0d50",
+    "cases": [
+      "approved_peer_websocket_is_separate_and_read_only"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "Python/aiohttp/coincurve actuallocalWebSocket,20secidle-closeobservation.",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_peer_websocket-b70eb718001b0875",
+      "sha256": "8c2c04c767ea8739d5f2e9f8db53b0afd4ef8e1010061c9ecd75ccae4d31ddf3",
+      "bytes": 17769304,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_peers",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_peers.rs",
+    "source_sha256": "24f095cb093c62d749f5f11fa1643a4ab4fbb9d82b62de928cdb049b274ff076",
+    "cases": [
+      "approved_three_node_transfer_and_fallback"
+    ],
+    "case_count": 1,
+    "classification": "already_passed",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_peers-387fee1dc036baa9",
+      "sha256": "82b4a05fab19ddf539a0a4c7e7b21d85481de6bb6da75265259e65149f8e41c8",
+      "bytes": 21361632,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_pool_lifetimes",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_pool_lifetimes.rs",
+    "source_sha256": "ca7bb2d718882dd034c37eac6f026aabf3f295a6dd24f001ed229bfd7375f68f",
+    "cases": [
+      "operator_audit_releases_its_single_pool_client",
+      "compatibility_lists_release_their_single_pool_client"
+    ],
+    "case_count": 2,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_pool_lifetimes-9d4f81754827b455",
+      "sha256": "fe4ced4adcc6909704e264bed2256ec0d8c017f1bbde7a5e894f2cb0909c640b",
+      "bytes": 20218328,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_public_serving",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_public_serving.rs",
+    "source_sha256": "1b61babab20ba1a14d697d4ae46d39b2c21c6677b35f6ef637dd2b9d52211f2b",
+    "cases": [
+      "node_serving_recovers_before_policy_and_database_startup"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_public_serving-61ca1611e03f131a",
+      "sha256": "7d33614e9ee6f554716007c0ed1bb42d1e7b0be1baaf1ece280f5c1960c32353",
+      "bytes": 27239736,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_publication",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_publication.rs",
+    "source_sha256": "83c19a3586fd5672752c1816c15cb613998d5fe171b91eff41dbcb534e530d92",
+    "cases": [
+      "complete_originals_before_publication"
+    ],
+    "case_count": 1,
+    "classification": "already_passed",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_publication-9a37ac32aea6b9fb",
+      "sha256": "a2ffa3bcb514fb5beec9f04711788ea08a3f52a7eaedf4c9eb4f173072fc78c6",
+      "bytes": 20862952,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_publishers",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_publishers.rs",
+    "source_sha256": "0a8ad195b53dc2d82ef92e07c43d0663dd6ee96ac369ca2e756cd68f70636946",
+    "cases": [
+      "independent_publishers_have_scoped_staging_and_fenced_authority"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_publishers-9e4f3b6b7db1970f",
+      "sha256": "443bf7e342c3ec8a9d4f66ead4ffc55fb2cb02c21a52a554eea446325965d5a4",
+      "bytes": 26335384,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_read_admission_diagnostics",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_read_admission_diagnostics.rs",
+    "source_sha256": "592432ef00a5951ae84a09e66cb1122556b022c417cafc20a7d40c63e238fdc8",
+    "cases": [
+      "bounded_operator_diagnostics_classify_rejections_without_changing_http"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_read_admission_diagnostics-ed670d3a4467dbeb",
+      "sha256": "22babfe71bc78229df703eaa16081bb6d5e747f8fd9f626dc8b7d974541d3463",
+      "bytes": 19229192,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_read_classes",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_read_classes.rs",
+    "source_sha256": "24406ecf6405d39288def2be5e98e9ee1ae6f4b0fbf8d59c221e3b8787b6ca57",
+    "cases": [
+      "read_classes_isolate_policy_contention"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_read_classes-dc807c6fe7f93956",
+      "sha256": "88299ee7843d2fadc6abb357f3e65a8498608926b9d2fcb0e5d4c4fb22af98bb",
+      "bytes": 19686536,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_read_ownership",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_read_ownership.rs",
+    "source_sha256": "aefd9dfa390e0b70492bb71c8acbb925e4d1dcfba581df05972512a1a6679bc2",
+    "cases": [
+      "disconnected_http_retains_work_admission"
+    ],
+    "case_count": 1,
+    "classification": "already_passed",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_read_ownership-e5d83d7d89eac314",
+      "sha256": "a05d6d33f0878a34c4b54034dd9770ebb10751043e61e7c18edc94283ec3ac7a",
+      "bytes": 20908608,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_reader_state",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_reader_state.rs",
+    "source_sha256": "dbe753ccea969e63138729194940ce9373dddebfffade9f1c0f6f8646091cb7f",
+    "cases": [
+      "profiles_lists_progress_and_signed_mutations_follow_current_public_library"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_reader_state-ef8527969a001bd6",
+      "sha256": "e58d4bfb0f14f01bb81f6918671cc34d6c6b03c76e2f8789c6fa701666f50949",
+      "bytes": 21999192,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_real_images",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_real_images.rs",
+    "source_sha256": "2b7c189a9a0671627fcb4ca303a360850ab631cc49fe787abbd98512ed080411",
+    "cases": [
+      "met_originals_survive_source_loss_with_progress_and_immutable_reupload"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "Four already-cached licensedfixtureJPEGs4.43MiB,2816\u00d72112; realoriginals API/nginx transfer; no externalfetch.",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_real_images-df3e2d3fae23a117",
+      "sha256": "4e73ae379b72dbee25eee0572ac7cdafb7ec9ccf7dacc975e7a695ff439d5b0c",
+      "bytes": 19730272,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_relay",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_relay.rs",
+    "source_sha256": "2b2ed9d49b3667529dab90563f96b02d9a4fa32c240abb6d4b51d2695d3373c6",
+    "cases": [
+      "guarded_websocket_real_backend"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_relay-3627451a537c2e1f",
+      "sha256": "674fa3b57c8a967ac3c9de55dc33c6e8cdd1d16e9897c632179cd512856c5499",
+      "bytes": 18001328,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_remembered_identity",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_remembered_identity.rs",
+    "source_sha256": "cb39647a15a1032f1893123a2fc46ac8bc091da6f12304f946d1fcfbfdd23705",
+    "cases": [
+      "remembers_possession_without_granting_trust_and_detects_domain_transfer"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_remembered_identity-3fcd3f8b2819775d",
+      "sha256": "7b7dac18893f5f501283a83ec530568542be5be16f78447e5865673c79be4da6",
+      "bytes": 19940704,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_service_announcements",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_service_announcements.rs",
+    "source_sha256": "20ea6e0c50b47ff1f94ba63e0a5c7e326ccc428a3381030db08e62850c2ef9f3",
+    "cases": [
+      "signed_announcements_survive_founder_loss_and_reject_rollback"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_service_announcements-5c52b65bc3fef9c1",
+      "sha256": "58de8703a205160682bac705531abd02753c9318e2365f7e595bfc1c83f03740",
+      "bytes": 20329448,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_service_proof",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_service_proof.rs",
+    "source_sha256": "23658fae5afa4da3fda14ac49d71cfb819abc0ce49ac55adf3c3cc7b83dbc47b",
+    "cases": [
+      "forwarded_identity_does_not_authorize_modified_or_replayed_metadata"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_service_proof-224608e254fe6436",
+      "sha256": "f6a87e84665db3a2b5f7b7caa3183c9b5b72fdb767eef509251eb25a41235ae4",
+      "bytes": 22702024,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_staged_delete",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_staged_delete.rs",
+    "source_sha256": "6099313c183d5489df5fd78fa8aa938fe444cbef1751b1b65ef1f6efb938a8c4",
+    "cases": [
+      "direct_upload_deletion_is_scoped_and_never_moderates_hosted_content"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_staged_delete-f5707aa829dc55f2",
+      "sha256": "f17034fcbf967720f3fed671ffe626b7fa2d2b74e50780f4ccc2ceb7a1fdca8c",
+      "bytes": 18808016,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_submission_review",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_submission_review.rs",
+    "source_sha256": "1f8203faf7d6cbce5685f17b316cd8beecc18fd7c1e63a5cadfa06a3a39206bb",
+    "cases": [
+      "admitted_review_is_private_one_off_atomic_and_expiring"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_submission_review-14ccae16436e9087",
+      "sha256": "e0e04e759b2f0bc53d09b221d90699d1dd29d5341acb3c365306c409e7d32b1c",
+      "bytes": 20238728,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_sync_jobs",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_sync_jobs.rs",
+    "source_sha256": "04f5264d5ad429f9b1981427b797e93f270cbfedea2779c13c5179030eaa5cde",
+    "cases": [
+      "durable_job_resumes_after_real_worker_crash"
+    ],
+    "case_count": 1,
+    "classification": "large_scale_functional_deferred",
+    "proposed_execute": false,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "120k synthetic rows in each of two databases",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_sync_jobs-be8b714a20932a18",
+      "sha256": "e45e7a6361c83e293c42614af4ea8945dbfe6fc48ba594ab953d5400d8f975a9",
+      "bytes": 25122040,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_sync_skips",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_sync_skips.rs",
+    "source_sha256": "7c7a579e15e7e2b26704d69012b8066dfd8b7c04d1b4791a014afd83ae451dba",
+    "cases": [
+      "mixed_versions_and_policy_rejections_do_not_cancel_other_items"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_sync_skips-0a1ae00aec1ca231",
+      "sha256": "59ce20339586e3b707983846e574f67accd9e9de6bfe4737b02c26dd7bfedd8e",
+      "bytes": 21481640,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_tls_proxy",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_tls_proxy.rs",
+    "source_sha256": "12b57df4ea5bee509e789a8d58df7afe6fcdfb801f11ded536dfa884f446a017",
+    "cases": [
+      "tls_proxy_preserves_external_auth_scope_without_trusting_forwarded_headers"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "Local temporary testCA/clienttrust,actualnginx+openssl+PythonWSS; no systemtrustchange.",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_tls_proxy-dc309328ab542f17",
+      "sha256": "136cfb74b838326e33f70a6aa44cc1533a107f6223ba686a818ed75bbfe817cd",
+      "bytes": 19714968,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_upload",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_upload.rs",
+    "source_sha256": "8fb65367132fb9129544628396d21b12838848b26166e4036050fbd36b671f0b",
+    "cases": [
+      "verified_http_upload"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_upload-7d526827433a0f5f",
+      "sha256": "0cda03fb65ed57db3ad948db1d7731a8bdb42a7e57323dbc644e90c4e4025b00",
+      "bytes": 18433464,
+      "executed": false
+    }
+  },
+  {
+    "target": "http_upload_admission",
+    "source": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/server/tests/http_upload_admission.rs",
+    "source_sha256": "f9be7bbc648a22f24e90fd66c2da24fd498ce690dd987644d1d39411b342b05a",
+    "cases": [
+      "bounded_original_uploads_progress_behind_library_staging"
+    ],
+    "case_count": 1,
+    "classification": "ordinary_correctness",
+    "proposed_execute": true,
+    "estimate_from_design_only": true,
+    "duration_estimate": "15\u2013180seconds",
+    "note": "",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_upload_admission-bca7f5284b3cb60d",
+      "sha256": "9e00af9e388de458c1efa2cec056ab0f76a666bf16fae23e6c797758a5c20959",
+      "bytes": 20399736,
+      "executed": false
+    }
+  }
+]

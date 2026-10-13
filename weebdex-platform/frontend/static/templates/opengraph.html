@@ -1,0 +1,239 @@
+{{- define "opengraph" -}}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      /* noto-sans-display-regular - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Noto Sans Display";
+        font-style: normal;
+        font-weight: 400;
+        src:
+          url("/fonts/noto-sans-display-v30-latin-regular.woff2") format("woff2"),
+          /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */ url("/fonts/noto-sans-display-v30-latin-regular.ttf")
+            format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+      }
+      /* noto-sans-display-italic - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Noto Sans Display";
+        font-style: italic;
+        font-weight: 400;
+        src:
+          url("/fonts/noto-sans-display-v30-latin-italic.woff2") format("woff2"),
+          /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */ url("/fonts/noto-sans-display-v30-latin-italic.ttf")
+            format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+      }
+      /* noto-sans-display-500 - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Noto Sans Display";
+        font-style: normal;
+        font-weight: 500;
+        src:
+          url("/fonts/noto-sans-display-v30-latin-500.woff2") format("woff2"),
+          /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */ url("/fonts/noto-sans-display-v30-latin-500.ttf")
+            format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+      }
+      /* noto-sans-display-500italic - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Noto Sans Display";
+        font-style: italic;
+        font-weight: 500;
+        src:
+          url("/fonts/noto-sans-display-v30-latin-500italic.woff2") format("woff2"),
+          /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+            url("/fonts/noto-sans-display-v30-latin-500italic.ttf") format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+      }
+      /* noto-sans-display-600 - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Noto Sans Display";
+        font-style: normal;
+        font-weight: 600;
+        src:
+          url("/fonts/noto-sans-display-v30-latin-600.woff2") format("woff2"),
+          /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */ url("/fonts/noto-sans-display-v30-latin-600.ttf")
+            format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+      }
+      /* noto-sans-display-600italic - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Noto Sans Display";
+        font-style: italic;
+        font-weight: 600;
+        src:
+          url("/fonts/noto-sans-display-v30-latin-600italic.woff2") format("woff2"),
+          /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+            url("/fonts/noto-sans-display-v30-latin-600italic.ttf") format("truetype"); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+      }
+
+      * {
+        margin: 0;
+      }
+
+      img {
+        max-width: 100%;
+      }
+
+      body {
+        background-color: #000;
+        color: #fff;
+        font-family: "Noto Sans Display", serif;
+      }
+
+      body,
+      #root {
+        position: relative;
+        overflow: hidden;
+        width: 1200px;
+        height: 630px;
+      }
+
+      .background img {
+        object-fit: cover;
+        object-position: 0 center;
+      }
+
+      h1 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+      }
+
+      h2 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      {{- if .IsGroup }}
+        <div
+          class="background"
+          style="filter: blur(2px); position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%"
+        >
+          <img src="/images/monimonimoni.png" style="width: 100%; height: 100%" />
+          <div
+            style="
+              background-color: rgba(0, 0, 0, 0.75);
+              position: absolute;
+              top: -5%;
+              left: -5%;
+              width: 110%;
+              height: 110%;
+            "
+          ></div>
+        </div>
+        <div style="position: relative; display: flex; z-index: 1; height: 100%;">
+          <div style="display: flex; flex-direction: column; flex-grow: 1; width: 0; padding: 30px">
+            <div style="display: flex; flex-grow: 1;">
+              <div style="margin: auto">
+                <h1 style="text-align: center; font-size: 60px; line-height: 75px; font-weight: 600; text-wrap-style: balance">{{- .Title -}}</h1>
+                <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-top: 20px;">
+                  <div style="display: flex; align-items: center; gap: 10px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg>
+                    <span style="font-size: 36px; font-weight: 600">
+                      {{- if .Chapters }}
+                        {{ .Chapters }}
+                      {{- else }}
+                        0
+                      {{- end }}
+                    </span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+                    <span style="font-size: 36px; font-weight: 600">
+                      {{- if .Members }}
+                        {{ .Members }}
+                      {{- else }}
+                        0
+                      {{- end }}
+                    </span>
+                  </div>
+                </div>
+                {{- if or .Discord .Twitter }}
+                  <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin-top: 20px;">
+                    {{- if .Discord }}
+                    <div style="display: flex; align-items: center; gap: 10px">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-discord" viewBox="0 0 16 16">
+                        <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
+                      </svg>
+                      <span style="font-size: 20px; font-weight: 500">
+                        {{ .Discord }}
+                      </span>
+                    </div>
+                    {{- end }}
+                    {{- if .Twitter }}
+                      <div style="display: flex; align-items: center; gap: 10px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter-icon lucide-twitter"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                        <span style="font-size: 20px; font-weight: 500">
+                          @{{ .Twitter }}
+                        </span>
+                      </div>
+                    {{- end }}
+                  </div>
+                {{- end }}
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 20px">
+              <img src="/favicon.png" width="60px" />
+            </div>
+          </div>
+        </div>
+      {{- else }}
+        <div
+          class="background"
+          style="filter: blur(5px); position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%"
+        >
+          <img src="{{ .Image }}" style="width: 100%; height: 100%" />
+          <div
+            style="
+              background-color: rgba(0, 0, 0, 0.5);
+              position: absolute;
+              top: -5%;
+              left: -5%;
+              width: 110%;
+              height: 110%;
+            "
+          ></div>
+        </div>
+        <div style="position: relative; display: flex; z-index: 1">
+          <div style="display: flex; flex-direction: column; flex-grow: 1; width: 0; padding: 30px">
+            <div style="flex-grow: 1">
+              <h1 style="font-size: 56px; line-height: 70px; font-weight: 600; text-wrap-style: balance">{{- .Title -}}</h1>
+              {{- if .Subtitle }}
+                <h2 style="font-size: 36px; line-height: 45px; font-weight: 400; margin-top: 25px; text-wrap-style: balance">
+                  {{- .Subtitle -}}
+                </h2>
+              {{- end }}
+              {{- if .Groups }}
+                <strong style="font-size: 24px; line-height: 36px; font-weight: 400; display: block; font-style: italic; margin-top: 20px;">Group:</strong>
+                {{- range .Groups }}
+                  <div style="font-size: 36px; line-height: 45px; font-weight: 600; display: block;">{{ . }}</div>
+                {{- end }}
+              {{- end }}
+            </div>
+            <div style="display: flex; align-items: center; gap: 20px">
+              <img src="/favicon.png" width="60px" />
+              {{- if not .Groups }}
+                <strong style="font-size: 40px; line-height: 0; font-weight: 600">WeebDex</strong>
+              {{- end }}
+            </div>
+          </div>
+          <img src="{{ .Image }}" style="width: 450px; height: 630px; object-fit: cover; object-position: center" />
+        </div>
+      {{- end }}
+    </div>
+  </body>
+</html>
+{{- end -}}

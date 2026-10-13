@@ -1,0 +1,251 @@
+{
+  "utc": "2026-10-13T02:42:25.132969+00:00",
+  "kind": "static source inspection, not PostgreSQL execution",
+  "migration_count": 23,
+  "function_definitions": {
+    "platform.catalog_timestamp": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [],
+      "source_guard_reachable_static_inference": false
+    },
+    "platform.catalog_author_json": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_timestamp",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.catalog_thread_json": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_timestamp",
+        "platform.community_thread_stats",
+        "platform.community_thread_visible",
+        "platform.community_user_json"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.catalog_group_json": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_thread_json",
+        "platform.catalog_timestamp",
+        "platform.protocol_group_is_visible",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.catalog_cover_json": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_timestamp",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.catalog_manga_base": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_timestamp",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.catalog_manga_tags_json": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [],
+      "source_guard_reachable_static_inference": false
+    },
+    "platform.catalog_relations_json": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_cover_json",
+        "platform.catalog_manga_base",
+        "platform.catalog_manga_tags_json",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.catalog_manga_json": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_author_json",
+        "platform.catalog_cover_json",
+        "platform.catalog_group_json",
+        "platform.catalog_manga_base",
+        "platform.catalog_manga_tags_json",
+        "platform.catalog_relations_json",
+        "platform.catalog_thread_json",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.catalog_chapter_json": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_group_json",
+        "platform.catalog_manga_json",
+        "platform.catalog_thread_json",
+        "platform.catalog_timestamp",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.library_create_user_thread": {
+      "last_definition": "0030_library.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_threads"
+      ],
+      "source_guard_reachable_static_inference": false
+    },
+    "platform.library_user_json": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_group_json",
+        "platform.catalog_thread_json",
+        "platform.protocol_group_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.community_user_json": {
+      "last_definition": "0040_community.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [],
+      "source_guard_reachable_static_inference": false
+    },
+    "platform.community_thread_stats": {
+      "last_definition": "0040_community.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [],
+      "source_guard_reachable_static_inference": false
+    },
+    "platform.community_thread_visible": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.protocol_group_is_visible",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.community_thread_json": {
+      "last_definition": "0040_community.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_chapter_json",
+        "platform.catalog_group_json",
+        "platform.catalog_manga_json",
+        "platform.catalog_thread_json",
+        "platform.community_thread_visible",
+        "platform.community_user_json"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.community_reply_json": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_timestamp",
+        "platform.community_thread_visible",
+        "platform.community_user_json"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.report_entity_exists": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.community_thread_visible",
+        "platform.protocol_group_is_visible",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.report_json": {
+      "last_definition": "0050_moderation.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_author_json",
+        "platform.catalog_chapter_json",
+        "platform.catalog_group_json",
+        "platform.catalog_manga_json",
+        "platform.catalog_thread_json",
+        "platform.catalog_timestamp",
+        "platform.community_reply_json",
+        "platform.community_thread_json",
+        "platform.community_user_json",
+        "platform.report_entity_exists"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.analytics_user_stats": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.community_thread_visible",
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.protocol_source_is_visible": {
+      "last_definition": "0070_protocol_bridge.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [],
+      "source_guard_reachable_static_inference": true
+    },
+    "platform.announcement_json": {
+      "last_definition": "0080_announcements.sql",
+      "source_guard": false,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.catalog_timestamp",
+        "platform.community_user_json"
+      ],
+      "source_guard_reachable_static_inference": false
+    },
+    "platform.protocol_group_is_visible": {
+      "last_definition": "0081_community_visibility.sql",
+      "source_guard": true,
+      "fixed_zero_thread_stats": false,
+      "guard_function_calls": [
+        "platform.protocol_source_is_visible"
+      ],
+      "source_guard_reachable_static_inference": true
+    }
+  },
+  "note": "Function reachability is a static call-graph inference, not SQL execution or a proof that every independent root query is guarded."
+}

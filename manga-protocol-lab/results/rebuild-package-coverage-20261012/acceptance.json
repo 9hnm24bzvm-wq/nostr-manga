@@ -1,0 +1,57 @@
+{
+  "recorded_utc": "2026-10-12T21:19:59.148480+00:00",
+  "verdict": "focused_packaging_cli_accepted",
+  "sources": {
+    "scripts/package.py": {
+      "before_sha256": "bd553cda3299bda8c2ae8a3f341b795b88556e01a8ad6835c17d4fcda7b2e938",
+      "candidate_sha256": "04fd9f8c00153dde5b109891025af59b953ea8f891b12a5f25b57a44b8fb8b1b"
+    },
+    "scripts/tests/test_package_cli.py": {
+      "before_sha256": "49db9f02695a6b16952bcabab72240d9a978d881878e2da4c1fc0277d2aa92a2",
+      "candidate_sha256": "56dbd25c521277c669fab1bd3ce5b8d3dbf38eb37d2b220edc74fb08d8628f92"
+    }
+  },
+  "tests": {
+    "actual_cli_methods": 12,
+    "exit": 0,
+    "seconds": 0.964,
+    "final_log_sha256": "60c72a809a46fd4ee738dcfb430b09cc263f71167a2f6795646ead3091ff2603",
+    "full_project_gate_rerun": false
+  },
+  "independent_review": {
+    "path": "results/rebuild-package-coverage-20261012/INDEPENDENT-REVIEW.md",
+    "sha256": "db3d4e22727057233421afaa04c13ca85c8d865effbf90b45313c85e604c242f",
+    "method": "Read-only independent review; no duplicate test run"
+  },
+  "restoration": {
+    "canonical_expected": 392,
+    "canonical_original_archive_matching": 387,
+    "canonical_original_archive_missing": 5,
+    "canonical_original_archive_mismatched": 0,
+    "missing_files_recreated": false,
+    "post_restoration_approved_canonical_edits": [
+      "scripts/package.py",
+      "scripts/tests/test_package_cli.py"
+    ]
+  },
+  "historical_records_verified_unchanged": {
+    "CHECKPOINT-STATUS.json": "3030747a674229f36a72f3369a84b40f85d32e2f20d53d88b24628abaa308deb",
+    "docs/rebuild/STATUS.md": "2dcf24b8f996d53c9c60a1ad4a34a1ed4f77828657bd44b94893b5fcc8e316c6",
+    "docs/rebuild/CHECKPOINTS.json": "33e513dde8eec0478b0a9c3197c1bf53152c0810de2a88abb1a1aeb5de07b363",
+    "results/rebuild-pool-lifetimes-final/canonical-source-after.json": "a26e31ca2d65abfb8bdb500249ebab4c3c68f9c55a90823e686b6c8388b2e763",
+    "results/rebuild-pool-lifetimes-final/canonical-acceptance.json": "656aa030c83f239bde726813cefb6f6c49ffe9d3cd55e18ca1be38f9779cd6d5"
+  },
+  "original392_manifest_refusal": {
+    "exit": 1,
+    "output_absent": true,
+    "log_sha256": "c6d8aae3e2ee44509dac66b574c5cd716600674787937f1e954825a7d406e2ab"
+  },
+  "next_checkpoint_requirement": "Require an independently reviewed canonical coverage gate; old392 must fail until missing files recovered or a new scope is formally reviewed without changing historical receipts. Archived checkpoint helper is still subset-only.",
+  "status_supplement": "docs/rebuild/RESTORATION-STATUS-2026-10-12.md",
+  "local_links_verified": 20,
+  "limits": [
+    "Optional-manifest coverage is relative only to supplied reviewed identity map.",
+    "Path checks do not replace reviewed content privacy.",
+    "No fresh whole-project gate, app rebuild, throughput qualification or upload."
+  ]
+}

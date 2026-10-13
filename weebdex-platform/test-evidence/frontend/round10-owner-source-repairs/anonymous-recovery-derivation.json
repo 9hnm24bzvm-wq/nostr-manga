@@ -1,0 +1,8 @@
+{
+  "original": "src/routes/(app)/auth/recovery/+page.svelte",
+  "preserved_byte_copy": "platform-integrations/frontend-behavior/RetainedRecovery.svelte",
+  "executed_script_derivative": "platform-integrations/frontend-behavior/RecoveryRequest.svelte",
+  "original_sha256": "20ba760776b71854e74c17aef228abd234dd5bded650c4fe863a1a94e1115fcf",
+  "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
+  "original_markup_styles_identical": true
+}

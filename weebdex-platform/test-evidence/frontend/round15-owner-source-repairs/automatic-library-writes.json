@@ -1,0 +1,22 @@
+{
+  "automatic_account_history": {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "mutation": "ChapterHistory.UpdateBatch",
+    "ack": "200 plus non-null body",
+    "admission": "live captured chapter/manga/library/account intent before opening; statuschecked after owned completion",
+    "failure": "shared current-owned failure guidance; automatic token retained so no automatic replay"
+  },
+  "automatic_device_progress": {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "mutation": "saveProgress",
+    "ack": "fulfilled atomic IndexedDB transaction, no HTTPResponse",
+    "admission": "captured immutable destination/page,350ms coalescing; admitted final exit flush only",
+    "failure": "rejected Promise/local panel error; no silent account fallback"
+  },
+  "other_observed_UpdateBatch_callers": [
+    "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "src/lib/components/ChapterListEntry.svelte"
+  ],
+  "other_callers_automatic": false,
+  "runtime_verified": false
+}

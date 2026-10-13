@@ -1,0 +1,10 @@
+{
+  "ui_index_sha256": "108828f3326f86fe080670d3a96eecf1884a2aceb7d89d51f22b8994096eef43",
+  "hash_sources": [
+    "'sha256-gOZMbJp9TD43eNzzK31YE638PRgljylRB1pOGg1lmdw='"
+  ],
+  "recognized_bootstrap_count": 1,
+  "external_analytics_allowed": false,
+  "script_unsafe_inline_allowed": false,
+  "runtime_startup_checked": false
+}

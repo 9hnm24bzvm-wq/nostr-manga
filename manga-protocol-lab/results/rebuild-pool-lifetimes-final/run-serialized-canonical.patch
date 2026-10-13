@@ -1,0 +1,17 @@
+--- scripts/test.sh
++++ results/rebuild-pool-lifetimes-final/run-serialized-canonical.sh
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env bash
+ # Canonical current-runtime acceptance. Historical SQLite experiments are retired.
+ set -euo pipefail
+-cd "$(dirname "$0")/.."
++cd "$(dirname "$0")/../.."
+ mkdir -p results
+ export PYTHONPATH="$PWD/vendor/pydeps:$PWD${PYTHONPATH:+:$PYTHONPATH}"
+ export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$PWD/prototype/target}"
+@@ -9,4 +9,4 @@
+ python3 -m unittest discover -s tests
+ python3 -m unittest discover -s scripts/tests
+ (cd browser-client && npm run build && npm test)
+-bash scripts/test-postgres.sh
++bash results/rebuild-pool-lifetimes-final/test-postgres-serialized.sh

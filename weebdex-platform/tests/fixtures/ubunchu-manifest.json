@@ -1,0 +1,600 @@
+{
+  "schema": 1,
+  "dataset": "Ubunchu Japanese originals chapters1–2",
+  "repository": "https://gitlab.com/ubunchu-translators/ubunchu",
+  "project_id": 468079,
+  "revision": "9f065a3fde464be893dfba9fb5fc6abc93722cf9",
+  "retrieved_at": "2026-10-13",
+  "use_boundary": "Data review and explicitly noncommercial local disposable tests only; no commercial-rights determination, public deployment, external upload or translated-art license inference. Preserve attribution and both supplied notices.",
+  "author_source": "https://seotch.wordpress.com/ubunchu/",
+  "author": "Hiroshi Seo (Seotch)",
+  "publisher": "ASCII MEDIA WORKS Inc.",
+  "source_modified": false,
+  "download_limits": {
+    "files": 28,
+    "per_image_bytes": 4194304,
+    "per_notice_bytes": 131072,
+    "total_bytes": 33554432,
+    "total_seconds": 240,
+    "request_seconds": 20,
+    "allowed_host": "gitlab.com"
+  },
+  "chapters": [
+    {
+      "chapter": 1,
+      "images": 12,
+      "credit_images": 1,
+      "story_pages": 11,
+      "bytes": 4765627,
+      "pixels": 24446520
+    },
+    {
+      "chapter": 2,
+      "images": 12,
+      "credit_images": 1,
+      "story_pages": 11,
+      "bytes": 4733881,
+      "pixels": 24444028
+    }
+  ],
+  "statistics": {
+    "images": 24,
+    "image_bytes": 9499508,
+    "notice_bytes": 7572,
+    "min_file_bytes": 123129,
+    "max_file_bytes": 2091990,
+    "median_file_bytes": 263969.5,
+    "total_pixels": 48890548,
+    "dimensions": [
+      {
+        "width": 1246,
+        "height": 1635,
+        "count": 23
+      },
+      {
+        "width": 1246,
+        "height": 1633,
+        "count": 1
+      }
+    ],
+    "modes": {
+      "RGBA": 3,
+      "RGB": 1,
+      "L": 20
+    }
+  },
+  "files": [
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_00.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_00.png",
+      "sha256": "5e282afe7c5a0c5caeb817c53c50d6b01e8f2aa5b01df42e67e9fd644a85470a",
+      "bytes": 123129,
+      "width": 1246,
+      "height": 1635,
+      "mode": "RGBA",
+      "format": "PNG",
+      "role": "credit",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_01.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_01.png",
+      "sha256": "46edc928a569782199565c0f4788c04cf1bfce401073788131c64c7a48a11735",
+      "bytes": 1698506,
+      "width": 1246,
+      "height": 1635,
+      "mode": "RGB",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_02.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_02.png",
+      "sha256": "d5737394c163cbc46348582f8684e4c38b565765eaaa77828d370a5100fcbbee",
+      "bytes": 302738,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_03.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_03.png",
+      "sha256": "0415128bd10a53b9964851c62cf54ec69ce73c805719bd042ca9e5c3dcabf8a3",
+      "bytes": 305298,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_04.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_04.png",
+      "sha256": "bc5a90b6952e45f11f9d6de80195cef48d2c0dee211e6071521001dd0848abe3",
+      "bytes": 285034,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_05.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_05.png",
+      "sha256": "5dfb6ed69c9e9ad0402707ee60a038c7d1d1af0124f1bb169b07afefad705cba",
+      "bytes": 307082,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_06.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_06.png",
+      "sha256": "18ddf8669a843afe5545ec4d0f8a4e95bcf7dfdb511f1cef610af48a77cc4743",
+      "bytes": 233977,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_07.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_07.png",
+      "sha256": "115e0544c7aef1e5c436a768b7d6a157abc44afa17e467b20a3cb49f3358c8a6",
+      "bytes": 256458,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_08.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_08.png",
+      "sha256": "ff8df548f49e576496c995e8da40a6afe5f5fbe21f0a4fce30da3b1675750e25",
+      "bytes": 314848,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_09.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_09.png",
+      "sha256": "42ff3d8ccafaa93fd1f9e4409eb860bc895ed740bee16e44364f512baea17eb8",
+      "bytes": 368260,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_10.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_10.png",
+      "sha256": "878dbe670c636faf90624e6a0063a21d76541897a748a078dd84eb52f108d9a4",
+      "bytes": 265406,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/ubunchu01_11.png",
+      "chapter": 1,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/ubunchu01_11.png",
+      "sha256": "ac03dee57627ac14fa4a4dc398408ee6e7640ef8dfcb329e83a20a110e8d44ca",
+      "bytes": 304891,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/01/ubunchu01_ja_release/license_en.txt",
+        "chapters/01/ubunchu01_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 1"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu01_00.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu01_00.png",
+      "sha256": "71444fb64df4ec6313021695699449cfb24c5fb0b847d0af81af9b679d311fba",
+      "bytes": 125120,
+      "width": 1246,
+      "height": 1635,
+      "mode": "RGBA",
+      "format": "PNG",
+      "role": "credit",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_01.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_01.png",
+      "sha256": "3693e7818790583dbd3f96fc3d0a551914da80d28d175dcf49ee609464ef8604",
+      "bytes": 2091990,
+      "width": 1246,
+      "height": 1633,
+      "mode": "RGBA",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_02.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_02.png",
+      "sha256": "9320d8a8b98703eed0b960e49e9c2a9d42da60902a27d3b3709a0d2bb59cc585",
+      "bytes": 233917,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_03.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_03.png",
+      "sha256": "5f177eb4ca3ac15b41cdf196802c335dc5b9d1684eba7682495248efa5fbb01e",
+      "bytes": 258546,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_04.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_04.png",
+      "sha256": "8a57f9dd6bfc503fe7594146b293bc398967be8fdce4e3be0be84912663dda6a",
+      "bytes": 262533,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_05.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_05.png",
+      "sha256": "c182f6ea660a1b431f33a4a098183cc66fd27366ec4928e83b25c9fc6e5f933a",
+      "bytes": 277335,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_06.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_06.png",
+      "sha256": "7f438563430ccc75d224b988e799a9bcdd18290c9f34e5d6b67e94987729ad28",
+      "bytes": 235492,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_07.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_07.png",
+      "sha256": "ee7fddb45f0d28c5984161b3b5f00396cf11d81ba1c57092ec73194d84e63791",
+      "bytes": 235597,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_08.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_08.png",
+      "sha256": "f6376f99c385ff4da291e201c02f7548905e15bb5de5ad392fde32c0915ea441",
+      "bytes": 228202,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_09.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_09.png",
+      "sha256": "d6284d60c0e31ff0e07082852346495467374cea4d795d3f12b758a76ad8e5e5",
+      "bytes": 245313,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_10.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_10.png",
+      "sha256": "978536ed11c5ef3eb691d8eee8e8c9f52ff0bf9d023d18d52ec3cdd82cfce270",
+      "bytes": 284457,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/ubunchu02_11.png",
+      "chapter": 2,
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/ubunchu02_11.png",
+      "sha256": "d9c7d94c444c7f7d26dc9aedc75a665e942ed7aec80cc24b496dadf3eb19aa11",
+      "bytes": 255379,
+      "width": 1246,
+      "height": 1635,
+      "mode": "L",
+      "format": "PNG",
+      "role": "story_page",
+      "license_notice_paths": [
+        "chapters/02/ubunchu02_ja_release/license_en.txt",
+        "chapters/02/ubunchu02_ja_release/license_ja.txt"
+      ],
+      "declared_license_urls": [
+        "https://creativecommons.org/licenses/by-nc/3.0/",
+        "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+      ],
+      "attribution": "Ubunchu! — Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc.; Japanese original, chapter 2"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/license_en.txt",
+      "sha256": "d913cdc056048525bc11ae09d36700edf88da3ce0d12f6629a903405dd49fffb",
+      "bytes": 1628,
+      "role": "license_notice"
+    },
+    {
+      "path": "chapters/01/ubunchu01_ja_release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/01/ubunchu01_ja_release/license_ja.txt",
+      "sha256": "add20f0e38bade6c32c1f8c22198f9ac39879bdcbc4fd9c823ef4f0b365a0330",
+      "bytes": 2274,
+      "role": "license_notice"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/license_en.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/license_en.txt",
+      "sha256": "41fc0463f3715eb27bd3396f526862965d9e62a3ed28929e95af69e38c459083",
+      "bytes": 1548,
+      "role": "license_notice"
+    },
+    {
+      "path": "chapters/02/ubunchu02_ja_release/license_ja.txt",
+      "source_url": "https://gitlab.com/ubunchu-translators/ubunchu/-/raw/9f065a3fde464be893dfba9fb5fc6abc93722cf9/chapters/02/ubunchu02_ja_release/license_ja.txt",
+      "sha256": "c9686be4cddce9bb97c24251c209c387e90616489b39f9d1ca6a81b37591575b",
+      "bytes": 2122,
+      "role": "license_notice"
+    }
+  ]
+}

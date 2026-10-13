@@ -1,0 +1,171 @@
+{
+  "updated_utc": "2026-10-13T05:33:45.475860+00:00",
+  "status": "source_frozen_after_actual_Send_diagnostic_correction_pending_fresh_check_and_independent_review",
+  "authorization": "Parent explicitly approved these exact23 original files across initial facade/store integration and round2/3/4 lifecycle completion. Original52 migrations and authority remain unchanged.",
+  "files": {
+    "lib.rs": {
+      "immutable_prior_baseline_sha256": "88d8f9b9603a0611784cd8ed2ba6e66469402dd25c9b0a9d117750c8944d6c02",
+      "before_this_global_lifecycle_patch_sha256": "88d8f9b9603a0611784cd8ed2ba6e66469402dd25c9b0a9d117750c8944d6c02",
+      "rationale": "Previously approved additive facade export, unchanged in this patch.",
+      "after_sha256": "88d8f9b9603a0611784cd8ed2ba6e66469402dd25c9b0a9d117750c8944d6c02"
+    },
+    "platform_bridge.rs": {
+      "immutable_prior_baseline_sha256": "8f9cb7a341b9d76522ca3d33d868fe55af3448f22eda7d083a366f4b4a616c2e",
+      "before_this_global_lifecycle_patch_sha256": "394f89229a024b72e5e1d82b793f1754509211c5097a714cf794d5a688e57247",
+      "rationale": "Additive original-owned byte-budget catalogue prefix and explicit invalid-row rejection; current signed deletion target/generation row-lock facade.",
+      "after_sha256": "394f89229a024b72e5e1d82b793f1754509211c5097a714cf794d5a688e57247"
+    },
+    "node.rs": {
+      "immutable_prior_baseline_sha256": "ff25345d5ade29bb971a200e170e20671ade5339cf4a89204fe75678b08a50fb",
+      "before_this_global_lifecycle_patch_sha256": "9a122a7137d98bce9fb874256876ce64b6ce0c2c749968edb978ec7cda4309d0",
+      "rationale": "Shared-store embedded lifecycle scope with terminal async/blocking leases, maintenance/infrastructure sequencing, actual join observation and source-only cancellation/shutdown tests.",
+      "after_sha256": "9e2d09fda7e05a8bbc740879b9ed5622a189e853eec66ceda8c1c7daec4024a3"
+    },
+    "relay.rs": {
+      "immutable_prior_baseline_sha256": "d8abe99f2309740688ce70cc19e3515cdd23567cacc67e673f0792f77634f3e0",
+      "before_this_global_lifecycle_patch_sha256": "f45b37a158747ba5e63692c1ccaa430092a2f94bc4d06f694cd03769e87aedb1",
+      "rationale": "Scoped policy child survives caller cancellation; idle embedded session observes close between commands and sends bounded Close frame.",
+      "after_sha256": "cfc1cd5d5b7bd4e4c1263b79fe82a58cd2a49f942673db0b17a9cdefcbfcc8a5"
+    },
+    "upload.rs": {
+      "immutable_prior_baseline_sha256": "cda13102ff4255f860a429abb0982e87b71c023fa9e5e90e6c6505d930036f40",
+      "before_this_global_lifecycle_patch_sha256": "cda13102ff4255f860a429abb0982e87b71c023fa9e5e90e6c6505d930036f40",
+      "rationale": "Scoped finite storage children and reclaim JoinSet forks inherit actual terminal lease.",
+      "after_sha256": "390c2304dfa1c490ab5802b8216eb9f6173011d3b18e203d7c3f4df4f5abd87b"
+    },
+    "library.rs": {
+      "immutable_prior_baseline_sha256": "83b13c7f241542d36b61e3b5df6c08c0beb011470775edcb4e91cb6c913c69bb",
+      "before_this_global_lifecycle_patch_sha256": "83b13c7f241542d36b61e3b5df6c08c0beb011470775edcb4e91cb6c913c69bb",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "d076b7c19f139077c7f2b36cbb4ecac232496ff0b867755a6bce7d6203305dc8"
+    },
+    "library_storage.rs": {
+      "immutable_prior_baseline_sha256": "ad7efab494dfab1ec476823830d3d29a1dcbc18055df2da673191dbd021c342f",
+      "before_this_global_lifecycle_patch_sha256": "ad7efab494dfab1ec476823830d3d29a1dcbc18055df2da673191dbd021c342f",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "67b72b41a826967f78724b78f0ae917fc367721b77b153b03a283f99382cf866"
+    },
+    "storage.rs": {
+      "immutable_prior_baseline_sha256": "9bc74e72457853e33960f30f790c3388005db0544632871f5cbec42719a271f2",
+      "before_this_global_lifecycle_patch_sha256": "9bc74e72457853e33960f30f790c3388005db0544632871f5cbec42719a271f2",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "ae37007e1b329492e59b4442f7f2d26d91f1ad153d3ee82b39d25a1916998f80"
+    },
+    "catalogue.rs": {
+      "immutable_prior_baseline_sha256": "7f9589ad3fa05d06b8deeea924958cd3ac007e6da5772f85e0bb556f0a8ba51a",
+      "before_this_global_lifecycle_patch_sha256": "7f9589ad3fa05d06b8deeea924958cd3ac007e6da5772f85e0bb556f0a8ba51a",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "4e8f3e3471ae6517b46ce653a86d555322804584a8d8b5b60564351ada6e1a84"
+    },
+    "inventory.rs": {
+      "immutable_prior_baseline_sha256": "01def25585b6b4cc96ac3c33147af19cf1053eb15b8fd72c7bfdde7fee8c717a",
+      "before_this_global_lifecycle_patch_sha256": "01def25585b6b4cc96ac3c33147af19cf1053eb15b8fd72c7bfdde7fee8c717a",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "10951dd32c76e1b4d1e39aa22db5a494ee707275dd5dee471a8bb8d1327af8a5"
+    },
+    "publication.rs": {
+      "immutable_prior_baseline_sha256": "2f5a7b5f2df4e1ef3aec0d8d0d80a46722db890fc2630eb043d9e5dff23bf978",
+      "before_this_global_lifecycle_patch_sha256": "2f5a7b5f2df4e1ef3aec0d8d0d80a46722db890fc2630eb043d9e5dff23bf978",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "6fb7ebf4fbf7ee2537f9bc04546c416ac00205a392ae31d91892bc410b3a6fd6"
+    },
+    "groups.rs": {
+      "immutable_prior_baseline_sha256": "dec15c22c9205c0bb19ac96e123955f25c02a7d10f8984f2eb2f2ed6be8d17e7",
+      "before_this_global_lifecycle_patch_sha256": "dec15c22c9205c0bb19ac96e123955f25c02a7d10f8984f2eb2f2ed6be8d17e7",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "48281729cc8a6a8640fee1385edceef40eadce91a982f34bf39d0098f37e68b3"
+    },
+    "peers.rs": {
+      "immutable_prior_baseline_sha256": "d1b9a69d65538e96de744b3dd7424ff4de72d5ace92a1ba582457387cf5c6508",
+      "before_this_global_lifecycle_patch_sha256": "d1b9a69d65538e96de744b3dd7424ff4de72d5ace92a1ba582457387cf5c6508",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "15928a16624655079830566fa3b470b0da876dd6b47e3912df85b9fb8bb4a3f7"
+    },
+    "library_view.rs": {
+      "immutable_prior_baseline_sha256": "aa4d226a24f4e058980883d2380f9a2bf3ebd00c19931552fb9677ce57fdc268",
+      "before_this_global_lifecycle_patch_sha256": "aa4d226a24f4e058980883d2380f9a2bf3ebd00c19931552fb9677ce57fdc268",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "99f49b53925df7abaddd2c52ae8a65e93bdcd478a5182ef3bfc6f4b2fefbd532"
+    },
+    "relay_dispatch.rs": {
+      "immutable_prior_baseline_sha256": "ebbbac585f29e9d4a254e337fedd90b9e2e7fedfca00afca28b35db862029a7c",
+      "before_this_global_lifecycle_patch_sha256": "ebbbac585f29e9d4a254e337fedd90b9e2e7fedfca00afca28b35db862029a7c",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "53606a4cf6ad33833e85102df0721c35dd6b5b05bdcbae99d07755caac213b8f"
+    },
+    "relay_feed.rs": {
+      "immutable_prior_baseline_sha256": "a3917f9bbc6dff3991d3a22034eebae68bb6a1bbe0247a34a7b38f53decac914",
+      "before_this_global_lifecycle_patch_sha256": "a3917f9bbc6dff3991d3a22034eebae68bb6a1bbe0247a34a7b38f53decac914",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "de40a4fe6c192c7aca5474bfd4135839f7addb63ccc16004d9210d5e72f41026"
+    },
+    "sync_jobs.rs": {
+      "immutable_prior_baseline_sha256": "561edb780e2ad05fb942930173a079f4d87fd81abce5a6ac4cf9c53274dab63e",
+      "before_this_global_lifecycle_patch_sha256": "561edb780e2ad05fb942930173a079f4d87fd81abce5a6ac4cf9c53274dab63e",
+      "rationale": "Bounded sync work propagates scoped descendants; private renewal infrastructure has abort-on-parent-drop and actual terminal lease.",
+      "after_sha256": "fdd55c47a8a41ad7d2cf5f87fdfa331a5096816e61f5f8bda0a988c6752f7b48"
+    },
+    "node/read_admission.rs": {
+      "immutable_prior_baseline_sha256": "b0cd43603c4d6fffee23b541ed91be0bb66f0da4491258fbd8a4735358838820",
+      "before_this_global_lifecycle_patch_sha256": "b0cd43603c4d6fffee23b541ed91be0bb66f0da4491258fbd8a4735358838820",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "63bbf3de850d922a781752ee27a3afebfcd9e01c001786a76d4435c7aa3e5e9c"
+    },
+    "bounded_response.rs": {
+      "immutable_prior_baseline_sha256": "f2d2bcb4e107ad4ef32157d533d5e1aa7ea5a4123057f706ef25076fae5f6cce",
+      "before_this_global_lifecycle_patch_sha256": "f2d2bcb4e107ad4ef32157d533d5e1aa7ea5a4123057f706ef25076fae5f6cce",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "7fabe62848fb369b4c5a9c7f6c0dd4f7dab5aabaae74f3d852103692a0fa68bd"
+    },
+    "serving_role.rs": {
+      "immutable_prior_baseline_sha256": "4ca27dea6d90812d463c95ce2f2ff839d14022ce399cc265489ba00462068c10",
+      "before_this_global_lifecycle_patch_sha256": "4ca27dea6d90812d463c95ce2f2ff839d14022ce399cc265489ba00462068c10",
+      "rationale": "Cooperatively stopped serving loop classified infrastructure; its actual loop and finite storage descendants remain in terminal drain.",
+      "after_sha256": "334cde8061cca308103bd4c3fa699b6108b8630bf9d8127c5ad816d41bf474ff"
+    },
+    "node/blossom_http.rs": {
+      "immutable_prior_baseline_sha256": "ef245419de23a255876862308912c20f3c01a69cd9011c94918befb897bc4e57",
+      "before_this_global_lifecycle_patch_sha256": "ef245419de23a255876862308912c20f3c01a69cd9011c94918befb897bc4e57",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "ff130af70d6aa68e1857ff859c0c2e7c0823e01732eed00d6c4b6222d17adca8"
+    },
+    "node/review_http.rs": {
+      "immutable_prior_baseline_sha256": "d8d58a0ef5d35fa4565e11071ab1f47bba6a34c65f0a18fe6cbd507d4a0d5697",
+      "before_this_global_lifecycle_patch_sha256": "d8d58a0ef5d35fa4565e11071ab1f47bba6a34c65f0a18fe6cbd507d4a0d5697",
+      "rationale": "Exactly mechanical scoped async/blocking fork substitution; no signing, admission, schema or standalone behavior change.",
+      "after_sha256": "c83ecd8d193b428808ec7a1950c2fb78dc324a2f1970d9804e351a4d4f672ff7"
+    },
+    "backend.rs": {
+      "immutable_prior_baseline_sha256": "f49a6b0ad769ed464f7906dbcea401b0010338ba99838fc1adcca9f44d1f87f3",
+      "before_this_global_lifecycle_patch_sha256": "f49a6b0ad769ed464f7906dbcea401b0010338ba99838fc1adcca9f44d1f87f3",
+      "rationale": "Explicitly approved cancellation-surviving bounded subprocess/pipe/process-group terminal lifetime. Original command args and standalone behavior retained.",
+      "after_sha256": "57edc3a8546ffc1592f76acbc6aded66a3a4990fb8c80df27bc0c1761fb6de43",
+      "compiler_correction": "Parent-approved narrow siginfo_t synchronous scope preserves waitid WNOWAIT/EINTR semantics; no pointer-containing value crosses await and no unsafe Send implementation."
+    }
+  },
+  "file_count": 23,
+  "current_source_compiled": false,
+  "current_source_runtime_tested": false,
+  "synthetic_source_tests": [
+    "byte-bounded valid sibling prefix and explicit individual invalid/over-budget rejection",
+    "exact deletion UUID/generation/single-target body validation",
+    "disconnected scoped child retained until terminal",
+    "panic lease release without handle cycle",
+    "cancelled audit and async parent retain actual running blocking child",
+    "infrastructure private child abort/join before terminal drain",
+    "idle and already-closed embedded relay shutdown notification",
+    "real public original signed publication HTTP disconnect while original verdict lock is held, shutdown blocked until actual durable terminal acceptance",
+    "backend process-group leader failure cannot leave a real synthetic descendant running",
+    "unconfirmed process cleanup remains a supervisor failure after Rust task/lease termination"
+  ],
+  "execution_only_gates": [
+    "Fresh independent reviewer after this patchset",
+    "Sole compiler all-target check/codegen on exact23file authorized candidate",
+    "New original lifecycle and source-heavy HTTP acceptance execution",
+    "Managed-group restore/rehost native DELETE distinct-generation actual public seam execution",
+    "Combined original-backed browser fixture and signed NIP07 library/social/revocation/namespace-rebuild journeys",
+    "Backend leader-failure process-group fixture and WNOWAIT/proc terminal-observation execution on the supported Linux runtime"
+  ],
+  "prior_frozen_manifest_sha256": "ba414d759170f04afda30b5ae03a3fc473b9755b66c44d40007896f51c2aeaec",
+  "actual_latest_check": "Candidate005 cargo-check-round4-001 terminal101 two non-Send errors, clean guard/no changed inputs; corrected source uncompiled"
+}

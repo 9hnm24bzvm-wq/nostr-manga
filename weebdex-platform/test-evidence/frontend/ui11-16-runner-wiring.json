@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-13T10:10:19.693970+00:00",
+  "ordinary_phases_added": 14,
+  "total_prepared_phases": 38,
+  "exports": [
+    "ui11To16JourneyPhases",
+    "runUi11To16Journeys(h)"
+  ],
+  "syntax_checks": "node --check runner and new module exit0; no module import/application/browser/fixture execution",
+  "runtime_tests_executed": false,
+  "file_hashes": {
+    "scripts/browser-acceptance.mjs": "108efc390e3d43c2333033fd87dbe912329e405004875f51de208b9ad08d57a7",
+    "scripts/browser-ui11-16-journeys.mjs": "4a4f31f99e2bcf86485c3aebb26108fd5eff3a9e14800145fa12b4d589e63906",
+    "docs/browser-ui11-16-regressions.md": "37d74765485bb3975743c63c0de9e05f1764646709f29cd727a279f95feeda5e"
+  },
+  "execution_prerequisites": [
+    "fresh UI18 and fixture-extension review gate",
+    "--ui-regression-controls; named pagination seed before reader activation",
+    "--pg-home-fault-controls for ui14-home-failures; independent watchdog and final PG restart cleanup proof",
+    "baseline cover checks before ui15-16-empty-tabs disposable last-cover deletion"
+  ]
+}

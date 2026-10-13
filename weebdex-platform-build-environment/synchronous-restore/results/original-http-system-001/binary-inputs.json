@@ -1,0 +1,50 @@
+{
+  "immutable_snapshot_manifest": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/source-manifest.json",
+  "immutable_snapshot_sha256": "038d3471f678c7463755b8b89daa4f79402caa2eaff3a0edbfe3d1abfcf89bac",
+  "targets": [
+    {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/manga_node-0efaacddd011f470",
+      "sha256": "bbbf04858729cb4eb3137728fc95bda834f3f0b3c1ef596e3366384653cad445",
+      "bytes": 24942120,
+      "executed": false
+    },
+    {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_group_retry-64921c6db43cab18",
+      "sha256": "cfaa815e0491405b2b951aa941de1aa056abd68a4a26df098a5ca1d7335063a0",
+      "bytes": 21303904,
+      "executed": false
+    },
+    {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_moderation-096a822d007c1f02",
+      "sha256": "19e23ae487653be4b4da0c3adc2fee2273cdbe49bb3865f67ceb10f07a57c356",
+      "bytes": 21602656,
+      "executed": false
+    },
+    {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_node-b243b045d54497bb",
+      "sha256": "74bf989a1104a093247f82d769cf766e9dd8f1f0d66b9bf663d4c7aaedd62c39",
+      "bytes": 19765376,
+      "executed": false
+    },
+    {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_peers-387fee1dc036baa9",
+      "sha256": "82b4a05fab19ddf539a0a4c7e7b21d85481de6bb6da75265259e65149f8e41c8",
+      "bytes": 21361632,
+      "executed": false
+    },
+    {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_publication-9a37ac32aea6b9fb",
+      "sha256": "a2ffa3bcb514fb5beec9f04711788ea08a3f52a7eaedf4c9eb4f173072fc78c6",
+      "bytes": 20862952,
+      "executed": false
+    },
+    {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_read_ownership-e5d83d7d89eac314",
+      "sha256": "a05d6d33f0878a34c4b54034dd9770ebb10751043e61e7c18edc94283ec3ac7a",
+      "bytes": 20908608,
+      "executed": false
+    }
+  ],
+  "runner_sha256": "2b32a41081fcb9a5101eb4f88406302581fa77d4c2cb0f29700ea0eb8652f952",
+  "runtime_fixture_isolated": true
+}

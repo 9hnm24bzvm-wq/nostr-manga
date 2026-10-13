@@ -1,0 +1,66 @@
+{
+  "owner": "implement_weebdex_library_api",
+  "tickets": [
+    "WD-011",
+    "WD-012:user profile subset"
+  ],
+  "implementation": "source ready; compilation/test execution pending",
+  "compiled": "not run",
+  "tests": "not run",
+  "UI_tests": "not run",
+  "migration": "0030_library.sql",
+  "protocol_source_modified": false,
+  "protocol_publication": "not performed; instance account state separate",
+  "custom_lists": "additive instance-only contract; absent from observed frontend",
+  "source_limitations": [
+    "Source API URL concatenation relies on the retained +layout.ts URLSearchParams query-prefix patch; fresh deep-link ordering is a final browser acceptance gate; speculative URI rewriting removed",
+    "Reader history marks read on reader mount, not final-page completion"
+  ],
+  "operation_counts": {
+    "observed_owned": 22,
+    "implemented_source": 22,
+    "compiled": 0,
+    "passing_public_seams": 0
+  },
+  "observed_operations": [
+    "ChapterHistory.Search",
+    "ChapterHistory.List",
+    "ChapterHistory.Feed",
+    "ChapterHistory.UpdateBatch",
+    "Group.Follows",
+    "Group.Follow",
+    "Group.Unfollow",
+    "Group.GetFollowStatus",
+    "MangaFollow.Search",
+    "MangaFollow.LatestFeed",
+    "MangaFollow.LatestUpdates",
+    "MangaFollow.Update",
+    "MangaFollow.Unfollow",
+    "MangaFollow.Import",
+    "Settings.Update",
+    "User.Search",
+    "User.Get",
+    "User.Update",
+    "User.Follows",
+    "User.Follow",
+    "User.Unfollow",
+    "User.GetFollowStatus"
+  ],
+  "test_source": "backend/tests/library_http.rs",
+  "additive_operations": [
+    "MangaFollow.Export",
+    "CustomList.Create",
+    "CustomList.Get",
+    "CustomList.Update",
+    "CustomList.Delete",
+    "CustomList.Mine",
+    "CustomList.PublicByUser",
+    "ChapterProgress.Get",
+    "ChapterProgress.Update"
+  ],
+  "test_command": "scripts/run-auth-tests.sh cargo test --manifest-path backend/Cargo.toml --test library_http -- --ignored --test-threads=1",
+  "user_stats": "No points/messages fabricated; optional profile statistics omitted until actual community/analytics data exists",
+  "test_source_status": "Complete first-pass public HTTP/DB source for all22 observed operations, execution pending",
+  "audit_source_update_utc": "2026-10-13T02:44:03.202896+00:00",
+  "rating_sentinel": "Sole __none__ accepted for explicit empty rating selections, mixed sentinel and real ratings rejected"
+}

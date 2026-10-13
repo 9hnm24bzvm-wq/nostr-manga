@@ -1,0 +1,21 @@
+{
+  "created_utc": "2026-10-13T06:25:21.284768+00:00",
+  "purpose": "Source-identical original Python serving/migration support needed by CARGO_MANIFEST_DIR parent-relative integration tests. No runtime database or existing test results copied.",
+  "files": {
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/auth_model.py": "fd85e977416e17a7ff8edf950c0590f4772f97cba25464de82323104f2844457",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/cbor_profile.py": "67f3e76c18b01b291aac082428b22dfef50c41182685d24f7b039c04abf106f9",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/library_records.py": "7b7fece7acc665e0513d365ca950be715db4f19178a5b5945699f28b874d76a4",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/local_library_migration.py": "19cfd3693462a5bc40f6509b62ff70595989ec6003ef43992dbbaf6daf60049a",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/mangadex_migration.py": "c7f17f8ecebb7a867648b03f26c24e0ebb1dab6942552793a5b90a91d17fff33",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/operator_json.py": "33bd92d454451dc2c629dbcedb3640eaa6dd1d2ce6eef6252de605b17f24cb19",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/postgres_backup.py": "a7c10120769f42c843905040fc6ce77159b0dad602906c60a77b2b067f9a50cc",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/postgres_migration.py": "da585e0541c5189302a9dcb4ae4bf41defbdf80d86bc56bd1914c94b0664c655",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/src/serving_supervisor.py": "24689ab2bdfefef145c20a2ff307068c51f51bb6699e7bdcde29462190570a5e"
+  },
+  "vendor_read_only_provenance": {
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/vendor/strfry/strfry": "559791b46763f5c129231bd9347c8fb39cfad84e2ee3d4f4218cef8df8c27e56",
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/vendor/nginx-1.28.0/objs/nginx": "10cb18eb76e0f513836da11d6e0b992387bfa0a53300a82ab7b2d9a6ae5fa45a",
+    "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/vendor/nginx-1.30.5/objs/nginx": "10cb18eb76e0f513836da11d6e0b992387bfa0a53300a82ab7b2d9a6ae5fa45a"
+  },
+  "runtime_tests_executed": 0
+}

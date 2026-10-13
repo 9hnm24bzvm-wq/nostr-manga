@@ -1,0 +1,13 @@
+{
+  "baseline_inventory": "test-evidence/frontend/final-build7/source-baseline.json",
+  "changed_files": {
+    "platform-integrations/frontend-overlays.mjs": {
+      "baseline": "35233ac867ad3dc82d042cbf3ad2bdd7a057b6c72ecbb59610c0307b0b3c6076",
+      "candidate": "cf87726b06b337c37bf941174a1ebcb72995dd85d1cc2d0c864d27d601024f71"
+    },
+    "scripts/browser-journeys.mjs": {
+      "baseline": "de00fc1c07959ac52b387f2fb3233d068f5fe07b8de7d9f049c00703e12aced7",
+      "candidate": "8b167f3026c4df574de3628aae7aa512b9761936114e7b176c12f13a2cebf636"
+    }
+  }
+}

@@ -1,0 +1,550 @@
+{
+  "source_only": true,
+  "runtime_tests_executed": false,
+  "scope": "Original credentialed native REST writes use reviewed shared HTTP; actual library adapters/signing/auth flows separately classified. Public GETs are not blanket-guarded.",
+  "original_function_inventory": [
+    {
+      "source": "src/lib/API/Analytics.ts",
+      "function": "Manga",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": false,
+      "classification": "Intentionally anonymous same-instance catalogue view counter; no account/library mutation. External Google tracking remains CSP-blocked."
+    },
+    {
+      "source": "src/lib/API/Analytics.ts",
+      "function": "Chapter",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": false,
+      "classification": "Intentionally anonymous same-instance catalogue view counter; no account/library mutation. External Google tracking remains CSP-blocked."
+    },
+    {
+      "source": "src/lib/API/Author.ts",
+      "function": "Create",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Author.ts",
+      "function": "Update",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Author.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Chapter.ts",
+      "function": "Update",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Chapter.ts",
+      "function": "Claim",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Chapter.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/ChapterHistory.ts",
+      "function": "UpdateBatch",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Client.ts",
+      "function": "Create",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Client.ts",
+      "function": "Update",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Client.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Client.ts",
+      "function": "RegenerateSecret",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Cover.ts",
+      "function": "Upload",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Cover.ts",
+      "function": "Update",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Cover.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Group.ts",
+      "function": "Create",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Group.ts",
+      "function": "Update",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Group.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Group.ts",
+      "function": "Follow",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Group.ts",
+      "function": "Unfollow",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Create",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Update",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Commit",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Publish",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Reject",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Lock",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Unlock",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "CreateRelation",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Manga.ts",
+      "function": "DeleteRelation",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/MangaFollow.ts",
+      "function": "Update",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/MangaFollow.ts",
+      "function": "Unfollow",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/MangaFollow.ts",
+      "function": "Import",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Report.ts",
+      "function": "Create",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Report.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Report.ts",
+      "function": "Accept",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Report.ts",
+      "function": "Reject",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Settings.ts",
+      "function": "Update",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "VoteThread",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "UnvoteThread",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "CreateReply",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "UpdateReply",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "RemoveReply",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "DeleteReply",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "VoteReply",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/Thread.ts",
+      "function": "UnvoteReply",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/UploadSession.ts",
+      "function": "Begin",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/UploadSession.ts",
+      "function": "BeginEdit",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/UploadSession.ts",
+      "function": "Delete",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/UploadSession.ts",
+      "function": "Commit",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/UploadSession.ts",
+      "function": "DeleteFile",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/UploadSession.ts",
+      "function": "DeleteFiles",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/UploadSession.ts",
+      "function": "CheckApprovalRequired",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/User.ts",
+      "function": "Update",
+      "methods": [
+        "PUT"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/User.ts",
+      "function": "Follow",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    },
+    {
+      "source": "src/lib/API/User.ts",
+      "function": "Unfollow",
+      "methods": [
+        "DELETE"
+      ],
+      "credentialed": true,
+      "classification": "normal-browser native mutation; central actor/generation guard"
+    }
+  ],
+  "functions": 57,
+  "credentials_absent_mutations": [
+    {
+      "source": "src/lib/API/Analytics.ts",
+      "function": "Manga",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": false,
+      "classification": "Intentionally anonymous same-instance catalogue view counter; no account/library mutation. External Google tracking remains CSP-blocked."
+    },
+    {
+      "source": "src/lib/API/Analytics.ts",
+      "function": "Chapter",
+      "methods": [
+        "POST"
+      ],
+      "credentialed": false,
+      "classification": "Intentionally anonymous same-instance catalogue view counter; no account/library mutation. External Google tracking remains CSP-blocked."
+    }
+  ],
+  "additional_transports": {
+    "local_library_account_fetch": "Already captures expected account + library scope + every Session-write revision, post-response authoritative identity reconciliation; no replay. Device IndexedDB writes stay local and do not need browser-session authority.",
+    "announcement_reconstruction": "Direct fetch mutation exception migrated to common authenticatedMutation with owned manage-page intent; current-identity personal reads fenced and anonymous credentials omitted.",
+    "auth_flow_SDK": "Separate CSRF/browser-flow contract; anonymous signup/login/verification/recovery/reset-only capability must not be bound as normal native account writes.",
+    "original_signed_protocol": "Explicit external signer/admission/recipient authority; protocol signing and exact durable outbox are separate from password Session.",
+    "public_read_only_mapping_POST": "Protocol resources/import mapping resolution uses credentials omit, no authenticated account mutation.",
+    "upload": "Owned immutable target/actor captures + central native HTTP expected-account fence; multipart input snapshotted before queue.",
+    "public_GET": "Not blanket-blocked; specific personal reply/follow/announcement projections omit anonymous credentials or verify matching actor before/after reads."
+  }
+}

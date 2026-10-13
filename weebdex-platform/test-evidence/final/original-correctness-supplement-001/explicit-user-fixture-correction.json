@@ -1,0 +1,8 @@
+{
+  "fixture_only": true,
+  "source_and_binaries_unchanged": true,
+  "change": "Adds explicit current owned cluster OS-role user to reserved loopback manga_test DSN, required by safe backup parser. No password or other authority change.",
+  "prior_runner_sha256": "2b32a41081fcb9a5101eb4f88406302581fa77d4c2cb0f29700ea0eb8652f952",
+  "runner_sha256": "3a3984dfbcbff6b99d0f4a13a7a9349649219215ec97d820b827fa7958c0f9bb",
+  "failed_receipt": "weebdex-platform-build-environment/synchronous-restore/results/original-correctness-001/system-http-migration-001-result.json"
+}

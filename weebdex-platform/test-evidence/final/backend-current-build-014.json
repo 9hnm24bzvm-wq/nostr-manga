@@ -1,0 +1,94 @@
+{
+  "updated_utc": "2026-10-13T07:19:55.816555+00:00",
+  "source_candidate_sha256": "6d174a9cc00ff7be4fb2ad449cfd0daa08be0ecb4113b466ecf2386c3aad2ce9",
+  "normal_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "8be12f95d3795e4e1ab7135347774c57291b6057f45503659acfe15df4766e1b",
+    "bytes": 75311712,
+    "executed": false,
+    "compiled_current_source": true
+  },
+  "result_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-014/cargo-build-normal-004-result.json",
+  "result_sha256": "051fefd7d1e598de9fdd869bb386629775c7536ac23dc6ea0ef168bd48be5baa",
+  "command_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-014/cargo-build-normal-004-command.json",
+  "resource_budget_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-009/resource-budget.json",
+  "runtime_executed": false,
+  "example_codegen": {
+    "status": "passed",
+    "source_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/backend/examples/browser_fixture_provisioner.rs",
+    "source_sha256": "1ee707435069e7c8925efb8247c6b99244d043935cc2b5470c4fb58c556e842a",
+    "receipt": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-014/cargo-build-example-004-result.json",
+    "receipt_sha256": "86130f9f2b294f4de551b02b83ed3bb8cb8be1699e085b37884714ac2ea9e619",
+    "binary": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+      "sha256": "729b49b74428ed303c100ca3c796286a91b2b1a5e96f7a5de8d30ca50031e6e9",
+      "bytes": 56942608,
+      "executed": false
+    }
+  },
+  "test_codegen": {
+    "status": "passed",
+    "receipt": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-014/cargo-codegen-tests-004-result.json",
+    "receipt_sha256": "ce19b8392eb3308d5ffd22dcd9664cc344690a398e5ae8aa8126e650f5e0cf0e",
+    "binaries": [
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/weebdex_platform-c6de6df8301139ee",
+        "sha256": "f06fbffbdc4abcbf81b2d157ecdd61bf5847e1c785bf00e1a31c2557769314fb",
+        "bytes": 18777312,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/weebdex_platform-d79c03cd898b2889",
+        "sha256": "769e1d65e405592b818def459931e2197573ddecc24c244559984a462f859bd0",
+        "bytes": 1092712,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/auth_http-275c1e0a055cf5cc",
+        "sha256": "cc2bcff94aa7d084b0251beac31ad50cf25f6da0ea8f67922ec2354094c3857f",
+        "bytes": 45680432,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/catalog_http-15123d1cbcf43891",
+        "sha256": "9a461ea0fe6582af33d5ff5069a575efae2e00afecc26442406546a0c1e73eaa",
+        "bytes": 44265456,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/community_http-77711564597d0705",
+        "sha256": "844828f19bd1a9ecbede8fc6242de0031e7d5661766c55edbb289250c345d318",
+        "bytes": 44201472,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/library_http-3b2d89cc07dfd675",
+        "sha256": "1c892a0a97f6952941c504f4495bf2087fad580715bb401558860179a7e5ee75",
+        "bytes": 44137632,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/protocol_bridge_http-3f936b335b360daf",
+        "sha256": "089a34c0428d763a367cffbc3025cdbca7590b9e384733d256fff3fcef51b4e1",
+        "bytes": 72591504,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/upload_http-cd07e6bff9519e2c",
+        "sha256": "31638a1fa02e29190c2626e5ae8b67b2895e6d3ecdb368d1ddc9c508961b5505",
+        "bytes": 46059936,
+        "executed": false
+      },
+      {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/upload_storage_contract-759552f3c13f4702",
+        "sha256": "7cdd3d496ff0dfacdd5aa432427cee8088c9a2f7a34d740cac4dac795f01ebf5",
+        "bytes": 4033240,
+        "executed": false
+      }
+    ],
+    "warnings": [
+      "Unused GIF fixture helper in protocol_bridge_http.rs:352; no suppression and no runtime execution."
+    ]
+  },
+  "gate": "No runtime suites until parent independent implementation gate clears."
+}

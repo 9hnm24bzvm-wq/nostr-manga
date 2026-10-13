@@ -1,0 +1,171 @@
+[
+  {
+    "id": "BE-001",
+    "gap": "Upload entry was unreachable when no session returned200{}",
+    "status": "implemented source",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/uploads/sessions.rs",
+      "line": 171,
+      "anchor": "pub async fn get("
+    },
+    "acceptance": "No current session returns204, existing owned session returns200{id}. Begin/resume/cancel/add archive/images/folder/reorder/remove/replace/commit exact pages. Reject invalid media visibly without stuck mutex. Refresh committed versions. Signed source status and pending processing are truthful; identical commit retries preserve event/receipt/page positions.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "BE-002",
+    "gap": "Optimized quality previously had no real pipeline",
+    "status": "implemented source; bridge media integration separately owned",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/uploads/derivatives.rs",
+      "line": 7,
+      "anchor": "pub(crate) fn encode"
+    },
+    "acceptance": "Open actual original pages, navigate first/last/previous/next and chapter selection in natural order. Exercise paged/scroll/layout/direction/double/offset/width/gap/preload/parallel and input switches. Real failures expose Retry; cancel/retry/quality/exit release requests, permits and URLs. Optimized is enabled only for a complete actual smaller derivative set; animation retains original timing.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "BE-003",
+    "gap": "Derivative metadata must never advertise partial or duplicated originals",
+    "status": "implemented catalog-owned complete-set writer",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/catalog/derivatives.rs",
+      "line": 8,
+      "anchor": "pub(crate) async fn install_optimized_pages"
+    },
+    "acceptance": "Open actual original pages, navigate first/last/previous/next and chapter selection in natural order. Exercise paged/scroll/layout/direction/double/offset/width/gap/preload/parallel and input switches. Real failures expose Retry; cancel/retry/quality/exit release requests, permits and URLs. Optimized is enabled only for a complete actual smaller derivative set; animation retains original timing.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "BE-004",
+    "gap": "Forum entity OG paths previously had placeholder/unhandled image",
+    "status": "implemented source with local SVG rendering and fresh canonical visibility",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/previews/mod.rs",
+      "line": 19,
+      "anchor": "pub fn router()"
+    },
+    "acceptance": "Read/paginate/deep-link discussions; submit/reply/quote/edit/remove/vote with real persisted versions and counters. Empty editor formatting is safe. Embedded previews use actual local eligible entities; no fake success, hidden-source leakage or external resource fetch.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "BE-005",
+    "gap": "Native upload previously stopped at local catalog rather than configured source publication",
+    "status": "implemented actual original publication hook; authenticated pending receipt durable",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/uploads/sessions.rs",
+      "line": 513,
+      "anchor": "let receipt = crate::protocol::publication::publish_native_upload("
+    },
+    "acceptance": "No current session returns204, existing owned session returns200{id}. Begin/resume/cancel/add archive/images/folder/reorder/remove/replace/commit exact pages. Reject invalid media visibly without stuck mutex. Refresh committed versions. Signed source status and pending processing are truthful; identical commit retries preserve event/receipt/page positions.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "BE-006",
+    "gap": "Canonical original hashes and repeated identical pages conflicted with native name primary key",
+    "status": "implemented migration23 canonical names plus position key",
+    "evidence": {
+      "source": "weebdex-platform/backend/migrations/0023_chapter_derivatives.sql",
+      "line": 11,
+      "anchor": "ADD PRIMARY KEY(chapter_id,position)"
+    },
+    "acceptance": "No current session returns204, existing owned session returns200{id}. Begin/resume/cancel/add archive/images/folder/reorder/remove/replace/commit exact pages. Reject invalid media visibly without stuck mutex. Refresh committed versions. Signed source status and pending processing are truthful; identical commit retries preserve event/receipt/page positions.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "CAT-001",
+    "gap": "Absent discovery ratings admitted adult results despite retained default preferences",
+    "status": "catalog owner corrected source defaults and explicit __none__ sentinel",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/catalog/query.rs",
+      "line": 71,
+      "anchor": "__none__"
+    },
+    "acceptance": "Search title/alternate/author/artist/year/original language/demographic/status/content rating/included/excluded tag AND/OR plus chapter language/uploader/group filters and every sort/order/page/limit/view. Default discovery hides unselected adult rating; explicit no ratings is empty. Create/edit draft/title/author/group/cover/relation workflows validate versions and permissions.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "CAT-002",
+    "gap": "Reader aggregate direction reversed first/last/next/previous and Start Read",
+    "status": "catalog owner corrected descending natural order",
+    "evidence": {
+      "source": "weebdex-platform/frontend/src/lib/components/reader/context.svelte.ts",
+      "line": 27,
+      "anchor": "readonly firstChapter"
+    },
+    "acceptance": "Open actual original pages, navigate first/last/previous/next and chapter selection in natural order. Exercise paged/scroll/layout/direction/double/offset/width/gap/preload/parallel and input switches. Real failures expose Retry; cancel/retry/quality/exit release requests, permits and URLs. Optimized is enabled only for a complete actual smaller derivative set; animation retains original timing.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "ADD-001",
+    "gap": "Missing homepage announcement components and linked route",
+    "status": "frontend owner separately reconstructed real additive announcement routes/components",
+    "evidence": {
+      "source": "weebdex-platform/docs/announcements-reconstruction.md",
+      "line": 7,
+      "anchor": "Implemented source paths:"
+    },
+    "acceptance": "Load pinned public home items, public feed/detail, authorized manage/draft/edit/publish/pin/delete with versions; anonymous callers never see drafts. Empty real data is allowed; missing components were reconstructed additively.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "OPEN-001",
+    "gap": "Imported protocol covers require actual256/512 reader thumbnails",
+    "status": "bridge owner actively completing; do not count original-only media as full UI completion",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/protocol/media.rs",
+      "line": 31,
+      "anchor": "pub async fn cover("
+    },
+    "acceptance": "Import a verified locally hosted series cover and load original,256 and512 exact supplied cover URLs; dimensions, MIME and smaller bounded bytes must match, source revocation fails closed before conditional delivery.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "OPEN-002",
+    "gap": "Native protocol-linked reader derivatives require authorized instance media routing",
+    "status": "bridge owner actively completing",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/uploads/media.rs",
+      "line": 26,
+      "anchor": "pub async fn chapter("
+    },
+    "acceptance": "Upload via configured signed runtime, select actual optimized complete pages, confirm allowed local associations plus current original chapter/series authority; revocation prevents fresh200/304, no unrestricted source/raw storage fallback.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "GATE-001",
+    "gap": "Fresh deep-link query startup ordering requires actual browser evidence",
+    "status": "not proven by static source",
+    "evidence": {
+      "source": "weebdex-platform/frontend/src/routes/+layout.ts",
+      "line": 10,
+      "anchor": "URLSearchParams"
+    },
+    "acceptance": "Open fresh title/random and search deep links under final same-origin build; verify each URL has normal route?query syntax after root initialization. No speculative server URI rewrite.",
+    "API_verified": false,
+    "UI_verified": false
+  },
+  {
+    "id": "CONFIG-001",
+    "gap": "Verification/recovery delivery needs actual operator-provided trusted email transport",
+    "status": "implementation capability exists; disabled transport truthfully unavailable",
+    "evidence": {
+      "source": "weebdex-platform/backend/src/domains/auth/README.md",
+      "line": 21,
+      "anchor": "Set up actual email delivery"
+    },
+    "acceptance": "With isolated reserved-domain sink verify delivery+one-time redemption; disabled transport rejects usefully without fake verification. Production credential provisioning remains deliberate operator action.",
+    "API_verified": false,
+    "UI_verified": false
+  }
+]

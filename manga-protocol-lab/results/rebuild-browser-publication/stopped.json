@@ -1,0 +1,8 @@
+{
+  "stopped": true,
+  "runtime": "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/.runtime-final/native-publication-wjm8a_pq",
+  "owned_node_reaped_by_controller": true,
+  "postgres_stop_log_confirmed": true,
+  "postgres_pidfile_absent": true,
+  "runtime_contains_synthetic_secret_files_exclude_from_checkpoint": true
+}

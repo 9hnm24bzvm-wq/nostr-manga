@@ -1,0 +1,64 @@
+{
+  "manifest": "tests/fixtures/ubunchu-manifest.json",
+  "manifest_sha256": "279dff36348bfef4b60b2923c33b82de80c4ee812756eb53567be4ac64afeb92",
+  "statistics": {
+    "images": 24,
+    "image_bytes": 9499508,
+    "notice_bytes": 7572,
+    "min_file_bytes": 123129,
+    "max_file_bytes": 2091990,
+    "median_file_bytes": 263969.5,
+    "total_pixels": 48890548,
+    "dimensions": [
+      {
+        "width": 1246,
+        "height": 1635,
+        "count": 23
+      },
+      {
+        "width": 1246,
+        "height": 1633,
+        "count": 1
+      }
+    ],
+    "modes": {
+      "RGBA": 3,
+      "RGB": 1,
+      "L": 20
+    }
+  },
+  "chapters": [
+    {
+      "chapter": 1,
+      "images": 12,
+      "credit_images": 1,
+      "story_pages": 11,
+      "bytes": 4765627,
+      "pixels": 24446520
+    },
+    {
+      "chapter": 2,
+      "images": 12,
+      "credit_images": 1,
+      "story_pages": 11,
+      "bytes": 4733881,
+      "pixels": 24444028
+    }
+  ],
+  "repository_inventory": {
+    "japanese_chapters": 8,
+    "japanese_png": 96,
+    "english_png": 11,
+    "english_pdf": 8
+  },
+  "chapter_notice_review": {
+    "chapters_reviewed": 8,
+    "english_notice_url": "https://creativecommons.org/licenses/by-nc/3.0/",
+    "japanese_notice_url": "https://creativecommons.org/licenses/by-nc/2.1/jp/"
+  },
+  "local_download_root": ".cache/fixtures/ubunchu/9f065a3fde464be893dfba9fb5fc6abc93722cf9",
+  "assets_excluded_from_source_and_checkpoints": true,
+  "runtime_fixture_started": false,
+  "upstream_scripts_executed": false,
+  "external_upload": false
+}

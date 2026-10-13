@@ -1,0 +1,131 @@
+{
+  "updated_utc": "2026-10-13T13:02:41.608414+00:00",
+  "source_candidate": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/candidate-source.json",
+    "sha256": "d94878d178e3b614d72c9ca3ac7f2cf66ea48426d19e0f4ea91ec0870b2bcf37",
+    "bytes": 81311
+  },
+  "current_production_check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-022/cargo-check-http-repairs-001-result.json",
+    "sha256": "5c82dd73129895f13a6ae34df1125ab55f38aef75f7bb98aed8f7c093091004d",
+    "bytes": 1367
+  },
+  "production_inputs_unchanged_from_check_candidate022": true,
+  "current_normal_and_example_build_result": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-build-current-server-001-result.json",
+    "sha256": "1c77865e6beb7857f2e637da4b0d77cc9eedcc3fc9028409f9deaf43d8599b8d",
+    "bytes": 1365
+  },
+  "normal_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/weebdex-platform",
+    "sha256": "60c0ba20bc0ac3aef27dd70a0b9fad8fe7dfe8ff92913182d0dd38cb761bd0e6",
+    "bytes": 75362344
+  },
+  "example_binary": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/examples/browser_fixture_provisioner",
+    "sha256": "7b82dc67f1a5b00a1af89b70e74e48c11b99ff89991017ab5965326e01a0f013",
+    "bytes": 58565312
+  },
+  "all_nine_test_targets_codegen_result": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-022/cargo-codegen-http-repairs-001-result.json",
+    "sha256": "bf772a15b12d064e0321b40cfc13de5ccb010ead9e3b80a7f1c1693499c13ae2",
+    "bytes": 1368
+  },
+  "current_bridge_test_codegen_result": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-codegen-bridge-freshness-001-result.json",
+    "sha256": "3b9b4bc9d3723d05b3a7d9c627e448341d63e2250e49085deb7a6ddc556f09dc",
+    "bytes": 1367
+  },
+  "runtime_http_pg": {
+    "distinct_cases": 14,
+    "passed": 14,
+    "failed": 0,
+    "ignored": 0,
+    "groups": {
+      "auth": 3,
+      "catalog": 1,
+      "library": 1,
+      "community_moderation_analytics": 1,
+      "uploads": 7,
+      "protocol_bridge": 1
+    },
+    "production_revision": 22,
+    "bridge_test_only_revision": 23,
+    "receipts": [
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-003",
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/protocol-bridge-http-003-result.json"
+    ],
+    "licensed_real_images": {
+      "manifest": {
+        "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/tests/fixtures/ubunchu-manifest.json",
+        "sha256": "279dff36348bfef4b60b2923c33b82de80c4ee812756eb53567be4ac64afeb92",
+        "bytes": 25509
+      },
+      "original_pngs_uploaded_and_served": 24,
+      "cover_original_uploaded_and_served": 1,
+      "chapter_sessions": 2,
+      "attribution_preserved": true,
+      "no_external_publication": true
+    }
+  },
+  "unit_contract_tests": {
+    "library": 64,
+    "main": 0,
+    "upload_storage_contract": 3,
+    "passed": 67,
+    "failed": 0,
+    "ignored": 0,
+    "receipts": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004"
+  },
+  "browser": {
+    "executed_steps": 0,
+    "blocked": "Chromium AF_UNIX IPC EPERM; supported cloud browser cannot reach fixture loopback"
+  },
+  "historical_failures_retained": true,
+  "original_system_runtime": {
+    "executed": 6,
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "compiled_source_snapshot": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/original-regression-008/source-manifest.json",
+      "sha256": "038d3471f678c7463755b8b89daa4f79402caa2eaff3a0edbfe3d1abfcf89bac"
+    },
+    "targets_codegen_total": 95,
+    "targets_runtime_executed_in_this_group": 6,
+    "not_full_90_integration_target_runtime": true
+  },
+  "production_readiness_claimed": false,
+  "original_unit_runtime": {
+    "executed": 85,
+    "passed": 85,
+    "failed": 0,
+    "ignored": 2,
+    "ignored_reasons": [
+      "Child-process harness invoked by its crash parent, not a standalone case",
+      "Half-million-record codec scale fixture intentionally deferred, no performance test run"
+    ]
+  },
+  "sanitized_runtime_index": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/final/http-system-acceptance-current.json",
+    "sha256": "d79bb1f8b35ca255e81427989bc5d7fa6e911625ad86133776da31b2c2829e72"
+  },
+  "source_bound023_all_target_check": {
+    "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-023/cargo-check-current-all-targets-001-result.json",
+    "sha256": "808d525c2dfec4c0bd4ff95950b3850e082dfc3826d87dd3b157fdc265980779"
+  },
+  "fixture_provisioner_unit_tests": {
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0,
+    "guard_result": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/http-end-to-end-004/provisioner-unit-001-result.json",
+      "sha256": "3efe4c27f6508fe6f81bbe332ffdcfc767e52845b95f8959ea5d6236b52cd60c"
+    },
+    "cases": [
+      "synthetic_volumes_match_original_upload_store_grammar",
+      "safe_seed_diagnostics_emit_only_static_stage_and_reason"
+    ]
+  }
+}

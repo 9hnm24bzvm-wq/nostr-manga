@@ -1,0 +1,1293 @@
+{
+  "updated_utc": "2026-10-13T02:17:36.438410+00:00",
+  "observed_total": 107,
+  "source_route_present": 107,
+  "source_route_missing": [],
+  "qualification": "Static registration audit verifies handler routing only; it is not proof of completed semantics, final compile or passing runtime/UI tests.",
+  "operations": [
+    {
+      "id": "Analytics.Manga",
+      "method": "POST",
+      "path": "/analytics/manga/{}/views",
+      "ticket": "WD-015",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/analytics/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Analytics.Chapter",
+      "method": "POST",
+      "path": "/analytics/chapter/{}/views",
+      "ticket": "WD-015",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/analytics/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Auth.Check",
+      "method": "GET",
+      "path": "/auth/check",
+      "ticket": "WD-006",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/auth/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Author.Search",
+      "method": "GET",
+      "path": "/author",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Author.Get",
+      "method": "GET",
+      "path": "/author/{}",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Author.Create",
+      "method": "POST",
+      "path": "/author",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Author.Update",
+      "method": "PUT",
+      "path": "/author/{}",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Author.Delete",
+      "method": "DELETE",
+      "path": "/author/{}",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.Search",
+      "method": "GET",
+      "path": "/chapter",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.LatestUpdates",
+      "method": "GET",
+      "path": "/chapter/updates",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.LatestFeed",
+      "method": "GET",
+      "path": "/chapter/feed",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.Trending",
+      "method": "GET",
+      "path": "/chapter/top",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.Get",
+      "method": "GET",
+      "path": "/chapter/{}",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.List",
+      "method": "GET",
+      "path": "/manga/{}/chapters",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.Aggregate",
+      "method": "GET",
+      "path": "/manga/{}/aggregate",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.Update",
+      "method": "PUT",
+      "path": "/chapter/{}",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.Claim",
+      "method": "POST",
+      "path": "/chapter/{}/claim",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Chapter.Delete",
+      "method": "DELETE",
+      "path": "/chapter/{}",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "ChapterHistory.Search",
+      "method": "GET",
+      "path": "/user/history/manga",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "ChapterHistory.List",
+      "method": "GET",
+      "path": "/user/history/manga/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "ChapterHistory.Feed",
+      "method": "GET",
+      "path": "/user/history/manga/feed",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "ChapterHistory.UpdateBatch",
+      "method": "POST",
+      "path": "/user/history/manga/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Client.List",
+      "method": "GET",
+      "path": "/client",
+      "ticket": "WD-014",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/auth/clients.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Client.Create",
+      "method": "POST",
+      "path": "/client",
+      "ticket": "WD-014",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/auth/clients.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Client.Update",
+      "method": "POST",
+      "path": "/client/{}",
+      "ticket": "WD-014",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/auth/clients.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Client.Delete",
+      "method": "DELETE",
+      "path": "/client/{}",
+      "ticket": "WD-014",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/auth/clients.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Client.RegenerateSecret",
+      "method": "POST",
+      "path": "/client/{}/secret",
+      "ticket": "WD-014",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/auth/clients.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Cover.List",
+      "method": "GET",
+      "path": "/manga/{}/covers",
+      "ticket": "WD-010",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Cover.Get",
+      "method": "GET",
+      "path": "/cover/{}",
+      "ticket": "WD-010",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Cover.Upload",
+      "method": "POST",
+      "path": "/cover/{}",
+      "ticket": "WD-010",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Cover.Update",
+      "method": "PUT",
+      "path": "/cover/{}",
+      "ticket": "WD-010",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Cover.Delete",
+      "method": "DELETE",
+      "path": "/cover/{}",
+      "ticket": "WD-010",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Search",
+      "method": "GET",
+      "path": "/group",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Get",
+      "method": "GET",
+      "path": "/group/{}",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Create",
+      "method": "POST",
+      "path": "/group",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Update",
+      "method": "PUT",
+      "path": "/group/{}",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Delete",
+      "method": "DELETE",
+      "path": "/group/{}",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Follows",
+      "method": "GET",
+      "path": "/user/follows/groups",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Follow",
+      "method": "POST",
+      "path": "/user/follows/groups/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.Unfollow",
+      "method": "DELETE",
+      "path": "/user/follows/groups/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Group.GetFollowStatus",
+      "method": "GET",
+      "path": "/user/follows/groups/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Search",
+      "method": "GET",
+      "path": "/manga",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Get",
+      "method": "GET",
+      "path": "/manga/{}",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Random",
+      "method": "GET",
+      "path": "/manga/random",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Trending",
+      "method": "GET",
+      "path": "/manga/top",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Relations",
+      "method": "GET",
+      "path": "/manga/{}/relations",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Recommendations",
+      "method": "GET",
+      "path": "/manga/{}/recommendations",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.SearchDrafts",
+      "method": "GET",
+      "path": "/manga/draft",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.GetDraft",
+      "method": "GET",
+      "path": "/manga/draft/{}",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Create",
+      "method": "POST",
+      "path": "/manga",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Update",
+      "method": "PUT",
+      "path": "/manga/{}",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Commit",
+      "method": "POST",
+      "path": "/manga/draft/{}/commit",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Publish",
+      "method": "POST",
+      "path": "/manga/draft/{}/publish",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Reject",
+      "method": "POST",
+      "path": "/manga/draft/{}/reject",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Lock",
+      "method": "POST",
+      "path": "/manga/{}/lock",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Unlock",
+      "method": "POST",
+      "path": "/manga/{}/unlock",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.Delete",
+      "method": "DELETE",
+      "path": "/manga/{}",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.CreateRelation",
+      "method": "POST",
+      "path": "/manga/{}/relations",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Manga.DeleteRelation",
+      "method": "DELETE",
+      "path": "/manga/{}/relations",
+      "ticket": "WD-005",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "MangaFollow.Search",
+      "method": "GET",
+      "path": "/user/follows/manga",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "MangaFollow.LatestFeed",
+      "method": "GET",
+      "path": "/user/follows/chapter/feed",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "MangaFollow.LatestUpdates",
+      "method": "GET",
+      "path": "/user/follows/chapter/updates",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "MangaFollow.Update",
+      "method": "POST",
+      "path": "/user/follows/manga/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "MangaFollow.Unfollow",
+      "method": "DELETE",
+      "path": "/user/follows/manga/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "MangaFollow.Import",
+      "method": "POST",
+      "path": "/user/follows/manga/import",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Report.Search",
+      "method": "GET",
+      "path": "/report",
+      "ticket": "WD-013",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/moderation/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Report.Reasons",
+      "method": "GET",
+      "path": "/report/reasons/{}",
+      "ticket": "WD-013",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/moderation/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Report.Create",
+      "method": "POST",
+      "path": "/report",
+      "ticket": "WD-013",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/moderation/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Report.Delete",
+      "method": "DELETE",
+      "path": "/report/{}",
+      "ticket": "WD-013",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/moderation/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Report.Accept",
+      "method": "POST",
+      "path": "/report/{}/accept",
+      "ticket": "WD-013",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/moderation/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Report.Reject",
+      "method": "POST",
+      "path": "/report/{}/reject",
+      "ticket": "WD-013",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/moderation/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Settings.Update",
+      "method": "PUT",
+      "path": "/settings",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Statistics.User",
+      "method": "GET",
+      "path": "/user/{}/statistics",
+      "ticket": "WD-015",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/analytics/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Statistics.Manga",
+      "method": "GET",
+      "path": "/manga/{}/statistics",
+      "ticket": "WD-015",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/analytics/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Statistics.Chapter",
+      "method": "GET",
+      "path": "/chapter/{}/statistics",
+      "ticket": "WD-015",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/analytics/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Statistics.Group",
+      "method": "GET",
+      "path": "/group/{}/statistics",
+      "ticket": "WD-015",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/analytics/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Statistics.Thread",
+      "method": "GET",
+      "path": "/thread/{}/statistics",
+      "ticket": "WD-015",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/analytics/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Tag.Search",
+      "method": "GET",
+      "path": "/manga/tag",
+      "ticket": "WD-004",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/catalog/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.Get",
+      "method": "GET",
+      "path": "/thread/{}",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.GetThreadVote",
+      "method": "GET",
+      "path": "/thread/{}/vote",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.VoteThread",
+      "method": "POST",
+      "path": "/thread/{}/vote",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.UnvoteThread",
+      "method": "DELETE",
+      "path": "/thread/{}/vote",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.Replies",
+      "method": "GET",
+      "path": "/thread/{}/replies",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.GetReply",
+      "method": "GET",
+      "path": "/thread/{}/replies/{}",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.CreateReply",
+      "method": "POST",
+      "path": "/thread/{}/replies",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.UpdateReply",
+      "method": "PUT",
+      "path": "/thread/{}/replies/{}",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.RemoveReply",
+      "method": "DELETE",
+      "path": "/thread/{}/replies/{}",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.DeleteReply",
+      "method": "DELETE",
+      "path": "/thread/{}/replies/{}/hard",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.VoteReply",
+      "method": "POST",
+      "path": "/thread/{}/replies/{}/vote",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Thread.UnvoteReply",
+      "method": "DELETE",
+      "path": "/thread/{}/replies/{}/vote",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/community/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.Get",
+      "method": "GET",
+      "path": "/upload",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.Begin",
+      "method": "POST",
+      "path": "/upload/begin",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.BeginEdit",
+      "method": "POST",
+      "path": "/upload/begin/{}",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.Delete",
+      "method": "DELETE",
+      "path": "/upload/{}",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.Commit",
+      "method": "POST",
+      "path": "/upload/{}/commit",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.DeleteFile",
+      "method": "DELETE",
+      "path": "/upload/{}/{}",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.DeleteFiles",
+      "method": "DELETE",
+      "path": "/upload/{}/batch",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "UploadSession.CheckApprovalRequired",
+      "method": "POST",
+      "path": "/upload/check-approval-required",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "User.Search",
+      "method": "GET",
+      "path": "/user",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "User.Get",
+      "method": "GET",
+      "path": "/user/{}",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "User.Update",
+      "method": "PUT",
+      "path": "/user/{}",
+      "ticket": "WD-012",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "User.Follows",
+      "method": "GET",
+      "path": "/user/follows/users",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "User.Follow",
+      "method": "POST",
+      "path": "/user/follows/users/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "User.Unfollow",
+      "method": "DELETE",
+      "path": "/user/follows/users/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "User.GetFollowStatus",
+      "method": "GET",
+      "path": "/user/follows/users/{}",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Direct.ChapterPageUpload",
+      "method": "POST",
+      "path": "/upload/{}",
+      "ticket": "WD-009",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/uploads/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    },
+    {
+      "id": "Direct.LibraryExport",
+      "method": "GET",
+      "path": "/user/follows/manga/export",
+      "ticket": "WD-011",
+      "source_route_present": true,
+      "route_sources": [
+        "weebdex-platform/backend/src/domains/library/mod.rs"
+      ],
+      "compiled": "pending final compile after latest feature edits",
+      "runtime_seam": "separately gated"
+    }
+  ]
+}

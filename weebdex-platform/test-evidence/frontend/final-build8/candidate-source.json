@@ -1,0 +1,29 @@
+{
+  "baseline_inventory": "test-evidence/frontend/final-build8/source-baseline.json",
+  "changed_files": {
+    "platform-integrations/frontend-overlays.mjs": {
+      "baseline": "cf87726b06b337c37bf941174a1ebcb72995dd85d1cc2d0c864d27d601024f71",
+      "candidate": "4180f3c49560bec6cf2df691a117ab66dba6a6e494dbc373465797237b5160a0"
+    },
+    "platform-integrations/frontend-reader-overlays.mjs": {
+      "baseline": "0fa703b3208a1d0abe210062cf4ec02bb813132a83d687cf331d212aae983dce",
+      "candidate": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505"
+    },
+    "platform-integrations/local-library/LocalLibraryPanel.svelte": {
+      "baseline": "791246609e9232ff053af02d941aa872649b7cf70a1147f2f08282add860b572",
+      "candidate": "6074d5567a3caa39cade3921aef045f0cbf13fe803488139ef913ec5583ac7d1"
+    },
+    "platform-integrations/local-library/MangaFollow.ts": {
+      "baseline": "a45c7898a9b4bd605d319fe9a81c07b971934b4158f650c2f50146fd907eca3b",
+      "candidate": "c2b4bc21f6839f2a2a588fd7b0d1c2d38fdc26b390d187193993780b3a213e58"
+    },
+    "scripts/browser-journeys.mjs": {
+      "baseline": "8b167f3026c4df574de3628aae7aa512b9761936114e7b176c12f13a2cebf636",
+      "candidate": "65f5e5d115f35d15608e4075957172354978727cead70cfbeea6b64a0c0e5efc"
+    },
+    "platform-integrations/frontend-behavior/authenticated-mutation.ts": {
+      "baseline": null,
+      "candidate": "feba7952eb231940a3f0cfd5223baee1873c96a923818291c6c91b2694f95fdd"
+    }
+  }
+}

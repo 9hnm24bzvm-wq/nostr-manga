@@ -1,0 +1,55 @@
+# Browser-device library and optional signed public identity
+
+Status: implemented source integration; supplied frontend source bytes remain unchanged. Additive mounts, exact anchored library-availability/key exceptions and original-module hashes are recorded by the frontend integration manifest. Bundler and runtime/browser acceptance are separate evidence gates; source presence alone is not a UI pass.
+
+## Module boundary and authority
+
+`platform-integrations/local-library` is an external adapter. Its API resolver replaces only retained `MangaFollow` and `ChapterHistory` modules. `LibraryProtected` is substituted only in the library, history and library-settings layouts. Existing account/profile/community/edit/moderation permission guards retain the real password Session. Additive `LocalLibraryPanel` and `ProtocolIdentityPanel` expose device storage, backups, canonical records and explicitly reviewed public actions.
+
+Device mode is the initial default. The device record store is IndexedDB; a successful API-like response is returned only after transaction completion. Local storage errors are visible and never switch silently to server account storage. Browser storage can be evicted; private exported backups and optional persistent-storage requests remain important. Local availability is not a fabricated user, role or permission.
+
+Catalogue hydration still sends the requested native catalogue IDs and filters to the current scoped catalogue API. Hydration is a read. It does not store personal follows/history on the account server and does not publish reading records to a relay.
+
+## Native ID scope and portability
+
+The retained frontend uses native ten-character catalogue aliases. Their device scope includes the exact catalogue API origin, persisted `catalog_namespace` database epoch and a pinned original service key when one is available. Native aliases are randomly assigned by each catalogue and are not portable solely because two catalogues share a service key. A namespace or service identity change requires reviewed migration; existing stored records are not silently rebound.
+
+Local IndexedDB opens without waiting for the network; bounded scope verification runs in the background. New empty stores can record the configured scope. A populated origin-only store needs explicit verified source-identity adoption with current native ID/title/missing-ID preview. Offline explicit saved-device inspection, existing saved-series edits/removals, list management and backups retain the last saved scope unless a mismatch has already been detected. Current-catalogue controls, hydration and read/follow flags require a verified tuple even for saved native-ID collisions. A detected mismatch persists a cross-tab mutation fence: old records remain inspectable/exportable, while native mutations and current catalogue hydration/status interpretation are blocked. Retrying a failed network check does not remove that fence. Snapshots read scope, fence and records in the same IndexedDB transaction; importing verifies scope again inside the mutation transaction. Foreign-origin/epoch/key native backup collisions are shown and blocked. Moving native aliases between instances is not implemented; portable canonical protocol backups are the cross-instance route.
+
+Device backups contain versioned scope plus normalized Series, Chapters, Lists and Members extension records. File preview validates structure, duplicate keys, timestamps, IDs, record budgets and list membership. Merge retains newer existing device records and preserves local values on equal timestamps. Replace is separately confirmed and removes existing device records. Applying either rejects a changed device revision. Generate.csv exports genuine scoped CSV with native IDs and the saved catalogue origin/namespace/service identity. Scoped CSV imports reject foreign identity before interpretation; legacy unscoped CSV uses explicit current-scope title resolution and reviewed overlaps/missing entries. JSON device backup and canonical backup controls are separately labelled. MyAnimeList imports use bounded public catalogue mappings and exclude missing/ambiguous aliases before explicit review.
+
+## Ordinary library behavior
+
+The six original reading statuses are retained. Follows, notification preferences, mark-read/unread, actual reader page progress, completion and custom list membership remain device-local. Reader progress is debounced with navigation/destruction flush and does not create an endless write loop on store refresh. Device read-modify-write operations use a single IndexedDB transaction, including completion retention, list existence and scope/revision checks. Web Locks serialize the brief cross-database publication admission boundary; they are not held across network calls or external signer prompts.
+
+Library catalogue filters remain the public catalogue filters. Local reading-status/list selection preselects native IDs. Empty libraries return empty results without global discovery. Hydration uses at most 100 IDs/results per request and gathers all filtered candidates before one global sort/page. Real server `_sort_value`/`_sort_text` metadata is used rather than invented rating/upload values; nulls remain last and IDs are deterministic ties. Latest updates collapse to the newest visible chapter per followed notified manga before global paging. Followed-tag preference exemptions remain intact.
+
+## Original protocol reuse
+
+Nine browser-client dependency modules are copied byte-identically: store, indexeddb, outbox, publishing, backup, codec, limits, nostr and worker. Their SHA-256 provenance and exact Noble 2.0.1 dependency versions are recorded in `protocol-source-manifest.json`; verified build dependency restoration has separate package provenance.
+
+The original LocalLibrary remains authoritative for canonical Chapters/Series/Lists/Members, original CBOR graph construction, backup staging, replacement revision checks, publication clocks, exact event signing and durable graph outbox/receipts. A dedicated adapter worker calls the unchanged original codec to merge current device records with canonical imported/recovered records off the UI thread. Native projections are not persisted into the canonical store: a later native unfollow therefore cannot survive as a stale canonical projection.
+
+`POST /api/protocol/resources` returns only verified, current, visible native-to-canonical source associations. Every response must match the scoped catalogue namespace, configured original origin and service key. Native-only, hidden, removed and unmapped records are excluded and counted in the publication preview. A native alias is never padded, hashed or otherwise invented as a canonical protocol identifier. Original canonical imports retain their canonical IDs.
+
+## Explicit library publication and recovery
+
+1. Connect the intended external NIP-07 browser signer. Only its public key and signed events are exposed to the app; no private key is generated, entered or saved.
+2. Verify and remember an instance with its actual service-key proof. Recipients start unselected and must satisfy the operator's exact CSP/relay policy. Request public-key account admission separately if needed.
+3. Preview the canonical graph, manifest, native/canonical revisions, included count, excluded native IDs, signing owner and exact recipient set.
+4. Approve the public reading data disclosure and explicitly sign/publish that reviewed snapshot. Revalidation checks current mappings, identity, selection and revisions. The original durable outbox commits before delivery; concurrent local changes during the signer prompt invalidate admission.
+5. Inspect each recipient receipt: accepted/projected, projection pending, refused, superseded, or unresolved. Retry only the previously approved graph and original recipients. Cancellation stops further requests; already transmitted public copies cannot be recalled.
+
+Public recovery verifies the original signed event and CBOR graph. It previews the owner, pinned recipient, event/time and expected local canonical revision before replacement. Native device records remain independently scoped. Portable canonical JSON/JSONL backups have their own bounded preview and use original streamed staged import plus original revision CAS; they can be restored offline. Canonical records are directly inspectable and locally removable in the panel without claiming native catalogue aliases exist.
+
+## Explicit public account and social actions
+
+The independent public-identity panel supports original signed kind 0 profiles, kind 3 follow lists, kind 10002 write-relay metadata, NIP-22 kind 1111 comments/replies and kind 7 reactions. Top-level/reply tags bind the exact verified canonical source and signed parent. Ordinary authored kind 5 withdrawals are separately reviewed; the UI cannot use this control to remove another author or protected source publication.
+
+Every public action shows its exact content/tags, signing owner, recipient origin/service key and consequential public behavior before consent. The original `signExact` verifies the event returned by the external signer, and original `signedRequest` binds kind 27235 HTTP proof to the exact endpoint, method and body hash. Real public metadata head receipts are followed by `/events/{id}` reads and signature checks. Public social reads verify original source and returned signed events. Accepted-but-unprojected work is reported as pending, not visible success.
+
+Before the first public-action delivery, the exact signed body/recipient is durably retained in a bounded twenty-record local outbox. An ambiguous transport result retains `outcome_unknown`. Public counterpart reconciliation can prove the saved exact event. Explicit retry uses that same body/ID and only fresh HTTP authentication, preventing a lost response from requiring a newly signed duplicate comment. Cross-tab delivery locks are independent of local-save locks. Cancel/remove controls distinguish stopping future delivery from recalling already-public copies.
+
+## Verification requirements
+
+Required acceptance covers anonymous follow/status/read/unread/page/list saves surviving reload; read/write/quota/version errors; duplicate/repeated actions; cross-tab completion/revision behavior; independent account-mode/login/import boundaries; native scope/epoch collisions; backup previews and interrupted restore; canonical inclusion/exclusion and source visibility; external signer identity changes/timeouts; exact-event/public-action lost-response reconciliation; explicit admission/CSP/CORS rejection; original signed-kind/CBOR delivery; per-instance outbox receipts/cancel/retry; verified public counterparts; and immutable original frontend bytes. No runtime tests should execute until the independent full-wiring source gate permits them.

@@ -1,0 +1,48 @@
+{
+  "status": "verified_source_defects_pending_build_confirmation",
+  "source_modified": false,
+  "defects": [
+    {
+      "kind": "missing_source",
+      "importer": "frontend/src/routes/(app)/+page.svelte",
+      "import": "./announcements/announcement.svelte",
+      "expected_path": "frontend/src/routes/(app)/announcements/announcement.svelte",
+      "consequence": "Homepage announcement data source is absent from the attachment. Exact original behavior cannot be confirmed or recovered from this archive."
+    },
+    {
+      "kind": "missing_source",
+      "importer": "frontend/src/routes/(app)/+page.svelte",
+      "import": "./announcements/AnnouncementEntry.svelte",
+      "expected_path": "frontend/src/routes/(app)/announcements/AnnouncementEntry.svelte",
+      "consequence": "Original announcement component markup and styling are absent. No substitute can establish exact visual parity."
+    },
+    {
+      "kind": "case_sensitive_import",
+      "importer": "frontend/src/lib/stores/index.ts",
+      "import": "./session",
+      "actual_path": "frontend/src/lib/stores/Session.ts",
+      "planned_fix": "External exact-target resolver, leaving attachment source unchanged."
+    },
+    {
+      "kind": "case_sensitive_import",
+      "importer": "Multiple generated UI components under frontend/src/lib/components/ui",
+      "import": "$lib/utils.js",
+      "actual_path": "frontend/src/lib/Utils.ts",
+      "planned_fix": "External exact-target resolver, leaving attachment source unchanged."
+    }
+  ],
+  "completion_claims": {
+    "all_attachment_files_identical": true,
+    "all_original_feature_source_present": false,
+    "frontend_build_passed": false,
+    "rendered_visual_parity_established": false
+  },
+  "additive_reconstruction": {
+    "directory": "platform-integrations/frontend-reconstruction/announcements",
+    "source_bytes_modified": false,
+    "status": "unverified build fallback only",
+    "data": "empty array; no invented announcement records",
+    "entry": "uses preserved Card UI components with no added CSS; optional title/body fields are assumptions",
+    "missing_announcements_route": "open feature ticket"
+  }
+}

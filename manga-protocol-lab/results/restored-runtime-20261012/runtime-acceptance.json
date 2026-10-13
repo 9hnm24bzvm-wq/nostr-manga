@@ -1,0 +1,157 @@
+{
+  "verified_utc": "2026-10-12T21:19:44.862935+00:00",
+  "stages": {
+    "python-runtime": {
+      "completed_utc": "2026-10-12T21:08:13.859151+00:00",
+      "command_exit": 0,
+      "abort_reason": null,
+      "monitor_error": null,
+      "cleanup_error": null,
+      "termination_signal": null,
+      "remaining_owned_members": [],
+      "frozen_identity_hashes": {
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/guarded-command.py": "9240004c16b87270bb1b24f74bf31477644ab5b1c5caae55f2e1b1df45587ffb",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/candidate-source.json": "574aa97dfda6fcd080544f45cc860d952fb156bcd1751a4a2ed70eea53de3ff5",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/restored-source-protection.json": "01f269aac9f0266c11a38edf4784dde438ddc798f17ea470e47aab4f6a6ebcd5"
+      },
+      "owned_leader_reaped": true,
+      "stop_actions": [],
+      "reaped_descendants": [],
+      "changed_inputs": [],
+      "minimum_free_bytes": 31613394944,
+      "minimum_available_memory_bytes": 8845787136,
+      "final_free_bytes": 31613394944,
+      "final_available_memory_bytes": 8935387136,
+      "command_log_bytes": 4614,
+      "telemetry_bytes": 1526,
+      "telemetry_capped": false,
+      "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+      "status": "passed",
+      "elapsed_s": 13.836938
+    },
+    "postgres-runtime": {
+      "completed_utc": "2026-10-12T21:11:52.321961+00:00",
+      "command_exit": 0,
+      "abort_reason": null,
+      "monitor_error": null,
+      "cleanup_error": null,
+      "termination_signal": null,
+      "remaining_owned_members": [],
+      "frozen_identity_hashes": {
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/guarded-command.py": "9240004c16b87270bb1b24f74bf31477644ab5b1c5caae55f2e1b1df45587ffb",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/candidate-source.json": "574aa97dfda6fcd080544f45cc860d952fb156bcd1751a4a2ed70eea53de3ff5",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/restored-source-protection.json": "01f269aac9f0266c11a38edf4784dde438ddc798f17ea470e47aab4f6a6ebcd5"
+      },
+      "owned_leader_reaped": true,
+      "stop_actions": [],
+      "reaped_descendants": [],
+      "changed_inputs": [],
+      "minimum_free_bytes": 31310843904,
+      "minimum_available_memory_bytes": 8497020928,
+      "final_free_bytes": 31310843904,
+      "final_available_memory_bytes": 8746921984,
+      "command_log_bytes": 163,
+      "telemetry_bytes": 16241,
+      "telemetry_capped": false,
+      "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+      "status": "passed",
+      "elapsed_s": 149.322994
+    },
+    "native-runtime": {
+      "completed_utc": "2026-10-12T21:17:28.224080+00:00",
+      "command_exit": 0,
+      "abort_reason": null,
+      "monitor_error": null,
+      "cleanup_error": null,
+      "termination_signal": null,
+      "remaining_owned_members": [],
+      "frozen_identity_hashes": {
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/guarded-command.py": "9240004c16b87270bb1b24f74bf31477644ab5b1c5caae55f2e1b1df45587ffb",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/candidate-source.json": "574aa97dfda6fcd080544f45cc860d952fb156bcd1751a4a2ed70eea53de3ff5",
+        "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/results/restored-runtime-20261012/restored-source-protection.json": "01f269aac9f0266c11a38edf4784dde438ddc798f17ea470e47aab4f6a6ebcd5"
+      },
+      "owned_leader_reaped": true,
+      "stop_actions": [],
+      "reaped_descendants": [],
+      "changed_inputs": [],
+      "minimum_free_bytes": 30944231424,
+      "minimum_available_memory_bytes": 7187582976,
+      "final_free_bytes": 30944231424,
+      "final_available_memory_bytes": 8569462784,
+      "command_log_bytes": 92704,
+      "telemetry_bytes": 31610,
+      "telemetry_capped": false,
+      "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+      "status": "passed",
+      "elapsed_s": 299.341942
+    }
+  },
+  "versions": {
+    "postgres": "postgres (PostgreSQL) 18.6",
+    "psql": "psql (PostgreSQL) 18.6",
+    "nginx": "nginx version: nginx/1.30.5\nbuilt by gcc 14.2.0 (Debian 14.2.0-19) \nbuilt with OpenSSL 3.5.7 9 Jun 2026\nTLS SNI support enabled\nconfigure arguments: --prefix=/workspace/scratch/3eafc9756ff3/manga-protocol-lab/vendor/nginx-1.30.5/local --with-http_auth_request_module --with-http_ssl_module --with-threads",
+    "cmake": "cmake version 3.31.6\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake)."
+  },
+  "native_source_pins": {
+    "strfry": "4cd3cf64850caf47dda46c2a2abbbf3525a64d10",
+    "secp256k1": "0cdc758a56360bf58a851fe91085a327ec97685a",
+    "lmdb": "3a29a24777c82a0165de813ae696a5068b5add30",
+    "flatbuffers": "1c514626e83c20fffa8557e75641848e1e15cd5e"
+  },
+  "recursive_submodules": " 929c591b6c7a444bd106ee884c760568936dfef8 external/negentropy (remotes/origin/protov1-11-g929c591)\n 4440cad898898b85de499dd5c49486b2b6d26d40 external/negentropy/test/cpp/hoytech-cpp (4440cad)\n d649a581d3cebfe7d8bd4d345bc2c1c4c2cc59a2 external/negentropy/test/cpp/lmdbxx (0.9.14.0-92-gd649a58)\n 73ba63b506b4ce412a98fca78bc9d1d3968d4f1e golpe (heads/master)\n 9afe8a71920b9dadf309a503d734143e1ff78b3e golpe/external/PEGTL (3.2.2-18-g9afe8a71)\n ab8c38a2d00e58dd004fd71da7f0e70749993fc1 golpe/external/config (ab8c38a)\n d73d01389660084a8dbedd44eb674da57f26aba6 golpe/external/config/external/json (1.0.0-beta.13-17-gd73d0138)\n defd9045df3252a1f8427298a050589ff374085c golpe/external/config/external/json/external/PEGTL (3.2.2-12-gdefd9045)\n 6f5de76970be94a6f1e4556d1716593100e285d2 golpe/external/docopt.cpp (v0.6.2-24-g6f5de76)\n 1d33d3596aceac359b83924867673349c0c18a85 golpe/external/hoytech-cpp (heads/master)\n d73d01389660084a8dbedd44eb674da57f26aba6 golpe/external/json (1.0.0-beta.13-17-gd73d0138)\n defd9045df3252a1f8427298a050589ff374085c golpe/external/json/external/PEGTL (3.2.2-12-gdefd9045)\n 13851b3333a8840398ba0aa8b7d0febe661b08d5 golpe/external/lmdbxx (0.9.14.0-91-g13851b3)\n 644f60dca77de3b0f718a03d370c8ebdf5f97968 golpe/external/loguru (v2.1.0-42-g644f60d)\n 87ece91c6e4c457c5faac179dae6e11e2cd39b16 golpe/external/parallel-hashmap (v1.3.8-7-g87ece91)\n cebe0a567ccfa37a493f091e809a452ad3f9422b golpe/external/rasgueadb (cebe0a5)\n a53c831713a6d06fbf43c420a7ddf3366ff1ad6a golpe/external/session-token-cpp (heads/master)\n 05554eea58a15d461e3385507c1c3fd1bfd05fa3 golpe/external/templar (heads/master)\n 45816de84b51b9f217fd0242fecd003e0d6a48c6 golpe/external/uWebSockets (v0.14.8-42-g45816de)\n",
+  "executables": {
+    "build-artifacts/linux-x86_64/manga-node": {
+      "sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+      "bytes": 25125128,
+      "ldd": "linux-vdso.so.1 (0x00007feeebd26000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007feeea9a5000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007feeea8b5000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007feeea6c1000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007feeebd28000)"
+    },
+    "build-artifacts/linux-x86_64/manga-demo": {
+      "sha256": "803af60b4c19db3f8c5dbcd3110e120ad58ea142f96a05e25cb5b5cc10195e2d",
+      "bytes": 8574560,
+      "ldd": "linux-vdso.so.1 (0x00007efce3890000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007efce31ae000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007efce30be000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007efce2eca000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007efce3892000)"
+    },
+    "build-artifacts/linux-x86_64/manga-key-tool": {
+      "sha256": "226d370a807fd78f6718b3937cf897389648280006c478d1e1ed91ccdb69ace5",
+      "bytes": 1331528,
+      "ldd": "linux-vdso.so.1 (0x00007f3c81815000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f3c816e2000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3c814ee000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f3c81817000)"
+    },
+    "vendor/pgsql/bin/postgres": {
+      "sha256": "b815054d03319191c9b32ff280d188502bde83885bbf35dbee63bcc9f56e8a9d",
+      "bytes": 11321096,
+      "ldd": "linux-vdso.so.1 (0x00007fb1b7400000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007fb1b68c4000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007fb1b628a000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007fb1b626a000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fb1b617a000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fb1b5f84000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007fb1b5eba000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fb1b7402000)"
+    },
+    "vendor/pgsql/bin/psql": {
+      "sha256": "52b786f4b4b8d817c953c7b9fe57d9721b7c544219eb401de593f2fca125580f",
+      "bytes": 618008,
+      "ldd": "linux-vdso.so.1 (0x00007fbc85ff2000)\n\tlibpq.so.5 => /workspace/scratch/3eafc9756ff3/manga-protocol-lab/vendor/pgsql/lib/libpq.so.5 (0x00007fbc85f02000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fbc85def000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fbc85bfb000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007fbc85aed000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007fbc854b1000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fbc85ff4000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007fbc85491000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007fbc853c7000)"
+    },
+    "vendor/pgsql/bin/pg_ctl": {
+      "sha256": "e2bb1134795e194bd290b2229c5ee2852e2d0e52d93498c562714e330d71deb8",
+      "bytes": 89824,
+      "ldd": "linux-vdso.so.1 (0x00007fc685693000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fc68545f000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fc685695000)"
+    },
+    "vendor/pgsql/bin/initdb": {
+      "sha256": "3c3a1a624a2da28f2436d2a7e82c3d57fca4a36d5d316963ba3444aeb5ed64a6",
+      "bytes": 215384,
+      "ldd": "linux-vdso.so.1 (0x00007f54778a1000)\n\tlibpq.so.5 => /workspace/scratch/3eafc9756ff3/manga-protocol-lab/vendor/pgsql/lib/libpq.so.5 (0x00007f5477807000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f54776f4000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f5477500000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007f54773f2000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f5476db6000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f54778a3000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f5476d96000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f5476ccc000)"
+    },
+    "vendor/strfry/strfry": {
+      "sha256": "559791b46763f5c129231bd9347c8fb39cfad84e2ee3d4f4218cef8df8c27e56",
+      "bytes": 6235024,
+      "ldd": "linux-vdso.so.1 (0x00007f1b98668000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f1b97c33000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007f1b97b25000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f1b97b05000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f1b97a3b000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f1b977d3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f1b976e3000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f1b976b6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f1b974c2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f1b9866a000)"
+    },
+    "vendor/nginx-1.30.5/objs/nginx": {
+      "sha256": "10cb18eb76e0f513836da11d6e0b992387bfa0a53300a82ab7b2d9a6ae5fa45a",
+      "bytes": 4638344,
+      "ldd": "linux-vdso.so.1 (0x00007f731961f000)\n\tlibcrypt.so.1 => /lib/x86_64-linux-gnu/libcrypt.so.1 (0x00007f73194a2000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007f73193f3000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007f73192e5000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f7318cab000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f7318c89000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f7318a95000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f73189cb000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f7319621000)"
+    }
+  },
+  "free_bytes": 30944206848,
+  "services_started": false,
+  "rust_restored": false,
+  "application_rebuilt": false,
+  "original_script_hashes": {
+    "scripts/bootstrap.sh": "a4d56b91647d443223c4ddd2bf8682aa16811532bed55b34a6c8c141dbe1b384",
+    "scripts/bootstrap-postgres.sh": "8abdf8f08c9477e5221e036df258dd01d6b990fe4c80a51092cf8937bfe90155"
+  }
+}

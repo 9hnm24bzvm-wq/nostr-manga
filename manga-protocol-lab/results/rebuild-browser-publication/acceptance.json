@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "completed_utc": "2026-10-11T20:47:22.255780+00:00",
+  "browser": "actual dot cloud Chrome",
+  "client_build": "e4f4862bd75c26bb",
+  "node_sha256": "82c52b35720e623a303ec49fad73e65e08e033baf83b4fcc4349890af174c491",
+  "client_origin": "http://127.0.0.1:18768",
+  "node_origin": "http://127.0.0.1:18769",
+  "previous_origin_18767_untouched": true,
+  "signer": "temporary synthetic NIP07-compatible fixture adapter; no native extension installed or qualified",
+  "records": 4,
+  "families": [
+    "chapters",
+    "series",
+    "lists",
+    "members"
+  ],
+  "accepted_event_id": "8a50954633314357b562b33ca3454c2ce1ada894d1ea448e8c69a63f97b12201",
+  "root_manifest_hash": "41dbe04f6914be3a2f8ef62536ade6d574aa14dae22383ba14fb94929bc9e8b2",
+  "checks": {
+    "four_families_saved_through_rendered_ui": true,
+    "actual_baseline_browser_download": true,
+    "wrong_service_pin_rejected": true,
+    "explicit_correct_identity_confirmation": true,
+    "publication_without_consent_rejected": true,
+    "real_node_outage_retryable_outbox": true,
+    "same_event_persisted_after_browser_reload": true,
+    "node_restart_did_not_autopublish": true,
+    "explicit_same_job_retry_accepted": true,
+    "signed_projected_head_matches_outbox_event": true,
+    "unpublished_local_edit_preserves_public_head": true,
+    "verified_recovery_preview": true,
+    "declined_recovery_preserves_exported_local_edit": true,
+    "approved_recovery_matches_every_baseline_field": true,
+    "recovered_records_survive_reload_and_exact_export": true,
+    "production_assets_and_node_unchanged": true,
+    "owned_fixture_services_stopped": true
+  },
+  "asset_files_verified": 57,
+  "exports": {
+    "baseline.jsonl": {
+      "bytes": 656,
+      "sha256": "40e8ba8747d3a294bf9ba127547947a0a7d9722bb6844288d276e2e79115f54c"
+    },
+    "declined-recovery.jsonl": {
+      "bytes": 655,
+      "sha256": "1f82b956dc888c7e3e932edc0116f4b6a11be284a605d28e3033b21857733cb4"
+    },
+    "recovered.jsonl": {
+      "bytes": 656,
+      "sha256": "280568c6000d973e8c97e7a06e405cc5adea1461aa52f1d9294c7956a4499b10"
+    },
+    "recovered-after-reload.jsonl": {
+      "bytes": 656,
+      "sha256": "e8a2406f78a6fd1b44ed58dd8e82050f21f7e8d9005f8547504be93be8208f10"
+    }
+  },
+  "limits": [
+    "Small four-record functional qualification only; no browser publication capacity claim.",
+    "Synthetic adapter exercises browser Worker/Web Locks/IndexedDB and actual HTTP, but does not qualify native extension prompts or extension trust boundaries.",
+    "No mobile, physical power loss, eviction, disk-full or real signer account qualification.",
+    "Accepted outbox stores its original projection-pending receipt; subsequent signed HTTP head independently confirmed projected=true.",
+    "Iframe download event capture was unavailable; actual exports were captured from the unchanged direct same-origin client page.",
+    "Native host and execution context used separate loopback namespaces and Python ABIs; fixture setup was adapted without modifying production code."
+  ],
+  "evidence_privacy": "Only synthetic public records/identities and sanitized UI/HTTP outcomes. Exclude all runtime databases/configurations/passwords/service keys and fixture key-bearing source from exported checkpoint evidence."
+}

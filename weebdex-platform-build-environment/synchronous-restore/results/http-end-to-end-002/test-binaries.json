@@ -1,0 +1,54 @@
+{
+  "recorded_utc": "2026-10-13T12:29:15.992517+00:00",
+  "binaries": {
+    "auth_http": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/auth_http-275c1e0a055cf5cc",
+      "sha256": "0769af2aae02db22cb4742f408146855e1638ed4968da9389ec1dad01029bc16",
+      "bytes": 45737728,
+      "executed": false,
+      "compiled_current_source": true
+    },
+    "catalog_http": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/catalog_http-15123d1cbcf43891",
+      "sha256": "09f9d13368655cfa73f61bcf1e31bf2622ff21ee3f9361f613fd81e1c78affbb",
+      "bytes": 44381712,
+      "executed": false,
+      "compiled_current_source": true
+    },
+    "community_http": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/community_http-77711564597d0705",
+      "sha256": "12b98b7153c126f206a88aa8ef23a8ebf71ac32d639fe32befd80d74989a058a",
+      "bytes": 44258736,
+      "executed": false,
+      "compiled_current_source": true
+    },
+    "library_http": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/library_http-3b2d89cc07dfd675",
+      "sha256": "7e97b6c5df7ed00ef44da4fad87b6fe5efca880529ba8fee223b348476e638c0",
+      "bytes": 44193872,
+      "executed": false,
+      "compiled_current_source": true
+    },
+    "protocol_bridge_http": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/protocol_bridge_http-3f936b335b360daf",
+      "sha256": "4347fa8a7999015c9cc27f562dfe4752b25220e4bbd00336e44370f99e961c39",
+      "bytes": 72665592,
+      "executed": false,
+      "compiled_current_source": true
+    },
+    "upload_http": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/upload_http-cd07e6bff9519e2c",
+      "sha256": "2f5cb1e600bdd17d666a6871a6189d3c539ab79cf9479bf2ddf45cd068068b4f",
+      "bytes": 46119984,
+      "executed": false,
+      "compiled_current_source": true
+    }
+  },
+  "source_manifest": "candidate-source.json",
+  "candidate_sha256": "ddf33de06a76fd65a52d0262c8cd11b958a8015aa5def8cdc2a377ad8fe8ee30",
+  "runtime_executed_yet": false,
+  "script_path": "/workspace/scratch/3eafc9756ff3/weebdex-platform/scripts/run-auth-tests.sh",
+  "script_sha256": "7d4e3ab3ad45c442228a6db2bdad5a5f0951825c9ac9282880dc1bc73407f933",
+  "scope": "Owned disposable loopback PostgreSQL per crate; actual ignored HTTP/API seams, no browser claim or blanket107 coverage. Signed bridge is a separate fresh original authority DB/store.",
+  "prior_failed_auth_run": "http-end-to-end-001/auth-http-001-summary.json"
+}

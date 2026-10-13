@@ -1,0 +1,49 @@
+{
+  "status": "source_frozen_example_compiled_runtime_held",
+  "reviewed_at": "2026-10-13T07:18:00.905667+00:00",
+  "source_sha256": {
+    "tests/runtime/browser_fixture.py": "70401b969911da6b44bec5f41531476b5d425fcb1c9b2a4354e46839d2930c59",
+    "backend/examples/browser_fixture_provisioner.rs": "1ee707435069e7c8925efb8247c6b99244d043935cc2b5470c4fb58c556e842a",
+    "docs/browser-fixture-contract.md": "39bcf7bcdd1c1b0b85d6262d99bca4c24d3c9d08b971ba5c4c9edae5e5d42071"
+  },
+  "python_ast_parse": "passed_without_execution",
+  "rust_example_codegen": {
+    "passed": true,
+    "source_sha256": "1ee707435069e7c8925efb8247c6b99244d043935cc2b5470c4fb58c556e842a",
+    "binary_sha256": "8844296fa09e7423ea4814beac93412d0763628c787ba26f211acf0e821f3928",
+    "reported_by": "sole_compiler_candidate013",
+    "compiler_receipt": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/bridge-authorized-013/cargo-build-example-003-result.json",
+    "compiler_receipt_sha256": "4ffd0e18a900ed960983083898313aeeccff1431d8a31373e92104e377c19ce1"
+  },
+  "runtime_executed": false,
+  "protocol_success_mocks": false,
+  "private_control_actions": [
+    "source-revoke",
+    "source-restore",
+    "catalogue-rebuild",
+    "runtime-restart",
+    "peer-policy"
+  ],
+  "remaining": [
+    "Fresh parent UI/audit runtime clearance",
+    "Signed journey author call/assertions for new controls/two real recipients",
+    "Final immutable UI/backend/provisioner hash coordination",
+    "Real combined startup/projection/browser journeys",
+    "Real graceful drain/process-group/port/restart cleanup",
+    "Actual nginx >1MiB replacement acceptance"
+  ],
+  "licensed_images_in_evidence": false,
+  "fixture_contract": "docs/browser-fixture-contract.md",
+  "independent_findings_fixed": {
+    "BF-01": "Own complete sessions/adopted descendants, exact birth identities, per-process pidfds, bounded reap/drain and unconfirmed survivors",
+    "BF-02": "All eight exact signed phases600seconds",
+    "BF-03": "Frontend reports SHA-pinned absolute official preinstalled Playwright1.62.1 import and exact recipient list; no NODE_PATH",
+    "BF-04": "Mandatory pinned complete frontend manifest, exact source/snapshot membership and byte hashes, read-only snapshot rechecked prelaunch",
+    "BF-05": "All Popen births registered under same lock as orphan wait selection/final waitpid; psql/initdb/probe/migrate registered synchronous path, Popen owns true exit status, no locks across communicate/drain",
+    "BF-06": "Monotonic per-child forced/ever_forced plus fixture history across cleanup/archived generations; distinct final_teardown_clean/lifecycle_clean; nonzero supervisor for unconfirmed/unclean terminal receipt or browser failure"
+  },
+  "current_frontend_artifact_manifest_sha256": "51f8a91b9c3cc331bb98a1260c47720e43ea38ee774985abf8a17d44e828c6b8",
+  "normal_platform_binary_sha256": "946210110155338ade9501e4152ce39c343b3bff573dca6f7cbca8d8e136106d",
+  "frontend_generation": "build10_frozen_runtime_held",
+  "frontend_index_sha256": "7e81d63c5ecdb27ca5b0e1e5f77edb19d511d46c087cabf2d758007269b60b3b"
+}

@@ -1,0 +1,53 @@
+{
+  "reviewed_at": "2026-10-13T03:38:00Z",
+  "runtime_hold": true,
+  "owned_processes_live": false,
+  "findings": [
+    {
+      "area": "Canonical original routing",
+      "status": "source_fixed_compiler_pending",
+      "detail": "Reserved /originals URLs cannot become SPA200 when exact reverse-proxy route is absent; existing fallback regression assertion extended."
+    },
+    {
+      "area": "Embedded original worker ownership",
+      "status": "bridge_owner_review_pending",
+      "detail": "Original EmbeddedWorkerOwner aborts handles in Drop; asynchronous terminal join review assigned to bridge."
+    },
+    {
+      "area": "Group capability consistency",
+      "status": "bridge_owner_review_pending",
+      "detail": "Platform publication and native original group-key roots may differ; shared injection or matching-root validation assigned to bridge."
+    },
+    {
+      "area": "Reader errors",
+      "status": "implemented_browser_validation_pending",
+      "detail": "Frontend owner confirms bounded non2xx/decode/timeout/cancel/retry overlays already cover retained reader queue."
+    },
+    {
+      "area": "Browser state authority",
+      "status": "frontend_owner_repairing",
+      "detail": "HTTP mutation no-replay, durable upload resume and authority-sensitive service-worker caching repairs identified by renewed wiring audit."
+    }
+  ],
+  "validated_boundaries": [
+    "No production/public deployment, credentials or real accounts provisioned",
+    "Owned disposable fixture attempts stopped cleanly with platform and PostgreSQL exit0",
+    "Actual pre-fix deep-link404 was detected; corrected final full HTTP/browser pass remains pending",
+    "Latest normal debug binary compiled before operational reserved-route delta"
+  ],
+  "operator_prerequisites": [
+    "PostgreSQL/TLS and reviewed migration/backup/restore",
+    "Existing original admitted identities and private key/group bindings",
+    "Original projection backend with single physical-volume owner",
+    "Real mail provider/delivery verification",
+    "DNS/TLS/proxy/service/private-storage/log policies"
+  ],
+  "remaining": [
+    "Final compiler revalidation of source audit deltas",
+    "Parent audit clearance before supervised fixture/browser restart",
+    "Immutable final frontend build paired with current bootstrap CSP",
+    "Original listener/worker graceful-shutdown and durable restart-recovery checks",
+    "Real proxy/TLS/WebSocket/range and mail acceptance",
+    "Representative dataset-backed measured performance after functional acceptance"
+  ]
+}

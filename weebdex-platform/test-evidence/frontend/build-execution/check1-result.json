@@ -1,0 +1,52 @@
+{
+  "completed_utc": "2026-10-13T02:07:35.158615+00:00",
+  "command_exit": -15,
+  "abort_reason": "command_deadline",
+  "monitor_error": null,
+  "cleanup_error": null,
+  "termination_signal": null,
+  "remaining_owned_members": [],
+  "frozen_identity_hashes": {
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/build-execution/guarded-command.py": "652107fadd2c84f2c707f6280bf591c6feec020746b67558fb22731d40dc0172",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/build-execution/candidate-source.json": "944eab984e1dfe37bba434f0912e7610cd1a0ce9deaa8cb2c1c2235fc2555eb4",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/build-execution/source-baseline.json": "afbf14c8baa0f160f1f2a5030f2bc7c5a55638e3f391682a2dfea63a23753807"
+  },
+  "owned_leader_reaped": true,
+  "stop_actions": [
+    {
+      "pid": 15,
+      "start_ticks": 8553042,
+      "group": 15,
+      "session": 15,
+      "signal": 15,
+      "pidfd": true
+    },
+    {
+      "pid": 23,
+      "start_ticks": 8553542,
+      "group": 15,
+      "session": 15,
+      "signal": 15,
+      "pidfd": true
+    }
+  ],
+  "reaped_descendants": [
+    {
+      "pid": 23,
+      "start_ticks": 8553542,
+      "group": 15,
+      "session": 15,
+      "wait_status": 15
+    }
+  ],
+  "changed_inputs": [],
+  "minimum_free_bytes": 25036484608,
+  "minimum_available_memory_bytes": 6782726144,
+  "final_free_bytes": 25036484608,
+  "final_available_memory_bytes": 7830073344,
+  "command_log_bytes": 0,
+  "telemetry_bytes": 981,
+  "telemetry_capped": false,
+  "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+  "status": "failed"
+}

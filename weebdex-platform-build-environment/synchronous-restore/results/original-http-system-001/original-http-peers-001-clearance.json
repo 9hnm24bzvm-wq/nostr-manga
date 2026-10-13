@@ -1,0 +1,15 @@
+{
+  "heavy_io_terminal": true,
+  "explicit_launch_allowed": true,
+  "command": [
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/results/original-http-system-001/run-original-tests.sh",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/http_peers-387fee1dc036baa9",
+    "--ignored",
+    "--test-threads=1"
+  ],
+  "helper_sha256": "9f91c18d582d1ca7cedf64dc1a43f919541fe7a9788e0407283ed4fe366f6da8",
+  "candidate_sha256": "d94878d178e3b614d72c9ca3ac7f2cf66ea48426d19e0f4ea91ec0870b2bcf37",
+  "baseline_manifest_sha256": "74b53fb3dcdb01fb32a60c33b1d23a4fec5bcccaa89ab3d6869addb15f7ac1bb",
+  "start_free_bytes": 10737418240,
+  "authority": "User approved current E2E batch at12:00 and parent explicitly assigned actual HTTP/PG end-to-end acceptance at12:22. Execute already-compiled current-source ignored tests in fresh owned disposable loopback PostgreSQL clusters and synthetic storage only; original protocol module operations are confined to those disposable databases/stores. No production/original runtime DB or live service is touched. No browser claim or performance work. Existing guard bounds up to300seconds,10GiB launch/8GiB stop disk,2GiB available memory,32MiB logs, exact owned process-group cleanup. Failed receipts retained. Private raw test logs may contain transient synthetic fixture details and must not be externally shared unreviewed."
+}

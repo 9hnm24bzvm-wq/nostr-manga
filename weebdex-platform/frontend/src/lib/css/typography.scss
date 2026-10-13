@@ -1,0 +1,115 @@
+.typography {
+	h1 {
+		@apply text-2xl;
+	}
+
+	h2 {
+		@apply text-xl;
+	}
+
+	h3 {
+		@apply text-base;
+	}
+
+	h4 {
+		@apply text-sm;
+	}
+
+	h5 {
+		@apply text-xs;
+	}
+
+	b,
+	strong {
+		@apply font-semibold;
+	}
+
+	a {
+		@apply text-accent-foreground hover:underline;
+	}
+
+	hr {
+		@apply my-2;
+	}
+
+	img {
+		@apply inline max-w-192 transition;
+		cursor: pointer;
+		&:hover {
+			filter: brightness(0.85);
+		}
+	}
+
+	ol {
+		@apply ml-4.5 list-decimal;
+		ol {
+			@apply ml-3;
+		}
+	}
+
+	ul {
+		@apply ml-5 list-disc;
+		ul {
+			@apply ml-3 list-[circle];
+		}
+	}
+
+	blockquote {
+		&:not([data-greentext]) {
+			@apply text-muted-foreground border-l-3 pl-2;
+		}
+		&[data-greentext] {
+			@apply text-lime-500;
+		}
+
+		> br:first-child {
+			@apply hidden;
+		}
+	}
+
+	[data-quote] {
+		@apply border-l-accent bg-background rounded-md border border-l-3;
+
+		> br:first-child {
+			@apply hidden;
+		}
+
+		[data-quote-header] {
+			@apply bg-card text-accent-foreground block border-b px-2 py-1 font-medium;
+		}
+
+		[data-quote-content] {
+			@apply p-2;
+
+			> blockquote {
+				@apply border-l-0 pl-0;
+			}
+		}
+	}
+
+	[data-greentext-link] {
+		@apply text-red-300;
+	}
+
+	[data-spoiler] {
+		@apply bg-muted cursor-pointer text-transparent transition;
+
+		&:hover {
+			@apply bg-muted/75;
+		}
+		&:not([data-visible]) {
+			@apply select-none;
+		}
+		&[data-visible] {
+			@apply text-inherit;
+		}
+	}
+}
+
+.typography.comment {
+	img,
+	video,
+	iframe {
+		@apply m-auto block max-w-full rounded-md;
+	}
+}

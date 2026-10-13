@@ -1,0 +1,13 @@
+# Experimental capability registry
+
+Plain GET `/` and GET `/` with `Accept: application/nostr+json` include the same `manga` object. Namespace/API version1 is a local experimental profile, not an allocated NIP or a stable public protocol commitment. Existing HTTP top-level fields and feature flags remain available.
+
+The NIP11 `self` field identifies the service key; `pubkey` remains the administrator contact. A public key in a document is not proof of possession. Use the existing nonce-based `/identity` proof. Signed endpoint announcements and relocation discovery remain separate unfinished work.
+
+The registry is built once from a whitelisted runtime profile. It contains public endpoint templates, supported codec versions and event kinds, configured image formats/blob size, read/write admission policies, library budgets/concurrency, discovery budgets and available subsystem flags. It never serializes NodeConfig, database connection strings, secret-key files, storage paths or internal serving listener addresses. Endpoint templates describe the API vocabulary; feature flags say which subsystems are configured. Support does not establish current health, authorization, available quota, or target throughput.
+
+Metadata-only nodes advertise no blob limit/formats or publication support. Library codec limits still describe the implementation even when the library feature is disabled. The HTTP and NIP11 objects share one stored value, avoiding independent copies. Key query, filter and relay limits are shared constants used by enforcement and advertisements. Library budgets come from the validator's default limits; wire budgets come from the wire codec constants. This does not yet advertise every internal worker, transport or database budget.
+
+NIP11 root GET/HEAD/OPTIONS supports its read-only cross-origin discovery contract. This is not a claim of general API or Blossom CORS compatibility. The subsequent Blossom adapter advertises the restricted `server_scoped_private_staging` profile, standard root routes and mandatory domain-scoped authorization. Full/unrestricted Blossom remains false because staged URLs stay private and unscoped tokens are rejected. Legacy route semantics are separately advertised. See blossom-profile.md.
+
+Evidence: `http_capabilities` exercises real HTTP against PostgreSQL with metadata-only and storage-enabled configurations; checks namespaces match, administrator/service keys differ correctly, configured formats/limits match, private config strings are absent, preflight works and over-limit discovery fails. Unit tests bind advertised discovery/filter/relay values to parser behavior. Full regression evidence is recorded separately after execution.

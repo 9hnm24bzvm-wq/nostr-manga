@@ -1,0 +1,18 @@
+{
+  "status": 200,
+  "data": {
+    "event": {
+      "content": "{\"manifest\":\"41dbe04f6914be3a2f8ef62536ade6d574aa14dae22383ba14fb94929bc9e8b2\",\"version\":1}",
+      "created_at": 1791751331,
+      "id": "8a50954633314357b562b33ca3454c2ce1ada894d1ea448e8c69a63f97b12201",
+      "kind": 11999,
+      "pubkey": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "sig": "944d703dfba4ee8ed291ad3d5fe242fdaa72ce70b8d5b1692dd21d464b1fe05dc96517c65464ffe8c96d6eb5caffe83e9fdcd1f6d2003a8e0dde9df07f6e670b",
+      "tags": []
+    },
+    "projected": true
+  },
+  "service_proof_verified": true,
+  "public_request_id": "27e7ce822452135934700e4af970d743c363098528d9f0ad1f1a7efaa6a5460a",
+  "response_body_sha256": "0946b7a788338d274ec7d06187422034df445cd636c75f78a47278425459f9ff"
+}

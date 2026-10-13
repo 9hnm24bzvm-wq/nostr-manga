@@ -1,0 +1,10 @@
+export * as Author from "./author";
+export * as Chapter from "./chapter";
+export * as Client from "./client";
+export * as Cover from "./cover";
+export * as Group from "./group";
+export * as Manga from "./manga";
+export * as Reply from "./reply";
+export * as Report from "./report";
+export * as Upload from "./upload";
+export * as User from "./user";

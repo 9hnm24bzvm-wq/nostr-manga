@@ -1,0 +1,25 @@
+{
+  "ownership-clean": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-c",
+    "print(\"controlled child completed\")"
+  ],
+  "ownership-setsid": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-c",
+    "import subprocess,sys; subprocess.Popen([sys.executable,\"-c\",\"import time; time.sleep(60)\"],start_new_session=True); print(\"controlled setsid child launched\",flush=True)"
+  ],
+  "demo": [
+    "bash",
+    "results/restored-service-smoke-20261012/demo-layout/run-demo.sh",
+    "--check"
+  ],
+  "nginx": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_serving_supervisor.ServingCLI.test_prepared_activation_suspension_and_explicit_stop",
+    "test_serving_supervisor.ServingCLI.test_slow_unlinked_reader_drain_range_and_new_namespace"
+  ]
+}

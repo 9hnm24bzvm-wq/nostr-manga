@@ -1,0 +1,7 @@
+{
+  "clean_child_passed": true,
+  "setsid_leftover_failed_as_expected": true,
+  "anchored_pidfd_stop": true,
+  "adopted_child_reaped": true,
+  "remaining_owned_members": []
+}

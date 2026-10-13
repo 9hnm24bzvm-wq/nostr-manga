@@ -1,0 +1,46 @@
+{
+  "recorded_utc": "2026-10-13T13:14:45.531613+00:00",
+  "integration_targets": 90,
+  "already_passed_targets": 6,
+  "new_ordinary_module_targets": 44,
+  "new_ordinary_module_cases": 62,
+  "new_ordinary_HTTP_targets": 34,
+  "new_ordinary_HTTP_cases": 35,
+  "deferred_scale_targets": [
+    "sync_skips",
+    "http_inventory",
+    "http_library_client",
+    "http_sync_jobs"
+  ],
+  "diagnostic_excluded": [
+    "audit_gaps"
+  ],
+  "blocked_support_target": [
+    "http_browser_client"
+  ],
+  "ordinary_target_total": 84,
+  "ordinary_case_total": 103,
+  "bounds": {
+    "per_command_seconds": 300,
+    "serial_clusters": true,
+    "disk_start_gib": 10,
+    "disk_stop_gib": 8,
+    "available_memory_stop_gib": 2
+  },
+  "estimates_not_measured": true,
+  "source_023_identity_unchanged": true,
+  "inventories": [
+    "non-http-inventory.json",
+    "http-inventory.json"
+  ],
+  "installed_dependencies_present": [
+    "PostgreSQL tools",
+    "strfry",
+    "nginx",
+    "Python3.12+vendoredsupport",
+    "cc",
+    "OpenSSL",
+    "local4JPEGcorpus"
+  ],
+  "browser_execution_independent": true
+}

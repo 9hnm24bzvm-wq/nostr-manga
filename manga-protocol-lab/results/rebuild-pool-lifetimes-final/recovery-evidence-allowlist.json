@@ -1,0 +1,38 @@
+{
+  "purpose": "Explicit safe completed canonical gate evidence for the connection-lifetime candidate; preserve prior archives and focused evidence separately.",
+  "node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+  "files": {
+    "results/rebuild-pool-lifetimes-final/README.md": "4841bb1ba13d8b62e8cd240f71468222db93b1982655cda86e5994d9c07e456b",
+    "results/rebuild-pool-lifetimes-final/canonical-acceptance.json": "656aa030c83f239bde726813cefb6f6c49ffe9d3cd55e18ca1be38f9779cd6d5",
+    "results/rebuild-pool-lifetimes-final/canonical.log": "55c6ab99b26e54c8862d7e83a2a60e76aba4950566811b08f19a711ab54aaf0e",
+    "results/rebuild-pool-lifetimes-final/canonical.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "results/rebuild-pool-lifetimes-final/canonical-result.json": "e2461d5c51324aac79df00dc4e7f6530afa839e2383ec96eb5264aa37b0d68d9",
+    "results/rebuild-pool-lifetimes-final/canonical-process.json": "7a70e90d069cbdb89a73ff7a2080fd01d96429933f830db403a6c26065e4c4b5",
+    "results/rebuild-pool-lifetimes-final/canonical-command.json": "90528c3e04b054ac6a30ec848784dc621f6e445ac68415f6c40a7fa3007979ce",
+    "results/rebuild-pool-lifetimes-final/canonical-environment.json": "257056438013001e8d98652c54108b7d5f7adf0e269760fbb23203ec84013e79",
+    "results/rebuild-pool-lifetimes-final/canonical-clearance.json": "153691ae1c54580d51976fb0255d465d495a814d5f266738aa5c907ceb70f9ef",
+    "results/rebuild-pool-lifetimes-final/canonical-resources.jsonl": "03e485c5ce6c5c76b2e5cd7557d89b5d7736a8e85ac57394e70c96b2fb92f1a0",
+    "results/rebuild-pool-lifetimes-final/canonical-source-before.json": "77dfdc5bd28eee19192f4eb1b81a00563cd496d96c39152bcc549af9b2ffdb37",
+    "results/rebuild-pool-lifetimes-final/canonical-source-after.json": "a26e31ca2d65abfb8bdb500249ebab4c3c68f9c55a90823e686b6c8388b2e763",
+    "results/rebuild-pool-lifetimes-final/candidate-source.json": "7a78ee9fbe6b03ff0f9b2aceca992c7d74e82d17cfac9cae575fb58d50afe01d",
+    "results/rebuild-pool-lifetimes-final/integration-inventory.json": "8a3456cc307b2903d15dbc117c4c3773adc61e2b943f32f58118085b48f495b5",
+    "results/rebuild-pool-lifetimes-final/integration-results.json": "c0b3cd9f82b6dc7e94ce52eeb7eb438e7e3ce7d6e41da91c12f550dfc78aeb3e",
+    "results/rebuild-pool-lifetimes-final/runner-sha256.json": "cbc9c5117c7830a579cf2c21d430b412c7ba4ad17671fcfe8656fec3da7b93be",
+    "results/rebuild-pool-lifetimes-final/run-serialized-canonical.sh": "194da1c6bc979f7b86549c3ae61c9433c84a0c85bcc9eb6748c96721df2a4556",
+    "results/rebuild-pool-lifetimes-final/run-serialized-canonical.patch": "dc00c3b728720f11ead89ff48f89c4391edc263da5a171bdcf90703edaf81f01",
+    "results/rebuild-pool-lifetimes-final/test-postgres-serialized.sh": "41af3a18d3e14303375cf9fa0df3878ad31ee6f371cb2e46337c75a7c254c028",
+    "results/rebuild-pool-lifetimes-final/test-postgres-serialized.patch": "55b6962b931a7241e9b44a49b3d1cff8ec9d18ba065de01ab7adca495bec6d5a",
+    "results/rebuild-pool-lifetimes-final/guarded-command.py": "64b3c99114c9d1e64f486412d1b68b8fa754316856a5c869fc27e24c196d7b96",
+    "results/rebuild-pool-lifetimes-final/launch-preflight.json": "15b3db478d701aeb7ca33a3d91274aa4f6a221014d992c701ad18c1d870ef993",
+    "results/rebuild-pool-lifetimes-final/owned-runtime-terminal.json": "537b5b66b8420b4049e482d4910e99802da79c77ecb3addcf5b5a19057ac92a9",
+    "results/rebuild-pool-lifetimes-final/postgres-multiprocess.json": "882d5c2354f447732666fd499b97d0747426d28b6008f4e8ee0d4bb50e38540a",
+    "results/rebuild-pool-lifetimes-final/verify-terminal.py": "197f2e75afd4faf0c04914c7c35d743b219a8a3c6311d1535ff6723c681dd7ae"
+  },
+  "excluded": [
+    "Runtime trees, PostgreSQL databases and raw PostgreSQL server logs",
+    "Generated private fixture configs, passwords, service keys and credentials",
+    "Preserved prior executable (separately controlled artifact)",
+    "Unfinished or later independent-review files; add only by a separate exact-hash supplement"
+  ],
+  "note": "Local workspace paths and process IDs are provenance, not credentials. Independent focused evidence and its review supplement remain separately frozen."
+}

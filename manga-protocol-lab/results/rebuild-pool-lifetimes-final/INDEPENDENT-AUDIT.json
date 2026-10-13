@@ -1,0 +1,47 @@
+{
+  "audited_utc": "2026-10-12T02:05:05.195270+00:00",
+  "status": "passed",
+  "scope": "Independent static and terminal evidence audit of one operator-executed gate; no duplicate application execution",
+  "acceptance_sha256": "656aa030c83f239bde726813cefb6f6c49ffe9d3cd55e18ca1be38f9779cd6d5",
+  "node_sha256": "4c499f724af4db1843f54c51e47746114f777de15b446979a3e8e8a0e7a3e23a",
+  "source_count": 392,
+  "source_maps_equal": true,
+  "current_source_drift": [],
+  "current_runner_drift": [],
+  "counts_from_raw_log": {
+    "python": 58,
+    "packaging": 6,
+    "browser_model": 91,
+    "rust_module_passed": 74,
+    "rust_module_intentional_ignores": 2,
+    "integration_executables": 89,
+    "integration_cases_passed": 108
+  },
+  "complete_inventory_matches": true,
+  "guard_terminal": {
+    "command_exit": 0,
+    "owned_leader_reaped": true,
+    "remaining_owned_members": [],
+    "abort_reason": null,
+    "monitor_error": null,
+    "cleanup_error": null,
+    "termination_signal": null
+  },
+  "postgres_multiprocess_matches_raw_log": true,
+  "durability_on_on_present": true,
+  "evidence_recomputed_sha256": {
+    "canonical.log": "55c6ab99b26e54c8862d7e83a2a60e76aba4950566811b08f19a711ab54aaf0e",
+    "canonical-result.json": "e2461d5c51324aac79df00dc4e7f6530afa839e2383ec96eb5264aa37b0d68d9",
+    "canonical-source-before.json": "77dfdc5bd28eee19192f4eb1b81a00563cd496d96c39152bcc549af9b2ffdb37",
+    "canonical-source-after.json": "a26e31ca2d65abfb8bdb500249ebab4c3c68f9c55a90823e686b6c8388b2e763",
+    "candidate-source.json": "7a78ee9fbe6b03ff0f9b2aceca992c7d74e82d17cfac9cae575fb58d50afe01d",
+    "integration-results.json": "c0b3cd9f82b6dc7e94ce52eeb7eb438e7e3ce7d6e41da91c12f550dfc78aeb3e",
+    "integration-inventory.json": "8a3456cc307b2903d15dbc117c4c3773adc61e2b943f32f58118085b48f495b5",
+    "runner-sha256.json": "cbc9c5117c7830a579cf2c21d430b412c7ba4ad17671fcfe8656fec3da7b93be",
+    "postgres-multiprocess.json": "882d5c2354f447732666fd499b97d0747426d28b6008f4e8ee0d4bb50e38540a",
+    "canonical-environment.json": "257056438013001e8d98652c54108b7d5f7adf0e269760fbb23203ec84013e79",
+    "canonical-command.json": "90528c3e04b054ac6a30ec848784dc621f6e445ac68415f6c40a7fa3007979ce"
+  },
+  "owned_runtime_receipt_sha256": "537b5b66b8420b4049e482d4910e99802da79c77ecb3addcf5b5a19057ac92a9",
+  "issues": []
+}

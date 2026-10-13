@@ -1,0 +1,97 @@
+{
+  "source_copy": {
+    "status": "passed",
+    "attachment_files": 676,
+    "all_hash_identical": true
+  },
+  "integration_script_syntax": {
+    "status": "passed",
+    "node_check": [
+      "scripts/build-frontend.mjs",
+      "scripts/vite.platform.config.mjs"
+    ],
+    "python_compile": [
+      "scripts/verify-frontend-parity.py"
+    ]
+  },
+  "dependency_restore": {
+    "status": "passed",
+    "working_target": ".build/frontend-restore3",
+    "verified_official_locked_archives": 842,
+    "scripts_disabled": true,
+    "frozen_offline_install": true,
+    "terminal_evidence": "build-execution/offline-install2-result.json",
+    "remaining_owned_members": [],
+    "source_changes": [],
+    "prior_restore_lifecycle": "Initial session82342 and restore2-step6 remain unknown and were not resumed/signalled/reused as unpacked modules."
+  },
+  "frontend_typecheck": {
+    "status": "deadline_exceeded_not_completed",
+    "deadline_seconds": 8,
+    "evidence": "build-execution/check1-result.json",
+    "remaining_owned_members": []
+  },
+  "frontend_build": {
+    "status": "passed",
+    "terminal_evidence": "final-build19/build-result.json",
+    "command_exit": 0,
+    "remaining_owned_members": [],
+    "changed_inputs": [],
+    "portable_output": "artifacts/frontend",
+    "overlay_repairs": 534,
+    "overlay_original_paths": 106,
+    "announcement_routes_reconstructed": 3,
+    "spa_fallback_sha256": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+    "approved_event_handler_exceptions": 1,
+    "artifact_is_latest_frozen_overlay": true,
+    "current_source_build": "Build19/source534 passed against frozen relation eligibility repair",
+    "current_source_repairs": 534,
+    "source_patchset": "Finite relation eligibility repair bundled; fresh independent source review/runtime gate pending",
+    "last_attempt": {
+      "terminal_evidence": "final-build7/build-result.json",
+      "status": "failed",
+      "diagnostic": "External RecoveryBoundary could not resolve axios",
+      "owned_cleanup": true
+    }
+  },
+  "browser_render_comparison": {
+    "status": "not_run"
+  },
+  "all_features_working": {
+    "status": "not_established"
+  },
+  "known_source_gaps": "archive-defects.json",
+  "query_compatibility": {
+    "interpretation": "Root layout intentionally prefixes URLSearchParams with ?. No normal-path malformed request has been demonstrated.",
+    "server_rewrite_module": "removed",
+    "browser_startup_verification": "pending, including fresh title/random route"
+  },
+  "sveltekit_sync": {
+    "status": "passed",
+    "terminal_evidence": "build-execution/sync1-result.json"
+  },
+  "source_preservation": {
+    "attachment_files_checked": 676,
+    "canonical_and_staged_inputs_identical": true,
+    "original_html_css_preserved_in_script_transforms": false,
+    "executed_javascript_identical": false,
+    "transform_manifest": "integration-source-manifest.json",
+    "approved_event_handler_javascript_exception": {
+      "path": "src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+      "count": 1,
+      "retained_dom_classes_styles_unchanged": true
+    },
+    "qualification": "All676 supplied files remain byte-identical. Executed scripts differ. Unrelated original markup/styles match after only exact approved event handler, local availability/key and additive panel anchors are normalized. Explicit local/protocol panels and pending publication boundary are rendered extensions; globally identical executed HTML is not claimed.",
+    "original_styles_preserved": true,
+    "all_supplied_files_unchanged": true
+  },
+  "browser_acceptance": {
+    "status": "held_for_additional_feature_wiring_review_per_latest_user_sequence",
+    "application_cases_executed": 0,
+    "prior_browser_capability_attempt": "browser-execution-startup/browser-result.json",
+    "prior_attempt_result": "Chromium launch exited before any page or fixture request; clean owned terminal receipt",
+    "supervised_browser_attempts": 0,
+    "route_control_matrix": "browser-route-control-matrix.json",
+    "network_safety": "Exact-local-origin route allowlist plus owned external-deny proxy; local synthetic mail only; credentials/tokens omitted from evidence"
+  }
+}

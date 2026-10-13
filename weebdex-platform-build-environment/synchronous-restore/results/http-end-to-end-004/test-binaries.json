@@ -1,0 +1,12 @@
+{
+  "recorded_utc": "2026-10-13T12:53:22.573676+00:00",
+  "binaries": {
+    "protocol_bridge_http": {
+      "path": "/workspace/scratch/3eafc9756ff3/weebdex-platform-build-environment/synchronous-restore/targets/platform/debug/deps/protocol_bridge_http-3f936b335b360daf",
+      "sha256": "76b6a11a28fad99503d07608c53c589d1b0eff2a7cfdfa877a1393a912369d8d",
+      "bytes": 72670568,
+      "executed": false,
+      "compiled_current_source": true
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "completed_utc": "2026-10-13T04:05:48.376078+00:00",
+  "command_exit": 0,
+  "abort_reason": null,
+  "monitor_error": null,
+  "cleanup_error": null,
+  "termination_signal": null,
+  "remaining_owned_members": [],
+  "frozen_identity_hashes": {
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/noble-restore/guarded-command.py": "652107fadd2c84f2c707f6280bf591c6feec020746b67558fb22731d40dc0172",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/noble-restore/candidate-source.json": "6e53dff8375f3b791159385d8124326edfde5d7ec0cdecee6ac50a3cd460c333",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/noble-restore/source-baseline.json": "2b85643702392bfbb1cceb7b99914b7200df7c4f21228db8bcf3263198d48273"
+  },
+  "owned_leader_reaped": true,
+  "stop_actions": [],
+  "reaped_descendants": [],
+  "changed_inputs": [],
+  "minimum_free_bytes": 24094134272,
+  "minimum_available_memory_bytes": 7849271296,
+  "final_free_bytes": 24094134272,
+  "final_available_memory_bytes": 7872479232,
+  "command_log_bytes": 247,
+  "telemetry_bytes": 872,
+  "telemetry_capped": false,
+  "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+  "status": "passed"
+}

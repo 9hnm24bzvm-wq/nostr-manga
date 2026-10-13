@@ -1,0 +1,18 @@
+{
+  "stage": "source-only round2 UI2-10 repair",
+  "runtime_tests_run": false,
+  "source_compilation_run_by_this_owner": false,
+  "files": [
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/ProtocolIdentityPanel.svelte",
+      "before_sha256": "fbbbf359a0088426c7f817191afa9c6324ab6c0586bb0551d5d26a91e7a8e1a4",
+      "after_sha256": "1f9da0538967206a6fef07e4c59fa1b25b05807f9e1bc7f48cd05766c583785e"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/protocol-identity.ts",
+      "before_sha256": "17b0a66ea1a5d47caaae2ef512d25a3b466e9b7c8aac7011e9afc587446454ea",
+      "after_sha256": "c44f1954da876759d4a9ad0f602d9d1e82c26ddc3b96760e902bb3a5ae9c6f58"
+    }
+  ],
+  "patch_sha256": "1111fdc19f052e5c2f8e7da3557a57923974d7d8e23f7f0bcdbf29b942811e5f"
+}

@@ -1,0 +1,20 @@
+# Private/runtime state is never source. Original frontend public .env files are
+# retained attachment inputs; deploy secrets belong outside the checkout.
+/.build/
+/.cache/
+/runtime/
+/test-runtime/
+/backend/target/
+/frontend/node_modules/
+/frontend/.svelte-kit/
+/frontend/build/
+/deployment/*.local.json
+/deployment/runtime.env
+*.private.key
+*.secret
+*.pem
+/secrets/
+# Release packages are created deliberately from verified artifacts, separately
+# from source checkout/repository staging.
+/artifacts/backend/
+/artifacts/release-manifest.json

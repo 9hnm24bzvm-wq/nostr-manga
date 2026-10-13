@@ -1,0 +1,71 @@
+{
+  "production": true,
+  "protocol_read_only": false,
+  "bind": "127.0.0.1:8080",
+  "trusted_proxy_peers": ["127.0.0.1"],
+  "trusted_proxy_hops": 1,
+  "public_origin": "https://weebdex.example.invalid",
+  "ui_dir": "/opt/weebdex/weebdex-platform/artifacts/frontend",
+  "uploads_dir": "/var/lib/weebdex/native-uploads",
+  "database_connections": 8,
+  "database_wait_ms": 500,
+  "database_plaintext_local": false,
+  "maximum_requests": 32,
+  "maximum_json_bytes": 1048576,
+  "cache_bytes": 16777216,
+  "json_body_timeout_seconds": 30,
+  "upload_body_timeout_seconds": 180,
+  "shutdown_grace_seconds": 210,
+  "registration_enabled": false,
+  "auth_mail": {
+    "endpoint": "https://mail-provider.example.invalid/send",
+    "from": "noreply@example.invalid",
+    "bearer_token_env": "WEEBDEX_MAIL_TOKEN",
+    "allow_loopback_test_sink": false
+  },
+  "protocol_publication": {
+    "operator_key_file": "/etc/weebdex/secrets/operator.key",
+    "expected_publisher": "REPLACE_WITH_EXISTING_ADMITTED_PUBLIC_KEY",
+    "storage_owner": "REPLACE_WITH_ORIGINAL_STORAGE_OWNER_PUBLIC_KEY",
+    "storage_holder": "REPLACE_WITH_ORIGINAL_STORAGE_HOLDER_PUBLIC_KEY",
+    "group_keys_dir": null,
+    "backend": null,
+    "storage": {
+      "path": "/var/lib/weebdex/protocol-originals",
+      "volume": "originals",
+      "physical_bytes": 200000000000,
+      "staging_bytes": 10000000000,
+      "max_blob_bytes": 33554432,
+      "upload_slots": 2
+    },
+    "native_node": {
+      "bind": "127.0.0.1:8081",
+      "base_url": "https://protocol.example.invalid",
+      "service_key_file": "/etc/weebdex/secrets/service.key",
+      "admin_pubkey": "REPLACE_WITH_ORIGINAL_STORAGE_OWNER_PUBLIC_KEY",
+      "database_connections": 8,
+      "database_plaintext_local": false,
+      "cors_origins": [
+        "https://weebdex.example.invalid"
+      ],
+      "read_policy": "public",
+      "discovery_private_overrides": [],
+      "backend": {
+        "binary": "/opt/weebdex/bin/strfry",
+        "data_dir": "/var/lib/weebdex/projection",
+        "timeout_seconds": 10,
+        "map_bytes": 1073741824
+      },
+      "enrollment": {
+        "enabled": false,
+        "max_new_accounts_per_hour": 100,
+        "max_self_enrolled_accounts": 10000
+      },
+      "public_serving": null,
+      "storage": null,
+      "group_keys_dir": null,
+      "auto_approve_publication_deletions": false
+    }
+  },
+  "protocol_connect_origins": []
+}

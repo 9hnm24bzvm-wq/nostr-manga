@@ -1,0 +1,31 @@
+{
+  "bind": "127.0.0.1:8080",
+  "base_url": "https://REPLACE_WITH_YOUR_INSTANCE_DOMAIN",
+  "service_key_file": "/REPLACE_WITH_SECURE_PATH/service.key",
+  "admin_pubkey": "REPLACE_WITH_YOUR_ADMINISTRATOR_NOSTR_PUBLIC_KEY",
+  "database_plaintext_local": false,
+  "database_connections": 16,
+  "cache_bytes": 33554432,
+  "group_keys_dir": "/REPLACE_WITH_DATA_PATH/group-keys",
+  "storage": {
+    "path": "/REPLACE_WITH_DATA_PATH/originals",
+    "volume": "originals",
+    "physical_bytes": 200000000000,
+    "staging_bytes": 10000000000,
+    "max_blob_bytes": 16777216,
+    "upload_slots": 4
+  },
+  "backend": {
+    "binary": "/REPLACE_WITH_PACKAGE_PATH/bin/strfry",
+    "data_dir": "/REPLACE_WITH_DATA_PATH/strfry",
+    "timeout_seconds": 10,
+    "map_bytes": 1073741824
+  },
+  "cors_origins": [],
+  "discovery_private_overrides": [],
+  "enrollment": {
+    "enabled": false,
+    "max_new_accounts_per_hour": 100,
+    "max_self_enrolled_accounts": 10000
+  }
+}

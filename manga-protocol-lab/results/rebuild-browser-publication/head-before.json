@@ -1,0 +1,9 @@
+{
+  "status": 404,
+  "data": {
+    "error": "no_library_head"
+  },
+  "service_proof_verified": true,
+  "public_request_id": "e51ee74bf410ffe4cc5fcf7ed84ffeaa2c35fa7de7091e6b8e9ed122c0da0639",
+  "response_body_sha256": "442cc975ee4873e819b8041f3fd052f73f996c653490d7c034408e4bda5d72b6"
+}

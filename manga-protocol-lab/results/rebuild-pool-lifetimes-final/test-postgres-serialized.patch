@@ -1,0 +1,34 @@
+--- scripts/test-postgres.sh
++++ results/rebuild-pool-lifetimes-final/test-postgres-serialized.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+-cd "$(dirname "$0")/.."
++cd "$(dirname "$0")/../.."
+ mkdir -p results
+ PROFILE_ARGS=()
+ BIN_DIR=debug
+@@ -40,7 +40,7 @@
+ export MANGA_HTTP_NODE_REPORT="$ROOT/results/postgres-http-node.json"
+ export CARGO_HOME="$ROOT/vendor/cargo" RUSTUP_HOME="$ROOT/vendor/rustup" CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$ROOT/target}"
+ "$CARGO_HOME/bin/cargo" fmt --manifest-path server/Cargo.toml -- --check
+-"$CARGO_HOME/bin/cargo" test "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml -j2 --lib --bins
++"$CARGO_HOME/bin/cargo" test "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml -j1 --lib --bins
+ # Isolate identity, physical grants and backend target state between executable
+ # integration fixtures. Never let one fixture's quota settings affect another.
+ if [ -n "${MANGA_TEST_FIXTURE:-}" ] && [ ! -f "server/tests/$MANGA_TEST_FIXTURE.rs" ]; then
+@@ -58,11 +58,11 @@
+   "$PG/dropdb" -h 127.0.0.1 -p 55432 --force manga_test
+   "$PG/createdb" -h 127.0.0.1 -p 55432 manga_test
+   export MANGA_TEST_BACKEND_DIR="$RUNTIME/backend-$fixture"
+-  "$CARGO_HOME/bin/cargo" test "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml -j2 --test "$fixture" -- --include-ignored
++  "$CARGO_HOME/bin/cargo" test "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml -j1 --test "$fixture" -- --include-ignored
+ done
+-"$CARGO_HOME/bin/cargo" clippy "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml -j2 --all-targets -- -D warnings
++"$CARGO_HOME/bin/cargo" clippy "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml -j1 --all-targets -- -D warnings
+ 
+-"$CARGO_HOME/bin/cargo" build "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml --bin pg_fixture_worker -j2
++"$CARGO_HOME/bin/cargo" build "${PROFILE_ARGS[@]}" --locked --manifest-path server/Cargo.toml --bin pg_fixture_worker -j1
+ export MANGA_TEST_WORKER="$CARGO_TARGET_DIR/$BIN_DIR/pg_fixture_worker"
+ export MANGA_TEST_EVENT_PATH="$RUNTIME/event.json"
+ export MANGA_TEST_PG_CTL="$PG/pg_ctl" MANGA_TEST_PG_DATA="$RUNTIME/data" MANGA_TEST_PG_LOG="$RUNTIME/server.log"

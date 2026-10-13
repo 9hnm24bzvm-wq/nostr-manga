@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-13T06:56:06.176882+00:00",
+  "source": "official preinstalled Microsoft Playwright runtime package; no install or browser execution",
+  "package": "playwright",
+  "version": "1.62.1",
+  "reviewed_absolute_package_root": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright",
+  "inherited_node_path_used": false,
+  "files": [
+    {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/package.json",
+      "sha256": "ca170ec143a88ed3043ac953eb3b2377b2b97304104f4e1e23316684ce2c35af"
+    },
+    {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.js",
+      "sha256": "4e98f65f0a9d9bcab8cffc0c5cfdd87fd3f5b0be74fc494ff166a466b204cd44"
+    },
+    {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+      "sha256": "a0f5715ea22354f922791a9c53dc012d5d5c067ff9cc4cd35ffb7cd272071a9f"
+    }
+  ]
+}

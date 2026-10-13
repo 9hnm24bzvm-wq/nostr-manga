@@ -1,0 +1,32 @@
+# Operator-installed systemd unit. Review paths/identity/limits; never run as root.
+[Unit]
+Description=WeebDex Rust platform
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=weebdex
+Group=weebdex
+WorkingDirectory=/opt/weebdex/weebdex-platform/backend
+Environment=PLATFORM_CONFIG=/etc/weebdex/platform.json
+Environment=RUST_LOG=info
+# Root-owned mode0600, injected at runtime. Never checked into the repository.
+EnvironmentFile=/etc/weebdex/secrets/runtime.env
+ExecStart=/opt/weebdex/weebdex-platform/scripts/run-platform.sh serve
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=225
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/weebdex
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LimitNOFILE=8192
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

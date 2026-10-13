@@ -1,0 +1,82 @@
+{
+  "completed_utc": "2026-10-13T02:10:44.528490+00:00",
+  "command_exit": -15,
+  "abort_reason": "command_deadline",
+  "monitor_error": null,
+  "cleanup_error": null,
+  "termination_signal": null,
+  "remaining_owned_members": [],
+  "frozen_identity_hashes": {
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/build-execution/guarded-build-command.py": "6e8fa634bd11f96e5bbc6723e21bc9e0e46d6f66d9dfdae0bbd3229edd200fdf",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/build-execution/candidate-source.json": "944eab984e1dfe37bba434f0912e7610cd1a0ce9deaa8cb2c1c2235fc2555eb4",
+    "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/build-execution/source-baseline.json": "afbf14c8baa0f160f1f2a5030f2bc7c5a55638e3f391682a2dfea63a23753807"
+  },
+  "owned_leader_reaped": true,
+  "stop_actions": [
+    {
+      "pid": 7,
+      "start_ticks": 8570155,
+      "group": 7,
+      "session": 7,
+      "signal": 15,
+      "pidfd": true
+    },
+    {
+      "pid": 15,
+      "start_ticks": 8570162,
+      "group": 7,
+      "session": 7,
+      "signal": 15,
+      "pidfd": true
+    },
+    {
+      "pid": 23,
+      "start_ticks": 8570175,
+      "group": 7,
+      "session": 7,
+      "signal": 15,
+      "pidfd": true
+    },
+    {
+      "pid": 65,
+      "start_ticks": 8571788,
+      "group": 7,
+      "session": 7,
+      "signal": 15,
+      "pidfd": true
+    }
+  ],
+  "reaped_descendants": [
+    {
+      "pid": 15,
+      "start_ticks": 8570162,
+      "group": 7,
+      "session": 7,
+      "wait_status": 15
+    },
+    {
+      "pid": 23,
+      "start_ticks": 8570175,
+      "group": 7,
+      "session": 7,
+      "wait_status": 15
+    },
+    {
+      "pid": 65,
+      "start_ticks": 8571788,
+      "group": 7,
+      "session": 7,
+      "wait_status": 15
+    }
+  ],
+  "changed_inputs": [],
+  "minimum_free_bytes": 25031110656,
+  "minimum_available_memory_bytes": 4957323264,
+  "final_free_bytes": 25031110656,
+  "final_available_memory_bytes": 7793881088,
+  "command_log_bytes": 20925,
+  "telemetry_bytes": 2834,
+  "telemetry_capped": false,
+  "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+  "status": "failed"
+}

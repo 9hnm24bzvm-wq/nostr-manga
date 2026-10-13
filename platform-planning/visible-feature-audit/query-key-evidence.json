@@ -1,0 +1,1430 @@
+[
+  {
+    "key": "page",
+    "source": "src/lib/components/ChapterFeed.svelte",
+    "line": 53,
+    "anchor": "const p = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "id",
+    "source": "src/lib/components/ChapterFeed.svelte",
+    "line": 111,
+    "anchor": "newIds.forEach(id => q.append(\"id\", id));"
+  },
+  {
+    "key": "tlang",
+    "source": "src/lib/components/ChapterListFilter.svelte",
+    "line": 27,
+    "anchor": "tlang: page.url.searchParams.getAll(\"tlang\") ?? [],"
+  },
+  {
+    "key": "group",
+    "source": "src/lib/components/ChapterListFilter.svelte",
+    "line": 28,
+    "anchor": "group: page.url.searchParams.getAll(\"group\") ?? [],"
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/ChapterListFilter.svelte",
+    "line": 29,
+    "anchor": "order: page.url.searchParams.get(\"order\") ?? \"desc\""
+  },
+  {
+    "key": "tlang",
+    "source": "src/lib/components/ChapterListFilter.svelte",
+    "line": 39,
+    "anchor": "if (search.tlang?.length) search.tlang.forEach(lang => q.append(\"tlang\", lang));"
+  },
+  {
+    "key": "group",
+    "source": "src/lib/components/ChapterListFilter.svelte",
+    "line": 40,
+    "anchor": "if (search.group?.length) search.group.forEach(group => q.append(\"group\", group));"
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/ChapterListFilter.svelte",
+    "line": 41,
+    "anchor": "if (search.order === \"asc\") q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/GenericPagination.svelte",
+    "line": 19,
+    "anchor": "if (page > 1) searchParams.set(\"page\", page.toString());"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/GenericPagination.svelte",
+    "line": 20,
+    "anchor": "else searchParams.delete(\"page\");"
+  },
+  {
+    "key": "name",
+    "source": "src/lib/components/GenericSearchFilter.svelte",
+    "line": 16,
+    "anchor": "let query = $state<string>(page.url.searchParams.get(\"name\") ?? \"\");"
+  },
+  {
+    "key": "name",
+    "source": "src/lib/components/GenericSearchFilter.svelte",
+    "line": 24,
+    "anchor": "if (query.length) q.set(\"name\", query);"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/GenericSearchFilter.svelte",
+    "line": 25,
+    "anchor": "q.delete(\"page\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/LatestUpdatesGrid.svelte",
+    "line": 57,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/LatestUpdatesGrid.svelte",
+    "line": 58,
+    "anchor": "q.set(\"limit\", \"70\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/LatestUpdatesSection.svelte",
+    "line": 67,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/LatestUpdatesSection.svelte",
+    "line": 68,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/MangaSearchFilter.svelte",
+    "line": 77,
+    "anchor": "searchParams.delete(\"page\");"
+  },
+  {
+    "key": "hasChapters",
+    "source": "src/lib/components/MangaSearchFilter.svelte",
+    "line": 126,
+    "anchor": "if (!search.hasChapters) q.delete(\"hasChapters\");"
+  },
+  {
+    "key": "tmod",
+    "source": "src/lib/components/MangaSearchFilter.svelte",
+    "line": 127,
+    "anchor": "if (search.tmod === \"AND\" || search.tmod === \"0\" || !search.tag?.length) q.delete(\"tmod\");"
+  },
+  {
+    "key": "txmod",
+    "source": "src/lib/components/MangaSearchFilter.svelte",
+    "line": 128,
+    "anchor": "if (search.txmod === \"OR\" || search.txmod === \"0\" || !search.tagx?.length) q.delete(\"txmod\");"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/MangaSearchFilter.svelte",
+    "line": 134,
+    "anchor": "q.delete(\"sort\");"
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/MangaSearchFilter.svelte",
+    "line": 136,
+    "anchor": "if (search.order === \"desc\") q.delete(\"order\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/MangaSearchFilter.svelte",
+    "line": 137,
+    "anchor": "if (search.limit === Number($prefs.items_per_page)) q.delete(\"limit\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/MangaSearchPagination.svelte",
+    "line": 14,
+    "anchor": "if (page > 1) searchParams.set(\"page\", page.toString());"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/MangaSearchPagination.svelte",
+    "line": 15,
+    "anchor": "else searchParams.delete(\"page\");"
+  },
+  {
+    "key": "rank",
+    "source": "src/lib/components/MostReadCarousel.svelte",
+    "line": 22,
+    "anchor": "q.set(\"rank\", \"read\");"
+  },
+  {
+    "key": "time",
+    "source": "src/lib/components/MostReadCarousel.svelte",
+    "line": 23,
+    "anchor": "q.set(\"time\", \"30d\");"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/components/MostReadCarousel.svelte",
+    "line": 25,
+    "anchor": "q.append(\"contentRating\", Constants.Manga.ContentRating.Safe);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/components/MostReadCarousel.svelte",
+    "line": 26,
+    "anchor": "if ($prefs.show_suggestive) q.append(\"contentRating\", Constants.Manga.ContentRating.Suggestive);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/components/MostReadCarousel.svelte",
+    "line": 27,
+    "anchor": "if ($prefs.show_erotic) q.append(\"contentRating\", Constants.Manga.ContentRating.Erotica);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/components/MostReadCarousel.svelte",
+    "line": 28,
+    "anchor": "if ($prefs.show_hentai) q.append(\"contentRating\", Constants.Manga.ContentRating.Pornographic);"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/MyUpdatesCarousel.svelte",
+    "line": 30,
+    "anchor": "q.set(\"limit\", \"10\");"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/RecentlyAddedCarousel.svelte",
+    "line": 24,
+    "anchor": "q.set(\"sort\", Constants.Manga.SortBy.CreatedAt);"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/RecentlyAddedCarousel.svelte",
+    "line": 25,
+    "anchor": "q.set(\"limit\", \"10\");"
+  },
+  {
+    "key": "category",
+    "source": "src/lib/components/ReportSearchFilter.svelte",
+    "line": 37,
+    "anchor": "category: page.url.searchParams.get(\"category\") ?? \"\","
+  },
+  {
+    "key": "object",
+    "source": "src/lib/components/ReportSearchFilter.svelte",
+    "line": 38,
+    "anchor": "object: page.url.searchParams.get(\"object\") ?? \"\","
+  },
+  {
+    "key": "reason",
+    "source": "src/lib/components/ReportSearchFilter.svelte",
+    "line": 39,
+    "anchor": "reason: page.url.searchParams.get(\"reason\") ?? \"\","
+  },
+  {
+    "key": "status",
+    "source": "src/lib/components/ReportSearchFilter.svelte",
+    "line": 40,
+    "anchor": "status: page.url.searchParams.get(\"status\") ?? \"\","
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/ReportSearchFilter.svelte",
+    "line": 41,
+    "anchor": "order: (page.url.searchParams.get(\"order\") as \"asc\" | \"desc\") ?? \"desc\""
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/ReportSearchFilter.svelte",
+    "line": 73,
+    "anchor": "if (search.order === \"desc\") q.delete(\"order\");"
+  },
+  {
+    "key": "title",
+    "source": "src/lib/components/SearchDialog.svelte",
+    "line": 29,
+    "anchor": "q.set(\"title\", title);"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/SearchDialog.svelte",
+    "line": 30,
+    "anchor": "q.set(\"sort\", \"relevance\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/SearchDialog.svelte",
+    "line": 31,
+    "anchor": "q.set(\"limit\", \"5\");"
+  },
+  {
+    "key": "name",
+    "source": "src/lib/components/SearchDialog.svelte",
+    "line": 45,
+    "anchor": "q.set(\"name\", name);"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/SearchDialog.svelte",
+    "line": 46,
+    "anchor": "q.set(\"limit\", \"5\");"
+  },
+  {
+    "key": "name",
+    "source": "src/lib/components/SearchDialog.svelte",
+    "line": 60,
+    "anchor": "q.set(\"name\", name);"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/SearchDialog.svelte",
+    "line": 61,
+    "anchor": "q.set(\"limit\", \"5\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/comments/comments-feed.svelte",
+    "line": 23,
+    "anchor": "if (page.url.searchParams.has(\"page\")) {"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/comments/comments-feed.svelte",
+    "line": 24,
+    "anchor": "const p = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/comments/comments-feed.svelte",
+    "line": 25,
+    "anchor": "if (Number(p) > 1) q.set(\"page\", p!);"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/comments/comments-feed.svelte",
+    "line": 27,
+    "anchor": "if (page.url.searchParams.has(\"sort\")) {"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/comments/comments-feed.svelte",
+    "line": 28,
+    "anchor": "const sort = page.url.searchParams.get(\"sort\");"
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/comments/comments-feed.svelte",
+    "line": 29,
+    "anchor": "if (sort === \"oldest\") q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/comments/comments-filter.svelte",
+    "line": 12,
+    "anchor": "const isOldest = $derived(page.url.searchParams.get(\"sort\") === \"oldest\");"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/comments/comments-filter.svelte",
+    "line": 16,
+    "anchor": "if (value === \"oldest\") q.set(\"sort\", value);"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/comments/comments-filter.svelte",
+    "line": 17,
+    "anchor": "else q.delete(\"sort\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/comments/comments-provider.svelte",
+    "line": 35,
+    "anchor": "q.set(\"page\", String(targetPage));"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/comments/comments.svelte",
+    "line": 86,
+    "anchor": "{#if page.url.searchParams.get(\"sort\") !== \"oldest\"}"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/comments/comments.svelte",
+    "line": 111,
+    "anchor": "{#if page.url.searchParams.get(\"sort\") === \"oldest\"}"
+  },
+  {
+    "key": "state",
+    "source": "src/lib/components/draft/manga/DraftSearchFilter.svelte",
+    "line": 26,
+    "anchor": "state: page.url.searchParams.getAll(\"state\") ?? [],"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/draft/manga/DraftSearchFilter.svelte",
+    "line": 27,
+    "anchor": "sort: (page.url.searchParams.get(\"sort\") as Constants.Manga.DraftSortBy) ?? Constants.Manga.DraftSortBy.CreatedAt,"
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/draft/manga/DraftSearchFilter.svelte",
+    "line": 28,
+    "anchor": "order: (page.url.searchParams.get(\"order\") as \"asc\" | \"desc\") ?? \"desc\""
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/draft/manga/DraftSearchFilter.svelte",
+    "line": 49,
+    "anchor": "if (search.sort === Constants.Manga.DraftSortBy.CreatedAt) q.delete(\"sort\");"
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/draft/manga/DraftSearchFilter.svelte",
+    "line": 50,
+    "anchor": "if (search.order === \"desc\") q.delete(\"order\");"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/draft/manga/DraftSearchFilter.svelte",
+    "line": 51,
+    "anchor": "q.delete(\"page\");"
+  },
+  {
+    "key": "name",
+    "source": "src/lib/components/draft/manga/MetadataSection.svelte",
+    "line": 38,
+    "anchor": "q.set(\"name\", query);"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/draft/manga/MetadataSection.svelte",
+    "line": 39,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "title",
+    "source": "src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+    "line": 40,
+    "anchor": "if (search.title) q.set(\"title\", search.title);"
+  },
+  {
+    "key": "sort",
+    "source": "src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+    "line": 41,
+    "anchor": "if (search.sort) q.set(\"sort\", search.sort);"
+  },
+  {
+    "key": "order",
+    "source": "src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+    "line": 42,
+    "anchor": "if (search.order) q.set(\"order\", search.order);"
+  },
+  {
+    "key": "page",
+    "source": "src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+    "line": 43,
+    "anchor": "if (page && page > 1) q.set(\"page\", page.toString());"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+    "line": 44,
+    "anchor": "q.set(\"limit\", \"28\");"
+  },
+  {
+    "key": "tlang",
+    "source": "src/lib/components/reader/reader-provider.svelte",
+    "line": 76,
+    "anchor": "q.set(\"tlang\", chapter.language);"
+  },
+  {
+    "key": "name",
+    "source": "src/lib/components/upload/UploadChapterGroups.svelte",
+    "line": 27,
+    "anchor": "q.set(\"name\", query);"
+  },
+  {
+    "key": "limit",
+    "source": "src/lib/components/upload/UploadChapterGroups.svelte",
+    "line": 28,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "lang",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 27,
+    "anchor": "prefs.languages.forEach(code => searchParams.append(\"lang\", code));"
+  },
+  {
+    "key": "tagx",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 28,
+    "anchor": "prefs.tags.forEach(id => searchParams.append(\"tagx\", id));"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 33,
+    "anchor": "if (prefs.show_safe) searchParams.append(\"contentRating\", Constants.Manga.ContentRating.Safe);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 34,
+    "anchor": "if (prefs.show_suggestive) searchParams.append(\"contentRating\", Constants.Manga.ContentRating.Suggestive);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 35,
+    "anchor": "if (prefs.show_erotic) searchParams.append(\"contentRating\", Constants.Manga.ContentRating.Erotica);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 36,
+    "anchor": "if (prefs.show_hentai) searchParams.append(\"contentRating\", Constants.Manga.ContentRating.Pornographic);"
+  },
+  {
+    "key": "tlang",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 43,
+    "anchor": "prefs.translated_languages.forEach(code => searchParams.append(\"tlang\", code));"
+  },
+  {
+    "key": "uploaderx",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 44,
+    "anchor": "prefs.uploaders.forEach(({ id }) => searchParams.append(\"uploaderx\", id));"
+  },
+  {
+    "key": "groupx",
+    "source": "src/lib/stores/prefs.ts",
+    "line": 46,
+    "anchor": "prefs.groups.forEach(({ id }) => searchParams.append(\"groupx\", id));"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/error/+page.svelte",
+    "line": 21,
+    "anchor": "const redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/error/+page.svelte",
+    "line": 23,
+    "anchor": "if (!page.url.searchParams.has(\"flow\")) {"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/error/+page.svelte",
+    "line": 27,
+    "anchor": "const res = await Kratos.getFlowError({ id: page.url.searchParams.get(\"flow\")! });"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/error/+page.svelte",
+    "line": 38,
+    "anchor": "q.set(\"flow\", res.data.id);"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/error/+page.svelte",
+    "line": 39,
+    "anchor": "q.delete(\"redirect\");"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/login/+page.svelte",
+    "line": 41,
+    "anchor": "const redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/login/+page.svelte",
+    "line": 45,
+    "anchor": "if (page.url.searchParams.has(\"flow\")) {"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/login/+page.svelte",
+    "line": 46,
+    "anchor": "promise = Kratos.getLoginFlow({ id: page.url.searchParams.get(\"flow\")! });"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/login/+page.svelte",
+    "line": 72,
+    "anchor": "q.set(\"flow\", res.data.id);"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/login/+page.svelte",
+    "line": 73,
+    "anchor": "q.delete(\"redirect\");"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/logout/+page.svelte",
+    "line": 16,
+    "anchor": "const redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/recovery/+page.svelte",
+    "line": 39,
+    "anchor": "const redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/recovery/+page.svelte",
+    "line": 46,
+    "anchor": "if (page.url.searchParams.has(\"flow\")) {"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/recovery/+page.svelte",
+    "line": 47,
+    "anchor": "promise = Kratos.getRecoveryFlow({ id: page.url.searchParams.get(\"flow\")! });"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/recovery/+page.svelte",
+    "line": 73,
+    "anchor": "q.set(\"flow\", res.data.id);"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/recovery/+page.svelte",
+    "line": 74,
+    "anchor": "q.delete(\"redirect\");"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/register/+page.svelte",
+    "line": 47,
+    "anchor": "const redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/register/+page.svelte",
+    "line": 54,
+    "anchor": "if (page.url.searchParams.has(\"flow\")) {"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/register/+page.svelte",
+    "line": 55,
+    "anchor": "promise = Kratos.getRegistrationFlow({ id: page.url.searchParams.get(\"flow\")! });"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/register/+page.svelte",
+    "line": 81,
+    "anchor": "q.set(\"flow\", res.data.id);"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/register/+page.svelte",
+    "line": 82,
+    "anchor": "q.delete(\"redirect\");"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/verification/+page.svelte",
+    "line": 39,
+    "anchor": "const redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/verification/+page.svelte",
+    "line": 43,
+    "anchor": "if (page.url.searchParams.has(\"flow\")) {"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/verification/+page.svelte",
+    "line": 44,
+    "anchor": "promise = Kratos.getVerificationFlow({ id: page.url.searchParams.get(\"flow\")! });"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/auth/verification/+page.svelte",
+    "line": 64,
+    "anchor": "q.set(\"flow\", res.data.id);"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/auth/verification/+page.svelte",
+    "line": 65,
+    "anchor": "q.delete(\"redirect\");"
+  },
+  {
+    "key": "authorOrArtist",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 41,
+    "anchor": "q.set(\"authorOrArtist\", $author.id);"
+  },
+  {
+    "key": "sort",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 42,
+    "anchor": "q.set(\"sort\", \"title\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 43,
+    "anchor": "q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 45,
+    "anchor": "if (page.url.searchParams.has(\"page\")) {"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 46,
+    "anchor": "const p = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 47,
+    "anchor": "if (Number(p) > 1) q.set(\"page\", p!);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 49,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 74,
+    "anchor": "let previousPage = $state(page.url.searchParams.get(\"page\"));"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/author/[id]/+page.svelte",
+    "line": 76,
+    "anchor": "const currentPage = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "authorOrArtist",
+    "source": "src/routes/(app)/author/[id]/Author.svelte",
+    "line": 68,
+    "anchor": "q.set(\"authorOrArtist\", $author.id);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/author/[id]/Author.svelte",
+    "line": 69,
+    "anchor": "q.set(\"limit\", \"0\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 24,
+    "anchor": "\"!text-accent-foreground !border-accent border-b-2\": page.url.searchParams.get(\"order\") !== \"asc\""
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 29,
+    "anchor": "q.delete(\"order\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 41,
+    "anchor": "\"!text-accent-foreground !border-accent border-b-2\": page.url.searchParams.get(\"order\") === \"asc\""
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 46,
+    "anchor": "q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "authorOrArtist",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 65,
+    "anchor": "q.set(\"authorOrArtist\", $author.id);"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 66,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 67,
+    "anchor": "if (page.url.searchParams.has(\"order\")) q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 67,
+    "anchor": "if (page.url.searchParams.has(\"order\")) q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/author/[id]/uploads/+page.svelte",
+    "line": 68,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/drafts/title/+page.svelte",
+    "line": 17,
+    "anchor": "q.set(\"limit\", \"36\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/forums/threads/[id]/[postId]/+page.ts",
+    "line": 20,
+    "anchor": "if (page > 1) q.set(\"page\", page.toString());"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 42,
+    "anchor": "q.set(\"group\", $group.id);"
+  },
+  {
+    "key": "sort",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 43,
+    "anchor": "q.set(\"sort\", \"title\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 44,
+    "anchor": "q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 46,
+    "anchor": "if (page.url.searchParams.has(\"page\")) {"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 47,
+    "anchor": "const p = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 48,
+    "anchor": "if (Number(p) > 1) q.set(\"page\", p!);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 50,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 75,
+    "anchor": "let previousPage = $state(page.url.searchParams.get(\"page\"));"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/group/[id]/+page.svelte",
+    "line": 77,
+    "anchor": "const currentPage = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/group/[id]/Group.svelte",
+    "line": 110,
+    "anchor": "q.set(\"group\", $group.id);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/group/[id]/Group.svelte",
+    "line": 111,
+    "anchor": "q.set(\"limit\", \"0\");"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/group/[id]/settings/+page.svelte",
+    "line": 193,
+    "anchor": "q.set(\"name\", query);"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 24,
+    "anchor": "\"!border-accent text-accent-foreground border-b-2\": page.url.searchParams.get(\"order\") !== \"asc\""
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 29,
+    "anchor": "q.delete(\"order\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 41,
+    "anchor": "\"!border-accent text-accent-foreground border-b-2\": page.url.searchParams.get(\"order\") === \"asc\""
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 46,
+    "anchor": "q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 65,
+    "anchor": "q.set(\"group\", $group.id);"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 66,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 67,
+    "anchor": "if (page.url.searchParams.has(\"order\")) q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 67,
+    "anchor": "if (page.url.searchParams.has(\"order\")) q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/group/[id]/uploads/+page.svelte",
+    "line": 68,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "line": 16,
+    "anchor": "if (page.url.searchParams.has(\"name\")) q.set(\"name\", page.url.searchParams.get(\"name\")!);"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "line": 16,
+    "anchor": "if (page.url.searchParams.has(\"name\")) q.set(\"name\", page.url.searchParams.get(\"name\")!);"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "line": 16,
+    "anchor": "if (page.url.searchParams.has(\"name\")) q.set(\"name\", page.url.searchParams.get(\"name\")!);"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "line": 17,
+    "anchor": "if (page.url.searchParams.has(\"page\")) {"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "line": 18,
+    "anchor": "const p = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "line": 19,
+    "anchor": "if (Number(p) > 1) q.set(\"page\", p!);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/groups/+page.svelte",
+    "line": 21,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/history/+page.svelte",
+    "line": 22,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/history/+page.svelte",
+    "line": 23,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/library/+page.svelte",
+    "line": 21,
+    "anchor": "if (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/library/+page.svelte",
+    "line": 21,
+    "anchor": "if (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/library/updates/+page.svelte",
+    "line": 22,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/library/updates/+page.svelte",
+    "line": 23,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/my/reports/+page.svelte",
+    "line": 16,
+    "anchor": "q.set(\"limit\", \"36\");"
+  },
+  {
+    "key": "time",
+    "source": "src/routes/(app)/popular/MostReadChapter.svelte",
+    "line": 39,
+    "anchor": "q.set(\"time\", time);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadChapter.svelte",
+    "line": 41,
+    "anchor": "q.append(\"contentRating\", Constants.Manga.ContentRating.Safe);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadChapter.svelte",
+    "line": 42,
+    "anchor": "if ($prefs.show_suggestive) q.append(\"contentRating\", Constants.Manga.ContentRating.Suggestive);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadChapter.svelte",
+    "line": 43,
+    "anchor": "if ($prefs.show_erotic) q.append(\"contentRating\", Constants.Manga.ContentRating.Erotica);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadChapter.svelte",
+    "line": 44,
+    "anchor": "if ($prefs.show_hentai) q.append(\"contentRating\", Constants.Manga.ContentRating.Pornographic);"
+  },
+  {
+    "key": "rank",
+    "source": "src/routes/(app)/popular/MostReadGrid.svelte",
+    "line": 35,
+    "anchor": "q.set(\"rank\", \"read\");"
+  },
+  {
+    "key": "time",
+    "source": "src/routes/(app)/popular/MostReadGrid.svelte",
+    "line": 36,
+    "anchor": "q.set(\"time\", time);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadGrid.svelte",
+    "line": 38,
+    "anchor": "q.append(\"contentRating\", Constants.Manga.ContentRating.Safe);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadGrid.svelte",
+    "line": 39,
+    "anchor": "if ($prefs.show_suggestive) q.append(\"contentRating\", Constants.Manga.ContentRating.Suggestive);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadGrid.svelte",
+    "line": 40,
+    "anchor": "if ($prefs.show_erotic) q.append(\"contentRating\", Constants.Manga.ContentRating.Erotica);"
+  },
+  {
+    "key": "contentRating",
+    "source": "src/routes/(app)/popular/MostReadGrid.svelte",
+    "line": 41,
+    "anchor": "if ($prefs.show_hentai) q.append(\"contentRating\", Constants.Manga.ContentRating.Pornographic);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/search/+page.svelte",
+    "line": 22,
+    "anchor": "if (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/search/+page.svelte",
+    "line": 22,
+    "anchor": "if (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/settings/account/+page.svelte",
+    "line": 51,
+    "anchor": "if (page.url.searchParams.has(\"flow\")) {"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/settings/account/+page.svelte",
+    "line": 52,
+    "anchor": "promise = Kratos.getSettingsFlow({ id: page.url.searchParams.get(\"flow\")! });"
+  },
+  {
+    "key": "flow",
+    "source": "src/routes/(app)/settings/account/+page.svelte",
+    "line": 76,
+    "anchor": "q.set(\"flow\", res.data.id);"
+  },
+  {
+    "key": "redirect",
+    "source": "src/routes/(app)/settings/account/+page.svelte",
+    "line": 77,
+    "anchor": "q.delete(\"redirect\");"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/settings/preferences/+page.svelte",
+    "line": 346,
+    "anchor": "q.set(\"name\", query);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/settings/preferences/+page.svelte",
+    "line": 347,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/settings/preferences/+page.svelte",
+    "line": 409,
+    "anchor": "q.set(\"name\", query);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/settings/preferences/+page.svelte",
+    "line": 410,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "tab",
+    "source": "src/routes/(app)/title/Manga.svelte",
+    "line": 107,
+    "anchor": "let key = page.url.searchParams.get(\"tab\") ?? \"chapters\";"
+  },
+  {
+    "key": "draft",
+    "source": "src/routes/(app)/title/Manga.svelte",
+    "line": 122,
+    "anchor": "if (!isPublished) q.set(\"draft\", \"true\");"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 173,
+    "anchor": "if (page.url.searchParams.has(\"tlang\")) {"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 174,
+    "anchor": "q.delete(\"tlang\");"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 175,
+    "anchor": "page.url.searchParams.getAll(\"tlang\").forEach(lang => q.append(\"tlang\", lang));"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 175,
+    "anchor": "page.url.searchParams.getAll(\"tlang\").forEach(lang => q.append(\"tlang\", lang));"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 177,
+    "anchor": "if (page.url.searchParams.has(\"group\")) {"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 178,
+    "anchor": "q.delete(\"group\");"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 179,
+    "anchor": "page.url.searchParams.getAll(\"group\").forEach(group => q.append(\"group\", group));"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/title/MangaActions.svelte",
+    "line": 179,
+    "anchor": "page.url.searchParams.getAll(\"group\").forEach(group => q.append(\"group\", group));"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 19,
+    "anchor": "if (page.url.searchParams.has(\"tlang\")) page.url.searchParams.getAll(\"tlang\").forEach(v => q.append(\"tlang\", v));"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 19,
+    "anchor": "if (page.url.searchParams.has(\"tlang\")) page.url.searchParams.getAll(\"tlang\").forEach(v => q.append(\"tlang\", v));"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 19,
+    "anchor": "if (page.url.searchParams.has(\"tlang\")) page.url.searchParams.getAll(\"tlang\").forEach(v => q.append(\"tlang\", v));"
+  },
+  {
+    "key": "tlang",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 20,
+    "anchor": "else if ($prefs.translated_languages.length) $prefs.translated_languages.forEach(v => q.append(\"tlang\", v));"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 21,
+    "anchor": "if (page.url.searchParams.has(\"group\")) page.url.searchParams.getAll(\"group\").forEach(v => q.append(\"group\", v));"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 21,
+    "anchor": "if (page.url.searchParams.has(\"group\")) page.url.searchParams.getAll(\"group\").forEach(v => q.append(\"group\", v));"
+  },
+  {
+    "key": "group",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 21,
+    "anchor": "if (page.url.searchParams.has(\"group\")) page.url.searchParams.getAll(\"group\").forEach(v => q.append(\"group\", v));"
+  },
+  {
+    "key": "groupx",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 22,
+    "anchor": "else if ($prefs.groups.length) $prefs.groups.forEach(v => q.append(\"groupx\", v.id));"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 24,
+    "anchor": "if (page.url.searchParams.has(\"page\")) {"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 25,
+    "anchor": "const p = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 26,
+    "anchor": "if (Number(p) > 1) q.set(\"page\", p!);"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 28,
+    "anchor": "if (page.url.searchParams.has(\"order\")) {"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 29,
+    "anchor": "q.set(\"order\", page.url.searchParams.get(\"order\")!);"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 29,
+    "anchor": "q.set(\"order\", page.url.searchParams.get(\"order\")!);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "line": 31,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "draft",
+    "source": "src/routes/(app)/title/[id]/+page.ts",
+    "line": 7,
+    "anchor": "const isDraft = url.searchParams.get(\"draft\") === \"true\";"
+  },
+  {
+    "key": "draft",
+    "source": "src/routes/(app)/title/[id]/[slug]/+page.ts",
+    "line": 7,
+    "anchor": "const isDraft = url.searchParams.get(\"draft\") === \"true\";"
+  },
+  {
+    "key": "draft",
+    "source": "src/routes/(app)/title/[id]/edit/+page.ts",
+    "line": 11,
+    "anchor": "const res = await (url.searchParams.get(\"draft\") === \"true\""
+  },
+  {
+    "key": "hasChapters",
+    "source": "src/routes/(app)/title/random/+page.ts",
+    "line": 9,
+    "anchor": "q.set(\"hasChapters\", \"1\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/updates/+page.svelte",
+    "line": 22,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/updates/+page.svelte",
+    "line": 23,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "uploader",
+    "source": "src/routes/(app)/user/[id]/User.svelte",
+    "line": 108,
+    "anchor": "q.set(\"uploader\", $user.id);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/user/[id]/User.svelte",
+    "line": 109,
+    "anchor": "q.set(\"limit\", \"0\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 25,
+    "anchor": "\"!border-accent text-accent-foreground border-b-2\": page.url.searchParams.get(\"order\") !== \"asc\""
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 30,
+    "anchor": "q.delete(\"order\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 42,
+    "anchor": "\"!border-accent text-accent-foreground border-b-2\": page.url.searchParams.get(\"order\") === \"asc\""
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 47,
+    "anchor": "q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "uploader",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 66,
+    "anchor": "q.set(\"uploader\", $user.id);"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 67,
+    "anchor": "if (n) q.set(\"page\", n.toString());"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 68,
+    "anchor": "if (page.url.searchParams.has(\"order\")) q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "order",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 68,
+    "anchor": "if (page.url.searchParams.has(\"order\")) q.set(\"order\", \"asc\");"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+    "line": 69,
+    "anchor": "q.set(\"limit\", \"100\");"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "line": 16,
+    "anchor": "if (page.url.searchParams.has(\"name\")) q.set(\"name\", page.url.searchParams.get(\"name\")!);"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "line": 16,
+    "anchor": "if (page.url.searchParams.has(\"name\")) q.set(\"name\", page.url.searchParams.get(\"name\")!);"
+  },
+  {
+    "key": "name",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "line": 16,
+    "anchor": "if (page.url.searchParams.has(\"name\")) q.set(\"name\", page.url.searchParams.get(\"name\")!);"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "line": 17,
+    "anchor": "if (page.url.searchParams.has(\"page\")) {"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "line": 18,
+    "anchor": "const p = page.url.searchParams.get(\"page\");"
+  },
+  {
+    "key": "page",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "line": 19,
+    "anchor": "if (Number(p) > 1) q.set(\"page\", p!);"
+  },
+  {
+    "key": "limit",
+    "source": "src/routes/(app)/users/+page.svelte",
+    "line": 21,
+    "anchor": "q.set(\"limit\", \"100\");"
+  }
+]

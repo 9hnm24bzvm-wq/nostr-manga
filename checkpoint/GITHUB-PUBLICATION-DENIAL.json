@@ -1,0 +1,22 @@
+{
+  "base_tree_sha": "92f3b83940b1ab4e3f215e26a29adda54e2aeb52",
+  "credential_switch_attempted": false,
+  "documentation_url": "https://docs.github.com/rest/git/trees#create-a-tree",
+  "error_code": "FORBIDDEN",
+  "github_message": "Resource not accessible by integration",
+  "http_status": 403,
+  "installation_read_result": {
+    "allow_all_repositories_for_testing": false,
+    "installations": []
+  },
+  "observed_utc": "2026-10-13T13:24:26Z",
+  "operation": "create_tree",
+  "remote_changes_created": false,
+  "repository": "9hnm24bzvm-wq/nostr-manga",
+  "repository_metadata_admin": true,
+  "repository_metadata_push": true,
+  "retry_attempted": false,
+  "schema": "github-publication-denial-v1",
+  "selected_entries": 11,
+  "state": "wait for owner to repair connected integration access; parent must verify before any further remote mutation"
+}

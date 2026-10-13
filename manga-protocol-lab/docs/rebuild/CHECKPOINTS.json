@@ -1,0 +1,591 @@
+{
+  "note": "Encrypted recovery records, not final releases. Passwords were delivered only in private user chat and are not stored in source. Status fields distinguish local authentication/member verification, Library saving and delivery, and independent downloaded/decrypted recovery verification. See each record and included provenance for incomplete work.",
+  "checkpoints": [
+    {
+      "name": "baseline",
+      "url": "https://files.catbox.moe/9cclmj.zip",
+      "sha256": "9fc365660d1f87f3be4e08bebed2918bae99e7215bf677599ccff894e038a567"
+    },
+    {
+      "name": "client-slice1",
+      "url": "https://files.catbox.moe/igh0ti.zip",
+      "sha256": "42e1f14fba2863fcd09f6ffd9e52029acb41b6cf265c0e5aa8ed938da880b642"
+    },
+    {
+      "name": "client-operator-slice2",
+      "url": "https://files.catbox.moe/vuy590.zip",
+      "sha256": "f40d7d3fe72cbe5e30915b0b9acc2cf7d139ae61ef5583f18e54561ad35408fc"
+    },
+    {
+      "name": "library-slice3",
+      "url": "https://files.catbox.moe/zfas1b.zip",
+      "sha256": "eeffaed5e6ab1b98c4d81175c1c5a57d4226871af058abae119cc8fbe8a47860"
+    },
+    {
+      "name": "server-slice4",
+      "url": "https://files.catbox.moe/xni95v.zip",
+      "sha256": "8047f744f595b8bc3e7b6e3a67781c1b35aaf16dee7dcd95fe9e55845138d72d"
+    },
+    {
+      "name": "comprehensive-slice5",
+      "url": "https://files.catbox.moe/gv5x2z.zip",
+      "sha256": "d7702560e7fbfd6be5d852df1621e722716847fe7c13e94d9f2f1a1f9df5c0aa",
+      "bytes": 9427316,
+      "status": "uploaded_downloaded_decrypted_verified",
+      "recovery_message_id": "Sentinel_27c3dc4b42688191a831400edfe7f853"
+    },
+    {
+      "name": "client-complete-slice6",
+      "url": "https://files.catbox.moe/88g43c.zip",
+      "sha256": "718d10ecc19acda20bade8bea7b709b0af58efe68e21866727d0528d066be58d",
+      "bytes": 9532439,
+      "status": "uploaded_downloaded_decrypted_verified",
+      "recovery_message_id": "Sentinel_0c3cf2bce85c81919ff9ee60394e89e3"
+    },
+    {
+      "name": "core-complete-slice7",
+      "url": "https://files.catbox.moe/d1c2qb.zip",
+      "sha256": "9a4b41835e0d244d914af690637568bc7c2603293d600c46ede15c14f92f9640",
+      "bytes": 65551929,
+      "status": "uploaded_downloaded_decrypted_verified"
+    },
+    {
+      "name": "pre-gate-optimized-slice8-qualified",
+      "url": "https://files.catbox.moe/c5hidn.zip",
+      "sha256": "55f34355f3d8c961c576c3802bfbd4a61aa0a2fd1b05045710ca1a127989fde9",
+      "bytes": 45128088,
+      "status": "uploaded_downloaded_decrypted_verified",
+      "qualification": "before formatting-only cleanup; final aggregate acceptance pending"
+    },
+    {
+      "name": "functional-release-slice9-complete",
+      "url": "https://files.catbox.moe/qfo00c.zip",
+      "sha256": "cadbed18fff48abba132f0617c1653d17f0bc315025ae29f3f162f7de78e2c35",
+      "bytes": 45352937,
+      "status": "uploaded_downloaded_decrypted_verified_and_cli_recovery_smoke",
+      "recovery_message_id": "Sentinel_d39359ee58488191871a38dbb2ddab1b",
+      "qualification": "Canonical optimized functional gate plus client picker supplement passed; capacity still unproven"
+    },
+    {
+      "name": "parity-in-progress-slice10",
+      "url": "https://files.catbox.moe/bzfoqw.zip",
+      "sha256": "1351e15022af0f4bc1ad479c50752619fa26e161e35d8d39392902c8526e0182",
+      "bytes": 11437269,
+      "status": "uploaded_downloaded_decrypted_verified",
+      "qualification": "Work-in-progress parity source and current browser build; no matching final server executable claimed; checkpoint9 retains preceding functional binaries.",
+      "recovery_message_id": "Sentinel_f8a312480da48191bb80acb9acbadafb"
+    },
+    {
+      "name": "parity-ownership-wip-slice11",
+      "url": "https://files.catbox.moe/t6wgg0.zip",
+      "sha256": "73c2c1694f2372ed55c2365333d3c15f706852fe5c5fc913cee0dff58789f7cf",
+      "bytes": 12296122,
+      "status": "uploaded_downloaded_decrypted_verified",
+      "recovery_message_id": "Sentinel_b06c07d52a64819192e6cadd8ed0c1b6",
+      "qualification": "WIP server source, browser72e656 with actual30k/500k roundtrips; before native family-count improvement; final combined gate pending. No matching final server binary claimed."
+    },
+    {
+      "name": "parity-release-slice12",
+      "url": "https://files.catbox.moe/iij1vx.zip",
+      "sha256": "68465c14d65fd99a09c3ca4bbb418abdd3de8048104765152e40df694d36530e",
+      "bytes": 47266690,
+      "status": "uploaded_downloaded_decrypted_verified_and_restored_cli_smoke",
+      "recovery_message_id": "Sentinel_36b4a6d4d87481918f6d97555d547bfd",
+      "qualification": "Final unchanged-source optimized gate passed, browser e4f4862bd75c26bb, node478ffc3243281a8e1e0c756eaf91b8923d740a2b2a146833b61443a837e73b54. Target capacity remains unproven."
+    },
+    {
+      "name": "upload-fairness-release-slice13",
+      "url": "https://files.catbox.moe/6k6cj7.zip",
+      "sha256": "a8a31346b010d1229b5b1d591386e99b28c268bdbe9dafbe5fcf5daf4e39f337",
+      "bytes": 108046754,
+      "status": "uploaded_local_verified_readback_blocked",
+      "recovery_message_id": "Sentinel_488ac474bff08191a31c887af65de012",
+      "qualification": "Full optimized gate passed exactb44node; localAESSTORE1662membersverified. CatboxreturnedURL; downloaded verification blocked bynetworkpolicy,thenescalatedcommandinitializationfailed twicebeforeexecution. Do not promote oververifiedcheckpoint12; no repeatedPOST."
+    }
+  ],
+  "source_only_backups": [
+    {
+      "name": "source-only-wip-20261011",
+      "library_file_id": "libfile_d64b88e5a8c481919b5150bdc2697630",
+      "current_version_number": 0,
+      "sha256": "e45394f5144cca951da4be09b22938831eb24dd11b54cec9c1a265b8f47c68f6",
+      "bytes": 4820811,
+      "members": 585,
+      "status": "library_saved_attached_local_verified_independent_readback_denied",
+      "local_verification": "AES-256 authentication, STORE, every member SHA-256/CRC32/length verified",
+      "independent_readback": "HTTP403 scope_violation: selected-folder scope; no bypass or retry performed",
+      "recovery_message_id": "Sentinel_03e7d59eb88481919d4f4a1d8199639f",
+      "readback_denied_message_id": "Sentinel_04589d83599481918b405c9785a6e7f8",
+      "qualification": "Source-only WIP backup excluding binaries and test evidence. Full combined gate pending at save time. Not an accepted full Catbox checkpoint; no independent remote download/decryption verification. Checkpoint 12 remains the latest fully verified full checkpoint."
+    }
+  ],
+  "library_recovery_deliveries": [
+    {
+      "name": "current-build-1a45-20261011",
+      "kind": "full_accepted_build_recovery_archive",
+      "node_sha256": "1a45e006c534cafbf0e28982a6ce7be582701d2bf4885090b1438098cb64bca2",
+      "browser_build": "e4f4862bd75c26bb",
+      "canonical_gate_completed_utc": "2026-10-11T04:46:32.004935+00:00",
+      "canonical_acceptance_sha256": "ee45a6f652e18a6800321ca946f25a028f915d91bb5887417d21bfa8f170a946",
+      "archive_name": "manga-protocol-current-build-1a45-20261011-aes256-store.zip",
+      "library_file_id": "libfile_e72afa5689b48191804cf2a0ef8b7140",
+      "current_version_number": 0,
+      "bytes": 48945218,
+      "members": 765,
+      "sha256": "87131146f6c464cb7a60eee122871b250253e1d59b9c237cf2cc224f28b298d2",
+      "status": "library_saved_multipart_attached_local_reassembly_member_verified_remote_readback_blocked",
+      "single_file_attachment": "Failed due to chat file-size limit; the whole archive remains saved in Library.",
+      "snapshot_scope": "Current 1a45 source, build artifacts, documentation and functional acceptance evidence. Documentation contains the 2026-10-11 04:47 UTC freeze; this later delivery/index update is not part of that immutable archive. Historical load summaries are labelled with their older tested builds.",
+      "excluded": "Credentials, private keys, personal data, runtime databases and raw historical traffic.",
+      "local_verification": "AES-256 authentication, STORE, every member SHA-256/CRC32/length verified",
+      "multipart_transport": {
+        "part_count": 6,
+        "maximum_part_bytes": 8388608,
+        "reassembled_byte_identically": true,
+        "parts": [
+          {
+            "file_name": "manga-protocol-current-build-1a45-20261011-aes256-store.zip.part001",
+            "library_file_id": "libfile_5738b4b13978819181253dba77568c79",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "c51908a33fa59343a0aa6965b3358c91ff1b3f6330923ea690d3de83198fa985"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1a45-20261011-aes256-store.zip.part002",
+            "library_file_id": "libfile_f043a7933548819182c3dda5a63e1692",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "9018f53567e3bedce61e7e0608171927c772f819767bdc3ddaf946bdd147ae65"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1a45-20261011-aes256-store.zip.part003",
+            "library_file_id": "libfile_8574508525a0819187da5f0fa90b937d",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "47893b72944d662f84b3a943f86a77b80cfff0b940e58ddf718b03b466ee32e5"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1a45-20261011-aes256-store.zip.part004",
+            "library_file_id": "libfile_584ceb6ae4508191967899b0a5ffc073",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "50116d798120a1480e77ed198ba3ec5a427a115ea2eb3f9253b93b50273af266"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1a45-20261011-aes256-store.zip.part005",
+            "library_file_id": "libfile_2aba54a336008191ad4878566bd8156d",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "1b10e435c177a0f6f30464256725210e08417c49c001c215aca5a428c46b6e80"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1a45-20261011-aes256-store.zip.part006",
+            "library_file_id": "libfile_e7de33f8087881919f01bfd149032e2f",
+            "current_version_number": 0,
+            "bytes": 7002178,
+            "sha256": "bbe15ee9c579f19b8738a8fabdc0bc3c4a81f97fda830fd9e9403aaa0123b01d"
+          }
+        ],
+        "guide": {
+          "file_name": "RECOVERY-GUIDE.txt",
+          "library_file_id": "libfile_1c4cc3a3174881918549216e70c334ae",
+          "current_version_number": 0,
+          "bytes": 5049,
+          "sha256": "be99325ca4a8d12496eafb8680cdfd8489a0a40f1be2276ca521a5f28dc3cf0a"
+        }
+      },
+      "delivery_message_id": "Sentinel_2fc3a743d3308191988a319eb3e85a4a",
+      "remote_readback_verified": false,
+      "remote_readback_status": "Independent readback remains blocked and was not retried or bypassed. Library saving, attachment delivery and local verification do not establish independent remote recovery verification.",
+      "local_receipts_relative_to_project_root": [
+        "../recovery/checkpoints/current-build-1a45-transport/transport-local-verification.json",
+        "../recovery/checkpoints/current-build-1a45-transport/transport-library-receipt.json",
+        "../recovery/checkpoints/current-build-1a45-transport/library-upload-result.json"
+      ],
+      "qualification": "Full recovery delivery for the accepted 1a45 build, distinct from the older 4e58 source-only backup and failed 108 MB Library transfer. No new 1a45 sustained-load run had occurred at delivery. Catbox checkpoint 12 remains the latest independently downloaded, decrypted, member-verified and restored/CLI-smoke-tested full checkpoint."
+    },
+    {
+      "name": "parity-addendum-20261011",
+      "kind": "recovery_addendum_not_replacement_source_checkpoint",
+      "requires_base_archive_sha256": "87131146f6c464cb7a60eee122871b250253e1d59b9c237cf2cc224f28b298d2",
+      "archive_name": "manga-protocol-parity-addendum-20261011-aes256-store.zip",
+      "bytes": 13202252,
+      "members": 96,
+      "sha256": "8eb3e58b6f5a4ffaffdffc28598e0ad832e0043361c6ba8c6fd83677485c5c14",
+      "status": "library_saved_attached_local_reassembly_member_verified_remote_readback_blocked",
+      "scope": "Frozen final parity/CURRENT/architecture/requirements docs, four 1a45 load reports and derived evidence, passive sampler source/tests and focused seams. Existing accepted application source/binaries remain in the base checkpoint. Raw traffic, private archives and runtime databases excluded.",
+      "qualification": "Functional/refactor parity accepted; two measured trials passed, profile-off repeat and scheduler diagnostic failed. Repeatable target performance remains unresolved; partial diagnostics cannot prove host-versus-application cause.",
+      "local_verification": "AES-256 authentication, STORE, every member SHA-256/CRC32/length verified",
+      "multipart_transport": {
+        "part_count": 2,
+        "maximum_part_bytes": 8388608,
+        "reassembled_byte_identically": true,
+        "parts": [
+          {
+            "file_name": "manga-protocol-parity-addendum-20261011-aes256-store.zip.part001",
+            "library_file_id": "libfile_33128a11b51081919c00467a39a54b71",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "5fc762367aebfde4697a9c64e614a714d497494974f204b9aa178377c6cda1b2"
+          },
+          {
+            "file_name": "manga-protocol-parity-addendum-20261011-aes256-store.zip.part002",
+            "library_file_id": "libfile_f842bdee1db48191b820bd3a497a657c",
+            "current_version_number": 0,
+            "bytes": 4813644,
+            "sha256": "cc455d4c2681c663fd89fef3f6b11534704f6933fe2ea4badf5a1fba87470578"
+          }
+        ],
+        "guide": {
+          "file_name": "ADDENDUM-RECOVERY-GUIDE.txt",
+          "library_file_id": "libfile_cdac3c30c6988191856d3db9c8783c60",
+          "current_version_number": 0,
+          "bytes": 4251,
+          "sha256": "2df79d4ac61761efdd2a5c85a6e97f29d6632576a068415b8f14686afae4e03a"
+        }
+      },
+      "standalone_report": {
+        "file_name": "PARITY-COMPLETION-REPORT.md",
+        "library_file_id": "libfile_9024238821d081918ef11250838c1106",
+        "current_version_number": 0,
+        "bytes": 16496,
+        "sha256": "8c730da9af1b4aac3b168a8feb65a931f5075503a73fbf96488f63d472d228d4"
+      },
+      "delivery_message_id": "Sentinel_1974c0eeda6c8191acb53f14d68d1d8a",
+      "delivered_utc": "2026-10-11T06:47:08.950086+00:00",
+      "delivery_confirmation_source": "Root confirmed successful four-file user message",
+      "remote_readback_verified": false,
+      "remote_readback_status": "Prior independent Library readback denied by selected-folder scope. No known-denied route retried or bypassed. Local verification, Library saving and attachment delivery are distinct from independent remote recovery verification.",
+      "local_receipts_relative_to_project_root": [
+        "../recovery/checkpoints/parity-addendum-transport/local-verification.json",
+        "../recovery/checkpoints/parity-addendum-transport/library-receipt.json",
+        "../recovery/checkpoints/parity-addendum-transport/delivery-receipt.json"
+      ],
+      "index_note": "This post-delivery index entry is not part of the immutable addendum archive. Frozen reports and packaged bytes remain unchanged."
+    },
+    {
+      "name": "current-build-82c52-20261011",
+      "kind": "full_accepted_build_recovery_archive",
+      "node_sha256": "82c52b35720e623a303ec49fad73e65e08e033baf83b4fcc4349890af174c491",
+      "browser_build": "e4f4862bd75c26bb",
+      "canonical_gate_completed_utc": "2026-10-11T07:42:11.975896+00:00",
+      "canonical_acceptance_sha256": "7a805b40b40948ed2be7a8883feeaece7c4692c151884cd2390c4218763be935",
+      "archive_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip",
+      "sha256": "fa004c278aec90da54068ab0d5ec995684335cc66ca95159d7c48825e7b491c3",
+      "bytes": 58217627,
+      "members": 781,
+      "status": "library_saved_multipart_attached_local_reassembly_member_verified_remote_readback_blocked",
+      "scope": "Full accepted82c52 source/config/build/docs/test evidence, browser build, diagnostic causal red/green/final canonical evidence, and four historical1a45 load reports explicitly distinguished. No82c52 mixed-load qualification established.",
+      "excluded": "Actual credentials/private keys/personal data, runtime databases/private archives/raw traffic, old binary copies, retired history, installed dependencies/build caches.",
+      "local_verification": "AES-256 authentication, STORE, every member SHA-256/CRC32/length verified",
+      "multipart_transport": {
+        "part_count": 7,
+        "maximum_part_bytes": 8388608,
+        "reassembled_byte_identically": true,
+        "parts": [
+          {
+            "file_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip.part001",
+            "library_file_id": "libfile_090343d826d8819185512b92b21b676b",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "65df6ce75e4f7bc0cd39c555e8c19f15b0479679e660ef7400ede617d0d80cba"
+          },
+          {
+            "file_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip.part002",
+            "library_file_id": "libfile_36886c7ff9188191b8350a36a7494887",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "3b484613a403296abe51f757e29e300751941e791286047d5008e39c3f8467bc"
+          },
+          {
+            "file_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip.part003",
+            "library_file_id": "libfile_fbcbd4bc97cc8191878605e71e042833",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "480cbe7e18468e37ea2e5466b5c42f5af258ad214026379cc68669b234f353be"
+          },
+          {
+            "file_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip.part004",
+            "library_file_id": "libfile_ac8b5d0978708191b5b2367435f76677",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "b33ebf6e91d0efd90f8927e4edd3265f0092dc2f99e35b63d0dacce0d3fd8e24"
+          },
+          {
+            "file_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip.part005",
+            "library_file_id": "libfile_298e77b28e1481918d5d779b3aa48ac3",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "48fc3267d123cd264e1f207f1acdbbf095a0b03e52e3a2e7c76c260e8bfbf9de"
+          },
+          {
+            "file_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip.part006",
+            "library_file_id": "libfile_bec8b1b8ef348191ac1ac1194ac47a4e",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "7700d1b3683f550c01cd3b46c7f1720b46ad44c7896c27c5a7e86ac63a5d7cc6"
+          },
+          {
+            "file_name": "manga-protocol-current-build-82c52-20261011-aes256-store.zip.part007",
+            "library_file_id": "libfile_9260966673608191aebc8048f46c49ee",
+            "current_version_number": 0,
+            "bytes": 7885979,
+            "sha256": "997b960ef84971ba6c226af97b79d340072c72ff2a40c25e4ca2b536733bb227"
+          }
+        ],
+        "guide": {
+          "file_name": "RECOVERY-GUIDE-82c52.txt",
+          "library_file_id": "libfile_6c7ec1ff7fe48191974b5a01702c4ed2",
+          "current_version_number": 0,
+          "bytes": 5888,
+          "sha256": "1e65fec30ed265f0f37635b48abdb51025c987bb241fa373aa0255763aa0cbc2"
+        }
+      },
+      "delivery_message_id": "Sentinel_dbf605c57b8c8191810fea59b02d9cf5",
+      "delivered_utc": "2026-10-11T07:49:37.422940+00:00",
+      "delivery_confirmation_source": "Root confirmed successful eight-file user message",
+      "remote_readback_verified": false,
+      "remote_readback_status": "Independent Library readback remains blocked by prior selected-folder scope denial. No denied route retried or bypassed. Local verification, Library saving and attachment delivery do not establish independent remote recovery verification.",
+      "local_receipts_relative_to_project_root": [
+        "../recovery/checkpoints/current-build-82c52-transport/local-verification.json",
+        "../recovery/checkpoints/current-build-82c52-transport/library-receipt.json",
+        "../recovery/checkpoints/current-build-82c52-transport/delivery-receipt.json"
+      ],
+      "snapshot_note": "Immutable archive contains the pre-delivery frozen documentation. This index record and later CURRENT delivery-status update are not part of that archive. Prior1a45 and parity-addendum artifacts remain unchanged."
+    },
+    {
+      "name": "current-build-migration-reviewed-20261011",
+      "kind": "full_accepted_current_tree_recovery_archive",
+      "node_sha256": "82c52b35720e623a303ec49fad73e65e08e033baf83b4fcc4349890af174c491",
+      "browser_build": "e4f4862bd75c26bb",
+      "canonical_gate_completed_utc": "2026-10-11T08:13:29.764250+00:00",
+      "canonical_acceptance_sha256": "bef0b1856542a996cd85167dd9de300c98c7837512cb20a7d0b64fde767f25d2",
+      "canonical_input_count": 390,
+      "archive_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip",
+      "sha256": "0088210c96b9eda00044056df1d520fb65069bb6a5827747c0ef4356c3760ed4",
+      "bytes": 58497839,
+      "members": 818,
+      "status": "library_saved_multipart_attached_local_reassembly_member_verified_remote_readback_blocked",
+      "scope": "Full migration-reviewed source/config/build/docs/test evidence including Python input-review causal red/green and fresh full gate. Rust/browser/node identities unchanged from prior82c52 delivery; this archive includes the later three-module Python correction and new CLI test. Four prior1a45 load reports are explicitly historical; no82c52 mixed-load qualification established.",
+      "excluded": "Actual credentials/private keys/personal data, generated runtime databases/private archives/raw traffic, old executable copies, caches/dependencies and retired history.",
+      "local_verification": "AES-256 authentication, STORE, every member SHA-256/CRC32/length verified",
+      "multipart_transport": {
+        "part_count": 7,
+        "maximum_part_bytes": 8388608,
+        "reassembled_byte_identically": true,
+        "parts": [
+          {
+            "file_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip.part001",
+            "library_file_id": "libfile_da8505b1b2dc819180ad1dfe58c3045e",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "65813679df3af7993f7d755b73efd303f5ef28696e78f980ae917a6a9bbbdb88"
+          },
+          {
+            "file_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip.part002",
+            "library_file_id": "libfile_7cfdbf83e1d481918b628e4076f490ae",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "ad1b47c5cc2042f4f759a6543ee814edb6746f9bcbbed7bd53367e4990ce9022"
+          },
+          {
+            "file_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip.part003",
+            "library_file_id": "libfile_3317a10ca6208191befc8a3af73d3620",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "185f5b5a66ec5951ce68d3a7ffd53b040800c13e819231f8510ecd963ac590db"
+          },
+          {
+            "file_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip.part004",
+            "library_file_id": "libfile_8210c1042de88191b49a1a2f94587f2b",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "9bdecc019b739b9f86356ae74ab4c727fd36b8b5fd6ebbf27b7aaad0aeeac01f"
+          },
+          {
+            "file_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip.part005",
+            "library_file_id": "libfile_75a74debd8b48191a299bc6397f95250",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "b0eb192ff00af0c1130e87d85eaeb47adfae08bfceb336ba95660d7011d1377e"
+          },
+          {
+            "file_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip.part006",
+            "library_file_id": "libfile_b8d6ac04a6b48191bd1d41010d5ebf95",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "814a8d55d59457b310ab4885dc783757114685429f75200d1b7325ddae311bdb"
+          },
+          {
+            "file_name": "manga-protocol-migration-reviewed-20261011-aes256-store.zip.part007",
+            "library_file_id": "libfile_63df5b77dc1c81919afb5c3c097f9d7a",
+            "current_version_number": 0,
+            "bytes": 8166191,
+            "sha256": "03c65e5564c83e97e3ae06a57a3e7452f536d4707d776b9125062504359f2a7c"
+          }
+        ],
+        "guide": {
+          "file_name": "RECOVERY-GUIDE-MIGRATION-REVIEWED.txt",
+          "library_file_id": "libfile_5980ef5d76b081919aa936f9d4069951",
+          "current_version_number": 0,
+          "bytes": 6657,
+          "sha256": "30b374f33b5fd54ff230d8962fcf5bbe1ca219a4087f3502a312d9d8f3083a65"
+        }
+      },
+      "standalone_report": {
+        "file_name": "PARITY-COMPLETION-REPORT-MIGRATION-REVIEWED.md",
+        "library_file_id": "libfile_34b1d702fb8c8191a067c732226e75b0",
+        "current_version_number": 0,
+        "bytes": 20092,
+        "sha256": "718c15e1394e22e5cffbdcfef530eea5bcbc8615f5e4f41d66058628a16d856e"
+      },
+      "delivery_message_id": "Sentinel_e73b7d3d663c8191b28a8ac2024477e7",
+      "delivered_utc": "2026-10-11T08:19:23.671465+00:00",
+      "delivery_confirmation_source": "Root confirmed successful nine-file user message",
+      "remote_readback_verified": false,
+      "remote_readback_status": "Independent Library readback remains blocked by prior selected-folder scope denial. No denied route retried or bypassed. Local verification, Library saving and attachment delivery do not establish independent remote recovery verification.",
+      "local_receipts_relative_to_project_root": [
+        "../recovery/checkpoints/migration-reviewed-transport/local-verification.json",
+        "../recovery/checkpoints/migration-reviewed-transport/library-receipt.json",
+        "../recovery/checkpoints/migration-reviewed-transport/delivery-receipt.json",
+        "../recovery/checkpoints/migration-reviewed-transport/staging-cleanup-receipt.json"
+      ],
+      "snapshot_note": "Immutable archive and standalone report preserve the pre-delivery documentation freeze. This index entry and later CURRENT delivery update are outside that archive. Earlier archives, transport identities and passwords remain distinct and unchanged."
+    },
+    {
+      "name": "completed-evidence-20261011T2133",
+      "kind": "evidence_only_addendum_not_source_checkpoint",
+      "requires_base_archive_sha256": "0088210c96b9eda00044056df1d520fb65069bb6a5827747c0ef4356c3760ed4",
+      "archive_name": "manga-protocol-completed-evidence-20261011T2133-aes256-store.zip",
+      "library_file_id": "libfile_a1890ed010cc81918ab8d56946cc833f",
+      "current_version_number": 0,
+      "sha256": "6e322b9cd12c0ba22247e661ecd610f5373a66b5cc76e4a1a2464549e3f9c85a",
+      "bytes": 2129855,
+      "members": 70,
+      "status": "library_saved_attachment_message_accepted_local_member_verified_remote_readback_unverified",
+      "scope": "Completed waiting32/waiting64 failed mixed-load evidence; scoped small synthetic native-browser publication/outbox/recovery acceptance; verified compiler-cache cleanup, lossless runtime/raw archival and XZ/Zstd pilot receipts; frozen status documents.",
+      "pending_and_excluded": "Large native30k/500k qualification is planned but paused on action approval. Unbuilt/untested read-phase candidate and its source/evidence excluded. No screenshots, private runtime/archive contents, per-member restoration maps, credentials, private keys, personal data or key-bearing fixture code/configs.",
+      "local_verification": "AES-256 authentication, STORE, every member SHA-256/CRC32/length verified",
+      "local_byte_identical_copy_and_member_verification": true,
+      "split_required": false,
+      "delivery_message_id": "Sentinel_dea87d8ff74c8191ab7d6892975fc82c",
+      "message_accepted_utc": "2026-10-11T21:34:34.912551+00:00",
+      "delivery_confirmation_source": "Root confirmed native attachment/private-password message accepted; recipient download not independently observed",
+      "remote_readback_verified": false,
+      "remote_readback_status": "Prior selected-folder scope denial unchanged. No denied Library/Catbox route retried. Saving, accepted attachment message and local verification do not establish remote downloaded/decrypted recovery verification.",
+      "local_receipts_relative_to_project_root": [
+        "../recovery/checkpoints/completed-evidence-20261011-local-verification.json",
+        "../recovery/checkpoints/completed-evidence-20261011-library-receipt.json",
+        "../recovery/checkpoints/completed-evidence-20261011-delivery-receipt.json"
+      ],
+      "snapshot_note": "Archive preserves its frozen evidence cutoff. This append-only delivery record and any later CURRENT update are not part of the immutable archive. Prior source checkpoint and artifact identities preserved."
+    },
+    {
+      "name": "current-build-1c3f7769-20261012",
+      "kind": "full_accepted_source_build_docs_test_evidence_checkpoint",
+      "node_sha256": "1c3f7769e25ea3bd9f025c0f3d6cad009d7d23de3babe36b1f90a661afc7d713",
+      "browser_build": "e4f4862bd75c26bb",
+      "canonical_gate_completed_utc": "2026-10-12T00:14:18.609957+00:00",
+      "canonical_acceptance_sha256": "838f5cf89d252b09a91b2fcf702e4b6f5213da9f464b8396675b384c94dc03ec",
+      "canonical_input_count": 391,
+      "canonical_execution": "canonical-equivalent serialized runner adaptation; source root anchors and four Cargo -j2 to -j1 changes",
+      "archive_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip",
+      "sha256": "37ca5ee2e0f5020d9c7b69acc0dc7ca71a270bdd42c461ee45752ab990fb14e3",
+      "bytes": 62037185,
+      "members": 1096,
+      "status": "library_saved_multipart_attachment_message_accepted_local_reassembly_member_verified_remote_readback_unverified",
+      "scope": "Current accepted source and three optimized executables/browser; reviewed focused read-phase and guard evidence, full serialized gate/audit, current dated report/docs, safe historical waiting32/waiting64 and scoped small native-browser evidence. This full archive incorporates code and safe evidence previously delivered in separate full checkpoints/addenda.",
+      "limits": "No new1c3f7769 mixed-load qualification. Large30k/500k native action approval pending. Untested run-specific adapter/test/evidence excluded. Historical failures retain their original tested-build identities.",
+      "excluded": "Actual credentials/private keys/passwords/personal data, runtime/database/private archive contents, raw traffic/private restore maps, screenshots/key-bearing fixture code/configs, old binary copies and caches/dependencies.",
+      "local_verification": "AES-256 authentication, STORE, every member SHA-256/CRC32/length verified",
+      "multipart_transport": {
+        "part_count": 8,
+        "maximum_part_bytes": 8388608,
+        "reassembled_byte_identically": true,
+        "parts": [
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part001",
+            "library_file_id": "libfile_e277738e4bec81918d19b13b51b5bc0b",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "345b27d5b5ac8239a3156369eacb69490599a3e1902053ad43996b26b81c01b4"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part002",
+            "library_file_id": "libfile_1217748ce0bc8191b0c7d53f8eb4e307",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "aedf74b864719ff224e4988855591f579e527cc0c2dd320c480b789b4dba5288"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part003",
+            "library_file_id": "libfile_adb862f1374881918afb12d167eb094e",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "31392e2b2fbee0be9631750625ecb6cd75989e728e5c46ec74d457130f10dd30"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part004",
+            "library_file_id": "libfile_130521f21e7c8191a8c756fca4099d8d",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "0d6a0550aeb62719c871ed615cf148b838e6eb7504372a8c49489cbbbd91f6c0"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part005",
+            "library_file_id": "libfile_c7b7f2abbe0881919697baaa93670a48",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "f395aed34551f8462c3de05f692416c174843d840eec62e97c56cc7126f99f65"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part006",
+            "library_file_id": "libfile_ada3ba2e278c8191b227faea7c838268",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "5a8bc0886c9e13eaa6c1da2c1e64f28ed5d1084a2fa0d10163be7a3c32c8fcbc"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part007",
+            "library_file_id": "libfile_ff21ff57e0908191ac50e8d268722a7f",
+            "current_version_number": 0,
+            "bytes": 8388608,
+            "sha256": "a8acc5c884b1f705072cef7a62f5a4c6704cba897c7e8c65aa07a01e84550c40"
+          },
+          {
+            "file_name": "manga-protocol-current-build-1c3f7769-20261012-aes256-store.zip.part008",
+            "library_file_id": "libfile_ecac153fadf08191bbdf4ad32d77811b",
+            "current_version_number": 0,
+            "bytes": 3316929,
+            "sha256": "16ea5563ca8063a9f930b8e0a98100eed79448fdf86ca02993ca7ec439e96911"
+          }
+        ],
+        "guide": {
+          "file_name": "RECOVERY-GUIDE-1c3f7769.txt",
+          "library_file_id": "libfile_37324ec403ac8191838953cac2d76979",
+          "current_version_number": 0,
+          "bytes": 6597,
+          "sha256": "6fa61a2fd32dc60db1448c301b6b7096b85bf7ad0b355ee27c63dfb121063603"
+        }
+      },
+      "standalone_report": {
+        "file_name": "PARITY-COMPLETION-REPORT-2026-10-12.md",
+        "library_file_id": "libfile_6f202664a2248191aa052de66acf5e91",
+        "current_version_number": 0,
+        "bytes": 13881,
+        "sha256": "5c26aa557e66603f30f990db88e10850c29d48b04b5f26f5b15d087aa72506ba"
+      },
+      "delivery_message_id": "Sentinel_5b1b8137929481919cb17c35fb344b11",
+      "message_accepted_utc": "2026-10-12T00:27:25.690597+00:00",
+      "delivery_confirmation_source": "Root confirmed native ten-attachment/private-password message accepted; recipient downloads not independently observed",
+      "remote_readback_verified": false,
+      "remote_readback_status": "Known Library selected-folder scope and Catbox readback restrictions were not retried or bypassed. Local authentication/member verification, Library saving and accepted attachment message do not establish independent remote recovery verification.",
+      "local_receipts_relative_to_project_root": [
+        "../recovery/checkpoints/current-build-1c3f7769-transport/local-verification.json",
+        "../recovery/checkpoints/current-build-1c3f7769-transport/library-receipt.json",
+        "../recovery/checkpoints/current-build-1c3f7769-transport/delivery-receipt.json"
+      ],
+      "snapshot_note": "Immutable archive/report preserve pre-delivery documentation. This index entry and later CURRENT delivery-status update are outside the archive. Earlier artifacts and identities preserved."
+    }
+  ]
+}

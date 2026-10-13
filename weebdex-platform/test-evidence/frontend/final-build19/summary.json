@@ -1,0 +1,54 @@
+{
+  "utc": "2026-10-13T10:20:41.725169+00:00",
+  "build": "Build19/source534",
+  "build_terminal": {
+    "completed_utc": "2026-10-13T10:20:00.025514+00:00",
+    "command_exit": 0,
+    "abort_reason": null,
+    "monitor_error": null,
+    "cleanup_error": null,
+    "termination_signal": null,
+    "remaining_owned_members": [],
+    "frozen_identity_hashes": {
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/final-build19/guarded-command.py": "11a8d83617ab040eae908439c0da2137873014e02d5677363df52071f1b7da58",
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/final-build19/candidate-source.json": "9ec4242ccbe480899953ab19fad2af1ee8a18db66964019e9b26b9f3d839fe01",
+      "/workspace/scratch/3eafc9756ff3/weebdex-platform/test-evidence/frontend/final-build19/source-baseline.json": "b40de2c8fe9e37ae5d118cf70cae9016aea33a7e267519db1682bb0be5aa1430"
+    },
+    "owned_leader_reaped": true,
+    "stop_actions": [],
+    "reaped_descendants": [
+      {
+        "pid": 23,
+        "start_ticks": 11504049,
+        "group": 7,
+        "session": 7,
+        "wait_status": 0
+      }
+    ],
+    "changed_inputs": [],
+    "minimum_free_bytes": 20929253376,
+    "minimum_available_memory_bytes": 3061194752,
+    "final_free_bytes": 20929253376,
+    "final_available_memory_bytes": 7291469824,
+    "command_log_bytes": 89995,
+    "telemetry_bytes": 4578,
+    "telemetry_capped": false,
+    "limit": "Sampled global memory/disk protection, not attribution or a hard OOM/overshoot guarantee. SIGKILL cannot run cleanup.",
+    "status": "passed"
+  },
+  "source_definitions": 534,
+  "source_anchor_occurrences": 543,
+  "original_paths": 106,
+  "file_count": 401,
+  "total_bytes": 7008710,
+  "index_sha256": "4a7f1cc552277aba231db044ca0d2616d70c4f3fe02ebc8d4974b4a5589d004f",
+  "artifact_manifest_sha256": "56dab08d19e57db750a5bbfcb4acb90a17605995bc29aa02f638ea2cc14af429",
+  "bootstrap_csp_hash_sources": [
+    "'sha256-H3VNEClwf0njzAHy9TDF13XtJzCF1acNCLiLIpJ3mnA='"
+  ],
+  "bootstrap_csp_json_sha256": "833f747d3fb4aca939e42299576e844115cea2064aca989ca75a8f3c24b04762",
+  "static_source_files_byte_identical": 111,
+  "original_source_files_byte_identical": 676,
+  "browser_tests_executed": 0,
+  "rendered_parity": "unverified"
+}

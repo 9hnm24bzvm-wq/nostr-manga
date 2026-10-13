@@ -1,0 +1,103 @@
+{
+  "utc": "2026-10-13T08:05:41.996204+00:00",
+  "production_source_frozen": true,
+  "finite_source_findings": 1,
+  "overlay_definitions": 456,
+  "anchor_occurrences": 465,
+  "original_paths": 96,
+  "inventory_sha256": "8af5e851f68ca654e7f2ae82a5174f53f3448d8d0da2a59133c4b536baf24ea5",
+  "source_compile": {
+    "status": "passed",
+    "utc": "2026-10-13T08:03:55.506Z",
+    "runtime_tests_executed": false,
+    "components_compiled": 84,
+    "scripts_syntax_compiled": 52,
+    "shared_sha": "6fc8cd9fae676606b2b6a5d6df36ba68f905f622ad3d64a4c7e5c27640a01894",
+    "reader_sha": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "local_sha": "560cf6b9d615a4f54eb02cdf201142bcc6480f1c1b5661316244df0db54240fa",
+    "integration_inventory_sha": "8af5e851f68ca654e7f2ae82a5174f53f3448d8d0da2a59133c4b536baf24ea5",
+    "warnings": [
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      },
+      {
+        "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+        "code": "state_referenced_locally",
+        "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+      }
+    ],
+    "failures": []
+  },
+  "runtime_tests_executed": false,
+  "approved_markup_extension": [
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "count": 1,
+      "before": "\t\t\t\t\t{/if}\r\n\t\t\t\t</footer>",
+      "after": "\t\t\t\t\t{/if}\r\n\t\t\t\t\t{#if paginationPaused}\r\n\t\t\t\t\t\t<Button variant=\"outline\" class=\"w-full\" disabled={isLoading} onclick={() => continuation?.resume()}>{paginationFailed ? \"Retry loading updates\" : \"Load more updates\"}</Button>\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</footer>",
+      "approved_feed_pagination_exception": "bounded_continuation_resume"
+    }
+  ],
+  "source_files": {
+    "platform-integrations/frontend-behavior/feed-continuation.ts": "3f22a2d2085ad91c8a13b25e1eca6c09c4a8699a19b24133b12268d1a5da04a7",
+    "platform-integrations/local-library/overlays.mjs": "560cf6b9d615a4f54eb02cdf201142bcc6480f1c1b5661316244df0db54240fa",
+    "scripts/prepare-frontend-integration.mjs": "bdd40da8473bf65dd9f2159711903b4e9200ee8e66031ac0992dd31338a754a4",
+    "scripts/record-frontend-artifacts.py": "6383a20b276c7f9203e8e965fb72a48e04887638f813e9c38fe4534ea87cb2d8"
+  },
+  "artifact": "Build13/source456 is current; historical build12/source444 retained",
+  "build13": {
+    "status": "passed",
+    "receipt": "final-build13/build-result.json",
+    "files": 399,
+    "bytes": 6983672,
+    "manifest_sha256": "83d291158645f769a0ad741f877b221fb977a8091ab974923f96ac79613b0040",
+    "bootstrap": {
+      "ui_index_sha256": "edf955dc117896c8309469fd5f4f3e429d044e816210c73153ed59780b2ac170",
+      "hash_sources": [
+        "'sha256-MZQ/uhTvDXocsNPBG3d4/kvAogB1nWZGC8Tk71aD+oc='"
+      ],
+      "recognized_bootstrap_count": 1,
+      "external_analytics_allowed": false,
+      "script_unsafe_inline_allowed": false,
+      "runtime_startup_checked": false
+    },
+    "portable": {
+      "archive": "artifacts/frontend-static.tar.gz",
+      "sha256": "e240008c0a297f62db07b6a362d88b712031d966cc3a848c450f0e6861a051c5",
+      "bytes": 5147282,
+      "verified_regular_members": 410,
+      "ui_files": 399,
+      "independent_of_node_modules_and_build_workspace": true,
+      "contains_runtime_databases_credentials_or_user_records": false,
+      "verification": "Every archived regular member byte-compared and every UI input rehashed after packaging"
+    }
+  }
+}
