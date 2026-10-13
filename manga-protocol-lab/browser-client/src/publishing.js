@@ -8,6 +8,55 @@ import {
   verifyEvent,
   origin,
 } from "./nostr.js";
+/** @typedef {import("./store.js").LocalLibrary} LocalLibrary */
+/** @typedef {import("./types.js").Signer} Signer */
+/** @typedef {import("./types.js").Relay} Relay */
+/** @typedef {import("./types.js").Job} Job */
+/** @typedef {import("./types.js").NewJob} NewJob */
+/** @typedef {import("./types.js").PreparedSnapshot} PreparedSnapshot */
+/** @typedef {import("./types.js").GraphObject} GraphObject */
+/** @typedef {import("./types.js").JsonObject} JsonObject */
+
+/** @param {unknown} value @returns {value is JsonObject} */
+function isObject(value) {
+  return (
+    value !== null && (typeof value === "object" || typeof value === "function")
+  );
+}
+/** @param {unknown} value @returns {value is GraphObject} */
+function isGraphObject(value) {
+  return (
+    isObject(value) &&
+    (value.type === "root" || value.type === "chunk") &&
+    typeof value.hash === "string" &&
+    /^[0-9a-f]{64}$/.test(value.hash) &&
+    value.data instanceof Uint8Array &&
+    value.data.buffer instanceof ArrayBuffer
+  );
+}
+/** @param {unknown} value @returns {value is PreparedSnapshot} */
+function isPreparedSnapshot(value) {
+  if (
+    !isObject(value) ||
+    "error" in value ||
+    typeof value.revision !== "number" ||
+    !Number.isSafeInteger(value.revision) ||
+    value.revision < 0 ||
+    !isObject(value.graph)
+  )
+    return false;
+  const graph = value.graph;
+  return (
+    isGraphObject(graph.root) &&
+    graph.root.type === "root" &&
+    Array.isArray(graph.objects) &&
+    graph.objects.every(isGraphObject) &&
+    typeof graph.records === "number" &&
+    Number.isSafeInteger(graph.records) &&
+    graph.records >= 0
+  );
+}
+/** @param {string} database @returns {Promise<PreparedSnapshot>} */
 export function graphInWorker(database) {
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL("./worker.js", import.meta.url), {
@@ -17,11 +66,26 @@ export function graphInWorker(database) {
       worker.terminate();
       reject(Error("Snapshot preparation timed out"));
     }, 120000);
-    worker.onmessage = ({ data }) => {
+    worker.onmessage = /** @param {MessageEvent<unknown>} message */ ({
+      data,
+    }) => {
       clearTimeout(timer);
       worker.terminate();
-      if (data.error) reject(Error(data.error));
-      else resolve(data);
+      if (
+        isObject(data) &&
+        "error" in data &&
+        !("revision" in data) &&
+        !("graph" in data)
+      )
+        reject(
+          Error(
+            typeof data.error === "string" && data.error
+              ? data.error
+              : "Snapshot preparation failed",
+          ),
+        );
+      else if (isPreparedSnapshot(data)) resolve(data);
+      else reject(Error("Invalid snapshot preparation response"));
     };
     worker.onerror = (e) => {
       clearTimeout(timer);
@@ -31,6 +95,16 @@ export function graphInWorker(database) {
     worker.postMessage({ database });
   });
 }
+/**
+ * @param {LocalLibrary} store
+ * @param {Signer} signer
+ * @param {string} owner
+ * @param {PreparedSnapshot} snapshot
+ * @param {Relay[]} recipients
+ * @param {boolean} publicConsent
+ * @param {number} [reviewedRelayRevision]
+ * @returns {Promise<Job>}
+ */
 export async function queueSnapshot(
   store,
   signer,
@@ -56,6 +130,16 @@ export async function queueSnapshot(
     ),
   );
 }
+/**
+ * @param {LocalLibrary} store
+ * @param {Signer} signer
+ * @param {string} owner
+ * @param {PreparedSnapshot} snapshot
+ * @param {Relay[]} recipients
+ * @param {boolean} publicConsent
+ * @param {number} relayRevision
+ * @returns {Promise<Job>}
+ */
 async function queueSnapshotInner(
   store,
   signer,
@@ -98,6 +182,7 @@ async function queueSnapshotInner(
     tags: [],
     content: JSON.stringify({ manifest: snapshot.graph.root.hash, version: 1 }),
   });
+  /** @type {NewJob} */
   const job = {
     id: event.id,
     event,
@@ -115,6 +200,14 @@ async function queueSnapshotInner(
   };
   return store.createJob(job);
 }
+/**
+ * @param {LocalLibrary} store
+ * @param {string} id
+ * @param {Signer} signer
+ * @param {string} owner
+ * @param {(job: Job) => void} [onUpdate]
+ * @returns {Promise<Job>}
+ */
 export async function deliverJob(
   store,
   id,
@@ -175,13 +268,14 @@ export async function deliverJob(
               active,
             );
             if (response.status !== 200) {
-              const error = Error(
-                "Relay refused staging: HTTP" + response.status,
+              const error = Object.assign(
+                Error("Relay refused staging: HTTP" + response.status),
+                { status: response.status },
               );
-              error.status = response.status;
               throw error;
             }
             if (
+              !isObject(response.data) ||
               response.data.staged !== true ||
               JSON.stringify(response.data.hashes) !== JSON.stringify(b.hashes)
             )
@@ -202,38 +296,49 @@ export async function deliverJob(
             active,
           );
           if (
-            response.data.id !== job.event.id &&
+            !isObject(response.data) &&
+            [200, 202, 409].includes(response.status)
+          )
+            throw Error("Invalid publication receipt");
+          /** @type {JsonObject} */
+          const receipt = isObject(response.data) ? response.data : {};
+          if (
+            receipt.id !== job.event.id &&
             [200, 202, 409].includes(response.status)
           )
             throw Error("Wrong publication receipt");
           if (
             [200, 202].includes(response.status) &&
-            typeof response.data.projected === "boolean"
+            typeof receipt.projected === "boolean"
           ) {
             r.state = "accepted";
-            r.projected = response.data.projected;
-            r.message = response.data.projected
+            r.projected = receipt.projected;
+            r.message = receipt.projected
               ? "Accepted and projected"
               : "Accepted; projection pending";
-          } else if (
-            response.status === 409 &&
-            response.data.superseded === true
-          ) {
+          } else if (response.status === 409 && receipt.superseded === true) {
             r.state = "superseded";
             r.message = "A newer public head already exists";
           } else {
-            const error = Error(
-              "Relay refused publication: HTTP" + response.status,
+            const error = Object.assign(
+              Error("Relay refused publication: HTTP" + response.status),
+              { status: response.status },
             );
-            error.status = response.status;
             throw error;
           }
         } catch (error) {
+          const status =
+            isObject(error) && typeof error.status === "number"
+              ? error.status
+              : undefined;
           r.state =
-            error.status && [400, 401, 403, 404, 413].includes(error.status)
+            status && [400, 401, 403, 404, 413].includes(status)
               ? "rejected"
               : "retryable";
-          r.message = error.message;
+          r.message =
+            error instanceof Error
+              ? error.message
+              : "Publication request failed";
         }
         const current = await store.job(id);
         if (!current) return job;
@@ -249,6 +354,7 @@ export async function deliverJob(
     },
   );
 }
+/** @param {LocalLibrary} store @param {string} id @returns {Promise<void>} */
 export async function cancelJob(store, id) {
   const job = await store.job(id);
   if (job) {
@@ -256,6 +362,12 @@ export async function cancelJob(store, id) {
     await store.saveJob(job);
   }
 }
+/**
+ * @param {Relay} relay
+ * @param {Signer} signer
+ * @param {string} owner
+ * @returns {Promise<{event: import("./types.js").SignedEvent, snapshot: import("./types.js").LibrarySnapshot}>}
+ */
 export async function recoverPublic(relay, signer, owner) {
   await proveService(relay.origin, relay.serviceKey);
   const response = await signedRequest(
@@ -267,6 +379,7 @@ export async function recoverPublic(relay, signer, owner) {
   );
   if (response.status !== 200)
     throw Error("No readable library head: HTTP" + response.status);
+  if (!isObject(response.data)) throw Error("Invalid public library head");
   const event = response.data.event;
   if (
     !verifyEvent(event) ||
@@ -276,10 +389,13 @@ export async function recoverPublic(relay, signer, owner) {
     event.tags.some((t) => t[0] === "expiration")
   )
     throw Error("Invalid public library head");
+  /** @type {unknown} */
   const pointer = JSON.parse(event.content);
   if (
+    !isObject(pointer) ||
     Object.keys(pointer).sort().join("|") !== "manifest|version" ||
-    pointer.version !== 1
+    pointer.version !== 1 ||
+    typeof pointer.manifest !== "string"
   )
     throw Error("Invalid library pointer");
   unhex(pointer.manifest);
@@ -290,15 +406,16 @@ export async function recoverPublic(relay, signer, owner) {
     pointer.manifest,
     262144,
   );
-  const descriptors = rootDescriptors(root),
-    objects = new Map();
+  const descriptors = rootDescriptors(root);
+  /** @type {Map<string, Uint8Array<ArrayBuffer>>} */
+  const objects = new Map();
   for (const d of descriptors) {
     if (!objects.has(d.hash)) {
       const bytes = await publicObject(relay, signer, owner, d.hash, d.size);
       if (bytes.length !== d.size) throw Error("Library object size mismatch");
       objects.set(d.hash, bytes);
     }
-    if (objects.get(d.hash).length !== d.size)
+    if (objects.get(d.hash)?.length !== d.size)
       throw Error("Library object size mismatch");
   }
   return {
