@@ -13,6 +13,7 @@ import re
 import signal
 import socket
 import subprocess
+import sys
 import tempfile
 import time
 import urllib.error
@@ -21,6 +22,10 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 OWNER = "fixture_owner"
 RUNTIME = "fixture_runtime"
+# Deliberately public test vector. Generated key file exists only inside the
+# private disposable fixture and must never be used as production authority.
+FIXTURE_SECRET = "11" * 32
+FIXTURE_PUBLISHER = "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa"
 
 
 def require(value, message):
@@ -32,6 +37,13 @@ def free_port():
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         return sock.getsockname()[1]
+
+
+def runtime_ddl_logged(log):
+    # log_statement=ddl logs extended protocol as execute <name>: as well as
+    # simple protocol statement:. A denied DDL also has a STATEMENT record.
+    return bool(re.search(r"fixture_runtime LOG:\s+(?:statement:|execute [^:]*:)", log)
+                or re.search(r"fixture_runtime STATEMENT:[^\n]*\b(?:CREATE|ALTER|DROP|TRUNCATE|COMMENT|GRANT|REVOKE|REINDEX|CLUSTER|REFRESH)\b", log, re.I))
 
 
 class Fixture:
@@ -68,7 +80,11 @@ class Fixture:
         print(f"PASS {name}", flush=True)
 
     def env(self, role):
-        env = os.environ.copy()
+        # Only process/toolchain essentials enter this owned fixture. Do not
+        # inherit live provider credentials or unrelated app configuration.
+        allowed = {"PATH", "HOME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE",
+                   "LD_LIBRARY_PATH", "SSL_CERT_FILE", "SSL_CERT_DIR"}
+        env = {key: value for key, value in os.environ.items() if key in allowed}
         for key in ["PLATFORM_DATABASE_URL", "MANGA_DATABASE_URL", "PLATFORM_CONFIG",
                     "PLATFORM_BIND", "PLATFORM_PUBLIC_ORIGIN", "PLATFORM_UI_DIR",
                     "PLATFORM_UI_FALLBACK", "PLATFORM_PROTOCOL_ORIGIN", "PLATFORM_PRODUCTION",
@@ -114,6 +130,78 @@ class Fixture:
             REVOKE ALL ON ALL FUNCTIONS IN SCHEMA platform FROM PUBLIC;
             GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA platform TO {RUNTIME};
         """)
+
+    def publisher_grants(self):
+        self.sql(f"""
+            GRANT INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {RUNTIME};
+            REVOKE INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER ON public.schema_migrations FROM {RUNTIME};
+            GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO {RUNTIME};
+            REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC;
+            GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO {RUNTIME};
+        """)
+
+    def publisher_startup(self):
+        native_port = free_port()
+        native_origin = f"http://127.0.0.1:{native_port}"
+        key = self.run / "PUBLIC_SYNTHETIC_TEST_VECTOR.key"
+        key.write_text(FIXTURE_SECRET)
+        key.chmod(0o600)
+        config = json.loads(self.config.read_text())
+        config["protocol_publication"] = {
+            "operator_key_file": str(key), "expected_publisher": FIXTURE_PUBLISHER,
+            "storage_owner": FIXTURE_PUBLISHER, "storage_holder": FIXTURE_PUBLISHER,
+            "group_keys_dir": None, "backend": None,
+            "storage": {"path": str(self.run / "publisher-originals"), "volume": "RuntimePrivileges",
+                        "physical_bytes": 64*1024*1024, "staging_bytes": 64*1024*1024,
+                        "max_blob_bytes": 8*1024*1024, "upload_slots": 2},
+            "native_node": {
+                "bind": f"127.0.0.1:{native_port}", "base_url": native_origin,
+                "service_key_file": str(key), "admin_pubkey": FIXTURE_PUBLISHER,
+                "database_plaintext_local": True, "read_policy": "public",
+                "cors_origins": [config["public_origin"]], "sync_worker_enabled": False,
+                "peer_discovery_enabled": False, "auto_approve_publication_deletions": False,
+                "backend": {"binary": str(self.args.strfry_bin), "data_dir": str(self.run / "publisher-projection"),
+                            "map_bytes": 64*1024*1024, "timeout_seconds": 5},
+            },
+        }
+        self.config.write_text(json.dumps(config))
+        self.sql(f"INSERT INTO public.publisher_permissions(publisher,allowed) VALUES(decode('{FIXTURE_PUBLISHER}','hex'),TRUE)")
+        # verify deliberately does not open a signer/storage ownership runtime.
+        # Real serve must reject this profile until original application DML is
+        # separately provisioned, without making either listener available.
+        self.action("verify")
+        self.action("serve", ok=False)
+        for port in [self.http_port, native_port]:
+            with socket.socket() as sock:
+                require(sock.connect_ex(("127.0.0.1", port)) != 0, "publisher lacking original DML opened a listener")
+        self.passed("integrated publisher startup fails closed without original application DML")
+        self.publisher_grants()
+        require(self.sql(f"SELECT has_schema_privilege('{RUNTIME}','public','CREATE'),has_schema_privilege('{RUNTIME}','platform','CREATE'),has_database_privilege('{RUNTIME}',current_database(),'TEMP'),pg_has_role('{RUNTIME}','{OWNER}','MEMBER')") == "f|f|f|f", "publisher runtime inherited DDL/owner/TEMP authority")
+        protected = self.sql("SELECT 'original:'||version||':'||encode(checksum,'hex') FROM public.schema_migrations UNION ALL SELECT 'platform:'||version||':'||name||':'||encode(checksum,'hex') FROM platform.schema_migrations UNION ALL SELECT 'policy:'||version||':'||mode||':'||encode(checksum,'hex') FROM platform.protocol_visibility_policy ORDER BY 1")
+        for statement in ["DELETE FROM public.schema_migrations WHERE version=1", "UPDATE platform.schema_migrations SET name='tampered' WHERE version=1", "UPDATE platform.protocol_visibility_policy SET version=2", "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE SQL AS $$ SELECT TRUE $$"]:
+            self.sql(statement, RUNTIME, ok=False)
+        offset = self.pg_log.stat().st_size
+        self.action("verify")
+        self.start()
+        request = urllib.request.Request(native_origin + "/", headers={"Accept": "application/nostr+json"})
+        with urllib.request.urlopen(request, timeout=3) as response:
+            document = json.load(response)
+            require(response.status == 200 and document["self"] == FIXTURE_PUBLISHER
+                    and document["pubkey"] == FIXTURE_PUBLISHER
+                    and 11 in document["supported_nips"]
+                    and document["manga"]["features"]["publication"] is True,
+                    "genuine integrated publisher/native NIP-11 listener unavailable")
+        require(self.sql("SELECT count(*) FROM public.capacity_budgets", RUNTIME) == "2", "publisher storage startup did not persist capacity budgets")
+        require(self.sql(f"SELECT count(*) FROM public.node_identity WHERE service_key=decode('{FIXTURE_PUBLISHER}','hex') AND admin_key=service_key", RUNTIME) == "1", "native startup did not bind the configured instance identity")
+        require(self.sql(f"SELECT count(*) FROM public.service_announcements WHERE service_key=decode('{FIXTURE_PUBLISHER}','hex')", RUNTIME) == "1", "native startup did not persist its genuine signed service announcement")
+        require(self.sql("SELECT count(*) FROM public.backend_identity", RUNTIME) == "1", "real projection backend did not bind its database identity")
+        self.stop()
+        for port in [self.http_port, native_port]:
+            with socket.socket() as sock:
+                require(sock.connect_ex(("127.0.0.1", port)) != 0, "integrated shutdown left a listener available")
+        require(not runtime_ddl_logged(self.pg_log.read_bytes()[offset:].decode()), "integrated publisher startup issued runtime DDL")
+        require(self.sql("SELECT 'original:'||version||':'||encode(checksum,'hex') FROM public.schema_migrations UNION ALL SELECT 'platform:'||version||':'||name||':'||encode(checksum,'hex') FROM platform.schema_migrations UNION ALL SELECT 'policy:'||version||':'||mode||':'||encode(checksum,'hex') FROM platform.protocol_visibility_policy ORDER BY 1") == protected, "integrated publisher changed protected histories/policy")
+        self.passed("restricted integrated publisher/original backend/native NIP-11 startup and two-listener drain; original DML with immutable histories/policy and no DDL")
 
     def start(self):
         self.server = subprocess.Popen([str(self.args.platform_bin), "serve"], env=self.env(RUNTIME),
@@ -193,6 +281,7 @@ class Fixture:
             raise RuntimeError("owned PostgreSQL never became ready")
         self.sql(f"CREATE ROLE {OWNER} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE; CREATE ROLE {RUNTIME} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;", "fixture_admin", database="postgres")
         self.sql(f"CREATE DATABASE {self.database} OWNER {OWNER}", "fixture_admin", database="postgres")
+        self.sql(f"ALTER SCHEMA public OWNER TO {OWNER}", "fixture_admin")
         self.sql(f"REVOKE ALL ON DATABASE {self.database} FROM PUBLIC; GRANT CONNECT ON DATABASE {self.database} TO {RUNTIME}")
 
         # Supported baseline upgrade through PostgreSQL setup, not private Rust methods.
@@ -223,6 +312,7 @@ class Fixture:
         for statement in [
             "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE SQL AS $$ SELECT TRUE $$",
             "CREATE TABLE platform.runtime_ddl_forbidden(id INTEGER)",
+            "CREATE TABLE public.runtime_ddl_forbidden(id INTEGER)",
             "UPDATE platform.schema_migrations SET name='tampered' WHERE version=1",
             "DELETE FROM public.schema_migrations WHERE version=1",
             "UPDATE platform.protocol_visibility_policy SET version=2",
@@ -241,7 +331,7 @@ class Fixture:
         status, body = self.http("/api/author", "POST", {"name": "Runtime author"}, "weebdex_session=" + token)
         require(status == 201 and json.loads(body)["name"] == "Runtime author", "normal restricted HTTP write failed")
         self.stop()
-        require("fixture_runtime LOG:  statement:" not in self.pg_log.read_bytes()[offset:].decode(), "runtime verify/serve issued DDL")
+        require(not runtime_ddl_logged(self.pg_log.read_bytes()[offset:].decode()), "runtime verify/serve issued DDL")
         self.passed("restricted real HTTP readiness/write/drain succeeds without startup DDL")
 
         event = "ab" * 32
@@ -304,6 +394,7 @@ class Fixture:
         # Fresh platform install with original schema is independently prepared.
         self.database = "weebdex_privileges_fresh"
         self.sql(f"CREATE DATABASE {self.database} OWNER {OWNER}", "fixture_admin", database="postgres")
+        self.sql(f"ALTER SCHEMA public OWNER TO {OWNER}", "fixture_admin")
         self.command([str(self.args.manga_node_bin), "migrate", str(self.node_config)], env=self.env(OWNER))
         self.prepare()
         self.grants()
@@ -312,18 +403,35 @@ class Fixture:
         self.start()
         self.stop()
         self.passed("fresh original/platform install starts with restricted runtime")
+        self.publisher_startup()
 
 
 def main():
+    if sys.argv[1:] == ["--check-ddl-parser"]:
+        for adverse in ["fixture_runtime LOG:  statement: CREATE FUNCTION x()",
+                        "fixture_runtime LOG:  execute <unnamed>: CREATE FUNCTION x()",
+                        "fixture_runtime LOG:  execute cached_1: ALTER TABLE x",
+                        "fixture_runtime STATEMENT:  CREATE FUNCTION denied()",
+                        "fixture_runtime STATEMENT:  BEGIN; CREATE TABLE denied(x int)"]:
+            require(runtime_ddl_logged(adverse), "DDL log parser missed an adverse fixture")
+        for allowed in ["fixture_owner LOG:  statement: CREATE FUNCTION prepared()",
+                        "fixture_owner LOG:  execute <unnamed>: ALTER TABLE prepared",
+                        "fixture_runtime LOG:  connection authorized",
+                        "fixture_runtime STATEMENT:  SELECT missing_column FROM synthetic_fixture"]:
+            require(not runtime_ddl_logged(allowed), "DDL log parser misclassified a fixture")
+        print("PASS DDL log parser covers simple/extended/denied records and ignores privileged-role records")
+        return
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pg-bin", required=True, type=Path)
     parser.add_argument("--platform-bin", required=True, type=Path)
     parser.add_argument("--manga-node-bin", required=True, type=Path)
+    parser.add_argument("--strfry-bin", required=True, type=Path)
     args = parser.parse_args()
     args.pg_bin = args.pg_bin.resolve()
     args.platform_bin = args.platform_bin.resolve()
     args.manga_node_bin = args.manga_node_bin.resolve()
-    for binary in [args.platform_bin, args.manga_node_bin] + [args.pg_bin / name for name in ["initdb", "postgres", "psql", "pg_isready"]]:
+    args.strfry_bin = args.strfry_bin.resolve()
+    for binary in [args.platform_bin, args.manga_node_bin, args.strfry_bin] + [args.pg_bin / name for name in ["initdb", "postgres", "psql", "pg_isready"]]:
         require(binary.is_file() and os.access(binary, os.X_OK), f"required prepared executable unavailable: {binary}")
     require(os.geteuid() != 0, "PostgreSQL fixture requires an unprivileged user")
     runtime = ROOT / "test-runtime"

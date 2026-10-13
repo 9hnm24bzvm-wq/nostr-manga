@@ -95,19 +95,39 @@ migrations create new objects; do not default-grant DML to future policy/history
 objects. Runtime must not be able to replace the visibility function, create an
 object in either schema, or alter either migration history/preparation row.
 
-A full embedded publisher additionally needs the original module's application
-DML/sequence privileges for the configured node's actual publication, group,
-peer, storage and worker operations, provisioned under the original operator
-workflow. Preserve read-only `public.schema_migrations` and no original schema or
-function ownership/CREATE. The narrow two-role test below covers the platform
-and importer/read-only original path; it is not proof of full publisher grants,
-production TLS/SSO, every feature's authority, or a deployment.
+A full embedded publisher additionally needs original application DML/sequence
+and function execution for its configured publication, group, peer, storage and
+worker operations. An original-schema owner can grant the corresponding service
+contract while explicitly retaining read-only migration history:
+
+```sql
+GRANT INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO weebdex_runtime;
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
+  ON public.schema_migrations FROM weebdex_runtime;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO weebdex_runtime;
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO weebdex_runtime;
+```
+
+Do not grant original schema/function ownership or CREATE. The runtime is a
+trusted application service, not an ordinary user account. Publisher admission,
+node/service identity and signer bindings are separately controlled original
+operator provisions; startup grants cannot replace them.
+
+The two-role runner also starts the actual integrated publisher with admitted
+synthetic signer, isolated original storage, installed real projection backend
+and supervised native listener. It checks genuine NIP-11 publication capability,
+original startup DML (budget/instance/service-announcement/backend identity),
+both listener shutdowns, immutable histories/policy and absence of simple- or
+extended-protocol DDL. This is startup/grant proof, not signed1002 publication,
+complete publisher-feature acceptance, production TLS/SSO or a deployment.
 
 ## Bounded public-seam acceptance
 
 Build the actual binaries using the tracked lockfiles and Rust1.90+ before testing.
 No browser/load runs or installations are performed by this runner. Provide the
-prepared PostgreSQL executable directory and both newly built binary paths:
+prepared PostgreSQL executable directory, both newly built binary paths and the
+existing reviewed strfry binary:
 
 ```sh
 cargo build --locked --manifest-path weebdex-platform/backend/Cargo.toml --bin weebdex-platform
@@ -115,7 +135,8 @@ cargo build --locked --manifest-path manga-protocol-lab/server/Cargo.toml --bin 
 python3 weebdex-platform/scripts/test-runtime-privileges.py \
   --pg-bin /absolute/prepared/postgresql/bin \
   --platform-bin /absolute/build/weebdex-platform \
-  --manga-node-bin /absolute/build/manga-node
+  --manga-node-bin /absolute/build/manga-node \
+  --strfry-bin /absolute/prepared/strfry
 ```
 
 The runner accepts no operator DSN. It creates an owned loopback-only disposable
@@ -129,3 +150,13 @@ runtime state remain in ignored private `test-runtime`; sanitized named results
 are in its summary. Cleanup observes the owned server/PostgreSQL termination.
 Synthetic SQL rows test the public visibility predicate; they are not signed
 publication acceptance or a substitute for the existing protocol HTTP suite.
+
+The isolated fixture explicitly transfers its own `public` schema to its owner
+login, so it does not depend on PostgreSQL15's changed public-schema ownership
+convention. This affects only the newly created test databases.
+
+The DDL-log guard can also be checked without Rust/PostgreSQL installed:
+
+```sh
+python3 weebdex-platform/scripts/test-runtime-privileges.py --check-ddl-parser
+```
