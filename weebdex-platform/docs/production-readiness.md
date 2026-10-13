@@ -139,8 +139,11 @@ PLATFORM_CONFIG=/etc/weebdex/platform.json scripts/run-platform.sh serve
 ```
 
 `check-config` only inspects configuration/artifact files. `verify` connects and
-checks schema without opening a publication ownership runtime. `migrate` is an
-explicit platform-only operation, never an automatic startup side effect.
+checks schema and the exact prepared visibility policy without DDL or opening a
+publication ownership runtime. `migrate` is an explicit privileged platform-only
+operation, including policy preparation, never an automatic startup side effect.
+Use separate owner/runtime DSNs and the grants/order in
+[database role setup](database-role-setup.md).
 Original protocol migrations must first be applied through its separate reviewed
 `manga-node migrate NODE_CONFIG` workflow, against the same intended database.
 Use a backed-up staging copy first; there is no automatic destructive downgrade.

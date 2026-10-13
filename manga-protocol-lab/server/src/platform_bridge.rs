@@ -365,12 +365,20 @@ mod tests {
     }
 }
 
-/// Platform read functions use this generated canonical policy without copying
-/// protocol authority rules into downstream migrations. The function is lazy-
-/// planned, so a standalone native platform can safely lack protocol tables.
+/// Canonical body shared by privileged preparation and read-only verification.
+/// Keep protocol authority rules in the original catalogue module.
+pub fn visibility_function_body() -> String {
+    format!(
+        " BEGIN IF source_event IS NULL THEN RETURN TRUE; END IF; RETURN EXISTS(SELECT 1 FROM events e WHERE encode(e.id,'hex')=source_event AND e.kind IN(1001,1002) AND {VISIBLE}); EXCEPTION WHEN undefined_table OR undefined_column THEN RETURN FALSE; END; "
+    )
+}
+
+/// Privileged preparation only. The invoker function is lazy-planned and pins
+/// original authority relations ahead of temporary schemas.
 pub fn visibility_function_sql() -> String {
     format!(
-        "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE plpgsql STABLE AS $bridge$ BEGIN IF source_event IS NULL THEN RETURN TRUE; END IF; RETURN EXISTS(SELECT 1 FROM events e WHERE encode(e.id,'hex')=source_event AND e.kind IN(1001,1002) AND {VISIBLE}); EXCEPTION WHEN undefined_table OR undefined_column THEN RETURN FALSE; END; $bridge$;"
+        "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE plpgsql STABLE SECURITY INVOKER SET search_path = pg_catalog, public, pg_temp AS $bridge${}$bridge$;",
+        visibility_function_body()
     )
 }
 

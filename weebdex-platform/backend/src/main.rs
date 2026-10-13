@@ -37,7 +37,8 @@ async fn main() -> Result<()> {
     let state = AppState::connect(config, Config::database_dsn()?).await?;
     if action == "migrate" {
         state.db.migrate(domains::MIGRATIONS).await?;
-        tracing::info!("platform migrations applied; original protocol migrations remain separate");
+        state.protocol.prepare_visibility_function().await?;
+        tracing::info!("platform migrations and visibility policy prepared; original protocol migrations remain separate");
         return Ok(());
     }
     state.db.verify_schema(domains::MIGRATIONS).await?;
@@ -46,6 +47,9 @@ async fn main() -> Result<()> {
         !state.config.production || original_ready,
         "production requires verified original protocol schema"
     );
+    // Read-only gate for both runtime actions. Missing/stale/wrong-mode policy
+    // must fail before listeners, workers or readiness; startup never performs DDL.
+    state.protocol.verify_visibility_function().await?;
     if action == "verify" {
         tracing::info!(
             protocol_schema_ready = original_ready,
@@ -53,9 +57,6 @@ async fn main() -> Result<()> {
         );
         return Ok(());
     }
-    // Install original-module visibility or its fail-closed reset before any read
-    // worker or HTTP listener. This cannot bless a remote-only protocol record.
-    state.protocol.install_visibility_function().await?;
     let bind = state.config.bind;
     let listener = tokio::net::TcpListener::bind(bind).await?;
     let mut native_listener = None;
