@@ -7,7 +7,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": ".build/frontend-restore3",
+  "frontend": "frontend",
   "original_files_written": false,
   "reconstructed_routes": [
     {
@@ -192,8 +192,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 419540,
-      "sha256": "1d69c7b365e9730e5d1ee6308ffa5d4b3cd273db38a4fdf414f9835922bbd3bc"
+      "bytes": 420851,
+      "sha256": "f06442267827e6b391551fd302ebc0bca1ff9306a1a2d9ee75afd76f2738b8be"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -346,7 +346,7 @@
       "sha256": "754c99ba955622a2ced7c7d3cfe0c276e83201ca565b95fd5fa87edeb8ca512e"
     }
   ],
-  "integration_source_inventory_sha256": "08b4788aa51bdec2919f05596a76dc366b0785a7c66f38c0f8c4b3ad43af2e2c",
+  "integration_source_inventory_sha256": "46051b97a56e52588783020beddd8b3249c2b13c569b7ebf440ef23e876744f8",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -374,7 +374,7 @@
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "1d69c7b365e9730e5d1ee6308ffa5d4b3cd273db38a4fdf414f9835922bbd3bc",
+  "overlay_module_sha256": "f06442267827e6b391551fd302ebc0bca1ff9306a1a2d9ee75afd76f2738b8be",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -2473,6 +2473,30 @@
       "sha256": "fdf62a1220d8e13f446f4fc070788c78aded93baeef360ae88cee2b67827e799",
       "count": 1,
       "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority"
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "bootstrap Session depends on the authentication leaf instead of the API barrel",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "session initialization uses its authentication leaf",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Auth.ts",
+      "label": "authentication leaf depends on HTTP without reentering the application barrel",
+      "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/prefs.ts",
+      "label": "bootstrap preferences read initialized constants outside the API Session cycle",
+      "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+      "count": 1
     },
     {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
@@ -5734,6 +5758,30 @@
       "sha256": "fdf62a1220d8e13f446f4fc070788c78aded93baeef360ae88cee2b67827e799",
       "count": 1,
       "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority"
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "bootstrap Session depends on the authentication leaf instead of the API barrel",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "session initialization uses its authentication leaf",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Auth.ts",
+      "label": "authentication leaf depends on HTTP without reentering the application barrel",
+      "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/prefs.ts",
+      "label": "bootstrap preferences read initialized constants outside the API Session cycle",
+      "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+      "count": 1
     }
   ],
   "reader_script_repairs": [
@@ -7404,7 +7452,7 @@
     {
       "path": "src/lib/stores/prefs.ts",
       "original_sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
-      "executed_source_sha256": "54ef681d5cc60d33c8c0163e690fdc53f6269ccfe2801af94691a72b2be40229",
+      "executed_source_sha256": "971f219e3baa8cafb34da79330b6c93e692c659c35a5e8bcd74b018a44c38c8e",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -7481,7 +7529,7 @@
     {
       "path": "src/lib/stores/Session.ts",
       "original_sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
-      "executed_source_sha256": "d991c7c8a01b001ac10eed590e6d6ec1b689a28a69608c91511ddeb2a0ea49a0",
+      "executed_source_sha256": "32fb8ae653bb9df123a46373e490ee6b886bdc7454c98ee5d599e9ea52158320",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8241,6 +8289,17 @@
       "path": "src/lib/permission/manga.ts",
       "original_sha256": "fdf62a1220d8e13f446f4fc070788c78aded93baeef360ae88cee2b67827e799",
       "executed_source_sha256": "9f9a64cf97f3a8fac5d75a25c6e99c1c14d62ed9077e40061ef2f683ac0ec6c3",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/API/Auth.ts",
+      "original_sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+      "executed_source_sha256": "c7124a7dd2d6f8fe25ad34992af0cf59ab60c72afdecc1534ced1213d30705b9",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,

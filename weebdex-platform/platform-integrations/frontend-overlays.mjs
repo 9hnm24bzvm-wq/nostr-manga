@@ -2792,6 +2792,38 @@ const patches = [
     "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority",
     "before": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tif (!Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && (manga?.locked || !manga?.deleted_at)) {\r\n\t\treturn false;\r\n\t}\r\n\treturn Session.hasPerm(\"manga.relation.edit\");\r\n};",
     "after": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tconst actor = get(Session);\r\n\tif (!actor?.identity?.id) return false;\r\n\t// The create form has no saved title yet; its future draft owner needs manga.create.\r\n\tif (!manga) return Session.hasPerm(\"manga.create\");\r\n\tconst current = manga as Manga & { can_mutate?: boolean; is_unavailable?: boolean };\r\n\tif (manga.deleted_at || current.can_mutate === false || current.is_unavailable) return false;\r\n\tif (Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && Session.hasPerm(\"manga.relation.edit\")) return true;\r\n\tif (manga.locked) return false;\r\n\tif (manga.state === State.Published) return Session.hasPerm(\"manga.relation.edit\");\r\n\treturn manga.relationships?.submitter?.id === actor.identity.id && Session.hasPerm(\"manga.create\");\r\n};"
+  },
+  {
+    "path": "src/lib/stores/Session.ts",
+    "label": "bootstrap Session depends on the authentication leaf instead of the API barrel",
+    "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "count": 1,
+    "before": "import API from \"$lib/API\";",
+    "after": "import * as Auth from \"$lib/API/Auth\";"
+  },
+  {
+    "path": "src/lib/stores/Session.ts",
+    "label": "session initialization uses its authentication leaf",
+    "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "count": 1,
+    "before": "API.Auth.Check()",
+    "after": "Auth.Check()"
+  },
+  {
+    "path": "src/lib/API/Auth.ts",
+    "label": "authentication leaf depends on HTTP without reentering the application barrel",
+    "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+    "count": 1,
+    "before": "import { HTTP } from \"$lib\";",
+    "after": "import HTTP from \"$lib/HTTP\";"
+  },
+  {
+    "path": "src/lib/stores/prefs.ts",
+    "label": "bootstrap preferences read initialized constants outside the API Session cycle",
+    "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+    "count": 1,
+    "before": "import { Constants } from \"$lib\";",
+    "after": "import * as Constants from \"$lib/constants\";"
   }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
