@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from operator_support import OperatorCase
 from src.platform_backup import BackupError, effective_node, native_owner, verify_media, credential_free
+from src.postgres_backup import copy_tree, restore_group_root
 
 
 class PlatformBackupCLI(OperatorCase):
@@ -84,6 +85,26 @@ class PlatformBackupCLI(OperatorCase):
         path.symlink_to(target)
         with self.assertRaises(BackupError):
             with native_owner(root): pass
+
+    def test_enabled_empty_group_root_restored_privately_without_fabricating_keys(self):
+        original = self.root / "original-groups"
+        original.mkdir()
+        source = self.root / "backup"
+        source.mkdir()
+        copy_tree(original, source / "groups")
+        out = self.root / "restored"
+        out.mkdir()
+        config = {"group_keys_dir":str(original)}
+        restore_group_root(source, out, config)
+        self.assertTrue((out / "groups").is_dir())
+        self.assertEqual(list((out / "groups").iterdir()), [])
+        self.assertEqual((out / "groups").stat().st_mode & 0o777, 0o700)
+        (out / "groups").rmdir()
+        (source / "groups").rmdir()
+        with self.assertRaises(BackupError): restore_group_root(source, out, config)
+        (source / "groups").symlink_to(original)
+        with self.assertRaises(BackupError): restore_group_root(source, out, config)
+        self.assertFalse((out / "groups").exists())
 
     def test_native_referenced_original_derivative_hash_and_size(self):
         records = []

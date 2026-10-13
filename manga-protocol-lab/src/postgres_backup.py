@@ -481,6 +481,19 @@ def backup_entries(source):
             yield item, src
 
 
+def restore_group_root(source, out, config):
+    """Preserve an enabled empty key root, which has no file-manifest entry."""
+    if not config.get("group_keys_dir"):
+        return
+    backed = source / "groups"
+    target = out / "groups"
+    if backed.is_symlink() or not backed.is_dir():
+        raise BackupError("configured group-key root missing from backup")
+    if target.is_symlink() or (target.exists() and not target.is_dir()):
+        raise BackupError("invalid restored group-key root")
+    target.mkdir(mode=0o700, exist_ok=True)
+
+
 def restore(
     source,
     destination,
@@ -526,6 +539,7 @@ def restore(
     if count != complete["files"]:
         raise BackupError("backup file count mismatch")
     config = read_json(out / "source-config.json")
+    restore_group_root(source, out, config)
     binary = Path(backend_binary or config["backend"]["binary"])
     if (
         not binary.is_absolute()

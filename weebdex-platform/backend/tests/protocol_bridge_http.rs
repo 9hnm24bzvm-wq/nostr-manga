@@ -2063,13 +2063,15 @@ async fn offline_full_publisher_backup_restore_fences_auth_and_exact_retry() {
     let reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
     let bind = reservation.local_addr().unwrap(); drop(reservation);
     let binary = std::env::var_os("STRFRY_BIN").map(PathBuf::from).unwrap_or_else(||lab.join("vendor/strfry/strfry"));
+    let group_root = storage_root.join("enabled-empty-groups");
+    std::fs::create_dir(&group_root).unwrap();
     let publication = json!({"operator_key_file":keys[0].0,"expected_publisher":keys[0].1,
-        "storage_owner":keys[0].1,"storage_holder":keys[1].1,"group_keys_dir":null,"backend":null,
+        "storage_owner":keys[0].1,"storage_holder":keys[1].1,"group_keys_dir":group_root,"backend":null,
         "storage":{"path":storage_root.join("originals"),"volume":"BackupOriginalsFixture",
             "physical_bytes":64*1048576,"staging_bytes":64*1048576,"max_blob_bytes":8*1048576,"upload_slots":2},
         "native_node":{"bind":bind.to_string(),"base_url":format!("http://{bind}"),
             "service_key_file":keys[1].0,"admin_pubkey":keys[0].1,"database_plaintext_local":true,
-            "cors_origins":[ORIGIN],"read_policy":"public","storage":null,"group_keys_dir":null,
+            "cors_origins":[ORIGIN],"read_policy":"public","storage":null,"group_keys_dir":group_root,
             "sync_worker_enabled":false,"auto_approve_publication_deletions":false,
             "backend":{"binary":binary,"data_dir":storage_root.join("projection"),"map_bytes":64*1048576,"timeout_seconds":5}}});
     let source_config = json!({"public_origin":ORIGIN,"database_plaintext_local":true,"database_connections":4,
@@ -2177,6 +2179,8 @@ async fn offline_full_publisher_backup_restore_fences_auth_and_exact_retry() {
     let mut restored_config:Value = serde_json::from_slice(&std::fs::read(&config_path).unwrap()).unwrap();
     assert_eq!(restored_config["restore_review_required"],true);
     assert_eq!(restored_config["protocol_publication"]["native_node"]["storage"],Value::Null);
+    assert!(restored_root.join("groups").is_dir());
+    assert_eq!(std::fs::read_dir(restored_root.join("groups")).unwrap().count(),0);
     // Real serve entry refuses BEFORE DB, paths, owner or listener activation.
     let fenced = Command::new(env!("CARGO_BIN_EXE_weebdex-platform")).arg("serve").env("PLATFORM_CONFIG",&config_path)
         .env("PLATFORM_DATABASE_URL","invalid-and-must-not-be-used").output().unwrap();
