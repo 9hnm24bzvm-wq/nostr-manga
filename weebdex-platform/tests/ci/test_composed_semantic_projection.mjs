@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+// Read-only artifact validation for a completed local semantic projection.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const work = path.resolve(process.argv[2] ?? path.join(root, '.build/composed-semantic-check-reviewed'));
+const evidence = path.join(work, 'evidence');
+const read = name => JSON.parse(fs.readFileSync(path.join(evidence, name)));
+const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+const summary = read('summary.json'), manifest = read('projection-manifest.json'), graph = read('production-module-graph.json'), diagnostics = read('diagnostics.json'), isolation = read('isolation-and-fidelity-verification.json');
+const production = JSON.parse(fs.readFileSync(path.join(root, 'test-evidence/frontend/integration-source-manifest.json')));
+const expected = new Map(production.transformed_sources.map(entry => [entry.path, entry.executed_source_sha256]));
+assert.equal(summary.canonical_frontend_files, 679);
+assert.equal(summary.canonical_frontend_unchanged, true);
+for (const [file, expectedHash] of Object.entries(read('canonical-source-hashes.json'))) assert.equal(hash(fs.readFileSync(path.join(root, file))), expectedHash, file);
+for (const [file, expectedHash] of expected) assert.equal(manifest.find(entry => entry.canonical === file)?.production_composed_sha256, expectedHash, file);
+assert.equal(expected.size, 107);
+assert.equal(graph.filter(edge => edge.resolver.startsWith('unresolved')).length, 0);
+for (const entry of manifest) {
+  assert.match(entry.projection, /^(src|platform-integrations)\//);
+  assert.ok(!entry.projection.includes('node_modules'));
+  if (!entry.source_map) continue;
+  const mapPath = path.join(work, entry.source_map), map = JSON.parse(fs.readFileSync(mapPath));
+  assert.equal(hash(fs.readFileSync(mapPath)), entry.source_map_sha256);
+  assert.equal(map.sources.length, 1);
+  const source = path.resolve(path.dirname(mapPath), map.sources[0]);
+  assert.equal(hash(fs.readFileSync(source)), entry.production_composed_sha256, source);
+  assert.equal(hash(map.sourcesContent[0]), entry.production_composed_sha256);
+  assert.equal(path.resolve(path.dirname(mapPath), map.file), path.join(work, 'project', entry.projection));
+  assert.equal(hash(fs.readFileSync(path.join(work, 'project', entry.projection))), entry.projection_sha256);
+}
+assert.equal(read('source-map-validation.json').validated_maps, 586);
+assert.deepEqual(isolation.cache_byte_and_metadata_changes, []);
+assert.equal(isolation.protected_write_attempts, 0);
+assert.equal(summary.source_diagnostic_suppressions_added, false);
+assert.equal(summary.strict, true);
+assert.equal(summary.checkJs, true);
+assert.equal(summary.service_worker_receipt.exit_code, 0);
+assert.equal(diagnostics.filter(entry => entry.severity === 'error').length, summary.errors);
+assert.equal(diagnostics.filter(entry => entry.severity === 'warning').length, summary.warnings);
+assert.equal(diagnostics.filter(entry => /Cannot find module/.test(entry.message)).length, 0);
+assert.deepEqual(summary.worker_platform_type_bindings.map(entry => entry.file).sort(), ['platform-integrations/local-library/projection-worker.ts', 'platform-integrations/local-library/protocol/worker.js']);
+assert.ok(fs.readFileSync(path.join(work, 'project/platform-integrations/local-library/projection-worker.ts'), 'utf8').includes('declare const self: DedicatedWorkerGlobalScope;'));
+assert.ok(fs.readFileSync(path.join(work, 'project/platform-integrations/local-library/protocol/worker.js'), 'utf8').includes('const __semanticWorkerSelf ='));
+assert.deepEqual(isolation.error_categories, { implicit_any_or_inference: 188, assignability_or_call_signature: 17, nullability_or_unknown: 13, property_or_never: 14 });
+assert.deepEqual(isolation.errors_by_graph, { protocol_js: 217, integration_ts: 6, frontend_svelte: 9 });
+console.log(JSON.stringify({ status: 'passed', canonical_files: 679, composed_overlay_hashes: 107, valid_source_maps: 586, unresolved_graph_edges: 0, protected_node_write_attempts: 0, semantic_check_status: summary.status, errors: summary.errors, warnings: summary.warnings, qualification: 'Semantic failures are type diagnostics, not a count of proven runtime bugs. The cache audit is in-process verification, not OS syscall enforcement.' }));
