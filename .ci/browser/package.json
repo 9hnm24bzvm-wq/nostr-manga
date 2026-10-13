@@ -1,0 +1,10 @@
+{
+  "name": "nostr-manga-hosted-browser-tools",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Isolated official browser/build tools; never modifies the preserved frontend lockfile",
+  "dependencies": {
+    "playwright": "1.62.1",
+    "yarn": "1.22.22"
+  }
+}
