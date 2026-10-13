@@ -115,7 +115,9 @@ Install artifacts into a new immutable release directory and use an atomic
 operator-owned current-release switch. Provision writable private native/original
 storage separately, with adequate disk/inodes and tested backup/restore. Review
 `deployment/weebdex.service.example` and `deployment/nginx.example.conf`; these
-are templates, not verified installed services.
+are templates, not verified installed services. The service template uses
+`KillMode=mixed` so the main process owns initial shutdown while final whole-cgroup
+cleanup remains enabled. See [shutdown policy and acceptance](systemd-shutdown.md).
 
 Inject runtime JSON and secrets through the service manager or approved secret
 store. The only database value is `PLATFORM_DATABASE_URL` (legacy
@@ -178,7 +180,8 @@ instance; the original node's development defaults are not a production policy.
   recovery and link origin. Enable registration only deliberately.
 - Supply DNS/certificates, reverse proxy, closed loopback ports, management network
   policy, process manager, private data permissions and log retention/rotation.
-  Change example `TimeoutStopSec` if changing application drain. Proxy body limits
+  Keep example `TimeoutStopSec` greater than the actual configured application
+  `shutdown_grace_seconds`, including exit-cleanup margin. Proxy body limits
   must not fall below route-specific supported upload limits.
 - Review permissions, user bootstrap/staff policy, content licensing and original
   node instance/relay/read policies. Public-source provenance is not a publication

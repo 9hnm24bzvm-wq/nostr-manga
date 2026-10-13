@@ -1,0 +1,56 @@
+{
+  "issue": "https://github.com/9hnm24bzvm-wq/nostr-manga/issues/24",
+  "baseline_commit": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768",
+  "checked_utc": "2026-10-13T20:25:00Z",
+  "production_change": "Explicit KillMode=mixed in the example service; no Rust lifecycle changes",
+  "focused_contract_and_fixture_tests": {
+    "status": "passed",
+    "tests": 10,
+    "command": "python3 -m unittest discover -s tests/contracts -v"
+  },
+  "example_config_checks": {
+    "status": "passed",
+    "configs": [
+      "platform.publisher.example.json",
+      "platform.read-only.example.json"
+    ],
+    "app_grace_seconds": 210,
+    "manager_stop_seconds": 225
+  },
+  "baseline_negative_control": {
+    "status": "passed",
+    "description": "Original baseline unit rejected by new contract checker",
+    "checker_exit": 1
+  },
+  "python_compile": {
+    "status": "passed"
+  },
+  "systemd_analyze_verify": {
+    "status": "blocked",
+    "exit": 1,
+    "reason": "Analyzer attempted to create /run/systemd on a read-only filesystem; no host setting changed"
+  },
+  "real_manager_seam": {
+    "status": "unrun",
+    "cases_executed": 0,
+    "preflight_exit": 1,
+    "reason": "PID1 is codex, not systemd; system bus unavailable, user bus connection denied"
+  },
+  "actual_app_installed_unit_test": {
+    "status": "unrun",
+    "reason": "No authorized systemd-capable application host available for integrated manager/mutation acceptance"
+  },
+  "full_application_regression": {
+    "status": "unrun",
+    "reason": "Focused deployment-only change; no Rust application code changed"
+  },
+  "github_workflow": {
+    "status": "proposal_only",
+    "published": false,
+    "run": false
+  },
+  "host_settings_changed": false,
+  "merged": false,
+  "deployed": false,
+  "claim_boundary": "Passing contract checks and direct-signaled synthetic fixture tests do not establish real-manager or actual installed-application stop acceptance"
+}
