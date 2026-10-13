@@ -26,8 +26,12 @@ pub fn acquire_storage_owner(root: &std::path::Path) -> anyhow::Result<std::fs::
         use std::os::unix::fs::OpenOptionsExt;
         options.mode(0o600);
     }
-    let owner = options.open(&path).context("cannot open native upload owner")?;
-    owner.try_lock().context("native upload root has a live platform owner")?;
+    let owner = options
+        .open(&path)
+        .context("cannot open native upload owner")?;
+    owner
+        .try_lock()
+        .context("native upload root has a live platform owner")?;
     crate::domains::uploads::storage::verify_named_lease(&owner, &path)
         .map_err(|_| anyhow::anyhow!("native upload owner path changed or is not regular"))?;
     owner.sync_all()?;
@@ -96,9 +100,7 @@ mod owner_tests {
                             // This job owns only a PathBuf, like Tokio filesystem
                             // work; the cancelled async request owns no lease.
                             started_tx.send(()).unwrap();
-                            release_rx
-                                .recv_timeout(Duration::from_secs(5))
-                                .unwrap();
+                            release_rx.recv_timeout(Duration::from_secs(5)).unwrap();
                             assert!(acquire_storage_owner(&path).is_err());
                             std::fs::write(path.join("late-write"), b"synthetic").unwrap();
                         })
