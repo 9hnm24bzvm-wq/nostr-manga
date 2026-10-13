@@ -56,3 +56,7 @@ The current restore helper also explicitly disables peer_discovery_enabled. Re-e
 ## Schema52 restored-enrollment drill
 
 The actual pg_dump/restore/node fixture now verifies an enabled source enrollment policy is disabled after restored startup, while preserving its hourly/lifetime limits and signup counters. A previously admitted account remains admitted; a revoked account remains blocked even when checked against an enabled policy. Source configuration is unchanged. Focused fixture,unit tests,Clippy and process/database restart pass in results/restore-enrollment-policy.log with exit0. This extends evidence without changing application behavior.
+
+## Integrated full publisher
+
+For WeebDex's full publisher, use the [private full-publisher wrapper and explicit restore review fence](../../weebdex-platform/docs/offline-publisher-backup.md). The original-only helper does not include native platform originals/derivatives or platform auth invalidation. Its existing behavior stays unchanged unless the integrated wrapper explicitly opts into the extra snapshot/copy/restore hooks.

@@ -23,6 +23,10 @@ async fn main() -> Result<()> {
         "unknown platform action"
     );
     let config = Config::load()?;
+    ensure!(
+        !config.restore_review_required || action == "check-config" || action == "verify",
+        "restored publisher is fenced: complete offline recovery-point and exact-command review, then explicitly set restore_review_required=false before migrate or serve"
+    );
     if action != "migrate" {
         config.validate_runtime_paths()?;
     }
@@ -34,6 +38,15 @@ async fn main() -> Result<()> {
         );
         return Ok(());
     }
+    // Hold the native mutation owner until requests and all workers are gone.
+    // The offline backup helper acquires this same lock before its snapshot.
+    let _storage_owner = if action == "serve" || action == "migrate" {
+        Some(weebdex_platform::runtime::acquire_storage_owner(
+            &config.uploads_dir,
+        )?)
+    } else {
+        None
+    };
     let state = AppState::connect(config, Config::database_dsn()?).await?;
     if action == "migrate" {
         state.db.migrate(domains::MIGRATIONS).await?;

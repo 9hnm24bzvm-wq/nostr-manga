@@ -8,7 +8,6 @@ Restore only targets a new directory and an empty database, never overwrites one
 from __future__ import annotations
 import argparse, contextlib, ctypes, ctypes.util, fcntl, hashlib, json, os, re, select, shutil, stat, subprocess, time
 from pathlib import Path
-from coincurve import PrivateKey, PublicKeyXOnly
 from src.operator_json import save_json, read_json
 
 
@@ -59,6 +58,7 @@ def pg_environment(pg, dsn):
         raise BackupError("invalid PostgreSQL connection options")
     env = os.environ.copy()
     env.pop("MANGA_DATABASE_URL", None)
+    env.pop("PLATFORM_DATABASE_URL", None)
     env.pop("PGSERVICE", None)
     env.pop("PGSERVICEFILE", None)
     provided = set()
@@ -154,7 +154,7 @@ def owners(config):
 
 
 @contextlib.contextmanager
-def snapshot(pg, dsn, log):
+def snapshot(pg, dsn, log, platform=False):
     marker = "BACKUP_SNAPSHOT_READY"
     with Path(log).open("w") as err:
         p = subprocess.Popen(
@@ -167,7 +167,11 @@ def snapshot(pg, dsn, log):
         )
         try:
             command = (
-                "BEGIN ISOLATION LEVEL REPEATABLE READ;SET LOCAL lock_timeout='5s';SET LOCAL idle_in_transaction_session_timeout=0;SELECT pg_advisory_xact_lock(697241113);DO $$ DECLARE r record;BEGIN FOR r IN SELECT schemaname,tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename LOOP EXECUTE format('LOCK TABLE %I.%I IN SHARE MODE',r.schemaname,r.tablename);END LOOP;END $$;SELECT 'SNAP:'||pg_export_snapshot();SELECT '"
+                "BEGIN ISOLATION LEVEL REPEATABLE READ;SET LOCAL lock_timeout='5s';SET LOCAL idle_in_transaction_session_timeout=0;SELECT pg_advisory_xact_lock(697241113);"
+                + ("SELECT pg_advisory_xact_lock(697241114);" if platform else "")
+                + "DO $$ DECLARE r record;BEGIN FOR r IN SELECT schemaname,tablename FROM pg_tables WHERE "
+                + ("schemaname IN ('public','platform')" if platform else "schemaname='public'")
+                + " ORDER BY schemaname,tablename LOOP EXECUTE format('LOCK TABLE %I.%I IN SHARE MODE',r.schemaname,r.tablename);END LOOP;END $$;SELECT 'SNAP:'||pg_export_snapshot();SELECT '"
                 + marker
                 + "';\n"
             )
@@ -326,7 +330,22 @@ def verify_receipts(root, config):
     return counts
 
 
-def backup(config_path, destination, pg, dsn):
+def signer_public(key):
+    # Path-only verification and CLI help do not require the signing dependency.
+    from coincurve import PrivateKey, PublicKeyXOnly
+
+    key = absolute(key)
+    if key.stat().st_mode & 0o077 or key.stat().st_size > 128:
+        raise BackupError("signer key must be protected")
+    try:
+        return PublicKeyXOnly.from_secret(
+            PrivateKey(bytes.fromhex(key.read_text().strip())).secret
+        ).format().hex()
+    except (ValueError, TypeError):
+        raise BackupError("invalid signer key") from None
+
+
+def backup(config_path, destination, pg, dsn, *, platform=False, copy_extra=None):
     config = read_json(config_path)
     if not config.get("storage") or not config.get("backend"):
         raise BackupError("co-located storage and backend required")
@@ -342,16 +361,10 @@ def backup(config_path, destination, pg, dsn):
     key = absolute(config["service_key_file"])
     if key.stat().st_mode & 0o077 or key.stat().st_size > 128:
         raise BackupError("service key must be protected")
-    pub = (
-        PublicKeyXOnly.from_secret(
-            PrivateKey(bytes.fromhex(key.read_text().strip())).secret
-        )
-        .format()
-        .hex()
-    )
+    pub = signer_public(key)
     with owners(config):
         out.mkdir(parents=True, exist_ok=False, mode=0o700)
-        with snapshot(pg, dsn, out / "snapshot.log") as snap:
+        with snapshot(pg, dsn, out / "snapshot.log", platform=platform) as snap:
             identity = json.loads(
                 sql(
                     pg,
@@ -390,6 +403,7 @@ def backup(config_path, destination, pg, dsn):
             receipt_index(pg, dsn, out / "receipts.jsonl")
             counts = verify_receipts(out, config)
             schema = int(sql(pg, dsn, "SELECT max(version) FROM schema_migrations"))
+            extra = copy_extra(out, config) if copy_extra else {}
         entries = 0
         total = 0
         with (out / "files.jsonl").open("x") as manifest:
@@ -424,6 +438,7 @@ def backup(config_path, destination, pg, dsn):
             derived_public_namespace_excluded=True,
             scope="offline co-located node; no deployment activation",
         )
+        complete.update(extra)
         save_json(out / "BACKUP_COMPLETE.json", complete, exclusive=True)
         sync_dirs(out)
     return complete
@@ -475,6 +490,10 @@ def restore(
     bind=None,
     base_url=None,
     backend_binary=None,
+    *,
+    validate_extra=None,
+    restore_extra=None,
+    extra_fence_sql="",
 ):
     if not source_offline:
         raise BackupError(
@@ -492,6 +511,8 @@ def restore(
         raise BackupError("backup manifest mismatch")
     if sum(1 for _ in backup_entries(source)) != complete["files"]:
         raise BackupError("backup file count mismatch")
+    if validate_extra:
+        validate_extra(source, complete)
     if sql(pg, dsn, "SELECT count(*) FROM pg_tables WHERE schemaname='public'") != "0":
         raise BackupError("restore requires an empty destination database")
     out.mkdir(parents=True, exist_ok=False, mode=0o700)
@@ -534,7 +555,9 @@ def restore(
     sql(
         pg,
         dsn,
-        "BEGIN;SELECT pg_advisory_xact_lock(697241113);UPDATE jobs SET state='queued',generation=generation+1,claim_token=NULL,lease_until=NULL,available_at=clock_timestamp(),updated_at=clock_timestamp() WHERE state IN ('queued','leased');DO $$ BEGIN IF to_regclass('public.staging_operations') IS NOT NULL THEN DELETE FROM staging_operations; END IF; IF to_regclass('public.public_export_health_work') IS NOT NULL THEN DELETE FROM public_export_health_work; END IF; IF to_regclass('public.public_export_queue') IS NOT NULL THEN DELETE FROM public_export_queue; DELETE FROM public_export_roles; END IF; IF to_regclass('public.public_export_holds') IS NOT NULL THEN DELETE FROM public_export_holds; END IF; IF to_regclass('public.sync_schedules') IS NOT NULL THEN UPDATE sync_schedules SET enabled=FALSE,revision=revision+1,last_error='paused_after_restore',updated_at=clock_timestamp(); END IF; END $$;UPDATE inventory_snapshot_slots SET session_id=NULL,peer=NULL,peer_epoch=NULL,prefix='',filter='',snapshot=''::bytea,expires_at='-infinity',rounds=0,protocol_bytes=0;UPDATE node_identity SET restore_generation=restore_generation+1,auth_not_before=floor(extract(epoch FROM clock_timestamp()))::bigint+1,restored_at=clock_timestamp() WHERE singleton;COMMIT",
+        "BEGIN;SELECT pg_advisory_xact_lock(697241113);UPDATE jobs SET state='queued',generation=generation+1,claim_token=NULL,lease_until=NULL,available_at=clock_timestamp(),updated_at=clock_timestamp() WHERE state IN ('queued','leased');DO $$ BEGIN IF to_regclass('public.staging_operations') IS NOT NULL THEN DELETE FROM staging_operations; END IF; IF to_regclass('public.public_export_health_work') IS NOT NULL THEN DELETE FROM public_export_health_work; END IF; IF to_regclass('public.public_export_queue') IS NOT NULL THEN DELETE FROM public_export_queue; DELETE FROM public_export_roles; END IF; IF to_regclass('public.public_export_holds') IS NOT NULL THEN DELETE FROM public_export_holds; END IF; IF to_regclass('public.sync_schedules') IS NOT NULL THEN UPDATE sync_schedules SET enabled=FALSE,revision=revision+1,last_error='paused_after_restore',updated_at=clock_timestamp(); END IF; END $$;UPDATE inventory_snapshot_slots SET session_id=NULL,peer=NULL,peer_epoch=NULL,prefix='',filter='',snapshot=''::bytea,expires_at='-infinity',rounds=0,protocol_bytes=0;UPDATE node_identity SET restore_generation=restore_generation+1,auth_not_before=floor(extract(epoch FROM clock_timestamp()))::bigint+1,restored_at=clock_timestamp() WHERE singleton;"
+        + extra_fence_sql
+        + "COMMIT",
     )
     config["service_key_file"] = str(out / "service.key")
     config["storage"]["path"] = str(out / "storage")
@@ -547,6 +570,7 @@ def restore(
     if base_url:
         config["base_url"] = base_url
     pause_restored_roles(config)
+    extra = restore_extra(out, config, complete) if restore_extra else {}
     save_json(out / "restored-config.json", config, exclusive=True)
     result = dict(
         restored=True,
@@ -561,6 +585,7 @@ def restore(
             "Public serving aliases/process state were excluded; rebuild exports from verified restored originals before enabling that role.",
         ],
     )
+    result.update(extra)
     save_json(out / "RESTORE_COMPLETE.json", result, exclusive=True)
     sync_dirs(out)
     return result

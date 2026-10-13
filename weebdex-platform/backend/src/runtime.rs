@@ -11,6 +11,55 @@ use std::{
 };
 use tokio::time::Sleep;
 
+/// One cooperating writer per native upload root, also used by offline backup.
+/// Never truncate/unlink this named lock; its inode must remain stable.
+pub fn acquire_storage_owner(root: &std::path::Path) -> anyhow::Result<std::fs::File> {
+    use anyhow::{Context, ensure};
+    std::fs::create_dir_all(root).context("cannot initialize native upload root")?;
+    let metadata = std::fs::symlink_metadata(root)?;
+    ensure!(metadata.is_dir(), "native upload root must be a directory");
+    let path = root.join(".platform-owner");
+    let mut options = std::fs::OpenOptions::new();
+    options.read(true).write(true).create(true).truncate(false);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    let owner = options.open(&path).context("cannot open native upload owner")?;
+    owner.try_lock().context("native upload root has a live platform owner")?;
+    crate::domains::uploads::storage::verify_named_lease(&owner, &path)
+        .map_err(|_| anyhow::anyhow!("native upload owner path changed or is not regular"))?;
+    owner.sync_all()?;
+    std::fs::File::open(root)?.sync_all()?;
+    Ok(owner)
+}
+
+#[cfg(test)]
+mod owner_tests {
+    use super::acquire_storage_owner;
+
+    #[test]
+    fn native_owner_excludes_another_writer_and_releases_on_drop() {
+        let root = tempfile::tempdir().unwrap();
+        let first = acquire_storage_owner(root.path()).unwrap();
+        assert!(acquire_storage_owner(root.path()).is_err());
+        drop(first);
+        assert!(acquire_storage_owner(root.path()).is_ok());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn native_owner_rejects_symlink_name() {
+        let root = tempfile::tempdir().unwrap();
+        let target = root.path().join("regular");
+        std::fs::write(&target, b"unchanged").unwrap();
+        std::os::unix::fs::symlink(&target, root.path().join(".platform-owner")).unwrap();
+        assert!(acquire_storage_owner(root.path()).is_err());
+        assert_eq!(std::fs::read(target).unwrap(), b"unchanged");
+    }
+}
+
 #[derive(Default)]
 pub struct RuntimeState {
     ready: AtomicBool,
