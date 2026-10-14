@@ -1,0 +1,42 @@
+[
+  {
+    "pid": 125,
+    "protected_roots": [
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+    ],
+    "checked_node_mutations": 0,
+    "protected_write_attempts": 0,
+    "denied": []
+  },
+  {
+    "pid": 81,
+    "protected_roots": [
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+    ],
+    "checked_node_mutations": 125,
+    "protected_write_attempts": 0,
+    "denied": []
+  },
+  {
+    "pid": 89,
+    "protected_roots": [
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+    ],
+    "checked_node_mutations": 318,
+    "protected_write_attempts": 0,
+    "denied": []
+  },
+  {
+    "pid": 61,
+    "protected_roots": [
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+      "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+    ],
+    "checked_node_mutations": 7389,
+    "protected_write_attempts": 0,
+    "denied": []
+  }
+]

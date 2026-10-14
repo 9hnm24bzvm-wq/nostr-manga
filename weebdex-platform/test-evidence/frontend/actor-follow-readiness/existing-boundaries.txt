@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "baseline_reproduction": {
+    "error_class": "TypeError",
+    "property": "LimitHeight",
+    "source": "frontend/src/lib/stores/prefs.ts"
+  },
+  "preferences_only_reproduction": {
+    "error_class": "ReferenceError",
+    "source": "platform-integrations/local-library/library.ts",
+    "binding": "Session"
+  },
+  "results": [
+    {
+      "entry": "frontend/src/lib/stores/index.ts",
+      "composed_modules_evaluated": 87,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/API/index.ts",
+      "composed_modules_evaluated": 87,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/stores/Session.ts",
+      "composed_modules_evaluated": 87,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/index.ts",
+      "composed_modules_evaluated": 87,
+      "passed": true
+    },
+    {
+      "entry": "platform-integrations/local-library/library.ts",
+      "composed_modules_evaluated": 87,
+      "passed": true
+    }
+  ],
+  "package_browser_apis": "explicit stand-ins",
+  "browser_e2e": false,
+  "network": false,
+  "original_files_written": false
+}
+(node:44) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ tests/ci/test_frontend_bootstrap.mjs (466.727112ms)
+(node:45) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ native handler consumes the old flow, returns fresh serialized successor and rotates cookie (1.674199ms)
+✔ old consumed-id guard reproduces accepted native reset with no forced session read (76.11767ms)
+✔ native successor reaches actual forced Session read while UI remains restricted until authority confirmed (26.586268ms)
+✔ stale update response cannot start normal Session refresh: navigate (16.634306ms)
+✔ stale update response cannot start normal Session refresh: startNavigation (20.871458ms)
+✔ stale update response cannot start normal Session refresh: destroy (18.926829ms)
+✔ stale update response cannot start normal Session refresh: replaceFlow (16.133264ms)
+✔ stale update response cannot start normal Session refresh: replaceForm (14.314761ms)
+✔ stale forced refresh cannot complete old reset UI: navigate (14.837095ms)
+✔ stale forced refresh cannot complete old reset UI: startNavigation (15.308563ms)
+✔ stale forced refresh cannot complete old reset UI: destroy (15.090651ms)
+✔ stale forced refresh cannot complete old reset UI: replaceFlow (15.224208ms)
+✔ stale forced refresh cannot complete old reset UI: replaceForm (13.059924ms)
+✔ invalid acknowledged successor cannot grant authority or replay: missing id (16.402803ms)
+✔ invalid acknowledged successor cannot grant authority or replay: empty id (14.388922ms)
+✔ invalid acknowledged successor cannot grant authority or replay: consumed id (15.076099ms)
+✔ invalid acknowledged successor cannot grant authority or replay: API type (12.805298ms)
+✔ invalid acknowledged successor cannot grant authority or replay: different return target (14.938585ms)
+✔ invalid acknowledged successor cannot grant authority or replay: foreign origin (12.574165ms)
+✔ invalid acknowledged successor cannot grant authority or replay: wrong path (15.02311ms)
+✔ invalid acknowledged successor cannot grant authority or replay: wrong action id (13.295185ms)
+✔ invalid acknowledged successor cannot grant authority or replay: extra action query (13.114627ms)
+✔ invalid acknowledged successor cannot grant authority or replay: action fragment (12.068147ms)
+✔ invalid acknowledged successor cannot grant authority or replay: action credentials (12.608077ms)
+✔ invalid acknowledged successor cannot grant authority or replay: missing action (14.475391ms)
+✔ invalid acknowledged successor cannot grant authority or replay: wrong method (12.186963ms)
+✔ invalid acknowledged successor cannot grant authority or replay: reused CSRF (13.1438ms)
+✔ invalid acknowledged successor cannot grant authority or replay: empty CSRF (12.914771ms)
+✔ invalid acknowledged successor cannot grant authority or replay: non-string CSRF (14.437435ms)
+✔ invalid acknowledged successor cannot grant authority or replay: missing password (12.211259ms)
+✔ invalid acknowledged successor cannot grant authority or replay: broader account node (12.168956ms)
+✔ invalid acknowledged successor cannot grant authority or replay: missing UI (14.929394ms)
+✔ unaccepted response remains restricted with no Session refresh: same-id non-success (12.461139ms)
+✔ unaccepted response remains restricted with no Session refresh: foreign non-success (14.375413ms)
+✔ unaccepted response remains restricted with no Session refresh: non-200 success (12.591042ms)
+✔ unaccepted response remains restricted with no Session refresh: empty response (14.135528ms)
+✔ unaccepted response remains restricted with no Session refresh: same-id validation error (15.1028ms)
+✔ unaccepted response remains restricted with no Session refresh: foreign validation error (12.606153ms)
+✔ unaccepted response remains restricted with no Session refresh: broader validation error (13.64377ms)
+✔ acknowledgement alone cannot confirm a normal account: unauthorized (11.92148ms)
+✔ acknowledgement alone cannot confirm a normal account: still restricted (11.86102ms)
+✔ acknowledgement alone cannot confirm a normal account: read failure (14.059425ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 777.177629

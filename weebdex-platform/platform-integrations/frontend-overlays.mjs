@@ -1997,7 +1997,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\timport { toast } from \"svelte-sonner\";",
-    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";"
+    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";\r\n\timport { createActorFollowState } from \"$platform/actor-follow-state\";"
   },
   {
     "path": "src/routes/(app)/group/[id]/Group.svelte",
@@ -2005,7 +2005,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tconst group = writable<ScanlationGroup>(data);",
-    "after": "\tconst group = writable<ScanlationGroup>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));\r\n\t$effect(() => { $group.id; page.url.href; preferenceOwner.invalidate(); });"
+    "after": "\tconst group = writable<ScanlationGroup>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));"
   },
   {
     "path": "src/routes/(app)/group/[id]/Group.svelte",
@@ -2013,7 +2013,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst idx = $prefs.groups.findIndex(({ id }) => id === $group.id);\r\n\t\t\t\tif (idx >= 0) $prefs.groups.splice(idx, 1);\r\n\t\t\t\telse $prefs.groups.push({ id: $group.id, name: $group.name, version: $group.version });\r\n\r\n\t\t\t\tif ($Session) {\r\n\t\t\t\t\tconst payload: UpdateSettingsRequest = {\r\n\t\t\t\t\t\tversion: $prefs.version,\r\n\t\t\t\t\t\tgroups: $prefs.groups.map(({ id }) => id)\r\n\t\t\t\t\t};\r\n\t\t\t\t\tif (Object.keys(payload).length <= 1) {\r\n\t\t\t\t\t\treturn;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tconst res = await API.Settings.Update(payload);\r\n\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t$prefs = $Session.preferences = res.body;\r\n\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingBlockStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n",
-    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $group.id, name: $group.name, version: $group.version };\r\n\t\tconst next = selected.initial.groups.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.groups.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, groups: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
+    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session || (!isBlocked && !followState.knownAbsent())) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $group.id, name: $group.name, version: $group.version };\r\n\t\tconst next = selected.initial.groups.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.groups.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, groups: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2021,7 +2021,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\timport { toast } from \"svelte-sonner\";",
-    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";"
+    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";\r\n\timport { createActorFollowState } from \"$platform/actor-follow-state\";"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2029,7 +2029,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tconst user = writable<User>(data);",
-    "after": "\tconst user = writable<User>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));\r\n\t$effect(() => { $user.id; page.url.href; preferenceOwner.invalidate(); });"
+    "after": "\tconst user = writable<User>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2037,7 +2037,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst idx = $prefs.uploaders.findIndex(({ id }) => id === $user.id);\r\n\t\t\t\tif (idx >= 0) $prefs.uploaders.splice(idx, 1);\r\n\t\t\t\telse $prefs.uploaders.push({ id: $user.id, name: $user.name, version: $user.version });\r\n\r\n\t\t\t\tif ($Session) {\r\n\t\t\t\t\tconst payload: UpdateSettingsRequest = {\r\n\t\t\t\t\t\tversion: $prefs.version,\r\n\t\t\t\t\t\tuploaders: $prefs.uploaders.map(({ id }) => id)\r\n\t\t\t\t\t};\r\n\t\t\t\t\tif (Object.keys(payload).length <= 1) {\r\n\t\t\t\t\t\treturn;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tconst res = await API.Settings.Update(payload);\r\n\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t$prefs = $Session.preferences = res.body;\r\n\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingBlockStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n",
-    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $user.id, name: $user.name, version: $user.version };\r\n\t\tconst next = selected.initial.uploaders.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.uploaders.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, uploaders: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
+    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session || (!isBlocked && !followState.knownAbsent())) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $user.id, name: $user.name, version: $user.version };\r\n\t\tconst next = selected.initial.uploaders.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.uploaders.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, uploaders: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
   },
   {
     "path": "src/lib/components/upload/UploadChapterPages.svelte",
@@ -2093,7 +2093,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tconst updateFollowStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst res = await (isFollowed ? API.Group.Unfollow : API.Group.Follow)($group.id);\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) {\r\n\t\t\t\t\tisFollowed = !isFollowed;\r\n\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingFollowStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n\r\n",
-    "after": "\tconst updateFollowStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $group.id, nextFollowed = !isFollowed;\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await (nextFollowed ? API.Group.Follow : API.Group.Unfollow)(targetId, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) isFollowed = nextFollowed;\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingFollowStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n\r\n"
+    "after": "\tconst updateFollowStatus = () => followState.activate();\r\n\r\n"
   },
   {
     "path": "src/routes/(app)/group/[id]/Group.svelte",
@@ -2101,7 +2101,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tconst getFollowStatus = async () => {\r\n\t\tif (!(await Session.isValid())) {\r\n\t\t\treturn;\r\n\t\t}\r\n\r\n\t\tconst res = await API.Group.GetFollowStatus($group.id);\r\n\t\tisFollowed = res?.status === StatusCodes.NO_CONTENT;\r\n\t};\r\n\r\n",
-    "after": "\tconst getFollowStatus = async () => {\r\n\t\tif (!$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $group.id;\r\n\t\ttry { const res = await API.Group.GetFollowStatus(targetId); intent.assert(); isFollowed = res?.status === StatusCodes.NO_CONTENT; }\r\n\t\tfinally { intent.release(); }\r\n\t};\r\n\r\n"
+    "after": ""
   },
   {
     "path": "src/lib/API/User.ts",
@@ -2141,7 +2141,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tconst updateFollowStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst res = await (isFollowed ? API.User.Unfollow : API.User.Follow)($user.id);\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) {\r\n\t\t\t\t\tisFollowed = !isFollowed;\r\n\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingFollowStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n\r\n",
-    "after": "\tconst updateFollowStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $user.id, nextFollowed = !isFollowed;\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await (nextFollowed ? API.User.Follow : API.User.Unfollow)(targetId, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) isFollowed = nextFollowed;\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingFollowStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n\r\n"
+    "after": "\tconst updateFollowStatus = () => followState.activate();\r\n\r\n"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2149,7 +2149,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tconst getFollowStatus = async () => {\r\n\t\tif (!(await Session.isValid())) {\r\n\t\t\treturn;\r\n\t\t}\r\n\r\n\t\ttry {\r\n\t\t\tconst res = await API.User.GetFollowStatus($user.id);\r\n\t\t\tisFollowed = res?.status === StatusCodes.NO_CONTENT;\r\n\t\t} catch (e) {\r\n\t\t\tconsole.error(e);\r\n\t\t}\r\n\t};\r\n\r\n",
-    "after": "\tconst getFollowStatus = async () => {\r\n\t\tif (!$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $user.id;\r\n\t\ttry { const res = await API.User.GetFollowStatus(targetId); intent.assert(); isFollowed = res?.status === StatusCodes.NO_CONTENT; }\r\n\t\tfinally { intent.release(); }\r\n\t};\r\n\r\n"
+    "after": ""
   },
   {
     "path": "src/routes/(app)/forums/threads/[id]/Thread.svelte",
@@ -2984,7 +2984,110 @@ const patches = [
   "count": 1,
   "before": "\t\tconst target = window.location.pathname + q.toString();",
   "after": "\t\tconst finalValidation = validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (finalValidation) { toast.error(finalValidation.title, { description: finalValidation.body }); return; }\r\n\t\tconst target = window.location.pathname + q.toString();"
-}
+},
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group follow status follows current actor and target readiness",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "\tlet isFollowed = $state(false);",
+    "after": "\tconst followState = createActorFollowState({\r\n\t\towner: preferenceOwner, mutex,\r\n\t\ttarget: () => $group.id, lifetime: () => page.url.href,\r\n\t\tcanMutate: () => !isBlocked,\r\n\t\tread: target => API.Group.GetFollowStatus(target),\r\n\t\twrite: (target, followed, intent) => (followed ? API.Group.Follow : API.Group.Unfollow)(target, intent),\r\n\t\tonError: cause => { const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t});\r\n\tlet isFollowed = $derived($followState.followed);\r\n\t$effect.pre(() => { $group.id; page.url.href; followState.selectTarget(); });"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group mounted public chapter count is independent of actor readiness",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "await Promise.all([getFollowStatus(), getChaptersCount()]);",
+    "after": "await getChaptersCount();"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group follow progress reflects current read and mutation only",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "\tlet isUpdatingFollowStatus = $state(false);",
+    "after": "\tlet isUpdatingFollowStatus = $derived($followState.loading || $followState.updating);"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group follow control waits for known current status or offers read retry",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex}",
+    "after": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex || $followState.loading || $followState.updating || (!$followState.ready && !$followState.error)}",
+    "approved_follow_readiness_exception": "follow_current_status_disabled"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group unknown follow status offers explicit read-only retry",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "{#if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "after": "{#if $followState.error}\r\n\t\t\t\t\t\t\t\t\tRetry follow status\r\n\t\t\t\t\t\t\t\t{:else if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "approved_follow_readiness_exception": "follow_current_status_retry"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user follow status follows current actor and target readiness",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "\tlet isFollowed = $state(false);",
+    "after": "\tconst followState = createActorFollowState({\r\n\t\towner: preferenceOwner, mutex,\r\n\t\ttarget: () => $user.id, lifetime: () => page.url.href,\r\n\t\tcanMutate: () => !isBlocked && $user.id !== $Session?.identity.id,\r\n\t\tread: target => API.User.GetFollowStatus(target),\r\n\t\twrite: (target, followed, intent) => (followed ? API.User.Follow : API.User.Unfollow)(target, intent),\r\n\t\tonError: cause => { const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t});\r\n\tlet isFollowed = $derived($followState.followed);\r\n\t$effect.pre(() => { $user.id; page.url.href; followState.selectTarget(); });"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user mounted public chapter count is independent of actor readiness",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "await Promise.all([getFollowStatus(), getChaptersCount()]);",
+    "after": "await getChaptersCount();"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user follow progress reflects current read and mutation only",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "\tlet isUpdatingFollowStatus = $state(false);",
+    "after": "\tlet isUpdatingFollowStatus = $derived($followState.loading || $followState.updating);"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user follow control waits for known current status or offers read retry",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex}",
+    "after": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex || $followState.loading || $followState.updating || (!$followState.ready && !$followState.error)}",
+    "approved_follow_readiness_exception": "follow_current_status_disabled"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user unknown follow status offers explicit read-only retry",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "{#if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "after": "{#if $followState.error}\r\n\t\t\t\t\t\t\t\t\tRetry follow status\r\n\t\t\t\t\t\t\t\t{:else if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "approved_follow_readiness_exception": "follow_current_status_retry"
+  }
+,
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group unknown follow state cannot expose a new Block action",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "{#if !isFollowed}",
+    "after": "{#if isBlocked || ($followState.ready && !isFollowed)}",
+    "approved_follow_readiness_exception": "follow_current_status_block_guard"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user unknown follow state cannot expose a new Block action",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "{#if !isFollowed}",
+    "after": "{#if isBlocked || ($followState.ready && !isFollowed)}",
+    "approved_follow_readiness_exception": "follow_current_status_block_guard"
+  }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {
@@ -3034,3 +3137,5 @@ export const frontendApprovedSearchCallbackExceptions = patches.filter(patch => 
 export const frontendApprovedAuthFlowKeyExceptions = patches.filter(patch => patch.approved_auth_flow_key_exception).map(({ path, sha256, count, before, after, approved_auth_flow_key_exception }) => ({ path, sha256, count, before, after, approved_auth_flow_key_exception }));
 
 export const frontendApprovedCreateRecoveryExceptions = patches.filter(patch => patch.approved_create_recovery_exception).map(({ path, sha256, count, before, after, approved_create_recovery_exception }) => ({ path, sha256, count, before, after, approved_create_recovery_exception }));
+
+export const frontendApprovedFollowReadinessExceptions = patches.filter(patch => patch.approved_follow_readiness_exception).map(({ path, sha256, count, before, after, approved_follow_readiness_exception }) => ({ path, sha256, count, before, after, approved_follow_readiness_exception }));

@@ -36,6 +36,11 @@
       "sha256": "861f2f36763f3d07497c31a498e90438707a8848e166afba3c836dac982a7ecd"
     },
     {
+      "path": "platform-integrations/frontend-behavior/actor-follow-state.ts",
+      "bytes": 5890,
+      "sha256": "f98b0fdd79e1cc7ea13baada0a6cdc188e312d8e12e3560ae9d901c1e11b935b"
+    },
+    {
       "path": "platform-integrations/frontend-behavior/auth-form-owner.ts",
       "bytes": 1621,
       "sha256": "0999a37c2dc816d2a6b8bf602428ed029776c3828521f04d8079a7054dd11c59"
@@ -202,8 +207,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 431746,
-      "sha256": "6e5682c74a29b5fc8e8a54bf7ac5cf3b8c44073df12384f5a1f03480a1d13d15"
+      "bytes": 436112,
+      "sha256": "c392c30019bf211fc6ca79f492228d8c70f9b8697597843e909bc46cfea355f7"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -371,7 +376,7 @@
       "sha256": "b047eaba5865ee6d83a522410f84b7e6b884e9074b4dc127c75341f92e8bf224"
     }
   ],
-  "integration_source_inventory_sha256": "0db4d5b257bd6b1cbe1091508c816a76adec5292f70028195cf106eb17993a46",
+  "integration_source_inventory_sha256": "2016a2aed66744d5ca35fb069170817d8bd244a849f307f52f76e7cf5cfe8bfa",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -399,7 +404,7 @@
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "6e5682c74a29b5fc8e8a54bf7ac5cf3b8c44073df12384f5a1f03480a1d13d15",
+  "overlay_module_sha256": "c392c30019bf211fc6ca79f492228d8c70f9b8697597843e909bc46cfea355f7",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -2642,6 +2647,84 @@
       "label": "search Apply validates the final wire after sentinel and default-key mutations",
       "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
       "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group follow status follows current actor and target readiness",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group mounted public chapter count is independent of actor readiness",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group follow progress reflects current read and mutation only",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group follow control waits for known current status or offers read retry",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_disabled"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group unknown follow status offers explicit read-only retry",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_retry"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user follow status follows current actor and target readiness",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user mounted public chapter count is independent of actor readiness",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user follow progress reflects current read and mutation only",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user follow control waits for known current status or offers read retry",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_disabled"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user unknown follow status offers explicit read-only retry",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_retry"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group unknown follow state cannot expose a new Block action",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_block_guard"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user unknown follow state cannot expose a new Block action",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_block_guard"
     },
     {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
@@ -6047,6 +6130,84 @@
       "label": "search Apply validates the final wire after sentinel and default-key mutations",
       "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
       "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group follow status follows current actor and target readiness",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group mounted public chapter count is independent of actor readiness",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group follow progress reflects current read and mutation only",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group follow control waits for known current status or offers read retry",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_disabled"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group unknown follow status offers explicit read-only retry",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_retry"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user follow status follows current actor and target readiness",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user mounted public chapter count is independent of actor readiness",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user follow progress reflects current read and mutation only",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user follow control waits for known current status or offers read retry",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_disabled"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user unknown follow status offers explicit read-only retry",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_retry"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "label": "group unknown follow state cannot expose a new Block action",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_block_guard"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "label": "user unknown follow state cannot expose a new Block action",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "approved_follow_readiness_exception": "follow_current_status_block_guard"
     }
   ],
   "reader_script_repairs": [
@@ -7488,6 +7649,56 @@
       "approved_create_recovery_exception": "acknowledged_draft_recovery_controls"
     }
   ],
+  "approved_follow_readiness_exceptions": [
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "before": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex}",
+      "after": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex || $followState.loading || $followState.updating || (!$followState.ready && !$followState.error)}",
+      "approved_follow_readiness_exception": "follow_current_status_disabled"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "before": "{#if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+      "after": "{#if $followState.error}\r\n\t\t\t\t\t\t\t\t\tRetry follow status\r\n\t\t\t\t\t\t\t\t{:else if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+      "approved_follow_readiness_exception": "follow_current_status_retry"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "before": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex}",
+      "after": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex || $followState.loading || $followState.updating || (!$followState.ready && !$followState.error)}",
+      "approved_follow_readiness_exception": "follow_current_status_disabled"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "before": "{#if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+      "after": "{#if $followState.error}\r\n\t\t\t\t\t\t\t\t\tRetry follow status\r\n\t\t\t\t\t\t\t\t{:else if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+      "approved_follow_readiness_exception": "follow_current_status_retry"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/Group.svelte",
+      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+      "count": 1,
+      "before": "{#if !isFollowed}",
+      "after": "{#if isBlocked || ($followState.ready && !isFollowed)}",
+      "approved_follow_readiness_exception": "follow_current_status_block_guard"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/User.svelte",
+      "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+      "count": 1,
+      "before": "{#if !isFollowed}",
+      "after": "{#if isBlocked || ($followState.ready && !isFollowed)}",
+      "approved_follow_readiness_exception": "follow_current_status_block_guard"
+    }
+  ],
   "approved_feed_pagination_exceptions": [
     {
       "path": "src/lib/components/ChapterFeed.svelte",
@@ -8333,23 +8544,23 @@
     {
       "path": "src/routes/(app)/group/[id]/Group.svelte",
       "original_sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
-      "executed_source_sha256": "a05f641d5694ec2a360d9632b31a9b70a4897a14de97b559cca3d1adbf7ed80b",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
+      "executed_source_sha256": "2a5200217bf9d624e8ad92ecdef36485000f945ded82f400e5624801273d7976",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
+      "explicit_local_protocol_ui_extension": true,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/user/[id]/User.svelte",
       "original_sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
-      "executed_source_sha256": "3bb01b6a0c1a04135f3a0ed7c498e2fccf6ab90e1b6a7cdd6d5ef4c0cf83cda1",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
+      "executed_source_sha256": "e858c8dc60fe7540c38b587c3036b62ed2284a73a77adc83b062d7d32e8d6d74",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
+      "explicit_local_protocol_ui_extension": true,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -8903,5 +9114,5 @@
       "approved_event_handler_javascript_changed": false
     }
   ],
-  "qualification": "All supplied source bytes remain unchanged. Executed script source differs, including one exact approved onclick JavaScript body; unrelated retained markup/styles match after narrowly enumerated handler, local availability/key, target/discussion-key, existing share handler/name, supported client-name validation, staging cancel/reset and restricted recovery boundary exceptions are normalized. Anonymous recovery executes a guarded script derivative of a checked byte-identical source copy; its original markup/styles match exactly. Executed HTML has necessary explicit local/protocol, staging-cancel and restricted-reset UI extensions, so globally exact rendered HTML is not claimed. Absent announcements are reconstructed."
+  "qualification": "All supplied source bytes remain unchanged. Executed script source differs, including one exact approved onclick JavaScript body; unrelated retained markup/styles match after narrowly enumerated handler, local availability/key, target/discussion-key, existing share handler/name, supported client-name validation, staging cancel/reset, restricted recovery boundary and current-actor follow readiness/retry exceptions are normalized. Anonymous recovery executes a guarded script derivative of a checked byte-identical source copy; its original markup/styles match exactly. Executed HTML has necessary explicit local/protocol, staging-cancel, restricted-reset and current-actor follow readiness/retry UI extensions, so globally exact rendered HTML is not claimed. Absent announcements are reconstructed."
 }

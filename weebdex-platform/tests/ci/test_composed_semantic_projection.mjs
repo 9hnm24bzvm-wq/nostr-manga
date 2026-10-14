@@ -27,7 +27,8 @@ assert.equal(expected.size, 110);
 assert.equal(graph.filter(edge => edge.resolver.startsWith('unresolved')).length, 0);
 assert.ok(graph.length > 0, 'Source graph must not be empty');
 const mapped = manifest.filter(entry => entry.source_map);
-assert.equal(mapped.length, 591, 'Actual manifest must contain 591 mapped application sources');
+assert.equal(mapped.length, 592, 'Actual manifest must contain 592 mapped application sources');
+assert.ok(mapped.some(entry => entry.projection === 'platform-integrations/frontend-behavior/actor-follow-state.ts'), 'The new shared actor-follow controller must be in the actual production graph');
 assert.equal(new Set(manifest.map(entry => entry.projection)).size, manifest.length, 'Projection source identities must be unique');
 for (const entry of manifest) {
   assert.match(entry.projection, /^(src|platform-integrations)\//);

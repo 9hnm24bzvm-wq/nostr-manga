@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "utc": "2026-10-14T03:55:12.468781+00:00",
+  "base_commit": "01a593b7d167add9a4c8e7936d4e86abd10fcf21",
+  "base_tree": "0103a59fdbbab71750ddbda27b3ac9b58843ccbb",
+  "changes": {
+    "platform-integrations/frontend-behavior/actor-follow-state.ts": "f98b0fdd79e1cc7ea13baada0a6cdc188e312d8e12e3560ae9d901c1e11b935b",
+    "platform-integrations/frontend-overlays.mjs": "c392c30019bf211fc6ca79f492228d8c70f9b8697597843e909bc46cfea355f7",
+    "scripts/prepare-frontend-integration.mjs": "d628182c67de858ab4acde00421dcb048480de5a1e93159079cedf71bc271168",
+    "tests/ci/test_actor_follow_readiness.mjs": "2da977a9c5aea0eb6187ac6733175afd86c395f6385cb25a18212f8be9966195",
+    "tests/ci/test_composed_semantic_projection.mjs": "aa43d8369bae772910a69dc2f16bfdded29ba2dfe7f8e802d2769975f65089ce",
+    "tests/ci/test_semantic_validation_fail_closed.mjs": "71bc8d9f844a83a05fc54ab9c41ca29f0c43b3340d54abe414a97b327e92c3d4"
+  },
+  "focused_regressions": {
+    "cases": 52,
+    "passed": 52,
+    "failed": 0,
+    "receipt": "regression.txt"
+  },
+  "existing_semantic_seams": {
+    "cases": 132,
+    "passed": 132,
+    "receipt": "existing-semantic.txt"
+  },
+  "existing_bootstrap_and_recovery": {
+    "cases": 43,
+    "passed": 43,
+    "receipt": "existing-boundaries.txt"
+  },
+  "strict_production_composition": {
+    "status": "passed",
+    "errors": 0,
+    "warnings": 15,
+    "canonical_files": 679,
+    "canonical_unchanged": true,
+    "validated_maps": 592,
+    "all_maps_embedded_content_matches": true,
+    "evidence": ".build/follow-readiness-semantic-freeze/evidence",
+    "projection_manifest_sha256": "61af0ea8d0bcf09ddd2893231543f848008bf1137fe9a3c8c3a5755e4f7b36fa",
+    "source_map_validation_sha256": "7fd36dcf5bde617a7da4c709fa1d20102d0c227ecdfd134cc0285b9d9af733b2",
+    "summary": "strict-summary.json"
+  },
+  "readonly_dependency_guard": {
+    "process_audits": 4,
+    "protected_write_attempts": 0,
+    "receipt": "cache-guard-audits.json"
+  },
+  "services_browser_database_ci_public_writes": false,
+  "packages_installed": false,
+  "qualification": "Actual composed scripts with explicit rune/store/API completion stand-ins; no real browser execution. Exact original source hashes do not establish pixel parity. A canceled request is not proof of server rollback or strict ordering. The standalone projection-isolation validator and its negative controls were not run against this generation; their exact source-map expectation was advanced only for the one added controller."
+}

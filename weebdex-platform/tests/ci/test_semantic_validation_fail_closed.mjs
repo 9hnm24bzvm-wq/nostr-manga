@@ -20,7 +20,7 @@ function fixture(name, mutate) {
   mutate(edit);
   const checked = spawnSync(process.execPath, [validator, destination], { cwd: root, encoding: 'utf8', timeout: 30_000 });
   assert.ok(checked.status !== 0 && !checked.error, `Incomplete artifact fixture unexpectedly passed: ${name}`);
-  const expectedFailure = { 'empty-canonical-inventory': 'Actual canonical inventory must contain 679 records', 'missing-map-manifest-entry': 'Actual manifest must contain 591 mapped application sources', 'empty-cache-inventory': 'Actual cache inventory must not be empty', 'no-cache-process-audits': 'At least one configured cache-guard process audit is required', 'empty-audit-protected-roots': 'Each audit must cover both exact dependency roots', 'empty-declared-cache-roots': 'deepStrictEqual' }[name];
+  const expectedFailure = { 'empty-canonical-inventory': 'Actual canonical inventory must contain 679 records', 'missing-map-manifest-entry': 'Actual manifest must contain 592 mapped application sources', 'empty-cache-inventory': 'Actual cache inventory must not be empty', 'no-cache-process-audits': 'At least one configured cache-guard process audit is required', 'empty-audit-protected-roots': 'Each audit must cover both exact dependency roots', 'empty-declared-cache-roots': 'deepStrictEqual' }[name];
   assert.ok(checked.stderr.includes(expectedFailure), `Negative control failed for an unrelated reason: ${name}\n${checked.stderr}`);
   results.push({ probe: name, status: 'rejected', exit_code: checked.status, first_error: checked.stderr.split('\n').find(line => line.includes('AssertionError')) ?? checked.stderr.split('\n')[0] });
 }
