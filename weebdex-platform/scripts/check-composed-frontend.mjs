@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { frontendRouteAdditions } from '../platform-integrations/frontend-route-additions.mjs';
 import { createFrontendOverlays } from '../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../platform-integrations/frontend-reader-overlays.mjs';
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
@@ -55,12 +56,10 @@ fs.cpSync(path.join(root, 'platform-integrations'), path.join(project, 'platform
 fs.cpSync(path.join(root, 'platform-integrations'), path.join(work, 'production-composed/platform-integrations'), { recursive: true });
 
 // Reconstructed routes are installed on the production build input by its preparation step.
-const announcementRoot = path.join(root, 'platform-integrations/frontend-reconstruction/announcements');
-for (const name of ['+page.svelte', '[id]/+page.svelte', 'manage/+page.svelte']) {
-  const destination = path.join('src/routes/(app)/announcements', name);
+for (const addition of frontendRouteAdditions) {
   for (const tree of [input, project]) {
-    const target = path.join(tree, destination), source = path.join(announcementRoot, 'routes', name);
-    if (fs.existsSync(target) && !fs.readFileSync(target).equals(fs.readFileSync(source))) throw Error(`Reconstruction source drift: ${destination}`);
+    const target = path.join(tree, addition.target), source = path.join(root, addition.source);
+    if (fs.existsSync(target) && !fs.readFileSync(target).equals(fs.readFileSync(source))) throw Error(`Reviewed route source drift: ${addition.target}`);
     fs.mkdirSync(path.dirname(target), { recursive: true }); fs.copyFileSync(source, target);
   }
 }

@@ -104,7 +104,7 @@ test('shared title selector retains exact visible status and strict structural u
 });
 
 test('native wrapped select uses exact immediate label despite descendant option text', async () => {
-  const panel = read('platform-integrations/local-library/LocalLibraryPanel.svelte');
+  const panel = read('platform-integrations/local-library/LibraryManagementTools.svelte');
   assert.match(panel, /<label>List <select[^>]+bind:value=\{memberList\}/);
   assert.match(panel, /<label>Series <select[^>]+bind:value=\{memberSeries\}/);
   const identity = read('platform-integrations/local-library/ProtocolIdentityPanel.svelte');
@@ -150,7 +150,7 @@ test('account recovery and ordinary follow still use shared controls and durable
   assert.match(journeys, /const follow = status => selectTitleLibraryStatus\(page, status\)/);
   assert.match(journeys, /await follow\("Reading"\); localBefore = await until\(device/);
   assert.match(journeys, /row\.family === "series" && row\.id === manga/);
-  const panel = read('platform-integrations/local-library/LocalLibraryPanel.svelte');
+  const panel = read('platform-integrations/local-library/LibraryManagementTools.svelte');
   assert.match(panel, /const series = \$derived\(\$localLibraryState.records.filter\(row => row.family === 'series'\)\)/);
   assert.match(panel, /Choose saved series<\/option>\{#each series as row\}<option value=\{row.id\}/);
   assert.match(read('platform-integrations/local-library/library.ts'), /if \(!\(await request\(rows.get\(\['series', series\]\)\)\)\) throw Error\('Choose an existing scope-bound saved series'\)/);

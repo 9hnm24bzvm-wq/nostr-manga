@@ -1,6 +1,7 @@
 // Exact path repair only. The original frontend configuration stays unchanged.
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { createIntegrationUtilitySources } from "../platform-integrations/integration-utility-sources.mjs";
 import { createReaderOverlays } from "../platform-integrations/frontend-reader-overlays.mjs";
 import { createFrontendOverlays } from "../platform-integrations/frontend-overlays.mjs";
 import { createLocalLibraryOverlays, createLocalLibraryResolver } from "../platform-integrations/local-library/overlays.mjs";
@@ -35,6 +36,6 @@ export default async configEnv => {
   }],
   });
   // The immutable-source script repair must run before Svelte compilation.
-  merged.plugins.unshift(createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createLocalLibraryResolver(frontend, path.join(root, "platform-integrations/local-library")));
+  merged.plugins.unshift(createIntegrationUtilitySources(frontend, path.join(root, "platform-integrations")), createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createLocalLibraryResolver(frontend, path.join(root, "platform-integrations/local-library")));
   return merged;
 };

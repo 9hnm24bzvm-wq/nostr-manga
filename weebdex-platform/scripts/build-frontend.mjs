@@ -62,6 +62,7 @@ const evidence = {
   source_import_case_repaired_externally: ["$lib/utils.js -> src/lib/Utils.ts", "stores/./session -> stores/Session.ts"],
   missing_announcements_reconstructed_externally: true,
   reconstructed_routes: integration.reconstructed_routes,
+  integration_utility_sources: integration.integration_utility_sources,
   script_overlay_module_sha256: integration.overlay_module_sha256,
   reader_overlay_module_sha256: integration.reader_overlay_sha256,
   integration_source_inventory_sha256: integration.integration_source_inventory_sha256,

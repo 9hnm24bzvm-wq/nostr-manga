@@ -19,14 +19,6 @@ const patches = [
     "after": "import Protected from \"$localLibrary/LibraryProtected.svelte\";"
   },
   {
-    "path": "src/routes/(app)/settings/library/+layout.svelte",
-    "label": "device availability scoped layout import",
-    "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
-    "count": 1,
-    "before": "import Protected from \"$lib/components/ui/Protected.svelte\";",
-    "after": "import Protected from \"$localLibrary/LibraryProtected.svelte\";"
-  },
-  {
     "path": "src/lib/components/MangaSearchEntryCard.svelte",
     "label": "independent library imports",
     "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",

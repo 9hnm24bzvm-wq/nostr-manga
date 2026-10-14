@@ -6,12 +6,14 @@
   import { message } from './library';
   import { connectSigner, disconnectSigner, signerIdentity, relayPreferences, type Relay, type SourceMapping } from './publication';
   import { sourceResource, readMetadata, readSocial, reviewProfile, reviewFollows, reviewRelayList, reviewComment, reviewReaction, reviewWithdrawal, sendReviewed, publicActionRecords, deliverPublicAction, reconcilePublicAction, cancelPublicAction, removePublicAction, type PublicActionRecord, type SignedEvent, type PublicReview } from './protocol-identity';
-  const { resourceKind, resourceId }: { resourceKind?: 'manga' | 'chapter'; resourceId?: string } = $props();
-  let relays = $state<Relay[]>([]), selectedOrigin = $state(''), pending = $state(false), error = $state(''), notice = $state('');
+  let { resourceKind, resourceId, assertViewCurrent = () => {}, selectedOrigin = $bindable(''), settingsView = 'profile' }: { resourceKind?: 'manga' | 'chapter'; resourceId?: string; assertViewCurrent?: () => void; selectedOrigin?: string; settingsView?: 'profile' | 'follows' | 'actions' | 'connections' } = $props();
+  let relays = $state<Relay[]>([]), pending = $state(false), error = $state(''), notice = $state('');
   let actions = $state<PublicActionRecord[]>([]);
   let profileName = $state(''), displayName = $state(''), about = $state(''), followsText = $state(''), routesText = $state('');
   let review = $state<PublicReview>(), consent = $state(false), source = $state<SourceMapping>(), events = $state<SignedEvent[]>([]), metadata = $state<{ kind: number; event: SignedEvent | null; head: any }[]>([]), receipts = $state<any[]>([]);
-  let conversationOpen = $state(false);
+  let conversationOpen = $state(false), inspectedAction = $state(''), inspectedMetadata = $state('');
+  const queueState = (state: string) => ({ prepared: 'Ready to send', pending: 'Waiting to send', sending: 'Sending', retryable: 'Ready to retry', refused: 'Not sent', accepted: 'Sent', superseded: 'Replaced by a newer action', outcome_unknown: 'Delivery needs checking', projection_pending: 'Updating', cancelled: 'Cancelled' }[state] ?? 'Needs attention');
+  const actionName = (kind: number) => ({ 0: 'Profile update', 3: 'People you follow', 10002: 'Posting destinations', 1: 'Comment', 1111: 'Comment', 7: 'Reaction', 5: 'Removal request' }[kind] ?? 'Public action');
   let comment = $state(''), reaction = $state('+'), replyParent = $state<SignedEvent>(), offset = $state(0);
   const relay = $derived(relays.find(row => row.origin === selectedOrigin));
   const target = $derived({ kind: resourceKind ?? 'manga', id: resourceId ?? '' });
@@ -20,9 +22,10 @@
   type Context = { key: string; generation: number; kind: 'manga' | 'chapter'; id: string; relay?: Relay; owner: string | null; signerGeneration: number };
   class ContextChanged extends Error { constructor() { super('The selected target, recipient or signing identity changed. Previous results and reviews cannot attach to this selection. Any exact signed intent already saved remains bound to its original recipient; an already sent request cannot be recalled.'); } }
   let generation = 0, activeKey = '', activeTransportKey = '', disposed = false;
-  let sourceContext = '', metadataContext = '', reviewContext: Context | undefined;
+  let sourceContext = $state(''), metadataContext = '', reviewContext: Context | undefined;
   function clearReview() { review = undefined; reviewContext = undefined; consent = false; }
   function currentContext(): Context {
+    assertViewCurrent();
     if (disposed) throw new ContextChanged();
     // This synchronous fence also covers an input change before the effect runs.
     if (activeKey !== contextKey) {
@@ -51,7 +54,7 @@
   async function run(operation: () => Promise<void>) {
     if (pending || disposed) return; pending = true; error = '';
     try { await operation(); } catch (cause) { if (!disposed) { if (cause instanceof ContextChanged) notice = cause.message; else error = message(cause); } }
-    finally { if (!disposed) { pending = false; const saved = await publicActionRecords().catch(() => undefined); if (!disposed && saved) actions = saved; } }
+    finally { if (!disposed) { const saved = await publicActionRecords().catch(() => undefined); if (!disposed) { if (saved) actions = saved; pending = false; } } }
   }
   function setReview(value: PublicReview) {
     const context = currentContext(), recipient = contextRelay(context);
@@ -120,16 +123,16 @@
       </div>
     {/if}
 {/snippet}
-<section id={resourceId ? undefined : 'public-identity'} class={resourceId ? 'space-y-3' : 'scroll-mt-20 space-y-5 border-t pt-6'} data-protocol-identity-panel={resourceId ? undefined : true} data-source-conversation={resourceId ? true : undefined} data-resource-kind={resourceId ? resourceKind : undefined} data-resource-id={resourceId}>
+<section class={resourceId ? 'space-y-3' : 'space-y-5'} data-public-identity-tool={resourceId ? undefined : settingsView} data-source-conversation={resourceId ? true : undefined} data-resource-kind={resourceId ? resourceKind : undefined} data-resource-id={resourceId} data-verified-source-id={sourceContext === contextKey && source?.kind === target.kind && source?.id === target.id ? source.event_id : undefined}>
   {#if resourceId}
     <Button variant="ghost" size="sm" aria-expanded={conversationOpen} onclick={toggleConversation}>Signed comments</Button>
     {#if conversationOpen}
       <div class="space-y-3 border-t pt-4">
-        <p class="text-muted-foreground text-sm">Public comments and reactions for this {resourceKind === 'chapter' ? 'chapter' : 'title'} use an external signing identity. <a class="underline" href="/settings/preferences#public-identity">Manage public identity</a></p>
-        {#if !relays.length}<p class="text-sm">To choose where to post, <a class="underline" href="/settings/preferences#local-library">set up public sync in Library settings</a>.</p>{:else}{@render recipientControls()}{/if}
+        <p class="text-muted-foreground text-sm">Public comments and reactions for this {resourceKind === 'chapter' ? 'chapter' : 'title'} use an external signing identity. <a class="underline" href="/settings/identity">Manage public identity</a></p>
+        {#if !relays.length}<p class="text-sm">To choose where to post, <a class="underline" href="/settings/library">set up public sync in Library settings</a>.</p>{:else}{@render recipientControls()}{/if}
         <Button variant="outline" disabled={pending || !relay} onclick={() => run(() => refreshSocial())}>Load verified public conversation</Button>
         {#if source}
-          <details class="text-sm"><summary class="cursor-pointer text-muted-foreground">Source details</summary><p class="break-all text-xs">Verified canonical source: {source.event_id} · publisher {source.publisher} · kind {source.source_kind}</p></details>
+          <details class="text-sm"><summary class="cursor-pointer text-muted-foreground">Source details</summary><p class="break-all text-xs" data-verified-source-id={source.event_id}>Verified canonical source: {source.event_id} · publisher {source.publisher} · kind {source.source_kind}</p></details>
           {#if replyParent}<p class="break-all">Replying to {replyParent.id} by {replyParent.pubkey} <Button variant="ghost" onclick={() => { replyParent = undefined; clearReview(); }}>Cancel reply</Button></p>{/if}
           <label class="block" for="public-source-comment">Public comment <Textarea id="public-source-comment" class="mt-1" bind:value={comment} maxlength={4000}></Textarea></label>
           <Button disabled={pending || !$signerIdentity.owner} onclick={() => run(async () => { const context = currentContext(); setReview(reviewComment(contextRelay(context), selectedSource(context), comment, replyParent)); })}>Review public {replyParent ? 'reply' : 'comment'}</Button>
@@ -147,57 +150,57 @@
       </div>
     {/if}
   {:else}
-    <header class="space-y-1"><h2 class="text-lg font-semibold">Public identity</h2><p class="text-muted-foreground text-sm">Optional signed profiles and comments. Your reading library stays private until you choose to publish it.</p></header>
-    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-      <p class="text-sm">{$signerIdentity.owner ? 'External signer connected' : 'No external signer connected'}. This is separate from your site login.</p>
-      <div class="flex flex-wrap gap-2">
-        <Button variant="outline" disabled={pending} onclick={() => run(async () => { await connectSigner(() => { currentContext(); }); notice = 'External signing identity selected. Nothing published.'; })}>Connect external signer</Button>
-        <Button variant="outline" disabled={pending || !$signerIdentity.owner} onclick={disconnectSigner}>Disconnect signer</Button>
-      </div>
-    </div>
-    <details class="space-y-3"><summary class="cursor-pointer font-medium">Signing identity &amp; instances</summary><div class="space-y-3 pt-3">
+    {#if settingsView === 'connections'}
+      <p class="text-muted-foreground text-sm">Check the signing identity and verified instance used for public posts. These are separate from your site login.</p>
       <p class="break-all text-sm">Signing public key: {$signerIdentity.owner ?? 'none connected'}</p>
       {@render recipientControls()}
-      <p class="text-muted-foreground text-sm">Manage verified recipients and public-key admission in <a class="underline" href="/settings/preferences#local-library">Library settings</a>.</p>
-    </div></details>
-    <details class="space-y-3 border-t pt-4">
-      <summary class="cursor-pointer font-medium">Public profile and follows</summary>
-      <div class="mt-2 space-y-2">
+      <p class="text-muted-foreground text-sm">Add or verify destinations from <a class="underline" href="/settings/library">Library settings</a> → Set up public sync.</p>
+    {:else if settingsView === 'profile' || settingsView === 'follows'}
+      <p class="text-muted-foreground text-sm">Changes are public only after you review and approve them. Choose the instance where you want them published.</p>
+      {@render recipientControls()}
+      {#if settingsView === 'profile'}
         <label class="block" for="public-profile-name">Public username <Input id="public-profile-name" class="mt-1" bind:value={profileName} maxlength={128} /></label>
         <label class="block" for="public-profile-display-name">Public display name <Input id="public-profile-display-name" class="mt-1" bind:value={displayName} maxlength={128} /></label>
         <label class="block" for="public-profile-bio">Public bio <Textarea id="public-profile-bio" class="mt-1" bind:value={about} maxlength={4000}></Textarea></label>
         <Button disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(async () => { setReview(reviewProfile(selectedRelay(), { name: profileName, display_name: displayName, about })); })}>Review public profile</Button>
+      {:else}
+        <p class="text-muted-foreground text-sm">Public follows use signing public keys. These are people you follow, separate from your saved manga.</p>
         <label class="block" for="public-follow-keys">Public follow keys, one 64-character hex key per line <Textarea id="public-follow-keys" class="mt-1" bind:value={followsText}></Textarea></label>
         <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(async () => { setReview(reviewFollows(selectedRelay(), followsText.split(/\s+/).filter(Boolean))); })}>Review replacement public follow list</Button>
         <label class="block" for="public-write-relays">Public write relay URLs, one WSS URL per line <Textarea id="public-write-relays" class="mt-1" bind:value={routesText}></Textarea></label>
         <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(async () => { setReview(reviewRelayList(selectedRelay(), routesText.split(/\s+/).filter(Boolean))); })}>Review replacement public relay list</Button>
-        <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(refreshMetadata)}>Read verified current public metadata</Button>
-        {#each metadata as item}
-          <div class="space-y-3 border-t pt-4"><p class="break-all text-xs">Kind {item.kind}, event {item.head.id}, {item.head.projected ? 'projected' : 'accepted; projection pending'}</p>
-            {#if item.event}<p class="break-all">{item.event.content || JSON.stringify(item.event.tags)}</p><Button variant="outline" disabled={pending} onclick={() => run(async () => { setWithdrawal(item.event!, 'metadata'); })}>Review exact authored metadata withdrawal</Button>{/if}
-          </div>
-        {/each}
-      </div>
-    </details>
-    {@render reviewedAction()}
-    <details class="space-y-3 border-t pt-4">
-      <summary class="cursor-pointer font-medium">Saved public actions</summary>
-      <Button variant="outline" disabled={pending} onclick={() => run(async () => { actions = await publicActionRecords(); })}>Refresh saved actions</Button>
-      {#each actions as action}
-        <div class="rounded border p-2 space-y-1">
-          <p class="break-all text-xs">{action.event.id} · kind {action.event.kind} · signer {action.event.pubkey} · recipient {action.relay.origin}</p>
-          <p>{action.state}{action.cancelled ? ' · further sending cancelled' : ''}: {action.message}</p>
-          <details><summary class="cursor-pointer text-sm">Inspect this exact saved public action</summary><p class="break-all text-xs">Original tags: {JSON.stringify(action.event.tags)}</p><p class="whitespace-pre-wrap break-words">{action.event.content || '(empty signed content)'}</p></details>
-          <Button variant="outline" disabled={pending} onclick={() => run(async () => { await reconcilePublicAction(action.event.id); notice = 'Exact-event reconciliation checked. Review its saved status.'; })}>Reconcile exact public counterpart</Button>
-          {#if !action.cancelled && !['accepted', 'superseded'].includes(action.state)}
-            <Button variant="outline" disabled={pending || $signerIdentity.owner !== action.event.pubkey} onclick={() => { if (confirm(`Retry only this previously reviewed signed event ${action.event.id} to ${action.relay.origin}? Its body is unchanged. A fresh HTTP authentication proof will be requested.`)) void run(async () => { const context = currentContext(); await deliverPublicAction(action.event.id, () => assertContext(context)); notice = 'Exact signed-body retry finished.'; }); }}>Retry exact reviewed signed body</Button>
-            <Button variant="outline" onclick={() => { void cancelPublicAction(action.event.id).then(async () => { actions = await publicActionRecords(); }).catch(cause => { error = message(cause); }); }}>Cancel further sending</Button>
-          {:else}
-            <Button variant="outline" disabled={pending} onclick={() => { if (confirm('Remove this local signed-action retry record? Public copies are unaffected.')) void run(async () => { await removePublicAction(action.event.id); }); }}>Remove local retry record</Button>
-          {/if}
+      {/if}
+      <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(refreshMetadata)}>Read verified current public metadata</Button>
+      {#each metadata.filter(item => settingsView === 'profile' ? item.kind === 0 : item.kind !== 0) as item}
+        <div class="space-y-3 border-t pt-4" data-verified-metadata-kind={item.kind} data-verified-metadata-id={item.head.id}>
+          <p>{actionName(item.kind)} · {item.head.projected ? 'Current' : 'Updating'}</p>
+          {#if item.event}<Button variant="ghost" onclick={() => { inspectedMetadata = inspectedMetadata === item.head.id ? '' : item.head.id; }}>Inspect current data</Button>{#if inspectedMetadata === item.head.id}<p class="whitespace-pre-wrap break-words">{item.event.content || JSON.stringify(item.event.tags)}</p>{/if}<Button variant="outline" disabled={pending} onclick={() => run(async () => { setWithdrawal(item.event!, 'metadata'); })}>Review removal</Button>{/if}
         </div>
       {/each}
-    </details>
+      {@render reviewedAction()}
+    {:else}
+      <p class="text-muted-foreground text-sm">Check deliveries, retry a saved action, or stop further sending. Already published copies stay public.</p>
+      <Button variant="outline" disabled={pending} onclick={() => run(async () => { actions = await publicActionRecords(); })}>Refresh saved actions</Button>
+      {#if !actions.length}<p class="text-muted-foreground text-sm">No saved public actions.</p>{/if}
+      {#each actions as action}
+        <div class="space-y-3 border-t pt-4" data-public-action-id={action.event.id} data-action-state={action.state}>
+          <p class="font-medium">{actionName(action.event.kind)} · {new Date(action.event.created_at * 1000).toLocaleString()}</p>
+          <p>{action.cancelled ? 'Further sending cancelled' : queueState(action.state)}: {action.message}</p>
+          <p class="text-sm">To {action.relay.origin}</p>
+          <div class="flex flex-wrap gap-2">
+            <Button variant="outline" disabled={pending} onclick={() => run(async () => { await reconcilePublicAction(action.event.id); notice = 'Delivery checked. Review its saved status.'; })}>Check delivery</Button>
+            {#if !action.cancelled && !['accepted', 'superseded'].includes(action.state)}
+              <Button variant="outline" disabled={pending || $signerIdentity.owner !== action.event.pubkey} onclick={() => { if (confirm(`Retry only this previously reviewed signed event ${action.event.id} to ${action.relay.origin}? Its body is unchanged. A fresh HTTP authentication proof will be requested.`)) void run(async () => { const context = currentContext(); await deliverPublicAction(action.event.id, () => assertContext(context)); notice = 'Saved action retry finished.'; }); }}>Retry saved action</Button>
+              <Button variant="outline" onclick={() => { void cancelPublicAction(action.event.id).then(async () => { if (!disposed) actions = await publicActionRecords(); }).catch(cause => { if (!disposed) error = message(cause); }); }}>Cancel further sending</Button>
+            {:else}
+              <Button variant="outline" disabled={pending} onclick={() => { if (confirm('Remove this local signed-action retry record? Public copies are unaffected.')) void run(async () => { await removePublicAction(action.event.id); }); }}>Remove local retry record</Button>
+            {/if}
+            <Button variant="ghost" onclick={() => { inspectedAction = inspectedAction === action.event.id ? '' : action.event.id; }}>Inspect saved action</Button>
+          </div>
+          {#if inspectedAction === action.event.id}<div class="space-y-2 text-xs"><p class="break-all">Signed event {action.event.id} · signer {action.event.pubkey} · kind {action.event.kind}</p><p class="break-all">Original tags: {JSON.stringify(action.event.tags)}</p><p class="whitespace-pre-wrap break-words">{action.event.content || '(empty signed content)'}</p></div>{/if}
+        </div>
+      {/each}
+    {/if}
   {/if}
   {#if !resourceId || conversationOpen}
     {#each receipts as result}<p class="break-all text-xs">Signed event receipt {result.event.id} at {result.recipient}{result.target ? ' · canonical target ' + result.target : ''}: HTTP {result.receipt.status} · {JSON.stringify(result.receipt.data)}</p>{/each}

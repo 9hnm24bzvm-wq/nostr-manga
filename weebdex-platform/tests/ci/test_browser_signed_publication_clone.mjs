@@ -46,7 +46,7 @@ async function withOutbox(operation) {
 }
 const job = review => ({ id: event.id, event, revision: review.protocolRevision, relayRevision: review.relayRevision,
   cancelled: false, objects: review.graph.objects, recipients: review.recipients.map(row => ({ ...row, cursor: 0, state: 'pending', message: 'Not sent' })) });
-const panel = read('../../platform-integrations/local-library/LocalLibraryPanel.svelte');
+const panel = read('../../platform-integrations/local-library/LibraryManagementTools.svelte');
 const send = panel.match(/run\('publish', (async \(\) => \{[^\n]+\})\)/)?.[1];
 assert(send, 'Execute the exact production publication handoff');
 const handoff = (publication, publishReviewed) => vm.runInNewContext('(' + stripTypeScriptTypes(send) + ')()', { publication, publishReviewed, $state: { snapshot }, publicConsent: true, notice: '', assertActive() {} });

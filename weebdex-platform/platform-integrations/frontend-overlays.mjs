@@ -3000,8 +3000,7 @@ const patches = [
     "before": "{#if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
     "after": "{#if $followState.error}\r\n\t\t\t\t\t\t\t\t\tRetry follow status\r\n\t\t\t\t\t\t\t\t{:else if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
     "approved_follow_readiness_exception": "follow_current_status_retry"
-  }
-,
+  },
   {
     "path": "src/routes/(app)/group/[id]/Group.svelte",
     "label": "group unknown follow state cannot expose a new Block action",
@@ -3286,23 +3285,6 @@ const patches = [
     "approved_ui_extension": "route_owned_library_identity"
   },
   {
-    "path": "src/routes/(app)/settings/preferences/+page.svelte",
-    "label": "anonymous settings owns library and signing identity management",
-    "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
-    "count": 1,
-    "before": "\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";",
-    "after": "\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/settings/preferences/+page.svelte",
-    "label": "management is independent of native session and outside preference form",
-    "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
-    "count": 1,
-    "before": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}",
-    "after": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}\r\n\r\n<div class=\"mt-8 space-y-8\">\r\n\t<LocalLibraryPanel />\r\n\t<ProtocolIdentityPanel />\r\n</div>",
-    "approved_ui_extension": "route_owned_library_identity"
-  },
-  {
     "path": "src/routes/(app)/library/+layout.svelte",
     "label": "library management action uses native Button",
     "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
@@ -3311,14 +3293,14 @@ const patches = [
     "after": "\timport Protected from \"$lib/components/ui/Protected.svelte\";\r\n\timport { Button } from \"$lib/components/ui/button\";"
   },
   {
-    "path": "src/routes/(app)/library/+layout.svelte",
-    "label": "management stays reachable in account and failed-scope fallback",
-    "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
-    "count": 1,
-    "before": "<Protected>",
-    "after": "<div class=\"mb-4 flex justify-end\">\r\n\t<Button variant=\"outline\" size=\"sm\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n\r\n<Protected>",
-    "approved_ui_extension": "route_owned_library_identity"
-  },
+  "path": "src/routes/(app)/library/+layout.svelte",
+  "label": "management stays reachable in account and failed-scope fallback",
+  "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+  "count": 1,
+  "before": "<Protected>",
+  "after": "<div class=\"mb-4 flex justify-end\">\r\n\t<Button variant=\"outline\" size=\"sm\" href=\"/settings/library\">Manage library</Button>\r\n</div>\r\n\r\n<Protected>",
+  "approved_ui_extension": "route_owned_library_identity"
+},
   {
     "path": "src/routes/(app)/title/Manga.svelte",
     "label": "title discussion owns its source-bound signed actions",
@@ -3407,14 +3389,83 @@ const patches = [
     "approved_ui_extension": "route_owned_library_identity"
   },
   {
-    "path": "src/lib/components/reader/reader-settings.svelte",
-    "label": "reader settings links to anonymous library management",
-    "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-    "count": 1,
-    "before": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n",
-    "after": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n\r\n<Separator />\r\n<div class=\"space-y-2 p-2\">\r\n\t<Button class=\"w-full border-none\" variant=\"outline\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n",
-    "approved_ui_extension": "route_owned_library_identity"
-  }
+  "path": "src/lib/components/reader/reader-settings.svelte",
+  "label": "reader settings links to anonymous library management",
+  "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+  "count": 1,
+  "before": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n",
+  "after": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n\r\n<Separator />\r\n<div class=\"space-y-2 p-2\">\r\n\t<Button class=\"w-full border-none\" variant=\"outline\" href=\"/settings/library\">Manage library</Button>\r\n</div>\r\n",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/+layout.svelte",
+  "label": "anonymous Library and Public identity use native Settings tabs",
+  "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+  "count": 1,
+  "before": "\t\tlibrary: {\r\n\t\t\tname: \"Library\",\r\n\t\t\ticon: LibraryIcon,\r\n\t\t\thidden: !$Session\r\n\t\t},",
+  "after": "\t\tlibrary: {\r\n\t\t\tname: \"Library\",\r\n\t\t\ticon: LibraryIcon\r\n\t\t},\r\n\t\tidentity: {\r\n\t\t\tname: \"Public identity\",\r\n\t\t\ticon: SettingsIcon\r\n\t\t},"
+},
+  {
+  "path": "src/routes/(app)/settings/+layout.svelte",
+  "label": "native Settings tabs expose current page accessibly",
+  "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+  "count": 1,
+  "before": "\t\t\t\t\t\thref={pathname}",
+  "after": "\t\t\t\t\t\thref={pathname}\r\n\t\t\t\t\t\taria-current={page.url.pathname === pathname ? \"page\" : undefined}",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+layout.svelte",
+  "label": "library management does not inherit native account guard",
+  "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+  "count": 1,
+  "before": "\timport Protected from \"$lib/components/ui/Protected.svelte\";",
+  "after": ""
+},
+  {
+  "path": "src/routes/(app)/settings/library/+layout.svelte",
+  "label": "anonymous management renders independently of mode storage and scope",
+  "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+  "count": 1,
+  "before": "<Protected>\r\n\t{@render children?.()}\r\n</Protected>",
+  "after": "{@render children?.()}",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+page.svelte",
+  "label": "Library settings owns anonymous device management",
+  "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+  "count": 1,
+  "before": "\timport { PUBLIC_API_URL, PUBLIC_SITE_NAME } from \"$env/static/public\";",
+  "after": "\timport { PUBLIC_API_URL, PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport { localLibraryState } from \"$localLibrary/library\";\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+page.svelte",
+  "label": "native import export keeps explicit selected device or account destination",
+  "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+  "count": 1,
+  "before": "<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />",
+  "after": "<LocalLibraryPanel />\r\n<Separator class=\"my-5\" />\r\n<section class=\"mb-5 space-y-1\">\r\n\t<h2 class=\"font-semibold\">CSV and MyAnimeList files</h2>\r\n\t<p class=\"text-muted-foreground text-sm\">{$localLibraryState.mode === \"device\" ? \"These imports and CSV exports use this device library.\" : \"These imports and CSV exports use your signed-in account library.\"}</p>\r\n\t{#if $localLibraryState.mode === \"account\" && !$Session}<p class=\"text-muted-foreground text-sm\">Sign in for account import and export, or choose Use device library above.</p>{/if}\r\n</section>\r\n<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+page.svelte",
+  "label": "account file actions require login without hiding device management",
+  "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+  "count": 3,
+  "before": "disabled={$mutex}",
+  "after": "disabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/+layout.svelte",
+  "label": "native Settings tab navigation has a precise accessible name",
+  "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+  "count": 1,
+  "before": "<nav class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
+  "after": "<nav aria-label=\"Settings\" class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
+  "approved_ui_extension": "route_owned_library_identity"
+}
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {

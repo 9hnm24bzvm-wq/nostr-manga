@@ -11,7 +11,7 @@ import { nativeSelectForLabel } from '../../scripts/browser-select-controls.mjs'
 
 const source = fs.readFileSync(new URL('../../scripts/browser-signed-journeys.mjs', import.meta.url), 'utf8');
 const panel = name => fs.readFileSync(new URL('../../platform-integrations/local-library/' + name + '.svelte', import.meta.url), 'utf8');
-const libraryMarkup = panel('LocalLibraryPanel'), identityMarkup = panel('ProtocolIdentityPanel');
+const libraryMarkup = panel('LibraryManagementTools'), identityMarkup = panel('ProtocolIdentityPanel');
 const calls = [...source.matchAll(/nativeSelectForLabel\((library\(\)|identity\(\)|surface), ("[^"]*"(?: \+ manga)?)\)\.selectOption\(([^;\n]+?)\)/g)];
 assert.equal(calls.length, 8, 'Every signed native select call must use the reviewed helper');
 assert.doesNotMatch(source, /getByLabel\([^;\n]+?\)\.selectOption\(/, 'Exact descendant-contaminated native labels must not remain');
