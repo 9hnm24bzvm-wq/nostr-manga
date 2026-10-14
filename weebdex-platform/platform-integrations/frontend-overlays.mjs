@@ -2839,7 +2839,7 @@ const patches = [
   "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
   "count": 1,
   "before": "\tlet search = $state<SearchMangaRequest>(",
-  "after": "\tlet searchIssues = $state<SearchIssue[]>([]), searchPassthrough = new URLSearchParams(), explicitHasChapters = false;\r\n\tlet initialParsedSearch: MangaFilterRequest;\r\n\tlet search = $state<MangaFilterRequest>("
+  "after": "\tlet searchIssues = $state<SearchIssue[]>([]), searchPassthrough = new URLSearchParams(), explicitHasChapters = false, explicitEmptyRating = false;\r\n\tlet initialParsedSearch: MangaFilterRequest;\r\n\tlet search = $state<MangaFilterRequest>("
 },
 {
   "path": "src/lib/components/MangaSearchFilter.svelte",
@@ -2847,7 +2847,7 @@ const patches = [
   "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
   "count": 1,
   "before": "\t\t\tconst map: Record<string, any> = {};\r\n\t\t\tfor (const [key, value] of searchParams.entries()) {\r\n\t\t\t\tif (arrayFields.includes(key)) (map[key] ??= []).push(value);\r\n\t\t\t\telse map[key] = value;\r\n\t\t\t}\r\n\t\t\tfor (const [key, value] of Object.entries(map)) {\r\n\t\t\t\tinit[key as keyof SearchMangaRequest] = key === \"contentRating\" && Array.isArray(value) ? value.filter(v => v !== \"__none__\") : value;\r\n\t\t\t}\r\n\t\t\treturn init;",
-  "after": "\t\t\tconst parsed = parseMangaSearchQuery(init, searchParams, isLibrary);\r\n\t\t\tsearchIssues = parsed.issues; searchPassthrough = parsed.passthrough; explicitHasChapters = parsed.explicitHasChapters;\r\n\t\t\tinitialParsedSearch = structuredClone(parsed.search);\r\n\t\t\treturn parsed.search;"
+  "after": "\t\t\tconst parsed = parseMangaSearchQuery(init, searchParams, isLibrary);\r\n\t\t\tsearchIssues = parsed.issues; searchPassthrough = parsed.passthrough; explicitHasChapters = parsed.explicitHasChapters; explicitEmptyRating = isLibrary && parsed.explicitEmptyRating;\r\n\t\t\tinitialParsedSearch = structuredClone(parsed.search);\r\n\t\t\treturn parsed.search;"
 },
 {
   "path": "src/lib/components/MangaSearchFilter.svelte",
@@ -2855,7 +2855,7 @@ const patches = [
   "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
   "count": 1,
   "before": "\t\tconst q = new URLSearchParams();\r\n\t\tfor (const [key, value] of Object.entries(search)) {\r\n\t\t\tif (value === undefined || value === null || (typeof value === \"string\" && !value.length)) {\r\n\t\t\t\tcontinue;\r\n\t\t\t}\r\n\r\n\t\t\tif (Array.isArray(value)) {\r\n\t\t\t\tvalue.forEach(v => q.append(key, v));\r\n\t\t\t} else {\r\n\t\t\t\tq.set(key, value);\r\n\t\t\t}\r\n\t\t}\r\n",
-  "after": "\t\tconst unresolved = unresolvedSearchIssues(searchIssues, initialParsedSearch, $state.snapshot(search));\r\n\t\tconst q = serializeMangaSearchQuery($state.snapshot(search), searchPassthrough, explicitHasChapters);\r\n\t\tconst validation = searchValidationError(unresolved) ?? validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (validation) { toast.error(validation.title, { description: validation.body }); return; }\r\n\t\tsearchIssues = [];"
+  "after": "\t\tconst unresolved = unresolvedSearchIssues(searchIssues, initialParsedSearch, $state.snapshot(search));\r\n\t\tconst q = serializeMangaSearchQuery($state.snapshot(search), searchPassthrough, explicitHasChapters, explicitEmptyRating);\r\n\t\tconst validation = searchValidationError(unresolved) ?? validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (validation) { toast.error(validation.title, { description: validation.body }); return; }\r\n\t\tsearchIssues = [];"
 },
 {
   "path": "src/lib/components/MangaSearchFilter.svelte",
@@ -2871,7 +2871,7 @@ const patches = [
   "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
   "count": 1,
   "before": "\t\tsearch = structuredClone(defaultSearch);",
-  "after": "\t\tsearchIssues = []; searchPassthrough = new URLSearchParams(); explicitHasChapters = false;\r\n\t\tsearch = structuredClone(defaultSearch);"
+  "after": "\t\tsearchIssues = []; searchPassthrough = new URLSearchParams(); explicitHasChapters = false; explicitEmptyRating = false;\r\n\t\tsearch = structuredClone(defaultSearch);"
 },
 {
   "path": "src/lib/components/MangaSearch.svelte",
@@ -2944,6 +2944,38 @@ const patches = [
   "count": 1,
   "before": "void API.User.Get(actor).then(res => {",
   "after": "void (async () => API.User.Get(actor))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/search/+page.svelte",
+  "label": "actual search read imports its canonical query admission seam",
+  "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+  "count": 1,
+  "before": "\timport { StatusCodes } from \"http-status-codes\";",
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { mangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/routes/(app)/search/+page.svelte",
+  "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+  "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);",
+  "after": "\t\tconst admitted = mangaSearchReadQuery(new URLSearchParams(window.location.search), false);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+},
+{
+  "path": "src/routes/(app)/library/+page.svelte",
+  "label": "actual search read imports its canonical query admission seam",
+  "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+  "count": 1,
+  "before": "\timport { StatusCodes } from \"http-status-codes\";",
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { mangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/routes/(app)/library/+page.svelte",
+  "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+  "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);",
+  "after": "\t\tconst admitted = mangaSearchReadQuery(new URLSearchParams(window.location.search), true);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');

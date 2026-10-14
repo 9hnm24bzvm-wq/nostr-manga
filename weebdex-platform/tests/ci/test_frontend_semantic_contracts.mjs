@@ -132,6 +132,38 @@ check('exact Lightbox extension preserves its existing callable browser actions'
 });
 const bad = script('src/lib/components/MangaSearch.svelte', { current: '() => ({ error, feed, isMounted })' }, { page: { state: { _$MangaSearch_feed: { data: ['stale'] } } }, $props: () => ({ feed: { data: ['stale'] }, onSearch: () => { assert.fail('invalid query read issued'); } }), window: { location: { pathname: '/search', search: '?limit=101' } } });
 await bad.mounts[0](); check('actual feed existing error state wins over cached stale results', () => { assert.equal(bad.api.current().error.title, 'Invalid search filters'); assert.equal(bad.api.current().feed, undefined); assert.equal(bad.api.current().isMounted, true); });
+// Use the exact composed preference method, so literal-key default behavior is
+// exercised against actual canonical route queries rather than a permissive stub.
+const preferenceSource = compose('src/lib/stores/prefs.ts');
+const preferenceStart = preferenceSource.indexOf('applyMangaPreferences('), preferenceEnd = preferenceSource.indexOf('applyChapterPreferences(', preferenceStart);
+const preferenceMethod = preferenceSource.slice(preferenceStart, preferenceEnd).trim().replace(/^applyMangaPreferences/, 'function applyMangaPreferences').replace(/,$/, '');
+const preferenceValues = { show_safe: true, show_suggestive: false, show_erotic: false, show_hentai: false, languages: ['en'], tags: [] };
+const preferenceContext = vm.createContext({ URLSearchParams, get: () => preferenceValues, store: {}, Constants: { Manga } });
+const applyMangaPreferences = vm.runInContext(stripTypeScriptTypes(preferenceMethod) + ';applyMangaPreferences;', preferenceContext);
+for (const [library, input, expected] of [
+  [false, '?tag=a&tmod=1&tagx=b&txmod=1', { tmod: 'OR', txmod: 'AND' }],
+  [false, '?contentRating[]=pornographic&limit[]=0&page[]=2', { contentRating: 'pornographic', limit: '0', page: '2' }],
+  [false, '?page[]=1000000&lang[]=mx', { page: '1000000', lang: 'mx' }],
+  [true, '?reading_status[]=completed&list[]=' + 'a'.repeat(32) + '&id[]=native', { reading_status: 'completed', list: 'a'.repeat(32), id: 'native' }],
+  [true, '?contentRating[]=__none__&hasChapters[]=0', { contentRating: '__none__', hasChapters: 'false' }],
+]) {
+  const pathname = library ? '/library' : '/search', window = { location: { pathname, search: input, href: 'http://localhost' + pathname + input } }; let issued;
+  const request = async value => { issued = value; return { status: 200, body: { data: [], total: 0 } }; };
+  const route = script('src/routes/(app)' + pathname + '/+page.svelte', { read: 'onSearch' }, { window, prefs: { applyMangaPreferences }, API: { Manga: { Search: request }, MangaFollow: { Search: request } }, StatusCodes: { OK: 200, TOO_MANY_REQUESTS: 429 }, page: { state: {} }, replaceState() {} });
+  await route.api.read();
+  check('actual initial read canonicalizes before preferences ' + pathname + input, () => { for (const [key, value] of Object.entries(expected)) { assert.deepEqual(issued.getAll(key), [value]); assert.equal(issued.has(key + '[]'), false); } });
+}
+for (const input of ['?page=0','?page=1000001','?page=1&page[]=2','?page=bad','?tlang=bad','?manga=bad!','?group[]=bad!','?name=x&name[]=y','?rank=x&rank=y','?time=x&time=y','?draft=x&draft=y']) {
+  const window = { location: { pathname: '/search', search: input, href: 'http://localhost/search' + input } };
+  const cached = script('src/lib/components/MangaSearch.svelte', { current: '() => ({ error, feed })' }, { window, page: { state: { _$MangaSearch_feed: { data: ['stale'] } } }, $props: () => ({ feed: { data: ['stale'] }, onSearch: () => { assert.fail('invalid initial query was read'); } }) });
+  await cached.mounts[0]();
+  check('shared transport validation wins before cache/read ' + input, () => { assert.equal(cached.api.current().error.title, 'Invalid search filters'); assert.equal(cached.api.current().feed, undefined); });
+}
+check('valid pagination is retained for reads and excluded from Apply state', () => { const result = query.mangaSearchReadQuery(new URLSearchParams('page[]=2&limit[]=0'), false); assert.equal(result.error, undefined); assert.equal(result.query.get('page'), '2'); assert.equal(result.query.get('limit'), '0'); const parsed = parse('page=2'); assert.equal(Object.hasOwn(parsed.search, 'page'), false); assert.equal(parsed.passthrough.has('page'), false); });
+check('library username singleton does not narrow public unowned fields', () => { assert.ok(query.validateMangaSearchQuery(new URLSearchParams('username=a&username[]=b'), true)); assert.equal(query.validateMangaSearchQuery(new URLSearchParams('username=a&username=b'), false), undefined); });
+check('unowned future fields stay separate and survive initial read normalization', () => { const result = query.mangaSearchReadQuery(new URLSearchParams('future[]=one&future[]=two&tlang[]=mx&manga[]=native'), false); assert.equal(result.error, undefined); assert.deepEqual(result.query.getAll('future[]'), ['one','two']); assert.deepEqual(result.query.getAll('tlang'), ['mx']); assert.deepEqual(result.query.getAll('manga'), ['native']); });
+check('actual library Apply preserves explicit empty rating and resets page', () => { let target; const window = { location: { pathname: '/library', search: '?contentRating=__none__&page=2' } }; const value = script('src/lib/components/MangaSearchFilter.svelte', { submit: 'onSubmit' }, { window, goto: value => { target = value; }, toast: { error() { assert.fail('valid explicit empty selection rejected'); } } }); value.api.submit(); const next = new URL(target, 'http://localhost'); assert.equal(next.searchParams.get('contentRating'), '__none__'); assert.equal(next.searchParams.has('page'), false); });
+check('explicit library Reset clears its empty-rating selection deliberately', () => { let target; const window = { location: { pathname: '/library', search: '?contentRating=__none__&page=2' } }; const value = script('src/lib/components/MangaSearchFilter.svelte', { reset: 'onReset' }, { window, goto: value => { target = value; }, toast: { error() { assert.fail('explicit Reset was blocked'); } } }); value.api.reset(); assert.equal(target, '/library'); });
 const flush = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };
 for (const relative of ['src/routes/(app)/chapter/[id]/edit/+page.svelte','src/routes/(app)/title/[id]/upload/+page.svelte']) {
   for (const mode of ['undefined','throw','success','stale']) {
