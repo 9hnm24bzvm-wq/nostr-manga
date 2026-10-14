@@ -59,6 +59,8 @@ CHECKS['ui14-account-failures'] = ['account429-title-' + check for check in [
     'pressure-captured', 'capacity-ready', 'pressure-released', 'denial', 'feedback',
     'no-replay', 'durable-unchanged']]
 
+CHECKS['upload'] = ['upload-' + suffix for suffix in ['account-ready', 'begin-control', 'begin-uncertainty', 'begin-staging', 'corrupt-image-input', 'corrupt-image-feedback', 'corrupt-archive-input', 'corrupt-archive-feedback', 'corrupt-no-persisted-pages', 'failed-batch-feedback', 'failed-page-controls', 'cancel-conflict-retained', 'cancel-confirmed', 'stage-selection', 'stage-metadata', 'stage-durable', 'stage-reload', 'replacement-prerequisite', 'replacement-invalid-retained', 'replacement-lost-reply', 'replacement-durable', 'commit-prerequisite', 'commit-response', 'commit-receipt', 'published-reader', 'revert-prerequisite', 'revert-controls', 'page-edit-prerequisite', 'page-edit-controls']]
+
 CHECKS['local-library'] = ['local-library-' + suffix for suffix in ['device-title-navigation', 'device-follow-trigger-visible-unique',
  'device-follow-popup-open', 'device-follow-option-selected', 'device-status-durable',
  'device-authority-unpublished', 'device-reload-status', 'device-library-navigation',

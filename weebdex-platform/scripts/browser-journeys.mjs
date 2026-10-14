@@ -1,8 +1,9 @@
 // Real user-control journeys. Synthetic secrets stay only in harness memory.
+import { actAndWaitForPageEvent } from "./browser-action-events.mjs";
 import { randomBytes } from "node:crypto";
 import { deflateSync } from "node:zlib";
 import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
-import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel } from "./browser-select-controls.mjs";
+import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel, selectListboxTrigger, clickListboxOption, setListboxOptions, searchRatingTrigger } from "./browser-select-controls.mjs";
 import { expandDetailsPanel } from "./browser-details-controls.mjs";
 export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Object.freeze([
   'device-title-navigation', ...titleFollowCheckSuffixes.map(suffix => 'device-follow-' + suffix),
@@ -13,6 +14,7 @@ export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Obj
   'account-device-preserved', 'account-import-reviewed', 'signer-section-open', 'signer-binding-installed',
   'signer-dismissal-visible', 'signer-outbox-empty'
 ].map(suffix => 'local-library-' + suffix)) });
+export const ordinaryUploadDiagnosticChecks = Object.freeze({ upload: Object.freeze(["account-ready", "begin-control", "begin-uncertainty", "begin-staging", "corrupt-image-input", "corrupt-image-feedback", "corrupt-archive-input", "corrupt-archive-feedback", "corrupt-no-persisted-pages", "failed-batch-feedback", "failed-page-controls", "cancel-conflict-retained", "cancel-confirmed", "stage-selection", "stage-metadata", "stage-durable", "stage-reload", "replacement-prerequisite", "replacement-invalid-retained", "replacement-lost-reply", "replacement-durable", "commit-prerequisite", "commit-response", "commit-receipt", "published-reader", "revert-prerequisite", "revert-controls", "page-edit-prerequisite", "page-edit-controls"].map(suffix => "upload-" + suffix)) });
 export async function runJourneys(h) {
 	const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
 	const ids = fixture.ids ?? {};
@@ -20,6 +22,7 @@ export async function runJourneys(h) {
 	const sink = new URL(fixture.mail_origin ?? fixture.control_origin ?? "http://127.0.0.1:0");
 	const validSink = ["127.0.0.1", "localhost"].includes(sink.hostname) && sink.protocol === "http:" && sink.port !== "0";
 	let account, uploaded;
+	const uploadCheck = (suffix, operation) => { insist(typeof h.check === "function", "The fixed upload diagnostic recorder is required"); return h.check("upload-" + suffix, operation); };
 	const marker = randomBytes(6).toString("hex");
 	const api = async (route, options = {}) => {
 		insist(route.startsWith("/") && !route.startsWith("//") && !route.includes("://"), "API must stay inside the local fixture");
@@ -94,7 +97,7 @@ export async function runJourneys(h) {
 	const follow = status => selectTitleLibraryStatus(page, status);
 	const confirm = async name => { await page.getByRole('button', { name, exact: true }).first().click(); const dialog = page.getByRole('dialog'); await dialog.getByRole('button', { name, exact: true }).click(); };
 	const image = png(64, 96, marker);
-	if (["account", "account-recovery", "upload", "announcements", "community", "editorial"].includes(phase)) await step("register and verify synthetic account using real forms and local email", () => signup(["announcements", "editorial"].includes(phase) ? "staff" : phase === "community" ? "moderator" : "user"));
+	if (["account", "account-recovery", "upload", "announcements", "community", "editorial"].includes(phase)) await step("register and verify synthetic account using real forms and local email", () => phase === "upload" ? uploadCheck("account-ready", () => signup("user")) : signup(["announcements", "editorial"].includes(phase) ? "staff" : phase === "community" ? "moderator" : "user"));
 	if (phase === "account") {
 		await step("preference save uses authoritative version and persists after reload", async () => {
 			insist(account, "Registration prerequisite failed");
@@ -153,6 +156,7 @@ export async function runJourneys(h) {
       return { genuine_settings_post_200: true, normal_session_rehydrated: true, old_password_rejected: true, new_password_accepted: true, one_time_link_consumed: true, local_library_retained: true };
     });
 	} else if (phase === "upload") {
+		let uploadStageReady = false, replacementReady = false;
 		await step("lost successful begin response is not replayed and owner staging reconciles", async () => {
 			insist(account, "Registration prerequisite failed"); let begins = 0;
 			const intercept = async route => {
@@ -161,22 +165,22 @@ export async function runJourneys(h) {
 			};
 			await context.route(origin + "/api/upload/begin", intercept);
 			try {
-				await open(`/title/${manga}/upload`);
-				await page.getByRole("button", { name: /Not affiliated with any group/i }).click();
-				await page.getByText("Request outcome unknown", { exact: false }).waitFor({ state: "visible" });
-				await page.getByPlaceholder("Chapter Name", { exact: true }).waitFor({ state: "visible" });
-				await page.waitForTimeout(2500); insist(begins === 1, "An ambiguous POST was replayed");
-				const current = await api("/upload"); insist(current.status === 200 && current.body?.id, "Accepted staging was not restored");
+				await uploadCheck('begin-control', async () => { await open(`/title/${manga}/upload`);
+				await page.getByRole("button", { name: /Not affiliated with any group/i }).click(); });
+				await uploadCheck('begin-uncertainty', async () => { await page.getByText("Request outcome unknown", { exact: false }).waitFor({ state: "visible" });
+				await page.getByPlaceholder("Chapter Name", { exact: true }).waitFor({ state: "visible" }); });
+				await uploadCheck('begin-staging', async () => { await page.waitForTimeout(2500); insist(begins === 1, "An ambiguous POST was replayed");
+				const current = await api("/upload"); insist(current.status === 200 && current.body?.id, "Accepted staging was not restored"); });
 				return { accepted_post_count: begins, honest_uncertainty_visible: true, owner_staging_restored: true };
 			} finally { await context.unroute(origin + "/api/upload/begin", intercept); }
 		});
 		await step("corrupt image and corrupt archive release upload controls without fake success", async () => {
 			const input = page.locator('input[type="file"][accept*="image/jpeg"]');
-			await input.setInputFiles({ name: "broken.png", mimeType: "image/png", buffer: Buffer.from("not an image") });
-			await page.getByText(/Failed to read|Failed to load|Invalid image|Could not decode/i).first().waitFor({ state: "visible" });
-			await input.setInputFiles({ name: "broken.zip", mimeType: "application/zip", buffer: Buffer.from("not an archive") });
-			await page.getByText("Failed to extract archive", { exact: false }).first().waitFor({ state: "visible" });
-			const current = await api("/upload"); insist(current.body?.relationships?.files?.length === 0, "Rejected files became persisted pages");
+			await uploadCheck('corrupt-image-input', async () => { await input.setInputFiles({ name: "broken.png", mimeType: "image/png", buffer: Buffer.from("not an image") }); });
+			await uploadCheck('corrupt-image-feedback', async () => { await page.getByText(/Failed to read|Failed to load|Invalid image|Could not decode/i).first().waitFor({ state: "visible" }); });
+			await uploadCheck('corrupt-archive-input', async () => { await input.setInputFiles({ name: "broken.zip", mimeType: "application/zip", buffer: Buffer.from("not an archive") }); });
+			await uploadCheck('corrupt-archive-feedback', async () => { await page.getByText("Failed to extract archive", { exact: false }).first().waitFor({ state: "visible" }); });
+			await uploadCheck('corrupt-no-persisted-pages', async () => { const current = await api("/upload"); insist(current.body?.relationships?.files?.length === 0, "Rejected files became persisted pages"); });
 			return { corrupt_image_rejected: true, corrupt_zip_rejected: true, persisted_files: 0 };
 		});
 		await step("single failed batch remains visibly recoverable and cancellation409 preserves staging", async () => {
@@ -184,76 +188,77 @@ export async function runJourneys(h) {
       const endpoint = origin + `/api/upload/${original.body.id}`; let posts = 0;
       const rejectPost = async route => { if (route.request().method() !== "POST") return route.continue(); posts++; await route.fulfill({ status: 500, contentType: "application/json", body: '{"error":"synthetic batch failure before acceptance"}' }); };
       await context.route(endpoint, rejectPost);
-      try { await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: "failed-single.png", mimeType: "image/png", buffer: image }); await page.getByText("Upload was not confirmed", { exact: true }).last().waitFor({ state: "visible" }); }
+      try { await uploadCheck('failed-batch-feedback', async () => { await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: "failed-single.png", mimeType: "image/png", buffer: image }); await page.getByText("Upload was not confirmed", { exact: true }).last().waitFor({ state: "visible" }); }); }
       finally { await context.unroute(endpoint, rejectPost); }
       const card = page.locator('div[class~="!visible"]').filter({ has: page.getByText("failed-single.png", { exact: true }) });
-      insist(await card.getByRole("button").count() >= 2, "Failed single page has no per-item Replace/Remove controls");
+      await uploadCheck('failed-page-controls', async () => { insist(await card.getByRole("button").count() >= 2, "Failed single page has no per-item Replace/Remove controls");
       await card.getByRole("button").last().click(); await page.getByText("Page outcome is still unknown", { exact: true }).last().waitFor({ state: "visible" });
-      insist(posts === 1 && (await api("/upload")).body.id === original.body.id, "Ambiguous page was replayed or staging discarded");
+      insist(posts === 1 && (await api("/upload")).body.id === original.body.id, "Ambiguous page was replayed or staging discarded"); });
       const rejectCancel = async route => { if (route.request().method() === "DELETE") return route.fulfill({ status: 409, contentType: "application/json", body: '{"error":"synthetic immutable-stage rejection"}' }); return route.continue(); };
       await context.route(endpoint, rejectCancel);
-      try { await confirm("Cancel staged upload"); await page.getByText("Upload session changed", { exact: true }).last().waitFor({ state: "visible" }); insist((await api("/upload")).body.id === original.body.id && await card.count() === 1, "Cancel409 discarded private staged state"); }
+      try { await uploadCheck('cancel-conflict-retained', async () => { await confirm("Cancel staged upload"); await page.getByText("Upload session changed", { exact: true }).last().waitFor({ state: "visible" }); insist((await api("/upload")).body.id === original.body.id && await card.count() === 1, "Cancel409 discarded private staged state"); }); }
       finally { await context.unroute(endpoint, rejectCancel); }
-      const cancelled = page.waitForResponse(response => response.url() === endpoint && response.request().method() === "DELETE"); await confirm("Cancel staged upload"); insist((await cancelled).status() === 204 && (await api("/upload")).status === 204, "Explicit successful cancellation was not persisted");
-      await page.getByRole("button", { name: /Not affiliated with any group/i }).click(); await page.getByPlaceholder("Chapter Name", { exact: true }).waitFor();
+      await uploadCheck('cancel-confirmed', async () => { const cancelled = await actAndWaitForPageEvent(page, "response", () => confirm("Cancel staged upload"), response => response.url() === endpoint && response.request().method() === "DELETE"); insist((await cancelled).status() === 204 && (await api("/upload")).status === 204, "Explicit successful cancellation was not persisted");
+      await page.getByRole("button", { name: /Not affiliated with any group/i }).click(); await page.getByPlaceholder("Chapter Name", { exact: true }).waitFor(); });
       return { one_post_only: posts === 1, per_item_failure_controls: true, unknown_not_replayed: true, cancel409_retains_state: true, confirmed204_releases_stage_and_navigation: true };
     });
 		await step("real image upload privately saves metadata and exact order then resumes on reload", async () => {
-			await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles([{ name: "page1.png", mimeType: "image/png", buffer: image }, { name: "page2.png", mimeType: "image/png", buffer: png(64, 96, marker + "next") }]);
-			await page.getByPlaceholder("Chapter Name", { exact: true }).fill(`Staged ${marker}`);
+			await uploadCheck('stage-selection', async () => { await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles([{ name: "page1.png", mimeType: "image/png", buffer: image }, { name: "page2.png", mimeType: "image/png", buffer: png(64, 96, marker + "next") }]); });
+			await uploadCheck('stage-metadata', async () => { await page.getByPlaceholder("Chapter Name", { exact: true }).fill(`Staged ${marker}`);
 			await page.getByPlaceholder("Volume No.", { exact: true }).fill("1"); await page.getByPlaceholder("Chapter No.", { exact: true }).fill("7");
-			await page.getByText("Select Language", { exact: true }).click(); await page.getByText("English", { exact: true }).last().click();
-			const saved = await until(() => api("/upload"), value => value.body?.relationships?.files?.length === 2 && value.body?.draft?.title === `Staged ${marker}` && value.body?.draft?.language === "en" && value.body?.page_order?.length === 2, "Private staging metadata/order did not autosave", 25000);
-			await page.reload({ waitUntil: "domcontentloaded" });
+			await selectListboxTrigger(page.locator('form').filter({ has: page.locator("#terms") })).filter({ hasText: /^\s*Select Language\s*$/ }).click(); await clickListboxOption(page, "English"); });
+			const saved = await uploadCheck("stage-durable", () => until(() => api("/upload"), value => value.body?.relationships?.files?.length === 2 && value.body?.draft?.title === `Staged ${marker}` && value.body?.draft?.language === "en" && value.body?.page_order?.length === 2, "Private staging metadata/order did not autosave", 25000));
+			const previews = await uploadCheck('stage-reload', async () => { await page.reload({ waitUntil: "domcontentloaded" });
 			await until(() => page.getByPlaceholder("Chapter Name", { exact: true }).inputValue(), value => value === `Staged ${marker}`, "Reload lost chapter draft");
 			const restored = await api("/upload"); insist(restored.body.id === saved.body.id && JSON.stringify(restored.body.page_order) === JSON.stringify(saved.body.page_order), "Reload replaced or reordered staged work");
 			const previews = await page.locator('img[src*="/uploads/"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length);
-			insist(previews >= 2, "Resumed private image previews did not decode");
+			insist(previews >= 2, "Resumed private image previews did not decode"); return previews; });
+			uploadStageReady = true;
 			return { session_preserved: true, draft_title_restored: true, exact_order_restored: true, genuine_previews: previews };
 		});
 		await step("replacement rejects invalid images before mutation and reconciles one lost atomic response", async () => {
+      await uploadCheck("replacement-prerequisite", async () => { insist(uploadStageReady, "Actual uploaded staging prerequisite failed; replacement was not attempted"); });
       const current = await api("/upload"), previous = current.body.relationships.files[0]; let writes = 0, deletes = 0;
       const replaceControl = () => page.locator('div[class~="!visible"]').filter({ has: page.getByText(previous.original_file_name, { exact: true }) }).getByRole('button').first();
       const watch = request => { const path = new URL(request.url()).pathname; if (path.includes(`/upload/${current.body.id}/files/`) && request.method() === "DELETE") deletes++; if (path.endsWith("/replace") && request.method() === "POST") writes++; };
       page.on("request", watch);
       try {
-        const rejectedChooser = page.waitForEvent("filechooser"); await replaceControl().click(); await (await rejectedChooser).setFiles({ name: "corrupt-replacement.png", mimeType: "image/png", buffer: Buffer.from("not an image") });
-        await page.getByText(/Existing page is retained/, { exact: false }).first().waitFor({ state: "visible" });
+        await uploadCheck('replacement-invalid-retained', async () => { const rejectedChooser = await actAndWaitForPageEvent(page, "filechooser", () => replaceControl().click()); await rejectedChooser.setFiles({ name: "corrupt-replacement.png", mimeType: "image/png", buffer: Buffer.from("not an image") });
+        await page.getByText(/Existing page is retained/, { exact: false }).first().waitFor({ state: "visible" }); });
         const untouched = await api("/upload"); insist(untouched.body.relationships.files.find(row => row.id === previous.id)?.file_hash === previous.file_hash && writes === 0 && deletes === 0, "Replacement admission removed or changed the valid old page");
         const endpoint = origin + `/api/upload/${current.body.id}/files/${previous.id}/replace`;
         const loseReply = async route => { const response = await route.fetch(); insist(response.status() === 200, "Atomic replacement was rejected"); await route.abort("failed"); };
         await context.route(endpoint, loseReply);
-        try { const chooser = page.waitForEvent("filechooser"); await replaceControl().click(); await (await chooser).setFiles({ name: "replacement.png", mimeType: "image/png", buffer: png(80, 100, marker + "replace") }); await page.getByText("Replacement confirmed from current staging", { exact: true }).waitFor({ state: "visible", timeout: 15000 }); }
+        try { await uploadCheck('replacement-lost-reply', async () => { const chooser = await actAndWaitForPageEvent(page, "filechooser", () => replaceControl().click()); await chooser.setFiles({ name: "replacement.png", mimeType: "image/png", buffer: png(80, 100, marker + "replace") }); await page.getByText("Replacement confirmed from current staging", { exact: true }).waitFor({ state: "visible", timeout: 15000 }); }); }
         finally { await context.unroute(endpoint, loseReply); }
-        const latest = await api("/upload"), actual = latest.body.relationships.files.find(row => row.id === previous.id);
-        insist(actual && actual.file_hash !== previous.file_hash && actual.original_file_name === "replacement.png" && writes === 1 && deletes === 0 && JSON.stringify(latest.body.page_order) === JSON.stringify(untouched.body.page_order), "Atomic replacement changed identity/order or replayed its mutation");
+        await uploadCheck('replacement-durable', async () => { const latest = await api("/upload"), actual = latest.body.relationships.files.find(row => row.id === previous.id);
+        insist(actual && actual.file_hash !== previous.file_hash && actual.original_file_name === "replacement.png" && writes === 1 && deletes === 0 && JSON.stringify(latest.body.page_order) === JSON.stringify(untouched.body.page_order), "Atomic replacement changed identity/order or replayed its mutation"); });
+        replacementReady = true;
         return { invalid_replacement_kept_old_bytes: true, atomic_post_count: writes, delete_requests: deletes, stable_file_identity_order: true, lost_reply_reconciled_by_read: true };
       } finally { page.off("request", watch); }
     });
 		await step("commit actual image pages using form then read ordered published images", async () => {
-			await checked("#terms", true);
-			const responsePromise = page.waitForResponse(response => /\/api\/upload\/[^/]+\/commit$/.test(new URL(response.url()).pathname) && response.request().method() === "POST");
-			await page.getByRole("button", { name: "Upload", exact: true }).click();
-			const response = await responsePromise; insist(response.status() === 200, "Commit did not succeed"); uploaded = await response.json();
-			insist(uploaded.publication_scope === "instance-local" && uploaded.publication_status === "local" && uploaded.data?.length === 2, "Local fixture publication receipt was not truthful");
-			await page.getByText("Chapter uploaded to this instance", { exact: true }).waitFor({ state: "visible" }); await page.getByRole("button", { name: "Close", exact: true }).last().click();
+			await uploadCheck('commit-prerequisite', async () => { insist(uploadStageReady && replacementReady, "Actual image upload/replacement prerequisites failed; publication was not attempted"); await checked("#terms", true); });
+			const response = await uploadCheck("commit-response", () => actAndWaitForPageEvent(page, "response", () => page.getByRole("button", { name: "Upload", exact: true }).click(), response => /\/api\/upload\/[^/]+\/commit$/.test(new URL(response.url()).pathname) && response.request().method() === "POST")); await uploadCheck('commit-receipt', async () => { insist(response.status() === 200, "Commit did not succeed"); uploaded = await response.json();
+			insist(uploaded.publication_scope === "instance-local" && uploaded.publication_status === "local" && uploaded.data?.length === 2, "Local fixture publication receipt was not truthful"); });
+			await uploadCheck('published-reader', async () => { await page.getByText("Chapter uploaded to this instance", { exact: true }).waitFor({ state: "visible" }); await page.getByRole("button", { name: "Close", exact: true }).last().click();
 			await page.waitForURL(url => url.pathname.startsWith(`/chapter/${uploaded.id}/`));
-			await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), value => value > 0, "Published reader did not decode genuine page bytes");
+			await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), value => value > 0, "Published reader did not decode genuine page bytes"); });
 			return { committed_pages: uploaded.data.length, truthful_local_receipt: true, reader_opened_from_control: true, decoded_images: true };
 		});
 		await step("invalid dirty chapter metadata can Revert without a mutation or navigation trap", async () => {
-      insist(uploaded?.id, "Uploaded chapter prerequisite failed"); await open(`/chapter/${uploaded.id}/edit`);
+      await uploadCheck("revert-prerequisite", async () => { insist(uploaded?.id, "Uploaded chapter prerequisite failed"); await open(`/chapter/${uploaded.id}/edit`); });
       const field = page.getByPlaceholder("Chapter No.", { exact: true }), original = await field.inputValue(); let writes = 0;
       const watch = request => { if (new URL(request.url()).pathname === `/api/chapter/${uploaded.id}` && request.method() === "PUT") writes++; }; page.on("request", watch);
-      try { await field.fill("invalid-number"); const revert = page.getByRole("button", { name: "Revert", exact: true }); insist(await revert.isEnabled(), "Invalid dirty metadata blocks its local Revert control"); await revert.click(); insist(await field.inputValue() === original && writes === 0, "Revert wrote metadata or failed to restore initial value"); await page.locator(`a[href^="/title/${manga}"]`).first().click(); await page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`)); }
+      try { await uploadCheck("revert-controls", async () => { await field.fill("invalid-number"); const revert = page.getByRole("button", { name: "Revert", exact: true }); insist(await revert.isEnabled(), "Invalid dirty metadata blocks its local Revert control"); await revert.click(); insist(await field.inputValue() === original && writes === 0, "Revert wrote metadata or failed to restore initial value"); await page.locator(`a[href^="/title/${manga}"]`).first().click(); await page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`)); }); }
       finally { page.off("request", watch); }
       return { invalid_local_value_reverted: true, no_put_sent: writes === 0, clean_spa_exit: true };
     });
 		await step("Edit Pages and Replace Pages submit without native document navigation", async () => {
-      insist(uploaded?.id, "Uploaded chapter prerequisite failed"); await open(`/chapter/${uploaded.id}/edit`); let navigations = 0, begins = 0;
+      await uploadCheck("page-edit-prerequisite", async () => { insist(uploaded?.id, "Uploaded chapter prerequisite failed"); await open(`/chapter/${uploaded.id}/edit`); }); let navigations = 0, begins = 0;
       const watchFrame = frame => { if (frame === page.mainFrame()) navigations++; }, watchRequest = request => { if (new URL(request.url()).pathname === `/api/upload/begin/${uploaded.id}` && request.method() === "POST") begins++; };
       page.on("framenavigated", watchFrame); page.on("request", watchRequest);
-      try {
+      try { await uploadCheck("page-edit-controls", async () => {
         const titleField = page.getByPlaceholder("Chapter Name", { exact: true }); const originalTitle = await titleField.inputValue(); await titleField.fill(`Unacknowledged ${marker}`);
         await page.getByRole("button", { name: "Edit Pages", exact: true }).click(); await page.getByText("Save or revert chapter metadata first", { exact: true }).waitFor({ state: "visible" });
         insist(begins === 0 && navigations === 0 && await titleField.inputValue() !== originalTitle && (await api("/upload")).status === 204, "Dirty metadata was dropped or page staging began before Save/Revert");
@@ -264,7 +269,7 @@ export async function runJourneys(h) {
         await page.getByRole("button", { name: "Replace Pages", exact: true }).click(); const replace = await until(() => api("/upload"), value => value.status === 200 && value.body.chapter_id === uploaded.id && value.body.relationships.files.length === 0, "Replace Pages did not create an empty owned staging session");
         insist(navigations === 0 && begins === 2 && replace.body.id !== edit.body.id, "Page editing navigated or replayed a begin mutation");
         await page.getByRole("button", { name: "Cancel", exact: true }).first().click(); await until(() => api("/upload"), value => value.status === 204, "Replacement staging did not cancel");
-      } finally { page.off("framenavigated", watchFrame); page.off("request", watchRequest); }
+      }); } finally { page.off("framenavigated", watchFrame); page.off("request", watchRequest); }
       return { synchronous_default_prevention: true, native_document_navigations: navigations, actual_begin_requests: begins, edit_preserves_pages: true, replace_starts_empty: true };
     });
 	} else if (phase === "reader") {
@@ -345,19 +350,19 @@ export async function runJourneys(h) {
 			await page.locator("#announcement-title").fill(`Published ${marker}`); await checked("#announcement-published", true); await checked("#announcement-pinned", true); await page.getByRole("button", { name: "Save announcement", exact: true }).click();
 			const published = await until(() => api(`/announcement/${news.id}`), value => value.body?.published && value.body?.pinned && value.body?.version > news.version, "Announcement edit/publish did not persist");
 			await open("/"); await page.getByRole("link", { name: `Published ${marker}`, exact: true }).waitFor({ state: "visible" }); await page.getByRole("link", { name: `Published ${marker}`, exact: true }).click(); await page.getByText(`Synthetic persisted Markdown ${marker}`, { exact: false }).waitFor({ state: "visible" });
-			await open("/announcements/manage"); const changedCard = page.locator('[data-slot="card"]').filter({ has: page.getByRole("link", { name: `Published ${marker}`, exact: true }) }); page.once("dialog", dialog => dialog.accept()); await changedCard.getByRole("button", { name: "Delete", exact: true }).click();
+			await open("/announcements/manage"); const changedCard = page.locator('[data-slot="card"]').filter({ has: page.getByRole("link", { name: `Published ${marker}`, exact: true }) }); await actAndWaitForPageEvent(page, "dialog", () => changedCard.getByRole("button", { name: "Delete", exact: true }).click(), undefined, 7000, dialog => dialog.accept());
 			await until(() => api(`/announcement/${news.id}`), value => value.status === 404, "Delete control did not hide announcement");
 			return { version_advanced: published.body.version > news.version, published_homepage_link_clicked: true, real_detail_rendered: true, delete_control_persisted: true };
 		});
 	} else if (phase === 'filters') {
 		await step('empty explicit ratings emit sentinel and genuinely return zero results', async () => {
-			await open('/search'); for (const rating of ['Safe', 'Suggestive', 'Erotica', 'Pornographic']) { await page.getByRole('combobox', { name: /Safe|Suggestive|Erotica|Pornographic|Content Rating/ }).click(); const option = page.getByRole('option', { name: rating, exact: true }); if (await option.getAttribute('aria-selected') === 'true') await option.click(); await page.keyboard.press('Escape'); }
-			const result = page.waitForResponse(response => new URL(response.url()).pathname === '/api/manga' && new URL(response.url()).searchParams.get('contentRating') === '__none__'); await page.getByRole('button', { name: 'Search', exact: true }).click(); const response = await result; const feed = await response.json(); insist(response.status() === 200 && feed.total === 0 && feed.data.length === 0, 'Empty rating selection was silently treated as default ratings');
+			await open('/search'); await setListboxOptions(page, searchRatingTrigger(page), []);
+			const response = await actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Search', exact: true }).click(), response => new URL(response.url()).pathname === '/api/manga' && new URL(response.url()).searchParams.get('contentRating') === '__none__'); const feed = await response.json(); insist(response.status() === 200 && feed.total === 0 && feed.data.length === 0, 'Empty rating selection was silently treated as default ratings');
 			await page.getByText('No results found', { exact: true }).waitFor({ state: 'visible' }); return { explicit_empty_wire: '__none__', actual_total: feed.total, empty_results_ui: true };
 		});
 		await step('safe rating title and has-chapters controls produce real nonempty narrowed feed', async () => {
-			const seeded = await api(`/manga/${manga}`); insist(seeded.status === 200 && seeded.body.content_rating === 'safe', 'Seeded safe title missing'); await page.getByRole('combobox', { name: 'Content Rating', exact: true }).click(); await page.getByRole('option', { name: 'Safe', exact: true }).click(); await page.keyboard.press('Escape'); await page.getByPlaceholder('Search...', { exact: true }).fill(seeded.body.title); await checked('#hasChapters', true);
-			const result = page.waitForResponse(response => new URL(response.url()).pathname === '/api/manga' && new URL(response.url()).searchParams.get('contentRating') === 'safe' && new URL(response.url()).searchParams.get('hasChapters') === 'true'); await page.getByRole('button', { name: 'Search', exact: true }).click(); const response = await result, feed = await response.json(); insist(response.status() === 200 && feed.total >= 1 && feed.data.some(row => row.id === manga) && feed.data.every(row => row.content_rating === 'safe'), 'Selected filters did not constrain real feed'); await page.locator(`a[href^="/title/${manga}"]`).first().waitFor({ state: 'visible' });
+			const seeded = await api(`/manga/${manga}`); insist(seeded.status === 200 && seeded.body.content_rating === 'safe', 'Seeded safe title missing'); await setListboxOptions(page, searchRatingTrigger(page), ['Safe']); await page.getByPlaceholder('Search...', { exact: true }).fill(seeded.body.title); await checked('#hasChapters', true);
+			const response = await actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Search', exact: true }).click(), response => new URL(response.url()).pathname === '/api/manga' && new URL(response.url()).searchParams.get('contentRating') === 'safe' && new URL(response.url()).searchParams.get('hasChapters') === 'true'), feed = await response.json(); insist(response.status() === 200 && feed.total >= 1 && feed.data.some(row => row.id === manga) && feed.data.every(row => row.content_rating === 'safe'), 'Selected filters did not constrain real feed'); await page.locator(`a[href^="/title/${manga}"]`).first().waitFor({ state: 'visible' });
 			return { rating_filter_applied: true, title_filter_applied: true, has_chapters_applied: true, visible_seed_result: true, total: feed.total };
 		});
 		await step('reset and back-forward use initialized query semantics without double question marks', async () => {
@@ -370,7 +375,7 @@ export async function runJourneys(h) {
 			await open('/create/title'); await page.locator('#title').fill(`Browser Draft ${marker}`); await page.locator('#synopsis').fill(`Synthetic editorial draft ${marker}`); await page.getByRole('tab', { name: 'Metadata', exact: true }).click();
 			for (let index = 0; index < 2; index++) { await page.getByText('Search...', { exact: true }).nth(index).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Search...', { exact: true }).fill(author.body.name); await dialog.getByRole('button', { name: author.body.name, exact: true }).click(); await page.keyboard.press('Escape'); }
 			await page.getByRole('tab', { name: 'Covers', exact: true }).click(); await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: 'cover.png', mimeType: 'image/png', buffer: image });
-			const created = page.waitForResponse(response => new URL(response.url()).pathname === '/api/manga' && response.request().method() === 'POST'); await page.getByRole('button', { name: 'Save', exact: true }).click(); const response = await created; insist(response.status() === 200, 'Title creation did not persist'); title = await response.json();
+			const response = await actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Save', exact: true }).click(), response => new URL(response.url()).pathname === '/api/manga' && response.request().method() === 'POST'); insist(response.status() === 200, 'Title creation did not persist'); title = await response.json();
 			await page.getByText('Draft successfully created', { exact: true }).waitFor({ state: 'visible' }); const privateDraft = await api(`/manga/draft/${title.id}`); insist(privateDraft.status === 200 && privateDraft.body.state === 'draft', 'Created draft not privately readable'); const covers = await api(`/cover?manga=${title.id}`); insist(covers.status === 200, 'Original cover was not saved');
 			await page.getByRole('link', { name: 'Edit draft', exact: true }).click(); await page.locator('#title').waitFor({ state: 'visible' });
 			return { create_form_persisted: true, author_and_artist_controls_used: true, actual_png_cover_saved: true, original_editor_opened: true };
@@ -383,7 +388,7 @@ export async function runJourneys(h) {
 			return { submitted_version: submitted.body.version, rejected_version: rejected.body.version, revised_and_resubmitted_version: again.body.version };
 		});
 		await step('publish local scope and repeated lock unlock controls refresh actual versions', async () => {
-			insist(title, 'Draft prerequisite failed'); const receiptPromise = page.waitForResponse(response => new URL(response.url()).pathname === `/api/manga/draft/${title.id}/publish` && response.request().method() === 'POST'); await confirm('Publish'); const response = await receiptPromise; insist(response.status() === 200, 'Publish was not acknowledged'); const receipt = await response.json(); insist(receipt.publication_scope === 'instance-local' && receipt.publication_status === 'local', 'Native-only fixture publish scope is dishonest');
+			insist(title, 'Draft prerequisite failed'); const response = await actAndWaitForPageEvent(page, 'response', () => confirm('Publish'), response => new URL(response.url()).pathname === `/api/manga/draft/${title.id}/publish` && response.request().method() === 'POST'); insist(response.status() === 200, 'Publish was not acknowledged'); const receipt = await response.json(); insist(receipt.publication_scope === 'instance-local' && receipt.publication_status === 'local', 'Native-only fixture publish scope is dishonest');
 			const published = await until(() => api(`/manga/${title.id}`), value => value.body?.state === 'published', 'Published title not genuinely publicly readable'); await confirm('Lock'); const locked = await until(() => api(`/manga/${title.id}`), value => value.body?.locked === true && value.body.version > published.body.version, 'Lock did not persist actual version'); await confirm('Unlock'); const unlocked = await until(() => api(`/manga/${title.id}`), value => value.body?.locked === false && value.body.version > locked.body.version, 'Unlock did not persist after lock');
 			return { scope: receipt.publication_scope, publication_publicly_readable: true, lock_version: locked.body.version, unlock_version: unlocked.body.version, real_signed_pending_receipt_requires_original_fixture: true };
 		});
@@ -391,12 +396,12 @@ export async function runJourneys(h) {
 		let reply, group, claim;
 		const thread = ids.thread ?? 'SeedThred1';
 		await step('real comment create edit and persisted reload controls', async () => {
-			insist(account, 'Moderator registration prerequisite failed'); await open(`/forums/threads/${thread}`); await page.getByPlaceholder('Enter your thoughts...', { exact: true }).fill(`Browser comment ${marker}`); const posted = page.waitForResponse(response => new URL(response.url()).pathname === `/api/thread/${thread}/replies` && response.request().method() === 'POST'); await page.getByRole('button', { name: 'Post', exact: true }).click(); const response = await posted; insist(response.status() === 201, 'Comment POST not accepted'); reply = await response.json(); await page.locator(`#p${reply.id}`).getByText(`Browser comment ${marker}`, { exact: true }).waitFor({ state: 'visible' });
+			insist(account, 'Moderator registration prerequisite failed'); await open(`/forums/threads/${thread}`); await page.getByPlaceholder('Enter your thoughts...', { exact: true }).fill(`Browser comment ${marker}`); const response = await actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Post', exact: true }).click(), response => new URL(response.url()).pathname === `/api/thread/${thread}/replies` && response.request().method() === 'POST'); insist(response.status() === 201, 'Comment POST not accepted'); reply = await response.json(); await page.locator(`#p${reply.id}`).getByText(`Browser comment ${marker}`, { exact: true }).waitFor({ state: 'visible' });
 			await page.locator(`#p${reply.id}`).getByRole('button', { name: 'Edit', exact: true }).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Enter your thoughts...', { exact: true }).fill(`Edited ${marker}`); await dialog.getByRole('button', { name: 'Save', exact: true }).click(); const updated = await until(() => api(`/thread/${thread}/replies/${reply.id}`), value => value.body?.body === `Edited ${marker}` && value.body.version > reply.version, 'Comment edit did not advance persisted version'); await page.reload({ waitUntil: 'domcontentloaded' }); await page.locator(`#p${reply.id}`).getByText(`Edited ${marker}`, { exact: true }).waitFor({ state: 'visible' });
 			return { reply_created: true, edited_version: updated.body.version, reload_persisted: true };
 		});
 		await step('real group creation and ownership claim stays pending before moderation', async () => {
-			await open('/create/group'); await page.locator('#name').fill(`Browser Group ${marker}`); const created = page.waitForResponse(response => new URL(response.url()).pathname === '/api/group' && response.request().method() === 'POST'); await page.getByRole('button', { name: 'Save', exact: true }).click(); const response = await created; insist(response.status() === 201, 'Group creation failed'); group = await response.json(); await page.waitForURL(url => url.pathname.startsWith(`/group/${group.id}`)); await page.getByRole('button', { name: 'Claim', exact: true }).click(); const dialog = page.getByRole('dialog'); await dialog.getByRole('radio', { name: 'Translated Chapter (Credits Page)', exact: true }).click(); await dialog.locator('#translated-chapter').fill(`${origin}/chapter/${chapter}`); await dialog.locator('#notes').fill(`Synthetic claim proof ${marker}`); await dialog.getByRole('button', { name: 'Save', exact: true }).click(); await page.getByText('Group claim request submitted successfully', { exact: true }).waitFor({ state: 'visible' });
+			await open('/create/group'); await page.locator('#name').fill(`Browser Group ${marker}`); const response = await actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Save', exact: true }).click(), response => new URL(response.url()).pathname === '/api/group' && response.request().method() === 'POST'); insist(response.status() === 201, 'Group creation failed'); group = await response.json(); await page.waitForURL(url => url.pathname.startsWith(`/group/${group.id}`)); await page.getByRole('button', { name: 'Claim', exact: true }).click(); const dialog = page.getByRole('dialog'); await dialog.getByRole('radio', { name: 'Translated Chapter (Credits Page)', exact: true }).click(); await dialog.locator('#translated-chapter').fill(`${origin}/chapter/${chapter}`); await dialog.locator('#notes').fill(`Synthetic claim proof ${marker}`); await dialog.getByRole('button', { name: 'Save', exact: true }).click(); await page.getByText('Group claim request submitted successfully', { exact: true }).waitFor({ state: 'visible' });
 			const feed = await until(() => api(`/report?object=${group.id}&limit=100`), value => value.body?.data?.some(row => row.relationships?.reason?.reason === 'Group claim request'), 'Claim report was not persisted'); claim = feed.body.data.find(row => row.relationships?.reason?.reason === 'Group claim request'); insist(claim.status === 'waiting', 'Claim silently bypassed moderator approval'); const current = await api(`/group/${group.id}`); insist(!(current.body?.relationships?.members ?? []).some(member => member.is_leader), 'Creating/submitting claim granted ownership');
 			return { new_group_persisted: true, claim_form_persisted: true, pending_status: claim.status, no_automatic_leadership: true };
 		});
@@ -449,7 +454,7 @@ export async function runJourneys(h) {
 				await until(device, value => value?.records.some(row => row.family === 'members' && row.list === list.id && row.series === manga && row.position === 3), 'Membership control did not persist');
 			});
 			await inspect('custom-backup-export', async () => {
-				const downloading = page.waitForEvent('download'); await target.getByRole('button', { name: 'Export device backup', exact: true }).click(); const download = await downloading; const stream = await download.createReadStream(); const chunks = []; for await (const chunk of stream) chunks.push(chunk); backup = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+				const download = await actAndWaitForPageEvent(page, 'download', () => target.getByRole('button', { name: 'Export device backup', exact: true }).click()); const stream = await download.createReadStream(); const chunks = []; for await (const chunk of stream) chunks.push(chunk); backup = JSON.parse(Buffer.concat(chunks).toString('utf8'));
 				insist(backup.format === 'weebdex-device-library' && backup.scope.origin === origin && backup.records.length >= 4, 'UI export was not the scoped device backup');
 			});
 			await inspect('custom-foreign-backup-fenced', async () => { const foreign = { ...backup, scope: { ...backup.scope, origin: 'https://foreign.example.invalid' } }; await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'foreign.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(foreign)) }); await target.getByText('Native IDs belong to a different instance.', { exact: false }).waitFor({ state: 'visible' }); insist(await target.getByRole('button', { name: 'Merge reviewed import', exact: true }).count() === 0, 'Foreign native IDs could be merged silently'); });
@@ -463,7 +468,7 @@ export async function runJourneys(h) {
 			await selectTitleLibraryStatus(page, 'Plan to Read', { check, prefix: 'local-library-account-follow' });
 			const accountFollow = await inspect('account-status-durable', () => until(() => api(`/user/follows/manga?limit=100`), value => value.status === 200 && value.body?.data?.some(row => row.id === manga && row.reading_status === 'plan_to_read'), 'Explicit account follow did not persist'));
 			await inspect('account-device-preserved', async () => { const preserved = await device(); insist(JSON.stringify(preserved.records) === JSON.stringify(before.records), 'Account mode silently overwrote device records'); });
-			await inspect('account-import-reviewed', async () => { await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); await panel().getByText('Import preview: account', { exact: false }).waitFor({ state: 'visible' }); await panel().getByRole('button', { name: 'Merge reviewed import', exact: true }).click();
+			await inspect('account-import-reviewed', async () => { await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); await panel().getByText('Import preview: Explicit account-library import', { exact: false }).waitFor({ state: 'visible' }); await panel().getByRole('button', { name: 'Merge reviewed import', exact: true }).click();
 				await panel().getByRole('button', { name: 'Use device library', exact: true }).click(); await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga), 'Reviewed account import lost local series'); });
 			return { account_follow_confirmed: accountFollow.status, explicit_mode_only: true, device_unchanged_before_reviewed_import: true, reviewed_merge_control_used: true };
 		});

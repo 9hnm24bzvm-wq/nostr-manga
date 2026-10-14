@@ -190,3 +190,16 @@ test('former incomplete binding is rejected before the prompt, proving harness c
   await assert.rejects(module.context.connectSigner(), /compatible NIP-07 browser signer is required/);
   assert.equal(prompts, 0); assert.equal(module.identity.value.generation, 0);
 });
+
+test('account import preview follows the actual explicit source without changing review authority', () => {
+  const journeys = read('scripts/browser-journeys.mjs'), library = read('platform-integrations/local-library/library.ts'), panel = read('platform-integrations/local-library/LocalLibraryPanel.svelte');
+  const source = library.match(/source: '(Explicit account-library import)'/)[1];
+  assert.match(panel, /Import preview: \{imported.source\}/);
+  const text = 'Import preview: ' + source + ' · 1 rows';
+  assert.equal(text.includes('Import preview: account'), false);
+  assert(text.includes('Import preview: Explicit account-library import'));
+  assert.match(journeys, /getByText\('Import preview: Explicit account-library import', \{ exact: false \}\)/);
+  assert.match(library, /previewAccountImport[\s\S]*?assertCatalogueScope[\s\S]*?authoritativeAccount/);
+  assert.match(library, /applyImport[\s\S]*?accountId[\s\S]*?authoritativeAccount/);
+  assert.match(journeys, /getByRole\('button', \{ name: 'Merge reviewed import', exact: true \}\)\.click\(\)/);
+});

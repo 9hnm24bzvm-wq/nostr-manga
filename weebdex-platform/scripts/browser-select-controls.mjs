@@ -67,3 +67,10 @@ export async function setListboxOptions(page, trigger, labels) {
   }
   await page.keyboard.press('Escape');
 }
+
+// Rating options render as native Select buttons too. Scope to the retained
+// search form and allow only its exact placeholder or selected-rating/count text.
+export function searchRatingTrigger(page) {
+  const form = page.locator('form').filter({ has: page.getByPlaceholder('Search...', { exact: true }) });
+  return selectListboxTrigger(form).filter({ hasText: /^\s*(?:Content Rating|(?:Safe|Suggestive|Erotica|Pornographic)(?:,\s*(?:Safe|Suggestive|Erotica|Pornographic))*\s*\+\d+)\s*$/ });
+}
