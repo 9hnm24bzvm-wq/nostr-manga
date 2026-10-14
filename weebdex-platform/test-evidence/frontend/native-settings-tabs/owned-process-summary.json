@@ -1,0 +1,30 @@
+{
+  "strict": {
+    "command": [
+      "node",
+      "scripts/check-composed-frontend.mjs"
+    ],
+    "deadline_seconds": 180.0,
+    "elapsed_seconds": 18.805,
+    "process_exit_code": 0,
+    "deadline_exceeded": false,
+    "terminal_receipt": true,
+    "cleanup_verified": true,
+    "surviving_owned_process_ids": [],
+    "prior_or_unrelated_processes_touched": false
+  },
+  "build": {
+    "command": [
+      "node",
+      "scripts/build-frontend.mjs"
+    ],
+    "deadline_seconds": 180.0,
+    "elapsed_seconds": 45.222,
+    "process_exit_code": 0,
+    "deadline_exceeded": false,
+    "terminal_receipt": true,
+    "cleanup_verified": true,
+    "surviving_owned_process_ids": [],
+    "prior_or_unrelated_processes_touched": false
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "source-build-passed-browser-pending",
+  "source_commit": "1a40416f7e0d3f54c1395120ff03eb1f8188b072",
+  "source_tree": "a16bfb993c63433c17044bc391195d758f54eb81",
+  "design": "Anonymous native Library and Public identity Settings tabs; task-specific native dialogs; no settings accordions or routine raw identifiers",
+  "tests": {
+    "focused_node": {
+      "passed": 150,
+      "failed": 0,
+      "skipped": 0
+    },
+    "adjacent_node": {
+      "passed": 213,
+      "failed": 0,
+      "skipped": 0
+    },
+    "anchored_semantic_cases": 132,
+    "generated_css_node": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "log_sha256": {
+    "focused": "881a4b31a55e228fce8037ff636bbce90b7bd610bd0cc6f95f84f069c0a5397d",
+    "adjacent": "66ccb13e6ad16eaec8dec4767b2203570a78c8485094f52687951e9fc41479f9",
+    "css": "bef2cf74d329060d0dee822d99a72f64de9d3cf41a86b666afb7ff5d42fae5f9",
+    "semantic": "c59c30313be0d9cea1fbbbbd0d3d25dbeb57273ced46ad0e455a3bcd0f3b7c9f",
+    "strict": "9e2c5aaeea454c47f8e898757400e36489448e3c10c3d91ff7b93622d09ba531",
+    "build": "11a9937997204f6d5fc3af95fc2bd66bb545ec49ebe5b2c194d800e3e11a0a05"
+  },
+  "strict": {
+    "errors": 0,
+    "warnings": 15,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true
+  },
+  "frozen_source_inputs": 1069,
+  "changed_inputs": [],
+  "current_actor_plan_bindings_verified": 16,
+  "historical_receipts_and_native_backend_unchanged": true,
+  "deferred_prompt_regressions": {
+    "actual_original_action_invocation": true,
+    "actual_fresh_http_proof_invocation": true,
+    "actual_identity_key_invocation": true,
+    "pre_fix_log_sha256": {
+      "public_action": "e12dcb11b0a2aeb29c10d57900a7967d1c88829a29a6d37151929253f1db75e5",
+      "identity_key": "b6fe0a5a2f7d6b85dc51e880099978e77e9879f0b786f3b1a2ae8ff051a30fb4"
+    },
+    "fixture_correction": "Initial action-retention assertion compared VM-realm arrays directly; normalized expected tags to JSON. Two prompt negatives genuinely failed before source fixes; identity prompt negative separately reproduced."
+  },
+  "test_boundary": "Pinned compiled Svelte with native Dialog stand-ins plus original signing/publication/IDB/queue modules and genuine Noble signatures. DOM, IDB, locks, worker, service proof and transport adapters are explicit; no real browser or service starts. Actual Bits UI focus/portal/Escape and desktop/mobile layout remain required browser gates.",
+  "prior_browser_lineage": "a424 actual44-step browser pass and separate failed mobile Manage arrival are historical only and do not establish acceptance of these native-tab pages."
+}

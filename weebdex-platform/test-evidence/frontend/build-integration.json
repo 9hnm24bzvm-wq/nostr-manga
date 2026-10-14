@@ -11,7 +11,7 @@
     "PUBLIC_PROXY_URL": "/proxy",
     "PUBLIC_OPENGRAPH_URL": "/og-image"
   },
-  "spa_fallback_sha256": "1e798f2a884632e783c5973e3e3abcce6271967a29b0e82bb48969916b40fe70",
+  "spa_fallback_sha256": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
   "original_post_build_script_executed": true,
   "source_import_case_repaired_externally": [
     "$lib/utils.js -> src/lib/Utils.ts",
@@ -22,25 +22,37 @@
     {
       "source": "platform-integrations/frontend-reconstruction/announcements/routes/+page.svelte",
       "target": "src/routes/(app)/announcements/+page.svelte",
-      "sha256": "7ac91824c310f09f7516075c95e414e9300a3810bfe7e0ae31c1777d080e5c36",
-      "reconstruction": true
+      "reconstruction": true,
+      "sha256": "7ac91824c310f09f7516075c95e414e9300a3810bfe7e0ae31c1777d080e5c36"
     },
     {
       "source": "platform-integrations/frontend-reconstruction/announcements/routes/[id]/+page.svelte",
       "target": "src/routes/(app)/announcements/[id]/+page.svelte",
-      "sha256": "989cbda910a76e46a5306c5fdc4631c4d9955124b126c54d3ad61d16f3244a2a",
-      "reconstruction": true
+      "reconstruction": true,
+      "sha256": "989cbda910a76e46a5306c5fdc4631c4d9955124b126c54d3ad61d16f3244a2a"
     },
     {
       "source": "platform-integrations/frontend-reconstruction/announcements/routes/manage/+page.svelte",
       "target": "src/routes/(app)/announcements/manage/+page.svelte",
-      "sha256": "0b8e1fb9939652dcd1ae964bcc85b0d215cceff577e9357906665fd0790b006e",
-      "reconstruction": true
+      "reconstruction": true,
+      "sha256": "0b8e1fb9939652dcd1ae964bcc85b0d215cceff577e9357906665fd0790b006e"
+    },
+    {
+      "source": "platform-integrations/frontend-reconstruction/settings/identity/+page.svelte",
+      "target": "src/routes/(app)/settings/identity/+page.svelte",
+      "reconstruction": false,
+      "additive_settings_route": true,
+      "sha256": "dfab136b804bf4a0f877b621179ea439097ff6a6418fa3086e1ce6e769202ad5"
     }
   ],
-  "script_overlay_module_sha256": "0f4ed01c8e3022b64c93a6d5ccaf47232724586765ad0f8ab43221dfd964957e",
+  "integration_utility_sources": {
+    "method": "build-local explicit Tailwind source declaration",
+    "directory": "platform-integrations",
+    "original_stylesheet_unchanged": true
+  },
+  "script_overlay_module_sha256": "baa32e246e20a0725e945096c7b390ef23aae96e146a98971f19250ff594236b",
   "reader_overlay_module_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
-  "integration_source_inventory_sha256": "9b0993c10cdaaebe4ec7a42aa63bef714222a3edc29f1d5a4444900437140b1f",
+  "integration_source_inventory_sha256": "a1399e1d224dcb394bdecd4aae6b97e57406c9ec3efc040c4e63e049b02231b1",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -54,17 +66,17 @@
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
-      "sha256": "9319b37b25744bca38c73d00053176bc8d39b5870a08315517280cad6bf01608",
+      "sha256": "66671736d3a256ea460103f9f60cd6464c0ac6242f3dfe2335e50b9c81df4acb",
       "intentional_rendered_extension": true
     },
     {
       "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
-      "sha256": "12cb96ecb41110c40d905c8b2895e02aecbd4c55f44bedbb7caba78b2d2a7685",
+      "sha256": "2b2c621fffa228046157b0c146078a03b4432960a4da49212e3d95ef539a2b7f",
       "intentional_rendered_extension": true
     },
     {
       "path": "platform-integrations/local-library/LibraryProtected.svelte",
-      "sha256": "d608111ebc7c1eecf9a30bc08c40337f664038e438a6d7f06e210da482087b34",
+      "sha256": "7e40c424393c26f39801a796c5a4ced5e0808a2d2e113985ef5fba09cbb93d6d",
       "intentional_rendered_extension": true
     },
     {
@@ -76,9 +88,19 @@
       "path": "platform-integrations/local-library/MangaDiscussion.svelte",
       "sha256": "d10df4f2632f11b4f08305a1694eb59e7fd4310329b9f2e43f51b344674b54a3",
       "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryManagementTools.svelte",
+      "sha256": "abc7a8daa2d7d4349611982542d47ee42af48cbf7fbb6a7cabe45e4367dba6ec",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/PublicIdentitySettings.svelte",
+      "sha256": "6885e2856293f7b6fa3197bba35a25ad2d1b9ecffa46554a725882820fb11dbe",
+      "intentional_rendered_extension": true
     }
   ],
-  "local_library_overlay_module_sha256": "bffaba61a133992f7d09c412b38cc39c3d75823f46d10e784c816211a5033804",
+  "local_library_overlay_module_sha256": "59bb08ca509ac552679ef3af2def23f722f8b0b1e0ba61beb115361234568ba4",
   "approved_local_protocol_extensions": [
     {
       "path": "src/routes/+layout.svelte",
@@ -89,19 +111,11 @@
       "approved_ui_extension": "route_owned_library_identity"
     },
     {
-      "path": "src/routes/(app)/settings/preferences/+page.svelte",
-      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
-      "count": 1,
-      "before": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}",
-      "after": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}\r\n\r\n<div class=\"mt-8 space-y-8\">\r\n\t<LocalLibraryPanel />\r\n\t<ProtocolIdentityPanel />\r\n</div>",
-      "approved_ui_extension": "route_owned_library_identity"
-    },
-    {
       "path": "src/routes/(app)/library/+layout.svelte",
       "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
       "count": 1,
       "before": "<Protected>",
-      "after": "<div class=\"mb-4 flex justify-end\">\r\n\t<Button variant=\"outline\" size=\"sm\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n\r\n<Protected>",
+      "after": "<div class=\"mb-4 flex justify-end\">\r\n\t<Button variant=\"outline\" size=\"sm\" href=\"/settings/library\">Manage library</Button>\r\n</div>\r\n\r\n<Protected>",
       "approved_ui_extension": "route_owned_library_identity"
     },
     {
@@ -165,7 +179,47 @@
       "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
       "count": 1,
       "before": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n",
-      "after": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n\r\n<Separator />\r\n<div class=\"space-y-2 p-2\">\r\n\t<Button class=\"w-full border-none\" variant=\"outline\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n",
+      "after": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n\r\n<Separator />\r\n<div class=\"space-y-2 p-2\">\r\n\t<Button class=\"w-full border-none\" variant=\"outline\" href=\"/settings/library\">Manage library</Button>\r\n</div>\r\n",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1,
+      "before": "\t\t\t\t\t\thref={pathname}",
+      "after": "\t\t\t\t\t\thref={pathname}\r\n\t\t\t\t\t\taria-current={page.url.pathname === pathname ? \"page\" : undefined}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+layout.svelte",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1,
+      "before": "<Protected>\r\n\t{@render children?.()}\r\n</Protected>",
+      "after": "{@render children?.()}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1,
+      "before": "<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />",
+      "after": "<LocalLibraryPanel />\r\n<Separator class=\"my-5\" />\r\n<section class=\"mb-5 space-y-1\">\r\n\t<h2 class=\"font-semibold\">CSV and MyAnimeList files</h2>\r\n\t<p class=\"text-muted-foreground text-sm\">{$localLibraryState.mode === \"device\" ? \"These imports and CSV exports use this device library.\" : \"These imports and CSV exports use your signed-in account library.\"}</p>\r\n\t{#if $localLibraryState.mode === \"account\" && !$Session}<p class=\"text-muted-foreground text-sm\">Sign in for account import and export, or choose Use device library above.</p>{/if}\r\n</section>\r\n<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 3,
+      "before": "disabled={$mutex}",
+      "after": "disabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1,
+      "before": "<nav class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
+      "after": "<nav aria-label=\"Settings\" class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
       "approved_ui_extension": "route_owned_library_identity"
     },
     {
@@ -2902,19 +2956,6 @@
       "approved_ui_extension": "route_owned_library_identity"
     },
     {
-      "path": "src/routes/(app)/settings/preferences/+page.svelte",
-      "label": "anonymous settings owns library and signing identity management",
-      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/settings/preferences/+page.svelte",
-      "label": "management is independent of native session and outside preference form",
-      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
-      "count": 1,
-      "approved_ui_extension": "route_owned_library_identity"
-    },
-    {
       "path": "src/routes/(app)/library/+layout.svelte",
       "label": "library management action uses native Button",
       "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
@@ -2998,6 +3039,59 @@
       "path": "src/lib/components/reader/reader-settings.svelte",
       "label": "reader settings links to anonymous library management",
       "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "label": "anonymous Library and Public identity use native Settings tabs",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "label": "native Settings tabs expose current page accessibly",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+layout.svelte",
+      "label": "library management does not inherit native account guard",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+layout.svelte",
+      "label": "anonymous management renders independently of mode storage and scope",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "Library settings owns anonymous device management",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "native import export keeps explicit selected device or account destination",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/library/+page.svelte",
+      "label": "account file actions require login without hiding device management",
+      "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+      "count": 3,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/+layout.svelte",
+      "label": "native Settings tab navigation has a precise accessible name",
+      "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
       "count": 1,
       "approved_ui_extension": "route_owned_library_identity"
     },
@@ -3189,12 +3283,6 @@
     },
     {
       "path": "src/routes/(app)/history/+layout.svelte",
-      "label": "device availability scoped layout import",
-      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/settings/library/+layout.svelte",
       "label": "device availability scoped layout import",
       "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
       "count": 1
