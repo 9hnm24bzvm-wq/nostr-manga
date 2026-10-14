@@ -31,7 +31,7 @@ CHECKS = {
 }
 
 ACTOR_FOLLOW_CASE_CHECKS = {
-    'initial-readiness': ['prerequisite', 'initial-session', 'status-pending', 'status-settled'],
+    'initial-readiness': ['prerequisite', 'initial-session', 'status-pending', 'status-pending-follow-visible', 'status-pending-follow-disabled', 'status-pending-block-hidden', 'status-pending-no-writes', 'status-settled'],
     'read-retry': ['prerequisite', 'delivery-failed', 'retry-pending', 'retry-settled'],
     'unblock-loading': ['prerequisite', 'status-held', 'unblock-committed', 'follow-restored'],
     'unblock-error': ['prerequisite', 'status-held', 'unblock-committed', 'follow-restored'],
@@ -150,6 +150,48 @@ COMPACT_DATABASE_FAILURES = [
     'query-canceled', 'query-lock', 'query-connection', 'query-database', 'query-client',
 ]
 
+# Closed, read-only snapshot of the exact initial held read. No raw identity,
+# request header, path, body, button text or exception survives this projection.
+ACTOR_INITIAL_OBSERVATION_VALUES = {
+    'kind': ['group', 'user'], 'route': ['current', 'other', 'unavailable'],
+    'header': ['zero', 'one', 'many', 'unavailable'],
+    **{key: ['absent', 'enabled', 'disabled', 'multiple', 'unavailable']
+       for key in ['follow', 'unfollow', 'retry', 'block', 'unblock']},
+    **{key: ['zero', 'one', 'many', 'unavailable'] for key in ['get', 'post', 'delete', 'put']},
+    'request_actor': ['prerequisite-actor', 'other-actor', 'anonymous', 'unavailable'],
+    'held_status': ['native204', 'native404', 'other-native', 'unavailable'],
+    'delivery': ['pending', 'delivered', 'failed-delivery-after-real-response', 'browser-cancelled', 'unavailable'],
+}
+
+
+def project_actor_initial_observations(raw):
+    valid = type(raw) is list and len(raw) <= 2
+    rows, seen, prior = [], set(), -1
+    for row in raw[:2] if type(raw) is list else []:
+        if (type(row) is not dict or set(row) != set(ACTOR_INITIAL_OBSERVATION_VALUES)
+                or any(type(row[key]) is not str or row[key] not in values
+                       for key, values in ACTOR_INITIAL_OBSERVATION_VALUES.items())):
+            valid = False
+            continue
+        index = ['group', 'user'].index(row['kind'])
+        if row['kind'] in seen or index <= prior:
+            valid = False
+            continue
+        seen.add(row['kind'])
+        prior = index
+        rows.append({key: row[key] for key in ACTOR_INITIAL_OBSERVATION_VALUES})
+    return bool(valid), rows
+
+
+def actor_initial_observations_passed(rows):
+    expected = {'route': 'current', 'header': 'one', 'follow': 'disabled',
+                'unfollow': 'absent', 'retry': 'absent', 'block': 'absent', 'unblock': 'absent',
+                'get': 'one', 'post': 'zero', 'delete': 'zero', 'put': 'zero',
+                'request_actor': 'prerequisite-actor', 'held_status': 'native204', 'delivery': 'pending'}
+    return ([row['kind'] for row in rows] == ['group', 'user']
+            and all(all(row[key] == value for key, value in expected.items()) for row in rows))
+
+
 STATUSES = {'pending', 'running', 'passed', 'failed'}
 
 
@@ -180,10 +222,15 @@ def project(phase, acceptance):
     failure = acceptance.get('compact_feed_database_failure')
     if phase == 'ui12-compact-feed' and 'compact_feed_database_failure' in acceptance:
         valid = valid and type(failure) is str and failure in COMPACT_DATABASE_FAILURES
+    if phase == 'ui14-actor-follow':
+        observations_valid, observations = project_actor_initial_observations(acceptance.get('actor_follow_initial_observations', []))
+        valid = valid and observations_valid
     value = {'schema': 1, 'record_valid': bool(valid), 'private_values_omitted': True,
             'raw_messages_exported': False,
             'check_results': [{'check_id': check_id, 'status': rows[check_id]} for check_id in identifiers]}
 
+    if phase == 'ui14-actor-follow':
+        value['actor_follow_initial_observations'] = observations
     if phase == 'ui12-compact-feed':
         value['compact_feed_http_outcome'] = outcome if type(outcome) is str and outcome in COMPACT_HTTP_OUTCOMES else 'unavailable'
         value['compact_feed_database_failure'] = failure if type(failure) is str and failure in COMPACT_DATABASE_FAILURES else 'unavailable'

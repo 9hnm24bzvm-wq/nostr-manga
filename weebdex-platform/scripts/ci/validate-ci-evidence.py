@@ -173,7 +173,14 @@ def journey_checks(value, phase):
     required = {'schema', 'record_valid', 'private_values_omitted', 'raw_messages_exported', 'check_results'}
     if phase['phase'] == 'ui12-compact-feed':
         required.update({'compact_feed_http_outcome', 'compact_feed_database_failure'})
+    if phase['phase'] == 'ui14-actor-follow':
+        required.add('actor_follow_initial_observations')
     fields(value, required)
+    if phase['phase'] == 'ui14-actor-follow':
+        valid, observations = journey_diagnostics.project_actor_initial_observations(value['actor_follow_initial_observations'])
+        insist(valid and observations == value['actor_follow_initial_observations'])
+        if phase['status'] == 'passed':
+            insist(journey_diagnostics.actor_initial_observations_passed(observations))
     if phase['phase'] == 'ui12-compact-feed':
         insist(type(value['compact_feed_http_outcome']) is str and value['compact_feed_http_outcome'] in journey_diagnostics.COMPACT_HTTP_OUTCOMES + ['unavailable'])
         insist(type(value['compact_feed_database_failure']) is str and value['compact_feed_database_failure'] in journey_diagnostics.COMPACT_DATABASE_FAILURES)

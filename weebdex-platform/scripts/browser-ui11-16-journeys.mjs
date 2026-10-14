@@ -184,15 +184,15 @@ export async function runUi11To16Journeys(h) {
   // response. No body/status is replaced. A browser cancellation is distinct
   // from absent server effects and is reported truthfully by the gate.
   const hold = async (pattern, match, before = false) => {
-    let resolve, admitted = false, captured = false, done = false, disposition = "pending", failure, abort = false, status;
+    let resolve, admitted = false, captured = false, done = false, disposition = "pending", failure, abort = false, status, heldStatus;
     const gate = new Promise(value => { resolve = value; });
     const intercept = async route => {
       if (!match(route.request()) || admitted) return route.continue();
       admitted = true;
       try {
         let response;
-        if (before) { captured = true; await gate; response = await route.fetch({ maxRedirects: 0 }); }
-        else { response = await route.fetch({ maxRedirects: 0 }); captured = true; await gate; }
+        if (before) { captured = true; await gate; response = await route.fetch({ maxRedirects: 0 }); heldStatus = response.status(); }
+        else { response = await route.fetch({ maxRedirects: 0 }); heldStatus = response.status(); captured = true; await gate; }
         status = response.status();
         if (abort) { await route.abort("failed"); disposition = "failed-delivery-after-real-response"; }
         else { await route.fulfill({ response }); disposition = "delivered"; }
@@ -200,7 +200,7 @@ export async function runUi11To16Journeys(h) {
       finally { done = true; }
     };
     await context.route(pattern, intercept);
-    return { wait: () => until(() => captured || failure, Boolean, "Actual UI request was not captured").then(() => insist(!failure, failure)), release: async () => { resolve(); await until(() => done || !admitted, Boolean, "Held native request did not drain"); }, fail: async () => { abort = true; resolve(); await until(() => done || !admitted, Boolean, "Native failed delivery did not drain"); }, close: async () => { resolve(); if (admitted) await until(() => done, Boolean, "Held request cleanup did not finish"); await context.unroute(pattern, intercept); }, get disposition() { return disposition; }, get nativeStatus() { return status; } };
+    return { wait: () => until(() => captured || failure, Boolean, "Actual UI request was not captured").then(() => insist(!failure, failure)), release: async () => { resolve(); await until(() => done || !admitted, Boolean, "Held native request did not drain"); }, fail: async () => { abort = true; resolve(); await until(() => done || !admitted, Boolean, "Native failed delivery did not drain"); }, close: async () => { resolve(); if (admitted) await until(() => done, Boolean, "Held request cleanup did not finish"); await context.unroute(pattern, intercept); }, get disposition() { return disposition; }, get nativeStatus() { return status; }, get heldNativeStatus() { return heldStatus; } };
   };
   const observe = matcher => {
     const rows = [], active = new Set(), pending = new Set(); let maximum = 0, requests = 0;
@@ -758,6 +758,6 @@ export async function runUi11To16Journeys(h) {
       try { await open(`/search?title=${encodeURIComponent(data.query)}`); await until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.total === data.total && row.body?.limit === size), "Actual public search did not acknowledge its genuine capped-fixture total and selected page size"); const last = Math.ceil(Math.min(data.total, 10000) / size); const link = page.getByRole("link", { name: String(last), exact: true }).first(); await link.waitFor({ state: "visible" }); await realm(); await link.click(); await page.waitForURL(url => Number(url.searchParams.get("page")) === last); await until(() => seen.rows, rows => rows.some(row => row.body?.page === last && row.body?.limit === size && row.body?.data?.length > 0), "Visible terminal link did not reach its real last partial/native page"); const receipt = seen.rows.findLast(row => row.body?.page === last); const expected = Math.min(size, data.total - (last - 1) * size); insist(receipt.body.data.length === expected, "Actual last-page row count differs from the native uncapped catalogue contract"); await page.goBack({ waitUntil: "domcontentloaded" }); await page.goForward({ waitUntil: "domcontentloaded" }); await sameRealm(); await link.waitFor({ state: "visible" }); return { genuine_total: data.total, selected_limit: size, ordinary_last_link: last, native_last_rows: receipt.body.data.length, last_and_current_agree: true, back_forward_same_document: true }; } finally { await seen.close(); }
     });
   }
-  if (phase === actorFollowPhase) await runActorFollowJourneys({ phase, page, origin, ids, api, step, check, insist, open, signup, hold, requestPath, until, stable, realm, sameRealm });
+  if (phase === actorFollowPhase) await runActorFollowJourneys({ phase, page, origin, ids, api, step, check, insist, open, signup, hold, requestPath, until, stable, realm, sameRealm, report });
   finite();
 }

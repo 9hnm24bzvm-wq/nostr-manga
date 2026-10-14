@@ -41,13 +41,64 @@ process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui,..
         if phase == 'ui12-compact-feed':
             acceptance['compact_feed_http_outcome'] = 'success200'
             acceptance['compact_feed_database_failure'] = 'none'
+        if phase == 'ui14-actor-follow':
+            acceptance['actor_follow_initial_observations'] = self.actor_observations()
         owned = {'fixture_only': True, 'phase': phase, 'verified_stopped': True, 'forced': False, 'returncode': 0}
         return acceptance, owned, key
 
+    def actor_observations(self):
+        return [dict(kind=kind, route='current', header='one', follow='disabled',
+                     unfollow='absent', retry='absent', block='absent', unblock='absent',
+                     get='one', post='zero', delete='zero', put='zero',
+                     request_actor='prerequisite-actor', held_status='native204', delivery='pending')
+                for kind in ['group', 'user']]
+
+    def test_actor_observation_vocabulary_matches_actual_frozen_node_export(self):
+        code = "import {actorInitialObservationValues as values} from './scripts/browser-actor-follow-observations.mjs';process.stdout.write(JSON.stringify(values));"
+        result = subprocess.run(['node', '--input-type=module', '-e', code], cwd=ROOT, text=True, check=True, capture_output=True)
+        self.assertEqual(json.loads(result.stdout), contract.ACTOR_INITIAL_OBSERVATION_VALUES)
+
+    def test_actor_observations_reject_private_unknown_duplicate_and_reordered_rows(self):
+        secret = 'private@example.invalid?token=never-publish'
+        good = self.actor_observations()
+        malformed = [None, secret, {}, good[::-1], [good[0], good[0]], good + [good[0]]]
+        for key in contract.ACTOR_INITIAL_OBSERVATION_VALUES:
+            row = copy.deepcopy(good); row[0][key] = secret; malformed.append(row)
+            row = copy.deepcopy(good); del row[0][key]; malformed.append(row)
+        row = copy.deepcopy(good); row[0]['raw_header'] = secret; malformed.append(row)
+        for raw in malformed:
+            valid, rows = contract.project_actor_initial_observations(raw)
+            self.assertFalse(valid)
+            self.assertNotIn(secret, json.dumps(rows))
+            acceptance, _, _ = self.phase('ui14-actor-follow')
+            acceptance['actor_follow_initial_observations'] = raw
+            projected = contract.project('ui14-actor-follow', acceptance)
+            self.assertFalse(projected['record_valid'])
+            self.assertNotIn(secret, json.dumps(projected))
+
+    def test_actor_observations_are_required_for_success_and_honest_for_failure(self):
+        phase = 'ui14-actor-follow'; acceptance, owned, _ = self.phase(phase)
+        baseline = runner.project_phase(phase, 'actor-follow', acceptance, owned)
+        for key, values in contract.ACTOR_INITIAL_OBSERVATION_VALUES.items():
+            if key == 'kind': continue
+            for value in values:
+                row = copy.deepcopy(baseline)
+                row['journey_diagnostics']['actor_follow_initial_observations'][0][key] = value
+                if value == self.actor_observations()[0][key]: continue
+                with self.assertRaises(ValueError): validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+                row['status'] = 'failed'
+                validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+        for raw in [[], self.actor_observations()[:1]]:
+            row = copy.deepcopy(baseline); row['journey_diagnostics']['actor_follow_initial_observations'] = raw
+            with self.assertRaises(ValueError): validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+            row['status'] = 'failed'; validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+        row = copy.deepcopy(baseline); del row['journey_diagnostics']['actor_follow_initial_observations']
+        with self.assertRaises(ValueError): validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+
     def test_actor_follow_nested_failure_is_closed_and_keeps_unreached_checks_pending(self):
         phase = 'ui14-actor-follow'
-        self.assertEqual(len(contract.CHECKS[phase]), 71)
-        self.assertEqual(len(set(contract.CHECKS[phase])), 71)
+        self.assertEqual(len(contract.CHECKS[phase]), 79)
+        self.assertEqual(len(set(contract.CHECKS[phase])), 79)
         acceptance, owned, key = self.phase(phase)
         ids = contract.CHECKS[phase]
         failed = ids.index('actor-follow-group-initial-readiness-status-pending')

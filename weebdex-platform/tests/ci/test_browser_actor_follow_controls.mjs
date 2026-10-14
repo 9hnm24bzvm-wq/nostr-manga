@@ -13,6 +13,7 @@ import test from 'node:test';
 import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
+import { actorInitialObservationValues, captureActorInitialObservation } from '../../scripts/browser-actor-follow-observations.mjs';
 import { actorFollowHeader, actorFollowControl } from '../../scripts/browser-actor-follow-controls.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -68,12 +69,13 @@ function domPage(text, { busy = false, disabled = false, copies = 1, hiddenCopy 
     filter({ has, hasText }) { return locator(rows.filter(row => has ? row.querySelector('h1') : hasText.test(window.naming.elementText(new Map(), row).full))); },
     locator(selector) { assert.equal(selector, 'button[data-slot="button"]:visible'); return locator(rows.flatMap(row => [...row.querySelectorAll(selector.replace(':visible', ''))]).filter(row => !row.closest('[hidden]'))); },
     async count() { return rows.length; },
+    async evaluateAll(action) { return action(rows); },
     async waitFor({ state }) { assert.equal(state, 'visible'); assert.equal(rows.length, 1, 'strict unique actor control'); },
     async click() { assert.equal(rows.length, 1, 'strict unique actor control'); assert.equal(rows[0].disabled, false, 'native disabled control'); events.push(rows[0]); },
     async isDisabled() { assert.equal(rows.length, 1, 'strict unique actor control'); return rows[0].disabled; },
     async isEnabled() { assert.equal(rows.length, 1, 'strict unique actor control'); return !rows[0].disabled; },
   });
-  const page = { locator(selector) { if (selector === 'h1') return { selector }; assert.equal(selector, 'section > header:visible'); return locator([...window.document.querySelectorAll('section > header')].filter(row => !row.closest('[hidden]'))); } };
+  const page = { url: () => 'http://127.0.0.1:31415/group/synthetic', locator(selector) { if (selector === 'h1') return { selector }; assert.equal(selector, 'section > header:visible'); return locator([...window.document.querySelectorAll('section > header')].filter(row => !row.closest('[hidden]'))); } };
   return { dom, window, page, events };
 }
 
@@ -113,4 +115,28 @@ test('all actor action labels use the strict header/text helper, with original h
   assert.match(source, /pending.nativeStatus === 204/);
   assert.match(source, /watch.counts.POST === 1 && watch.counts.DELETE === 0 && watch.counts.PUT === 0/);
   assert.match(source, /watch.counts.GET === beforeReentry \+ 1/);
+});
+
+for (const [options, expected] of [[{ busy: true, disabled: true }, 'disabled'], [{}, 'enabled'], [{ copies: 0 }, 'absent'], [{ copies: 2 }, 'multiple'], [{ duplicateHeader: true }, 'multiple']]) test('finite initial snapshot observes actual strict native topology: ' + expected, async () => {
+  const value = domPage('Follow', { hiddenCopy: true, ...options });
+  const gate = { heldNativeStatus: 204, disposition: 'pending' };
+  const row = await captureActorInitialObservation(value.page, 'group', '/group/synthetic', { GET: 1, POST: 0, DELETE: 0, PUT: 0 }, gate, 'prerequisite-actor');
+  assert.equal(row.follow, expected); assert.equal(row.route, 'current');
+  assert.equal(row.header, options.duplicateHeader ? 'many' : 'one');
+  for (const key of ['unfollow', 'retry', 'block', 'unblock']) assert.equal(row[key], 'absent');
+  assert.equal(row.held_status, 'native204'); assert.equal(row.delivery, 'pending');
+  assert.equal(row.request_actor, 'prerequisite-actor'); assert.equal(value.events.length, 0);
+  assert.deepEqual(Object.keys(row), Object.keys(actorInitialObservationValues));
+  for (const [key, result] of Object.entries(row)) assert.ok(actorInitialObservationValues[key].includes(result));
+  assert.doesNotMatch(JSON.stringify(row), /synthetic|127\.0|Public entity|Loading|Follow/);
+  value.dom.window.close();
+});
+
+test('unavailable diagnostic DOM never invents a successful or private state', async () => {
+  const secret = 'private@example.invalid?token=never-publish';
+  const page = { url() { throw Error(secret); }, locator() { throw Error(secret); } };
+  const row = await captureActorInitialObservation(page, 'user', '/private-route', { GET: 2, POST: -1, DELETE: '0', PUT: 1 }, { heldNativeStatus: 503, disposition: secret }, secret);
+  for (const key of ['route', 'header', 'follow', 'unfollow', 'retry', 'block', 'unblock', 'post', 'delete', 'request_actor', 'delivery']) assert.equal(row[key], 'unavailable');
+  assert.equal(row.get, 'many'); assert.equal(row.put, 'one'); assert.equal(row.held_status, 'other-native');
+  assert.doesNotMatch(JSON.stringify(row), /private|token|503/);
 });

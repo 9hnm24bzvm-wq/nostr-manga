@@ -40,8 +40,8 @@ Both actual entity headers run the same seven scenario groups:
 Delivery abort is reported as a browser-delivery failure, never a fabricated
 HTTP status or rollback. Disposal may cancel browser delivery after the original
 server commit. Native state and exact browser request methods/counts are separate
-oracles. Public report checkpoints retain the 15 original aggregate identities
-and add four finite subchecks under each entity case (71 fixed identities total)
+oracles. The original public report checkpoints retain the 15 aggregate identities
+and add four finite subchecks under each entity case (71 baseline identities)
 with finite statuses; no body, URL, cookie, credentials, account header or error is
 added to public diagnostic projection. Existing redaction and owned teardown
 requirements remain in force.
@@ -100,3 +100,46 @@ fixture, hosted CI or publication was started for this correction. Rebuild and
 pin this corrected source, rerun the actual `actor-follow` batch, and then retain
 the full original-phase run requirement. The existing 52 controlled Session/
 controller cases remain separate evidence for in-place ordering.
+
+## Initial readiness diagnostic probe after run 38615879103
+
+Run `38615879103` on public commit
+`e94029800c1ffde6f1d7e90d36d121ef54c12651`, tree
+`83141fce1dba67dbd529cc1da53b065bba672133`, passed all Retry, Unblock and
+pending-ack/lost/disposed checks. Its 71-check artifact contained 65 passed,
+4 failed and 2 pending checks: both initial-readiness aggregates and their
+status-pending children failed; status-settled was never reached. The initial
+Session checkpoints passed, proving the public anonymous quiet view, genuine
+Auth.Check delivery and target-status capture. The artifact cannot distinguish
+missing Follow, actionable Follow, an exposed Block or an unexpected write.
+It does not establish a product defect or a successful initial settlement.
+
+The next local-only probe retains those exact four assertions, their messages
+and order under the existing status-pending parent, and adds four fixed leaf
+identities per actor (79 total). The original 15 aggregate steps, all 31 assertion
+predicates/messages, three polls, five stability conditions, seven holds, all
+request-count/durable-state/privacy/ownership assertions and their deadlines are
+preserved. No delay, cache policy, controller or canonical frontend is changed.
+
+Before that owned status hold is released by cleanup, a read-only observation
+classifies the current expected route/header, the five exact native controls,
+browser target GET/POST/DELETE/settings PUT counts, the genuine held status,
+delivery disposition and whether the captured expected-account header matches
+the exact prerequisite actor. Values are finite categories only; identities,
+URLs, route/header/button text, request headers, bodies and exceptions are never
+projected. A missing/duplicate/disabled control is observed immediately without
+clicking, retrying or treating it as success. The actual hold exposes a separate
+held-native-status getter; its existing delivered status and release/cancel/drain
+semantics remain intact. Closed Python projection and public validation reject
+extra/private/unknown/duplicate/reordered observations; a successful phase must
+include both owned native204 pending-read observations with disabled Follow,
+absent other actions, one GET and zero writes. Failed observations remain honest.
+
+The exact local base is `2d9c80135328796856c789050fcd81b0093f4661` (the same
+public source tree). Source inspection found no basis for changing product
+readiness: private reads remain no-store and generation-owned. Pinned DOM naming,
+actual hold-closure and assertion/cleanup stand-in tests establish diagnostic
+contracts only. This probe is browser-unrun; it needs a fresh actual frontend
+build and the actor-follow batch to identify the first failing invariant, then
+any necessary evidence-based fix and the required full browser acceptance run.
+The in-place Session browser limitations above remain unchanged.

@@ -1,9 +1,10 @@
 // Actual Group/User route controls only. Importing starts no browser or fixture.
 // Native response delivery is delayed/aborted; successful data is never invented.
+import { captureActorInitialObservation } from './browser-actor-follow-observations.mjs';
 import { actorFollowHeader, actorFollowControl } from './browser-actor-follow-controls.mjs';
 export const actorFollowPhase = 'ui14-actor-follow';
 export const actorFollowCaseChecks = Object.freeze(Object.fromEntries(Object.entries({
-  'initial-readiness': ['prerequisite', 'initial-session', 'status-pending', 'status-settled'],
+  'initial-readiness': ['prerequisite', 'initial-session', 'status-pending', 'status-pending-follow-visible', 'status-pending-follow-disabled', 'status-pending-block-hidden', 'status-pending-no-writes', 'status-settled'],
   'read-retry': ['prerequisite', 'delivery-failed', 'retry-pending', 'retry-settled'],
   'unblock-loading': ['prerequisite', 'status-held', 'unblock-committed', 'follow-restored'],
   'unblock-error': ['prerequisite', 'status-held', 'unblock-committed', 'follow-restored'],
@@ -33,7 +34,7 @@ export function watchActorFollowRequests(page, origin, endpoint) {
 }
 
 export async function runActorFollowJourneys(h) {
-  const { phase, page, origin, ids, api, step, check, insist, open, signup, hold, requestPath, until, stable, realm, sameRealm } = h;
+  const { phase, page, origin, ids, api, step, check, insist, open, signup, hold, requestPath, until, stable, realm, sameRealm, report } = h;
   insist(phase === actorFollowPhase, 'Unknown actor-follow phase');
   const run = (id, action) => step(id, () => check(id, () => action((suffix, operation) => check(id + '-' + suffix, operation))));
   await run('actor-follow-account', async () => {
@@ -58,7 +59,7 @@ export async function runActorFollowJourneys(h) {
       insist(saved.status === 200 && saved.body?.[preference]?.some(row => row.id === id) === blocked, 'Genuine native block prerequisite did not persist');
       const changed = await api(endpoint, { method: followed ? 'POST' : 'DELETE' });
       insist(changed.status === 204 && (await api(endpoint)).status === (followed ? 204 : 404), 'Genuine native follow prerequisite did not persist');
-      return { preferencesVersion: saved.body.version };
+      return { preferencesVersion: saved.body.version, actorId: actual.body.identity.id };
     };
     const close = async gates => {
       const results = await Promise.allSettled(gates.map(gate => gate.close()));
@@ -71,17 +72,35 @@ export async function runActorFollowJourneys(h) {
     };
 
     await run(`actor-follow-${kind}-initial-readiness`, async inspect => {
-      await inspect('prerequisite', () => prepare(true)); const watch = watchActorFollowRequests(page, origin, endpoint), gates = [];
+      const prepared = await inspect('prerequisite', () => prepare(true)); const watch = watchActorFollowRequests(page, origin, endpoint), gates = [];
+      let statusRequestSeen = false, requestActor = 'unavailable';
       try {
         const status = await inspect('initial-session', async () => {
           const auth = await hold(origin + '/api/auth/check', request => requestPath(request, '/api/auth/check') && !request.headers()['x-weebdex-expected-account']); gates.push(auth);
-          const status = await hold(origin + endpoint, request => requestPath(request, endpoint)); gates.push(status);
+          const status = await hold(origin + endpoint, request => {
+            const matched = requestPath(request, endpoint);
+            if (matched && !statusRequestSeen) {
+              statusRequestSeen = true;
+              const expected = request.headers()['x-weebdex-expected-account'];
+              requestActor = !expected ? 'anonymous' : expected === prepared.actorId ? 'prerequisite-actor' : 'other-actor';
+            }
+            return matched;
+          }); gates.push(status);
           await open(route); await auth.wait(); await publicReady();
           await stable(async () => watch.counts.GET === 0 && watch.counts.POST === 0 && watch.counts.DELETE === 0 && watch.counts.PUT === 0 && await button('Follow').count() === 0 && await button('Unfollow').count() === 0 && await button('Block').count() === 0, 'The anonymous initial entity view issued personal work or exposed account actions', 350);
           await auth.release(); insist(auth.nativeStatus === 200 && auth.disposition === 'delivered', 'Initial Session delivery was not the genuine native200'); await status.wait(); return status;
         });
         await inspect('status-pending', async () => {
-          await button('Follow').waitFor({ state: 'visible' }); insist(await button('Follow').isDisabled(), 'Follow became actionable before current status readiness'); await absentBlock(); noWrites(watch.counts);
+          try {
+            await inspect('status-pending-follow-visible', () => button('Follow').waitFor({ state: 'visible' }));
+            await inspect('status-pending-follow-disabled', async () => insist(await button('Follow').isDisabled(), 'Follow became actionable before current status readiness'));
+            await inspect('status-pending-block-hidden', () => absentBlock());
+            await inspect('status-pending-no-writes', () => noWrites(watch.counts));
+          } finally {
+            // Capture before owned cleanup releases this exact native response.
+            const observation = await captureActorInitialObservation(page, kind, route, watch.counts, status, requestActor);
+            (report.actor_follow_initial_observations ??= []).push(observation);
+          }
         });
         await inspect('status-settled', async () => {
           await status.release(); insist(status.nativeStatus === 204 && status.disposition === 'delivered', 'Existing native follow was not actually delivered'); await enabled('Unfollow'); await absentBlock();
