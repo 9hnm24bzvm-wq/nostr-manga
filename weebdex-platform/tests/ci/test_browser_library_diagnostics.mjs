@@ -9,7 +9,7 @@ const controls = ['timer-page1', 'timer-page3', 'lock-page1', 'lock-page3'];
 const suffixes = ['setup', 'select-page', 'no-prior-progress', 'gate-captured', 'old-intent-cancelled', 'page-retained', 'durable-progress', 'reload-progress', 'stable-revision'];
 const expected = {
   'ui11-device-progress': ['device-progress-signup-context', ...controls.flatMap(control => suffixes.map(suffix => `device-progress-${control}-${suffix}`))],
-  'ui12-compact-feed': ['compact-feed-seed-pagination', 'compact-feed-spanish-preferences', 'compact-feed-fixture-total', 'compact-feed-open-updates', 'compact-feed-third-page', 'compact-feed-resume-visible', 'compact-feed-bounded-burst', 'compact-feed-compact-geometry', 'compact-feed-trimmed-cards', 'compact-feed-manual-terminal-page', 'compact-feed-unique-sequential-pages', 'compact-feed-scenario-membership', 'compact-feed-all-compact-chapters', 'compact-feed-terminal-idle', 'compact-feed-resize-retains-entries', 'compact-feed-back-restores-entries']
+  'ui12-compact-feed': ['compact-feed-seed-pagination', 'compact-feed-spanish-preferences', 'compact-feed-fixture-total', 'compact-feed-fixture-response-received', 'compact-feed-fixture-http-200', 'compact-feed-fixture-total-integer', 'compact-feed-fixture-total-at-least-seeded', 'compact-feed-fixture-total-within-known-scenarios', 'compact-feed-open-updates', 'compact-feed-third-page', 'compact-feed-resume-visible', 'compact-feed-bounded-burst', 'compact-feed-compact-geometry', 'compact-feed-trimmed-cards', 'compact-feed-manual-terminal-page', 'compact-feed-unique-sequential-pages', 'compact-feed-scenario-membership', 'compact-feed-all-compact-chapters', 'compact-feed-terminal-idle', 'compact-feed-resize-retains-entries', 'compact-feed-back-restores-entries']
 };
 assert.deepEqual(ui11To16DiagnosticChecks, expected);
 assert(Object.isFrozen(ui11To16DiagnosticChecks));
@@ -31,7 +31,8 @@ async function probe(phase, failAt) {
     on(name, callback) { assert(!listeners.has(name)); listeners.set(name, callback); },
     off(name, callback) { assert.equal(listeners.get(name), callback); assert(listeners.delete(name)); }
   };
-  await runUi11To16Journeys({ phase, fixture, page, context: {}, origin: 'http://127.0.0.1:1', report: {}, redactions: new Set(),
+  const context = { request: { async fetch() { return { status: () => 200, headers: () => ({ 'content-type': 'application/json' }), async json() { return { total: 505 }; } }; } } };
+  await runUi11To16Journeys({ phase, fixture, page, context, origin: 'http://127.0.0.1:1', report: {}, redactions: new Set(),
     insist(value, message) { assert(value, message); },
     async check(id, operation) {
       assert.equal(typeof operation, 'function'); assert(expected[phase].includes(id));
@@ -39,7 +40,9 @@ async function probe(phase, failAt) {
       if (id === failAt) throw failure;
       if (id.endsWith('-gate-captured')) return id.includes('page3') ? 3 : 1;
       if (id.endsWith('-durable-progress')) return { completed: id.includes('page3') };
-      if (id === 'compact-feed-fixture-total') return 505;
+      // Execute the real nested preflight so each added boundary is reachable.
+      // Its request transport is the explicit synthetic response above.
+      if (id.startsWith('compact-feed-fixture-')) return operation();
       // This stand-in does not manufacture native success. It isolates only
       // the actual outer call-site sequence and exception propagation.
     },

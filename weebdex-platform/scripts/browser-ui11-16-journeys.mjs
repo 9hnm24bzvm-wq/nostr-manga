@@ -8,6 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { selectListboxTrigger, clickListboxOption, setListboxOptions } from "./browser-select-controls.mjs";
+import { observeCompactFeedResponse } from "./compact-feed-http-outcome.mjs";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export const ui11To16JourneyPhases = Object.freeze([
@@ -33,6 +34,8 @@ export const ui11To16DiagnosticChecks = Object.freeze({
   ]),
   "ui12-compact-feed": Object.freeze([
     "compact-feed-seed-pagination", "compact-feed-spanish-preferences", "compact-feed-fixture-total",
+    "compact-feed-fixture-response-received", "compact-feed-fixture-http-200", "compact-feed-fixture-total-integer",
+    "compact-feed-fixture-total-at-least-seeded", "compact-feed-fixture-total-within-known-scenarios",
     "compact-feed-open-updates", "compact-feed-third-page", "compact-feed-resume-visible",
     "compact-feed-bounded-burst", "compact-feed-compact-geometry", "compact-feed-trimmed-cards",
     "compact-feed-manual-terminal-page", "compact-feed-unique-sequential-pages",
@@ -85,9 +88,11 @@ export async function runUi11To16Journeys(h) {
   };
   const ensurePagination = async () => { if (!extras?.compact) await privateControl("ui-regressions-seed", { scenario: "pagination" }); };
   const ensureReaders = async () => { insist(extras?.compact, "The pagination seed/compact phase must finish before reader activation; two 120-second controls do not fit one ordinary phase"); if (!Array.isArray(extras?.readers) || !extras.readers.length || !extras.bilingual?.manga_id) await privateControl("ui-regressions-readers"); };
-  const api = async (route, options = {}) => {
+  const api = async (route, options = {}, observeOutcome) => {
     finite(); insist(route.startsWith("/api/") && !route.includes("://") && !route.startsWith("//"), "UI regression observation escaped the fixture API");
-    const response = await context.request.fetch(origin + route, { ...options, maxRedirects: 0, timeout: 12000, headers: { Origin: origin, ...(options.headers ?? {}) } });
+    const fetchResponse = () => context.request.fetch(origin + route, { ...options, maxRedirects: 0, timeout: 12000, headers: { Origin: origin, ...(options.headers ?? {}) } });
+    if (observeOutcome) return observeCompactFeedResponse(fetchResponse, observeOutcome);
+    const response = await fetchResponse();
     return { status: response.status(), body: /json/.test(response.headers()["content-type"] ?? "") ? await response.json() : undefined };
   };
   const sink = () => {
@@ -352,7 +357,14 @@ export async function runUi11To16Journeys(h) {
     await check("compact-feed-seed-pagination", async () => { await ensurePagination(); const data = dependency("compact"); insist(data.total >= 501 && data.language === "es", "Compact fixture must contain over500 isolated Spanish chapters"); });
     const data = dependency("compact");
     await check("compact-feed-spanish-preferences", async () => { await chapterLanguagePreference("Spanish"); await page.setViewportSize({ width: 1440, height: 1800 }); });
-    const nativeTotal = await check("compact-feed-fixture-total", async () => { const probe = await api("/api/chapter/feed?tlang=es&limit=100"); insist(probe.status === 200 && [data.total, data.total + (extras.bilingual?.manga_id ? 1 : 0)].includes(probe.body?.total), "Actual Spanish fixture has unrelated rows outside the recorded compact/bilingual scenarios"); return probe.body.total; });
+    const nativeTotal = await check("compact-feed-fixture-total", async () => {
+      const probe = await check("compact-feed-fixture-response-received", async () => api("/api/chapter/feed?tlang=es&limit=100", {}, outcome => { report.compact_feed_http_outcome = outcome; h.save?.(); }));
+      await check("compact-feed-fixture-http-200", async () => { insist(probe.status === 200, "The actual Spanish fixture feed did not return HTTP200"); });
+      await check("compact-feed-fixture-total-integer", async () => { insist(Number.isSafeInteger(probe.body?.total), "The actual Spanish fixture feed did not return an integer total"); });
+      await check("compact-feed-fixture-total-at-least-seeded", async () => { insist(probe.body.total >= data.total, "The actual Spanish fixture feed contains fewer chapters than the recorded compact seed"); });
+      await check("compact-feed-fixture-total-within-known-scenarios", async () => { insist(probe.body.total <= data.total + (extras.bilingual?.manga_id ? 1 : 0), "The actual Spanish fixture feed contains chapters outside the recorded compact/bilingual scenarios"); });
+      insist(probe.status === 200 && [data.total, data.total + (extras.bilingual?.manga_id ? 1 : 0)].includes(probe.body?.total), "Actual Spanish fixture has unrelated rows outside the recorded compact/bilingual scenarios"); return probe.body.total;
+    });
     const seen = observe(request => requestPath(request, "/api/chapter/feed"));
     try {
       await check("compact-feed-open-updates", async () => { await open("/updates"); });
