@@ -211,6 +211,7 @@ async function queueSnapshotInner(
  * @param {Signer} signer
  * @param {string} owner
  * @param {(job: Job) => void} [onUpdate]
+ * @param {() => void} [assertCurrent]
  * @returns {Promise<Job>}
  */
 export async function deliverJob(
@@ -219,6 +220,7 @@ export async function deliverJob(
   signer,
   owner,
   onUpdate = () => {},
+  assertCurrent = () => {},
 ) {
   if (!navigator.locks)
     throw Error("This browser needs Web Locks for safe multi-tab publishing");
@@ -234,6 +236,9 @@ export async function deliverJob(
         throw Error("Connect the snapshot signing identity");
       async function active() {
         const current = await store.job(id);
+        // This is also signedRequest's final beforeSend boundary. A view may
+        // have closed while the cancellation read was awaiting IndexedDB.
+        assertCurrent();
         if (!current || current.cancelled)
           throw Error("Cancelled; an already-sent request cannot be recalled");
       }

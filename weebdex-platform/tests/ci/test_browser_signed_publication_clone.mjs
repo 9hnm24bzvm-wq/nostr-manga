@@ -49,12 +49,12 @@ const job = review => ({ id: event.id, event, revision: review.protocolRevision,
 const panel = read('../../platform-integrations/local-library/LocalLibraryPanel.svelte');
 const send = panel.match(/run\('publish', (async \(\) => \{[^\n]+\})\)/)?.[1];
 assert(send, 'Execute the exact production publication handoff');
-const handoff = (publication, publishReviewed) => vm.runInNewContext('(' + stripTypeScriptTypes(send) + ')()', { publication, publishReviewed, $state: { snapshot }, publicConsent: true, notice: '' });
+const handoff = (publication, publishReviewed) => vm.runInNewContext('(' + stripTypeScriptTypes(send) + ')()', { publication, publishReviewed, $state: { snapshot }, publicConsent: true, notice: '', assertActive() {} });
 
 test('actual pinned Svelte compiler lowers the owned handoff to snapshot before clearing state or awaiting', () => {
   const { compile } = createRequire(import.meta.url)(path.join(svelte, 'compiler/index.js'));
   const { js } = compile(panel, { filename: 'LocalLibraryPanel.svelte', generate: 'client', dev: false, runes: true });
-  assert.match(js.code, /const reviewed = \$\.snapshot\(\$\.get\(publication\)\);\s*\$\.set\(publicConsent, false\);\s*\$\.set\(publication, undefined\);\s*await publishReviewed\(reviewed, true\)/);
+  assert.match(js.code, /const reviewed = \$\.snapshot\(\$\.get\(publication\)\);\s*\$\.set\(publicConsent, false\);\s*\$\.set\(publication, undefined\);\s*await publishReviewed\(reviewed, true, assertActive\)/);
 });
 
 test('old reactive graph handoff really fails original outbox insertion and rolls back the job', async () => {
@@ -93,5 +93,5 @@ test('snapshot does not bypass the actual original revision and recipient-intent
   });
   const source = read('../../platform-integrations/local-library/publication.ts');
   for (const guard of ['review.owner !== identity.owner', 'review.generation !== identity.generation', 'current.revision !== review.deviceRevision', 'canonical.revision !== review.protocolRevision', 'preferences.revision !== review.relayRevision', 'fingerprint.mappingProof !== review.mappingProof', 'latest.revision !== review.deviceRevision']) assert(source.includes(guard), guard);
-  assert.match(panel, /const reviewed = \$state\.snapshot\(publication!\); publicConsent = false; publication = undefined; await publishReviewed\(reviewed, true\)/);
+  assert.match(panel, /const reviewed = \$state\.snapshot\(publication!\); publicConsent = false; publication = undefined; await publishReviewed\(reviewed, true, assertActive\)/);
 });

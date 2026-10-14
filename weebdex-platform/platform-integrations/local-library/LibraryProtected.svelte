@@ -12,7 +12,7 @@
 {:else if $localLibraryState.ready && $localLibraryState.mode === 'account'}
   <LoginRequired {isAction} />
 {:else if $localLibraryState.ready && $localLibraryState.mode === 'device' && $localLibraryState.scopeStatus !== 'verified'}
-  <p role="alert">{$localLibraryState.scopeReason} Inspect or export the preserved records in the device library panel.</p>
+  <p role="alert">{$localLibraryState.scopeReason} Your saved records are preserved. <a class="underline" href="/settings/preferences#local-library">Manage your library or export a backup</a>.</p>
 {:else}
   <p role="status">Opening this device's library…</p>
 {/if}

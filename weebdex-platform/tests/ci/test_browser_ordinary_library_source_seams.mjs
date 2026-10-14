@@ -109,13 +109,12 @@ test('native wrapped select uses exact immediate label despite descendant option
   assert.match(panel, /<label>Series <select[^>]+bind:value=\{memberSeries\}/);
   const identity = read('platform-integrations/local-library/ProtocolIdentityPanel.svelte');
   assert.match(identity, /<label>Verified recipient <select[^>]+bind:value=\{selectedOrigin\}/);
-  assert.match(identity, /<label>Target type <select bind:value=\{targetKind\}/);
+  assert.doesNotMatch(identity, /Target type|Current instance catalogue ID/);
   assert.match(panel, /<label>Status for saved \{row.id\}<select/);
   const cases = [
     ['List', 'list-id', 'Choose list', 'Local example'],
     ['Series', 'SeedManga1', 'Choose saved series', 'SeedManga1 (reading)'],
     ['Verified recipient', 'http://127.0.0.1:1', 'Choose instance', 'http://127.0.0.1:1 · public-key'],
-    ['Target type', 'manga', 'Chapter', 'Manga'],
     ['Status for saved SeedManga1', 'completed', 'reading', 'completed'],
     ['Status for saved SeedManga10', 'on_hold', 'reading', 'on_hold'],
   ];
@@ -160,7 +159,8 @@ test('account recovery and ordinary follow still use shared controls and durable
 
 function signerModule(window) {
   const publication = read('platform-integrations/local-library/publication.ts');
-  const operation = publication.match(/export async function connectSigner\(\) \{[\s\S]*?\n\}/)[0];
+  const operation = publication.slice(publication.indexOf('export async function connectSigner('), publication.indexOf('\nexport function disconnectSigner'));
+  assert(operation.startsWith('export async function connectSigner('));
   const request = read('platform-integrations/local-library/protocol/nostr.js').match(/export async function signerRequest\(operation\) \{[\s\S]*?\n\}/)[0];
   const identity = { value: { owner: null, generation: 0 }, set(value) { this.value = value; } };
   const context = vm.createContext({ window, signerIdentity: identity, get: value => value.value, performance, setTimeout, clearTimeout });

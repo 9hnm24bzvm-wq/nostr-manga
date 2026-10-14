@@ -15,12 +15,14 @@ export type SourceMapping = { kind: 'manga' | 'chapter'; id: string; event_id: s
 export type NIP07Signer = { getPublicKey(): Promise<string>; signEvent(event: unknown): Promise<unknown> };
 export const signerIdentity = writable<{ owner: string | null; generation: number }>({ owner: null, generation: 0 });
 let signer: NIP07Signer | null = null;
-export async function connectSigner() {
+export async function connectSigner(assertCurrent = () => {}) {
+  assertCurrent();
   const candidate = (window as Window & { nostr?: NIP07Signer }).nostr;
   if (!candidate?.getPublicKey || !candidate.signEvent) throw Error('A compatible NIP-07 browser signer is required for publication. Device saving works without one.');
   const generation = get(signerIdentity).generation + 1;
   signerIdentity.set({ owner: null, generation }); signer = null;
   const owner = await signerRequest(() => candidate.getPublicKey());
+  assertCurrent();
   if (!/^[0-9a-f]{64}$/.test(owner)) throw Error('Signer returned an invalid public key');
   if (get(signerIdentity).generation !== generation) throw Error('Signer selection changed');
   signer = candidate; signerIdentity.set({ owner, generation });
@@ -34,6 +36,9 @@ export function selectedSigner() {
     if (signer !== selected || current.owner !== identity.owner || current.generation !== identity.generation) throw Error('Signer identity changed. Review this action again.');
   };
   return { owner: identity.owner, generation: identity.generation, signer: { signEvent: async (template: unknown) => { check(); const result = await selected.signEvent(template); check(); return result; } }, check };
+}
+function activeSigner(selected: { signEvent(event: unknown): Promise<unknown> }, assertCurrent: () => void) {
+  return { signEvent: async (template: unknown) => { assertCurrent(); const result = await selected.signEvent(template); assertCurrent(); return result; } };
 }
 export async function capabilities(): Promise<Capabilities> {
   const result = await apiRead<Capabilities>('/protocol/capabilities');
@@ -69,10 +74,12 @@ export async function forgetRelay(relayOrigin: string, expectedRevision: number)
   if (current.revision !== expectedRevision) throw Error('Instance selection changed. Review again.');
   return protocol.setRelays(current.relays.filter(row => row.origin !== relayOrigin), expectedRevision);
 }
-export async function admitAccount(relay: Relay) {
+export async function admitAccount(relay: Relay, assertCurrent = () => {}) {
+  assertCurrent();
   const policy = await capabilities(); assertAllowedRelay(relay.origin, policy);
   const identity = selectedSigner(); await proveService(relay.origin, relay.serviceKey); identity.check();
-  const result = await signedRequest(relay, identity.signer, identity.owner, '/enrollment');
+  assertCurrent();
+  const result = await signedRequest(relay, activeSigner(identity.signer, assertCurrent), identity.owner, '/enrollment');
   if (![200, 201].includes(result.status)) throw Error(`Instance refused public-key account admission: HTTP ${result.status}`);
   return result;
 }
@@ -126,7 +133,8 @@ export async function previewPublication(): Promise<PublicationReview> {
   if ((await currentDeviceSnapshot()).revision !== snapshot.revision) throw Error('Device library changed during preview. Review again.');
   return { deviceRevision: snapshot.revision, protocolRevision: prepared.protocolRevision, mappingProof: prepared.mappingProof, relayRevision: preferences.revision, owner: identity.owner, generation: identity.generation, recipients, graph: prepared.graph, excluded: prepared.excluded, sourceOrigin: policy.origin!, serviceKey: policy.service_key! };
 }
-export async function publishReviewed(review: PublicationReview, publicConsent: boolean) {
+export async function publishReviewed(review: PublicationReview, publicConsent: boolean, assertCurrent = () => {}) {
+  assertCurrent();
   if (publicConsent !== true) throw Error('Explicit public-publication consent is required');
   if (!navigator.locks) throw Error('This browser needs Web Locks for safe publication');
   const identity = selectedSigner(), { device, protocol } = await stores();
@@ -149,16 +157,23 @@ export async function publishReviewed(review: PublicationReview, publicConsent: 
     if (latest.revision !== review.deviceRevision) throw Error('Device library changed while signing. Nothing was queued; review again.');
     return protocol.createJob({ ...job, deviceRevision: review.deviceRevision, sourceScope: current.scope });
   });
-  const job = await queueSnapshot(guarded, identity.signer, identity.owner, { revision: review.protocolRevision, graph: review.graph }, review.recipients, true, review.relayRevision);
-  await deliverJob(protocol, job.id, identity.signer, identity.owner);
+  // A dismissed settings view may not start a new signature. If dismissal
+  // happens inside the extension prompt, retain the exact signed/CAS-checked
+  // job before checking UI lifetime again. No newly approved bytes are lost.
+  const snapshotSigner = { signEvent: (template: unknown) => { assertCurrent(); return identity.signer.signEvent(template); } };
+  const job = await queueSnapshot(guarded, snapshotSigner, identity.owner, { revision: review.protocolRevision, graph: review.graph }, review.recipients, true, review.relayRevision);
+  assertCurrent();
+  await deliverJob(protocol, job.id, activeSigner(identity.signer, assertCurrent), identity.owner, undefined, assertCurrent);
   return job.id;
 }
 export async function publicationJobs() { const { protocol } = await stores(); return protocol.jobs(); }
-export async function retryPublication(id: string) {
+export async function retryPublication(id: string, assertCurrent = () => {}) {
+  assertCurrent();
   const { protocol } = await stores(), identity = selectedSigner(), job = await protocol.job(id), policy = await capabilities();
   if (!job || job.event.pubkey !== identity.owner) throw Error('Connect the identity that signed this snapshot');
   for (const relay of job.recipients) assertAllowedRelay(relay.origin, policy);
-  await deliverJob(protocol, id, identity.signer, identity.owner);
+  assertCurrent();
+  await deliverJob(protocol, id, activeSigner(identity.signer, assertCurrent), identity.owner, undefined, assertCurrent);
 }
 export async function cancelPublication(id: string) { const { protocol } = await stores(); return cancelJob(protocol, id); }
 export async function removePublication(id: string) {
@@ -188,10 +203,11 @@ export async function adoptServiceIdentity(review: ServiceAdoptionReview) {
   await device.pinServiceIdentity(review.serviceKey, review.catalogNamespace, review.expectedRevision); await refreshLibrary(); await verifyCatalogueScope();
 }
 export type RecoveryReview = { snapshot: unknown; event: { id: string; pubkey: string; created_at: number }; relay: Relay; protocolRevision: number; relayRevision: number; owner: string; generation: number };
-export async function previewRecovery(relay: Relay): Promise<RecoveryReview> {
+export async function previewRecovery(relay: Relay, assertCurrent = () => {}): Promise<RecoveryReview> {
+  assertCurrent();
   const policy = await capabilities(); assertAllowedRelay(relay.origin, policy);
   const identity = selectedSigner(), { protocol } = await stores(), revision = (await protocol.counts()).revision, preferences = await protocol.relayPreferences();
-  const result = await recoverPublic(relay, identity.signer, identity.owner); identity.check();
+  const result = await recoverPublic(relay, activeSigner(identity.signer, assertCurrent), identity.owner); identity.check(); assertCurrent();
   return { ...result, relay, protocolRevision: revision, relayRevision: preferences.revision, owner: identity.owner, generation: identity.generation };
 }
 export async function applyRecovery(review: RecoveryReview) {

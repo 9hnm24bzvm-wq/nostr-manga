@@ -2,14 +2,14 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { createRouteActionOwner } from '$platform/route-action-owner';
-  import { toast } from 'svelte-sonner';
   import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   import { localLibraryState, libraryIdentity, openLibrary, verifyCatalogueScope, useMode, message, currentDeviceSnapshot, previewImport, previewAccountImport, applyImport, exportBackup, downloadBlob, createList, saveListMember, saveSavedSeries, removeLocalRecord, captureLibraryContext, assertLibraryContext, type ImportReview } from './library';
   import { sameScope, statuses } from './device-store';
   import { recordKey } from './protocol/codec.js';
   import type { Counts, LibraryRecord } from './protocol/types.d.ts';
   import { connectSigner, disconnectSigner, signerIdentity, capabilities, relayPreferences, rememberRelay, selectRelays, forgetRelay, admitAccount, previewPublication, publishReviewed, publicationJobs, retryPublication, cancelPublication, removePublication, previewServiceAdoption, adoptServiceIdentity, type ServiceAdoptionReview, previewRecovery, applyRecovery, exportCanonicalBackup, canonicalRecords, removeCanonicalRecord, previewCanonicalImport, applyCanonicalImport, type CanonicalImportReview, type Relay, type PublicationReview, type RecoveryReview, type Capabilities } from './publication';
-  let notice = $state('Device saves stay in IndexedDB. Publication is off.'), error = $state(''), pending = $state('');
+  let notice = $state('Changes stay local unless you review and publish a public snapshot.'), error = $state(''), pending = $state('');
   let relays = $state<Relay[]>([]), relayRevision = $state(0), jobs = $state<any[]>([]);
   let policy = $state<Capabilities>(), relayOrigin = $state(''), serviceKey = $state('');
   let publicConsent = $state(false), publication = $state<PublicationReview>(), imported = $state<ImportReview>(), recovery = $state<RecoveryReview>();
@@ -17,6 +17,7 @@
   let adoption = $state<ServiceAdoptionReview>(), adoptionPage = $state(0);
   let scopeMatches = $state(true), canonicalFamily = $state('series'), canonicalRows = $state<LibraryRecord[]>([]), canonicalCounts = $state<Partial<Counts>>({}), canonicalAfter = $state<string | null>(null), canonicalImport = $state<CanonicalImportReview>();
   let canonicalGeneration = 0, canonicalLoadedFamily = '', canonicalDisposed = false;
+  function assertActive() { if (canonicalDisposed) throw Error('Library settings were closed. Reopen them and review the action again.'); }
   function invalidateCanonical() { canonicalGeneration++; canonicalLoadedFamily = ''; canonicalRows = []; canonicalAfter = null; }
   async function canonicalFamilyChanged() { invalidateCanonical(); await run('canonical-read', () => loadCanonical()); }
   async function loadCanonical(more = false) {
@@ -43,16 +44,17 @@
   const lists = $derived($localLibraryState.records.filter(row => row.family === 'lists'));
   const series = $derived($localLibraryState.records.filter(row => row.family === 'series'));
   async function refresh() {
-    const preferences = await relayPreferences(); relays = preferences.relays; relayRevision = preferences.revision;
-    jobs = await publicationJobs();
-    const snapshot = await currentDeviceSnapshot();
+    const preferences = await relayPreferences(); if (canonicalDisposed) return; relays = preferences.relays; relayRevision = preferences.revision;
+    const savedJobs = await publicationJobs(); if (canonicalDisposed) return; jobs = savedJobs;
+    const snapshot = await currentDeviceSnapshot(); if (canonicalDisposed) return;
     scopeText = `${snapshot.scope.origin} · namespace ${snapshot.scope.catalogNamespace ?? 'origin-only'} · ${snapshot.scope.serviceKey ?? 'origin-only scope; service identity not adopted'}`;
   }
   async function run(name: string, operation: () => Promise<void>) {
-    if (pending) return; pending = name; error = '';
+    if (pending || canonicalDisposed) return; pending = name; error = '';
+    assertActive();
     try { await operation(); }
-    catch (cause) { error = message(cause); }
-    finally { pending = ''; await refresh().catch(cause => { error ||= message(cause); }); }
+    catch (cause) { if (!canonicalDisposed) error = message(cause); }
+    finally { if (!canonicalDisposed) { pending = ''; await refresh().catch(cause => { if (!canonicalDisposed) error ||= message(cause); }); } }
   }
   async function cancel(id: string) { try { await cancelPublication(id); await refresh(); notice = 'Further sending cancelled. Already sent copies cannot be recalled.'; } catch (cause) { error = message(cause); } }
   function resetReviews() { publication = undefined; publicConsent = false; recovery = undefined; }
@@ -89,20 +91,14 @@
     if (publication && (publication.deviceRevision !== $localLibraryState.revision || publication.owner !== $signerIdentity.owner || publication.generation !== $signerIdentity.generation)) { publication = undefined; publicConsent = false; }
   });
   onMount(() => {
-    const reportError = (event: Event) => { error = String((event as CustomEvent).detail); toast.error('Library save failed', { description: error }); };
-    window.addEventListener('weebdex-library-error', reportError);
-    void run('open', async () => { await openLibrary(); await refresh(); void capabilities().then(result => { policy = result; }).catch(() => {}); });
-    return () => { canonicalDisposed = true; canonicalGeneration++; window.removeEventListener('weebdex-library-error', reportError); };
+    void run('open', async () => { await openLibrary(); await refresh(); void capabilities().then(result => { if (!canonicalDisposed) policy = result; }).catch(() => {}); });
+    return () => { canonicalDisposed = true; canonicalGeneration++; resetReviews(); imported = undefined; canonicalImport = undefined; adoption = undefined; };
   });
 </script>
-<details class="my-3 rounded-md border p-3" data-local-library-panel>
-  <summary class="cursor-pointer font-medium">Device library, backups and optional public sync</summary>
-  <div class="mt-3 space-y-3">
-    <p>Library source: {$localLibraryState.mode === 'device' ? 'this browser device' : 'signed-in WeebDex account'}. Local identity and Nostr signing are independent of account login.</p>
-    <p class="break-all text-sm">Native catalogue scope: {scopeText}</p>
-    {#if $localLibraryState.scopeStatus !== "verified"}<p role="status">{$localLibraryState.scopeReason ?? "Verifying current catalogue identity. Current title/chapter controls stay unavailable until verified; saved-device records and backups remain available."}</p>{/if}
-    <p role="status">Scope verification: {$localLibraryState.scopeStatus}. {$localLibraryState.scopeReason ?? ""}</p>
-    <Button variant="outline" disabled={!!pending} onclick={() => run("verify-scope", async () => { await verifyCatalogueScope(); })}>Verify current catalogue scope</Button>
+<section id="local-library" class="scroll-mt-20 space-y-5 border-t pt-6" data-local-library-panel>
+  <header class="space-y-1"><h2 class="text-lg font-semibold">Library</h2><p class="text-muted-foreground text-sm">Manage where you save your reading progress, keep backups, and choose whether to share.</p></header>
+  <div class="space-y-4">
+    <p>Library source: {$localLibraryState.mode === 'device' ? 'this browser device' : 'signed-in WeebDex account'}. Device saves do not need an account.</p>
     <div class="flex flex-wrap gap-2">
       <Button variant="outline" disabled={!!pending || $localLibraryState.mode === 'device'} onclick={() => run('device-mode', () => chooseMode('device'))}>Use device library</Button>
       <Button variant="outline" disabled={!!pending || $localLibraryState.mode === 'account'} onclick={() => run('account-mode', () => chooseMode('account'))}>Use account library</Button>
@@ -129,8 +125,14 @@
         <Button variant="outline" disabled={!!pending} onclick={() => { imported = undefined; }}>Cancel import</Button>
       </div>
     {/if}
-    <details class="rounded border p-2">
-      <summary class="cursor-pointer">Edit saved-device series without catalogue lookup</summary>
+    <details class="space-y-3 border-t pt-4"><summary class="cursor-pointer font-medium">Advanced library settings</summary><div class="space-y-3 pt-3">
+    <p class="break-all text-sm">Native catalogue scope: {scopeText}</p>
+    {#if $localLibraryState.scopeStatus !== "verified"}<p role="status">{$localLibraryState.scopeReason ?? "Verifying current catalogue identity. Current title/chapter controls stay unavailable until verified; saved-device records and backups remain available."}</p>{/if}
+    <p role="status">Scope verification: {$localLibraryState.scopeStatus}. {$localLibraryState.scopeReason ?? ""}</p>
+    <Button variant="outline" disabled={!!pending} onclick={() => run("verify-scope", async () => { await verifyCatalogueScope(); })}>Verify current catalogue scope</Button>
+    </div></details>
+    <details class="space-y-3 border-t pt-4">
+      <summary class="cursor-pointer font-medium">Edit saved-device series without catalogue lookup</summary>
       <p class="text-sm">These IDs remain in the displayed saved-device scope. No current title is looked up or rebound.</p>
       {#each series as row}
         <div class="flex flex-wrap items-center gap-2">
@@ -140,16 +142,16 @@
         </div>
       {/each}
     </details>
-    <details class="rounded border p-2">
-      <summary class="cursor-pointer">Custom device lists</summary>
+    <details class="space-y-3 border-t pt-4">
+      <summary class="cursor-pointer font-medium">Custom device lists</summary>
       <form class="my-2 flex flex-wrap gap-2" onsubmit={event => { event.preventDefault(); void run('create-list', async () => { memberList = await createList(listName); listName = ''; notice = 'List created on this device.'; }); }}>
-        <label>List name <input class="rounded border px-2" bind:value={listName} maxlength="128" required /></label>
+        <label for="device-list-name">List name <Input id="device-list-name" class="mt-1" bind:value={listName} maxlength={128} required /></label>
         <Button type="submit" disabled={!!pending}>Create list</Button>
       </form>
       <form class="my-2 flex flex-wrap gap-2" onsubmit={event => { event.preventDefault(); void run('member', async () => { await saveListMember(memberList, memberSeries, memberPosition); notice = 'List membership saved locally.'; }); }}>
         <label>List <select class="rounded border px-2" bind:value={memberList} required><option value="">Choose list</option>{#each lists as list}<option value={list.id}>{list.name}</option>{/each}</select></label>
         <label>Series <select class="rounded border px-2" bind:value={memberSeries} required><option value="">Choose saved series</option>{#each series as row}<option value={row.id}>{row.id} ({row.status})</option>{/each}</select></label>
-        <label>Position <input class="w-20 rounded border px-2" type="number" min="0" step="1" bind:value={memberPosition} required /></label>
+        <label for="device-list-position">Position <Input id="device-list-position" class="w-20 rounded border px-2" type="number" min={0} step={1} bind:value={memberPosition} required /></label>
         <Button type="submit" disabled={!!pending}>Save member</Button>
       </form>
       {#each lists as list}
@@ -159,12 +161,12 @@
         {/each}
       {/each}
     </details>
-    <details class="rounded border p-2">
-      <summary class="cursor-pointer">Optional Nostr publication and verified recovery</summary>
+    <details class="space-y-3 border-t pt-4">
+      <summary class="cursor-pointer font-medium">Public sync &amp; recovery</summary>
       <div class="mt-2 space-y-2">
         <p>Publishing exposes signed reading status, chapter completion/pages, list names and memberships publicly. Local saves never publish automatically.</p>
         <p class="break-all">Signing key: {$signerIdentity.owner ?? 'none connected'}</p>
-        <Button variant="outline" disabled={!!pending} onclick={() => run('connect-signer', async () => { resetReviews(); await connectSigner(); notice = 'Signer connected. No library data sent.'; })}>Connect external browser signer</Button>
+        <Button variant="outline" disabled={!!pending} onclick={() => run('connect-signer', async () => { resetReviews(); await connectSigner(assertActive); notice = 'Signer connected. No library data sent.'; })}>Connect external browser signer</Button>
         <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => { disconnectSigner(); resetReviews(); }}>Disconnect signer</Button>
         {#if policy?.service_key && ($localLibraryState.scopeStatus === 'origin_only' || scopeText.includes('origin-only'))}
           <Button variant="outline" disabled={!!pending} onclick={() => run('adoption-preview', async () => { adoption = await previewServiceAdoption(); adoptionPage = 0; })}>Preview source identity adoption</Button>
@@ -185,16 +187,16 @@
         {/if}
         <p class="text-sm">Available protocol bridge: {policy?.available ? policy.origin : 'not configured'}. Public-key account admission is a separate instance prerequisite.</p>
         <form class="flex flex-wrap gap-2" onsubmit={event => { event.preventDefault(); if (confirm(`Verify and remember ${relayOrigin} with expected service key ${serviceKey || 'identity discovered by signed proof'}? This does not send your library.`)) void run('remember-relay', async () => { await rememberRelay(relayOrigin, serviceKey.trim(), relayRevision); resetReviews(); notice = 'Verified instance remembered, initially unselected.'; }); }}>
-          <label>Instance origin <input class="rounded border px-2" type="url" bind:value={relayOrigin} placeholder="https://instance.example" required /></label>
-          <label>Expected service public key <input class="rounded border px-2" bind:value={serviceKey} placeholder="64 lowercase hex characters" /></label>
+          <label for="sync-instance-origin">Instance origin <Input id="sync-instance-origin" class="mt-1" type="url" bind:value={relayOrigin} placeholder="https://instance.example" required /></label>
+          <label for="sync-instance-key">Expected service public key <Input id="sync-instance-key" class="mt-1" bind:value={serviceKey} placeholder="64 lowercase hex characters" /></label>
           <Button type="submit" disabled={!!pending}>Verify and remember instance</Button>
         </form>
         {#each relays as relay}
           <div class="rounded border p-2">
             <label><input type="checkbox" checked={relay.selected} disabled={!!pending} onchange={event => run('select-relay', async () => { await selectRelays(relays.map(row => row.origin === relay.origin ? { ...row, selected: (event.target as HTMLInputElement).checked } : row), relayRevision); resetReviews(); })} /> Select {relay.origin}</label>
             <p class="break-all text-xs">Pinned service key: {relay.serviceKey}</p>
-            <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => { if (confirm(`Request admission for public key ${$signerIdentity.owner} at ${relay.origin}? This does not publish the library.`)) void run('enroll', async () => { await admitAccount(relay); notice = 'Public-key account admitted. Library remains local.'; }); }}>Request public-key account admission</Button>
-            <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => run('recover-preview', async () => { recovery = await previewRecovery(relay); })}>Preview verified public recovery</Button>
+            <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => { if (confirm(`Request admission for public key ${$signerIdentity.owner} at ${relay.origin}? This does not publish the library.`)) void run('enroll', async () => { await admitAccount(relay, assertActive); notice = 'Public-key account admitted. Library remains local.'; }); }}>Request public-key account admission</Button>
+            <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => run('recover-preview', async () => { recovery = await previewRecovery(relay, assertActive); })}>Preview verified public recovery</Button>
             <Button variant="outline" disabled={!!pending} onclick={() => { if (confirm('Forget this instance and cancel unfinished snapshots sent to it? Published copies remain public.')) void run('forget', async () => { await forgetRelay(relay.origin, relayRevision); resetReviews(); }); }}>Forget instance</Button>
           </div>
         {/each}
@@ -205,7 +207,7 @@
             <p class="break-all">Manifest {publication.graph.root.hash}. Signing key {publication.owner}. Recipients: {publication.recipients.map(row => row.origin).join(', ')}</p>
             {#if publication.excluded.length}<p class="break-all text-xs">Excluded IDs: {publication.excluded.slice(0, 30).join(', ')}{publication.excluded.length > 30 ? '…' : ''}</p>{/if}
             <label><input type="checkbox" bind:checked={publicConsent} /> I understand that this reviewed snapshot becomes public at these recipients.</label>
-            <Button disabled={!!pending || !publicConsent} onclick={() => run('publish', async () => { const reviewed = $state.snapshot(publication!); publicConsent = false; publication = undefined; await publishReviewed(reviewed, true); notice = 'Publication attempt finished. Review every instance receipt below.'; })}>Sign and publish reviewed snapshot</Button>
+            <Button disabled={!!pending || !publicConsent} onclick={() => run('publish', async () => { const reviewed = $state.snapshot(publication!); publicConsent = false; publication = undefined; await publishReviewed(reviewed, true, assertActive); notice = 'Publication attempt finished. Review every instance receipt below.'; })}>Sign and publish reviewed snapshot</Button>
             <Button variant="outline" disabled={!!pending} onclick={resetReviews}>Cancel preview</Button>
           </div>
         {/if}
@@ -235,23 +237,24 @@
           {/each}
           {#if canonicalRows.length && canonicalRows.length % 50 === 0}<Button variant="outline" disabled={!!pending} onclick={() => run('canonical-more', () => loadCanonical(true))}>Load more</Button>{/if}
         </details>
-        <p>Saved outbox snapshots:</p>
+        <details><summary class="cursor-pointer font-medium">Saved sync attempts</summary>
         {#each jobs as job}
           <div class="rounded border p-2">
             <p class="break-all text-xs">{job.id} · device revision {job.deviceRevision ?? 'canonical only'} · {job.cancelled ? 'cancelled' : 'saved'} · signer {job.event.pubkey}</p>
             {#each job.recipients as recipient}<p>{recipient.origin}: {recipient.state} · {recipient.message}</p>{/each}
             {#if !job.cancelled && job.recipients.some((row: { state: string }) => !['accepted', 'superseded'].includes(row.state))}
-              <Button variant="outline" disabled={!!pending} onclick={() => { if (confirm('Retry this previously approved public snapshot to its original recipients? New device changes are not included.')) void run('retry', async () => { await retryPublication(job.id); notice = 'Retry finished; review receipts.'; }); }}>Retry approved snapshot</Button>
+              <Button variant="outline" disabled={!!pending} onclick={() => { if (confirm('Retry this previously approved public snapshot to its original recipients? New device changes are not included.')) void run('retry', async () => { await retryPublication(job.id, assertActive); notice = 'Retry finished; review receipts.'; }); }}>Retry approved snapshot</Button>
               <Button variant="outline" onclick={() => cancel(job.id)}>Cancel further sending</Button>
             {:else}
               <Button variant="outline" disabled={!!pending} onclick={() => { if (confirm('Remove this local retry record? Published copies are unaffected.')) void run('remove-job', async () => { await removePublication(job.id); }); }}>Remove local outbox record</Button>
             {/if}
           </div>
         {/each}
+        </details>
       </div>
     </details>
     {#if pending}<p role="status">Working: {pending.replaceAll('-', ' ')}…</p>{/if}
     <p role="status">{notice}</p>
     {#if error || $localLibraryState.error}<p role="alert" class="text-red-600">{error || $localLibraryState.error}</p>{/if}
   </div>
-</details>
+</section>

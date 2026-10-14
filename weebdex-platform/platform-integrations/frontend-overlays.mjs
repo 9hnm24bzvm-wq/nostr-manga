@@ -701,74 +701,6 @@ const patches = [
     "after": "\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\tmanga = res.body;\r\n\t\t\t\t\ttoast.success(\"Lock state updated successfully\");"
   },
   {
-    "path": "src/routes/(app)/+layout.svelte",
-    "label": "explicit local and protocol panels import without auth Session substitution",
-    "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-    "count": 1,
-    "before": "\timport AppHeader from \"$lib/components/AppHeader.svelte\";",
-    "after": "\timport AppHeader from \"$lib/components/AppHeader.svelte\";\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/+layout.svelte",
-    "label": "mount opt-in collapsed local library and signed identity panels",
-    "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-    "count": 1,
-    "before": "\t\t\t{@render children()}",
-    "after": "\t\t\t<LocalLibraryPanel />\r\n\t\t\t<ProtocolIdentityPanel />\r\n\t\t\t{@render children()}",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
-    "path": "src/routes/(app)/title/Manga.svelte",
-    "label": "source-bound title conversation imports explicit panel",
-    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-    "count": 1,
-    "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/title/Manga.svelte",
-    "label": "title source discussion has explicit target-specific opt-in panel",
-    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-    "count": 1,
-    "before": "</svelte:head>",
-    "after": "</svelte:head>\r\n\r\n<ProtocolIdentityPanel resourceKind=\"manga\" resourceId={manga.id} />",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-    "label": "source-bound reader conversation imports explicit panel",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-    "label": "reader retains original provider and adds explicit local/source panels",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "\t{#if data.chapter}",
-    "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-    "label": "source-bound reader conversation imports explicit panel",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-    "label": "reader retains original provider and adds explicit local/source panels",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "\t{#if data.chapter}",
-    "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
     "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
     "label": "pending title receipt uses scoped external editor boundary",
     "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
@@ -3335,7 +3267,154 @@ const patches = [
   "label": "upload candidates share reactive identity between queued mutations and rendered controls",
   "before": "\tconst createPage = (file: File) => {\r\n\t\treturn <UploadSessionFile>{\r\n\t\t\tid: crypto.randomUUID(),\r\n\t\t\toriginal_file_name: file.name,\r\n\r\n\t\t\tfile: file,\r\n\t\t\tthumbnail: URL.createObjectURL(file)\r\n\t\t};\r\n\t};",
   "after": "\tconst createPage = (file: File) => {\r\n\t\t// The upload queue and rendered array must share this exact reactive row.\r\n\t\t// Mutating a pre-proxy raw row after an awaited request is invisible.\r\n\t\tconst candidate = $state(<UploadSessionFile>{\r\n\t\t\tid: crypto.randomUUID(),\r\n\t\t\toriginal_file_name: file.name,\r\n\r\n\t\t\tfile: file,\r\n\t\t\tthumbnail: URL.createObjectURL(file)\r\n\t\t});\r\n\t\treturn candidate;\r\n\t};"
-}
+},
+  {
+    "path": "src/routes/+layout.svelte",
+    "label": "one renderless library lifecycle across app and standalone reader",
+    "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+    "count": 1,
+    "before": "\timport { onMount } from \"svelte\";",
+    "after": "\timport { onMount } from \"svelte\";\n\timport LibraryRuntime from \"$localLibrary/LibraryRuntime.svelte\";"
+  },
+  {
+    "path": "src/routes/+layout.svelte",
+    "label": "restore device state and save error reporting without management UI",
+    "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+    "count": 1,
+    "before": "<Lightbox.Provider>",
+    "after": "<LibraryRuntime />\n\n<Lightbox.Provider>",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/settings/preferences/+page.svelte",
+    "label": "anonymous settings owns library and signing identity management",
+    "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+    "count": 1,
+    "before": "\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";",
+    "after": "\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/settings/preferences/+page.svelte",
+    "label": "management is independent of native session and outside preference form",
+    "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+    "count": 1,
+    "before": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}",
+    "after": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}\r\n\r\n<div class=\"mt-8 space-y-8\">\r\n\t<LocalLibraryPanel />\r\n\t<ProtocolIdentityPanel />\r\n</div>",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/library/+layout.svelte",
+    "label": "library management action uses native Button",
+    "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+    "count": 1,
+    "before": "\timport Protected from \"$lib/components/ui/Protected.svelte\";",
+    "after": "\timport Protected from \"$lib/components/ui/Protected.svelte\";\r\n\timport { Button } from \"$lib/components/ui/button\";"
+  },
+  {
+    "path": "src/routes/(app)/library/+layout.svelte",
+    "label": "management stays reachable in account and failed-scope fallback",
+    "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+    "count": 1,
+    "before": "<Protected>",
+    "after": "<div class=\"mb-4 flex justify-end\">\r\n\t<Button variant=\"outline\" size=\"sm\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n\r\n<Protected>",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "label": "title discussion owns its source-bound signed actions",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "\timport * as Comments from \"$lib/components/comments\";",
+    "after": "\timport MangaDiscussion from \"$localLibrary/MangaDiscussion.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "label": "signed conversation remains available without native account thread",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "\t\t\tcomponent: Comments.Comments,\r\n\t\t\thidden: !isPublished || !manga.relationships.thread",
+    "after": "\t\t\tcomponent: MangaDiscussion,\r\n\t\t\thidden: !isPublished"
+  },
+  {
+    "path": "src/lib/components/reader/reader.svelte",
+    "label": "reader discussion imports contextual signed actions",
+    "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+    "count": 1,
+    "before": "\timport * as Comments from \"../comments\";",
+    "after": "\timport * as Comments from \"../comments\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
+  },
+  {
+    "path": "src/lib/components/reader/reader.svelte",
+    "label": "signed comments belong below reading surface in discussion area",
+    "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+    "count": 1,
+    "before": "\t\t<Comments.Comments class=\"m-auto max-w-300\" />",
+    "after": "\t\t<div class=\"m-auto max-w-300 space-y-5\">\r\n\t\t\t{#if reader.chapter.relationships.thread}<Comments.Comments />{/if}\r\n\t\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={reader.chapter.id} />\r\n\t\t</div>",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+    "label": "reader supports source discussion independently of native thread",
+    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+    "count": 1,
+    "before": "\t\t<Comments.Provider thread={data.chapter.relationships.thread}>\r\n\t\t\t<Reader.Provider chapter={data.chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t</Comments.Provider>",
+    "after": "\t\t{#snippet reading(chapter: Chapter)}\r\n\t\t\t<Reader.Provider {chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t{/snippet}\r\n\t\t{#if data.chapter.relationships.thread}\r\n\t\t\t<Comments.Provider thread={data.chapter.relationships.thread}>{@render reading(data.chapter)}</Comments.Provider>\r\n\t\t{:else}\r\n\t\t\t{@render reading(data.chapter)}\r\n\t\t{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+    "label": "reader supports source discussion independently of native thread",
+    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+    "count": 1,
+    "before": "\t\t<Comments.Provider thread={data.chapter.relationships.thread}>\r\n\t\t\t<Reader.Provider chapter={data.chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t</Comments.Provider>",
+    "after": "\t\t{#snippet reading(chapter: Chapter)}\r\n\t\t\t<Reader.Provider {chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t{/snippet}\r\n\t\t{#if data.chapter.relationships.thread}\r\n\t\t\t<Comments.Provider thread={data.chapter.relationships.thread}>{@render reading(data.chapter)}</Comments.Provider>\r\n\t\t{:else}\r\n\t\t\t{@render reading(data.chapter)}\r\n\t\t{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-panel.svelte",
+    "label": "reader native votes and thread link require native discussion",
+    "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+    "count": 1,
+    "before": "\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t<Comments.Votes />\r\n\t\t\t\t\t\t\t<a\r\n\t\t\t\t\t\t\t\tclass={buttonVariants({ class: \"flex-auto border-none\", variant: \"outline\" })}\r\n\t\t\t\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t<MessagesSquareIcon />\r\n\t\t\t\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t\tNo comments yet\r\n\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t</a>\r\n\t\t\t\t\t\t</div>",
+    "after": "\t\t\t\t\t\t{#if reader.chapter.relationships.thread}\r\n\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t<Comments.Votes />\r\n\t\t\t\t\t\t\t<a\r\n\t\t\t\t\t\t\t\tclass={buttonVariants({ class: \"flex-auto border-none\", variant: \"outline\" })}\r\n\t\t\t\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t<MessagesSquareIcon />\r\n\t\t\t\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t\tNo comments yet\r\n\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t</a>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "both end-page native vote controls require native discussion",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 2,
+    "before": "<Comments.Votes />",
+    "after": "{#if reader.chapter.relationships.thread}<Comments.Votes />{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "end-page native thread link guard 1",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>",
+    "after": "{#if reader.chapter.relationships.thread}<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "end-page native thread link guard 2",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t{comments.stats.replies}\r\n\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tGo to comments\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</a>",
+    "after": "{#if reader.chapter.relationships.thread}<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t{comments.stats.replies}\r\n\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tGo to comments\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</a>{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-settings.svelte",
+    "label": "reader settings links to anonymous library management",
+    "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+    "count": 1,
+    "before": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n",
+    "after": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n\r\n<Separator />\r\n<div class=\"space-y-2 p-2\">\r\n\t<Button class=\"w-full border-none\" variant=\"outline\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n",
+    "approved_ui_extension": "route_owned_library_identity"
+  }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {
