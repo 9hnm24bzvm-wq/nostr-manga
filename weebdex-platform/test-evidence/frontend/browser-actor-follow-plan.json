@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "source-prepared-browser-unrun",
+  "base_commit": "56f9cb248334eff951be571a567697b73f710fab",
+  "historical_browser_plan": "test-evidence/frontend/browser-startup-plan-build19.json",
+  "historical_phases_retained": 38,
+  "supplemental_phases": [
+    "ui14-actor-follow"
+  ],
+  "total_required_unique_phases": 39,
+  "batch": "actor-follow",
+  "maximum_phase_seconds": 300,
+  "checks": [
+    "actor-follow-account",
+    "actor-follow-group-initial-readiness",
+    "actor-follow-group-read-retry",
+    "actor-follow-group-unblock-loading",
+    "actor-follow-group-unblock-error",
+    "actor-follow-group-pending-ack",
+    "actor-follow-group-pending-lost",
+    "actor-follow-group-pending-disposed",
+    "actor-follow-user-initial-readiness",
+    "actor-follow-user-read-retry",
+    "actor-follow-user-unblock-loading",
+    "actor-follow-user-unblock-error",
+    "actor-follow-user-pending-ack",
+    "actor-follow-user-pending-lost",
+    "actor-follow-user-pending-disposed"
+  ],
+  "source_sha256": {
+    "scripts/browser-actor-follow-journeys.mjs": "72769b769508d9f4dc24a5fb537e5f103b6414a802d21160c40308a6dbc3642f",
+    "scripts/browser-ui11-16-journeys.mjs": "e94ddc40b2fe41b1c501a20ae9193c967a3b741e3b97c22a6641d9e5536dfb0f",
+    "scripts/ci/run-hosted-browser.py": "d45b6a87cf2caa0ffc16d3f82e34495bbaa1cb072c9154ee0451cd34ca407fe2",
+    "scripts/ci/journey-diagnostics.py": "9956200c37e9bdeb0a52f5462c99f8208b6687426dc5fe2236b993bc28687abc",
+    "scripts/ci/validate-ci-evidence.py": "938b9097edc4aa7e9db36ceb0007ab24f90420c8a712f213307616cb8cf9fc7c",
+    "docs/browser-actor-follow-regressions.md": "cc8f9f7246816ed91757da9d1ffd0c64dfe340a6890a54d1e83b97961c509bf1",
+    "tests/ci/test_browser_actor_follow_journeys.mjs": "e88a937d331911c7b50a977b057de9c544aacedb281643eb2fae04142317ddaf",
+    "tests/ci/test_browser_library_diagnostics.mjs": "52c2165864e9722b95ae5978a7d174bf634bc5b6510a2252486827d9d0709a6f",
+    "tests/ci/test_hosted_browser.py": "eac43be813194e705982eaeddbd20b35f6f9da00c568f2f9744102a73010206c",
+    "docs/hosted-browser-e2e.md": "3a96d0bc5a1fb8096ee2f285ffdce2b4736fbdae36b790c85c143a1d04961f31",
+    "../.github/workflows/hosted-browser-e2e.yml": "3e780bc659f5b2d611a7c70084de3d148fb635d8cb44280cdc5e68c9844b5dfd"
+  },
+  "requires": "Fresh supported hosted Linux fixture with newly rebuilt actual frontend source including 56f9cb2 follow controller; old Build19 static artifact cannot establish this patch acceptance.",
+  "browser_limitations": [
+    "Login/logout routes dispose the Group/User component; these journeys cover disposal/reentry rather than in-place A-to-B-to-A Session transitions.",
+    "Same-actor Session revision during a pending follow write remains covered by controlled composed-script tests, not this actual-route phase.",
+    "No real browser, service, fixture, hosted CI or publication was started for source preparation."
+  ],
+  "source_paths_relative_to": "weebdex-platform"
+}

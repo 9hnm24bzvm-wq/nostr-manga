@@ -1,3 +1,17 @@
+# Supplemental actor-follow phase
+
+The current source adds `ui14-actor-follow` in the fresh-fixture `actor-follow`
+batch. All 38 historical phases are retained; the current complete scope is
+39 unique phases in 11 batches (51 scheduled executions including Startup on
+each fixture and existing deliberate repeats). The original Build19 handoff
+remains historical. See [supplemental coverage and run boundaries](browser-actor-follow-regressions.md)
+and `test-evidence/frontend/browser-actor-follow-plan.json`. This source change
+has not run a browser or hosted CI. Rebuild the actual follow-fixed frontend
+before accepting these journeys.
+
+The earlier run history and 38-phase descriptions below describe their original
+source revisions.
+
 # GitHub-hosted real browser E2E
 
 ## Review status

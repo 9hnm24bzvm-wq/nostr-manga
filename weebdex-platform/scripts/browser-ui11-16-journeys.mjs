@@ -9,6 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { selectListboxTrigger, clickListboxOption, setListboxOptions } from "./browser-select-controls.mjs";
 import { observeCompactFeedResponse } from "./compact-feed-http-outcome.mjs";
+import { actorFollowPhase, actorFollowDiagnosticChecks, runActorFollowJourneys } from "./browser-actor-follow-journeys.mjs";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export const ui11To16JourneyPhases = Object.freeze([
@@ -16,7 +17,7 @@ export const ui11To16JourneyPhases = Object.freeze([
   "ui13-terminal-feed", "ui13-feed-authority", "ui14-entity-pagination",
   "ui14-account-failures", "ui14-home-failures", "ui15-chapter-filter",
   "ui15-reader-feedback", "ui15-reader-geometry", "ui15-16-empty-tabs",
-  "ui16-home-preferences", "ui16-search-cap"
+  "ui16-home-preferences", "ui16-search-cap", actorFollowPhase
 ]);
 
 // Closed diagnostic vocabulary. IDs encode reviewed controls only, never fixture
@@ -28,6 +29,7 @@ const progressChecks = Object.freeze([
   "reload-progress", "stable-revision"
 ]);
 export const ui11To16DiagnosticChecks = Object.freeze({
+  ...actorFollowDiagnosticChecks,
   "ui11-device-progress": Object.freeze([
     "device-progress-signup-context",
     ...progressCases.flatMap(control => progressChecks.map(check => `device-progress-${control}-${check}`))
@@ -696,5 +698,6 @@ export async function runUi11To16Journeys(h) {
       try { await open(`/search?title=${encodeURIComponent(data.query)}`); await until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.total === data.total && row.body?.limit === size), "Actual public search did not acknowledge its genuine capped-fixture total and selected page size"); const last = Math.ceil(Math.min(data.total, 10000) / size); const link = page.getByRole("link", { name: String(last), exact: true }).first(); await link.waitFor({ state: "visible" }); await realm(); await link.click(); await page.waitForURL(url => Number(url.searchParams.get("page")) === last); await until(() => seen.rows, rows => rows.some(row => row.body?.page === last && row.body?.limit === size && row.body?.data?.length > 0), "Visible terminal link did not reach its real last partial/native page"); const receipt = seen.rows.findLast(row => row.body?.page === last); const expected = Math.min(size, data.total - (last - 1) * size); insist(receipt.body.data.length === expected, "Actual last-page row count differs from the native uncapped catalogue contract"); await page.goBack({ waitUntil: "domcontentloaded" }); await page.goForward({ waitUntil: "domcontentloaded" }); await sameRealm(); await link.waitFor({ state: "visible" }); return { genuine_total: data.total, selected_limit: size, ordinary_last_link: last, native_last_rows: receipt.body.data.length, last_and_current_agree: true, back_forward_same_document: true }; } finally { await seen.close(); }
     });
   }
+  if (phase === actorFollowPhase) await runActorFollowJourneys({ phase, page, origin, ids, api, step, check, insist, open, signup, hold, requestPath, until, stable, realm, sameRealm });
   finite();
 }

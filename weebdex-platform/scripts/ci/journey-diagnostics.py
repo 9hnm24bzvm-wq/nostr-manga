@@ -30,6 +30,12 @@ CHECKS = {
     ]],
 }
 
+CHECKS['ui14-actor-follow'] = ['actor-follow-account', *[
+    'actor-follow-' + kind + '-' + case for kind in ['group', 'user']
+    for case in ['initial-readiness', 'read-retry', 'unblock-loading', 'unblock-error',
+                 'pending-ack', 'pending-lost', 'pending-disposed']
+]]
+
 CHECKS['local-library'] = ['local-library-' + suffix for suffix in ['device-title-navigation', 'device-follow-trigger-visible-unique',
  'device-follow-popup-open', 'device-follow-option-selected', 'device-status-durable',
  'device-authority-unpublished', 'device-reload-status', 'device-library-navigation',

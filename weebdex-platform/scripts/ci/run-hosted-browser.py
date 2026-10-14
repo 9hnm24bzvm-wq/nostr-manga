@@ -29,9 +29,12 @@ BATCHES = {
     # Baseline actual reader/cover assertions precede last-cover deletion.
     'ui-reader': ['ui12-compact-feed', 'reader', 'ui15-chapter-filter', 'ui15-reader-geometry', 'ui15-reader-feedback', 'ui15-16-empty-tabs'],
     'ui-home': ['ui14-account-failures', 'ui14-home-failures', 'ui16-home-preferences', 'ui16-search-cap'],
+    # Supplemental Group/User controller coverage has its own fresh fixture.
+    'actor-follow': ['ui14-actor-follow'],
 }
 ALL_PHASES = ['startup', *dict.fromkeys(phase for phases in BATCHES.values() for phase in phases)]
-assert len(ALL_PHASES) == 38
+assert len(ALL_PHASES) == 39
+MAX_PHASE_RUNS = sum(1 + len(phases) for phases in BATCHES.values())
 STOP = False
 
 
@@ -229,7 +232,7 @@ def summarize(journal, selection, requested):
     clean = bool(journal['batches']) and all(row.get('supervisor_terminal') is True and row['cleanup']['verified_stopped'] is True for row in journal['batches'])
     lifecycles_clean = clean and all(row.get('supervisor_exit_zero') is True and row['cleanup'].get('lifecycle_clean') is True and row.get('passed') is True for row in journal['batches'])
     target_passed = set(requested) <= passed and not failed and lifecycles_clean and not journal.get('error_class')
-    return {'schema': 1, 'selection': selection, 'selected_scope_passed': target_passed, 'full_suite_passed': selection == 'all' and target_passed and set(ALL_PHASES) <= passed, 'required_unique_phases': 38, 'passed_unique_phases': sorted(passed - failed), 'failed_unique_phases': sorted(failed), 'pending_unique_phases': sorted(set(ALL_PHASES) - passed - failed), 'actual_phase_runs': len(journal['phases']), 'all_fixture_teardowns_verified': clean, 'all_fixture_lifecycles_clean': lifecycles_clean, 'budget_exhausted': journal.get('budget_exhausted', False), 'interrupted': STOP, 'screenshots_or_raw_logs_uploaded': False, 'private_runtime_artifacts_uploaded': False, 'pixel_parity_established': False}
+    return {'schema': 1, 'selection': selection, 'selected_scope_passed': target_passed, 'full_suite_passed': selection == 'all' and target_passed and set(ALL_PHASES) <= passed, 'required_unique_phases': len(ALL_PHASES), 'passed_unique_phases': sorted(passed - failed), 'failed_unique_phases': sorted(failed), 'pending_unique_phases': sorted(set(ALL_PHASES) - passed - failed), 'actual_phase_runs': len(journal['phases']), 'all_fixture_teardowns_verified': clean, 'all_fixture_lifecycles_clean': lifecycles_clean, 'budget_exhausted': journal.get('budget_exhausted', False), 'interrupted': STOP, 'screenshots_or_raw_logs_uploaded': False, 'private_runtime_artifacts_uploaded': False, 'pixel_parity_established': False}
 
 
 def main():

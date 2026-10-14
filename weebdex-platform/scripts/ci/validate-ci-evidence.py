@@ -53,7 +53,7 @@ def digest(value):
 
 
 def phase_list(value):
-    insist(type(value) is list and len(value) <= 38 and len(set(value)) == len(value) and all(type(item) is str and item in runner.ALL_PHASES for item in value))
+    insist(type(value) is list and len(value) <= len(runner.ALL_PHASES) and len(set(value)) == len(value) and all(type(item) is str and item in runner.ALL_PHASES for item in value))
 
 
 def error_fields(value):
@@ -225,7 +225,7 @@ def phases(value):
     error_fields(value)
     if 'budget_exhausted' in value:
         boolean(value['budget_exhausted'])
-    insist(type(value['phases']) is list and len(value['phases']) <= 49 and type(value['batches']) is list and len(value['batches']) <= 10)
+    insist(type(value['phases']) is list and len(value['phases']) <= runner.MAX_PHASE_RUNS and type(value['batches']) is list and len(value['batches']) <= len(runner.BATCHES))
     for row in value['phases']:
         fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics'})
         insist(row['batch'] in ['startup', *runner.BATCHES] and row['phase'] in runner.ALL_PHASES and row['status'] in ['passed', 'failed'] and row['evidence_scope'] == SCOPE)
@@ -280,12 +280,12 @@ def phases(value):
 def summary(value):
     fields(value, {'schema', 'selection', 'selected_scope_passed', 'full_suite_passed', 'required_unique_phases', 'passed_unique_phases', 'failed_unique_phases', 'pending_unique_phases', 'actual_phase_runs', 'all_fixture_teardowns_verified', 'all_fixture_lifecycles_clean', 'budget_exhausted', 'interrupted', 'screenshots_or_raw_logs_uploaded', 'private_runtime_artifacts_uploaded', 'pixel_parity_established'})
     insist(type(value['schema']) is int and value['schema'] == 1 and value['selection'] in ['all', 'startup', *runner.BATCHES])
-    insist(type(value['required_unique_phases']) is int and value['required_unique_phases'] == 38)
-    integer(value['actual_phase_runs'], 0, 49)
+    insist(type(value['required_unique_phases']) is int and value['required_unique_phases'] == len(runner.ALL_PHASES))
+    integer(value['actual_phase_runs'], 0, runner.MAX_PHASE_RUNS)
     for key in ['passed_unique_phases', 'failed_unique_phases', 'pending_unique_phases']:
         phase_list(value[key])
     sets = [set(value[key]) for key in ['passed_unique_phases', 'failed_unique_phases', 'pending_unique_phases']]
-    insist(set.union(*sets) == set(runner.ALL_PHASES) and sum(map(len, sets)) == 38)
+    insist(set.union(*sets) == set(runner.ALL_PHASES) and sum(map(len, sets)) == len(runner.ALL_PHASES))
     for key in set(value) - {'schema', 'selection', 'required_unique_phases', 'actual_phase_runs', 'passed_unique_phases', 'failed_unique_phases', 'pending_unique_phases'}:
         boolean(value[key])
     insist(value['screenshots_or_raw_logs_uploaded'] is False and value['private_runtime_artifacts_uploaded'] is False and value['pixel_parity_established'] is False)

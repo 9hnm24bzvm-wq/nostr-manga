@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       batch:
-        description: Bounded batch, or all 38 phases with fresh fixtures
+        description: Bounded batch, or all 39 phases with fresh fixtures
         required: true
         default: all
         type: choice
-        options: [all, startup, ordinary-a, ordinary-b, ui10, signed-a, signed-b, signed-c, signed-d, ui-feed, ui-reader, ui-home]
+        options: [all, startup, ordinary-a, ordinary-b, ui10, signed-a, signed-b, signed-c, signed-d, ui-feed, ui-reader, ui-home, actor-follow]
 
 permissions:
   contents: read
