@@ -7,6 +7,7 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { selectListboxTrigger, clickListboxOption, setListboxOptions } from "./browser-select-controls.mjs";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export const ui11To16JourneyPhases = Object.freeze([
@@ -139,16 +140,9 @@ export async function runUi11To16Journeys(h) {
     const save = page.getByRole("button", { name: "Save", exact: true });
     if (await save.isEnabled()) { const response = account ? page.waitForResponse(value => new URL(value.url()).pathname === "/api/settings" && value.request().method() === "PUT") : undefined; await save.click(); if (response) insist((await response).status() === 200, "Actual account preference save was not acknowledged"); await page.getByText("Your changes have been saved.", { exact: true }).last().waitFor({ state: "visible" }); }
   };
-  const selectOptions = async (trigger, labels) => {
-    await trigger.click();
-    const filter = page.locator('[data-slot="command-input"]'); if (await filter.count()) await filter.fill("");
-    const current = page.locator('[data-slot="select-item"][aria-selected="true"]');
-    while (await current.count()) await current.first().click();
-    for (const label of labels) { if (await filter.count()) await filter.fill(label); await selectOption(label).click(); }
-    await page.keyboard.press("Escape");
-  };
-  const selectOption = label => page.locator('[data-slot="select-item"]').filter({ hasText: new RegExp("^\\s*" + label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*$") });
-  const chapterLanguagePreference = async label => { await open("/settings/preferences"); const section = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Chapter Language Filter" }) }).last(); await selectOptions(section.getByRole("combobox"), label ? [label] : []); await savePreferences(); };
+  const selectOptions = (trigger, labels) => setListboxOptions(page, trigger, labels);
+  const selectOption = label => clickListboxOption(page, label);
+  const chapterLanguagePreference = async label => { await open("/settings/preferences"); const section = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Chapter Language Filter" }) }).last(); await selectOptions(selectListboxTrigger(section), label ? [label] : []); await savePreferences(); };
   const deviceRows = () => page.evaluate(async currentOrigin => {
     const db = await new Promise((resolve, reject) => { const request = indexedDB.open("weebdex-device-library-v1:" + encodeURIComponent(currentOrigin), 1); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only device observation failed")); });
     try { return await new Promise((resolve, reject) => { const tx = db.transaction("records", "readonly"), request = tx.objectStore("records").getAll(); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only record observation failed")); }); } finally { db.close(); }
@@ -273,8 +267,8 @@ export async function runUi11To16Journeys(h) {
     return { wait: () => until(() => page.evaluate(() => window.__ui1116Gate?.captured), Boolean, "The actual browser storage/timer seam was not reached"), release: () => page.evaluate(() => window.__ui1116Gate?.release()), close: () => page.evaluate(() => window.__ui1116Gate?.restore()) };
   };
   const readPage = async () => Number((await page.title()).match(/^Page (\d+):/)?.[1]);
-  const readerSelector = () => page.getByRole("combobox").filter({ hasText: /^\s*\d+(?:-\d+)?\s*\/\s*\d+\s*$/ });
-  const selectReaderPage = async (label, expected) => { const selector = readerSelector().first(); await selector.click(); await selectOption(label).click(); await until(readPage, value => value === expected, "Actual page selector chose a different raw page than its advertised option"); insist(new URL(page.url()).pathname.endsWith("/" + expected), "Reader URL does not agree with selected raw page"); };
+  const readerSelector = () => selectListboxTrigger(page).filter({ hasText: /^\s*\d+(?:-\d+)?\s*\/\s*\d+\s*$/ });
+  const selectReaderPage = async (label, expected) => { const selector = readerSelector().first(); await selector.click(); await selectOption(label); await until(readPage, value => value === expected, "Actual page selector chose a different raw page than its advertised option"); insist(new URL(page.url()).pathname.endsWith("/" + expected), "Reader URL does not agree with selected raw page"); };
   const readerSettings = async () => { if (!await page.getByRole("button", { name: "Paged", exact: true }).isVisible()) await page.locator('nav button:has(svg.lucide-settings)').first().click(); await page.getByRole("button", { name: "Paged", exact: true }).waitFor({ state: "visible" }); };
   const settings = async (direction = "Left-to-right", double = false) => { await readerSettings(); await page.getByRole("button", { name: "Paged", exact: true }).click(); await page.getByRole("button", { name: direction, exact: true }).click(); await page.getByRole("button", { name: double ? "Double" : "Single", exact: true }).click(); await page.getByRole("button", { name: "All", exact: true }).first().click(); };
   const closeReaderPanel = async () => { await page.locator('[data-sidebar="header"] button:has(svg.lucide-x)').click(); await page.getByRole("button", { name: "Paged", exact: true }).waitFor({ state: "hidden" }); };
@@ -454,7 +448,7 @@ export async function runUi11To16Journeys(h) {
           if (status === 401) await context.clearCookies();
           if (gesture === "reader-entry") { await page.locator(`a[href="/chapter/${ids.chapter}"]`).first().click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); }
           else if (gesture === "chapter-read") await page.locator("article").filter({ has: page.locator(`a[href="/chapter/${ids.chapter}"]`) }).getByRole("button", { name: "Mark as unread", exact: true }).click();
-          else if (gesture === "title-unfollow") { await page.getByRole("combobox", { name: "Reading", exact: true }).click(); await page.getByRole("option", { name: "None", exact: true }).click(); }
+          else if (gesture === "title-unfollow") { await selectListboxTrigger(page).filter({ hasText: /^\s*Reading\s*$/ }).click(); await clickListboxOption(page, "None"); }
           else { const card = page.locator("article").filter({ has: page.locator(`a[href^="/title/${ids.manga}"]`) }).first(); await card.hover(); await card.locator("button").filter({ has: page.locator("svg.lucide-plus") }).first().click(); }
           await until(() => posts.rows, rows => rows.some(row => row.status === status), `The actual ${gesture} request did not reach its genuine${status} backend denial`);
           const title = gesture === "reader-entry" ? "History save failed" : gesture === "chapter-read" ? "Read history update failed" : "Library update failed";
@@ -586,7 +580,7 @@ export async function runUi11To16Journeys(h) {
     await ensureReaders();
     const data = dependency("bilingual"); await open(`/title/${data.manga_id}?tlang=en`); await realm();
     const form = page.locator("form").filter({ has: page.getByRole("button", { name: "Apply", exact: true }) });
-    const trigger = () => form.getByRole("combobox").first();
+    const trigger = () => selectListboxTrigger(form).first();
     const applied = async (code, label, chapter) => { await page.waitForURL(url => url.searchParams.getAll("tlang").join(",") === code); await trigger().filter({ hasText: label }).waitFor({ state: "visible" }); insist(!await form.getByRole("button", { name: "Apply", exact: true }).isEnabled(), "Apply baseline did not match the actual current applied query"); await page.locator(`a[href="/chapter/${chapter}"]`).first().waitFor({ state: "visible" }); };
     await applied("en", "English", data.english_chapter_id);
     await selectOptions(trigger(), ["Spanish"]); insist(await form.getByRole("button", { name: "Apply", exact: true }).isEnabled(), "Changed Spanish language could not be applied"); await form.getByRole("button", { name: "Apply", exact: true }).click(); await applied("es", "Spanish", data.spanish_chapter_id);
@@ -658,7 +652,7 @@ export async function runUi11To16Journeys(h) {
       // plus the acknowledged analytics events above, never invented counters.
       insist(typeof data.tag_id === "string" && data.tagged_title_id === data.language_title_id && data.language === "es", "UNIMPLEMENTED FIXTURE DEPENDENCY: the real tagged Spanish preference title is required");
       await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click();
-      const languages = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Original Language Filter" }) }).last(); await selectOptions(languages.getByRole("combobox"), ["Spanish"]); await savePreferences(); const languageBoundary = seen.rows.length;
+      const languages = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Original Language Filter" }) }).last(); await selectOptions(selectListboxTrigger(languages), ["Spanish"]); await savePreferences(); const languageBoundary = seen.rows.length;
       await spaLink("/"); await until(() => seen.rows.slice(languageBoundary), rows => rows.filter(row => row.status === 200 && new URLSearchParams(row.query).getAll("lang").join(",") === "es").length >= 2, "Both home widgets did not issue their actual acknowledged Spanish-language query");
       insist(await home.locator(`a[href^="/title/${data.language_title_id}"]`).count() >= 2, "The real Spanish target is absent from one of the two current home widgets");
       await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click(); await checked(`#tag-${data.tag_id}`, true); await savePreferences(); const tagBoundary = seen.rows.length;
@@ -668,7 +662,7 @@ export async function runUi11To16Journeys(h) {
       // A real older Most Read response is already acknowledged at the backend
       // when settings change. Releasing its delivery after a new current read
       // must not restore the formerly enabled adult cards into this SPA.
-      await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click(); await selectOptions(languages.getByRole("combobox"), []); await checked(`#tag-${data.tag_id}`, false); await checked("#erotic", true); await checked("#hentai", true); await savePreferences();
+      await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click(); await selectOptions(selectListboxTrigger(languages), []); await checked(`#tag-${data.tag_id}`, false); await checked("#erotic", true); await checked("#hentai", true); await savePreferences();
       const older = await hold(origin + "/api/manga/top*", request => requestPath(request, "/api/manga/top"));
       try {
         await spaLink("/"); await older.wait();
@@ -685,7 +679,7 @@ export async function runUi11To16Journeys(h) {
     await ensurePagination();
     const data = dependency("search"); insist(data.total >= 10000 && typeof data.query === "string", "A genuine10000-title bounded metadata scenario is required");
     for (const size of [28, 42, 56, 70, 84, 98]) await step(`UI16 Search cap: native10000 total has an ordinary terminal page link at limit${size}`, async () => {
-      await open("/settings/preferences"); await page.getByRole("combobox", { name: /Items Per Page:/ }).click(); await page.getByRole("option", { name: String(size), exact: true }).click(); await savePreferences();
+      await open("/settings/preferences"); await selectListboxTrigger(page).filter({ hasText: /Items Per Page:/ }).click(); await clickListboxOption(page, String(size)); await savePreferences();
       const seen = observe(request => requestPath(request, "/api/manga"));
       try { await open(`/search?title=${encodeURIComponent(data.query)}`); await until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.total === data.total && row.body?.limit === size), "Actual public search did not acknowledge its genuine capped-fixture total and selected page size"); const last = Math.ceil(Math.min(data.total, 10000) / size); const link = page.getByRole("link", { name: String(last), exact: true }).first(); await link.waitFor({ state: "visible" }); await realm(); await link.click(); await page.waitForURL(url => Number(url.searchParams.get("page")) === last); await until(() => seen.rows, rows => rows.some(row => row.body?.page === last && row.body?.limit === size && row.body?.data?.length > 0), "Visible terminal link did not reach its real last partial/native page"); const receipt = seen.rows.findLast(row => row.body?.page === last); const expected = Math.min(size, data.total - (last - 1) * size); insist(receipt.body.data.length === expected, "Actual last-page row count differs from the native uncapped catalogue contract"); await page.goBack({ waitUntil: "domcontentloaded" }); await page.goForward({ waitUntil: "domcontentloaded" }); await sameRealm(); await link.waitFor({ state: "visible" }); return { genuine_total: data.total, selected_limit: size, ordinary_last_link: last, native_last_rows: receipt.body.data.length, last_and_current_agree: true, back_forward_same_document: true }; } finally { await seen.close(); }
     });

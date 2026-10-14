@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "baseline_commit": "d62c0e8b3db57d3ee024676e8bdec67f425abadd",
+  "baseline_tree": "f016ada9e111b15e3ec919e48bf5a242695e35c2",
+  "baseline_browser_run": 38498307038,
+  "observed_scope": {
+    "ui12-compact-feed": "Pagination seed passed; Spanish-preferences failed; fixture-total and all feed-pagination checkpoints remained pending.",
+    "ui11-device-progress": "Not executed in the diagnostic run because the preceding navigation phase had nonzero runner exit. The earlier cf76 run failed both page3 steps and passed both page1 steps."
+  },
+  "established_source_contracts": [
+    "Pinned bits-ui2.16.5 SelectTriggerState supplies aria-haspopup=listbox and no role=combobox. SelectPrimitive.Trigger renders a native button.",
+    "The retained Combobox module aliases the retained Select trigger wrapper. Both preference language controls and reader selectors use this wrapper.",
+    "The retained preference page mounts TagComboBox with an independent Command.Input. The opened language popup has a second Command.Input, so the former page-global input locator is ambiguous."
+  ],
+  "repair": "Journey-only correction: native visible select-trigger buttons; exactly one active visible listbox required; input, selected-item clearing and option selection scoped to that popup. Missing or ambiguous active popups fail closed. No runtime completion, feed, persistence or fixture change.",
+  "owned_paths": [
+    "UI11 reader raw-page selection",
+    "UI12 chapter-language preference selection"
+  ],
+  "additional_source_proven_callers": [
+    "UI14 title-unfollow Reading-to-None control",
+    "UI15 title chapter-language filter",
+    "UI16 original-language preference selection",
+    "UI16 original-language preference clearing",
+    "UI16 Items Per Page selection"
+  ],
+  "additional_paths_real_browser_execution": "Unexecuted; source-proven contract repair requires fresh real browser acceptance.",
+  "assertion_wait_preservation": {
+    "insist": {
+      "original_calls": 102,
+      "candidate_calls": 102,
+      "ordered_normalized_identical": true
+    },
+    "until": {
+      "original_calls": 43,
+      "candidate_calls": 43,
+      "ordered_normalized_identical": true
+    },
+    "stable": {
+      "original_calls": 10,
+      "candidate_calls": 10,
+      "ordered_normalized_identical": true
+    }
+  },
+  "diagnostic_check_inventory_unchanged": true,
+  "outer_steps_unchanged": true,
+  "existing_timeouts_and_cleanup_unchanged": true,
+  "dependency_contract": {
+    "package": "bits-ui",
+    "version": "2.16.5",
+    "existing_verified_cache_only": true,
+    "source_sha256": {
+      "package.json": "53d8a4a608138a95a24315a6b97f9e703b752031f9c7c00dac2ff75acc8a1ecb",
+      "dist/bits/select/select.svelte.js": "f608bf550819a996ac412d87de666349f4585ea79fc1822226780405ec9707c1",
+      "dist/bits/select/components/select-trigger.svelte": "0f9094d7a347aef7eed751becb56957144b066180797fe4e40673c5950cc294c"
+    }
+  },
+  "checks": [
+    {
+      "command": "WEEBDEX_SELECT_SOURCE_NODE_MODULES=<verified frontend node_modules> node tests/ci/test_browser_select_controls.mjs",
+      "status": "passed",
+      "cases": 18,
+      "boundary": "Actual helper and actual reader-caller expression executed with explicit native DOM/strict-locator stand-ins; retained component and pinned package source audit."
+    },
+    {
+      "command": "node tests/ci/test_browser_library_diagnostics.mjs",
+      "status": "passed",
+      "cases": 56,
+      "boundary": "Outer checkpoint wiring/error cleanup with inner browser-action stand-ins."
+    },
+    {
+      "command": "node --experimental-vm-modules tests/ci/test_frontend_semantic_contracts.mjs",
+      "status": "passed",
+      "cases": 132,
+      "boundary": "Actual anchored overlays and helper seams; external browser/UI APIs are stand-ins."
+    },
+    {
+      "command": "python scripts/verify-frontend-parity.py",
+      "status": "passed",
+      "original_files": 676
+    },
+    {
+      "command": "node --check scripts/browser-select-controls.mjs && node --check scripts/browser-ui11-16-journeys.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed"
+    }
+  ],
+  "source_sha256": {
+    "scripts/browser-ui11-16-journeys.mjs": "cb59a1c9900e9a46b75770ced2231c56ce84f50b68b5d653139954f1e82e31aa",
+    "scripts/browser-select-controls.mjs": "d40a8a8fc0f7252936a9c28ae6cb0d23167ec8740d3fc79dcc6b569b3755ef90",
+    "tests/ci/test_browser_select_controls.mjs": "57d693912b6a680c912eca5aee9ecc5305fecbaa4936d760ee79664d0ef3aa07"
+  },
+  "browser_started": false,
+  "services_started": false,
+  "databases_started": false,
+  "network_requests_made": false,
+  "public_writes_made": false,
+  "real_browser_acceptance": "Required after independent review. No browser success is inferred from these bounded seams."
+}
