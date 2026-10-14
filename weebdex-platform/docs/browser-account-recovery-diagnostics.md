@@ -103,3 +103,32 @@ The test fails closed if either inspected Bits UI source file differs from its
 recorded hash or the retained lock no longer pins 2.16.5. These eleven finite
 checks do not constitute real browser acceptance; the corrected journey still
 needs a coordinated genuine rerun.
+
+## UI10 reset-lifetime localization
+
+The same genuine diagnostic run passed the first five
+`ui10-recovery-lifetimes` steps and failed its final abandoned-reset/session
+refresh step. Those earlier passes establish that this separate failure occurs
+after actual restricted recovery was reached; the title Trigger correction
+does not explain it. The uploaded evidence has no inner failure identity, so
+the authentication application remains unchanged.
+
+The final step now records fourteen fixed IDs through the existing finite
+journey recorder. They distinguish the current realm, installed session-response
+hold, actual password submission, captured genuine normal-session response,
+newer navigation and late response release, absence of stale completion and
+duplicate writes, logout, rejected/settled old-password login, unauthorized old
+session, successful new-password login, and rejected one-time-link replay. All
+original observations and assertions remain required. The old-password login
+response waiter and click are immediately joined with `Promise.all`, preserving
+the required real 400 while handling a later waiter rejection after click
+failure. No write is replayed and no authentication result is fabricated.
+
+`test_browser_ui10_recovery_diagnostics.mjs` executes the actual outer checkpoint
+wiring with explicit inner-action stand-ins, injecting a failure at each of the
+fourteen points and checking exact failure propagation, listener/hold cleanup,
+fixed-only receipts, and skipped later checks. It also executes the actual
+old-password checkpoint body against explicit response stand-ins to require 400,
+reject 200, and verify strict-mode failure accounting. Its eighteen finite cases
+launch no browser, network, services or storage. Shared public schema/inventory
+integration and a coordinated genuine rerun remain necessary.

@@ -8,6 +8,16 @@ export const ui10JourneyPhases = Object.freeze([
   "ui10-preferences", "ui10-reader-transition"
 ]);
 
+export const ui10DiagnosticChecks = Object.freeze({
+  "ui10-recovery-lifetimes": Object.freeze([
+    "recovery-reset-realm", "recovery-reset-hold-session", "recovery-reset-submit",
+    "recovery-reset-held-session", "recovery-reset-newer-search", "recovery-reset-late-response",
+    "recovery-reset-no-stale-ui", "recovery-reset-logout", "recovery-reset-old-login-form",
+    "recovery-reset-old-password", "recovery-reset-old-login-settled", "recovery-reset-old-session-denied",
+    "recovery-reset-new-password", "recovery-reset-link-replay"
+  ])
+});
+
 export async function runUi10Journeys(h) {
   const { phase, page, context, origin, fixture, step, insist, open, redactions } = h;
   insist(ui10JourneyPhases.includes(phase), "Unknown UI10 journey phase");
@@ -319,22 +329,36 @@ export async function runUi10Journeys(h) {
       } finally { await held.close(); oldFlow = undefined; }
     });
     await step("UI10 recovery: delayed acknowledged reset Session refresh preserves newer navigation and actual password outcome", async () => {
-      const replacement = remember(`Recovered!${randomBytes(24).toString("base64url")}9a`); await realm();
-      const held = await holdOne(origin + "/api/auth/check", request => request.method() === "GET", async response => { const body = await response.json(); insist(response.status() === 200 && body.identity?.username === account.username && body.session_purpose !== "recovery", "Real reset did not rotate to a normal account session"); });
+      insist(typeof h.check === "function", "The reviewed fixed-check diagnostic recorder is required for this recovery journey");
+      const check = (id, operation) => h.check(id, operation);
+      const replacement = remember(`Recovered!${randomBytes(24).toString("base64url")}9a`);
+      await check("recovery-reset-realm", realm);
+      const held = await check("recovery-reset-hold-session", () => holdOne(origin + "/api/auth/check", request => request.method() === "GET", async response => { const body = await response.json(); insist(response.status() === 200 && body.identity?.username === account.username && body.session_purpose !== "recovery", "Real reset did not rotate to a normal account session"); }));
       let posts = 0; const count = request => { if (new URL(request.url()).pathname === "/auth/self-service/settings" && request.method() === "POST") posts++; }; page.on("request", count);
       try {
-        await page.locator('input[name="password"]').fill(replacement); await page.getByRole("button", { name: "Reset Password", exact: true }).click(); await held.wait(); await search();
-        await held.release(); await assertRouteStable("/search"); await sameRealm();
-        insist(await page.getByText("Password reset completed", { exact: true }).count() === 0 && posts === 1, "Old reset completion leaked onto newer UI or replayed its write");
-        await logout(); await open("/auth/login"); await fillLogin();
-        const rejected = page.waitForResponse(response => new URL(response.url()).pathname === "/auth/self-service/login" && response.request().method() === "POST");
-        await page.getByRole("button", { name: "Sign in", exact: true }).click();
-        insist((await rejected).status() === 400, "Actual old-password login was not rejected by the server");
-        await until(() => page.locator('input[name="password"]').isEnabled(), Boolean, "Rejected old-password login never settled");
-        insist((await api("/api/auth/check")).status === 401, "Old password remained usable after the actually acknowledged reset");
-        account.password = replacement; await fillLogin(); await page.getByRole("button", { name: "Sign in", exact: true }).click();
-        await until(() => api("/api/auth/check"), value => value.status === 200 && value.body?.identity?.username === account.username, "Replacement password failed actual login after abandoned reset UI");
-        const replay = await context.request.get(oneTimeLink, { maxRedirects: 0 }); insist(replay.status() === 400, "Actual one-time recovery link remained replayable");
+        await check("recovery-reset-submit", async () => { await page.locator('input[name="password"]').fill(replacement); await page.getByRole("button", { name: "Reset Password", exact: true }).click(); });
+        await check("recovery-reset-held-session", () => held.wait());
+        await check("recovery-reset-newer-search", search);
+        await check("recovery-reset-late-response", async () => { await held.release(); await assertRouteStable("/search"); await sameRealm(); });
+        await check("recovery-reset-no-stale-ui", async () => { insist(await page.getByText("Password reset completed", { exact: true }).count() === 0 && posts === 1, "Old reset completion leaked onto newer UI or replayed its write"); });
+        await check("recovery-reset-logout", logout);
+        await check("recovery-reset-old-login-form", async () => { await open("/auth/login"); await fillLogin(); });
+        await check("recovery-reset-old-password", async () => {
+          // Both the real response and click are owned immediately, including
+          // failure, so a later login-response timeout cannot go unhandled.
+          const [rejected] = await Promise.all([
+            page.waitForResponse(response => new URL(response.url()).pathname === "/auth/self-service/login" && response.request().method() === "POST"),
+            page.getByRole("button", { name: "Sign in", exact: true }).click()
+          ]);
+          insist(rejected.status() === 400, "Actual old-password login was not rejected by the server");
+        });
+        await check("recovery-reset-old-login-settled", () => until(() => page.locator('input[name="password"]').isEnabled(), Boolean, "Rejected old-password login never settled"));
+        await check("recovery-reset-old-session-denied", async () => { insist((await api("/api/auth/check")).status === 401, "Old password remained usable after the actually acknowledged reset"); });
+        await check("recovery-reset-new-password", async () => {
+          account.password = replacement; await fillLogin(); await page.getByRole("button", { name: "Sign in", exact: true }).click();
+          await until(() => api("/api/auth/check"), value => value.status === 200 && value.body?.identity?.username === account.username, "Replacement password failed actual login after abandoned reset UI");
+        });
+        await check("recovery-reset-link-replay", async () => { const replay = await context.request.get(oneTimeLink, { maxRedirects: 0 }); insist(replay.status() === 400, "Actual one-time recovery link remained replayable"); });
         return { actual_password_posts: posts, discarded_stale_reset_ui: true, newer_search_retained: true, old_password_401: true, new_password_authenticated: true, one_time_link_replay_400: true };
       } finally { page.off("request", count); await held.close(); }
     });
