@@ -166,7 +166,14 @@ def diagnostic_error(row):
 
 
 def journey_checks(value, phase):
-    fields(value, {'schema', 'record_valid', 'private_values_omitted', 'raw_messages_exported', 'check_results'})
+    required = {'schema', 'record_valid', 'private_values_omitted', 'raw_messages_exported', 'check_results'}
+    if phase['phase'] == 'ui12-compact-feed':
+        required.add('compact_feed_http_outcome')
+    fields(value, required)
+    if phase['phase'] == 'ui12-compact-feed':
+        insist(type(value['compact_feed_http_outcome']) is str and value['compact_feed_http_outcome'] in journey_diagnostics.COMPACT_HTTP_OUTCOMES + ['unavailable'])
+        if phase['status'] == 'passed':
+            insist(value['compact_feed_http_outcome'] == 'success200')
     insist(type(value['schema']) is int and value['schema'] == 1)
     boolean(value['record_valid'])
     insist(value['private_values_omitted'] is True and value['raw_messages_exported'] is False)

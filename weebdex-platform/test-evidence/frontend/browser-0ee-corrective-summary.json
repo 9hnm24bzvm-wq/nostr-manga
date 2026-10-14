@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "baseline_public_commit": "0ee583e53a698975c17d19c679736146a1cea5f2",
+  "baseline_public_tree": "6ab0b95f672175d3aecf7dfd255924c56f566537",
+  "candidate_hosted_acceptance": "pending",
+  "original_frontend_files_preserved": 676,
+  "reviewed_reconstructed_routes_preserved": 3,
+  "source_hashes": {
+    "platform-integrations/frontend-behavior/RecoveryBoundary.svelte": "8c5b636c64edc3416341fa41f3214630a1ebba812f9373ca785593516dbe885d",
+    "test-evidence/frontend/integration-source-manifest.json": "634dbf449ed5c0434b758c09309e33fc63cd99662f0e878284ff35a211961316",
+    "scripts/browser-deny-proxy.mjs": "65109bc6aab7c79b5a3c3efa10d7dade022f710bdaf7c57f1ef33d1dfc2feb41",
+    "scripts/ci/journey-diagnostics.py": "7106ba8ecf93aff27901dda57c7084443673008e4929ae2919dddaa0161d8464",
+    "scripts/ci/runner-diagnostics.py": "9271b0ee7f39954d9ee470284ac2a2b5550e0c8e14895427804cc3a2b0d1576b"
+  },
+  "strict_composed_check": {
+    "status": "passed",
+    "errors": 0,
+    "warnings": 15,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true,
+    "runtime_browser_database_services_started": false,
+    "installed_dependencies": false,
+    "strict": true,
+    "checkJs": true,
+    "skipLibCheck_inherited_from_original": true,
+    "source_diagnostic_suppressions_added": false
+  },
+  "reachable_integration_files": 52,
+  "source_maps_validated": 591,
+  "readonly_cache_guard": {
+    "node_processes_observed": 4,
+    "protected_write_attempts": 0
+  },
+  "local_tests": {
+    "node_test_runner_reported_entries": 87,
+    "node_test_runner_failed_entries": 0,
+    "python_controller_seams": 23,
+    "python_journey_projection_seams": 11,
+    "python_runner_projection_seams": 8,
+    "real_loopback_proxy_cases": 24,
+    "passive_process_lifecycle_cases": 6,
+    "frontend_semantic_contract_cases": 132,
+    "bootstrap_entry_orders": 5
+  },
+  "probe_scope": "Synthetic loopback peers and explicit UI/browser stand-ins; no real browser, application service, runtime database, external connection or credentials. Separate-process peer test does not relabel retained failed same-process client stress as passed."
+}

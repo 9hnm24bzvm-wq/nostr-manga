@@ -51,3 +51,31 @@ in place. Selection remains `all`: one frozen preparation/build supplies ten
 fresh startup observations and the original journeys where their startup gate
 passes. There is no failed-startup bypass, retry-to-pass rule, or selective
 failure erasure. A partial diagnostic result is not full-suite acceptance.
+
+## Follow-up after run 38502322656
+
+The next diagnostic run used public `0ee583e53a698975c17d19c679736146a1cea5f2`.
+Its verified artifact retained 21 actual executions: two uniquely passing
+phases, ten failed phases, and 26 pending. All ten startups passed their
+nineteen original content assertions; one startup still failed its Node exit
+and finalization gate. Three executions recorded an uncaught exception during
+browser close. All ten physical fixture teardowns stopped cleanly. The full
+suite and acceptance lifecycles remained failed.
+
+The next reviewed candidate separately owns denied CONNECT peer-reset teardown
+and corrects the recovery boundary's native settings-successor response contract.
+It also refines existing local/signed library and compact preflight diagnostics.
+Local library has 25 fixed checks; all eight signed phases share 23 phase-prefixed
+checks. Compact has 21, with the original fixture-total parent preceding five
+nested response/status/type/range checks. Its original seeded-count predicate
+and every original journey assertion remain. Compact's public HTTP observation
+is one of eight fixed outcomes, or explicitly `unavailable` before observation.
+No status number, body, URL, error text, key, identity, or stored record is added.
+A missing/invalid outcome cannot support a passing compact phase.
+
+The central inventory is checked directly against the actual JavaScript exports.
+All instrumented phases require their diagnostics object; duplicate, reversed,
+missing, unknown or extra-field rows cannot support a pass. Unentered or failed
+observations remain finite and explicit. The publication keeps the same guarded
+branch, `all` selection, 38 unique phases, ten batches and 49 planned executions.
+A fresh hosted run is required to establish the candidate's actual results.

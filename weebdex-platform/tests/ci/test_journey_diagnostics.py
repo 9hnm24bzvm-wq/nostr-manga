@@ -27,7 +27,9 @@ class JourneyDiagnosticSeams(unittest.TestCase):
         code = '''import {accountRecoveryCheckIds as account} from './scripts/browser-account-recovery.mjs';
 import {ui11To16DiagnosticChecks as ui} from './scripts/browser-ui11-16-journeys.mjs';
 import {ui10DiagnosticChecks as ui10} from './scripts/browser-ui10-journeys.mjs';
-process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui}));'''
+import {localLibraryDiagnosticChecks as local} from './scripts/browser-journeys.mjs';
+import {signedLibraryDiagnosticChecks as signed} from './scripts/browser-signed-journeys.mjs';
+process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui,...local,...signed}));'''
         value = json.loads(subprocess.run(['node', '--input-type=module', '-e', code], cwd=ROOT, text=True, check=True, capture_output=True).stdout)
         self.assertEqual(value, contract.CHECKS)
 
@@ -36,6 +38,7 @@ process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui}))
         key = 'account_recovery_checks' if phase == 'account-recovery' else 'journey_checks'
         acceptance = {'phase': phase, 'passed': True, 'completed_utc': 'synthetic-finalized', 'proxy_lifecycle': {'connect_denials': 0, 'expected_connect_resets': 0, 'remaining_socket_count': 0, 'observations_truncated': False, 'shutdown_started': True, 'closed': True}, 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'exit_observed': True, 'exit_code': 0}, 'steps': [{'status': 'passed'}], 'page_errors': [],
                       key: [{'check_id': check_id, 'status': status} for check_id, status in zip(contract.CHECKS[phase], statuses)]}
+        if phase == 'ui12-compact-feed': acceptance['compact_feed_http_outcome'] = 'success200'
         owned = {'fixture_only': True, 'phase': phase, 'verified_stopped': True, 'forced': False, 'returncode': 0}
         return acceptance, owned, key
 
@@ -83,6 +86,50 @@ process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui}))
             with self.assertRaises(ValueError): validator.phases({'schema': 1, 'phases': [row], 'batches': []})
         row = copy.deepcopy(baseline); row.pop('journey_diagnostics')
         with self.assertRaises(ValueError): validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+
+    def test_compact_outcome_matches_actual_frozen_js_enum(self):
+        code = "import {compactFeedHttpOutcomes as outcomes} from './scripts/compact-feed-http-outcome.mjs';process.stdout.write(JSON.stringify(outcomes));"
+        result = subprocess.run(['node','--input-type=module','-e',code],cwd=ROOT,text=True,check=True,capture_output=True)
+        self.assertEqual(json.loads(result.stdout), contract.COMPACT_HTTP_OUTCOMES)
+
+    def test_compact_outcome_is_finite_and_required_for_pass(self):
+        phase = 'ui12-compact-feed'; acceptance, owned, _ = self.phase(phase)
+        baseline = runner.project_phase(phase, 'ui-reader', acceptance, owned)
+        secret = 'private@example.invalid?token=never-publish'
+        for outcome in [None, secret, {}, [], False, 200]:
+            adverse = dict(acceptance, compact_feed_http_outcome=outcome)
+            row = runner.project_phase(phase, 'ui-reader', adverse, owned)
+            self.assertFalse(row['journey_diagnostics']['record_valid'])
+            self.assertNotIn(secret, json.dumps(row))
+            with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
+        for outcome in contract.COMPACT_HTTP_OUTCOMES[1:] + ['unavailable']:
+            row = copy.deepcopy(baseline); row['journey_diagnostics']['compact_feed_http_outcome'] = outcome
+            with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
+        for key in ['compact_feed_http_outcome', 'journey_diagnostics']:
+            row = copy.deepcopy(baseline)
+            if key == 'journey_diagnostics': row.pop(key)
+            else: row['journey_diagnostics'].pop(key)
+            with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
+        acceptance.pop('compact_feed_http_outcome'); acceptance['passed'] = False
+        acceptance['steps'][0]['status'] = 'failed'; owned['returncode'] = 1
+        row = runner.project_phase(phase, 'ui-reader', acceptance, owned)
+        self.assertEqual(row['journey_diagnostics']['compact_feed_http_outcome'], 'unavailable')
+        validator.phases({'schema':1,'phases':[row],'batches':[]})
+        for outcome in contract.COMPACT_HTTP_OUTCOMES:
+            row = runner.project_phase(phase, 'ui-reader', dict(acceptance, compact_feed_http_outcome=outcome), owned)
+            self.assertEqual(row['journey_diagnostics']['compact_feed_http_outcome'], outcome)
+            validator.phases({'schema':1,'phases':[row],'batches':[]})
+
+    def test_all_instrumented_phases_reject_missing_duplicate_reversed_or_private_check_rows(self):
+        for phase in contract.CHECKS:
+            acceptance, owned, key = self.phase(phase)
+            original = acceptance[key]
+            for rows in [[], original[1:], original[::-1], original + [original[0]],
+                         [dict(original[0], raw_value='private')] + original[1:]]:
+                row = runner.project_phase(phase, 'ordinary-a', dict(acceptance, **{key:rows}), owned)
+                with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
+            row = runner.project_phase(phase, 'ordinary-a', acceptance, owned); row.pop('journey_diagnostics')
+            with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
 
     def startup_row(self):
         acceptance = {'phase': 'startup', 'origin': 'http://127.0.0.1:31234', 'passed': False,

@@ -89,10 +89,10 @@ def project_phase(phase, batch, acceptance, owned):
         diagnostics = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(diagnostics)
         value['startup_diagnostics'] = diagnostics.project(acceptance)
-    if phase in ['account-recovery', 'ui10-recovery-lifetimes', 'ui11-device-progress', 'ui12-compact-feed']:
-        spec = importlib.util.spec_from_file_location('journey_diagnostics', ROOT / 'scripts/ci/journey-diagnostics.py')
-        diagnostics = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(diagnostics)
+    spec = importlib.util.spec_from_file_location('journey_diagnostics', ROOT / 'scripts/ci/journey-diagnostics.py')
+    diagnostics = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(diagnostics)
+    if phase in diagnostics.CHECKS:
         value['journey_diagnostics'] = diagnostics.project(phase, acceptance)
     return value
 
