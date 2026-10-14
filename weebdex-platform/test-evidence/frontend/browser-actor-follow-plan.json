@@ -85,19 +85,19 @@
   ],
   "source_sha256": {
     "scripts/browser-actor-follow-journeys.mjs": "bca49ba60a7b6c3dd4606dcae92176598cdd765dcc9e21bd42a8c39440dc5cde",
-    "scripts/browser-ui11-16-journeys.mjs": "08678ab8a082e5e7787afc71fafb51da4a1e544c488851b10247a6890dc152d8",
-    "scripts/ci/run-hosted-browser.py": "d45b6a87cf2caa0ffc16d3f82e34495bbaa1cb072c9154ee0451cd34ca407fe2",
-    "scripts/ci/journey-diagnostics.py": "daf298e6ef78858515a6b5d215f73de98a761b36efb0902ee9f3e8c9103c5022",
-    "scripts/ci/validate-ci-evidence.py": "d2b23272d10e5e79e2e3cf51a1e3e8342c11aca2e4243608dcac0bf5ab456c81",
+    "scripts/browser-ui11-16-journeys.mjs": "3de59f65fc54dfebcee0e99b7a92cf3438b53fdbc8aad94cc21d98e8f2df87c6",
+    "scripts/ci/run-hosted-browser.py": "275aaddfe32bf3b1fa5824d0285161a7d2ffd353037438433ee8796c1492c8a3",
+    "scripts/ci/journey-diagnostics.py": "5db3a7de12d6420842488a9bc476bae92e7baaedfaef6a8322e35f19d41b4c8d",
+    "scripts/ci/validate-ci-evidence.py": "8a6efb98e8c691d3340e8d7b1af53de074e0d978eb1089af78ca479672c6dff2",
     "docs/browser-actor-follow-regressions.md": "224b38aac90cec0b9fb38efaba640ac15da9e9a536752aab82d8b666b40c58be",
     "tests/ci/test_browser_actor_follow_journeys.mjs": "602d98939f05e23a3158edf7dcd96f29c7f59770ca782c10620088077a6481fe",
-    "tests/ci/test_browser_library_diagnostics.mjs": "ee9b3185b2c7645d86342bd49ce077a4c0d49a69374658e71b5d5fe919a3d340",
+    "tests/ci/test_browser_library_diagnostics.mjs": "b104b3d55fd740db8c59f5dfc3ab5e345e25019eae09065e9c9f31d285e7e7f9",
     "tests/ci/test_hosted_browser.py": "eac43be813194e705982eaeddbd20b35f6f9da00c568f2f9744102a73010206c",
-    "docs/hosted-browser-e2e.md": "3a96d0bc5a1fb8096ee2f285ffdce2b4736fbdae36b790c85c143a1d04961f31",
-    "../.github/workflows/hosted-browser-e2e.yml": "3e780bc659f5b2d611a7c70084de3d148fb635d8cb44280cdc5e68c9844b5dfd",
+    "docs/hosted-browser-e2e.md": "96138c2c72d3aa2ca82fe8f15469b91f18548f6ace00dbd3d4d6e09f856f657e",
+    "../.github/workflows/hosted-browser-e2e.yml": "b56d499e953d71cd270a671928393e234cf2f8df606dc94baf887991e157477d",
     "scripts/browser-actor-follow-controls.mjs": "07e4b21bbaee22e3bcd190425acc428c9e043dd8dad52461c25db320531ce3c9",
     "tests/ci/test_browser_actor_follow_controls.mjs": "5b0800fce07be43f54908845d7b361acae136e352fe3af031167b033fe947445",
-    "tests/ci/test_journey_diagnostics.py": "8c22d99cec4ca9969d0f2ef26540ddbfe0feeb682efa1de721e86f971babd90a"
+    "tests/ci/test_journey_diagnostics.py": "9487c1854101db0980a1ea0cdbba639f02e75c09369bce8dfd25ab6b1887b0fb"
   },
   "requires": "Fresh supported hosted Linux fixture with newly rebuilt actual frontend source including 56f9cb2 follow controller; old Build19 static artifact cannot establish this patch acceptance.",
   "browser_limitations": [

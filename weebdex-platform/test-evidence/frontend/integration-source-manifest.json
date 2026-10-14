@@ -7,7 +7,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": "frontend",
+  "frontend": ".build/integrated-current-manifest-input",
   "original_files_written": false,
   "reconstructed_routes": [
     {
@@ -207,8 +207,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 436112,
-      "sha256": "c392c30019bf211fc6ca79f492228d8c70f9b8697597843e909bc46cfea355f7"
+      "bytes": 450067,
+      "sha256": "201dcb5619f0c5869dc7d6f0f1f2b93b8580f9550b6e543943d7efd219441702"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -376,7 +376,7 @@
       "sha256": "b047eaba5865ee6d83a522410f84b7e6b884e9074b4dc127c75341f92e8bf224"
     }
   ],
-  "integration_source_inventory_sha256": "2016a2aed66744d5ca35fb069170817d8bd244a849f307f52f76e7cf5cfe8bfa",
+  "integration_source_inventory_sha256": "0fcce99cdae1f3c6799c7dbd1baf3b9a3c5fcb281199b639789e3fa6af8c6a19",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -404,7 +404,7 @@
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "c392c30019bf211fc6ca79f492228d8c70f9b8697597843e909bc46cfea355f7",
+  "overlay_module_sha256": "201dcb5619f0c5869dc7d6f0f1f2b93b8580f9550b6e543943d7efd219441702",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -2725,6 +2725,162 @@
       "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
       "count": 1,
       "approved_follow_readiness_exception": "follow_current_status_block_guard"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file gestures capture mutable owner staging before taking their shared mutex",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement checks captured staging instead of rejecting its own mutex",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement cannot apply a late page reconciliation to another session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement rechecks staging after image header read",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement rechecks staging after image decoding",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement validates captured staging after authority read",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement rechecks staging after digest before atomic mutation",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement cannot apply an acknowledged receipt after staging changed",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement reconciliation remains bound to captured staging",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing retains captured staging while its own mutex is locked",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing rechecks staging after decoding and splitting",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing rechecks staging after archive extraction",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing rechecks staging before exposing candidates",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "each admitted chunk remains bound to the captured session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "stale file failures cannot annotate replacement staging",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "input admission happens before the shared mutex is taken",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "input add and replace retain the admitted session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "input admission closes before drop admission",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "drop admission happens before the shared mutex is taken",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "folder and plain drops retain the admitted session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "plain drops retain the admitted session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "batch results must retain the exact admitted staging object"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "local replacement failure cannot restore a row into changed staging"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "batch owner retains exact admitted staging through authority reads and hashing"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "obsolete file input cannot attach feedback to newer editor authority"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "obsolete file drop cannot attach feedback to newer editor authority"
     },
     {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
@@ -6208,6 +6364,162 @@
       "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
       "count": 1,
       "approved_follow_readiness_exception": "follow_current_status_block_guard"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file gestures capture mutable owner staging before taking their shared mutex",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement checks captured staging instead of rejecting its own mutex",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement cannot apply a late page reconciliation to another session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement rechecks staging after image header read",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement rechecks staging after image decoding",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement validates captured staging after authority read",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement rechecks staging after digest before atomic mutation",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement cannot apply an acknowledged receipt after staging changed",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement reconciliation remains bound to captured staging",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing retains captured staging while its own mutex is locked",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing rechecks staging after decoding and splitting",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing rechecks staging after archive extraction",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "file processing rechecks staging before exposing candidates",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "each admitted chunk remains bound to the captured session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "stale file failures cannot annotate replacement staging",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "input admission happens before the shared mutex is taken",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "input add and replace retain the admitted session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "input admission closes before drop admission",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "drop admission happens before the shared mutex is taken",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "folder and plain drops retain the admitted session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "plain drops retain the admitted session",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "batch results must retain the exact admitted staging object"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "local replacement failure cannot restore a row into changed staging"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "batch owner retains exact admitted staging through authority reads and hashing"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "obsolete file input cannot attach feedback to newer editor authority"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "obsolete file drop cannot attach feedback to newer editor authority"
     }
   ],
   "reader_script_repairs": [
@@ -8159,7 +8471,7 @@
     {
       "path": "src/lib/components/upload/UploadChapterPages.svelte",
       "original_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
-      "executed_source_sha256": "28b89712a7299d6cae3f798863cb714dd72a2215e693cb88ea6a6d911ca5c116",
+      "executed_source_sha256": "8075232a634f174847d992499628399a46172931535ad016b3db347975812e46",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
