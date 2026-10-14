@@ -33,7 +33,12 @@ const progressChecks = Object.freeze([
 export const ui11To16DiagnosticChecks = Object.freeze({
   ...homeFailureDiagnosticChecks,
   ...actorFollowDiagnosticChecks,
-  "ui14-account-failures": Object.freeze(["prerequisite", "open", "account-mode", "durable-baseline", "trigger", "option", "pressure-captured", "capacity-ready", "pressure-released", "denial", "feedback", "no-replay", "durable-unchanged"].map(check => `account429-title-${check}`)),
+  "ui14-account-failures": Object.freeze(["prerequisite", "open", "account-mode", "durable-baseline", "trigger", "option", "pressure-captured", "capacity-attempt", "capacity-fixture", "capacity-connections", "capacity-saturated", "capacity-live", "capacity-ready", "pressure-released", "denial", "feedback", "no-replay", "capacity-cleanup", "durable-unchanged"].map(check => `account429-title-${check}`)),
+  "ui14-entity-pagination": Object.freeze([
+    "entity-seed-pagination", "entity-fixture",
+    ...["group", "author", "user"].flatMap(kind => ["desc", "asc"].flatMap(order => ["prerequisite", "open", "native-last-page", "page-one-control", "page-one-route", "native-first-page"].map(check => `entity-${kind}-${order}-${check}`))),
+    ...["withdrawal", "open", "empty-visible", "native-empty", "page-one-control", "native-first-page"].map(check => `entity-empty-${check}`)
+  ]),
   "ui11-device-progress": Object.freeze([
     "device-progress-signup-context",
     ...progressCases.flatMap(control => progressChecks.map(check => `device-progress-${control}-${check}`))
@@ -210,21 +215,22 @@ export async function runUi11To16Journeys(h) {
   };
   const requestPath = (request, pathname, method = "GET") => new URL(request.url()).origin === origin && new URL(request.url()).pathname === pathname && request.method() === method;
   const countPosts = pathname => observe(request => requestPath(request, pathname, "POST"));
-  const withCapacity = async operation => {
-    const url = new URL(origin); insist(fixture.fixture_only === true && url.protocol === "http:" && ["127.0.0.1", "localhost"].includes(url.hostname) && !!url.port && url.port !== "0", "Capacity fault requires the owned exact loopback disposable fixture");
+  const withCapacity = async (operation, probe = (_suffix, action) => action()) => {
+    await probe("capacity-fixture", async () => { const url = new URL(origin); insist(fixture.fixture_only === true && url.protocol === "http:" && ["127.0.0.1", "localhost"].includes(url.hostname) && !!url.port && url.port !== "0", "Capacity fault requires the owned exact loopback disposable fixture"); });
     const owned = [], sockets = new Set(); let released = false;
     const close = () => { if (released) return; released = true; for (const request of owned) request.destroy(); for (const socket of sockets) socket.destroy(); };
     // Start the watchdog before connecting, so even a partially connected set
     // cannot keep the actual middleware saturated while waiting for a browser.
     const watchdog = setTimeout(close, 9000);
     try {
-      await Promise.all(Array.from({ length: 32 }, () => new Promise((resolve, reject) => {
+      await probe("capacity-connections", () => Promise.all(Array.from({ length: 32 }, () => new Promise((resolve, reject) => {
         const request = http.request(origin + "/api/client", { method: "POST", headers: { Origin: origin, "Content-Type": "application/json", "Content-Length": "65536" }, agent: false }); owned.push(request);
         request.on("socket", socket => { sockets.add(socket); socket.once("close", () => sockets.delete(socket)); socket.once("connect", () => { request.write('{"name":"'); resolve(); }); }); request.on("error", () => { if (!released) reject(Error("Owned local capacity socket failed before saturation")); }); request.on("response", response => { response.resume(); if (!released) reject(Error("Incomplete native JSON did not retain its genuine admission permit")); }); request.setTimeout(10000, () => request.destroy());
-      })));
-      await until(() => api("/api/manga?limit=1"), value => value.status === 429 && value.body?.code === "capacity_busy", "Actual native request permits were not saturated", 3000);
+      }))));
+      await probe("capacity-saturated", () => until(() => api("/api/manga?limit=1"), value => value.status === 429 && value.body?.code === "capacity_busy", "Actual native request permits were not saturated", 3000));
+      await probe("capacity-live", async () => { insist(!released, "The bounded capacity watchdog expired before the denied gesture was released"); });
       return await operation();
-    } finally { clearTimeout(watchdog); close(); await until(() => sockets.size, count => count === 0, "Owned local capacity sockets did not reach their close events", 3000); }
+    } finally { clearTimeout(watchdog); close(); await probe("capacity-cleanup", () => until(() => sockets.size, count => count === 0, "Owned local capacity sockets did not reach their close events", 3000)); }
   };
 
   // Native platform fault gates, installed in this one real document only.
@@ -435,17 +441,36 @@ export async function runUi11To16Journeys(h) {
   }
 
   if (phase === "ui14-entity-pagination") {
-    await ensurePagination();
-    const data = dependency("entity");
+    await check("entity-seed-pagination", ensurePagination);
+    const data = await check("entity-fixture", async () => dependency("entity"));
     for (const [kind, id] of [["group", data.group_id], ["author", data.author_id], ["user", data.user_id]]) for (const order of ["desc", "asc"]) await step(`UI14 ${kind} Uploads: genuine last page retains links back in ${order} order`, async () => {
-      insist(typeof id === "string" && data.total === 101, "Isolated101-row entity fixture is required");
+      const probe = (suffix, operation) => check(`entity-${kind}-${order}-${suffix}`, operation);
+      await probe("prerequisite", async () => { insist(typeof id === "string" && data.total === 101, "Isolated101-row entity fixture is required"); });
       const route = `/${kind}/${id}/uploads?page=2${order === "asc" ? "&order=asc" : ""}`, seen = observe(request => requestPath(request, "/api/chapter"));
-      try { await open(route); await until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === data.total && row.body?.data?.length === 1), "Entity last-page UI did not receive its real one-row native page"); const back = page.locator("footer").getByRole("link", { name: "1", exact: true }); await back.waitFor({ state: "visible" }); await back.click(); await page.waitForURL(url => url.pathname === `/${kind}/${id}/uploads` && !url.searchParams.has("page")); await until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Existing entity paginator did not return to the real first page"); return { native_total: data.total, deep_link_page: 2, native_last_page_rows: 1, existing_page1_link_worked: true, order }; } finally { await seen.close(); }
+      try {
+        await probe("open", () => open(route));
+        await probe("native-last-page", () => until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === data.total && row.body?.data?.length === 1), "Entity last-page UI did not receive its real one-row native page"));
+        // Bits UI gives the retained anchor aria-label="Page 1"; its visible
+        // numeral alone is not the accessible name. Keep the footer/link scope.
+        const back = page.locator("footer").getByRole("link", { name: "Page 1", exact: true });
+        await probe("page-one-control", async () => { await back.waitFor({ state: "visible" }); await back.click(); });
+        await probe("page-one-route", () => page.waitForURL(url => url.pathname === `/${kind}/${id}/uploads` && !url.searchParams.has("page")));
+        await probe("native-first-page", () => until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Existing entity paginator did not return to the real first page"));
+        return { native_total: data.total, deep_link_page: 2, native_last_page_rows: 1, existing_page1_link_worked: true, order };
+      } finally { await seen.close(); }
     });
     await step("UI14 entity high empty page: real count shrink retains recovery to page1", async () => {
-      const removed = await privateControl("ui-regressions-withdraw", { scenario: "entity" }); insist(removed.ui_regressions?.entity?.current_total === 100 || removed.operation?.ui_regressions?.entity?.current_total === 100, "Named production entity withdrawal did not verify its genuine100-row state");
+      const probe = (suffix, operation) => check("entity-empty-" + suffix, operation);
+      await probe("withdrawal", async () => { const removed = await privateControl("ui-regressions-withdraw", { scenario: "entity" }); insist(removed.ui_regressions?.entity?.current_total === 100 || removed.operation?.ui_regressions?.entity?.current_total === 100, "Named production entity withdrawal did not verify its genuine100-row state"); });
       const seen = observe(request => requestPath(request, "/api/chapter"));
-      try { await open(`/group/${data.group_id}/uploads?page=2`); await page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }); await seen.settle(); insist(seen.rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === 100 && row.body?.data?.length === 0), "Empty high-page evidence lacked actual count-shrunk200"); await page.locator("footer").getByRole("link", { name: "1", exact: true }).click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Count-shrunk entity paginator lost the existing earlier-page recovery"); return { real101_to100_shrink: true, empty_high_page: true, page1_recovery: true }; } finally { await seen.close(); }
+      try {
+        await probe("open", () => open(`/group/${data.group_id}/uploads?page=2`));
+        await probe("empty-visible", () => page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }));
+        await probe("native-empty", async () => { await seen.settle(); insist(seen.rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === 100 && row.body?.data?.length === 0), "Empty high-page evidence lacked actual count-shrunk200"); });
+        await probe("page-one-control", () => page.locator("footer").getByRole("link", { name: "Page 1", exact: true }).click());
+        await probe("native-first-page", () => until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Count-shrunk entity paginator lost the existing earlier-page recovery"));
+        return { real101_to100_shrink: true, empty_high_page: true, page1_recovery: true };
+      } finally { await seen.close(); }
     });
   }
 

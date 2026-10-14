@@ -20,7 +20,7 @@ import { createLocalLibraryOverlays } from '../../platform-integrations/local-li
 const controls = ['403', '404', 'delayed', 'normal'];
 const suffixes = ['open', 'page-one', 'image-bytes', 'settings', 'shortcut-focus', 'navigation', 'destination'];
 const ids = [...controls.flatMap(control => suffixes.map(suffix => `reader-transition-${control}-${suffix}`)), ...['title-control','title-route','chapter-link','page-one','image-bytes','realm','progress','incomplete','settled'].map(suffix => `reader-transition-normal-destination-${suffix}`)];
-const accountSuffixes = ['prerequisite', 'open', 'account-mode', 'durable-baseline', 'trigger', 'option', 'pressure-captured', 'capacity-ready', 'pressure-released', 'denial', 'feedback', 'no-replay', 'durable-unchanged'];
+const accountSuffixes = ['prerequisite', 'open', 'account-mode', 'durable-baseline', 'trigger', 'option', 'pressure-captured', 'capacity-attempt', 'capacity-fixture', 'capacity-connections', 'capacity-saturated', 'capacity-live', 'capacity-ready', 'pressure-released', 'denial', 'feedback', 'no-replay', 'capacity-cleanup', 'durable-unchanged'];
 
 test('new phase inventories are fixed, ordered and frozen', () => {
   assert.deepEqual(ui10DiagnosticChecks['ui10-reader-transition'], ids);
@@ -104,7 +104,7 @@ for (const failAt of [undefined, ...ids]) test('actual reader checkpoints propag
   assert.doesNotMatch(JSON.stringify(snapshots), /private synthetic|127\.0\.0\.1/);
 });
 
-const pressureChecks = ['pressure-captured', 'capacity-ready', 'pressure-released'];
+const pressureChecks = ['pressure-captured', 'capacity-attempt', 'capacity-ready', 'pressure-released'];
 for (const failAt of [undefined, 'gesture', 'capacity', 'denial', ...pressureChecks]) test('single held title gesture owns pressure cleanup: ' + (failAt ?? 'complete'), async () => {
   const seen = [], failure = Error('private capacity state'); let closed = 0;
   const act = async id => { seen.push(id); if (failAt === id) throw failure; };
@@ -118,7 +118,7 @@ for (const failAt of [undefined, 'gesture', 'capacity', 'denial', ...pressureChe
   assert.equal(closed, 1);
   assert.equal(seen.filter(id => id === 'gesture').length, 1);
   assert.equal(seen.filter(id => id === 'release').length, !failAt || failAt === 'denial' ? 1 : 0);
-  if (!failAt) assert.deepEqual(seen, ['gesture', 'pressure-captured', 'wait', 'capacity', 'capacity-ready', 'pressure-released', 'release', 'denial']);
+  if (!failAt) assert.deepEqual(seen, ['gesture', 'pressure-captured', 'wait', 'capacity-attempt', 'capacity', 'capacity-ready', 'pressure-released', 'release', 'denial']);
 });
 
 function actualAccountStep() {
@@ -148,15 +148,21 @@ for (const failAt of [undefined, ...accountSuffixes]) test('actual title429 chec
     async until(read, valid, message) { const value = await read(); assert(await valid(value), message); return value; },
     async stable(predicate, message) { assert(await predicate(), message); },
     hold: async () => { holds++; return { async wait() {}, async release() {}, async close() { holdsClosed++; } }; },
-    withCapacity: async operation => operation(), runHeldAccountDenial,
+    async withCapacity(operation, probe) {
+      await probe('capacity-fixture', async () => {});
+      try { for (const id of ['capacity-connections', 'capacity-saturated', 'capacity-live']) await probe(id, async () => {}); await operation(); }
+      finally { await probe('capacity-cleanup', async () => {}); }
+    }, runHeldAccountDenial,
   };
   const execute = new (Object.getPrototypeOf(async function() {}).constructor)(...Object.keys(bindings), actualAccountStep())(...Object.values(bindings));
   if (failAt) await assert.rejects(execute, error => error === failure); else await execute;
   assert.equal(observed, observersClosed);
   assert.equal(holds, holdsClosed);
-  const reached = failAt ? accountSuffixes.slice(0, accountSuffixes.indexOf(failAt) + 1) : accountSuffixes;
+  const reached = failAt ? accountSuffixes.slice(0, accountSuffixes.indexOf(failAt) + 1) : [...accountSuffixes];
+  if (failAt && accountSuffixes.indexOf(failAt) >= accountSuffixes.indexOf('capacity-connections') && accountSuffixes.indexOf(failAt) < accountSuffixes.indexOf('capacity-cleanup')) reached.push('capacity-cleanup');
   assert.deepEqual(seen, reached.map(suffix => `account429-title-${suffix}`));
-  assert.deepEqual(report.journey_checks.map(row => row.status), reached.map(suffix => suffix === failAt ? 'failed' : 'passed'));
+  const capacityFailed = failAt && accountSuffixes.indexOf(failAt) >= accountSuffixes.indexOf('capacity-attempt') && accountSuffixes.indexOf(failAt) <= accountSuffixes.indexOf('capacity-cleanup');
+  assert.deepEqual(report.journey_checks.map(row => row.status), reached.map(suffix => suffix === failAt || suffix === 'capacity-attempt' && capacityFailed ? 'failed' : 'passed'));
   assert.doesNotMatch(JSON.stringify(report), /private synthetic|127\.0\.0\.1/);
 });
 

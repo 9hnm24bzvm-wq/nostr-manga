@@ -56,8 +56,16 @@ CHECKS['ui14-home-failures'] = [*['home-pg-' + check for check in [
         'redemption', 'restricted-auth', 'native-denial', 'widget-open', 'feedback', 'single-read', 'retry', 'repeated-denial']]]
 CHECKS['ui14-account-failures'] = ['account429-title-' + check for check in [
     'prerequisite', 'open', 'account-mode', 'durable-baseline', 'trigger', 'option',
-    'pressure-captured', 'capacity-ready', 'pressure-released', 'denial', 'feedback',
-    'no-replay', 'durable-unchanged']]
+    'pressure-captured', 'capacity-attempt', 'capacity-fixture', 'capacity-connections', 'capacity-saturated',
+    'capacity-live', 'capacity-ready', 'pressure-released', 'denial', 'feedback', 'no-replay', 'capacity-cleanup', 'durable-unchanged']]
+
+CHECKS['reader'] = ['reader-spread-' + check for check in [
+    'open', 'double', 'deep-link', 'first-images', 'reload', 'reloaded-images', 'selected-page', 'quality', 'quality-images', 'single']]
+CHECKS['ui14-entity-pagination'] = ['entity-seed-pagination', 'entity-fixture', *[
+    'entity-' + kind + '-' + order + '-' + check
+    for kind in ['group', 'author', 'user'] for order in ['desc', 'asc']
+    for check in ['prerequisite', 'open', 'native-last-page', 'page-one-control', 'page-one-route', 'native-first-page']],
+    *['entity-empty-' + check for check in ['withdrawal', 'open', 'empty-visible', 'native-empty', 'page-one-control', 'native-first-page']]]
 
 CHECKS['upload'] = ['upload-' + suffix for suffix in ['account-ready', 'begin-control', 'begin-uncertainty', 'begin-staging', 'corrupt-image-input', 'corrupt-image-feedback', 'corrupt-archive-input', 'corrupt-archive-feedback', 'corrupt-no-persisted-pages', 'failed-batch-feedback', 'failed-page-controls', 'cancel-conflict-retained', 'cancel-confirmed', 'stage-selection', 'stage-metadata', 'stage-durable', 'stage-reload', 'replacement-prerequisite', 'replacement-invalid-retained', 'replacement-lost-reply', 'replacement-durable', 'commit-prerequisite', 'commit-response', 'commit-receipt', 'published-reader', 'revert-prerequisite', 'revert-controls', 'page-edit-prerequisite', 'page-edit-controls']]
 

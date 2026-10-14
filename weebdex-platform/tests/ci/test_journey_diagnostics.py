@@ -27,9 +27,9 @@ class JourneyDiagnosticSeams(unittest.TestCase):
         code = '''import {accountRecoveryCheckIds as account} from './scripts/browser-account-recovery.mjs';
 import {ui11To16DiagnosticChecks as ui} from './scripts/browser-ui11-16-journeys.mjs';
 import {ui10DiagnosticChecks as ui10} from './scripts/browser-ui10-journeys.mjs';
-import {localLibraryDiagnosticChecks as local, ordinaryUploadDiagnosticChecks as upload} from './scripts/browser-journeys.mjs';
+import {localLibraryDiagnosticChecks as local, ordinaryUploadDiagnosticChecks as upload, ordinaryReaderDiagnosticChecks as reader} from './scripts/browser-journeys.mjs';
 import {signedLibraryDiagnosticChecks as signed} from './scripts/browser-signed-journeys.mjs';
-process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui,...local,...upload,...signed}));'''
+process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui,...local,...upload,...reader,...signed}));'''
         value = json.loads(subprocess.run(['node', '--input-type=module', '-e', code], cwd=ROOT, text=True, check=True, capture_output=True).stdout)
         self.assertEqual(value, contract.CHECKS)
 

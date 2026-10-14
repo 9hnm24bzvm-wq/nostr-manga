@@ -17,9 +17,10 @@ const expected = {
 // account-429 probes each retain their exact independently expected inventory.
 assert.deepEqual(ui11To16DiagnosticChecks, {
   ...homeFailureDiagnosticChecks,
-  'ui14-account-failures': ['prerequisite','open','account-mode','durable-baseline','trigger','option','pressure-captured','capacity-ready','pressure-released','denial','feedback','no-replay','durable-unchanged'].map(suffix => `account429-title-${suffix}`),
+  'ui14-account-failures': ['prerequisite','open','account-mode','durable-baseline','trigger','option','pressure-captured','capacity-attempt','capacity-fixture','capacity-connections','capacity-saturated','capacity-live','capacity-ready','pressure-released','denial','feedback','no-replay','capacity-cleanup','durable-unchanged'].map(suffix => `account429-title-${suffix}`),
   ...expected,
-  ...actorFollowDiagnosticChecks
+  ...actorFollowDiagnosticChecks,
+  'ui14-entity-pagination': ['entity-seed-pagination','entity-fixture', ...['group','author','user'].flatMap(kind => ['desc','asc'].flatMap(order => ['prerequisite','open','native-last-page','page-one-control','page-one-route','native-first-page'].map(check => `entity-${kind}-${order}-${check}`))), ...['withdrawal','open','empty-visible','native-empty','page-one-control','native-first-page'].map(check => `entity-empty-${check}`)]
 });
 assert(Object.isFrozen(ui11To16DiagnosticChecks));
 for (const ids of Object.values(ui11To16DiagnosticChecks)) {

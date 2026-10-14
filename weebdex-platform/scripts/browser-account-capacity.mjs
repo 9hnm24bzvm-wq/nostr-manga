@@ -6,12 +6,12 @@ export async function runHeldAccountDenial({ hold, pattern, match, gesture, capa
   try {
     await gesture();
     await check("pressure-captured", () => pressure.wait());
-    await capacity(async () => {
+    await check("capacity-attempt", () => capacity(async () => {
       // The genuine capacity helper invokes this callback only after its own
       // native429/capacity_busy prerequisite has passed.
       await check("capacity-ready", async () => {});
       await check("pressure-released", () => pressure.release());
       await denial();
-    });
+    }, check));
   } finally { await pressure.close(); }
 }

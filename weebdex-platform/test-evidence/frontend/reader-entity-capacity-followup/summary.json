@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "status": "source-seams-passed-browser-unrun",
+  "base_commit": "2d9c80135328796856c789050fcd81b0093f4661",
+  "base_tree": "83141fce1dba67dbd529cc1da53b065bba672133",
+  "verified_hosted_observation": {
+    "run_id": 38615879103,
+    "public_commit": "e94029800c1ffde6f1d7e90d36d121ef54c12651",
+    "artifact_zip_sha256": "ac3d15d39de5350e5fdc3910b474899e6d1df20652077e6f58fce49db59acf4a",
+    "reader_failed_original_steps": [
+      1
+    ],
+    "entity_failed_original_steps": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "account_failed_original_steps": [
+      6
+    ],
+    "account_last_passed_check": "account429-title-pressure-captured",
+    "account_unentered_check": "account429-title-capacity-ready",
+    "affected_runners_finalized": true,
+    "page_errors": 0,
+    "runner_fatal_failures": false
+  },
+  "changes": {
+    "reader": "reopen genuine page2 after retained Double first-member normalization; original reload/image/quality assertions unchanged",
+    "entity": "exact footer/link accessible name Page 1 from installed Bits UI; original row/route/recovery assertions unchanged",
+    "account": "diagnostic-only setup/lifetime checkpoints and expired-watchdog rejection; cause remains unproven",
+    "fixed_check_counts": {
+      "reader": 10,
+      "ui14-entity-pagination": 44,
+      "ui14-account-failures": 19
+    },
+    "capacity_bounds_unchanged": {
+      "incomplete_requests": 32,
+      "watchdog_ms": 9000,
+      "socket_timeout_ms": 10000,
+      "native_saturation_wait_ms": 3000,
+      "socket_close_wait_ms": 3000
+    },
+    "product_source_changed": false,
+    "canonical_frontend_changed": false,
+    "new_dependencies": false,
+    "timeouts_raised": false
+  },
+  "verification": {
+    "focused_node_suites": {
+      "passed": 220,
+      "failed": 0,
+      "new_suite_cases": 69
+    },
+    "python_ci": {
+      "passed": 53,
+      "failed": 0
+    },
+    "existing_semantic_seams": {
+      "passed": 132
+    },
+    "canonical_attachment_parity": {
+      "files": 676,
+      "identical": true
+    },
+    "original_ordered_assertion_wait_step_preservation": {
+      "scripts/browser-journeys.mjs": {
+        "insist": {
+          "count": 101,
+          "ordered_payloads_preserved": true,
+          "sha256": "b0e917722735276cd437de8bca2c75ba5e263cf61ae8d5a531438a28912022fa"
+        },
+        "until": {
+          "count": 46,
+          "ordered_payloads_preserved": true,
+          "sha256": "c9087b43c7bd4982bfa31432a36f04101b4ccbb00e4e205a9b1f69f5028cac1f"
+        },
+        "stable": {
+          "count": 0,
+          "ordered_payloads_preserved": true,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "step": {
+          "count": 38,
+          "ordered_payloads_preserved": true,
+          "sha256": "238ed855e0bbe630cc6e9ac09ca7f6c071943638c009dda21a73abdb4ac980ae"
+        }
+      },
+      "scripts/browser-ui11-16-journeys.mjs": {
+        "insist": {
+          "count": 107,
+          "ordered_payloads_preserved": true,
+          "sha256": "74385f0c2730b6009d020c98e6d55dc0d8d58375e827255ca09847191c88e076"
+        },
+        "until": {
+          "count": 43,
+          "ordered_payloads_preserved": true,
+          "sha256": "cffc0958e6ef0ee836b123dbbbee3ae22462c6446edf88028909c8836412e55d"
+        },
+        "stable": {
+          "count": 11,
+          "ordered_payloads_preserved": true,
+          "sha256": "593dbda26316a654af3086f7ebd07f8dc2335972d8825d9a792206ff64cd5579"
+        },
+        "step": {
+          "count": 26,
+          "ordered_payloads_preserved": true,
+          "sha256": "4a22291d9bcc521c76c9e3e7974ddbc63ea052213d617adc4eae0c0670156b50"
+        }
+      }
+    },
+    "new_assertions": [
+      "The bounded capacity watchdog expired before the denied gesture was released"
+    ],
+    "real_browser_or_hosted_run": "unrun",
+    "native_capacity_or_database_run": "unrun",
+    "seam_limit": "Actual source and journey bodies with explicit UI/transport/socket stand-ins; no service/listener/network/database/browser is started."
+  },
+  "source_hashes": {
+    "scripts/browser-journeys.mjs": "ef3eb396cd921abf9b7da67b660442a10532a8a8eb3cc95aeebab8ec8a51d3a4",
+    "scripts/browser-ui11-16-journeys.mjs": "4957823cee8b60a17b123dffc7c4e2e01cd261a8cb86d89a973f210eb2c31be0",
+    "scripts/browser-account-capacity.mjs": "ebfadc1d553290ffe4b2f84d7a4c83823148091ef2fd9976b5088ecb3763daa4",
+    "scripts/ci/journey-diagnostics.py": "4ed89d40cd6c2e28a77236776840e384651e23a787055bfdc8c7d3907e7eb426",
+    "tests/ci/test_browser_reader_entity_capacity.mjs": "f5f8f3f1292da8a8f3dac6c4719d1f0362b155a0a7b0e436aa478f11fb15ca20",
+    "tests/ci/test_browser_reader_account_diagnostics.mjs": "2cabb4f32b5a4de9a799d0ec9948e6951b1bfcd28a77134da3ddb7b876a6bce2",
+    "tests/ci/test_browser_library_diagnostics.mjs": "8f9259c535f0012d8201dc9ab78964b3a5185923c545684fbe8f9c935b422d44",
+    "tests/ci/test_journey_diagnostics.py": "950cd6e2a613a9b545903762aebce03cd4803f304f31e50136f21c24d5874d42",
+    "docs/reader-entity-capacity-followup.md": "5552a712886848e8b8ab03a476b413ce71c9287d862616cd1464053b74bc48ef"
+  }
+}

@@ -15,6 +15,7 @@ export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Obj
   'signer-dismissal-visible', 'signer-outbox-empty'
 ].map(suffix => 'local-library-' + suffix)) });
 export const ordinaryUploadDiagnosticChecks = Object.freeze({ upload: Object.freeze(["account-ready", "begin-control", "begin-uncertainty", "begin-staging", "corrupt-image-input", "corrupt-image-feedback", "corrupt-archive-input", "corrupt-archive-feedback", "corrupt-no-persisted-pages", "failed-batch-feedback", "failed-page-controls", "cancel-conflict-retained", "cancel-confirmed", "stage-selection", "stage-metadata", "stage-durable", "stage-reload", "replacement-prerequisite", "replacement-invalid-retained", "replacement-lost-reply", "replacement-durable", "commit-prerequisite", "commit-response", "commit-receipt", "published-reader", "revert-prerequisite", "revert-controls", "page-edit-prerequisite", "page-edit-controls"].map(suffix => "upload-" + suffix)) });
+export const ordinaryReaderDiagnosticChecks = Object.freeze({ reader: Object.freeze(["open", "double", "deep-link", "first-images", "reload", "reloaded-images", "selected-page", "quality", "quality-images", "single"].map(suffix => "reader-spread-" + suffix)) });
 export async function runJourneys(h) {
 	const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
 	const ids = fixture.ids ?? {};
@@ -23,6 +24,7 @@ export async function runJourneys(h) {
 	const validSink = ["127.0.0.1", "localhost"].includes(sink.hostname) && sink.protocol === "http:" && sink.port !== "0";
 	let account, uploaded;
 	const uploadCheck = (suffix, operation) => { insist(typeof h.check === "function", "The fixed upload diagnostic recorder is required"); return h.check("upload-" + suffix, operation); };
+	const readerCheck = (suffix, operation) => h.check("reader-spread-" + suffix, operation);
 	const marker = randomBytes(6).toString("hex");
 	const api = async (route, options = {}) => {
 		insist(route.startsWith("/") && !route.startsWith("//") && !route.includes("://"), "API must stay inside the local fixture");
@@ -283,12 +285,16 @@ export async function runJourneys(h) {
 			return { real_failed_state: true, failed_requests: blocked, retry_user_control: true, genuine_image_decoded: true };
 		});
 		await step("double-spread second-page deep link stays visible after reload and quality changes", async () => {
-      await open(`/chapter/${chapter}/2`); await page.getByRole("button", { name: "Double", exact: true }).click();
+      await readerCheck("open", () => open(`/chapter/${chapter}/2`)); await readerCheck("double", () => page.getByRole("button", { name: "Double", exact: true }).click());
+      // The retained Double gesture deliberately selects the spread's first
+      // member. Re-enter the genuine page2 deep link with Double already active
+      // before testing second-member initialization, reload and quality changes.
+      await readerCheck("deep-link", () => open(`/chapter/${chapter}/2`));
       const visibleImages = () => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0 && image.getClientRects().length && getComputedStyle(image).visibility !== "hidden").length);
-      await until(visibleImages, count => count > 0, "Selected spread's second member blanked reader");
-      await page.reload({ waitUntil: "domcontentloaded" }); await until(visibleImages, count => count > 0, "Double-spread page2 became blank after reload"); insist(/\/2$/.test(new URL(page.url()).pathname), "Reload changed the selected one-based page");
-      await page.getByRole("button", { name: "Optimized", exact: true }).click(); await until(visibleImages, count => count > 0, "Quality change blanked the selected spread");
-      await page.getByRole("button", { name: "Single", exact: true }).click();
+      await readerCheck("first-images", () => until(visibleImages, count => count > 0, "Selected spread's second member blanked reader"));
+      await readerCheck("reload", () => page.reload({ waitUntil: "domcontentloaded" })); await readerCheck("reloaded-images", () => until(visibleImages, count => count > 0, "Double-spread page2 became blank after reload")); await readerCheck("selected-page", async () => { insist(/\/2$/.test(new URL(page.url()).pathname), "Reload changed the selected one-based page"); });
+      await readerCheck("quality", () => page.getByRole("button", { name: "Optimized", exact: true }).click()); await readerCheck("quality-images", () => until(visibleImages, count => count > 0, "Quality change blanked the selected spread"));
+      await readerCheck("single", () => page.getByRole("button", { name: "Single", exact: true }).click());
       return { selected_second_member_visible: true, ordinary_reload_retains_page2: true, quality_change_retains_images: true };
     });
 		await step("same-title language change rejects an old pending reader aggregate", async () => {
