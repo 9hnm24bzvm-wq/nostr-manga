@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "source_tree": "00012dd2cd11f80d1fcf0c47e625f52e4864a3f6",
+  "phase": "relocation-visual-probe",
+  "passed": false,
+  "page_error_count": 0,
+  "checks": [
+    {
+      "check_id": "mobile-manage-arrival",
+      "status": "failed",
+      "failure_code": "heading_obscured",
+      "geometry_retained": false
+    },
+    {
+      "check_id": "mobile-manga-expanded",
+      "status": "passed",
+      "observation": {
+        "anonymous": true,
+        "route_bound_target": true,
+        "explicit_opt_in": true,
+        "anonymous_identity_prompt_visible": true,
+        "geometry": {
+          "width": 390,
+          "scroll_width": 390,
+          "scroll_y": 284
+        }
+      }
+    },
+    {
+      "check_id": "mobile-chapter-expanded",
+      "status": "passed",
+      "observation": {
+        "anonymous": true,
+        "route_bound_target": true,
+        "explicit_opt_in": true,
+        "anonymous_identity_prompt_visible": true,
+        "geometry": {
+          "width": 390,
+          "scroll_width": 390,
+          "scroll_y": 611
+        }
+      }
+    },
+    {
+      "check_id": "desktop-manage-arrival",
+      "status": "passed",
+      "observation": {
+        "anonymous": true,
+        "actual_manage_click": true,
+        "screenshot_scroll_performed": false,
+        "geometry": {
+          "heading_top": 157,
+          "heading_bottom": 185,
+          "viewport_height": 1000,
+          "heading_unobscured": true,
+          "section_top": 156,
+          "section_scroll_margin_top": "0px",
+          "scroll_y": 684,
+          "horizontal_overflow": false
+        }
+      }
+    },
+    {
+      "check_id": "desktop-manga-expanded",
+      "status": "passed",
+      "observation": {
+        "anonymous": true,
+        "route_bound_target": true,
+        "explicit_opt_in": true,
+        "anonymous_identity_prompt_visible": true,
+        "geometry": {
+          "width": 1440,
+          "scroll_width": 1440,
+          "scroll_y": 0
+        }
+      }
+    },
+    {
+      "check_id": "desktop-chapter-expanded",
+      "status": "passed",
+      "observation": {
+        "anonymous": true,
+        "route_bound_target": true,
+        "explicit_opt_in": true,
+        "anonymous_identity_prompt_visible": true,
+        "geometry": {
+          "width": 1440,
+          "scroll_width": 1440,
+          "scroll_y": 507
+        }
+      }
+    }
+  ],
+  "qualifications": [
+    "Mobile heading coordinates were not retained by the failing recorder; the screenshot and exact fixed assertion failure are retained.",
+    "Desktop computed section scroll-margin-top was 0px despite the source utility class.",
+    "Expanded title and reader captures show anonymous setup only; signed posting was covered by the separate original focused phases."
+  ],
+  "raw_messages_exported": false
+}

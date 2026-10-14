@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "source_tree": "00012dd2cd11f80d1fcf0c47e625f52e4864a3f6",
+  "fresh_fixture": true,
+  "fixture_lifetime_seconds": 1200,
+  "sandbox_enabled": true,
+  "original_source_frontend_binaries_unchanged": true,
+  "probe_source_hashes": [
+    {
+      "role": "visual-probe",
+      "sha256": "f38e97eab16d4316f2ecc1eae482e7996b49cc4d086a5dba1e55a3558c281af6"
+    },
+    {
+      "role": "probe-driver",
+      "sha256": "bda5d9272db4b622237ba48d79f955320fd2b93bfadbe4f278cc195d433af4e8"
+    },
+    {
+      "role": "owned-wrapper",
+      "sha256": "f8efe17ad13614646c5f5d690848e7c81251b35e8f8d3092e821d998ad3d899a"
+    }
+  ],
+  "cleanup_pass_requires": [
+    "verified_stopped",
+    "ports_closed",
+    "keys_removed",
+    "final_teardown_clean",
+    "lifecycle_clean",
+    "outer_verified_stopped",
+    "no_forced_cleanup",
+    "supervisor_exit_zero"
+  ],
+  "stage_only_probe_sources_published": false
+}

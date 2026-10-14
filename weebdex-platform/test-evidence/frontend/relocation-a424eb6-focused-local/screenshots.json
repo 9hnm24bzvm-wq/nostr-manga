@@ -1,0 +1,102 @@
+{
+  "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "screenshots": [
+    {
+      "file": "screenshots/relocation-desktop-home.png",
+      "sha256": "6d90dc29894f3dd4d7d7cff0f4cfaffcafc7e2bc69307f339f9cf7740ea307e4",
+      "width": 1440,
+      "height": 1426
+    },
+    {
+      "file": "screenshots/relocation-desktop-library-settings.png",
+      "sha256": "c9b9136e936bd754a0328b4e5afb4da64083e2034d1363e548f7a5b2f2ca98f5",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-public-identity.png",
+      "sha256": "c9b9136e936bd754a0328b4e5afb4da64083e2034d1363e548f7a5b2f2ca98f5",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-reader-discussion.png",
+      "sha256": "675d3d3ac0ac51375a3aec9fbade075416356d649622ab0a7dd1abbe40588399",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-reader.png",
+      "sha256": "498d4e17fcdd7851913306f8383bce4b41ef7b04e9b2c7c29254497889e99fbe",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-search.png",
+      "sha256": "7726d9e9338db5920e580eab838abee54d9c5761d6a6edaaae11bc2c75d6fdfa",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-title-comments.png",
+      "sha256": "031b873fbfe27e37594b4f0fe234fb2becdb7cd4158d854d3b5bda89da59126c",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-title.png",
+      "sha256": "8f7cca6421fb643fc6c2492133ccd6aefd783d5123569bd4375355c3fc6620b4",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-mobile-home.png",
+      "sha256": "fc240edbd9108708596a10825517674f1b77bc7d40326a3f80ae9195cd188fec",
+      "width": 390,
+      "height": 1343
+    },
+    {
+      "file": "screenshots/relocation-mobile-library-settings.png",
+      "sha256": "e4904d31a5b98a6eb54ef42527754737902de2fdcaaf0ccc24270f3f3e85ce1b",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-public-identity.png",
+      "sha256": "13083efbf1150401f3f5c44dc311c1629323fb25519a432d32536c65b2a6f9b2",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-reader-discussion.png",
+      "sha256": "91e0993d9fbe6a8c0eb3bb1c0d18826844a2e6446e4c26838839e985f343f911",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-reader.png",
+      "sha256": "5e75ec8892ea0eb591cf80a2593b6c979cc42a51f8b51431e9f675dd6fbd0475",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-search.png",
+      "sha256": "cfb8c88eb085518ce3c9fe22e56604d3cfe66f1938f87d0818b0b4719eb58fbf",
+      "width": 390,
+      "height": 1064
+    },
+    {
+      "file": "screenshots/relocation-mobile-title-comments.png",
+      "sha256": "1c0683b83cba5280214d8eb2fffde4ab934581b9c4d7bdc62c6964ab563542a0",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-title.png",
+      "sha256": "a85d7ad4c8fafa98f15dd0b8e6b99c4190af03cf7142a72fa753b6d981a8026e",
+      "width": 390,
+      "height": 882
+    }
+  ],
+  "visual_inspection_separate_from_semantic_pass": true
+}
