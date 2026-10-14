@@ -29,13 +29,13 @@
   ],
   "source_sha256": {
     "scripts/browser-actor-follow-journeys.mjs": "72769b769508d9f4dc24a5fb537e5f103b6414a802d21160c40308a6dbc3642f",
-    "scripts/browser-ui11-16-journeys.mjs": "e94ddc40b2fe41b1c501a20ae9193c967a3b741e3b97c22a6641d9e5536dfb0f",
+    "scripts/browser-ui11-16-journeys.mjs": "08678ab8a082e5e7787afc71fafb51da4a1e544c488851b10247a6890dc152d8",
     "scripts/ci/run-hosted-browser.py": "d45b6a87cf2caa0ffc16d3f82e34495bbaa1cb072c9154ee0451cd34ca407fe2",
-    "scripts/ci/journey-diagnostics.py": "9956200c37e9bdeb0a52f5462c99f8208b6687426dc5fe2236b993bc28687abc",
-    "scripts/ci/validate-ci-evidence.py": "938b9097edc4aa7e9db36ceb0007ab24f90420c8a712f213307616cb8cf9fc7c",
+    "scripts/ci/journey-diagnostics.py": "8bd384128dd4e457a609581fda6c2ebe9b40257b368fef0007cc96b85095747d",
+    "scripts/ci/validate-ci-evidence.py": "d2b23272d10e5e79e2e3cf51a1e3e8342c11aca2e4243608dcac0bf5ab456c81",
     "docs/browser-actor-follow-regressions.md": "cc8f9f7246816ed91757da9d1ffd0c64dfe340a6890a54d1e83b97961c509bf1",
     "tests/ci/test_browser_actor_follow_journeys.mjs": "e88a937d331911c7b50a977b057de9c544aacedb281643eb2fae04142317ddaf",
-    "tests/ci/test_browser_library_diagnostics.mjs": "52c2165864e9722b95ae5978a7d174bf634bc5b6510a2252486827d9d0709a6f",
+    "tests/ci/test_browser_library_diagnostics.mjs": "ee9b3185b2c7645d86342bd49ce077a4c0d49a69374658e71b5d5fe919a3d340",
     "tests/ci/test_hosted_browser.py": "eac43be813194e705982eaeddbd20b35f6f9da00c568f2f9744102a73010206c",
     "docs/hosted-browser-e2e.md": "3a96d0bc5a1fb8096ee2f285ffdce2b4736fbdae36b790c85c143a1d04961f31",
     "../.github/workflows/hosted-browser-e2e.yml": "3e780bc659f5b2d611a7c70084de3d148fb635d8cb44280cdc5e68c9844b5dfd"
