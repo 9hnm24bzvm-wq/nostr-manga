@@ -147,8 +147,13 @@ async function probe(fault, { initialReaderOpen } = {}) {
           };
         },
         locator(close) {
-          assert.equal(close, 'button:has(svg.lucide-x)');
-          return { async click() { assert(atReader() && readerSidebar); if (fault === 'reader-close-driver') throw original; if (fault !== 'reader-close-retains-panel') readerSidebar = false; events.push(['reader-settings-close', viewport.width]); } };
+          assert.equal(close, '[data-slot="sidebar-header"] button:has(svg.lucide-x)');
+          // Mobile has two legitimate X controls: the reader header toggle and
+          // the Sheet primitive's sibling close. Only the header belongs here.
+          const nativeCloseControls = [{ owner: 'sidebar-header' }, ...(viewport.width < 768 ? [{ owner: 'sheet-content' }] : [])];
+          const selected = nativeCloseControls.filter(control => control.owner === 'sidebar-header');
+          events.push(['reader-close-candidates', nativeCloseControls.length, selected.length, viewport.width]);
+          return { async click() { assert.equal(selected.length, 1, 'Strict reader-header close must have one owner'); assert(atReader() && readerSidebar); if (fault === 'reader-close-driver') throw original; if (fault !== 'reader-close-retains-panel') readerSidebar = false; events.push(['reader-settings-close', viewport.width]); } };
         },
       };
       if (selector === '[data-local-library-panel], [data-protocol-identity-panel]') return { async count() { assert(!isSettings()); events.push(['global-check', url.pathname]); return fault === 'global-mount' ? 1 : 0; } };
@@ -262,6 +267,15 @@ test('actual reader close must hide Manage rather than merely dismiss a dialog',
   assert.match(value.error?.message ?? '', /Active reader Manage visibility must follow native sidebar state/);
   assert.equal(value.result, undefined);
   assert.equal(value.events.some(row => row[0] === 'show-comments'), false);
+});
+
+test('actual reader close selects its header toggle despite the legitimate mobile Sheet X', async () => {
+  const value = await probe(); assert.equal(value.error, undefined);
+  assert(value.events.some(row => row[0] === 'reader-close-candidates' && row[1] === 2 && row[2] === 1 && row[3] === 390));
+  const reader = fs.readFileSync(new URL('../../frontend/src/lib/components/reader/reader-panel.svelte', import.meta.url), 'utf8');
+  const header = reader.slice(reader.indexOf('<Sidebar.Header'), reader.indexOf('</Sidebar.Header>'));
+  assert.match(header, /<Button[^>]*onclick=\{sidebar.toggle\}>\s*<XIcon/);
+  assert.match(fs.readFileSync(new URL('../../frontend/src/lib/components/ui/sidebar/sidebar-header.svelte', import.meta.url), 'utf8'), /data-slot="sidebar-header"/);
 });
 
 for (const [fault, message] of [

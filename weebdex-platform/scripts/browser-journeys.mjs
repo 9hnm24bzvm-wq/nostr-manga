@@ -532,7 +532,9 @@ export async function runJourneys(h) {
 				if (!await readerManage.isVisible()) await page.locator('nav button:has(svg.lucide-settings)').first().click();
 				await readerManage.waitFor({ state: 'visible' });
 				insist(await readerManage.getAttribute('href') === '/settings/library', 'Reader Manage library link missed its native Settings tab');
-				await readerSidebar.locator('button:has(svg.lucide-x)').click(); await readerManage.waitFor({ state: 'hidden' });
+				// The mobile Sheet also owns its built-in X. Use the reader header's
+				// actual toggle, not an arbitrary first match among both close controls.
+				await readerSidebar.locator('[data-slot="sidebar-header"] button:has(svg.lucide-x)').click(); await readerManage.waitFor({ state: 'hidden' });
 				await page.getByRole('dialog').waitFor({ state: 'hidden' });
 				const show = page.getByRole('button', { name: 'Show Comments', exact: true }); if (await show.isVisible()) await show.click();
 				const conversation = page.locator(`section[data-source-conversation][data-resource-kind="chapter"][data-resource-id="${chapter}"]`);
