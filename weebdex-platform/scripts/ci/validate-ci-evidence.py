@@ -16,6 +16,9 @@ spec.loader.exec_module(diagnostics)
 spec = importlib.util.spec_from_file_location('hosted_journey_contract', ROOT / 'scripts/ci/journey-diagnostics.py')
 journey_diagnostics = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(journey_diagnostics)
+spec = importlib.util.spec_from_file_location('hosted_runner_contract', ROOT / 'scripts/ci/runner-diagnostics.py')
+runner_diagnostics = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(runner_diagnostics)
 ERRORS = {'RuntimeError', 'TimeoutError', 'InterruptedError', 'FileNotFoundError', 'PermissionError', 'IsADirectoryError', 'NotADirectoryError', 'OSError', 'JSONDecodeError', 'KeyError', 'TypeError', 'ValueError', 'ProcessLookupError', 'ChildProcessError'}
 SCOPE = 'actual browser controls and persisted-result assertions; pixel parity remains unverified'
 
@@ -177,6 +180,27 @@ def journey_checks(value, phase):
         insist(value['record_valid'] and all(row['status'] == 'passed' for row in rows))
 
 
+def runner_checks(value, phase):
+    fields(value, {'schema', 'record_valid', 'stage', 'fatal_kind', 'fatal_stage', 'exit_observed', 'exit_code', 'owned_exit_code', 'report_finalized', 'report_passed', 'private_values_omitted', 'raw_messages_exported'})
+    insist(type(value['schema']) is int and value['schema'] == 1)
+    for key in ['record_valid', 'exit_observed', 'report_finalized', 'report_passed']:
+        boolean(value[key])
+    insist(value['private_values_omitted'] is True and value['raw_messages_exported'] is False)
+    insist(type(value['stage']) is str and value['stage'] in runner_diagnostics.STAGES | {'unavailable'})
+    insist(type(value['fatal_kind']) is str and value['fatal_kind'] in runner_diagnostics.FATAL_KINDS | {'unavailable'})
+    insist(type(value['fatal_stage']) is str and value['fatal_stage'] in runner_diagnostics.STAGES | {'none', 'unavailable'})
+    for key, low in [('exit_code', 0), ('owned_exit_code', -64)]:
+        if value[key] is not None:
+            integer(value[key], low, 255)
+    insist(phase['runner_exit_zero'] is (value['owned_exit_code'] == 0))
+    if value['record_valid']:
+        insist(value['stage'] != 'unavailable' and value['fatal_kind'] != 'unavailable' and value['fatal_stage'] != 'unavailable')
+        insist(value['exit_observed'] or value['exit_code'] is None)
+        insist((value['fatal_kind'] == 'none') is (value['fatal_stage'] == 'none'))
+    if phase['status'] == 'passed':
+        insist(runner_diagnostics.passed(value))
+
+
 def phases(value):
     fields(value, {'schema', 'phases', 'batches'}, {'error_class', 'budget_exhausted'})
     insist(value['schema'] == 1 and type(value['schema']) is int)
@@ -185,12 +209,13 @@ def phases(value):
         boolean(value['budget_exhausted'])
     insist(type(value['phases']) is list and len(value['phases']) <= 49 and type(value['batches']) is list and len(value['batches']) <= 10)
     for row in value['phases']:
-        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope'}, {'startup_diagnostics', 'journey_diagnostics'})
+        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics'})
         insist(row['batch'] in ['startup', *runner.BATCHES] and row['phase'] in runner.ALL_PHASES and row['status'] in ['passed', 'failed'] and row['evidence_scope'] == SCOPE)
         integer(row['actual_steps'])
         integer(row['page_error_count'])
         for key in ['harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero']:
             boolean(row[key])
+        runner_checks(row['runner_diagnostics'], row)
         insist(type(row['failed_steps']) is list and len(row['failed_steps']) <= row['actual_steps'])
         for step in row['failed_steps']:
             fields(step, {'index', 'status'})

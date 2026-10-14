@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { createJourneyCheck } from '../../scripts/journey-checks.mjs';
-import { observeSeedTitleReadiness, readSeedTitleState } from '../../scripts/startup-readiness-probe.mjs';
+import { observeSeedTitleReadiness, readSeedTitleState, waitForSeedTitleReady, seedTitleReady } from '../../scripts/startup-readiness-probe.mjs';
 
 const state = (visible = false) => ({ document_ready: true, body_meaningful: visible,
   fixture_heading_visible: visible, fixture_route: true });
@@ -69,6 +69,37 @@ await test('deadline leaves no time for an additional renderer operation', async
   }, waitForFunction: async () => { calls++; } }, false, { timeoutMs: 5 });
   assert.equal(result.wait_outcome, 'deadline'); assert.equal(calls, 1);
   await new Promise(done => setTimeout(done, 30)); assert.equal(calls, 1);
+});
+await test('content readiness waits for the actual seeded route, visible heading and meaningful body', async () => {
+  const run = (pathname, text, heading, visible = true, readyState = 'complete') => vm.runInNewContext('(' + seedTitleReady.toString() + ')()', {
+    document: { readyState, body: { innerText: text }, querySelectorAll: () => [{ textContent: heading, getClientRects: () => visible ? [{}] : [] }] },
+    location: { pathname },
+  });
+  assert.equal(run('/title/SeedManga1', 'Meaningful expected title body', 'Fixture Adventure'), true);
+  for (const args of [['/search', 'Meaningful expected title body', 'Fixture Adventure'],
+    ['/title/SeedManga1', '', 'Fixture Adventure'], ['/title/SeedManga1', 'Meaningful body but wrong title', 'Wrong title'],
+    ['/title/SeedManga1', 'Meaningful expected title body', 'Fixture Adventure', false],
+    ['/title/SeedManga1', 'Meaningful expected title body', 'Fixture Adventure', true, 'loading']]) assert.equal(run(...args), false);
+  let waited = false;
+  const result = await waitForSeedTitleReady({ waitForFunction: async (predicate, arg, options) => {
+    assert.equal(predicate, seedTitleReady); assert.equal(arg, undefined); assert.ok(options.timeout > 0 && options.timeout <= 6750);
+    waited = true;
+  }, evaluate: async () => { assert.equal(waited, true); return state(true); } });
+  assert.deepEqual(result, state(true));
+});
+await test('content readiness fails closed when final expected content disappears', async () => {
+  for (const key of Object.keys(state(true))) await assert.rejects(waitForSeedTitleReady({
+    waitForFunction: async () => {}, evaluate: async () => ({ ...state(true), [key]: false }),
+  }), /readiness changed/);
+});
+await test('content readiness bounds stalled wait and late sampler without unhandled rejection', async () => {
+  let reject, samples = 0;
+  const pending = new Promise((_, fail) => { reject = fail; });
+  await assert.rejects(waitForSeedTitleReady({ waitForFunction: () => pending,
+    evaluate: async () => { samples++; return state(true); } }, { timeoutMs: 10 }), { name: 'TimeoutError' });
+  reject(Error('late private wait')); await new Promise(done => setTimeout(done, 20)); assert.equal(samples, 0);
+  await assert.rejects(waitForSeedTitleReady({ waitForFunction: async () => {},
+    evaluate: () => new Promise(() => {}) }, { timeoutMs: 10 }), { name: 'TimeoutError' });
 });
 await test('check persists running and terminal passed state and returns original value', async () => {
   const report = {}, saved = [], check = createJourneyCheck(report, () => saved.push(JSON.parse(JSON.stringify(report))));

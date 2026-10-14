@@ -75,10 +75,15 @@ def wait_for(process, predicate, seconds, owner=None):
 
 
 def project_phase(phase, batch, acceptance, owned):
+    spec = importlib.util.spec_from_file_location('runner_diagnostics', ROOT / 'scripts/ci/runner-diagnostics.py')
+    diagnostics = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(diagnostics)
+    runner_diagnostics = diagnostics.project(acceptance, owned)
     steps = acceptance.get('steps', [])
     clean = owned.get('fixture_only') is True and owned.get('phase') == phase and owned.get('verified_stopped') is True and owned.get('forced') is False
-    passed = clean and owned.get('returncode') == 0 and acceptance.get('phase') == phase and acceptance.get('passed') is True and not acceptance.get('harness_error') and bool(steps) and all(row.get('status') == 'passed' for row in steps) and acceptance.get('page_errors') == []
-    value = {'batch': batch, 'phase': phase, 'status': 'passed' if passed else 'failed', 'actual_steps': len(steps), 'failed_steps': [{'index': index, 'status': row.get('status') if row.get('status') in ['passed', 'failed'] else 'unresolved'} for index, row in enumerate(steps) if row.get('status') != 'passed'], 'page_error_count': len(acceptance.get('page_errors', [])), 'harness_error_observed': bool(acceptance.get('harness_error')), 'runner_report_present': bool(acceptance), 'owned_runner_terminal': clean, 'runner_exit_zero': owned.get('returncode') == 0, 'evidence_scope': 'actual browser controls and persisted-result assertions; pixel parity remains unverified'}
+    passed = clean and owned.get('returncode') == 0 and acceptance.get('phase') == phase and acceptance.get('passed') is True and not acceptance.get('harness_error') and bool(steps) and all(row.get('status') == 'passed' for row in steps) and acceptance.get('page_errors') == [] and diagnostics.passed(runner_diagnostics)
+    value = {'batch': batch, 'phase': phase, 'status': 'passed' if passed else 'failed', 'actual_steps': len(steps), 'failed_steps': [{'index': index, 'status': row.get('status') if row.get('status') in ['passed', 'failed'] else 'unresolved'} for index, row in enumerate(steps) if row.get('status') != 'passed'], 'page_error_count': len(acceptance.get('page_errors', [])), 'harness_error_observed': bool(acceptance.get('harness_error')), 'runner_report_present': bool(acceptance), 'owned_runner_terminal': clean, 'runner_exit_zero': type(owned.get('returncode')) is int and owned['returncode'] == 0, 'evidence_scope': 'actual browser controls and persisted-result assertions; pixel parity remains unverified'}
+    value['runner_diagnostics'] = runner_diagnostics
     if phase == 'startup':
         spec = importlib.util.spec_from_file_location('startup_diagnostics', ROOT / 'scripts/ci/startup-diagnostics.py')
         diagnostics = importlib.util.module_from_spec(spec)

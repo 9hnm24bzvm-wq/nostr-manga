@@ -6,8 +6,9 @@ import path from "node:path";
 import http from "node:http";
 import { fileURLToPath } from "node:url";
 import { loadBrowserRuntime } from "./ci/browser-runtime.mjs";
-import { observeSeedTitleReadiness } from "./startup-readiness-probe.mjs";
+import { observeSeedTitleReadiness, waitForSeedTitleReady } from "./startup-readiness-probe.mjs";
 import { createJourneyCheck } from "./journey-checks.mjs";
+import { installRunnerLifecycle } from "./runner-lifecycle.mjs";
 import { runJourneys } from "./browser-journeys.mjs";
 import { runSignedJourneys, signedJourneyPhases } from "./browser-signed-journeys.mjs";
 import { runUi10Journeys, ui10JourneyPhases } from "./browser-ui10-journeys.mjs";
@@ -62,6 +63,7 @@ const safeError = error => {
 	return value.length > 9000 ? value.slice(0, 2000) + "\n[diagnostic middle omitted]\n" + value.slice(-7000) : value;
 };
 function save() { fs.writeFileSync(path.join(output, "acceptance.json"), JSON.stringify(report, null, 2) + "\n"); }
+const runnerStage = installRunnerLifecycle(report, save);
 const check = createJourneyCheck(report, save);
 function insist(condition, message) { if (!condition) throw new Error(message); }
 async function step(name, action) {
@@ -83,9 +85,11 @@ proxy.on("connection", socket => { sockets.add(socket); socket.on("close", () =>
 await new Promise(resolve => proxy.listen(0, "127.0.0.1", resolve));
 const proxyAddress = proxy.address();
 try {
+	runnerStage("launching-browser");
 	browser = await chromium.launch({ executablePath, headless: true,
 		proxy: { server: `http://127.0.0.1:${proxyAddress.port}`, bypass: "127.0.0.1,localhost" },
 		args: ["--disable-background-networking", "--disable-component-update", "--disable-sync", "--no-first-run", "--disable-default-apps", "--disable-features=MediaRouter"] });
+	runnerStage("creating-context");
 	const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1, serviceWorkers: phase === "pwa" ? "allow" : "block" });
 	await context.route("**/*", async route => {
 		const request = route.request(); const target = new URL(request.url());
@@ -111,7 +115,8 @@ try {
 		}
 	});
 	const page = await context.newPage();
-	async function open(route) { const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" }); await page.waitForTimeout(1200); insist(response?.status() === 200, `Navigation returned ${response?.status()}`); return response; }
+	runnerStage("running-checks");
+	async function open(route) { const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" }); insist(response?.status() === 200, `Navigation returned ${response?.status()}`); if (phase === "startup" && route === "/title/SeedManga1") await waitForSeedTitleReady(page); else await page.waitForTimeout(1200); return response; }
 	async function screenshot(name) { const target = path.join(output, name + ".png"); await page.screenshot({ path: target, fullPage: true }); report.screenshots.push(path.relative(root, target)); }
 	async function snapshot() {
 		const state = await page.evaluate(() => ({ title: document.title, text: document.body.innerText.slice(0, 1400), background: getComputedStyle(document.body).backgroundColor, font_family: getComputedStyle(document.body).fontFamily, stylesheets: [...document.styleSheets].map(sheet => sheet.href).filter(Boolean), horizontal_overflow: document.documentElement.scrollWidth > innerWidth + 1, csp: window.__acceptanceCsp ?? [] }));
@@ -151,13 +156,18 @@ try {
 		});
 	} else await (signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions });
 	insist(report.page_errors.length === 0, "Application JavaScript page errors were observed during the journey");
+	runnerStage("closing-context");
 	await context.close();
 } catch (error) { report.harness_error = safeError(error); }
 finally {
+	runnerStage("closing-browser");
 	if (browser) await browser.close();
+	runnerStage("closing-proxy");
 	for (const socket of sockets) socket.destroy();
 	await new Promise(resolve => proxy.close(resolve));
+	runnerStage("finalizing-report");
 	report.completed_utc = new Date().toISOString(); report.passed = !report.harness_error && report.steps.length > 0 && report.steps.every(entry => entry.status === "passed"); save();
 	process.stdout.write(JSON.stringify({ phase, passed: report.passed, steps: report.steps.length, failed_steps: report.steps.filter(entry => entry.status === "failed").map(entry => entry.name), page_errors: report.page_errors.length, network_guard: "Exact validated fixture-origin HTTP/WS routing plus owned external-deny proxy", evidence: path.relative(root, output) }) + "\n");
 }
 process.exitCode = report.passed ? 0 : 1;
+runnerStage("complete");

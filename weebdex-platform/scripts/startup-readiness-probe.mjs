@@ -1,4 +1,5 @@
-// Diagnostic only. A late render never changes the original 1200 ms verdict.
+// Finite startup readiness and read-only observations. The diagnostic helper
+// still never changes a snapshot which its caller has already recorded.
 export function readSeedTitleState() {
   const heading = [...document.querySelectorAll('h1')].some(node =>
     node.textContent?.trim() === 'Fixture Adventure' && node.getClientRects().length > 0);
@@ -8,6 +9,37 @@ export function readSeedTitleState() {
     fixture_heading_visible: heading,
     fixture_route: /^\/title\/SeedManga1(?:\/[^/]+)?\/?$/.test(location.pathname),
   };
+}
+
+export function seedTitleReady() {
+  return ['interactive', 'complete'].includes(document.readyState) &&
+    /^\/title\/SeedManga1(?:\/[^/]+)?\/?$/.test(location.pathname) &&
+    document.body.innerText.trim().length > 20 &&
+    [...document.querySelectorAll('h1')].some(node =>
+      node.textContent?.trim() === 'Fixture Adventure' && node.getClientRects().length > 0);
+}
+
+export async function waitForSeedTitleReady(page, { timeoutMs = 7000 } = {}) {
+  const deadline = Date.now() + Math.max(1, Math.min(7000, Number.isFinite(timeoutMs) ? timeoutMs : 7000));
+  const timeout = () => { const error = Error('Expected seeded title did not become ready'); error.name = 'TimeoutError'; return error; };
+  const bounded = async action => {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) throw timeout();
+    let timer;
+    try {
+      // Observe late rejection without extending the original finite deadline.
+      return await Promise.race([Promise.resolve().then(action), new Promise((_, reject) => {
+        timer = setTimeout(() => reject(timeout()), remaining);
+      })]);
+    } finally { clearTimeout(timer); }
+  };
+  await bounded(() => page.waitForFunction(seedTitleReady, undefined,
+    { timeout: Math.max(1, deadline - Date.now() - 250), polling: 100 }));
+  const state = structuredClone(await bounded(() => page.evaluate(readSeedTitleState)));
+  if (!state || !['document_ready', 'body_meaningful', 'fixture_heading_visible', 'fixture_route'].every(key => state[key] === true)) {
+    throw Error('Expected seeded title readiness changed before its snapshot');
+  }
+  return state;
 }
 
 export async function observeSeedTitleReadiness(page, originalBodyMeaningful, { timeoutMs = 7000 } = {}) {
