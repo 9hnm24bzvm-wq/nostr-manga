@@ -1,0 +1,63 @@
+{
+  "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "type": "browser",
+  "issued_at": "2026-10-14T00:00:00.000000Z",
+  "expires_at": "2026-10-14T00:10:00.000000Z",
+  "return_to": "https://recovery.example.invalid/auth/recovery",
+  "state": "success",
+  "ui": {
+    "action": "/auth/self-service/settings?flow=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "method": "POST",
+    "nodes": [
+      {
+        "type": "input",
+        "group": "default",
+        "attributes": {
+          "name": "csrf_token",
+          "node_type": "input",
+          "type": "hidden",
+          "value": "synthetic-successor-csrf",
+          "required": true,
+          "disabled": false,
+          "autocomplete": "off"
+        },
+        "messages": [],
+        "meta": {
+          "label": {
+            "id": 1070000,
+            "text": "CSRF token",
+            "type": "info"
+          }
+        }
+      },
+      {
+        "type": "input",
+        "group": "password",
+        "attributes": {
+          "name": "password",
+          "node_type": "input",
+          "type": "password",
+          "value": "",
+          "required": true,
+          "disabled": false,
+          "autocomplete": "current-password"
+        },
+        "messages": [],
+        "meta": {
+          "label": {
+            "id": 1070000,
+            "text": "New password",
+            "type": "info"
+          }
+        }
+      }
+    ],
+    "messages": [
+      {
+        "id": 1050001,
+        "text": "Your changes have been saved",
+        "type": "success"
+      }
+    ]
+  }
+}

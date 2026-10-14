@@ -1230,6 +1230,49 @@ async fn flow_error(
 mod tests {
     use super::*;
     #[test]
+    fn recovery_settings_successor_matches_frontend_contract_fixture() {
+        // No database or HTTP fixture: exercise the native response serializer
+        // with a synthetic fresh settings flow and restricted principal. The
+        // frontend executes this same fixture against its actual reset handler.
+        let successor = Flow {
+            id: "b".repeat(32),
+            kind: "settings".into(),
+            browser_hash: vec![0; 32],
+            csrf_token: "synthetic-successor-csrf".into(),
+            session_id: Some("synthetic-rotated-session".into()),
+            return_to: "https://recovery.example.invalid/auth/recovery".into(),
+            issued_at: "2026-10-14T00:00:00.000000Z".into(),
+            expires_at: "2026-10-14T00:10:00.000000Z".into(),
+            expired: false,
+            used: false,
+            attempts: 0,
+        };
+        let principal = SessionPrincipal {
+            user_id: "synthetic-user".into(),
+            username: "synthetic-user".into(),
+            email: "synthetic@example.invalid".into(),
+            verified: false,
+            roles: vec![],
+            permissions: vec![],
+            session_id: "synthetic-rotated-session".into(),
+            is_api_client: false,
+            authenticated_age_seconds: 0,
+            recovery_session: true,
+        };
+        let mut body = flow_body(&successor, Some(&principal));
+        // These are the native settings handler's two acknowledgement fields.
+        body["state"] = json!("success");
+        body["ui"]["messages"] =
+            json!([{"id":1050001,"text":"Your changes have been saved","type":"success"}]);
+        let expected: Value = serde_json::from_str(include_str!(
+            "../../../tests/fixtures/recovery-settings-success.json"
+        ))
+        .unwrap();
+        assert_eq!(body, expected);
+        assert_ne!(body["id"], "a".repeat(32));
+        assert!(body.get("identity").is_none());
+    }
+    #[test]
     fn return_targets_are_same_origin_and_normalized() {
         assert_eq!(
             safe_return_to("https://example.test", Some("/manga/one?a=1")).unwrap(),

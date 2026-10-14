@@ -22,14 +22,26 @@
   const controller = new AbortController();
   const formOwner = createAuthFormOwner();
   $effect.pre(() => { page.url.href; formOwner.observe(window.location.href); });
-  function restrictedFlow(value: SettingsFlow) {
+  function restrictedFlowToken(value: SettingsFlow) {
     const nodes = value?.ui?.nodes;
     if (!Array.isArray(nodes) || nodes.some(node => !['csrf_token', 'password', 'method'].includes((node.attributes as { name?: string }).name ?? ''))) throw Error('The server did not provide a password-only recovery flow. No account details were displayed.');
     const token = nodes.find(node => (node.attributes as { name?: string }).name === 'csrf_token');
     const password = nodes.find(node => (node.attributes as { name?: string }).name === 'password');
     const valueToken = (token?.attributes as { value?: unknown })?.value;
     if (typeof valueToken !== 'string' || !valueToken || !password) throw Error('The restricted recovery flow is incomplete. Request a fresh recovery link.');
-    flow = value; csrf = valueToken;
+    return valueToken;
+  }
+  function restrictedFlow(value: SettingsFlow) {
+    const token = restrictedFlowToken(value);
+    flow = value; csrf = token;
+  }
+  function confirmResetSuccess(value: SettingsFlow, submitted: SettingsFlow, submittedToken: string) {
+    // Native settings consumes the submitted flow and rotates its session,
+    // returning a fresh password-only successor rather than the consumed id.
+    const id = value?.id;
+    if (typeof id !== 'string' || !id || id === submitted.id || value.type !== 'browser' || value.state !== 'success' || value.return_to !== submitted.return_to || value.ui?.method !== 'POST' || typeof value.ui.action !== 'string') throw Error('The password update did not return a valid recovery successor. Sign in with the new password before requesting another reset.');
+    const target = new URL(value.ui.action, window.location.href);
+    if (target.origin !== window.location.origin || target.pathname !== '/auth/self-service/settings' || target.search !== '?flow=' + encodeURIComponent(id) || target.hash || target.username || target.password || restrictedFlowToken(value) === submittedToken) throw Error('An unrelated recovery settings successor was discarded. Sign in with the new password before requesting another reset.');
   }
   const describe = (cause: unknown) => cause instanceof AxiosError
     ? cause.response?.data?.ui?.messages?.map((message: { text?: string }) => message.text).filter(Boolean).join(' ') || cause.response?.data?.error?.message || 'The recovery request was not confirmed. It may have completed; try signing in with the new password before requesting a new link. No password update was replayed.'
@@ -56,18 +68,24 @@
   const resetPassword = async (event: SubmitEvent) => {
     event.preventDefault();
     if (busy || !resetOnly || !flow || !csrf || !form || disposed) return;
-    const captured = generation, flowId = flow.id, csrfToken = csrf;
+    const captured = generation, submitted = flow, flowId = submitted.id, csrfToken = csrf;
     const intent = formOwner.capture(flowId, () => flow?.id, false);
     if (!intent.alive()) return;
+    const submittedField = form.elements.namedItem('password') as HTMLInputElement | null;
     busy = true; error = '';
     try {
-      const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+      const password = submittedField!.value;
       // Do not cancel/replay a valid password write merely because its UI left.
       const response = await Kratos.updateSettingsFlow({ flow: flowId, updateSettingsFlowBody: { method: 'password', csrf_token: csrfToken, password } });
       if (disposed || captured !== generation || !intent.alive()) return;
-      if (response.data.id !== flowId) throw Error('An unrelated recovery settings flow was discarded. Reload the current recovery form.');
-      if (response.status !== 200 || response.data.state !== 'success') { restrictedFlow(response.data); throw Error('The password update was not accepted. Review the restricted form errors.'); }
+      if (response.status !== 200 || response.data?.state !== 'success') {
+        if (response.data?.id !== flowId) throw Error('An unrelated recovery settings flow was discarded. Reload the current recovery form.');
+        restrictedFlow(response.data); throw Error('The password update was not accepted. Review the restricted form errors.');
+      }
+      // An acknowledged write must never reuse its consumed local CSRF token,
+      // including when the acknowledgement's successor shape is rejected.
       csrf = '';
+      confirmResetSuccess(response.data, submitted, csrfToken);
       await Session.initialize(true);
       if (disposed || captured !== generation || !intent.alive()) return;
       if (!(await Session.isValid())) throw Error('The password may have been changed, but a normal account session could not be confirmed. Sign in with the new password before trying another reset.');
@@ -77,13 +95,16 @@
       if (!disposed && captured === generation && intent.alive()) {
         // Validation errors may provide the same CSRF-bound restricted flow.
         if (cause instanceof AxiosError && cause.response?.status === 400 && cause.response.data?.ui) {
-          try { restrictedFlow(cause.response.data); } catch { flow = undefined; csrf = ''; }
+          try {
+            if (cause.response.data.id !== flowId) throw Error('Unrelated recovery validation flow');
+            restrictedFlow(cause.response.data);
+          } catch { flow = undefined; csrf = ''; }
         }
         error = describe(cause);
       }
     } finally {
-      const field = form?.elements.namedItem('password') as HTMLInputElement | null;
-      if (field) field.value = '';
+      // Clear only this write's secret, never a newer form's replacement field.
+      if (submittedField) submittedField.value = '';
       if (!disposed && captured === generation && intent.alive()) busy = false;
     }
   };
