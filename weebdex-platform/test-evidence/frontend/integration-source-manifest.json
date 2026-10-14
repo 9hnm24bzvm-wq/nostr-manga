@@ -7,7 +7,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": ".build/composed-relocation-04/production-input",
+  "frontend": ".build/composed-wording-01/production-input",
   "original_files_written": false,
   "reconstructed_routes": [
     {
@@ -377,8 +377,8 @@
     },
     {
       "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
-      "bytes": 21601,
-      "sha256": "1faa4ef91441f723ef6496f5d490c40fcf5a4abaf0334781647a83701365dae8"
+      "bytes": 21571,
+      "sha256": "12cb96ecb41110c40d905c8b2895e02aecbd4c55f44bedbb7caba78b2d2a7685"
     },
     {
       "path": "platform-integrations/local-library/publication.ts",
@@ -386,7 +386,7 @@
       "sha256": "c2d21235ac2050fbab06f02adb79aea840b7987cb43841b719519077d9f8e036"
     }
   ],
-  "integration_source_inventory_sha256": "41503a1701b709d94ce5dc023449c53434ee994fdac658e76aec0bef349042d5",
+  "integration_source_inventory_sha256": "9b0993c10cdaaebe4ec7a42aa63bef714222a3edc29f1d5a4444900437140b1f",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -405,7 +405,7 @@
     },
     {
       "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
-      "sha256": "1faa4ef91441f723ef6496f5d490c40fcf5a4abaf0334781647a83701365dae8",
+      "sha256": "12cb96ecb41110c40d905c8b2895e02aecbd4c55f44bedbb7caba78b2d2a7685",
       "intentional_rendered_extension": true
     },
     {

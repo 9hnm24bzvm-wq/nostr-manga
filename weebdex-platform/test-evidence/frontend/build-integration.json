@@ -11,7 +11,7 @@
     "PUBLIC_PROXY_URL": "/proxy",
     "PUBLIC_OPENGRAPH_URL": "/og-image"
   },
-  "spa_fallback_sha256": "5f7a148c12562c06816827d6cdbd922c3a2c709d38ba59bbc9feaa9bddf93f57",
+  "spa_fallback_sha256": "1e798f2a884632e783c5973e3e3abcce6271967a29b0e82bb48969916b40fe70",
   "original_post_build_script_executed": true,
   "source_import_case_repaired_externally": [
     "$lib/utils.js -> src/lib/Utils.ts",
@@ -40,7 +40,7 @@
   ],
   "script_overlay_module_sha256": "0f4ed01c8e3022b64c93a6d5ccaf47232724586765ad0f8ab43221dfd964957e",
   "reader_overlay_module_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
-  "integration_source_inventory_sha256": "41503a1701b709d94ce5dc023449c53434ee994fdac658e76aec0bef349042d5",
+  "integration_source_inventory_sha256": "9b0993c10cdaaebe4ec7a42aa63bef714222a3edc29f1d5a4444900437140b1f",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -59,7 +59,7 @@
     },
     {
       "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
-      "sha256": "1faa4ef91441f723ef6496f5d490c40fcf5a4abaf0334781647a83701365dae8",
+      "sha256": "12cb96ecb41110c40d905c8b2895e02aecbd4c55f44bedbb7caba78b2d2a7685",
       "intentional_rendered_extension": true
     },
     {

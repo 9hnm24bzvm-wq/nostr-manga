@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "scope": "Two Settings disclosure wording changes only; superseded by requested native-tab redesign, not UX acceptance",
+  "product_commit": "84b8e8975870c1758132e2bbc138a50dbc088429",
+  "source_parent": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "focused_tests": {
+    "passed": 77,
+    "failed": 0,
+    "skipped": 0
+  },
+  "strict_composed": {
+    "status": "passed",
+    "errors": 0,
+    "warnings": 15,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true
+  },
+  "strict_owned_cleanup_verified": true,
+  "source_inputs_unchanged": 1064,
+  "current_actor_plan_bindings_verified": 16,
+  "historical_plans_and_receipts_unchanged": true,
+  "browser_acceptance": "Unrun for wording snapshot; genuine a424 browser evidence belongs to separate unchanged lineage",
+  "source_files": {
+    "platform-integrations/local-library/ProtocolIdentityPanel.svelte": "12cb96ecb41110c40d905c8b2895e02aecbd4c55f44bedbb7caba78b2d2a7685",
+    "scripts/browser-journeys.mjs": "8bbbe1f9205462da43d647f30f1c3a648e10ca103fc1872ddd4d35123e7f6edb",
+    "scripts/browser-signed-journeys.mjs": "315e0692d47da6017c0505f87747cdab0c650f59a79d129417f348e122ac533c",
+    "tests/ci/test_library_identity_route_ownership.mjs": "ebcf9ac5be1ed09a542c1a3807d54cae09ec574dff5fe25389e365b1cc95d076",
+    "tests/ci/test_browser_library_relocation.mjs": "89f5ac601dd2d5aaf5ca8103c7e1cdb15d117ca5ed9d6cf3d4e78bd645e4d7c1"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "command_exit": 0,
+  "remaining_owned_members": [],
+  "changed_inputs": [],
+  "owned_terminal_receipt": ".build/wording-owned-build/owned.json",
+  "browser_tests_executed": false,
+  "frozen_input_files": 1064
+}
