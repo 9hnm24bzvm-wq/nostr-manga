@@ -82,8 +82,8 @@
     },
     {
       "path": "platform-integrations/frontend-behavior/manga-search-query.ts",
-      "bytes": 10638,
-      "sha256": "23d9b9a6e5b191b114df873d633aa97c9e77f8b3bec89fd98a08114c605099c8"
+      "bytes": 11360,
+      "sha256": "db7130ddb28f6b4c3c71f3a1d41f2f6547ea907f67a00e7fb83d3d4e52105998"
     },
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -202,8 +202,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 430713,
-      "sha256": "4dbd1e4b2eece4817bdf7f8de559711cd2308bf780ca2365e560c98e2db46b37"
+      "bytes": 431746,
+      "sha256": "6e5682c74a29b5fc8e8a54bf7ac5cf3b8c44073df12384f5a1f03480a1d13d15"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -371,7 +371,7 @@
       "sha256": "b047eaba5865ee6d83a522410f84b7e6b884e9074b4dc127c75341f92e8bf224"
     }
   ],
-  "integration_source_inventory_sha256": "8dca0e78b6e5f8cc92bb1f451492ac705657616d61a7224f08c901c868e0c7a6",
+  "integration_source_inventory_sha256": "b86055be4bcabb8cafe2df297958b23cb9eb5f3ae521a328ffd90f4ed58dbc7a",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -399,7 +399,7 @@
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "4dbd1e4b2eece4817bdf7f8de559711cd2308bf780ca2365e560c98e2db46b37",
+  "overlay_module_sha256": "6e5682c74a29b5fc8e8a54bf7ac5cf3b8c44073df12384f5a1f03480a1d13d15",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -2635,6 +2635,12 @@
       "path": "src/routes/(app)/library/+page.svelte",
       "label": "actual search read normalizes explicit fields before preferences and limit defaults",
       "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search Apply validates the final wire after sentinel and default-key mutations",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
       "count": 1
     },
     {
@@ -6035,6 +6041,12 @@
       "label": "actual search read normalizes explicit fields before preferences and limit defaults",
       "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
       "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search Apply validates the final wire after sentinel and default-key mutations",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
     }
   ],
   "reader_script_repairs": [
@@ -7738,7 +7750,7 @@
     {
       "path": "src/lib/components/MangaSearchFilter.svelte",
       "original_sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
-      "executed_source_sha256": "6a2ff20648d0afde98ea7762e31f59f9c7b2e1e13a54fa29b03f7fb2a9396934",
+      "executed_source_sha256": "ae758a8523c8df74fe0864555fc09284c29fcfe2a172f4749621b451837d36e4",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8563,7 +8575,7 @@
     {
       "path": "src/lib/components/MangaSearch.svelte",
       "original_sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
-      "executed_source_sha256": "9ac0858b84e752f4787dd30785d86a27fe5332af013a9c7a88ca04320455e777",
+      "executed_source_sha256": "af038cd1d33ae5e8f49d4ccc9d77e56e4f73af0039b502a8d8b09c8fdc059d4f",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8596,7 +8608,7 @@
     {
       "path": "src/routes/(app)/search/+page.svelte",
       "original_sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
-      "executed_source_sha256": "a6ae7cc740b8959b515e00b4e4cfd689ab1948deaa96ec3deb66f6e0da6ebc49",
+      "executed_source_sha256": "0e373a4be0a9b37c0e56d155dcf7c4473c86c7e76f6744027c5bcb9e976b9726",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8607,7 +8619,7 @@
     {
       "path": "src/routes/(app)/library/+page.svelte",
       "original_sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
-      "executed_source_sha256": "f3520e3898554ddbdcc087797dc5a454143e699e8f579dcb5162285d7a467741",
+      "executed_source_sha256": "a70017ec8ce59fccea4557cd3200d3dbc8fad2829d82662ee824f65cf24872cb",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,

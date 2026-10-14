@@ -185,6 +185,49 @@ check('valid owned-field edits do not discard over-budget unknown passthrough', 
 });
 check('actual library Apply preserves explicit empty rating and resets page', () => { let target; const window = { location: { pathname: '/library', search: '?contentRating=__none__&page=2' } }; const value = script('src/lib/components/MangaSearchFilter.svelte', { submit: 'onSubmit' }, { window, goto: value => { target = value; }, toast: { error() { assert.fail('valid explicit empty selection rejected'); } } }); value.api.submit(); const next = new URL(target, 'http://localhost'); assert.equal(next.searchParams.get('contentRating'), '__none__'); assert.equal(next.searchParams.has('page'), false); });
 check('explicit library Reset clears its empty-rating selection deliberately', () => { let target; const window = { location: { pathname: '/library', search: '?contentRating=__none__&page=2' } }; const value = script('src/lib/components/MangaSearchFilter.svelte', { reset: 'onReset' }, { window, goto: value => { target = value; }, toast: { error() { assert.fail('explicit Reset was blocked'); } } }); value.api.reset(); assert.equal(target, '/library'); });
+const wire = value => value.toString().replace(/^\?/, '');
+function boundedQuery(seed, length) {
+  const result = new URLSearchParams(seed);
+  while (length - wire(result).length > 1008) result.append('future', 'a'.repeat(1000));
+  const remaining = length - wire(result).length;
+  assert.ok(remaining >= 8); result.append('future', 'a'.repeat(remaining - 8));
+  assert.equal(wire(result).length, length); return result;
+}
+const noRatings = { items_per_page: '20', show_safe: false, show_suggestive: false, show_erotic: false, show_hentai: false, languages: [], tags: [] };
+const selected = 'limit=0&sort=title&order=asc&tag=a&tmod=OR&tagx=b&txmod=AND';
+for (const [length, accepted] of [[16375, false], [16360, true]]) {
+  const input = boundedQuery(selected, length), errors = [], targets = [];
+  assert.equal(query.validateMangaSearchQuery(input, false), undefined);
+  const value = script('src/lib/components/MangaSearchFilter.svelte', { submit: 'onSubmit' }, { $prefs: noRatings, window: { location: { pathname: '/search', search: input.toString() } }, goto: target => targets.push(target), toast: { error: (...args) => errors.push(args) } });
+  value.api.submit();
+  check('actual Apply admits final sentinel wire only within budget ' + length, () => {
+    assert.equal(targets.length, accepted ? 1 : 0); assert.equal(errors.length, accepted ? 0 : 1);
+    if (accepted) { const final = new URL(targets[0], 'http://localhost').searchParams; assert.equal(final.get('contentRating'), '__none__'); for (const [key, expected] of new URLSearchParams(selected)) assert.equal(final.get(key), expected); assert.equal(query.validateMangaSearchQuery(final, false), undefined); }
+  });
+}
+const savedPreferences = { ...preferenceValues };
+Object.assign(preferenceValues, noRatings);
+for (const [library, seed, length, accepted] of [[false, selected, 16375, false], [false, selected, 16360, true], [true, 'sort=title&order=asc', 16380, false], [true, 'sort=title&order=asc', 16370, true]]) {
+  const input = boundedQuery(seed, length), pathname = library ? '/library' : '/search';
+  const window = { location: { pathname, search: input.toString(), href: 'http://localhost' + pathname + input.toString() } };
+  assert.equal(query.validateMangaSearchQuery(input, library), undefined);
+  let issued;
+  const request = async value => { issued = value; return { status: 200, body: { data: [], total: 0 } }; };
+  const supplied = { window, $prefs: noRatings, prefs: { applyMangaPreferences }, API: { Manga: { Search: request }, MangaFollow: { Search: request } }, StatusCodes: { OK: 200, TOO_MANY_REQUESTS: 429 }, page: { state: {} }, replaceState() {} };
+  const route = script('src/routes/(app)' + pathname + '/+page.svelte', { read: 'onSearch' }, supplied);
+  let rejected; try { await route.api.read(); } catch (error) { rejected = error; }
+  check('actual read validates preference and default additions ' + pathname + '/' + length, () => { assert.equal(Boolean(issued), accepted); if (accepted) assert.equal(query.validateMangaSearchQuery(issued, library), undefined); else assert.equal(rejected.title, 'Invalid search filters'); });
+  let cacheReads = 0;
+  const cached = script('src/lib/components/MangaSearch.svelte', { current: '() => ({ error, feed })' }, { ...supplied, page: { state: { _$MangaSearch_feed: { data: ['cached'] } } }, $props: () => ({ feed: { data: ['cached'] }, onSearch: async () => { cacheReads++; await route.api.read(); } }) });
+  await cached.mounts[0]();
+  check('cache admission validates identical effective query ' + pathname + '/' + length, () => { assert.equal(cacheReads, accepted && library ? 1 : 0); if (accepted) { assert.equal(cached.api.current().error, undefined); if (!library) assert.deepEqual(clean(cached.api.current().feed.data), ['cached']); } else { assert.equal(cached.api.current().error.title, 'Invalid search filters'); assert.equal(cached.api.current().feed, undefined); } });
+}
+for (const [field, values] of [['languages', Array(101).fill('en')], ['tags', Array(101).fill('native')]]) {
+  Object.assign(preferenceValues, noRatings, { [field]: values });
+  check('effective query rejects excessive preference rows ' + field, () => { const result = query.effectiveMangaSearchReadQuery(new URLSearchParams(), false, { applyMangaPreferences }, '20'); assert.equal(result.error.title, 'Invalid search filters'); });
+}
+Object.assign(preferenceValues, savedPreferences);
+check('effective query validates an invalid preference default limit', () => { assert.equal(query.effectiveMangaSearchReadQuery(new URLSearchParams(), true, { applyMangaPreferences }, '101').error.title, 'Invalid search filters'); });
 const flush = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };
 for (const relative of ['src/routes/(app)/chapter/[id]/edit/+page.svelte','src/routes/(app)/title/[id]/upload/+page.svelte']) {
   for (const mode of ['undefined','throw','success','stale']) {

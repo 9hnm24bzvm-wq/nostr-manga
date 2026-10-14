@@ -146,3 +146,13 @@ export function mangaSearchReadQuery(input: URLSearchParams, library: boolean): 
   if (parsed.page !== undefined) query.set('page', String(parsed.page));
   return { query, error: searchValidationError(parsed.issues) };
 }
+
+// Cache admission and the actual API read must validate the same final wire,
+// including preference rows and the default limit appended by the route.
+export function effectiveMangaSearchReadQuery(input: URLSearchParams, library: boolean, preferences: { applyMangaPreferences(query: URLSearchParams): void }, defaultLimit: string): { query: URLSearchParams; error?: SearchError } {
+  const admitted = mangaSearchReadQuery(input, library);
+  if (admitted.error) return admitted;
+  if (!library) preferences.applyMangaPreferences(admitted.query);
+  if (!admitted.query.has('limit')) admitted.query.set('limit', defaultLimit);
+  return { query: admitted.query, error: validateMangaSearchQuery(admitted.query, library) };
+}

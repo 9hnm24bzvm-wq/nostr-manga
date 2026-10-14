@@ -2879,7 +2879,7 @@ const patches = [
   "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
   "count": 1,
   "before": "\timport { Constants } from \"$lib\";",
-  "after": "\timport { Constants } from \"$lib\";\r\n\timport { validateMangaSearchQuery } from \"$platform/manga-search-query\";"
+  "after": "\timport { Constants } from \"$lib\";\r\n\timport { validateMangaSearchQuery, effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
 },
 {
   "path": "src/lib/components/MangaSearch.svelte",
@@ -2887,7 +2887,7 @@ const patches = [
   "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
   "count": 1,
   "before": "\tonMount(async () => {",
-  "after": "\tonMount(async () => {\r\n\t\tif (window.location.pathname === \"/search\" || window.location.pathname === \"/library\") {\r\n\t\t\tconst validation = validateMangaSearchQuery(new URLSearchParams(window.location.search), window.location.pathname === \"/library\");\r\n\t\t\tif (validation) { error = validation; feed = undefined; isMounted = true; return; }\r\n\t\t}"
+  "after": "\tonMount(async () => {\r\n\t\tif (window.location.pathname === \"/search\" || window.location.pathname === \"/library\") {\r\n\t\t\tconst input = new URLSearchParams(window.location.search), library = window.location.pathname === \"/library\";\r\n\t\t\tconst validation = validateMangaSearchQuery(input, library) ?? effectiveMangaSearchReadQuery(input, library, prefs, $prefs.items_per_page).error;\r\n\t\t\tif (validation) { error = validation; feed = undefined; isMounted = true; return; }\r\n\t\t}"
 },
 {
   "path": "src/lib/components/AppHeader.svelte",
@@ -2951,15 +2951,15 @@ const patches = [
   "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
   "count": 1,
   "before": "\timport { StatusCodes } from \"http-status-codes\";",
-  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { mangaSearchReadQuery } from \"$platform/manga-search-query\";"
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
 },
 {
   "path": "src/routes/(app)/search/+page.svelte",
   "label": "actual search read normalizes explicit fields before preferences and limit defaults",
   "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
   "count": 1,
-  "before": "\t\tconst q = new URLSearchParams(window.location.search);",
-  "after": "\t\tconst admitted = mangaSearchReadQuery(new URLSearchParams(window.location.search), false);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);\r\n\t\tprefs.applyMangaPreferences(q);\r\n\r\n\t\tif (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);",
+  "after": "\t\tconst admitted = effectiveMangaSearchReadQuery(new URLSearchParams(window.location.search), false, prefs, $prefs.items_per_page);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
 },
 {
   "path": "src/routes/(app)/library/+page.svelte",
@@ -2967,15 +2967,23 @@ const patches = [
   "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
   "count": 1,
   "before": "\timport { StatusCodes } from \"http-status-codes\";",
-  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { mangaSearchReadQuery } from \"$platform/manga-search-query\";"
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
 },
 {
   "path": "src/routes/(app)/library/+page.svelte",
   "label": "actual search read normalizes explicit fields before preferences and limit defaults",
   "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
   "count": 1,
-  "before": "\t\tconst q = new URLSearchParams(window.location.search);",
-  "after": "\t\tconst admitted = mangaSearchReadQuery(new URLSearchParams(window.location.search), true);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);\r\n\r\n\t\tif (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);",
+  "after": "\t\tconst admitted = effectiveMangaSearchReadQuery(new URLSearchParams(window.location.search), true, prefs, $prefs.items_per_page);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search Apply validates the final wire after sentinel and default-key mutations",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tconst target = window.location.pathname + q.toString();",
+  "after": "\t\tconst finalValidation = validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (finalValidation) { toast.error(finalValidation.title, { description: finalValidation.body }); return; }\r\n\t\tconst target = window.location.pathname + q.toString();"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
