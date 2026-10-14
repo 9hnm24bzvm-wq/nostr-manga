@@ -402,7 +402,14 @@ export async function runUi11To16Journeys(h) {
       const prefix = `device-progress-${gateKind}-page${targetPage}`;
       await check(prefix + "-setup", async () => {
         await open(`/title/${ids.manga}`); await ready(); await mode("account"); await removeDeviceChapter(ids.chapter);
-        const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); await settings(); await realm();
+        const entry = countPosts(`/api/user/history/manga/${ids.manga}`);
+        try {
+          const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`));
+          await until(() => entry.rows, rows => rows.some(row => row.status === 200 && row.body), "Initial account reader entry did not join its genuine200 acknowledgement before stale-intent observation");
+          const durable = await api(`/api/user/history/manga/${ids.manga}`); insist(durable.status === 200 && Object.hasOwn(durable.body[ids.manga] ?? {}, ids.chapter), "Initial legitimate account reader entry was not durable");
+          await entry.settle(); insist(entry.requests === 1, "Initial reader lifetime replayed automatic account history before the mode-change test");
+          await settings(); await realm();
+        } finally { await entry.close(); }
       });
       await check(prefix + "-select-page", async () => { if (targetPage !== 1) await selectReaderPage(String(targetPage), targetPage); });
       await check(prefix + "-no-prior-progress", async () => { insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Device progress already existed before the controlled reentry test"); });
