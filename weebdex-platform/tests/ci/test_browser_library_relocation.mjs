@@ -104,7 +104,7 @@ async function probe(fault) {
         return { async isVisible() { assert(atReader()); return true; }, async click() { assert(atReader()); shown = true; events.push(['show-comments', viewport.width]); } };
       }
       assert.equal(role, 'link'); assert.equal(options.name, 'Manage library');
-      return { async click() { assert.equal(url.pathname, '/library'); events.push(['manage-link', viewport.width]); url = new URL('/settings/preferences#local-library', origin); } };
+      return { async click() { assert.equal(url.pathname, '/library'); if (fault === 'missing-manage-link') throw original; events.push(['manage-link', viewport.width]); url = new URL('/settings/preferences#local-library', origin); } };
     },
     async waitForURL(predicate) { assert(predicate(url), 'Actual management helper must verify its settings deep link'); },
     async reload(options) { assert.deepEqual(options, { waitUntil: 'domcontentloaded' }); assert(isSettings()); reloads++; if (fault === 'reload-hash') url.hash = ''; events.push(['reload', viewport.width]); },
@@ -132,11 +132,16 @@ test('actual step visits both configured native layouts, contextual actions and 
     for (const kind of ['chapter', 'manga']) assert(value.events.some(row => row[0] === 'conversation' && row[1] === kind && row[3] === width));
     assert.equal(value.events.filter(row => row[0] === 'disclosure' && row[2] === width).length, summaries.length);
     assert.equal(value.events.filter(row => row[0] === 'image-callback' && row[1] === width).length, 2, 'Execute both actual image callbacks');
+    const label = width === 1440 ? 'desktop' : 'mobile';
+    const captures = value.events.filter(row => row[0] === 'capture-stand-in' && row[1].includes('/relocation-' + label + '-'));
+    assert.deepEqual(captures.map(row => [row[1].split('/relocation-' + label + '-')[1], row[2]]), [['home.png', true], ['search.png', true], ['title.png', true], ['reader.png', false], ['reader-discussion.png', false], ['title-comments.png', false], ['library-settings.png', false], ['public-identity.png', false]]);
+    assert(value.events.indexOf(captures[3]) < value.events.findIndex(row => row[0] === 'show-comments' && row[1] === width), 'Initial reader capture precedes contextual comments');
   }
   assert.equal(value.events.filter(row => row[0] === 'manage-link').length, 2);
   assert.equal(value.events.filter(row => row[0] === 'identity-prompt').length, 2);
   assert.equal(value.events.filter(row => row[0] === 'reload').length, 2);
   assert.equal(value.events.filter(row => row[0] === 'auth').length, 3);
+  assert.equal(value.events.filter(row => row[0] === 'target-input-check').length, 4);
   assert.equal(value.report.screenshots.length, 16); assert.equal(new Set(value.report.screenshots).size, 16);
   assert.deepEqual(value.result.screenshots, value.report.screenshots);
   assert.equal(value.result.observations.length, 16);
@@ -157,6 +162,6 @@ for (const [fault, message] of [
   const value = await probe(fault); assert.match(value.error?.message ?? '', message); assert.equal(value.result, undefined);
 });
 
-for (const fault of ['wrong-chapter', 'wrong-manga', 'missing-prompt', 'capture-failure']) test('actual step preserves original driver error for ' + fault, async () => {
+for (const fault of ['wrong-chapter', 'wrong-manga', 'missing-prompt', 'missing-manage-link', 'capture-failure']) test('actual step preserves original driver error for ' + fault, async () => {
   const value = await probe(fault); assert.equal(value.error, value.original); assert.equal(value.result, undefined);
 });
