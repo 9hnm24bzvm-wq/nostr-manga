@@ -9,7 +9,7 @@ import test from 'node:test';
 import { createJourneyCheck } from '../../scripts/journey-checks.mjs';
 import { titleFollowCheckSuffixes, selectTitleLibraryStatus } from '../../scripts/browser-select-controls.mjs';
 import { localLibraryDiagnosticChecks } from '../../scripts/browser-journeys.mjs';
-import { signedJourneyPhases, signedLibraryDiagnosticChecks } from '../../scripts/browser-signed-journeys.mjs';
+import { signedJourneyPhases, signedLibraryDiagnosticChecks, signedDownstreamCheckSuffixes } from '../../scripts/browser-signed-journeys.mjs';
 
 const localSource = fs.readFileSync(new URL('../../scripts/browser-journeys.mjs', import.meta.url), 'utf8');
 const signedSource = fs.readFileSync(new URL('../../scripts/browser-signed-journeys.mjs', import.meta.url), 'utf8');
@@ -30,7 +30,7 @@ const signedSuffixes = [
   'recipient-verified', 'recipient-selected'
 ];
 const expected = { 'local-library': localSuffixes.map(suffix => 'local-library-' + suffix),
-  ...Object.fromEntries(signedJourneyPhases.map(phase => [phase, signedSuffixes.map(suffix => phase + '-' + suffix)])) };
+  ...Object.fromEntries(signedJourneyPhases.map(phase => [phase, [...signedSuffixes, ...(signedDownstreamCheckSuffixes[phase] ?? [])].map(suffix => phase + '-' + suffix)])) };
 
 test('closed inventories are fixed, unique, deeply frozen and phase scoped', () => {
   assert.deepEqual(titleFollowCheckSuffixes, ['trigger-visible-unique', 'popup-open', 'option-selected']);
@@ -105,7 +105,7 @@ const followSource = signedSource.match(/const follow = ([^\n]+);/)[1];
 async function wiringProbe(phase, failAt) {
   const report = {}, steps = [], failure = Error('synthetic private checkpoint failure');
   const recorder = createJourneyCheck(report);
-  const inventory = expected[phase];
+  const inventory = phase === 'local-library' ? expected[phase] : signedSuffixes.map(suffix => phase + '-' + suffix);
   const check = async (id, operation) => {
     assert.equal(typeof operation, 'function'); assert(inventory.includes(id));
     // These probe bodies deliberately stand in for the original private actions.
@@ -157,6 +157,6 @@ test('actual local outer code retains monotone checkpoints and original failure 
 test('actual signed common outer code records every fixed phase split and original failure', async () => {
   for (const phase of signedJourneyPhases) {
     await wiringProbe(phase);
-    for (const id of expected[phase]) await wiringProbe(phase, id);
+    for (const id of signedSuffixes.map(suffix => phase + '-' + suffix)) await wiringProbe(phase, id);
   }
 });
