@@ -44,6 +44,30 @@ process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui,..
         owned = {'fixture_only': True, 'phase': phase, 'verified_stopped': True, 'forced': False, 'returncode': 0}
         return acceptance, owned, key
 
+    def test_actor_follow_nested_failure_is_closed_and_keeps_unreached_checks_pending(self):
+        phase = 'ui14-actor-follow'
+        self.assertEqual(len(contract.CHECKS[phase]), 71)
+        self.assertEqual(len(set(contract.CHECKS[phase])), 71)
+        acceptance, owned, key = self.phase(phase)
+        ids = contract.CHECKS[phase]
+        failed = ids.index('actor-follow-group-initial-readiness-status-pending')
+        acceptance[key] = [{'check_id': value, 'status': 'failed' if value in [
+            'actor-follow-group-initial-readiness', ids[failed]] else 'passed'}
+            for value in ids[:failed + 1]]
+        acceptance['passed'] = False
+        acceptance['steps'][0]['status'] = 'failed'
+        owned['returncode'] = 1
+        row = runner.project_phase(phase, 'actor-follow', acceptance, owned)
+        diagnostics = row['journey_diagnostics']
+        self.assertTrue(diagnostics['record_valid'])
+        self.assertEqual(diagnostics['check_results'][failed]['status'], 'failed')
+        self.assertTrue(all(value['status'] == 'pending' for value in diagnostics['check_results'][failed + 1:]))
+        validator.phases({'schema': 1, 'phases': [row], 'batches': []})
+        acceptance[key][-1]['error'] = 'private@example.invalid?token=never-publish'
+        projection = contract.project(phase, acceptance)
+        self.assertFalse(projection['record_valid'])
+        self.assertNotIn('never-publish', json.dumps(projection))
+
     def test_all_finite_journey_projections_validate(self):
         for phase in contract.CHECKS:
             acceptance, owned, _ = self.phase(phase)

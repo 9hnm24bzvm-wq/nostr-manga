@@ -30,10 +30,19 @@ CHECKS = {
     ]],
 }
 
+ACTOR_FOLLOW_CASE_CHECKS = {
+    'initial-readiness': ['prerequisite', 'initial-session', 'status-pending', 'status-settled'],
+    'read-retry': ['prerequisite', 'delivery-failed', 'retry-pending', 'retry-settled'],
+    'unblock-loading': ['prerequisite', 'status-held', 'unblock-committed', 'follow-restored'],
+    'unblock-error': ['prerequisite', 'status-held', 'unblock-committed', 'follow-restored'],
+    'pending-ack': ['prerequisite', 'write-committed', 'pending-controls', 'delivery-settled'],
+    'pending-lost': ['prerequisite', 'write-committed', 'pending-controls', 'delivery-settled'],
+    'pending-disposed': ['prerequisite', 'write-committed', 'pending-controls', 'delivery-settled'],
+}
 CHECKS['ui14-actor-follow'] = ['actor-follow-account', *[
-    'actor-follow-' + kind + '-' + case for kind in ['group', 'user']
-    for case in ['initial-readiness', 'read-retry', 'unblock-loading', 'unblock-error',
-                 'pending-ack', 'pending-lost', 'pending-disposed']
+    'actor-follow-' + kind + '-' + case + suffix
+    for kind in ['group', 'user'] for case, checks in ACTOR_FOLLOW_CASE_CHECKS.items()
+    for suffix in ['', *['-' + check for check in checks]]
 ]]
 CHECKS['ui10-reader-transition'] = ['reader-transition-' + control + '-' + check
     for control in ['403', '404', 'delayed', 'normal']

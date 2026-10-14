@@ -1,7 +1,7 @@
 # Supplemental Group/User follow browser regressions
 
 Source preparation based exactly on `56f9cb248334eff951be571a567697b73f710fab`.
-No real browser execution is claimed. This adds one dedicated
+The original source preparation added one dedicated
 `ui14-actor-follow` phase and fresh-fixture `actor-follow` batch alongside all
 38 original phases. The full required set is now 39 unique phases. The historical
 Build19 launch plan/pins remain historical; the supplemental machine-readable
@@ -40,8 +40,9 @@ Both actual entity headers run the same seven scenario groups:
 Delivery abort is reported as a browser-delivery failure, never a fabricated
 HTTP status or rollback. Disposal may cancel browser delivery after the original
 server commit. Native state and exact browser request methods/counts are separate
-oracles. Public report checkpoints contain only the 15 fixed check identities
-and finite statuses; no body, URL, cookie, credentials, account header or error is
+oracles. Public report checkpoints retain the 15 original aggregate identities
+and add four finite subchecks under each entity case (71 fixed identities total)
+with finite statuses; no body, URL, cookie, credentials, account header or error is
 added to public diagnostic projection. Existing redaction and owned teardown
 requirements remain in force.
 
@@ -61,3 +62,41 @@ must retain all original phases as well. Local contract/seam tests verify harnes
 wiring and evidence rejection only; selectors, real timings, native responses,
 actual browser operation and terminal fixture cleanup remain unestablished until
 that run. No publication or hosted CI is authorized by this source preparation.
+
+## Observed run and harness correction
+
+Hosted run `38584846100` exercised the original phase on commit
+`e1ea103f2d8c0d8091eb63acf11f240c1e350591` / tree
+`6950c9b7a819874d630831e61ea1907a0c8c40fc`. Its sanitized result contained
+15 aggregate checks: the account and four Unblock cases passed; initial
+readiness, read retry, and all three pending-write cases failed for both actors
+(10 failed, 5 passed). There were zero page errors. The closed aggregate artifact
+does not identify the first failing inner assertion, so this is not evidence of
+any later assertion succeeding or of a product regression.
+
+The source-derived naming reproduction uses actual composed Group/User markup,
+retained native Button/Spinner topology, JSDOM 27.0.1, and the hash-pinned
+Playwright 1.62.1 injected accessible-name/text functions. A pending read/write
+renders the accessible name `Loading Follow` (or `Loading Unfollow`), while its
+exact visible label stays `Follow` (or `Unfollow`). The former exact role-name
+lookup therefore cannot find the busy control. This mismatch occurs at a
+required busy-button lookup in every one of the ten failed cases, and explains
+why the four Unblock cases avoid it. Block/Unblock retain BanIcon without
+Spinner; Retry is rendered before the next read, then becomes busy Follow.
+
+The corrective harness uses the unique visible native entity header and exact
+visible native-button text for all five labels. It still fails on missing or
+duplicate controls and asserts the actual disabled state. It changes neither
+product code, native statuses, response holds, polling budgets, interaction
+focus, mutation counts, durable-state checks nor owned cleanup. Four fixed
+subchecks distinguish prerequisites, genuine-response capture, pending controls,
+and settlement, retaining all fifteen aggregate steps. Raw error messages,
+request values and account data are still excluded from public diagnostics.
+
+This is a local seam/contract correction based on exact combined source
+`94c00b8b0688b121499743ed213e465eec69bc37`. JSDOM has no browser layout; the
+naming seam is not a Chromium run or compiled Svelte mount. No new real-browser,
+fixture, hosted CI or publication was started for this correction. Rebuild and
+pin this corrected source, rerun the actual `actor-follow` batch, and then retain
+the full original-phase run requirement. The existing 52 controlled Session/
+controller cases remain separate evidence for in-place ordering.
