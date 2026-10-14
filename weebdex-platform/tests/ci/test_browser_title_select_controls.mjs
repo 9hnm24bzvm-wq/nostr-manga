@@ -66,6 +66,7 @@ function pageStandIn(name = 'Add to Library') {
   const all = [trigger, ...decoys];
   const locator = rows => ({
     and(other) { return locator(rows.filter(row => other.rows.includes(row))); }, rows,
+    filter({ hasText }) { return locator(rows.filter(row => hasText.test(row.name))); },
     async click() { assert.equal(rows.length, 1, 'A specific real control must be selected'); events.push(rows[0] === trigger ? 'title-trigger' : 'Reading-option'); },
     async waitFor(options) { assert.deepEqual(options, { state: 'visible' }); assert.equal(rows.length, 1, 'Readback must find the actual selected title status'); events.push('Reading-visible'); },
   });
@@ -74,7 +75,7 @@ function pageStandIn(name = 'Add to Library') {
       if (role === 'option') { assert.equal(options.name, 'Reading'); assert.equal(options.exact, true); return locator([{ role: 'option', name: 'Reading' }]); }
       return locator(all.filter(row => (row.role ?? (row.tag === 'button' ? 'button' : undefined)) === role && (options.name instanceof RegExp ? options.name.test(row.name) : options.name === row.name)));
     },
-    locator(selector) { assert.equal(selector, 'div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]'); return locator(all.filter(row => row.tag === 'button' && row.titleLibrary && row['aria-haspopup'] === 'listbox')); },
+    locator(selector) { assert.equal(selector, 'div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]:visible'); return locator(all.filter(row => row.tag === 'button' && row.titleLibrary && row['aria-haspopup'] === 'listbox')); },
   };
   return { page, events };
 }

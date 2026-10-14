@@ -1,10 +1,14 @@
-// The retained title control uses Bits UI Select.Trigger: a native button with
-// aria-haspopup=listbox. Select.Input has role=combobox; Trigger does not.
+// The retained title control is a native Bits UI button. Its always-mounted
+// Spinner has aria-label="Loading" even while scale-0, so its accessible name is
+// not the visible status alone. Match the exact text in the unique visible title
+// scope; do not broaden to unrelated listboxes or silently choose a duplicate.
 export const titleLibraryControlName = /^(?:Add to Library|Reading|Plan to Read|On Hold|Completed|Dropped|Re-reading)$/;
+const escapeTextPattern = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export function titleLibraryTrigger(page, status) {
-  return page.getByRole('button', status === undefined ? { name: titleLibraryControlName } : { name: status, exact: true })
-    .and(page.locator('div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]'));
+  const text = status === undefined ? titleLibraryControlName.source.slice(1, -1) : escapeTextPattern(status);
+  return page.locator('div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]:visible')
+    .filter({ hasText: new RegExp('^\\s*' + text + '\\s*$') });
 }
 
 export const titleFollowCheckSuffixes = Object.freeze(['trigger-visible-unique', 'popup-open', 'option-selected']);

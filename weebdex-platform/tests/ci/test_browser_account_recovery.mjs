@@ -77,13 +77,13 @@ function journeyStandIns({ failSeed = false } = {}) {
   const response = (status, body) => ({ status: () => status, ok: () => status >= 200 && status < 300, json: async () => body, headers: () => ({ 'content-type': 'application/json' }) });
   const locator = selector => ({
     fill: async value => { inputs[selector] = value; }, count: async () => 0,
+    filter({ hasText }) { assert(hasText.test('Add to Library')); return { click: async () => { if (failSeed) throw Error('synthetic title control unavailable'); calls.push('title-trigger'); } }; },
     first() { return this; }, waitFor: async () => {},
   });
   const role = (kind, options) => ({
     first() { return this; }, and() { return this; }, waitFor: async () => {}, count: async () => 0,
     click: async () => {
       calls.push(options.name);
-      if (kind === 'button' && options.name instanceof RegExp && failSeed) throw Error('synthetic title control unavailable');
       if (options.name === 'Create Account') { session = 'normal'; initialPassword = currentPassword = inputs['input[name="password"]']; }
       if (options.name === 'Logout') session = 'none';
       if (options.name === 'Reset Password') { currentPassword = inputs['input[name="password"]']; session = 'normal'; }

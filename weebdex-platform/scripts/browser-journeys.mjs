@@ -470,7 +470,7 @@ export async function runJourneys(h) {
 		await step('optional signer requires explicit selection and dismissal does not queue publication', async () => {
 			const target = panel();
 			await inspect('signer-section-open', async () => { await expandPanel(); await target.getByText('Optional Nostr publication and verified recovery', { exact: true }).click(); });
-			await inspect('signer-binding-installed', () => page.evaluate(() => { window.nostr = { getPublicKey: async () => { throw Error('Synthetic signer prompt dismissed'); } }; }));
+			await inspect('signer-binding-installed', () => page.evaluate(() => { window.nostr = { getPublicKey: async () => { throw Error('Synthetic signer prompt dismissed'); }, signEvent: async () => { throw Error('Dismissed signer must never sign'); } }; }));
 			await inspect('signer-dismissal-visible', async () => { await target.getByRole('button', { name: 'Connect external browser signer', exact: true }).click(); await target.getByText('Synthetic signer prompt dismissed', { exact: false }).waitFor({ state: 'visible' }); });
 			await inspect('signer-outbox-empty', async () => { insist(await outboxCount() === 0, 'Dismissed signer created publication jobs'); await page.evaluate(() => { delete window.nostr; }); });
 			return { explicit_signer_control: true, dismissed_prompt_truthful: true, no_job_or_auto_key: true, signed_delivery_recovery_requires_real_original_fixture: true };

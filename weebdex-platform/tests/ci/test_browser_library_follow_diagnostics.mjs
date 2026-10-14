@@ -49,6 +49,7 @@ function controlPage({ failAt } = {}) {
   const fail = action => { events.push(action); if (failAt === action) throw Error('synthetic exact control failure'); };
   const trigger = {
     and() { return this; },
+    filter() { return this; },
     async waitFor({ state }) { assert.equal(state, 'visible'); fail('trigger-wait'); },
     async click() { fail('trigger-click'); popup = true; },
   };
@@ -63,7 +64,8 @@ function controlPage({ failAt } = {}) {
     },
     locator(selector) {
       if (selector === '[data-slot="select-content"][role="listbox"]:visible') return { async waitFor({ state }) { assert.equal(state, 'visible'); assert(popup); fail('popup-wait'); } };
-      assert.equal(selector, 'div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]'); return {};
+      assert.equal(selector, 'div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]:visible');
+      return { filter({ hasText }) { if (hasText.test('Add to Library')) return trigger; assert(hasText.test('Reading')); return { async waitFor({ state }) { assert.equal(state, 'visible'); assert(selected); fail('status-visible'); } }; } };
     },
   };
   return { page, events };
@@ -91,7 +93,7 @@ test('legacy uninstrumented helper keeps exactly its original two clicks', async
   assert.deepEqual(page.events, ['trigger-click', 'option-click']);
 });
 
-const checkOnlyPage = { getByRole() { return { and() { return this; } }; }, locator() { return {}; } };
+const checkOnlyPage = { getByRole() { return { and() { return this; } }; }, locator() { return { filter() { return this; } }; } };
 const localStart = localSource.indexOf("\t} else if (phase === 'local-library') {") + "\t} else if (phase === 'local-library') {".length;
 const localEnd = localSource.indexOf('\n\t} else if (phase === "pwa")', localStart);
 assert(localStart > 0 && localEnd > localStart);

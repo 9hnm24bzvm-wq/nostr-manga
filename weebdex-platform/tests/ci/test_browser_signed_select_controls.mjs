@@ -25,6 +25,7 @@ function pageStandIn(titleNames = []) {
     return {
       rows: matches,
       and(other) { return locator(matches.filter(row => other.rows.includes(row))); },
+      filter({ hasText }) { return locator(matches.filter(row => hasText.test(row.name))); },
       async count() { return matches.length; },
       async click() { assert.equal(matches.length, 1, 'No ambiguous or missing control may be silently selected'); events.push(matches[0]); },
     };
@@ -34,7 +35,7 @@ function pageStandIn(titleNames = []) {
       if (role === 'option') { assert.equal(options.exact, true); return locator([{ role, name: options.name }]); }
       return locator(rows.filter(row => row.role === role && (options.name instanceof RegExp ? options.name.test(row.name) : row.name === options.name)));
     },
-    locator(selector) { assert.equal(selector, 'div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]'); return locator(rows.filter(row => row.role === 'button' && row.title && row.popup === 'listbox')); },
+    locator(selector) { assert.equal(selector, 'div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]:visible'); return locator(rows.filter(row => row.role === 'button' && row.title && row.popup === 'listbox')); },
   } };
 }
 const insist = (condition, message) => assert.ok(condition, message);
