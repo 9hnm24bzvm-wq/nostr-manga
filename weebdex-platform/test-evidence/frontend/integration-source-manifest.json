@@ -7,7 +7,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": ".build/integrated-current-manifest-input",
+  "frontend": ".build/composed-relocation-04/production-input",
   "original_files_written": false,
   "reconstructed_routes": [
     {
@@ -207,8 +207,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 452687,
-      "sha256": "ddb2df007b63982c5c6e336739bc1bd401febe003eee2e60a43f655c2151face"
+      "bytes": 461696,
+      "sha256": "0f4ed01c8e3022b64c93a6d5ccaf47232724586765ad0f8ab43221dfd964957e"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -277,13 +277,23 @@
     },
     {
       "path": "platform-integrations/local-library/LibraryProtected.svelte",
-      "bytes": 941,
-      "sha256": "bfa325f8b7ce8cfc27e72e42d8f353828277d264d2cbbddb15bad4368e5670f5"
+      "bytes": 1014,
+      "sha256": "d608111ebc7c1eecf9a30bc08c40337f664038e438a6d7f06e210da482087b34"
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryRuntime.svelte",
+      "bytes": 734,
+      "sha256": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8"
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
-      "bytes": 29158,
-      "sha256": "c3c603ae4104c2ee5b491605ab27161dc926258b0326571f5c0a8aae22ebe164"
+      "bytes": 29990,
+      "sha256": "9319b37b25744bca38c73d00053176bc8d39b5870a08315517280cad6bf01608"
+    },
+    {
+      "path": "platform-integrations/local-library/MangaDiscussion.svelte",
+      "bytes": 393,
+      "sha256": "d10df4f2632f11b4f08305a1694eb59e7fd4310329b9f2e43f51b344674b54a3"
     },
     {
       "path": "platform-integrations/local-library/MangaFollow.ts",
@@ -347,8 +357,8 @@
     },
     {
       "path": "platform-integrations/local-library/protocol/publishing.js",
-      "bytes": 13464,
-      "sha256": "0d589492e970ff9f8a1a72d1f0300aa696def080bc708337ae3f9a4a3004c69f"
+      "bytes": 13709,
+      "sha256": "144a07f06b0fb4f7877f61cf6dd056073b169c7df403002b16285be2c7cdef3d"
     },
     {
       "path": "platform-integrations/local-library/protocol/store.js",
@@ -367,16 +377,16 @@
     },
     {
       "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
-      "bytes": 19755,
-      "sha256": "1f9da0538967206a6fef07e4c59fa1b25b05807f9e1bc7f48cd05766c583785e"
+      "bytes": 21601,
+      "sha256": "1faa4ef91441f723ef6496f5d490c40fcf5a4abaf0334781647a83701365dae8"
     },
     {
       "path": "platform-integrations/local-library/publication.ts",
-      "bytes": 22499,
-      "sha256": "b047eaba5865ee6d83a522410f84b7e6b884e9074b4dc127c75341f92e8bf224"
+      "bytes": 23612,
+      "sha256": "c2d21235ac2050fbab06f02adb79aea840b7987cb43841b719519077d9f8e036"
     }
   ],
-  "integration_source_inventory_sha256": "a730fc45ec167e6d919bd5a067ae9ec498caad066daaabc4e626bb3100ca609a",
+  "integration_source_inventory_sha256": "41503a1701b709d94ce5dc023449c53434ee994fdac658e76aec0bef349042d5",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -390,21 +400,31 @@
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
-      "sha256": "c3c603ae4104c2ee5b491605ab27161dc926258b0326571f5c0a8aae22ebe164",
+      "sha256": "9319b37b25744bca38c73d00053176bc8d39b5870a08315517280cad6bf01608",
       "intentional_rendered_extension": true
     },
     {
       "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
-      "sha256": "1f9da0538967206a6fef07e4c59fa1b25b05807f9e1bc7f48cd05766c583785e",
+      "sha256": "1faa4ef91441f723ef6496f5d490c40fcf5a4abaf0334781647a83701365dae8",
       "intentional_rendered_extension": true
     },
     {
       "path": "platform-integrations/local-library/LibraryProtected.svelte",
-      "sha256": "bfa325f8b7ce8cfc27e72e42d8f353828277d264d2cbbddb15bad4368e5670f5",
+      "sha256": "d608111ebc7c1eecf9a30bc08c40337f664038e438a6d7f06e210da482087b34",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryRuntime.svelte",
+      "sha256": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/MangaDiscussion.svelte",
+      "sha256": "d10df4f2632f11b4f08305a1694eb59e7fd4310329b9f2e43f51b344674b54a3",
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "ddb2df007b63982c5c6e336739bc1bd401febe003eee2e60a43f655c2151face",
+  "overlay_module_sha256": "0f4ed01c8e3022b64c93a6d5ccaf47232724586765ad0f8ab43221dfd964957e",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -928,58 +948,6 @@
       "label": "lock mutation consumes authoritative body rather than stale optimistic flag",
       "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
       "count": 1
-    },
-    {
-      "path": "src/routes/(app)/+layout.svelte",
-      "label": "explicit local and protocol panels import without auth Session substitution",
-      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/+layout.svelte",
-      "label": "mount opt-in collapsed local library and signed identity panels",
-      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "label": "source-bound title conversation imports explicit panel",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "label": "title source discussion has explicit target-specific opt-in panel",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-      "label": "source-bound reader conversation imports explicit panel",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-      "label": "reader retains original provider and adds explicit local/source panels",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-      "label": "source-bound reader conversation imports explicit panel",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-      "label": "reader retains original provider and adds explicit local/source panels",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
     },
     {
       "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
@@ -2911,6 +2879,119 @@
       "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
       "count": 1,
       "label": "upload candidates share reactive identity between queued mutations and rendered controls"
+    },
+    {
+      "path": "src/routes/+layout.svelte",
+      "label": "one renderless library lifecycle across app and standalone reader",
+      "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/+layout.svelte",
+      "label": "restore device state and save error reporting without management UI",
+      "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "anonymous settings owns library and signing identity management",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "management is independent of native session and outside preference form",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/library/+layout.svelte",
+      "label": "library management action uses native Button",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+layout.svelte",
+      "label": "management stays reachable in account and failed-scope fallback",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "title discussion owns its source-bound signed actions",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "signed conversation remains available without native account thread",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader.svelte",
+      "label": "reader discussion imports contextual signed actions",
+      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader.svelte",
+      "label": "signed comments belong below reading surface in discussion area",
+      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+      "label": "reader supports source discussion independently of native thread",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+      "label": "reader supports source discussion independently of native thread",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-panel.svelte",
+      "label": "reader native votes and thread link require native discussion",
+      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "label": "both end-page native vote controls require native discussion",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 2,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "label": "end-page native thread link guard 1",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "label": "end-page native thread link guard 2",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-settings.svelte",
+      "label": "reader settings links to anonymous library management",
+      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
     },
     {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
@@ -4599,58 +4680,6 @@
       "count": 1
     },
     {
-      "path": "src/routes/(app)/+layout.svelte",
-      "label": "explicit local and protocol panels import without auth Session substitution",
-      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/+layout.svelte",
-      "label": "mount opt-in collapsed local library and signed identity panels",
-      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "label": "source-bound title conversation imports explicit panel",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "label": "title source discussion has explicit target-specific opt-in panel",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-      "label": "source-bound reader conversation imports explicit panel",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-      "label": "reader retains original provider and adds explicit local/source panels",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-      "label": "source-bound reader conversation imports explicit panel",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-      "label": "reader retains original provider and adds explicit local/source panels",
-      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "count": 1,
-      "approved_ui_extension": "explicit_local_protocol_panel"
-    },
-    {
       "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
       "label": "pending title receipt uses scoped external editor boundary",
       "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
@@ -6580,6 +6609,119 @@
       "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
       "count": 1,
       "label": "upload candidates share reactive identity between queued mutations and rendered controls"
+    },
+    {
+      "path": "src/routes/+layout.svelte",
+      "label": "one renderless library lifecycle across app and standalone reader",
+      "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/+layout.svelte",
+      "label": "restore device state and save error reporting without management UI",
+      "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "anonymous settings owns library and signing identity management",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "label": "management is independent of native session and outside preference form",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/library/+layout.svelte",
+      "label": "library management action uses native Button",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+layout.svelte",
+      "label": "management stays reachable in account and failed-scope fallback",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "title discussion owns its source-bound signed actions",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "label": "signed conversation remains available without native account thread",
+      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader.svelte",
+      "label": "reader discussion imports contextual signed actions",
+      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/reader/reader.svelte",
+      "label": "signed comments belong below reading surface in discussion area",
+      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+      "label": "reader supports source discussion independently of native thread",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+      "label": "reader supports source discussion independently of native thread",
+      "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-panel.svelte",
+      "label": "reader native votes and thread link require native discussion",
+      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "label": "both end-page native vote controls require native discussion",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 2,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "label": "end-page native thread link guard 1",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "label": "end-page native thread link guard 2",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-settings.svelte",
+      "label": "reader settings links to anonymous library management",
+      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+      "count": 1,
+      "approved_ui_extension": "route_owned_library_identity"
     }
   ],
   "reader_script_repairs": [
@@ -7751,36 +7893,92 @@
   "local_library_overlay_sha256": "bffaba61a133992f7d09c412b38cc39c3d75823f46d10e784c816211a5033804",
   "approved_local_protocol_extensions": [
     {
-      "path": "src/routes/(app)/+layout.svelte",
-      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
+      "path": "src/routes/+layout.svelte",
+      "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
       "count": 1,
-      "before": "\t\t\t{@render children()}",
-      "after": "\t\t\t<LocalLibraryPanel />\r\n\t\t\t<ProtocolIdentityPanel />\r\n\t\t\t{@render children()}",
-      "approved_ui_extension": "explicit_local_protocol_panel"
+      "before": "<Lightbox.Provider>",
+      "after": "<LibraryRuntime />\n\n<Lightbox.Provider>",
+      "approved_ui_extension": "route_owned_library_identity"
     },
     {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
       "count": 1,
-      "before": "</svelte:head>",
-      "after": "</svelte:head>\r\n\r\n<ProtocolIdentityPanel resourceKind=\"manga\" resourceId={manga.id} />",
-      "approved_ui_extension": "explicit_local_protocol_panel"
+      "before": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}",
+      "after": "\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}\r\n\r\n<div class=\"mt-8 space-y-8\">\r\n\t<LocalLibraryPanel />\r\n\t<ProtocolIdentityPanel />\r\n</div>",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/library/+layout.svelte",
+      "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "count": 1,
+      "before": "<Protected>",
+      "after": "<div class=\"mb-4 flex justify-end\">\r\n\t<Button variant=\"outline\" size=\"sm\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n\r\n<Protected>",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader.svelte",
+      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+      "count": 1,
+      "before": "\t\t<Comments.Comments class=\"m-auto max-w-300\" />",
+      "after": "\t\t<div class=\"m-auto max-w-300 space-y-5\">\r\n\t\t\t{#if reader.chapter.relationships.thread}<Comments.Comments />{/if}\r\n\t\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={reader.chapter.id} />\r\n\t\t</div>",
+      "approved_ui_extension": "route_owned_library_identity"
     },
     {
       "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
       "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
       "count": 1,
-      "before": "\t{#if data.chapter}",
-      "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
-      "approved_ui_extension": "explicit_local_protocol_panel"
+      "before": "\t\t<Comments.Provider thread={data.chapter.relationships.thread}>\r\n\t\t\t<Reader.Provider chapter={data.chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t</Comments.Provider>",
+      "after": "\t\t{#snippet reading(chapter: Chapter)}\r\n\t\t\t<Reader.Provider {chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t{/snippet}\r\n\t\t{#if data.chapter.relationships.thread}\r\n\t\t\t<Comments.Provider thread={data.chapter.relationships.thread}>{@render reading(data.chapter)}</Comments.Provider>\r\n\t\t{:else}\r\n\t\t\t{@render reading(data.chapter)}\r\n\t\t{/if}",
+      "approved_ui_extension": "route_owned_library_identity"
     },
     {
       "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
       "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
       "count": 1,
-      "before": "\t{#if data.chapter}",
-      "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
-      "approved_ui_extension": "explicit_local_protocol_panel"
+      "before": "\t\t<Comments.Provider thread={data.chapter.relationships.thread}>\r\n\t\t\t<Reader.Provider chapter={data.chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t</Comments.Provider>",
+      "after": "\t\t{#snippet reading(chapter: Chapter)}\r\n\t\t\t<Reader.Provider {chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t{/snippet}\r\n\t\t{#if data.chapter.relationships.thread}\r\n\t\t\t<Comments.Provider thread={data.chapter.relationships.thread}>{@render reading(data.chapter)}</Comments.Provider>\r\n\t\t{:else}\r\n\t\t\t{@render reading(data.chapter)}\r\n\t\t{/if}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-panel.svelte",
+      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+      "count": 1,
+      "before": "\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t<Comments.Votes />\r\n\t\t\t\t\t\t\t<a\r\n\t\t\t\t\t\t\t\tclass={buttonVariants({ class: \"flex-auto border-none\", variant: \"outline\" })}\r\n\t\t\t\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t<MessagesSquareIcon />\r\n\t\t\t\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t\tNo comments yet\r\n\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t</a>\r\n\t\t\t\t\t\t</div>",
+      "after": "\t\t\t\t\t\t{#if reader.chapter.relationships.thread}\r\n\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t<Comments.Votes />\r\n\t\t\t\t\t\t\t<a\r\n\t\t\t\t\t\t\t\tclass={buttonVariants({ class: \"flex-auto border-none\", variant: \"outline\" })}\r\n\t\t\t\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t<MessagesSquareIcon />\r\n\t\t\t\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t\tNo comments yet\r\n\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t</a>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t{/if}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 2,
+      "before": "<Comments.Votes />",
+      "after": "{#if reader.chapter.relationships.thread}<Comments.Votes />{/if}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 1,
+      "before": "<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>",
+      "after": "{#if reader.chapter.relationships.thread}<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>{/if}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "count": 1,
+      "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t{comments.stats.replies}\r\n\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tGo to comments\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</a>",
+      "after": "{#if reader.chapter.relationships.thread}<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t{comments.stats.replies}\r\n\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tGo to comments\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</a>{/if}",
+      "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/lib/components/reader/reader-settings.svelte",
+      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+      "count": 1,
+      "before": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n",
+      "after": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n\r\n<Separator />\r\n<div class=\"space-y-2 p-2\">\r\n\t<Button class=\"w-full border-none\" variant=\"outline\" href=\"/settings/preferences#local-library\">Manage library</Button>\r\n</div>\r\n",
+      "approved_ui_extension": "route_owned_library_identity"
     },
     {
       "path": "src/lib/components/MangaSearchEntryCard.svelte",
@@ -8564,12 +8762,12 @@
     {
       "path": "src/lib/components/reader/reader.svelte",
       "original_sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
-      "executed_source_sha256": "69f50c8c1de97a820dedc6e7bc1658646d96b87cce74e8c5c4e43c2192199413",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
+      "executed_source_sha256": "6bfe86b5517644c278bfcb939a37af7e38b6f45fd945c1700c872da5bff91096",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
+      "explicit_local_protocol_ui_extension": true,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -8614,50 +8812,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/+layout.svelte",
-      "original_sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-      "executed_source_sha256": "ff0f1a445b22f492deb1c22d293eccfbbb08e86261b71d1749d580cb9a555edf",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "original_sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "executed_source_sha256": "42d3f5723565fd0684bab167f1c9d3f8fac57cf13be77a09bc959f7cec8622d6",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-      "original_sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "executed_source_sha256": "03e713332033ace1e330802d5e285ba8e6a8dd73540a1c2a8214cdbfb247b524",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-      "original_sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-      "executed_source_sha256": "03e713332033ace1e330802d5e285ba8e6a8dd73540a1c2a8214cdbfb247b524",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -8905,7 +9059,7 @@
     {
       "path": "src/routes/(app)/settings/preferences/+page.svelte",
       "original_sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
-      "executed_source_sha256": "d5bb4aaafaa65a4ba06d1796c0bdccfffa4fe25f217223bd44b071afcdb595d8",
+      "executed_source_sha256": "14b328846b798f8eeccc6b4685cf528822476e3faa679d6ba32a1841e3dfe1a4",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
@@ -9112,6 +9266,17 @@
       "approved_event_handler_javascript_changed": false
     },
     {
+      "path": "src/routes/(app)/+layout.svelte",
+      "original_sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
+      "executed_source_sha256": "863b4b9d9e200946a5c60970da7a31b0bf2ddc8469ff47f6d0aafc2f4e5de620",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
       "path": "src/routes/(app)/auth/+layout.svelte",
       "original_sha256": "dddbb202e26095ba9f348e2892d67366b570f40c4e84e0e4062128cc0cbd59b2",
       "executed_source_sha256": "24f2b65902c89099badca22c78c6e81379bbc3607af22844b56491d7ede78b4a",
@@ -9211,6 +9376,94 @@
       "approved_event_handler_javascript_changed": false
     },
     {
+      "path": "src/routes/+layout.svelte",
+      "original_sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+      "executed_source_sha256": "a2fcd67bf0a8bcce11afdbada771ab6cfc7cf8156c39c7bab6a69bc48e116318",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/routes/(app)/library/+layout.svelte",
+      "original_sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "executed_source_sha256": "c70b088fade314fa07a1c188b4ed05ea6442a079266a7e69dc1750a5339d468a",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/routes/(app)/title/Manga.svelte",
+      "original_sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+      "executed_source_sha256": "8ba56eb70f2a7b76e2c719ab82149d86bff3633a23bb4db7364aa8945b4252ab",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+      "original_sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "executed_source_sha256": "bdc368cab5e084e8c5a530c50365cbc5c94324b737e5453a9c85bd8bfc23fd34",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+      "original_sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+      "executed_source_sha256": "bdc368cab5e084e8c5a530c50365cbc5c94324b737e5453a9c85bd8bfc23fd34",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/components/reader/reader-panel.svelte",
+      "original_sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+      "executed_source_sha256": "40b535782f9f7b6c86f85f92090a10a136c24b6c50a490f422f69a4761afeccc",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/components/reader/reader-last-page.svelte",
+      "original_sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+      "executed_source_sha256": "9dcfa889752d07ad0f047af3d344866ce1a05830dfc462141fee30ecf39aaef1",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/components/reader/reader-settings.svelte",
+      "original_sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+      "executed_source_sha256": "3bbe26820f25f3fd0ae5bb5c2454cf0f4b21aa619c429aac59f485c0c90b2cac",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
       "original_sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
       "executed_source_sha256": "31996302c5c5bf92c41aeddff8d6f746f65c3135ea1afd46cb7a64f73a0b87a1",
@@ -9236,17 +9489,6 @@
       "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
       "original_sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
       "executed_source_sha256": "26b61c86ec2e35cb84b3ccdc2e0bb1a35dc3cfab1ddaa514f932ae39f0e5854f",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/library/+layout.svelte",
-      "original_sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
-      "executed_source_sha256": "efb41ddb27af634c5181ae0fcd02f6c409e4b65220f1b7f9d1d838f9b6b56401",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
