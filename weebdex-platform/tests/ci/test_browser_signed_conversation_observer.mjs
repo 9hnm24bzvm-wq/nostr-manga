@@ -53,34 +53,35 @@ test('missing duplicate unfinished oversized invalid JSON and failed bodies neve
 const source = fs.readFileSync(new URL('../../scripts/browser-signed-journeys.mjs', import.meta.url), 'utf8');
 const start = source.indexOf('  let firstConversationObserved = false;'), end = source.indexOf('\n  const sendAction =', start);
 assert(start > 0 && end > start);
+const verifiedSource = source.match(/  const verifiedSource = ([^\n]+);/)[1];
 const suffixes = ['conversation-target-controls', 'conversation-mapping-response', 'conversation-root-response', 'conversation-feed-response', 'conversation-source-visible'];
-async function probe({ fault, visibilityError, targetError, wrongBinding = false } = {}) {
+async function probe({ fault, visibilityError, targetError, wrongBinding = false, proofId = eventId } = {}) {
   const page = emitter(), report = {}, record = createJourneyCheck(report), seen = [], original = Error('private original source visibility error');
   let kindValue = '', idValue = '', clicks = 0;
   const panel = {
-    async getAttribute(name) { assert(['data-resource-kind', 'data-resource-id'].includes(name)); return name === 'data-resource-kind' ? kindValue : wrongBinding ? 'OtherTitle' : idValue; },
+    async getAttribute(name) { assert(['data-resource-kind', 'data-resource-id', 'data-verified-source-id'].includes(name)); if (name === 'data-verified-source-id') return proofId; return name === 'data-resource-kind' ? kindValue : wrongBinding ? 'OtherTitle' : idValue; },
     getByRole(role, options) { assert.equal(role, 'button'); assert.equal(options.name, 'Load verified public conversation'); assert.equal(options.exact, true); return { async click() { clicks++; for (const type of ['mapping', 'root', 'feed']) if (fault !== 'missing-' + type) response(page, type, fault === 'bad-' + type ? { data: {} } : {}); } }; },
-    getByText(text, options) { assert.equal(text, 'Verified canonical source: ' + eventId); assert.equal(options.exact, false); return { async waitFor(value) { assert.equal(value.state, 'visible'); assert.equal(value.timeout, 45000); if (visibilityError) throw original; } }; },
   };
   const global = { phase: 'signed-social', page, origin, protocol, fixture: { service_key: key }, seeded: { catalog_namespace: namespace },
-    watchSignedConversationResponses, identity: () => panel, async sourceDetails() { seen.push('source-details-disclosed'); },
+    watchSignedConversationResponses, identity: () => panel,
+    async until(read, valid, message, timeout) { assert.equal(timeout, 45000); seen.push('exact-current-source-attribute'); if (visibilityError) throw original; const value = await read(); assert(valid(value), message); return value; },
     async target(kind, selectedId) { if (targetError) throw original; kindValue = kind; idValue = selectedId; }, identifier: value => /^[0-9a-f]{64}$/.test(value),
     verify(value) { seen.push(value); return value.id === eventId && value.kind === 1002 && value.pubkey === publisher; },
     insist(value, message) { assert(value, message); }, inspect: (suffix, operation) => record('signed-social-' + suffix, operation),
   };
   const context = vm.createContext(global);
-  vm.runInContext(source.slice(start, end) + '\nglobalThis.load = loadConversation;', context);
+  vm.runInContext('const verifiedSource = ' + verifiedSource + ';\n' + source.slice(start, end) + '\nglobalThis.load = loadConversation;', context);
   let error; try { await context.load('manga', id, eventId); } catch (cause) { error = cause; }
   assert.equal(page.count(), 0, 'All observer listeners are released on every boundary');
   assert.doesNotMatch(JSON.stringify(report), /private namespace|body error|original source visibility|http:|SeedManga|aaaa/);
   return { report, error, original, seen, context, clicks: () => clicks };
 }
 
-test('actual first-call helper preserves original visibility budget and crypto/binding gates exactly once', async () => {
+test('actual first-call helper preserves proof budget and crypto/binding gates without visible technical IDs', async () => {
   const value = await probe(); assert.equal(value.error, undefined);
   assert.deepEqual(value.report.journey_checks, suffixes.map(suffix => ({ check_id: 'signed-social-' + suffix, status: 'passed' })));
-  assert.equal(value.seen.filter(row => row !== 'source-details-disclosed').length, 1, 'The exact source event still requires cryptographic verification');
-  assert(value.seen.includes('source-details-disclosed'), 'Proof visibility must follow the actual progressive disclosure');
+  assert.equal(value.seen.filter(row => row !== 'exact-current-source-attribute').length, 1, 'The exact source event still requires cryptographic verification');
+  assert(value.seen.includes('exact-current-source-attribute'), 'Readiness must require the exact current canonical-source attribute');
   await value.context.load('manga', id, eventId); assert.equal(value.clicks(), 2); assert.equal(value.report.journey_checks.length, suffixes.length, 'Later conversation loads never replay the enrolled first-call diagnostics');
 });
 
@@ -92,4 +93,13 @@ test('actual mapping/root/feed and native control failures retain their own gate
   const target = await probe({ targetError: true }); assert.equal(target.error, target.original); assert.equal(target.clicks(), 0);
   const binding = await probe({ wrongBinding: true }); assert.match(binding.error.message, /exact reviewed native target/); assert.equal(binding.clicks(), 0); assert.equal(binding.report.journey_checks.at(-1).check_id, 'signed-social-conversation-target-controls');
   const visible = await probe({ visibilityError: true }); assert.equal(visible.error, visible.original); assert.equal(visible.report.journey_checks.at(-1).check_id, 'signed-social-conversation-source-visible');
+});
+
+test('missing or stale canonical proof attributes cannot replace the exact current source', async () => {
+  for (const proofId of [null, '', 'd'.repeat(64)]) {
+    const value = await probe({ proofId });
+    assert.match(value.error.message, /exact verified canonical source/);
+    assert.equal(value.report.journey_checks.at(-1).check_id, 'signed-social-conversation-source-visible');
+    assert.equal(value.report.journey_checks.at(-1).status, 'failed');
+  }
 });

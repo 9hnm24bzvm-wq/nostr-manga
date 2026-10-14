@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
 import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
 import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel, selectListboxTrigger, clickListboxOption, setListboxOptions, searchRatingTrigger } from "./browser-select-controls.mjs";
-import { expandDetailsPanel } from "./browser-details-controls.mjs";
 const journeyRootUrl = new URL("../", import.meta.url);
 export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Object.freeze([
   'device-title-navigation', ...titleFollowCheckSuffixes.map(suffix => 'device-follow-' + suffix),
@@ -101,9 +100,23 @@ export async function runJourneys(h) {
 	const panel = () => page.locator('section[data-local-library-panel]');
 	const openLibraryManagement = async () => {
 		await open('/library');
-		await page.getByRole('link', { name: 'Manage library', exact: true }).click();
-		await page.waitForURL(url => url.pathname === '/settings/preferences' && url.hash === '#local-library');
+		const manage = page.getByRole('link', { name: 'Manage library', exact: true });
+		insist(await manage.getAttribute('href') === '/settings/library', 'Manage library does not point to its native Settings tab');
+		await manage.click();
+		await page.waitForURL(url => url.pathname === '/settings/library' && url.hash === '');
 		await panel().waitFor({ state: 'visible' });
+	};
+	const identityPanel = () => page.locator('section[data-protocol-identity-panel]');
+	const openLibraryTool = async (name, tool) => {
+		await panel().getByRole('button', { name, exact: true }).click();
+		const target = page.getByRole('dialog').locator(`section[data-library-tool="${tool}"]`);
+		await target.waitFor({ state: 'visible' });
+		insist(await target.count() === 1, 'Library tool dialog must have exactly one owner');
+		return target;
+	};
+	const closeLibraryTool = async () => {
+		await page.getByRole('dialog').getByRole('button', { name: 'Close', exact: true }).click();
+		await page.getByRole('dialog').waitFor({ state: 'hidden' });
 	};
 	const follow = status => selectTitleLibraryStatus(page, status);
 	const confirm = async name => { await page.getByRole('button', { name, exact: true }).first().click(); const dialog = page.getByRole('dialog'); await dialog.getByRole('button', { name, exact: true }).click(); };
@@ -445,7 +458,7 @@ export async function runJourneys(h) {
 		await step('relocated native Library and contextual comments fit desktop and mobile without global panels', async () => {
 			insist((await api('/auth/check')).status === 401, 'Relocation check requires an anonymous browser');
 			const runId = process.env.BROWSER_RUN_ID ?? 'first'; insist(/^[a-zA-Z0-9_-]{1,60}$/.test(runId), 'Unsafe relocation evidence identifier');
-			const screenshots = [], observations = [];
+			const screenshots = [], observations = [], manageArrivals = [];
 			const capture = async (name, fullPage = false) => {
 				const relative = `test-evidence/frontend/browser/${phase}-${runId}/relocation-${name}.png`;
 				await page.screenshot({ path: fileURLToPath(new URL(relative, journeyRootUrl)), fullPage });
@@ -455,7 +468,50 @@ export async function runJourneys(h) {
 				const value = await page.evaluate(() => ({ width: innerWidth, scroll_width: document.documentElement.scrollWidth, horizontal_overflow: document.documentElement.scrollWidth > innerWidth + 1 }));
 				insist(!value.horizontal_overflow, `${label} overflows the viewport horizontally`); observations.push({ surface: label, ...value });
 			};
+			const framed = async (locator, label) => {
+				const value = await locator.evaluate(node => { const box = node.getBoundingClientRect(), hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2); return { width: box.width, height: box.height, left: box.left, right: box.right, top: box.top, bottom: box.bottom, viewport_width: innerWidth, viewport_height: innerHeight, unobstructed: !!hit && (hit === node || node.contains(hit)) }; });
+				// Preserve failed coordinates and hit-test facts even when the step throws.
+				(report.relocation_geometry ??= []).push({ surface: label, ...value });
+				insist(value.width > 0 && value.height > 0 && value.left >= 0 && value.right <= value.viewport_width && value.top >= 0 && value.bottom <= value.viewport_height && value.unobstructed, `${label} is outside the unobstructed viewport`);
+				return value;
+			};
 			const noGlobalPanels = async () => insist(await page.locator('[data-local-library-panel], [data-protocol-identity-panel]').count() === 0, 'Management controls remain mounted outside Settings');
+			const nativeSettings = async (route, owner) => {
+				insist(new URL(page.url()).pathname === route && new URL(page.url()).hash === '', 'Settings did not arrive at its native route');
+				const navigation = page.getByRole('navigation', { name: 'Settings', exact: true });
+				await navigation.waitFor({ state: 'visible' });
+				for (const [name, path] of [['Preferences', '/settings/preferences'], ['Library', '/settings/library'], ['Public identity', '/settings/identity']]) {
+					const tab = navigation.getByRole('link', { name, exact: true });
+					insist(await tab.count() === 1 && await tab.getAttribute('href') === path && await tab.getAttribute('aria-current') === (path === route ? 'page' : null), 'Anonymous native Settings tab is missing, duplicated or incorrectly selected: ' + name);
+				}
+				insist(await navigation.getByRole('link', { name: 'Account', exact: true }).count() === 0 && await navigation.getByRole('link', { name: 'API Clients', exact: true }).count() === 0, 'Anonymous Settings exposed protected account tabs');
+				insist(await page.locator('section[data-local-library-panel]').count() === (owner === 'library' ? 1 : 0) && await page.locator('section[data-protocol-identity-panel]').count() === (owner === 'identity' ? 1 : 0) && await page.locator('[data-source-conversation]').count() === 0, 'Settings does not own exactly one route-specific management surface');
+				if (owner) insist(await page.locator(`main section[data-${owner === 'library' ? 'local-library' : 'protocol-identity'}-panel]`).count() === 1, 'The selected management surface is outside the native Settings main');
+				insist(await page.locator('details, [data-slot^="accordion"]').count() === 0, 'Native Settings still use accordions');
+				insist(await page.locator('[data-library-tool], [data-public-identity-tool]').count() === 0 && await page.getByRole('dialog').count() === 0, 'Technical tools mounted before an explicit native action');
+			};
+			const contextControls = async (conversation, label) => {
+				const signed = conversation.getByRole('button', { name: 'Signed comments', exact: true });
+				insist(await signed.getAttribute('aria-expanded') === 'false', 'Technical signed controls were expanded before a contextual user action');
+				await signed.click();
+				insist(await signed.getAttribute('aria-expanded') === 'true', 'Contextual Signed comments did not expand');
+				const manage = conversation.getByRole('link', { name: 'Manage public identity', exact: true });
+				insist(await manage.getAttribute('href') === '/settings/identity', 'Disconnected contextual action has no anonymous signer Settings path');
+				insist(await conversation.getByLabel('Current instance catalogue ID', { exact: true }).count() === 0 && await conversation.getByLabel('Target type', { exact: true }).count() === 0, 'Contextual comments permit editing a different resource target');
+				await manage.scrollIntoViewIfNeeded(); await framed(manage, label + ' expanded signed controls');
+			};
+			const tools = async (owner, definitions) => {
+				const scope = owner === 'library' ? panel() : identityPanel();
+				for (const [name, tool] of definitions) {
+					await scope.getByRole('button', { name, exact: true }).click();
+					const dialog = page.getByRole('dialog'), target = dialog.locator(`section[data-${owner === 'library' ? 'library' : 'public-identity'}-tool="${tool}"]`);
+					await target.waitFor({ state: 'visible' });
+					insist(await dialog.count() === 1 && await target.count() === 1 && await target.locator('details, [data-slot^="accordion"]').count() === 0, 'Native management action did not open exactly one accordion-free dialog');
+					await framed(dialog, name + ' dialog');
+					await dialog.getByRole('button', { name: 'Close', exact: true }).click(); await dialog.waitFor({ state: 'hidden' });
+					insist(await page.locator('[data-library-tool], [data-public-identity-tool]').count() === 0, 'Dismissed native tool remained mounted');
+				}
+			};
 			for (const [viewport, width, height] of [['desktop', 1440, 1000], ['mobile', 390, 844]]) {
 				await page.setViewportSize({ width, height });
 				for (const [name, route] of [['home', '/'], ['search', '/search'], ['title', `/title/${manga}`], ['reader', `/chapter/${chapter}/1`]]) {
@@ -467,31 +523,50 @@ export async function runJourneys(h) {
 					}
 					await geometry(`${viewport}-${name}`); await capture(`${viewport}-${name}`, name !== 'reader');
 				}
+				// The reader management link is in its real settings sidebar. Keep the
+				// initial media capture unobstructed, then inspect and dismiss that sidebar.
+				// Desktop offcanvas content remains mounted, so bind visibility to its
+				// expanded native state as well as the mobile sidebar's rendered state.
+				const readerSidebar = page.locator('[data-slot="sidebar"][data-state="expanded"], [data-slot="sidebar"][data-mobile="true"]');
+				const readerManage = readerSidebar.getByRole('link', { name: 'Manage library', exact: true });
+				if (!await readerManage.isVisible()) await page.locator('nav button:has(svg.lucide-settings)').first().click();
+				await readerManage.waitFor({ state: 'visible' });
+				insist(await readerManage.getAttribute('href') === '/settings/library', 'Reader Manage library link missed its native Settings tab');
+				await readerSidebar.locator('button:has(svg.lucide-x)').click(); await readerManage.waitFor({ state: 'hidden' });
+				await page.getByRole('dialog').waitFor({ state: 'hidden' });
 				const show = page.getByRole('button', { name: 'Show Comments', exact: true }); if (await show.isVisible()) await show.click();
 				const conversation = page.locator(`section[data-source-conversation][data-resource-kind="chapter"][data-resource-id="${chapter}"]`);
-				await conversation.waitFor({ state: 'visible' });
-				const signed = conversation.getByRole('button', { name: 'Signed comments', exact: true });
-				insist(await signed.getAttribute('aria-expanded') === 'false', 'Technical signed controls were expanded before a contextual user action');
-				await signed.click();
-				insist(await conversation.getByRole('link', { name: 'Manage public identity', exact: true }).getAttribute('href') === '/settings/preferences#public-identity', 'Disconnected contextual action has no anonymous signer Settings path');
-				insist(await conversation.getByLabel('Current instance catalogue ID', { exact: true }).count() === 0 && await conversation.getByLabel('Target type', { exact: true }).count() === 0, 'Contextual comments permit editing a different resource target');
+				await conversation.waitFor({ state: 'visible' }); await contextControls(conversation, `${viewport}-reader-discussion`);
 				await geometry(`${viewport}-reader-discussion`); await capture(`${viewport}-reader-discussion`);
 				await open(`/title/${manga}?tab=comments`); await noGlobalPanels();
-				await page.locator(`section[data-source-conversation][data-resource-kind="manga"][data-resource-id="${manga}"]`).waitFor({ state: 'visible' });
+				const titleConversation = page.locator(`section[data-source-conversation][data-resource-kind="manga"][data-resource-id="${manga}"]`);
+				await titleConversation.waitFor({ state: 'visible' }); await contextControls(titleConversation, `${viewport}-title-comments`);
 				await geometry(`${viewport}-title-comments`); await capture(`${viewport}-title-comments`);
-				await openLibraryManagement();
-				insist(await page.locator('section[data-local-library-panel]').count() === 1 && await page.locator('section[data-protocol-identity-panel]').count() === 1 && await page.locator('[data-source-conversation]').count() === 0, 'Settings does not own exactly one management surface of each kind');
-				for (const summary of ['Advanced library settings', 'Public sync & recovery', 'Signing identity & instances', 'Public profile and follows', 'Saved public actions']) {
-					const details = page.locator('summary').filter({ hasText: new RegExp('^' + summary.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$') }).locator('..');
-					insist(await details.count() === 1 && await details.getAttribute('open') === null, `Technical Settings disclosure is missing, duplicated or open: ${summary}`);
-				}
-				await panel().scrollIntoViewIfNeeded(); await geometry(`${viewport}-library-settings`); await capture(`${viewport}-library-settings`);
-				await page.locator('#public-identity').scrollIntoViewIfNeeded(); await geometry(`${viewport}-public-identity`); await capture(`${viewport}-public-identity`);
+				await openLibraryManagement(); await nativeSettings('/settings/library', 'library');
+				// Arrival is measured before any screenshot-driven or tool-driven scroll.
+				manageArrivals.push({ viewport, ...await framed(panel().getByRole('heading', { name: 'Library', exact: true }), `${viewport} Manage library arrival heading`) });
+				insist(await panel().getByRole('button', { name: 'Verify current catalogue scope', exact: true }).count() === 0, 'Technical scope controls leaked onto Library main');
+				await geometry(`${viewport}-library-settings`); await capture(`${viewport}-library-settings`);
+				await tools('library', [['Manage lists', 'lists'], ['Set up public sync', 'sync'], ['Library recovery', 'recovery']]);
+				const identityTab = page.getByRole('navigation', { name: 'Settings', exact: true }).getByRole('link', { name: 'Public identity', exact: true });
+				await identityTab.click(); await page.waitForURL(url => url.pathname === '/settings/identity'); await identityPanel().waitFor({ state: 'visible' }); await nativeSettings('/settings/identity', 'identity');
+				await framed(identityPanel().getByRole('heading', { name: 'Public identity', exact: true }), `${viewport} Public identity arrival heading`);
+				await identityPanel().getByRole('button', { name: 'Connect external signer', exact: true }).waitFor({ state: 'visible' });
+				await geometry(`${viewport}-public-identity`); await capture(`${viewport}-public-identity`);
+				await tools('identity', [['Edit public profile', 'profile'], ['Manage follows', 'follows'], ['Saved public actions', 'actions']]);
+				await page.getByRole('navigation', { name: 'Settings', exact: true }).getByRole('link', { name: 'Library', exact: true }).click(); await page.waitForURL(url => url.pathname === '/settings/library');
 				await page.reload({ waitUntil: 'domcontentloaded' }); await panel().waitFor({ state: 'visible' });
-				insist(new URL(page.url()).hash === '#local-library' && (await api('/auth/check')).status === 401, 'Anonymous management reload lost its deep link or created account authority');
+				insist(new URL(page.url()).pathname === '/settings/library' && new URL(page.url()).hash === '' && (await api('/auth/check')).status === 401, 'Anonymous management reload lost its native route or created account authority');
+				await nativeSettings('/settings/library', 'library');
+				await page.getByRole('navigation', { name: 'Settings', exact: true }).getByRole('link', { name: 'Preferences', exact: true }).click(); await page.waitForURL(url => url.pathname === '/settings/preferences'); await nativeSettings('/settings/preferences');
+				for (const protectedRoute of ['/settings/account', '/settings/client']) {
+					await open(protectedRoute); await page.waitForURL(url => url.pathname === '/settings/preferences'); await nativeSettings('/settings/preferences');
+					insist((await api('/auth/check')).status === 401, 'Direct protected Settings navigation created account authority');
+					insist(await page.locator('input[name="email"], input[name="username"], input[name="password"]').count() === 0 && await page.getByRole('button', { name: 'Add New Client', exact: true }).count() === 0, 'Direct protected Settings navigation exposed account or API client controls');
+				}
 			}
 			await page.setViewportSize({ width: 1440, height: 1000 });
-			return { anonymous: true, actual_native_routes: true, no_global_management: true, route_bound_context: true, technical_controls_opt_in: true, screenshots_require_separate_visual_inspection: true, screenshots, observations };
+			return { anonymous: true, actual_native_routes: true, native_settings_tabs: true, protected_settings_direct_navigation: true, no_global_management: true, route_bound_context: true, technical_controls_opt_in: true, manage_arrivals_before_scroll: manageArrivals, screenshots_require_separate_visual_inspection: true, screenshots, observations };
 		});
 		const check = (id, operation) => {
 			insist(typeof h.check === 'function', 'The reviewed fixed-check diagnostic recorder is required for this local-library journey');
@@ -522,8 +597,8 @@ export async function runJourneys(h) {
 			return { reader_progress_saved: true, signup_did_not_select_account_mode: true, logout_preserved_device_records: true };
 		});
 		await step('custom list controls and reviewed scoped backup export/import persist actual device rows', async () => {
-			const target = panel();
-			await inspect('custom-list-navigation', async () => { await openLibraryManagement(); await expandDetailsPanel(target.locator('details').filter({ has: page.getByText('Custom device lists', { exact: true }) })); });
+			let target;
+			await inspect('custom-list-navigation', async () => { await openLibraryManagement(); target = await openLibraryTool('Manage lists', 'lists'); });
 			const list = await inspect('custom-list-durable', async () => {
 				await target.getByLabel('List name', { exact: true }).fill(`Local ${marker}`); await target.getByRole('button', { name: 'Create list', exact: true }).click();
 				const listed = await until(device, value => value?.records.some(row => row.family === 'lists' && row.name === `Local ${marker}`), 'List control did not persist'); return listed.records.find(row => row.family === 'lists' && row.name === `Local ${marker}`);
@@ -533,11 +608,12 @@ export async function runJourneys(h) {
 				await until(device, value => value?.records.some(row => row.family === 'members' && row.list === list.id && row.series === manga && row.position === 3), 'Membership control did not persist');
 			});
 			await inspect('custom-backup-export', async () => {
+				await closeLibraryTool(); target = panel();
 				const download = await actAndWaitForPageEvent(page, 'download', () => target.getByRole('button', { name: 'Export device backup', exact: true }).click()); const stream = await download.createReadStream(); const chunks = []; for await (const chunk of stream) chunks.push(chunk); backup = JSON.parse(Buffer.concat(chunks).toString('utf8'));
 				insist(backup.format === 'weebdex-device-library' && backup.scope.origin === origin && backup.records.length >= 4, 'UI export was not the scoped device backup');
 			});
-			await inspect('custom-foreign-backup-fenced', async () => { const foreign = { ...backup, scope: { ...backup.scope, origin: 'https://foreign.example.invalid' } }; await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'foreign.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(foreign)) }); await target.getByText('Native IDs belong to a different instance.', { exact: false }).waitFor({ state: 'visible' }); insist(await target.getByRole('button', { name: 'Merge reviewed import', exact: true }).count() === 0, 'Foreign native IDs could be merged silently'); });
-			await inspect('custom-backup-merged', async () => { await target.getByRole('button', { name: 'Cancel import', exact: true }).click(); await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'same-instance.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) }); await target.getByRole('button', { name: 'Merge reviewed import', exact: true }).click(); await target.getByText('Backup merged locally.', { exact: true }).waitFor({ state: 'visible' });
+			await inspect('custom-foreign-backup-fenced', async () => { const foreign = { ...backup, scope: { ...backup.scope, origin: 'https://foreign.example.invalid' } }; await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'foreign.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(foreign)) }); const review = page.getByRole('dialog', { name: 'Review library import', exact: true }); await review.waitFor({ state: 'visible' }); await review.getByText('This backup belongs to another catalogue.', { exact: false }).waitFor({ state: 'visible' }); insist(await review.getByRole('button', { name: 'Merge reviewed import', exact: true }).count() === 0 && await review.getByRole('button', { name: 'Replace with reviewed import', exact: true }).count() === 0, 'Foreign native IDs could be merged or replaced silently'); });
+			await inspect('custom-backup-merged', async () => { const review = page.getByRole('dialog', { name: 'Review library import', exact: true }); await review.getByRole('button', { name: 'Cancel import', exact: true }).click(); await review.waitFor({ state: 'hidden' }); await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'same-instance.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) }); await review.waitFor({ state: 'visible' }); await review.getByRole('button', { name: 'Merge reviewed import', exact: true }).click(); await review.waitFor({ state: 'hidden' }); await target.getByText('Backup merged locally.', { exact: true }).waitFor({ state: 'visible' });
 				insist(await outboxCount() === 0, 'Backup/list controls automatically published'); });
 			return { list_membership_persisted: true, actual_download_reviewed: true, foreign_scope_blocked: true, explicit_merge_succeeded: true, public_outbox_unchanged: true };
 		});
@@ -547,15 +623,15 @@ export async function runJourneys(h) {
 			await selectTitleLibraryStatus(page, 'Plan to Read', { check, prefix: 'local-library-account-follow' });
 			const accountFollow = await inspect('account-status-durable', () => until(() => api(`/user/follows/manga?limit=100`), value => value.status === 200 && value.body?.data?.some(row => row.id === manga && row.reading_status === 'plan_to_read'), 'Explicit account follow did not persist'));
 			await inspect('account-device-preserved', async () => { const preserved = await device(); insist(JSON.stringify(preserved.records) === JSON.stringify(before.records), 'Account mode silently overwrote device records'); });
-			await inspect('account-import-reviewed', async () => { await openLibraryManagement(); await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); await panel().getByText('Import preview: Explicit account-library import', { exact: false }).waitFor({ state: 'visible' }); await panel().getByRole('button', { name: 'Merge reviewed import', exact: true }).click();
+			await inspect('account-import-reviewed', async () => { await openLibraryManagement(); await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); const review = page.getByRole('dialog', { name: 'Review library import', exact: true }); await review.waitFor({ state: 'visible' }); await review.getByText('Import preview: Explicit account-library import', { exact: false }).waitFor({ state: 'visible' }); await review.getByRole('button', { name: 'Merge reviewed import', exact: true }).click(); await review.waitFor({ state: 'hidden' }); await panel().getByText('Backup merged locally.', { exact: true }).waitFor({ state: 'visible' });
 				await panel().getByRole('button', { name: 'Use device library', exact: true }).click(); await panel().getByText('Library source: this browser device.', { exact: false }).waitFor({ state: 'visible' }); await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga), 'Reviewed account import lost local series'); });
 			return { account_follow_confirmed: accountFollow.status, explicit_mode_only: true, device_unchanged_before_reviewed_import: true, reviewed_merge_control_used: true };
 		});
 		await step('optional signer requires explicit selection and dismissal does not queue publication', async () => {
-			const target = panel();
-			await inspect('signer-section-open', async () => { await expandDetailsPanel(target.locator('details').filter({ has: page.getByText('Public sync & recovery', { exact: true }) })); });
+			const target = identityPanel();
+			await inspect('signer-section-open', async () => { await open('/settings/identity'); await target.waitFor({ state: 'visible' }); });
 			await inspect('signer-binding-installed', () => page.evaluate(() => { window.nostr = { getPublicKey: async () => { throw Error('Synthetic signer prompt dismissed'); }, signEvent: async () => { throw Error('Dismissed signer must never sign'); } }; }));
-			await inspect('signer-dismissal-visible', async () => { await target.getByRole('button', { name: 'Connect external browser signer', exact: true }).click(); await target.getByText('Synthetic signer prompt dismissed', { exact: false }).waitFor({ state: 'visible' }); });
+			await inspect('signer-dismissal-visible', async () => { await target.getByRole('button', { name: 'Connect external signer', exact: true }).click(); await target.getByText('Synthetic signer prompt dismissed', { exact: false }).waitFor({ state: 'visible' }); });
 			await inspect('signer-outbox-empty', async () => { insist(await outboxCount() === 0, 'Dismissed signer created publication jobs'); await page.evaluate(() => { delete window.nostr; }); });
 			return { explicit_signer_control: true, dismissed_prompt_truthful: true, no_job_or_auto_key: true, signed_delivery_recovery_requires_real_original_fixture: true };
 		});

@@ -116,7 +116,11 @@ async function probe(phase, failAt) {
     async actions() { return [{ event: { ...event, kind: 1111 } }]; }, async counterpart() { return { body: event }; },
     signedEventDigest() { return 'private digest'; },
     async step(label, operation) { if (!labels.has(label)) return; const row = { label }; steps.push(row); try { await operation(); row.status = 'passed'; } catch (error) { row.status = 'failed'; row.error = error; } },
-    prepareIdentity() {}, reviewSnapshot() {}, sendAction() {},
+    // Explicit navigation-only stand-ins for the two real route-owned review
+    // pages. Diagnostic callbacks below remain responsible for every enrolled
+    // checkpoint; this wiring driver neither models nor claims native dialogs.
+    page: { async close() {} }, context: { async newPage() { return { async close() {} }; } }, ownedPages: new Set(),
+    prepareIdentity() {}, prepareSignerControls() {}, open() {}, selectSigner() {}, reviewSnapshot() {}, sendAction() {},
     inspect(suffix, operation) {
       assert(expected[phase].includes(suffix)); assert.equal(typeof operation, 'function');
       return check(phase + '-' + suffix, async () => {

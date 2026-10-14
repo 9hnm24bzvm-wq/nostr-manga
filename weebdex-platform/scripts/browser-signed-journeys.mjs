@@ -133,6 +133,7 @@ export async function runSignedJourneys(h) {
   let page = h.page;
   const initialPage = page, ownedPages = new Set([page]);
   const open = async route => {
+    libraryTools.delete(page); identityTools.delete(page);
     const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" });
     insist(response?.status() === 200, `Navigation returned ${response?.status()}`);
     await page.waitForTimeout(1200); return response;
@@ -231,10 +232,13 @@ export async function runSignedJourneys(h) {
     }
     return { result, current };
   };
-  const library = () => page.locator("section[data-local-library-panel]");
-  const identity = () => page.locator("section[data-protocol-identity-panel], section[data-source-conversation]");
+  const libraryTools = new WeakMap(), identityTools = new WeakMap();
+  const reload = async () => { await page.reload({ waitUntil: "domcontentloaded" }); libraryTools.delete(page); identityTools.delete(page); };
+  const libraryMain = () => page.locator("section[data-local-library-panel]");
+  const identityMain = () => page.locator("section[data-protocol-identity-panel]");
+  const library = () => page.locator(libraryTools.has(page) ? `section[data-library-tool="${libraryTools.get(page)}"]` : "section[data-local-library-panel]");
+  const identity = () => page.locator(identityTools.has(page) ? `section[data-public-identity-tool="${identityTools.get(page)}"]` : "section[data-protocol-identity-panel], section[data-source-conversation]");
   const expand = async target => { await target.waitFor({ state: "visible" }); insist(await target.count() === 1, "Expected one route-owned management or conversation surface"); };
-  const section = async (target, name) => { const summary = target.locator("summary").filter({ hasText: new RegExp("^" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$") }); const detail = summary.locator(".."); if (await detail.getAttribute("open") === null) await summary.click(); };
   const idle = async target => until(() => target.innerText(), value => !value.includes("Working:") && !value.includes("Waiting for the selected signer or instance"), "Actual UI operation did not settle", 45000);
   const consentDialog = async (button, expected) => {
     const dialog = page.waitForEvent("dialog"); const click = button.click(); const prompt = await dialog;
@@ -252,8 +256,8 @@ export async function runSignedJourneys(h) {
   });
   const jobs = async () => (await databases()).protocol?.jobs ?? [];
   const actions = async () => (await databases()).protocol?.["weebdexSignedPublicActions-v1"] ?? [];
-  const jobCard = id => library().locator("div.rounded.border.p-2").filter({ has: page.locator("p").filter({ hasText: id + " · device revision" }) }).last();
-  const actionCard = id => identity().locator("div.rounded.border.p-2.space-y-1").filter({ has: page.locator("p").filter({ hasText: id + " · kind" }) });
+  const jobCard = id => library().locator(`[data-library-job-id="${id}"]`);
+  const actionCard = id => identity().locator(`[data-public-action-id="${id}"]`);
   const counterpartAt = async (endpoint, id) => until(() => originalAt(endpoint, "/events/" + id), value => value.status === 200 && value.body?.id === id && verify(value.body), "Actual backend did not project the exact verified event", 60000);
   const counterpart = id => counterpartAt(protocol, id);
   const downloadBytes = async button => { const pending = page.waitForEvent("download"); await button.click(); const item = await pending; const stream = await item.createReadStream(); insist(stream, "UI download bytes unavailable"); const chunks = []; for await (const chunk of stream) chunks.push(chunk); return Buffer.concat(chunks); };
@@ -291,27 +295,93 @@ export async function runSignedJourneys(h) {
   const leaveReader = async () => {
     if (new URL(page.url()).pathname.startsWith("/chapter/")) await spaClick(page.locator(`a[href^="/title/${manga}"]:visible`), url => url.pathname.startsWith(`/title/${manga}`));
   };
-  const management = async () => {
-    if (new URL(page.url()).pathname !== "/settings/preferences") {
-      await leaveReader();
-      await spaClick(page.getByRole("link", { name: "My Library", exact: true }), url => url.pathname === "/library");
-      await spaClick(page.getByRole("link", { name: "Manage library", exact: true }), url => url.pathname === "/settings/preferences" && url.hash === "#local-library");
+  const closeTools = async () => {
+    const dialog = page.getByRole("dialog");
+    if (await dialog.count()) {
+      insist(await dialog.count() === 1, "Expected one explicit native management task");
+      await dialog.getByRole("button", { name: "Close", exact: true }).click();
+      await dialog.waitFor({ state: "hidden" });
     }
-    await expand(library()); await section(library(), "Advanced library settings");
+    libraryTools.delete(page); identityTools.delete(page);
+  };
+  const management = async () => {
+    await closeTools();
+    const route = new URL(page.url()).pathname;
+    if (route !== "/settings/library") {
+      if (route.startsWith("/settings/")) await spaClick(page.locator('nav[aria-label="Settings"]').getByRole("link", { name: "Library", exact: true }), url => url.pathname === "/settings/library");
+      else {
+        await leaveReader();
+        await spaClick(page.getByRole("link", { name: "My Library", exact: true }), url => url.pathname === "/library");
+        const manage = page.getByRole("link", { name: "Manage library", exact: true });
+        insist(await manage.getAttribute("href") === "/settings/library", "Manage library does not target the native Settings tab");
+        await spaClick(manage, url => url.pathname === "/settings/library");
+      }
+    }
+    await expand(libraryMain());
+    insist(await identityMain().count() === 0, "Library tab also mounted public-identity management");
+  };
+  const openLibraryTool = async tool => {
+    const labels = { lists: "Manage lists", sync: "Set up public sync", recovery: "Library recovery" };
+    const syncTasks = { destinations: "Choose destinations", publish: "Publish library", "public-recovery": "Recover public library", attempts: "Saved sync attempts" };
+    insist(Object.hasOwn(labels, tool) || Object.hasOwn(syncTasks, tool), "Unknown explicit Library task");
+    if (libraryTools.get(page) !== tool || new URL(page.url()).pathname !== "/settings/library") {
+      if (Object.hasOwn(syncTasks, tool)) {
+        const current = libraryTools.get(page);
+        if (Object.hasOwn(syncTasks, current)) {
+          await library().getByRole("button", { name: "Back to public sync", exact: true }).click();
+          libraryTools.set(page, "sync");
+          await expand(library());
+        } else await openLibraryTool("sync");
+        await library().getByRole("button", { name: syncTasks[tool], exact: true }).click();
+        libraryTools.set(page, tool);
+      } else {
+        await management();
+        await libraryMain().getByRole("button", { name: labels[tool], exact: true }).click();
+        libraryTools.set(page, tool);
+      }
+    }
+    await expand(library());
+    insist(await page.getByRole("dialog").count() === 1, "Library task is not the single native dialog");
   };
   const prepareSignerControls = async () => {
-    await management(); await section(library(), "Public sync & recovery");
+    await openLibraryTool("destinations");
     await library().getByRole("button", { name: "Connect external browser signer", exact: true }).waitFor({ state: "visible" });
   };
+  const knownServiceKey = async value => {
+    const field = library().getByLabel("Expected service public key", { exact: true });
+    if (await field.count() === 0) await library().getByRole("button", { name: "Use a known service key", exact: true }).click();
+    await field.fill(value);
+  };
   const selectSigner = async () => { await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("Signer connected. No library data sent.", { exact: true }).waitFor({ state: "visible" }); };
-  const reviewSnapshot = async () => { await library().getByRole("button", { name: "Preview public snapshot", exact: true }).click(); await library().getByText(/^Reviewed device revision/).waitFor({ state: "visible", timeout: 45000 }); const send = library().getByRole("button", { name: "Sign and publish reviewed snapshot", exact: true }); insist(await send.isDisabled(), "Snapshot sending enabled before explicit public consent"); await library().getByLabel("I understand that this reviewed snapshot becomes public at these recipients.", { exact: true }).check(); return send; };
+  const reviewSnapshot = async () => { await openLibraryTool("publish"); await library().getByRole("button", { name: "Preview public snapshot", exact: true }).click(); await library().getByText(/^Reviewed device revision/).waitFor({ state: "visible", timeout: 45000 }); const send = library().getByRole("button", { name: "Sign and publish reviewed snapshot", exact: true }); insist(await send.isDisabled(), "Snapshot sending enabled before explicit public consent"); await library().getByLabel("I understand that this reviewed snapshot becomes public at these recipients.", { exact: true }).check(); return send; };
+  const identityManagement = async () => {
+    await closeTools();
+    if (new URL(page.url()).pathname !== "/settings/identity") {
+      await management();
+      await spaClick(page.locator('nav[aria-label="Settings"]').getByRole("link", { name: "Public identity", exact: true }), url => url.pathname === "/settings/identity");
+    }
+    await expand(identityMain());
+    insist(await libraryMain().count() === 0, "Public identity tab also mounted Library management");
+  };
+  const openIdentityTool = async tool => {
+    const labels = { connections: "Connection settings", profile: "Edit public profile", follows: "Manage follows", actions: "Saved public actions" };
+    insist(Object.hasOwn(labels, tool), "Unknown explicit public-identity task");
+    if (identityTools.get(page) !== tool || new URL(page.url()).pathname !== "/settings/identity") {
+      await identityManagement();
+      await identityMain().getByRole("button", { name: labels[tool], exact: true }).click();
+      identityTools.set(page, tool);
+    }
+    await expand(identity());
+    insist(await page.getByRole("dialog").count() === 1, "Public-identity task is not the single native dialog");
+  };
   const prepareIdentity = async () => {
-    await management(); await expand(identity()); await section(identity(), "Signing identity & instances");
+    await openIdentityTool("connections");
     await identity().getByRole("button", { name: "Refresh verified instances", exact: true }).click(); await idle(identity());
     await nativeSelectForLabel(identity(), "Verified recipient").selectOption(protocol);
   };
   const target = async (kind, id) => {
     insist(["manga", "chapter"].includes(kind) && /^[A-Za-z0-9]{10}$/.test(id), "Invalid route-bound conversation target");
+    await closeTools();
     const current = new URL(page.url());
     if (kind === "manga" ? !current.pathname.startsWith(`/title/${id}`) : !current.pathname.startsWith(`/chapter/${id}`)) {
       await leaveReader();
@@ -338,20 +408,17 @@ export async function runSignedJourneys(h) {
     if (await disclosure.getAttribute("aria-expanded") !== "true") await disclosure.click();
     await nativeSelectForLabel(surface, "Verified recipient").selectOption(protocol);
   };
-  const sourceDetails = async () => {
-    const details = identity().locator("details").filter({ has: page.locator("summary", { hasText: /^Source details$/ }) });
-    await details.waitFor({ state: "attached" }); if (await details.getAttribute("open") === null) await details.locator(":scope > summary").click();
-  };
+  const verifiedSource = async eventId => until(() => identity().getAttribute("data-verified-source-id"), value => value === eventId, "Current route did not retain the exact verified canonical source", 45000);
   let firstConversationObserved = false;
   const loadConversation = async (kind, id, eventId) => {
-    if (!['signed-social', 'signed-source-controls'].includes(phase) || firstConversationObserved) { await target(kind, id); await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click(); await sourceDetails(); await identity().getByText("Verified canonical source: " + eventId, { exact: false }).waitFor({ state: "visible", timeout: 45000 }); return; }
+    if (!['signed-social', 'signed-source-controls'].includes(phase) || firstConversationObserved) { await target(kind, id); await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click(); await verifiedSource(eventId); return; }
     firstConversationObserved = true;
     const observed = watchSignedConversationResponses(page, { nativeOrigin: origin, protocolOrigin: protocol, kind, id, eventId });
     try {
       await inspect('conversation-target-controls', async () => { await target(kind, id); insist(await identity().getAttribute("data-resource-kind") === kind && await identity().getAttribute("data-resource-id") === id, "Conversation route did not bind the exact reviewed native target"); });
       observed.start(); await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click();
       let visibilityError;
-      try { await sourceDetails(); await identity().getByText("Verified canonical source: " + eventId, { exact: false }).waitFor({ state: "visible", timeout: 45000 }); } catch (error) { visibilityError = error; }
+      try { await verifiedSource(eventId); } catch (error) { visibilityError = error; }
       await observed.close();
       const source = await inspect('conversation-mapping-response', async () => { const mapping = observed.one('mapping'); const source = mapping.body.data?.find(row => row.kind === kind && row.id === id); insist(mapping.status === 200 && mapping.body.origin === protocol && mapping.body.service_key === fixture.service_key && mapping.body.catalog_namespace === seeded.catalog_namespace && source?.event_id === eventId && identifier(source.publisher) && source.source_kind === (kind === 'manga' ? 1002 : 1001), "Exact native conversation mapping response was not the verified current source"); return source; });
       await inspect('conversation-root-response', async () => { const root = observed.one('root'); insist(root.status === 200 && verify(root.body) && root.body.id === eventId && root.body.pubkey === source.publisher && root.body.kind === source.source_kind, "Exact original conversation source response was not a genuine verified event"); });
@@ -360,13 +427,13 @@ export async function runSignedJourneys(h) {
     } finally { await observed.close(); }
   };
   const sendAction = async () => { const button = identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }); insist(await button.isDisabled(), "Public action enabled before exact-action consent"); await identity().getByLabel("I approve this exact public action and recipient.", { exact: true }).check(); await button.click(); await idle(identity()); };
-  const openOutbox = async () => { await prepareIdentity(); await section(identity(), "Saved public actions"); await identity().getByRole("button", { name: "Refresh saved actions", exact: true }).click(); await idle(identity()); };
+  const openOutbox = async () => { await openIdentityTool("actions"); await identity().getByRole("button", { name: "Refresh saved actions", exact: true }).click(); await idle(identity()); };
   const reviewComment = async text => { if (await page.locator("[data-source-conversation]").count() !== 1) await loadConversation("manga", manga, seeded.series.event_id); await identity().getByLabel("Public comment", { exact: true }).fill(text); await identity().getByRole("button", { name: "Review public comment", exact: true }).click(); await identity().getByText("Publish this public source comment. Recipient: " + protocol, { exact: false }).waitFor({ state: "visible" }); };
   const lifecycleCoverage = { source_revocation_restoration: false, real_namespace_rebuild: false, joined_runtime_restart: false, two_real_recipients: false };
   const prepareLifecycleLibrary = async () => {
     await admit(true); await (await reviewSnapshot()).click(); await idle(library());
     const job = (await jobs()).at(-1); insist(job?.recipients[0].state === "accepted" && verify(job.event), "Lifecycle prerequisite has no genuine accepted library snapshot"); await counterpart(job.id);
-    await library().getByRole("button", { name: "Preview verified public recovery", exact: true }).click(); await library().getByText("Verified public recovery: " + protocol, { exact: false }).waitFor({ state: "visible", timeout: 60000 });
+    await openLibraryTool("public-recovery"); await library().getByRole("button", { name: "Preview verified public recovery", exact: true }).click(); await library().getByText("Verified public recovery: " + protocol, { exact: false }).waitFor({ state: "visible", timeout: 60000 });
     await consentDialog(library().getByRole("button", { name: "Restore reviewed canonical records", exact: true }), "verified recovery"); await idle(library());
     insist((await databases()).protocol.records.length >= 4, "Lifecycle prerequisite did not restore real canonical library families"); return job;
   };
@@ -396,9 +463,9 @@ export async function runSignedJourneys(h) {
       await inspect('native-title-navigation', () => open(`/title/${nativeOnly}`)); await follow("Plan to Read", phase + '-native-follow');
       await inspect('reader-bytes', async () => { await open(`/chapter/${chapter}/1`); await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), count => count > 0, "Canonical chapter reader did not decode real local bytes"); });
       await inspect('reader-progress-durable', () => until(databases, state => state.device?.records.some(row => row.family === "chapters" && row.id === chapter && row.page >= 1), "Canonical reader progress did not persist locally"));
-      await inspect('library-navigation', async () => { await management(); await section(library(), "Public sync & recovery"); });
+      await inspect('library-navigation', async () => { await management(); await openLibraryTool("sync"); });
       await inspect('device-list-durable', async () => {
-        await section(library(), "Custom device lists"); await library().getByLabel("List name", { exact: true }).fill("Synthetic signed list " + marker); await library().getByRole("button", { name: "Create list", exact: true }).click(); await idle(library());
+        await openLibraryTool("lists"); await library().getByLabel("List name", { exact: true }).fill("Synthetic signed list " + marker); await library().getByRole("button", { name: "Create list", exact: true }).click(); await idle(library());
         deviceList = (await databases()).device.records.find(row => row.family === "lists" && row.name === "Synthetic signed list " + marker); insist(deviceList && /^[0-9a-f]{32}$/.test(deviceList.id), "Visible custom list control did not persist its original 128-bit ID");
       });
       await inspect('device-member-durable', async () => {
@@ -409,7 +476,7 @@ export async function runSignedJourneys(h) {
         const state = await databases(); insist(state.device.instanceScope.catalogNamespace === seeded.catalog_namespace && state.device.instanceScope.serviceKey === fixture.service_key && state.protocol.jobs.length === 0 && mutationRequests.length === 0, "Anonymous local controls published or lost their namespace");
         insist((await native("/api/auth/check")).status !== 200 && await page.evaluate(() => typeof window.nostr === "undefined"), "A password session or signer was silently created");
       });
-      await inspect('missing-signer-refused', async () => { await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("A compatible NIP-07 browser signer is required", { exact: false }).waitFor({ state: "visible" }); });
+      await inspect('missing-signer-refused', async () => { await prepareSignerControls(); await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("A compatible NIP-07 browser signer is required", { exact: false }).waitFor({ state: "visible" }); });
       return { anonymous_scope_preserved: true, actual_reader_bytes_decoded: true, original_list_id: deviceList.id, scoped_list_membership: true, no_auto_signer: true, original_mutation_requests: 0, outbox_jobs: 0 };
     });
     await step("external signer and actual service recipient require explicit independent selection", async () => {
@@ -417,14 +484,14 @@ export async function runSignedJourneys(h) {
       await inspect('signer-selection-denied', async () => { await prepareSignerControls(); deniedConnect = true; await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("Synthetic signer selection denied", { exact: false }).waitFor({ state: "visible" }); insist((await jobs()).length === 0, "Denied signer selection queued a snapshot"); });
       await inspect('signer-connected', async () => { deniedConnect = false; await selectSigner(); });
       await inspect('recipient-wrong-key-refused', async () => {
-        await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await library().getByLabel("Expected service public key", { exact: true }).fill("0".repeat(64));
+        await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await knownServiceKey("0".repeat(64));
         await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); await library().getByText("Service identity mismatch", { exact: false }).waitFor({ state: "visible" });
         insist(((await databases()).protocol.relays ?? []).length === 0, "Wrong service proof was remembered");
       });
       await inspect('recipient-disallowed-origin-refused', async () => { await library().getByLabel("Instance origin", { exact: true }).fill("http://127.0.0.1:1");
         await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); await library().getByText("This origin is not allowed by the instance relay/CSP policy", { exact: false }).waitFor({ state: "visible" }); });
       await inspect('recipient-verified', async () => {
-        await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await library().getByLabel("Expected service public key", { exact: true }).fill(fixture.service_key);
+        await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await knownServiceKey(fixture.service_key);
         await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library());
         const remembered = (await databases()).protocol.relays; insist(remembered.length === 1 && remembered[0].origin === protocol && remembered[0].serviceKey === fixture.service_key && remembered[0].selected === false, "Verified instance was automatically selected");
       });
@@ -436,8 +503,9 @@ export async function runSignedJourneys(h) {
       let revoked, before;
       await step("genuine source moderation removes current mapping and fences both stale signed reviews", async () => {
         await inspect('source-account-admitted', () => admit(true)); await inspect('source-identity-selected', prepareIdentity);
+        await prepareSignerControls();
         const snapshotPage = page, conversationPage = await context.newPage(); ownedPages.add(conversationPage); page = conversationPage;
-        await open("/settings/preferences#local-library"); await prepareSignerControls(); await selectSigner();
+        await open("/settings/library"); await prepareSignerControls(); await selectSigner();
         await inspect('source-conversation-loaded', () => loadConversation("chapter", chapter, seeded.chapters[0].event_id)); await inspect('source-comment-reviewed', () => reviewComment("Synthetic revoked-source review " + marker));
         page = snapshotPage; const send = await inspect('source-snapshot-reviewed', reviewSnapshot); before = await databases();
         const snapshots = signedCounts.get(11999) ?? 0, comments = signedCounts.get(1111) ?? 0;
@@ -455,24 +523,24 @@ export async function runSignedJourneys(h) {
         const { restored, source } = await inspect('source-restored', async () => { const restored = await privateControl("source-restore", { event_id: seeded.chapters[0].event_id }); insist(restored.current.protocol_seed.fully_ready === true && restored.current.protocol_seed.catalog_namespace === seeded.catalog_namespace, "Exact source restore failed readiness or changed native namespace");
         const source = restored.current.protocol_seed.chapters.find(row => row.event_id === seeded.chapters[0].event_id); insist(source?.native_id === chapter && source.visible && source.projected && source.mapped, "Source restore changed exact identity or native alias"); await counterpart(source.event_id); return { restored, source }; });
         await inspect('source-restore-mapping', async () => { const mapping = await native("/api/protocol/resources", { resources: [{ kind: "chapter", id: chapter }] }); insist(mapping.body.data.some(row => row.event_id === source.event_id && row.id === chapter) && eventDigest((await databases()).device.records) === eventDigest(before.device.records), "Restored original did not regain its exact scoped native interpretation"); });
-        await inspect('source-restore-ui', async () => { await page.reload({ waitUntil: "domcontentloaded" }); await management(); await section(library(), "Public sync & recovery"); await selectSigner(); await prepareIdentity(); await loadConversation("chapter", chapter, source.event_id); lifecycleCoverage.source_revocation_restoration = true; });
+        await inspect('source-restore-ui', async () => { await reload(); await prepareSignerControls(); await selectSigner(); await prepareIdentity(); await loadConversation("chapter", chapter, source.event_id); lifecycleCoverage.source_revocation_restoration = true; });
         return { source_id: source.event_id, exact_original_event_restored: true, same_catalogue_namespace: true, real_projection_and_mapping_restored: true, joined_listener_restart: true, unchanged_local_records: true };
       });
     } else if (phase === "signed-namespace") {
       let before, rebuilt, job;
       await step("genuine platform migration rebuild changes namespace while preserving original publication and old device scope", async () => {
-        job = await prepareLifecycleLibrary(); before = await databases(); const backup = JSON.parse((await downloadBytes(library().getByRole("button", { name: "Export device backup", exact: true }))).toString("utf8")); const send = await reviewSnapshot(), count = signedCounts.get(11999);
+        job = await prepareLifecycleLibrary(); before = await databases(); await management(); const backup = JSON.parse((await downloadBytes(libraryMain().getByRole("button", { name: "Export device backup", exact: true }))).toString("utf8")); const send = await reviewSnapshot(), count = signedCounts.get(11999);
         rebuilt = await privateControl("catalogue-rebuild"); const operation = rebuilt.result.operation;
         insist(operation.migration_generated_namespace === true && operation.namespace_uuid_updated_by_fixture === false && operation.original_schema_preserved === true && operation.old_catalog_namespace === seeded.catalog_namespace && operation.catalog_namespace !== seeded.catalog_namespace && rebuilt.current.protocol_seed.catalog_namespace === operation.catalog_namespace, "Real migration-generated namespace rebuild did not meet its contract");
         const policy = await native("/api/protocol/capabilities"); insist(policy.status === 200 && policy.body.catalog_namespace === operation.catalog_namespace && policy.body.service_key === fixture.service_key, "Actual capabilities did not expose the new genuine namespace"); await counterpart(job.id);
         await send.click(); await idle(library()); await library().getByText("This device catalogue namespace is unadopted or changed", { exact: false }).waitFor({ state: "visible" }); insist(signedCounts.get(11999) === count && (await jobs()).length === 1, "Old-scope reviewed snapshot was signed into the rebuilt catalogue");
-        await library().getByRole("button", { name: "Verify current catalogue scope", exact: true }).click(); await idle(library()); await library().getByText("Scope verification: migration_required.", { exact: false }).waitFor({ state: "visible" });
+        await openLibraryTool("recovery"); await library().getByRole("button", { name: "Verify current catalogue scope", exact: true }).click(); await idle(library()); await library().getByText("Scope verification: migration_required.", { exact: false }).waitFor({ state: "visible" });
         const after = await databases(); insist(after.device.instanceScope.catalogNamespace === backup.scope.catalogNamespace && eventDigest(after.device.records) === eventDigest(before.device.records) && eventDigest(after.protocol.records) === eventDigest(before.protocol.records) && after.device.scopeMigrationReason, "Namespace rebuild silently rebound or discarded saved native/canonical data"); lifecycleCoverage.real_namespace_rebuild = true;
         return { old_namespace: seeded.catalog_namespace, migration_generated_new_namespace: operation.catalog_namespace, original_event_id: job.id, original_service_identity_preserved: true, stale_publication_fenced: true, old_scoped_records_and_backup_preserved: true, independent_canonical_rows_preserved: true };
       });
       await step("ordinary reload keeps genuine migration fence and refuses current title identity adoption", async () => {
-        insist(rebuilt?.result.success && before, "Genuine namespace rebuild prerequisite failed"); await page.reload({ waitUntil: "domcontentloaded" }); await management(); await library().getByText("Scope verification: migration_required.", { exact: false }).waitFor({ state: "visible" });
-        const backup = JSON.parse((await downloadBytes(library().getByRole("button", { name: "Export device backup", exact: true }))).toString("utf8")); insist(backup.scope.catalogNamespace === seeded.catalog_namespace && eventDigest(backup.records) === eventDigest(before.device.records), "Reload/export lost the previous saved-device namespace");
+        insist(rebuilt?.result.success && before, "Genuine namespace rebuild prerequisite failed"); await reload(); await openLibraryTool("recovery"); await library().getByText("Scope verification: migration_required.", { exact: false }).waitFor({ state: "visible" });
+        await management(); const backup = JSON.parse((await downloadBytes(libraryMain().getByRole("button", { name: "Export device backup", exact: true }))).toString("utf8")); insist(backup.scope.catalogNamespace === seeded.catalog_namespace && eventDigest(backup.records) === eventDigest(before.device.records), "Reload/export lost the previous saved-device namespace");
         await open("/title/" + rebuilt.current.protocol_seed.series.native_id); insist(await page.locator("[data-local-library-panel], [data-protocol-identity-panel]").count() === 0, "Current title mounted settings management"); insist(await titleLibraryTrigger(page).count() === 0, "Current catalogue title offered native save controls under a mismatched old scope");
         const state = await databases(); insist(eventDigest(state.device.records) === eventDigest(before.device.records) && state.device.instanceScope.catalogNamespace === seeded.catalog_namespace, "Current title navigation rebound old IDs after real rebuild");
         return { reload_kept_migration_required: true, old_backup_scope_retained: true, new_catalogue_native_controls_fenced: true, no_implicit_scope_adoption: true };
@@ -480,15 +548,15 @@ export async function runSignedJourneys(h) {
     } else if (phase === "signed-restart") {
       await step("joined real runtime restart retains exact outbox canonical recovery and device data", async () => {
         const job = await prepareLifecycleLibrary(), before = await databases(); const restarted = await privateControl("runtime-restart"); insist(restarted.current.protocol_seed.fully_ready && restarted.current.protocol_seed.catalog_namespace === seeded.catalog_namespace, "Joined restart changed namespace or lost genuine source readiness");
-        const visible = await counterpart(job.id); insist(signedEventDigest(visible.body) === signedEventDigest(job.event), "Restarted original event differs from saved exact publication"); await page.reload({ waitUntil: "domcontentloaded" }); await management(); await section(library(), "Public sync & recovery"); await selectSigner();
+        const visible = await counterpart(job.id); insist(signedEventDigest(visible.body) === signedEventDigest(job.event), "Restarted original event differs from saved exact publication"); await reload(); await prepareSignerControls(); await selectSigner();
         const after = await databases(); insist(eventDigest(after.device.records) === eventDigest(before.device.records) && eventDigest(after.protocol.records) === eventDigest(before.protocol.records) && eventDigest(after.protocol.jobs) === eventDigest(before.protocol.jobs), "Real runtime restart/reload lost or rebound local state/outbox");
-        await library().getByRole("button", { name: "Preview verified public recovery", exact: true }).click(); await library().getByText("Verified public recovery: " + protocol, { exact: false }).filter({ hasText: job.id }).waitFor({ state: "visible", timeout: 60000 }); await library().getByRole("button", { name: "Cancel recovery", exact: true }).click(); lifecycleCoverage.joined_runtime_restart = true;
+        await openLibraryTool("public-recovery"); await library().getByRole("button", { name: "Preview verified public recovery", exact: true }).click(); await library().getByText("Verified public recovery: " + protocol, { exact: false }).filter({ hasText: job.id }).waitFor({ state: "visible", timeout: 60000 }); await library().getByRole("button", { name: "Cancel recovery", exact: true }).click(); lifecycleCoverage.joined_runtime_restart = true;
         return { exact_event_id: job.id, genuine_joined_old_processes: true, real_new_process_generation: true, same_service_origin_identity_namespace_and_ui_hash: true, native_canonical_outbox_survived: true, actual_recovery_bytes_verified_after_restart: true };
       });
     } else if (phase === "signed-recipients") {
       insist(second && second.service_key !== fixture.service_key, "Two actual distinct fixture services are required; a blocked/missing recipient is not passing coverage");
       await step("two independently verified real recipients accept the identical reviewed library event", async () => {
-        await inspect('secondary-admitted', async () => { await admit(true); await admit(true, second.origin); }); await inspect('secondary-remembered', async () => { await library().getByLabel("Instance origin", { exact: true }).fill(second.origin); await library().getByLabel("Expected service public key", { exact: true }).fill(second.service_key); await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); });
+        await inspect('secondary-admitted', async () => { await admit(true); await admit(true, second.origin); }); await inspect('secondary-remembered', async () => { await library().getByLabel("Instance origin", { exact: true }).fill(second.origin); await knownServiceKey(second.service_key); await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); });
         await inspect('secondary-selected', async () => { const remembered = (await databases()).protocol.relays.find(row => row.origin === second.origin); insist(remembered?.serviceKey === second.service_key && remembered.selected === false, "Second real service proof was not independently pinned/unselected"); await library().getByLabel("Select " + second.origin, { exact: true }).check(); await idle(library()); });
         const send = await inspect('two-snapshot-reviewed', reviewSnapshot); await inspect('two-snapshot-published', async () => { await send.click(); await idle(library()); }); const job = await inspect('two-snapshot-accepted', async () => { const job = await inspect('two-snapshot-job-retained', async () => { const job = (await jobs()).at(-1); insist(job && job.id === job.event.id && verify(job.event) && !job.cancelled && job.recipients.length === 2, "The exact reviewed two-recipient signed snapshot was not retained"); return job; });
           await inspect('two-snapshot-primary-receipt', async () => { insist(job.recipients.filter(row => row.origin === protocol && row.serviceKey === fixture.service_key && row.state === 'accepted').length === 1, "The original primary recipient did not accept the retained snapshot"); });
@@ -498,12 +566,12 @@ export async function runSignedJourneys(h) {
         lifecycleCoverage.two_real_recipients = true; return { event_id: job.id, genuine_service_origins: recipients.map(row => row.origin), actual_independent_service_proofs: true, real_library_receipts_and_projections: 2, identical_signed_event: true };
       });
       await step("real recipient selection changes discard review and exact-body retry retains original approved service", async () => {
-        await prepareIdentity(); await section(identity(), "Public profile and follows"); await identity().getByLabel("Public username", { exact: true }).fill("SyntheticRecipient" + marker); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin);
+        await prepareIdentity(); await openIdentityTool("profile"); await identity().getByLabel("Public username", { exact: true }).fill("SyntheticRecipient" + marker); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin);
         await until(() => identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }).count(), count => count === 0, "Changing to another genuine recipient retained old review/consent"); insist((signedCounts.get(0) ?? 0) === 0, "Recipient change signed an unapproved profile");
         await nativeSelectForLabel(identity(), "Verified recipient").selectOption(protocol); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); let interrupted = 0; const intercept = async route => { if (route.request().method() !== "POST") return route.continue(); interrupted++; await route.abort("failed"); };
         await context.route(protocol + "/account-metadata", intercept); try { await sendAction(); } finally { await context.unroute(protocol + "/account-metadata", intercept); }
         const saved = (await actions()).filter(row => row.event.kind === 0).at(-1); insist(interrupted === 1 && saved?.state === "outcome_unknown" && saved.relay.origin === protocol && saved.relay.serviceKey === fixture.service_key && (await original("/events/" + saved.event.id)).status === 404, "Failed original-recipient action was lost or rebound");
-        const exact = signedEventDigest(saved.event), exactRequestBytes = digest(JSON.stringify(saved.event)), signed = signedCounts.get(0); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin); await section(identity(), "Saved public actions"); await consentDialog(actionCard(saved.event.id).getByRole("button", { name: "Retry exact reviewed signed body", exact: true }), saved.event.id); await idle(identity()); await counterpart(saved.event.id);
+        const exact = signedEventDigest(saved.event), exactRequestBytes = digest(JSON.stringify(saved.event)), signed = signedCounts.get(0); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin); await openOutbox(); await consentDialog(actionCard(saved.event.id).getByRole("button", { name: "Retry saved action", exact: true }), saved.event.id); await idle(identity()); await counterpart(saved.event.id);
         const done = (await actions()).find(row => row.event.id === saved.event.id), posts = mutationRequests.filter(row => row.path === "/account-metadata" && row.bodyDigest === exactRequestBytes); insist(done.state === "accepted" && signedEventDigest(done.event) === exact && done.relay.origin === protocol && done.relay.serviceKey === fixture.service_key && signedCounts.get(0) === signed && posts.length === 2 && posts.every(row => row.origin === protocol), "Exact-body retry switched to the newly selected genuine service");
         return { original_recipient: protocol, newly_selected_recipient: second.origin, exact_event_id: saved.event.id, exact_body_digest: exact, original_recipient_only_browser_transport: true, no_event_resigning: true };
       });
@@ -527,65 +595,65 @@ export async function runSignedJourneys(h) {
         await inspect('auth-preview-send', async () => { await admit(false); denyKind = 27235; await (await reviewSnapshot()).click(); await idle(library()); });
         firstJob = await inspect('auth-exact-job-retained', () => until(jobs, value => value.length === 1 && value[0].recipients[0].state === "retryable", "Denied authentication did not retain a retryable exact signed snapshot")); firstJob = firstJob[0];
         await inspect('auth-intent-bound', async () => { insist(firstJob.event.kind === 11999 && verify(firstJob.event) && firstJob.recipients[0].origin === protocol && firstJob.recipients[0].serviceKey === fixture.service_key && mutationRequests.length === 0, "Denied proof sent or rebound the snapshot"); });
-        await inspect('auth-unadmitted-retry', async () => { await consentDialog(jobCard(firstJob.id).getByRole("button", { name: "Retry approved snapshot", exact: true }), "original recipients"); await idle(library()); });
+        await inspect('auth-unadmitted-retry', async () => { await openLibraryTool("attempts"); await consentDialog(jobCard(firstJob.id).getByRole("button", { name: "Retry approved snapshot", exact: true }), "original recipients"); await idle(library()); });
         const rejected = await inspect('auth-refusal-verified', async () => { const rejected = (await jobs()).find(job => job.id === firstJob.id); insist(rejected.recipients[0].state === "rejected" && /HTTP(?:401|403)/.test(rejected.recipients[0].message) && (await original("/events/" + firstJob.id)).status === 404 && signedEventDigest(rejected.event) === signedEventDigest(firstJob.event), "Real account admission did not refuse the exact unadmitted publication"); return rejected; });
         return { snapshot_id: firstJob.id, kind: 11999, genuine_signature: true, denied_authentication_no_post: true, real_admission_refusal: rejected.recipients[0].message, exact_body_retained: true };
       });
       await step("explicit original account admission and exact approved retry reach genuine public projection", async () => {
         await inspect('admission-exact-prerequisite', async () => { insist(firstJob && firstJob.id === firstJob.event.id && verify(firstJob.event), "A retained exact verified approved snapshot is required before explicit admission and retry"); });
-        let count; await inspect('admission-exact-retry', async () => { await admit(true); count = signedCounts.get(11999); await consentDialog(jobCard(firstJob.id).getByRole("button", { name: "Retry approved snapshot", exact: true }), "original recipients"); await idle(library()); });
+        let count; await inspect('admission-exact-retry', async () => { await admit(true); count = signedCounts.get(11999); await openLibraryTool("attempts"); await consentDialog(jobCard(firstJob.id).getByRole("button", { name: "Retry approved snapshot", exact: true }), "original recipients"); await idle(library()); });
         const accepted = await inspect('admission-exact-accepted', async () => { const accepted = (await jobs()).find(job => job.id === firstJob.id); insist(accepted.recipients[0].state === "accepted" && signedEventDigest(accepted.event) === signedEventDigest(firstJob.event) && signedCounts.get(11999) === count, "Explicit retry signed different snapshot or lacked a real receipt"); return accepted; });
         await inspect('admission-exact-projected', async () => { const visible = await counterpart(firstJob.id); insist(signedEventDigest(visible.body) === signedEventDigest(firstJob.event), "Projected original counterpart differs from the saved event"); });
         const peerOnly = await inspect('admission-peer-denied', async () => { const peerOnly = await original("/federation/libraries/" + owner); insist([401, 403].includes(peerOnly.status) && !peerOnly.body?.event, "Public library read policy bypassed approved-peer federation authority"); return peerOnly; });
         return { actual_library_staging_post: mutationRequests.some(row => row.path === "/library/batches"), actual_library_publish_post: mutationRequests.some(row => row.path === "/libraries"), event_id: firstJob.id, recipient_state: "accepted", projected_exact_counterpart_verified: true, no_snapshot_resigning: true, federation_peer_only_status: peerOnly.status };
       });
       await step("lost genuine library acceptance response retains exact-event retry through ordinary reload", async () => {
-        await section(library(), "Edit saved-device series without catalogue lookup"); await nativeSelectForLabel(library(), "Status for saved " + manga).selectOption("completed"); await idle(library());
+        await openLibraryTool("recovery"); await nativeSelectForLabel(library(), "Status for saved " + manga).selectOption("completed"); await idle(library()); await prepareSignerControls();
         let lost = 0; const intercept = async route => { if (route.request().method() !== "POST") return route.continue(); const response = await route.fetch({ maxRedirects: 0 }); insist([200, 202].includes(response.status()), "Original library was not accepted before deliberate response loss"); lost++; await route.abort("failed"); };
         await context.route(protocol + "/libraries", intercept);
         try { await (await reviewSnapshot()).click(); await idle(library()); } finally { await context.unroute(protocol + "/libraries", intercept); }
         const unknown = (await jobs()).find(job => job.id !== firstJob.id); insist(lost === 1 && unknown?.recipients[0].state === "retryable" && !unknown.cancelled, "Lost acceptance was claimed successful or replayed automatically");
-        const exact = signedEventDigest(unknown.event), count = signedCounts.get(11999); await counterpart(unknown.id); await page.reload({ waitUntil: "domcontentloaded" }); await management(); await section(library(), "Public sync & recovery"); await selectSigner();
+        const exact = signedEventDigest(unknown.event), count = signedCounts.get(11999); await counterpart(unknown.id); await reload(); await prepareSignerControls(); await selectSigner();
         const restored = (await jobs()).find(job => job.id === unknown.id); insist(signedEventDigest(restored.event) === exact && restored.recipients[0].origin === protocol, "Reload rebound saved uncertain publication");
-        await consentDialog(jobCard(unknown.id).getByRole("button", { name: "Retry approved snapshot", exact: true }), "original recipients"); await idle(library());
+        await openLibraryTool("attempts"); await consentDialog(jobCard(unknown.id).getByRole("button", { name: "Retry approved snapshot", exact: true }), "original recipients"); await idle(library());
         insist((await jobs()).find(job => job.id === unknown.id).recipients[0].state === "accepted" && signedCounts.get(11999) === count, "Unknown-outcome retry failed or resigned public snapshot"); firstJob = (await jobs()).find(job => job.id === unknown.id);
         return { actual_acceptance_response_lost: true, no_automatic_replay: true, reload_retained_exact_event: true, event_id: firstJob.id, event_digest: exact, explicit_same_event_retry: true };
       });
       await step("verified real relay recovery restores portable canonical rows while native rows remain separate", async () => {
-        const before = await databases(); await library().getByRole("button", { name: "Preview verified public recovery", exact: true }).click(); await library().getByText("Verified public recovery: " + protocol, { exact: false }).waitFor({ state: "visible", timeout: 60000 });
+        const before = await databases(); await openLibraryTool("public-recovery"); await library().getByRole("button", { name: "Preview verified public recovery", exact: true }).click(); await library().getByText("Verified public recovery: " + protocol, { exact: false }).waitFor({ state: "visible", timeout: 60000 });
         await consentDialog(library().getByRole("button", { name: "Restore reviewed canonical records", exact: true }), "verified recovery"); await idle(library());
         const state = await databases(); insist(eventDigest(state.device.records) === eventDigest(before.device.records), "Canonical recovery overwrote scoped native rows");
         insist(state.protocol.records.some(row => row.family === "series" && row.record.id === seeded.series.event_id && row.record.status === "completed") && state.protocol.records.some(row => row.family === "chapters" && row.record.id === seeded.chapters[0].event_id) && state.protocol.records.some(row => row.family === "lists" && row.record.id === deviceList.id && row.record.name === deviceList.name) && state.protocol.records.some(row => row.family === "members" && row.record.list === deviceList.id && row.record.series === seeded.series.event_id && row.record.position === 2) && state.protocol.records.every(row => !JSON.stringify(row.record).includes(nativeOnly) && !JSON.stringify(row.record).includes(manga)), "Recovery did not contain real canonical IDs/list references or leaked native IDs");
-        backup = await downloadBytes(library().getByRole("button", { name: "Export portable canonical backup", exact: true })); const lines = backup.toString("utf8").trimEnd().split("\n").map(line => JSON.parse(line)); insist(lines[0].format === "manga-local-library" && lines[0].version === 2 && lines.at(-1).end === lines.length - 2 && lines.slice(1, -1).some(([family, row]) => family === "series" && row.id === seeded.series.event_id), "Actual UI canonical export was not portable reviewed JSONL");
+        await openLibraryTool("recovery"); backup = await downloadBytes(library().getByRole("button", { name: "Export portable canonical backup", exact: true })); const lines = backup.toString("utf8").trimEnd().split("\n").map(line => JSON.parse(line)); insist(lines[0].format === "manga-local-library" && lines[0].version === 2 && lines.at(-1).end === lines.length - 2 && lines.slice(1, -1).some(([family, row]) => family === "series" && row.id === seeded.series.event_id), "Actual UI canonical export was not portable reviewed JSONL");
         return { genuine_library_head_and_objects_verified_by_ui: true, canonical_series_id: seeded.series.event_id, canonical_chapter_id: seeded.chapters[0].event_id, original_list_id: deviceList.id, canonical_member_series: seeded.series.event_id, native_only_absent: true, native_rows_preserved: true, local_backup_digest: digest(backup), records: lines.at(-1).end };
       });
       await step("ordinary reload and reviewed canonical backup import preserve scope and never autopublish", async () => {
-        const before = await databases(), posts = mutationRequests.length; await page.reload({ waitUntil: "domcontentloaded" }); await management(); await section(library(), "Public sync & recovery");
+        const before = await databases(), posts = mutationRequests.length; await reload(); await openLibraryTool("recovery");
         const loaded = await databases(); insist(eventDigest(loaded.device.records) === eventDigest(before.device.records) && eventDigest(loaded.protocol.records) === eventDigest(before.protocol.records), "Ordinary reload lost native or canonical data");
         await library().getByLabel("Preview portable canonical backup", { exact: true }).setInputFiles({ name: "synthetic-canonical.jsonl", mimeType: "application/x-ndjson", buffer: backup }); await library().getByText("Canonical backup preview:", { exact: false }).waitFor({ state: "visible" });
         await consentDialog(library().getByRole("button", { name: "Restore reviewed canonical backup", exact: true }), "reviewed backup"); await idle(library());
         const imported = await databases(); insist(eventDigest(imported.device.records) === eventDigest(before.device.records) && eventDigest(imported.protocol.records) === eventDigest(before.protocol.records) && mutationRequests.length === posts, "Local canonical import rebound native scope or published");
-        const deviceBackup = JSON.parse((await downloadBytes(library().getByRole("button", { name: "Export device backup", exact: true }))).toString("utf8")); deviceBackup.scope.catalogNamespace = randomUUID();
-        await library().getByLabel("Preview device backup", { exact: true }).setInputFiles({ name: "different-catalogue-namespace.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(deviceBackup)) }); await library().getByText("Native IDs belong to a different instance.", { exact: false }).waitFor({ state: "visible" }); insist(await library().getByRole("button", { name: "Merge reviewed import", exact: true }).count() === 0, "Foreign catalogue namespace could silently merge");
-        await library().getByRole("button", { name: "Cancel import", exact: true }).click();
+        await management(); const deviceBackup = JSON.parse((await downloadBytes(library().getByRole("button", { name: "Export device backup", exact: true }))).toString("utf8")); deviceBackup.scope.catalogNamespace = randomUUID();
+        await libraryMain().getByLabel("Preview device backup", { exact: true }).setInputFiles({ name: "different-catalogue-namespace.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(deviceBackup)) }); const importDialog = page.getByRole("dialog", { name: "Review library import", exact: true }); await importDialog.waitFor({ state: "visible" }); await importDialog.getByText("This backup belongs to another catalogue.", { exact: false }).waitFor({ state: "visible" }); insist(await importDialog.getByRole("button", { name: "Merge reviewed import", exact: true }).count() === 0 && await importDialog.getByRole("button", { name: "Replace with reviewed import", exact: true }).count() === 0, "Foreign catalogue namespace could silently merge or replace");
+        await importDialog.getByRole("button", { name: "Cancel import", exact: true }).click(); await importDialog.waitFor({ state: "hidden" });
         return { reload_retained_both_libraries: true, reviewed_portable_import: true, foreign_namespace_native_import_blocked: true, original_mutation_count_unchanged: true, live_namespace_rebuild_and_source_revocation: "requires genuine fixture owner seam; not tested by a backup mismatch" };
       });
     } else {
       await step("public action fixture admission and dynamic target panel remain independent from password identity", async () => { await admit(true); await prepareIdentity(); return { public_key_explicitly_admitted: true, verified_recipient: protocol, password_session: false }; });
       if (phase === "signed-profile") {
-        await section(identity(), "Public profile and follows");
         for (const kind of [0, 3, 10002]) await step(`visible reviewed kind ${kind} metadata reaches genuine current-head projection`, async () => {
+          await openIdentityTool(kind === 0 ? "profile" : "follows");
           if (kind === 0) { await identity().getByLabel("Public username", { exact: true }).fill("Synthetic" + marker); await identity().getByLabel("Public display name", { exact: true }).fill("Disposable profile " + marker); await identity().getByLabel("Public bio", { exact: true }).fill("Synthetic browser acceptance profile."); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); }
           if (kind === 3) { await identity().getByLabel("Public follow keys, one 64-character hex key per line", { exact: true }).fill(fixture.operator_pubkey); await identity().getByRole("button", { name: "Review replacement public follow list", exact: true }).click(); }
           if (kind === 10002) { await identity().getByLabel("Public write relay URLs, one WSS URL per line", { exact: true }).fill(websocket.href); await identity().getByRole("button", { name: "Review replacement public relay list", exact: true }).click(); }
           await sendAction(); const saved = (await actions()).filter(row => row.event.kind === kind).at(-1); insist(saved?.state === "accepted" && saved.relay.origin === protocol && verify(saved.event), "Original metadata exact receipt missing");
           const event = await counterpart(saved.event.id); const head = await until(() => original(`/accounts/${owner}/metadata/${kind}`), value => value.status === 200 && value.body.id === saved.event.id && value.body.projected === true, "Real replaceable metadata head did not project", 60000);
           insist(signedEventDigest(event.body) === signedEventDigest(saved.event) && head.body.publisher === owner && head.body.kind === kind, "Current public metadata is not the exact signed event");
-          await identity().getByRole("button", { name: "Read verified current public metadata", exact: true }).click(); await idle(identity()); await identity().getByText(`Kind ${kind}, event ${saved.event.id}, projected`, { exact: true }).waitFor({ state: "visible" });
+          await identity().getByRole("button", { name: "Read verified current public metadata", exact: true }).click(); await idle(identity()); await identity().locator(`[data-verified-metadata-kind="${kind}"][data-verified-metadata-id="${saved.event.id}"]`).waitFor({ state: "visible" });
           return { kind, event_id: saved.event.id, actual_account_metadata_post: true, projected_current_head: true, current_verified_event_rendered: true, recipient: protocol };
         });
         await step("authored metadata withdrawal uses visible exact-event review and real original kind5 endpoint", async () => {
-          const profile = (await actions()).find(row => row.event.kind === 0); const item = identity().getByText(`Kind 0, event ${profile.event.id}, projected`, { exact: true }).locator(".."); await item.getByRole("button", { name: "Review exact authored metadata withdrawal", exact: true }).click(); await sendAction();
+          const profile = (await actions()).find(row => row.event.kind === 0); await openIdentityTool("profile"); await identity().getByRole("button", { name: "Read verified current public metadata", exact: true }).click(); await idle(identity()); const item = identity().locator(`[data-verified-metadata-kind="0"][data-verified-metadata-id="${profile.event.id}"]`); await item.waitFor({ state: "visible" }); await item.getByRole("button", { name: "Review removal", exact: true }).click(); await sendAction();
           const withdrawal = (await actions()).filter(row => row.event.kind === 5).at(-1); insist(withdrawal?.state === "accepted" && withdrawal.event.tags.length === 1 && withdrawal.event.tags[0][1] === profile.event.id, "Withdrawal was not bound to the exact authored profile");
           const actual = await until(() => original("/account-deletions/" + withdrawal.event.id), value => value.status === 200 && verify(value.body) && value.body.id === withdrawal.event.id, "Genuine original withdrawal counterpart missing");
           await until(() => original(`/accounts/${owner}/metadata/0`), value => value.status === 404, "Authored metadata remained current after real withdrawal projection", 60000);
@@ -610,7 +678,7 @@ export async function runSignedJourneys(h) {
           const intercept = async route => { if (route.request().method() !== "POST") return route.continue(); posts++; const response = await route.fetch({ maxRedirects: 0 }); insist([200, 202].includes(response.status()), "Social action was not genuinely accepted before response loss"); await route.abort("failed"); };
           await context.route(protocol + "/social", intercept); try { await sendAction(); } finally { await context.unroute(protocol + "/social", intercept); }
           const unknown = (await actions()).find(row => row.event.content === "Synthetic lost-response comment " + marker); insist(posts === 1 && unknown?.state === "outcome_unknown", "Unknown social outcome was called accepted or automatically retried"); await counterpart(unknown.event.id); const body = signedEventDigest(unknown.event), count = signedCounts.get(1111);
-          await openOutbox(); await actionCard(unknown.event.id).getByRole("button", { name: "Reconcile exact public counterpart", exact: true }).click(); await idle(identity()); const reconciled = (await actions()).find(row => row.event.id === unknown.event.id);
+          await openOutbox(); await actionCard(unknown.event.id).getByRole("button", { name: "Check delivery", exact: true }).click(); await idle(identity()); const reconciled = (await actions()).find(row => row.event.id === unknown.event.id);
           insist(reconciled.state === "accepted" && signedEventDigest(reconciled.event) === body && signedCounts.get(1111) === count && posts === 1, "Actual exact-event reconciliation re-signed or replayed uncertain social action");
           return { event_id: unknown.event.id, original_response_lost: true, exact_body_digest: body, actual_counterpart_reconciled: true, no_resigning_or_replay: true };
         });
@@ -619,9 +687,9 @@ export async function runSignedJourneys(h) {
           const intercept = async route => { if (route.request().method() !== "POST") return route.continue(); intercepted++; await route.abort("failed"); };
           await context.route(protocol + "/social", intercept); try { await sendAction(); } finally { await context.unroute(protocol + "/social", intercept); }
           const unknown = (await actions()).find(row => row.event.content === "Synthetic failed-transport comment " + marker); insist(intercepted === 1 && unknown?.state === "outcome_unknown" && (await original("/events/" + unknown.event.id)).status === 404, "Failed transport claimed acceptance or created a visible counterpart");
-          const exact = signedEventDigest(unknown.event), count = signedCounts.get(1111); await openOutbox(); await actionCard(unknown.event.id).getByRole("button", { name: "Reconcile exact public counterpart", exact: true }).click(); await idle(identity()); const unresolved = (await actions()).find(row => row.event.id === unknown.event.id);
+          const exact = signedEventDigest(unknown.event), count = signedCounts.get(1111); await openOutbox(); await actionCard(unknown.event.id).getByRole("button", { name: "Check delivery", exact: true }).click(); await idle(identity()); const unresolved = (await actions()).find(row => row.event.id === unknown.event.id);
           insist(unresolved.state === "outcome_unknown" && signedEventDigest(unresolved.event) === exact && unresolved.message.includes("No visible exact counterpart yet"), "A missing public projection was treated as proof of refusal or rewrote the signed event");
-          await consentDialog(actionCard(unknown.event.id).getByRole("button", { name: "Retry exact reviewed signed body", exact: true }), unknown.event.id); await idle(identity()); await counterpart(unknown.event.id); const accepted = (await actions()).find(row => row.event.id === unknown.event.id);
+          await consentDialog(actionCard(unknown.event.id).getByRole("button", { name: "Retry saved action", exact: true }), unknown.event.id); await idle(identity()); await counterpart(unknown.event.id); const accepted = (await actions()).find(row => row.event.id === unknown.event.id);
           insist(accepted.state === "accepted" && signedEventDigest(accepted.event) === exact && accepted.relay.origin === protocol && signedCounts.get(1111) === count, "Exact failed-transport retry changed public body, signature or recipient");
           return { event_id: unknown.event.id, failed_request_did_not_reach_service: true, absence_remained_unknown: true, exact_body_digest: exact, explicit_original_recipient_retry: true, projected_counterpart_verified: true, no_event_resigning: true };
         });
@@ -636,7 +704,7 @@ export async function runSignedJourneys(h) {
         await step("target change during a real pending read cannot attach old source or conversation", async () => {
           await target("manga", manga); let release, waiting = false, transportSettled = false, transportCancelled = false; const intercept = async route => { waiting = true; await new Promise(resolve => { release = resolve; }); try { await route.continue(); } catch { transportCancelled = true; } finally { transportSettled = true; } };
           await context.route(protocol + "/events/" + seeded.series.event_id, intercept);
-          try { await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click(); await until(() => waiting, Boolean, "Real source read did not reach pending fault seam"); await target("chapter", chapter); release(); await until(() => transportSettled, Boolean, "Old read transport did not settle after route disposal"); await idle(identity()); const settledUntil = Date.now() + 800; do { insist(await identity().getAttribute("data-resource-kind") === "chapter" && await identity().getAttribute("data-resource-id") === chapter && await identity().getByText("Verified canonical source:", { exact: false }).count() === 0 && await identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }).count() === 0, "Old pending source attached to changed target"); await page.waitForTimeout(60); } while (Date.now() < settledUntil); }
+          try { await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click(); await until(() => waiting, Boolean, "Real source read did not reach pending fault seam"); await target("chapter", chapter); release(); await until(() => transportSettled, Boolean, "Old read transport did not settle after route disposal"); await idle(identity()); const settledUntil = Date.now() + 800; do { insist(await identity().getAttribute("data-resource-kind") === "chapter" && await identity().getAttribute("data-resource-id") === chapter && await identity().getAttribute("data-verified-source-id") === null && await identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }).count() === 0, "Old pending source attached to changed target"); await page.waitForTimeout(60); } while (Date.now() < settledUntil); }
           finally { release?.(); await context.unroute(protocol + "/events/" + seeded.series.event_id, intercept); }
           await loadConversation("chapter", chapter, seeded.chapters[0].event_id);
           return { genuine_read_delayed: true, transport_settled_after_route_disposal: true, old_request_cancelled_by_navigation: transportCancelled, target_change_cleared_old_results: true, current_source: seeded.chapters[0].event_id };
@@ -651,14 +719,14 @@ export async function runSignedJourneys(h) {
           const beforePosts = mutationRequests.filter(row => row.path === "/social").length;
           await identity().getByLabel("I approve this exact public action and recipient.", { exact: true }).check(); await identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }).click(); await until(() => heldSeen, Boolean, "External signer event did not reach held prompt"); await target("chapter", chapter); heldResolve(); await until(actions, rows => rows.some(row => row.event.content === "Synthetic retained cancelled intent " + marker), "Disposed signer return did not retain its exact original intent");
           const retained = (await actions()).find(row => row.event.content === "Synthetic retained cancelled intent " + marker); insist(retained?.state === "prepared" && retained.relay.origin === protocol && retained.relay.serviceKey === fixture.service_key && retained.event.tags.some(tag => tag[0] === "E" && tag[1] === seeded.series.event_id) && !retained.event.tags.some(tag => tag.includes(seeded.chapters[0].event_id)) && mutationRequests.filter(row => row.path === "/social").length === beforePosts, "Signer-return race rebound signed intent or began transport");
-          await openOutbox(); await actionCard(retained.event.id).getByRole("button", { name: "Cancel further sending", exact: true }).click(); await until(actions, rows => rows.find(row => row.event.id === retained.event.id)?.cancelled === true, "Exact intent cancellation was not persisted"); insist(await actionCard(retained.event.id).getByRole("button", { name: "Retry exact reviewed signed body", exact: true }).count() === 0 && (await original("/events/" + retained.event.id)).status === 404, "Cancelled unsent exact intent had a public counterpart or retry control");
+          await openOutbox(); await actionCard(retained.event.id).getByRole("button", { name: "Cancel further sending", exact: true }).click(); await until(actions, rows => rows.find(row => row.event.id === retained.event.id)?.cancelled === true, "Exact intent cancellation was not persisted"); insist(await actionCard(retained.event.id).getByRole("button", { name: "Retry saved action", exact: true }).count() === 0 && (await original("/events/" + retained.event.id)).status === 404, "Cancelled unsent exact intent had a public counterpart or retry control");
           return { event_id: retained.event.id, original_recipient: protocol, original_canonical_target: seeded.series.event_id, changed_current_target: seeded.chapters[0].event_id, exact_intent_saved_before_context_abort: true, cancellation_persisted: true, transport_not_started: true };
         });
         await step("explicit exact-body retry remains bound to original recipient and source after target change", async () => {
           await loadConversation("manga", manga, seeded.series.event_id); await reviewComment("Synthetic retained retry intent " + marker); heldKind = 1111; heldSeen = false;
           await identity().getByLabel("I approve this exact public action and recipient.", { exact: true }).check(); await identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }).click(); await until(() => heldSeen, Boolean, "Second held signer prompt was not reached"); await target("chapter", nextChapter); heldResolve(); await until(actions, rows => rows.some(row => row.event.content === "Synthetic retained retry intent " + marker), "Disposed signer return did not retain its exact retry intent");
           const retained = (await actions()).find(row => row.event.content === "Synthetic retained retry intent " + marker), exact = signedEventDigest(retained.event), count = signedCounts.get(1111); insist(retained.state === "prepared", "Changed context started old intent transport");
-          await openOutbox(); await consentDialog(actionCard(retained.event.id).getByRole("button", { name: "Retry exact reviewed signed body", exact: true }), retained.event.id); await idle(identity()); await counterpart(retained.event.id); const done = (await actions()).find(row => row.event.id === retained.event.id); insist(done.state === "accepted" && signedEventDigest(done.event) === exact && done.relay.origin === protocol && signedCounts.get(1111) === count, "Explicit outbox retry changed body, recipient or signature");
+          await openOutbox(); await consentDialog(actionCard(retained.event.id).getByRole("button", { name: "Retry saved action", exact: true }), retained.event.id); await idle(identity()); await counterpart(retained.event.id); const done = (await actions()).find(row => row.event.id === retained.event.id); insist(done.state === "accepted" && signedEventDigest(done.event) === exact && done.relay.origin === protocol && signedCounts.get(1111) === count, "Explicit outbox retry changed body, recipient or signature");
           const originalFeed = await original(`/social?target=${seeded.series.event_id}&limit=50&offset=0`), changedFeed = await original(`/social?target=${seeded.chapters[1].event_id}&limit=50&offset=0`); insist(originalFeed.body.events.some(event => event.id === retained.event.id) && !changedFeed.body.events.some(event => event.id === retained.event.id), "Retried action attached to newly selected target");
           return { event_id: retained.event.id, exact_body_digest: exact, original_target_only: true, original_recipient: protocol, no_event_resigning: true };
         });

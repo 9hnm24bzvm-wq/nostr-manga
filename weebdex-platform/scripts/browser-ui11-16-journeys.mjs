@@ -141,9 +141,45 @@ export async function runUi11To16Journeys(h) {
     await until(() => api("/api/auth/check"), value => value.status === 200 && value.body?.identity?.username === account.username, "Actual login did not restore the synthetic browser session");
     await open("/");
   };
-  const managementHref = "/settings/preferences#local-library";
+  const managementHref = "/settings/library";
   const panel = () => page.locator("section[data-local-library-panel]");
-  const expand = async locator => { if (!await locator.evaluate(node => node.open)) await locator.locator(":scope > summary").click(); };
+  const managementReady = async () => {
+    const current = new URL(page.url());
+    insist(current.pathname === managementHref && !current.hash, "Library management is not on its dedicated native Settings tab");
+    await panel().waitFor({ state: "visible" });
+    insist(await panel().count() === 1 && await page.locator("[data-protocol-identity-panel]").count() === 0, "The Library Settings tab mounted a missing, duplicate or unrelated management surface");
+    insist(await panel().locator("details").count() === 0, "Library Settings tools must use native dialogs rather than accordions");
+    const backup = panel().getByRole("button", { name: "Export device backup", exact: true });
+    await until(() => backup.isEnabled(), Boolean, "The current Library Settings source did not finish initialization");
+  };
+  const toolDialog = kind => page.getByRole("dialog").filter({ has: page.locator(`section[data-library-tool="${kind}"]`) });
+  const toolView = kind => toolDialog(kind).locator(`section[data-library-tool="${kind}"]`);
+  const openLibraryTool = async kind => {
+    const names = { lists: "Manage lists", sync: "Set up public sync", recovery: "Library recovery" };
+    insist(Object.hasOwn(names, kind), "Unknown native Library Settings tool");
+    await managementReady();
+    insist(await page.getByRole("dialog").count() === 0, "A different native Settings dialog is already open");
+    await panel().getByRole("button", { name: names[kind], exact: true }).click();
+    await toolDialog(kind).waitFor({ state: "visible" });
+    await toolView(kind).waitFor({ state: "visible" });
+    insist(await toolDialog(kind).count() === 1 && await page.getByRole("dialog").count() === 1, "The selected Library tool did not open one native dialog");
+    insist(await toolView(kind).locator("details").count() === 0, "The native Library tool still requires an accordion");
+    const sourceControls = { lists: "Create list", sync: "Choose destinations", recovery: "Verify current catalogue scope" };
+    await until(() => toolView(kind).getByRole("button", { name: sourceControls[kind], exact: true }).isEnabled(), Boolean, "The native Library tool did not finish its own source initialization");
+    return toolView(kind);
+  };
+  const closeLibraryTool = async (kind, settle = true) => {
+    await toolDialog(kind).getByRole("button", { name: "Close", exact: true }).click();
+    await toolDialog(kind).waitFor({ state: "hidden" });
+    if (settle) await managementReady();
+    else {
+      // The saved-list race deliberately keeps its real operation pending.
+      // Dismiss the modal without waiting for that held operation to settle.
+      const current = new URL(page.url());
+      insist(current.pathname === managementHref && !current.hash, "Dismissing the held Library tool changed the Settings route");
+      await panel().waitFor({ state: "visible" });
+    }
+  };
   const noManagementPanel = async () => insist(await page.locator("[data-local-library-panel]").count() === 0, "Library management leaked outside the dedicated settings route");
   let managementVisit = 0;
   // Management is a real settings destination. Reach it through the Library
@@ -151,8 +187,8 @@ export async function runUi11To16Journeys(h) {
   // browser Back. Never inject an anchor, import a store or reload the document.
   const visitManagement = async () => {
     const previous = page.url(), previousUrl = new URL(previous);
-    if (previousUrl.pathname === "/settings/preferences") {
-      await panel().waitFor({ state: "visible" });
+    if (previousUrl.pathname === managementHref) {
+      await managementReady();
       return async () => {};
     }
     await noManagementPanel();
@@ -175,14 +211,15 @@ export async function runUi11To16Journeys(h) {
       await manage.click();
       backSteps++;
     }
-    await page.waitForURL(url => url.pathname === "/settings/preferences" && url.hash === "#local-library");
-    await panel().waitFor({ state: "visible" });
+    await page.waitForURL(url => url.pathname === managementHref && !url.hash);
+    await managementReady();
     insist(await page.evaluate(() => window.__ui1116ManagementRealm) === proof, "Visible management navigation reloaded the document");
     return async () => {
       for (let index = 0; index < backSteps; index++) await page.goBack({ waitUntil: "domcontentloaded" });
       await page.waitForURL(previous);
       insist(await page.evaluate(() => window.__ui1116ManagementRealm) === proof, "Management Back navigation reloaded the document");
       await noManagementPanel();
+      insist(await page.locator("[data-library-tool]").count() === 0, "A disposed Library Settings dialog survived Back navigation");
     };
   };
   const inManagement = async operation => {
@@ -190,9 +227,9 @@ export async function runUi11To16Journeys(h) {
     try { return await operation(); } finally { await restore(); }
   };
   const scopeStatus = async status => {
-    const advanced = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Advanced library settings" }) });
-    await expand(advanced);
-    await advanced.getByText(new RegExp(`Scope verification: ${status}\\.`)).waitFor({ state: "visible" });
+    const recovery = await openLibraryTool("recovery");
+    try { await recovery.getByText(new RegExp(`Scope verification: ${status}\\.`)).waitFor({ state: "visible" }); }
+    finally { await closeLibraryTool("recovery"); }
   };
   const ready = async () => inManagement(() => scopeStatus("verified"));
   const mode = async selected => inManagement(async () => {
@@ -203,6 +240,7 @@ export async function runUi11To16Journeys(h) {
     await until(() => Promise.all([panel().getByText(selectedText).isVisible(), button.isEnabled()]), ([selectedNow, enabled]) => selectedNow || enabled, "The current management mode never became actionable");
     if (!await panel().getByText(selectedText).isVisible()) await button.click();
     await panel().getByText(selectedText).waitFor({ state: "visible" });
+    await managementReady();
   });
   const realm = async () => page.evaluate(value => { window.__ui1116RealmProof = value; }, marker);
   const sameRealm = async () => insist(await page.evaluate(() => window.__ui1116RealmProof) === marker, "The regression navigated by document reload, hiding the SPA lifetime defect");
@@ -234,9 +272,13 @@ export async function runUi11To16Journeys(h) {
     const backup = JSON.parse(Buffer.concat(chunks).toString("utf8")); insist(backup.format === "weebdex-device-library" && backup.scope.origin === origin, "Actual UI device backup belongs to another scope");
     backup.records = backup.records.filter(row => !(row.family === "chapters" && row.id === id));
     await panel().getByLabel("Preview device backup", { exact: false }).setInputFiles({ name: "synthetic-reviewed-device.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(backup)) });
-    await panel().getByRole("button", { name: "Replace with reviewed import", exact: true }).waitFor({ state: "visible" });
-    page.once("dialog", dialog => dialog.accept()); await panel().getByRole("button", { name: "Replace with reviewed import", exact: true }).click();
+    const review = page.getByRole("dialog", { name: "Review library import", exact: true });
+    await review.waitFor({ state: "visible" });
+    await review.getByRole("button", { name: "Replace with reviewed import", exact: true }).waitFor({ state: "visible" });
+    page.once("dialog", dialog => dialog.accept()); await review.getByRole("button", { name: "Replace with reviewed import", exact: true }).click();
+    await review.waitFor({ state: "hidden" });
     await until(deviceRows, rows => !rows.some(row => row.family === "chapters" && row.id === id), "Reviewed actual UI replacement did not remove the previous device progress prerequisite");
+    await managementReady();
   });
 
   // Withhold exactly one real request before forwarding or after its real
@@ -365,11 +407,13 @@ export async function runUi11To16Journeys(h) {
     let listName = "Delayed list " + marker, listHref;
     await step("UI11 list: actual creation and current saved-list link select the exact device list", async () => {
       await signup(); await visitManagement(); await ready(); await mode("device");
-      const lists = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Custom device lists" }) }); await expand(lists);
+      let lists = await openLibraryTool("lists");
       await lists.getByLabel("List name", { exact: true }).fill(listName); await lists.getByRole("button", { name: "Create list", exact: true }).click();
       const link = lists.getByRole("link", { name: listName, exact: true }); await link.waitFor({ state: "visible" }); listHref = await link.getAttribute("href");
-      await mode("account"); await link.click(); await page.waitForURL(url => url.pathname === "/library" && url.searchParams.get("list") === new URL(listHref, origin).searchParams.get("list"));
+      await closeLibraryTool("lists"); await mode("account"); lists = await openLibraryTool("lists");
+      await lists.getByRole("link", { name: listName, exact: true }).click(); await page.waitForURL(url => url.pathname === "/library" && url.searchParams.get("list") === new URL(listHref, origin).searchParams.get("list"));
       await noManagementPanel();
+      insist(await page.locator("[data-library-tool]").count() === 0, "Opening the saved device list retained its obsolete native Settings dialog");
       await inManagement(() => panel().getByText(/Library source: this browser device\./).waitFor({ state: "visible" }));
       return { real_ui_created_list: true, exact_list_route: true, selected_device: true, management_settings_only: true };
     });
@@ -377,19 +421,32 @@ export async function runUi11To16Journeys(h) {
       insist(listHref, "Actual saved-list prerequisite failed");
       await open(lifetime === "reader-return" ? `/chapter/${ids.chapter}/1` : "/library"); await ready(); await realm();
       const restore = await visitManagement();
-      const lists = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Custom device lists" }) }); await expand(lists);
-      await panel().getByRole("button", { name: "Export device backup", exact: true }).waitFor({ state: "visible" });
-      await until(() => panel().getByRole("button", { name: "Export device backup", exact: true }).isEnabled(), Boolean, "Management initialization did not settle before the saved-list race");
+      const lists = await openLibraryTool("lists");
       const gate = await browserGate(waitAt);
+      let observation;
       try {
         await lists.getByRole("link", { name: listName, exact: true }).click(); await gate.wait();
         if (lifetime === "reader-return") await restore();
-        else await search();
+        else { await closeLibraryTool("lists", false); await search(); }
         if (lifetime === "back-forward") { await page.goBack({ waitUntil: "domcontentloaded" }); await page.goForward({ waitUntil: "domcontentloaded" }); }
-        const newer = page.url(); await noManagementPanel(); await gate.release();
+        const newer = page.url(); await noManagementPanel();
+        insist(await page.locator("[data-library-tool]").count() === 0, "The disposed list manager retained its native dialog on a newer route");
+        insist(await gate.held(), "The obsolete saved-list callback was released before the newer route became authoritative");
+        await gate.release();
         await stable(() => page.url() === newer, "The obsolete saved-list callback overwrote newer route/history"); await sameRealm();
-        return { gate: waitAt === "snapshot" ? "real IndexedDB readonly final acknowledgement" : "real committed mode transaction completion", exact_newer_route_retained: true, same_document: true, disposed_manager: true, reader_returned: lifetime === "reader-return", committed_preference_not_claimed_rolled_back: true };
+        observation = { gate: waitAt === "snapshot" ? "real IndexedDB readonly final acknowledgement" : "real committed mode transaction completion", exact_newer_route_retained: true, same_document: true, disposed_manager: true, reader_returned: lifetime === "reader-return", native_tool_dialog: true, lifecycle_evidence: lifetime === "reader-return" ? "route_back_disposal" : "dismissal_plus_navigation", committed_preference_not_claimed_rolled_back: true };
       } finally { await gate.close(); }
+      // A disposed task must not poison the next genuine user gesture. Reopen
+      // the current manager only after the original held-input proof is done.
+      await visitManagement(); await mode("account");
+      const reopened = await openLibraryTool("lists"), currentLink = reopened.getByRole("link", { name: listName, exact: true });
+      insist(await currentLink.getAttribute("href") === listHref, "The reopened manager lost the exact UI-created saved list");
+      await currentLink.click();
+      await page.waitForURL(url => url.pathname === "/library" && url.searchParams.get("list") === new URL(listHref, origin).searchParams.get("list"));
+      await noManagementPanel(); await sameRealm();
+      insist(await page.locator("[data-library-tool]").count() === 0, "A successful reopened saved-list gesture retained its obsolete dialog");
+      await inManagement(() => panel().getByText(/Library source: this browser device\./).waitFor({ state: "visible" }));
+      return { ...observation, reopened_saved_list_gestures: 1, reopened_exact_list_route: true, reopened_selected_device: true };
     });
   }
 
