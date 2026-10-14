@@ -11,6 +11,11 @@ export function titleLibraryTrigger(page, status) {
     .filter({ hasText: new RegExp('^\\s*' + text + '\\s*$') });
 }
 
+// Wrapping native labels include their descendant option text in getByLabel.
+// Playwright :text-is matches the exact immediate label text instead; direct
+// child select and the caller's panel scope keep this native control unique.
+export const nativeSelectForLabel = (scope, label) => scope.locator('label:text-is(' + JSON.stringify(label) + ') > select');
+
 export const titleFollowCheckSuffixes = Object.freeze(['trigger-visible-unique', 'popup-open', 'option-selected']);
 export async function selectTitleLibraryStatus(page, status, diagnostics) {
   const trigger = titleLibraryTrigger(page);

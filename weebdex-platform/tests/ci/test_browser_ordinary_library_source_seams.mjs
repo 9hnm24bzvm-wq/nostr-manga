@@ -14,7 +14,7 @@ import test from 'node:test';
 import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
-import { titleLibraryTrigger, titleLibraryControlName } from '../../scripts/browser-select-controls.mjs';
+import { titleLibraryTrigger, titleLibraryControlName, nativeSelectForLabel } from '../../scripts/browser-select-controls.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const frontend = path.join(root, 'frontend'), read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
@@ -49,14 +49,7 @@ function domPage(status = 'Add to Library', { copies = 1, hiddenCopy = false } =
   // The static fragment mirrors the source-checked title/button/span/Spinner
   // topology above. CSS transform supplies the actual scale-0 accessibility case.
   const markup = () => `<div class="min-w-45"><button data-slot="select-trigger" aria-haspopup="listbox"><span> ${status} </span><div><svg role="status" aria-label="${label}" style="transform:scale(0)"></svg></div></button></div>`;
-  const dom = new JSDOM(markup().repeat(copies) + (hiddenCopy ? '<div hidden>' + markup() + '</div>' : '') + '<button data-slot="select-trigger" aria-haspopup="listbox">Reading</button><div class="min-w-45"><button aria-haspopup="dialog">Reading</button></div>', { runScripts: 'outside-only' });
-  const { window } = dom;
-  const computed = window.getComputedStyle.bind(window);
-  // These sources have no generated pseudo-element content. JSDOM does not
-  // implement pseudo-element style lookup, so return only that explicit fact.
-  window.getComputedStyle = (element, pseudo) => pseudo ? { content: 'none' } : computed(element);
-  window.module = { exports: {} };
-  window.eval(injected + ';window.naming = {getElementAccessibleNameText, getAriaRole, elementText};');
+  const { dom, window } = makeDOM(markup().repeat(copies) + (hiddenCopy ? '<div hidden>' + markup() + '</div>' : '') + '<button data-slot="select-trigger" aria-haspopup="listbox">Reading</button><div class="min-w-45"><button aria-haspopup="dialog">Reading</button></div>');
   const events = [];
   const locator = rows => ({
     async count() { return rows.length; },
@@ -69,6 +62,17 @@ function domPage(status = 'Add to Library', { copies = 1, hiddenCopy = false } =
     getByRole(role, options) { return locator([...window.document.querySelectorAll('button')].filter(row => window.naming.getAriaRole(row) === role && options.name.test(window.naming.getElementAccessibleNameText(row)))); },
   };
   return { dom, window, page, events };
+}
+
+function makeDOM(markup) {
+  const dom = new JSDOM(markup, { runScripts: 'outside-only' }), { window } = dom;
+  const computed = window.getComputedStyle.bind(window);
+  // These sources have no generated pseudo-element content. JSDOM does not
+  // implement pseudo-element style lookup, so return only that explicit fact.
+  window.getComputedStyle = (element, pseudo) => pseudo ? { content: 'none' } : computed(element);
+  window.module = { exports: {} };
+  window.eval(injected + ';window.naming = {getElementAccessibleNameText, getAriaRole, elementText, getElementLabels, textIsEngine};');
+  return { dom, window };
 }
 
 test('actual Playwright naming proves scale-zero Spinner breaks the former exact role name', () => {
@@ -97,6 +101,49 @@ test('shared title selector retains exact visible status and strict structural u
     assert.equal(value.events.length, 0);
     value.dom.window.close();
   }
+});
+
+test('native wrapped select uses exact immediate label despite descendant option text', async () => {
+  const panel = read('platform-integrations/local-library/LocalLibraryPanel.svelte');
+  assert.match(panel, /<label>List <select[^>]+bind:value=\{memberList\}/);
+  assert.match(panel, /<label>Series <select[^>]+bind:value=\{memberSeries\}/);
+  const identity = read('platform-integrations/local-library/ProtocolIdentityPanel.svelte');
+  assert.match(identity, /<label>Verified recipient <select[^>]+bind:value=\{selectedOrigin\}/);
+  assert.match(identity, /<label>Target type <select bind:value=\{targetKind\}/);
+  assert.match(panel, /<label>Status for saved \{row.id\}<select/);
+  const cases = [
+    ['List', 'list-id', 'Choose list', 'Local example'],
+    ['Series', 'SeedManga1', 'Choose saved series', 'SeedManga1 (reading)'],
+    ['Verified recipient', 'http://127.0.0.1:1', 'Choose instance', 'http://127.0.0.1:1 · public-key'],
+    ['Target type', 'manga', 'Chapter', 'Manga'],
+    ['Status for saved SeedManga1', 'completed', 'reading', 'completed'],
+    ['Status for saved SeedManga10', 'on_hold', 'reading', 'on_hold'],
+  ];
+  const fragment = cases.map(([name, value, placeholder, choice]) => `<label>${name} <select><option value="">${placeholder}</option><option value="${value}">${choice}</option></select></label>`).join('');
+  const value = makeDOM(fragment), calls = [];
+  const scope = {
+    locator(selector) {
+      const match = selector.match(/^label:text-is\((.*)\) > select$/); assert.ok(match);
+      const name = JSON.parse(match[1]);
+      const rows = [...value.window.document.querySelectorAll('label')].filter(label => value.window.naming.textIsEngine.matches(label, [name], undefined, { _cacheText: new Map() })).flatMap(label => [...label.children].filter(child => child.tagName === 'SELECT'));
+      return { async count() { return rows.length; }, async selectOption(selected) { assert.equal(rows.length, 1, 'strict unique labelled native select'); assert([...rows[0].options].some(option => option.value === selected)); rows[0].value = selected; calls.push([name, selected]); } };
+    }
+  };
+  for (const [index, [name, selected]] of cases.entries()) {
+    const control = [...value.window.document.querySelectorAll('select')][index];
+    const labels = value.window.naming.getElementLabels(new Map(), control);
+    assert.equal(labels.some(label => label.normalized === name), false, 'The former exact getByLabel must fail on actual wrapped option text');
+    assert(labels[0].normalized.startsWith(name + ' '));
+    await nativeSelectForLabel(scope, name).selectOption(selected);
+  }
+  assert.deepEqual(calls, cases.map(([name, selected]) => [name, selected]));
+  value.window.document.body.insertAdjacentHTML('beforeend', fragment);
+  await assert.rejects(nativeSelectForLabel(scope, 'List').selectOption('list-id'), /strict unique labelled native select/);
+  assert.equal(await nativeSelectForLabel(scope, 'List name').count(), 0);
+  const journeys = read('scripts/browser-journeys.mjs');
+  assert.match(journeys, /nativeSelectForLabel\(target, 'List'\)\.selectOption\(list.id\)/);
+  assert.match(journeys, /nativeSelectForLabel\(target, 'Series'\)\.selectOption\(manga\)/);
+  value.dom.window.close();
 });
 
 test('account recovery and ordinary follow still use shared controls and durable saved rows', () => {

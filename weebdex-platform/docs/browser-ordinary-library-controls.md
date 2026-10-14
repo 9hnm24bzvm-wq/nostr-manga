@@ -28,10 +28,15 @@ The binding now includes a refusal-only `signEvent`; dismissal still happens in
 `getPublicKey`, signing is never reached, and the existing empty-outbox assertion
 remains required. The application compatibility guard remains intact.
 
-The failed custom-member checkpoint is consistent with the earlier absent
-saved series: its real selector is populated only from saved `series` rows and
-the mutation requires an existing scope-bound series. No list assertion is
-removed or bypassed; successful browser verification is still required.
+The custom-member checkpoint has a second independent selector mismatch. Native
+wrapping labels include their descendant option text in Playwright's
+`getElementLabels`: for example `List Choose listLocal example`, so exact
+`getByLabel('List')` fails. The shared `nativeSelectForLabel(scope, label)` helper
+uses the exact immediate-label `:text-is` engine with a direct child select.
+It keeps the existing panel scope and strict duplicate failures. Ordinary List
+and Series controls now use it. The actual membership mutation and durable
+list/series/position assertions remain unchanged. The initial failed follow
+also leaves no saved series to choose; both harness issues must be corrected.
 
 ## Regression seams and limits
 
@@ -40,7 +45,9 @@ layers and checks the retained trigger/Spinner topology. It executes the
 hash-pinned Playwright injected accessible-name and text implementations over
 an explicit source-derived JSDOM fragment, including the scale-zero SVG. It
 checks all statuses, hidden decoys, missing/duplicate controls and literal
-status escaping. It also executes the actual `connectSigner` and `signerRequest`
+status escaping. It executes pinned label/text selector engines for List,
+Series, verified recipient, target type and two distinct dynamic saved-status
+labels, preserving exact selection and missing/duplicate failures. It also executes the actual `connectSigner` and `signerRequest`
 functions with the exact journey binding, confirming one dismissed prompt,
 zero signing calls and no selected owner. Old incomplete bindings are explicitly
 shown to fail before the prompt.
