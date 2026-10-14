@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "run_id": 38554048951,
+  "run_attempt": 1,
+  "job_id": 115818664096,
+  "remote_commit": "5743275621c3869e7edc4219e9e9a755636a01ca",
+  "remote_tree": "0103a59fdbbab71750ddbda27b3ac9b58843ccbb",
+  "artifact_id": 11890278354,
+  "zip_bytes": 6730,
+  "zip_sha256": "46208733ddf092c6877ad27789a6d1b7a3b35c4fe156a00ffcf88bcbe58666b3",
+  "zip_digest_matches_github": true,
+  "exact_three_file_allowlist": true,
+  "closed_schemas_valid": true,
+  "summary_recomputed_exact": true,
+  "frozen_source_snapshot_matches_reviewed_tree": true,
+  "original_676_plus_3_preserved": true,
+  "summary": {
+    "actual_phase_runs": 27,
+    "all_fixture_lifecycles_clean": false,
+    "all_fixture_teardowns_verified": true,
+    "budget_exhausted": false,
+    "failed_unique_phases": [
+      "account-recovery",
+      "local-library",
+      "signed-library",
+      "signed-recipients",
+      "signed-social",
+      "signed-source-controls",
+      "ui10-reader-transition",
+      "ui12-compact-feed",
+      "ui14-account-failures"
+    ],
+    "full_suite_passed": false,
+    "interrupted": false,
+    "passed_unique_phases": [
+      "account",
+      "startup",
+      "ui10-api-client",
+      "ui10-auth-lifetimes",
+      "ui10-preferences",
+      "ui10-recovery-lifetimes",
+      "ui11-device-navigation",
+      "ui11-device-progress"
+    ],
+    "pending_unique_phases": [
+      "announcements",
+      "community",
+      "editorial",
+      "filters",
+      "pwa",
+      "reader",
+      "signed-context",
+      "signed-namespace",
+      "signed-profile",
+      "signed-restart",
+      "ui13-feed-authority",
+      "ui13-terminal-feed",
+      "ui14-entity-pagination",
+      "ui14-home-failures",
+      "ui15-16-empty-tabs",
+      "ui15-chapter-filter",
+      "ui15-reader-feedback",
+      "ui15-reader-geometry",
+      "ui16-home-preferences",
+      "ui16-search-cap",
+      "upload"
+    ],
+    "pixel_parity_established": false,
+    "private_runtime_artifacts_uploaded": false,
+    "required_unique_phases": 38,
+    "schema": 1,
+    "screenshots_or_raw_logs_uploaded": false,
+    "selected_scope_passed": false,
+    "selection": "all"
+  },
+  "safe_json_files": {
+    "phases.json": {
+      "bytes": 174956,
+      "sha256": "b109669bd63d2cef5c3be1740c89b35a1fbccdcb92f8422b2aa92b8911968337"
+    },
+    "summary.json": {
+      "bytes": 1150,
+      "sha256": "13c384240017f2a6b8f1a2ba5422383b78decdeab309655c6d371f8003cea637"
+    },
+    "preparation.json": {
+      "bytes": 845,
+      "sha256": "16dc9a59928f72db555786a245c43b4a67d09fc24d009042f5f756619dd9576b"
+    }
+  }
+}
