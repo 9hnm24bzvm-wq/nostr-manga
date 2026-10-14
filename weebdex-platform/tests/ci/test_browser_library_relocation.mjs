@@ -17,7 +17,7 @@ assert(stepStart > 0 && stepEnd > stepStart && helperStart > 0 && helperEnd > he
 const actualSource = source.slice(helperStart, helperEnd) + '\n' + source.slice(stepStart, stepEnd);
 const AsyncFunction = Object.getPrototypeOf(async function() {}).constructor;
 const origin = 'http://127.0.0.1:1', manga = 'SyntheticManga', chapter = 'SyntheticChapter';
-const summaries = ['Advanced library settings', 'Public sync & recovery', 'Signing identity & instances', 'Public profile and follow/relay lists', 'Saved exact signed public-action outbox'];
+const summaries = ['Advanced library settings', 'Public sync & recovery', 'Signing identity & instances', 'Public profile and follows', 'Saved public actions'];
 const nativeRoutes = ['/', '/search', `/title/${manga}`, `/chapter/${chapter}/1`];
 
 async function probe(fault) {

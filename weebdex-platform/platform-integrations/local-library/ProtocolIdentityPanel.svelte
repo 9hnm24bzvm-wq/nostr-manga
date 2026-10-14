@@ -161,7 +161,7 @@
       <p class="text-muted-foreground text-sm">Manage verified recipients and public-key admission in <a class="underline" href="/settings/preferences#local-library">Library settings</a>.</p>
     </div></details>
     <details class="space-y-3 border-t pt-4">
-      <summary class="cursor-pointer font-medium">Public profile and follow/relay lists</summary>
+      <summary class="cursor-pointer font-medium">Public profile and follows</summary>
       <div class="mt-2 space-y-2">
         <label class="block" for="public-profile-name">Public username <Input id="public-profile-name" class="mt-1" bind:value={profileName} maxlength={128} /></label>
         <label class="block" for="public-profile-display-name">Public display name <Input id="public-profile-display-name" class="mt-1" bind:value={displayName} maxlength={128} /></label>
@@ -181,7 +181,7 @@
     </details>
     {@render reviewedAction()}
     <details class="space-y-3 border-t pt-4">
-      <summary class="cursor-pointer font-medium">Saved exact signed public-action outbox</summary>
+      <summary class="cursor-pointer font-medium">Saved public actions</summary>
       <Button variant="outline" disabled={pending} onclick={() => run(async () => { actions = await publicActionRecords(); })}>Refresh saved actions</Button>
       {#each actions as action}
         <div class="rounded border p-2 space-y-1">

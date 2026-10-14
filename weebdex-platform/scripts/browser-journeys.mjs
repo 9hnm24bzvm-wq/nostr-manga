@@ -481,7 +481,7 @@ export async function runJourneys(h) {
 				await geometry(`${viewport}-title-comments`); await capture(`${viewport}-title-comments`);
 				await openLibraryManagement();
 				insist(await page.locator('section[data-local-library-panel]').count() === 1 && await page.locator('section[data-protocol-identity-panel]').count() === 1 && await page.locator('[data-source-conversation]').count() === 0, 'Settings does not own exactly one management surface of each kind');
-				for (const summary of ['Advanced library settings', 'Public sync & recovery', 'Signing identity & instances', 'Public profile and follow/relay lists', 'Saved exact signed public-action outbox']) {
+				for (const summary of ['Advanced library settings', 'Public sync & recovery', 'Signing identity & instances', 'Public profile and follows', 'Saved public actions']) {
 					const details = page.locator('summary').filter({ hasText: new RegExp('^' + summary.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$') }).locator('..');
 					insist(await details.count() === 1 && await details.getAttribute('open') === null, `Technical Settings disclosure is missing, duplicated or open: ${summary}`);
 				}

@@ -155,6 +155,10 @@ test('real settings components retain anonymous failed-scope backups without out
   assert.equal(identity.target.querySelector('section[data-protocol-identity-panel]').id, 'public-identity');
   assert.equal(identity.target.querySelectorAll('[data-source-conversation]').length, 0);
   assert.equal(button(identity.target, 'Connect external signer').disabled, false);
+  const summaries = [...identity.target.querySelectorAll('summary')].map(row => row.textContent);
+  assert(summaries.includes('Public profile and follows'));
+  assert(summaries.includes('Saved public actions'));
+  assert.doesNotMatch(summaries.join('\n'), /follow\/relay lists|exact signed public-action outbox/);
   assert.equal(identity.target.querySelectorAll('input').length > 0, true);
   await identity.close();
   const reopened = await render(Library, env); assert.equal(records.length, 1); assert.match(reopened.target.textContent, /1 followed series/); await reopened.close();
