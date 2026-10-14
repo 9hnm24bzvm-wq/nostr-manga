@@ -3295,6 +3295,38 @@ const patches = [
   "label": "obsolete file drop cannot attach feedback to newer editor authority",
   "before": "\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t});\r\n\t};\r\n\r\n\tlet isDeletingPages",
   "after": "\t\t\t} catch (e) {\r\n\t\t\t\tif (!owner.alive() || uploadSession !== session) return;\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t});\r\n\t};\r\n\r\n\tlet isDeletingPages"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "replacement authority compares the guarded captured staging ID",
+  "before": "current.body?.id !== uploadSession.id || current.body.can_mutate === false",
+  "after": "current.body?.id !== session.id || current.body.can_mutate === false"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "atomic replacement targets the guarded captured staging ID",
+  "before": "`${PUBLIC_API_URL}/upload/${uploadSession.id}/files/${target.id}/replace`",
+  "after": "`${PUBLIC_API_URL}/upload/${session.id}/files/${target.id}/replace`"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "replacement reconciliation compares the guarded captured staging ID",
+  "before": "latest.body?.id === uploadSession.id && confirmed?.file_hash === sha",
+  "after": "latest.body?.id === session.id && confirmed?.file_hash === sha"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "replacement acknowledgement updates the guarded captured staging version",
+  "before": "pages[idx] = replacement; pages = pages; uploadSession.version = version;",
+  "after": "pages[idx] = replacement; pages = pages; session.version = version;"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');

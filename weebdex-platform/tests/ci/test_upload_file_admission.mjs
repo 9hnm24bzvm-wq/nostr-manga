@@ -151,3 +151,15 @@ test('folder scan cannot admit files into newer staging after its asynchronous e
   await turn(); value.switchSession(); finish(image()); await pending;
   assert.equal(value.calls.decoded,0); assert.equal(value.calls.batches,0); assert.equal(value.pages.length,0); assert.equal(value.calls.feedback.length,0); assert.equal(value.context.mutex.isLocked(),false);
 });
+
+test('replacement uses its nonoptional captured staging only after exact live-session guards', () => {
+  const replacement = declarations(instance,['replaceFile']);
+  assert.match(replacement,/file: File, session: UploadSession/);
+  assert.doesNotMatch(replacement,/uploadSession\.(?:id|version)/);
+  assert.equal((replacement.match(/session\.id/g) ?? []).length,3);
+  assert.match(replacement,/session\.version = version/);
+  assert.match(replacement,/await owner.request<UploadSession>\("\/upload", "GET"\); assertFileSession\(session\)/);
+  assert.match(replacement,/const result = await http.POST\(\); assertFileSession\(session\)/);
+  assert.match(replacement,/catch\(\(\) => undefined\); assertFileSession\(session\)/);
+  assert.doesNotMatch(replacement,/\bas any\b|@ts-ignore|@ts-expect-error|uploadSession!/);
+});
