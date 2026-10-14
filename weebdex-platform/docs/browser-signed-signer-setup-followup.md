@@ -52,16 +52,17 @@ still fails on a missing or ambiguous visible connect button.
 
 - `node --check scripts/browser-signed-journeys.mjs`: passed
 - `node --test tests/ci/test_browser_signed_signer_setup.mjs tests/ci/test_browser_signed_select_controls.mjs tests/ci/test_browser_library_follow_diagnostics.mjs`:
-  17 tests passed
+  19 tests passed
 - `python -m unittest discover -s tests/ci -p test_journey_diagnostics.py -v`:
   11 tests passed
 - `git diff --check`: passed
 
-The new seven-case seam executes the actual setup and denial callbacks with
-explicit native-details/locator stand-ins. It checks the actual composed app
+The new nine-case seam executes the actual setup, denial, and synthetic signer
+getPublicKey callback branch with explicit native-details/locator stand-ins. It checks the actual composed app
 layout, initially closed panel markup, recovery after a preceding title failure,
 every setup interruption, absent/duplicate controls, the retained empty-outbox
-assertion, and native empty-string boolean attributes.
+assertion, native empty-string boolean attributes, wrong-page/frame ownership
+refusals, and the inability of navigation alone to satisfy the denial assertion.
 
 These are local source/driver seams, not browser acceptance. No browser,
 application, signer, service, fixture, database, package installation, hosted

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Execute the actual signed-journey setup and denial callbacks with explicit
-// native-details/locator stand-ins. No browser, signer, network, service, or
-// database is started; these seams do not establish signed browser acceptance.
+// native-details/locator stand-ins and the actual getPublicKey callback branch.
+// No browser, cryptographic signing, network, service, or database is started; these seams do not establish signed browser acceptance.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -20,12 +20,17 @@ const prepareSource = source.slice(prepareStart, prepareEnd);
 const denialSource = source.match(/await inspect\('signer-selection-denied', (async \(\) => \{[^\n]+\})\);/)[1];
 const expandSource = source.match(/  const expand = ([^\n]+);/)[1];
 const sectionSource = source.match(/  const section = ([^\n]+);/)[1];
+const signerStart = source.indexOf('  const signerCall = async (source, operation, input) => {');
+const signerEnd = source.indexOf('\n  const installSigner =', signerStart);
+assert(signerStart > 0 && signerEnd > signerStart);
+const signerSource = source.slice(signerStart, signerEnd);
 const publicationTitle = 'Optional Nostr publication and verified recovery';
 const buttonName = 'Connect external browser signer';
 
-function fixture({ failAt, duplicates = 1, jobCount = 0 } = {}) {
+function fixture({ failAt, duplicates = 1, jobCount = 0, signerSourcePage, signerFrameOrigin, skipSignerCall = false } = {}) {
   const events = [], state = { route: '/title/synthetic', outer: false, section: false, notice: '' };
   let scope;
+  const expectedPage = {}, origin = 'http://127.0.0.1:4000';
   const point = name => { events.push(name); if (name === failAt) throw Error('synthetic setup interruption: ' + name); };
   const button = {
     async waitFor({ state: expected }) {
@@ -36,7 +41,13 @@ function fixture({ failAt, duplicates = 1, jobCount = 0 } = {}) {
     async click() {
       point('button-click'); assert.equal(duplicates, 1); assert(state.outer && state.section);
       assert.equal(scope.deniedConnect, true, 'only an explicitly denied synthetic selection may execute');
-      state.notice = 'Synthetic signer selection denied';
+      if (skipSignerCall) return;
+      point('signer-get-public-key');
+      try {
+        await vm.runInContext('signerCall', scope)({ page: signerSourcePage ?? expectedPage,
+          frame: { url: () => (signerFrameOrigin ?? origin) + '/library' } }, 'getPublicKey');
+        state.notice = 'Signer connected. No library data sent.';
+      } catch (cause) { state.notice = cause.message; }
     },
   };
   const publication = {
@@ -61,14 +72,14 @@ function fixture({ failAt, duplicates = 1, jobCount = 0 } = {}) {
     },
   };
   scope = vm.createContext({
-    deniedConnect: false,
+    deniedConnect: false, page: expectedPage, origin, URL, owner: 'a'.repeat(64),
     library: () => panel,
     async open(route) { point('navigate-library'); assert.equal(route, '/library'); state.route = route; state.outer = false; state.section = false; },
     async idle(target) { assert.equal(target, panel); point('operation-settled'); },
     async jobs() { point('outbox-read'); return Array(jobCount).fill({}); },
     insist(condition, message) { assert(condition, message); },
   });
-  vm.runInContext('const expand = ' + expandSource + '; const section = ' + sectionSource + ';' + prepareSource, scope);
+  vm.runInContext('const expand = ' + expandSource + '; const section = ' + sectionSource + ';' + prepareSource + signerSource, scope);
   return { state, events, button, scope, denial: vm.runInContext('(' + denialSource + ')', scope), prepare: vm.runInContext('prepareSignerControls', scope) };
 }
 
@@ -93,7 +104,7 @@ test('actual signer denial reestablishes its visible controls after failed title
   value.events.length = 0;
   await assert.rejects(check('signed-library-mapped-follow-trigger-visible-unique', async () => { throw Error('original title failure'); }), /original title failure/);
   await check('signed-library-signer-selection-denied', value.denial);
-  assert.deepEqual(value.events, ['navigate-library', 'panel-visible', 'panel-summary-click', 'publication-summary-click', 'button-visible-unique', 'button-click', 'operation-settled', 'denial-visible', 'outbox-read']);
+  assert.deepEqual(value.events, ['navigate-library', 'panel-visible', 'panel-summary-click', 'publication-summary-click', 'button-visible-unique', 'button-click', 'signer-get-public-key', 'operation-settled', 'denial-visible', 'outbox-read']);
   assert.deepEqual(report.journey_checks, [
     { check_id: 'signed-library-mapped-follow-trigger-visible-unique', status: 'failed' },
     { check_id: 'signed-library-signer-selection-denied', status: 'passed' },
@@ -116,6 +127,25 @@ test('missing or ambiguous real signer controls still fail before clicking', asy
     await assert.rejects(value.denial(), /strict locator rejects missing or duplicate signer controls/);
     assert(!value.events.includes('button-click'));
     assert.equal(value.scope.deniedConnect, false);
+  }
+});
+
+test('navigation and expanded controls cannot falsely pass without the actual refusal', async () => {
+  const value = fixture({ skipSignerCall: true });
+  await assert.rejects(value.denial(), /Synthetic signer selection denied/);
+  assert.equal(value.state.route, '/library');
+  assert(value.state.outer && value.state.section);
+  assert(!value.events.includes('signer-get-public-key'));
+  assert(!value.events.includes('outbox-read'));
+});
+
+test('actual synthetic signer refuses another page or frame origin before the denial branch', async () => {
+  for (const options of [{ signerSourcePage: {} }, { signerFrameOrigin: 'http://127.0.0.1:4001' }]) {
+    const value = fixture(options);
+    await assert.rejects(value.denial(), /Synthetic signer selection denied/);
+    assert.match(value.state.notice, /Synthetic signer called outside its explicitly selected fixture page/);
+    assert(value.events.includes('signer-get-public-key'));
+    assert(!value.events.includes('outbox-read'));
   }
 });
 
