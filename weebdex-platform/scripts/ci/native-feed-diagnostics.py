@@ -79,6 +79,9 @@ def project(owned, observed, fixture):
     value = not_run()
     value['status'] = 'failed'
     if type(owned) is dict:
+        # Absence or malformed false-like text must never become evidence that
+        # the owned command stayed inside its deadline.
+        insist(type(owned.get('deadline_exceeded')) is bool)
         value['process_started'] = True
         code = owned.get('process_exit_code')
         if type(code) is int and -128 <= code <= 255:

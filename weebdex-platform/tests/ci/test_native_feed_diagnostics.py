@@ -69,6 +69,16 @@ class NativeFeedDiagnostics(unittest.TestCase):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 contract.parse_measurement(text)
 
+    def test_missing_and_nonboolean_deadline_receipts_cannot_pass(self):
+        missing = self.owned()
+        del missing['deadline_exceeded']
+        cases = [missing, *[dict(self.owned(), deadline_exceeded=value) for value in [None, 0, 1, '', 'private', [], {}]]]
+        for owned in cases:
+            with self.subTest(owned=owned), self.assertRaises(ValueError):
+                contract.project(owned, self.measurement(), self.fixture())
+        self.assertEqual(contract.project(dict(self.owned(), deadline_exceeded=True), self.measurement(), self.fixture())['status'], 'failed')
+        self.assertEqual(contract.project(dict(self.owned(), deadline_exceeded=False), self.measurement(), self.fixture())['status'], 'passed')
+
     def test_measurement_and_result_reject_unbounded_or_private_values(self):
         for key, value in [('baseline_outcome', 'private'), ('scenario', 'private'), ('baseline_ms', True),
                            ('baseline_ms', -1), ('batched_first_page_ms', 180001), ('all_505_ids_reached', False)]:

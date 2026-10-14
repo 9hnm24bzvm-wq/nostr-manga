@@ -76,7 +76,12 @@ def main():
                 fixture = read(directory / 'cleanup.json')
             except (OSError, ValueError, RuntimeError):
                 pass
-    value = contract.project(owned, observed, fixture)
+    try:
+        value = contract.project(owned, observed, fixture)
+    except ValueError:
+        # A malformed private receipt is a failed gate, not a normalized pass.
+        value = contract.not_run()
+        value.update(status='failed', process_started=True)
     if result.returncode != 0 or source.source_snapshot() != before:
         value['status'] = 'failed'
         value['measurement'] = None
