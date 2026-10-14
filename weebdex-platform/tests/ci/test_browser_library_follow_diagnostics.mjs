@@ -117,7 +117,7 @@ async function wiringProbe(phase, failAt) {
     });
   };
   const step = async (label, operation) => {
-    if (label.startsWith('real reader progress')) return; // Not instrumented by this change.
+    if (label.startsWith('real reader progress') || label.startsWith('relocated native Library')) return; // Separate actual-browser coverage, outside this fixed-check wiring seam.
     const row = { label }; steps.push(row);
     try { await operation(); row.status = 'passed'; } catch (cause) { row.status = 'failed'; row.error = cause; }
   };

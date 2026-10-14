@@ -141,10 +141,69 @@ export async function runUi11To16Journeys(h) {
     await until(() => api("/api/auth/check"), value => value.status === 200 && value.body?.identity?.username === account.username, "Actual login did not restore the synthetic browser session");
     await open("/");
   };
-  const panel = () => page.locator("details[data-local-library-panel]");
+  const managementHref = "/settings/preferences#local-library";
+  const panel = () => page.locator("section[data-local-library-panel]");
   const expand = async locator => { if (!await locator.evaluate(node => node.open)) await locator.locator(":scope > summary").click(); };
-  const ready = async () => { await expand(panel()); await panel().getByText(/Scope verification: verified\./).waitFor({ state: "visible" }); };
-  const mode = async selected => { await expand(panel()); const button = panel().getByRole("button", { name: `Use ${selected} library`, exact: true }); if (await button.isEnabled()) await button.click(); await panel().getByText(selected === "device" ? /Library source: this browser device\./ : /Library source: signed-in WeebDex account\./).waitFor({ state: "visible" }); };
+  const noManagementPanel = async () => insist(await page.locator("[data-local-library-panel]").count() === 0, "Library management leaked outside the dedicated settings route");
+  let managementVisit = 0;
+  // Management is a real settings destination. Reach it through the Library
+  // action (or the reader's settings action), then restore the exact route with
+  // browser Back. Never inject an anchor, import a store or reload the document.
+  const visitManagement = async () => {
+    const previous = page.url(), previousUrl = new URL(previous);
+    if (previousUrl.pathname === "/settings/preferences") {
+      await panel().waitFor({ state: "visible" });
+      return async () => {};
+    }
+    await noManagementPanel();
+    const proof = marker + ":management:" + ++managementVisit;
+    await page.evaluate(value => { window.__ui1116ManagementRealm = value; }, proof);
+    let backSteps = 0;
+    if (previousUrl.pathname.startsWith("/chapter/")) {
+      await readerSettings();
+      const manage = page.getByRole("link", { name: "Manage library", exact: true });
+      insist(await manage.getAttribute("href") === managementHref, "Reader management action points outside the dedicated settings destination");
+      await manage.click();
+      backSteps++;
+    } else {
+      if (previousUrl.pathname !== "/library") {
+        await spaLink("/library");
+        backSteps++;
+      }
+      const manage = page.getByRole("link", { name: "Manage library", exact: true });
+      insist(await manage.getAttribute("href") === managementHref, "Library management action points outside the dedicated settings destination");
+      await manage.click();
+      backSteps++;
+    }
+    await page.waitForURL(url => url.pathname === "/settings/preferences" && url.hash === "#local-library");
+    await panel().waitFor({ state: "visible" });
+    insist(await page.evaluate(() => window.__ui1116ManagementRealm) === proof, "Visible management navigation reloaded the document");
+    return async () => {
+      for (let index = 0; index < backSteps; index++) await page.goBack({ waitUntil: "domcontentloaded" });
+      await page.waitForURL(previous);
+      insist(await page.evaluate(() => window.__ui1116ManagementRealm) === proof, "Management Back navigation reloaded the document");
+      await noManagementPanel();
+    };
+  };
+  const inManagement = async operation => {
+    const restore = await visitManagement();
+    try { return await operation(); } finally { await restore(); }
+  };
+  const scopeStatus = async status => {
+    const advanced = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Advanced library settings" }) });
+    await expand(advanced);
+    await advanced.getByText(new RegExp(`Scope verification: ${status}\\.`)).waitFor({ state: "visible" });
+  };
+  const ready = async () => inManagement(() => scopeStatus("verified"));
+  const mode = async selected => inManagement(async () => {
+    const button = panel().getByRole("button", { name: `Use ${selected} library`, exact: true });
+    // A disabled button can also mean initial management work is in flight.
+    // Wait for the requested source or an actionable current-mode button.
+    const selectedText = selected === "device" ? /Library source: this browser device\./ : /Library source: signed-in WeebDex account\./;
+    await until(() => Promise.all([panel().getByText(selectedText).isVisible(), button.isEnabled()]), ([selectedNow, enabled]) => selectedNow || enabled, "The current management mode never became actionable");
+    if (!await panel().getByText(selectedText).isVisible()) await button.click();
+    await panel().getByText(selectedText).waitFor({ state: "visible" });
+  });
   const realm = async () => page.evaluate(value => { window.__ui1116RealmProof = value; }, marker);
   const sameRealm = async () => insist(await page.evaluate(() => window.__ui1116RealmProof) === marker, "The regression navigated by document reload, hiding the SPA lifetime defect");
   const spaLink = async href => { await page.locator(`a[href="${href}"]`).first().click(); await page.waitForURL(url => url.pathname === new URL(href, origin).pathname); };
@@ -167,10 +226,10 @@ export async function runUi11To16Journeys(h) {
     const db = await new Promise((resolve, reject) => { const request = indexedDB.open("weebdex-device-library-v1:" + encodeURIComponent(currentOrigin), 1); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only revision observation failed")); });
     try { return await new Promise((resolve, reject) => { const request = db.transaction("meta", "readonly").objectStore("meta").get("revision"); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only revision observation failed")); }); } finally { db.close(); }
   }, origin);
-  const removeDeviceChapter = async id => {
+  const removeDeviceChapter = async id => inManagement(async () => {
     // Test setup uses the supplied, reviewed backup workflow. No direct IDB
     // mutation can make a missing progress repair look successful.
-    await expand(panel()); const received = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); const download = await received;
+    const received = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); const download = await received;
     const stream = await download.createReadStream(), chunks = []; for await (const chunk of stream) chunks.push(chunk);
     const backup = JSON.parse(Buffer.concat(chunks).toString("utf8")); insist(backup.format === "weebdex-device-library" && backup.scope.origin === origin, "Actual UI device backup belongs to another scope");
     backup.records = backup.records.filter(row => !(row.family === "chapters" && row.id === id));
@@ -178,7 +237,7 @@ export async function runUi11To16Journeys(h) {
     await panel().getByRole("button", { name: "Replace with reviewed import", exact: true }).waitFor({ state: "visible" });
     page.once("dialog", dialog => dialog.accept()); await panel().getByRole("button", { name: "Replace with reviewed import", exact: true }).click();
     await until(deviceRows, rows => !rows.some(row => row.family === "chapters" && row.id === id), "Reviewed actual UI replacement did not remove the previous device progress prerequisite");
-  };
+  });
 
   // Withhold exactly one real request before forwarding or after its real
   // response. No body/status is replaced. A browser cancellation is distinct
@@ -240,9 +299,9 @@ export async function runUi11To16Journeys(h) {
   const browserGate = async kind => {
     await page.evaluate(kind => {
       if (window.__ui1116Gate) throw Error("A native gate is already installed");
-      let release, admitted = false, pending, captured = false;
+      let release, admitted = false, pending, captured = false, released = false;
       const wait = new Promise(resolve => { release = resolve; });
-      const gate = { kind, get captured() { return captured; }, release() { release(); }, restore() {} }; window.__ui1116Gate = gate;
+      const gate = { kind, get captured() { return captured; }, get held() { return captured && !released; }, release() { released = true; release(); }, restore() {} }; window.__ui1116Gate = gate;
       if (kind === "snapshot") {
         const original = IDBObjectStore.prototype.get, descriptor = Object.getOwnPropertyDescriptor(IDBRequest.prototype, "onsuccess");
         IDBObjectStore.prototype.get = function(key) {
@@ -281,7 +340,7 @@ export async function runUi11To16Journeys(h) {
         }; gate.restore = () => { window.setTimeout = original; release(); delete window.__ui1116Gate; };
       } else throw Error("Unsupported native gate");
     }, kind);
-    return { wait: () => until(() => page.evaluate(() => window.__ui1116Gate?.captured), Boolean, "The actual browser storage/timer seam was not reached"), release: () => page.evaluate(() => window.__ui1116Gate?.release()), close: () => page.evaluate(() => window.__ui1116Gate?.restore()) };
+    return { wait: () => until(() => page.evaluate(() => window.__ui1116Gate?.captured), Boolean, "The actual browser storage/timer seam was not reached"), held: () => page.evaluate(() => window.__ui1116Gate?.held === true), release: () => page.evaluate(() => window.__ui1116Gate?.release()), close: () => page.evaluate(() => window.__ui1116Gate?.restore()) };
   };
   const readPage = async () => Number((await page.title()).match(/^Page (\d+):/)?.[1]);
   const readerSelector = () => selectListboxTrigger(page).filter({ hasText: /^\s*\d+(?:-\d+)?\s*\/\s*\d+\s*$/ });
@@ -305,27 +364,31 @@ export async function runUi11To16Journeys(h) {
   if (phase === "ui11-device-navigation") {
     let listName = "Delayed list " + marker, listHref;
     await step("UI11 list: actual creation and current saved-list link select the exact device list", async () => {
-      await signup(); await ready(); await mode("device");
+      await signup(); await visitManagement(); await ready(); await mode("device");
       const lists = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Custom device lists" }) }); await expand(lists);
       await lists.getByLabel("List name", { exact: true }).fill(listName); await lists.getByRole("button", { name: "Create list", exact: true }).click();
       const link = lists.getByRole("link", { name: listName, exact: true }); await link.waitFor({ state: "visible" }); listHref = await link.getAttribute("href");
       await mode("account"); await link.click(); await page.waitForURL(url => url.pathname === "/library" && url.searchParams.get("list") === new URL(listHref, origin).searchParams.get("list"));
-      await panel().getByText(/Library source: this browser device\./).waitFor({ state: "visible" });
-      return { real_ui_created_list: true, exact_list_route: true, selected_device: true };
+      await noManagementPanel();
+      await inManagement(() => panel().getByText(/Library source: this browser device\./).waitFor({ state: "visible" }));
+      return { real_ui_created_list: true, exact_list_route: true, selected_device: true, management_settings_only: true };
     });
-    for (const waitAt of ["snapshot", "mode-completion"]) for (const lifetime of ["navigate", "back-forward", "reader-disposal"]) await step(`UI11 list: delayed native ${waitAt} cannot override ${lifetime}`, async () => {
+    for (const waitAt of ["snapshot", "mode-completion"]) for (const lifetime of ["navigate", "back-forward", "reader-return"]) await step(`UI11 list: delayed native ${waitAt} cannot override manager disposal and ${lifetime}`, async () => {
       insist(listHref, "Actual saved-list prerequisite failed");
-      await open(lifetime === "reader-disposal" ? `/chapter/${ids.chapter}/1` : "/library"); await ready(); await realm();
+      await open(lifetime === "reader-return" ? `/chapter/${ids.chapter}/1` : "/library"); await ready(); await realm();
+      const restore = await visitManagement();
       const lists = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Custom device lists" }) }); await expand(lists);
+      await panel().getByRole("button", { name: "Export device backup", exact: true }).waitFor({ state: "visible" });
+      await until(() => panel().getByRole("button", { name: "Export device backup", exact: true }).isEnabled(), Boolean, "Management initialization did not settle before the saved-list race");
       const gate = await browserGate(waitAt);
       try {
         await lists.getByRole("link", { name: listName, exact: true }).click(); await gate.wait();
-        if (lifetime === "reader-disposal") { await page.locator('[data-sidebar="header"] a[href="/"]').click(); await page.waitForURL(url => url.pathname === "/"); }
+        if (lifetime === "reader-return") await restore();
         else await search();
         if (lifetime === "back-forward") { await page.goBack({ waitUntil: "domcontentloaded" }); await page.goForward({ waitUntil: "domcontentloaded" }); }
-        const newer = page.url(); await gate.release();
+        const newer = page.url(); await noManagementPanel(); await gate.release();
         await stable(() => page.url() === newer, "The obsolete saved-list callback overwrote newer route/history"); await sameRealm();
-        return { gate: waitAt === "snapshot" ? "real IndexedDB readonly final acknowledgement" : "real committed mode transaction completion", exact_newer_route_retained: true, same_document: true, disposed_reader: lifetime === "reader-disposal", committed_preference_not_claimed_rolled_back: true };
+        return { gate: waitAt === "snapshot" ? "real IndexedDB readonly final acknowledgement" : "real committed mode transaction completion", exact_newer_route_retained: true, same_document: true, disposed_manager: true, reader_returned: lifetime === "reader-return", committed_preference_not_claimed_rolled_back: true };
       } finally { await gate.close(); }
     });
   }
@@ -335,33 +398,47 @@ export async function runUi11To16Journeys(h) {
       await check("device-progress-signup-context", async () => { await signup(); await ready(); await mode("device"); });
       return { real_account: true, device_scope_verified: true };
     });
-    for (const gateKind of ["timer", "lock"]) for (const targetPage of [1, 3]) await step(`UI11 progress: ${gateKind} device→account→device retains same page ${targetPage}`, async () => {
+    for (const gateKind of ["timer", "lock"]) for (const targetPage of [1, 3]) await step(`UI11 progress: ${gateKind} device→account→device through Settings retains page ${targetPage}`, async () => {
       const prefix = `device-progress-${gateKind}-page${targetPage}`;
       await check(prefix + "-setup", async () => {
         await open(`/title/${ids.manga}`); await ready(); await mode("account"); await removeDeviceChapter(ids.chapter);
-        const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); await settings();
+        const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); await settings(); await realm();
       });
       await check(prefix + "-select-page", async () => { if (targetPage !== 1) await selectReaderPage(String(targetPage), targetPage); });
       await check(prefix + "-no-prior-progress", async () => { insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Device progress already existed before the controlled reentry test"); });
-      const gate = await browserGate(gateKind);
+      const gate = await browserGate(gateKind), posts = countPosts(`/api/user/history/manga/${ids.manga}`);
+      let restoreReader;
       try {
-        const retained = await check(prefix + "-gate-captured", async () => { await mode("device"); await gate.wait(); return readPage(); });
-        await check(prefix + "-old-intent-cancelled", async () => {
-          await mode("account"); await gate.release(); await page.waitForTimeout(100);
-          insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "The old device intent wrote after its actual mode authority was lost");
+        const retained = await check(prefix + "-gate-captured", async () => { await mode("device"); await gate.wait(); const current = await readPage(); insist(current === targetPage, "Settings mode selection failed to restore the exact current reader page"); await sameRealm(); return current; });
+        const cancelled = await check(prefix + "-old-intent-cancelled", async () => {
+          restoreReader = await visitManagement();
+          await mode("account");
+          // Leaving a device reader may legitimately flush its admitted page
+          // before the user can change mode. Remove that pre-switch timer-case
+          // record through the reviewed UI, then establish the actual baseline.
+          // A held lock already owns the queued write, so no cleanup can contend
+          // for that lock before its destination is invalidated and released.
+          if (gateKind === "timer") await removeDeviceChapter(ids.chapter);
+          insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Reviewed account-mode baseline still contains prior device progress");
+          const revision = await deviceRevision();
+          insist(await gate.held(), "The old reader callback was released before the account-mode baseline was established");
+          insist(posts.requests === 0, "Management mode selection unexpectedly wrote account reader history");
+          await gate.release();
+          await stable(async () => !(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter) && await deviceRevision() === revision && posts.requests === 0, "The old reader lifetime wrote rows, revision or account history after losing its actual destination authority");
+          return { baseline_after_reviewed_backup_cleanup: gateKind === "timer", held_before_release: true, stale_rows: 0, stale_revision_writes: 0, stale_account_posts: 0, reader_reentry_not_yet_performed: true };
         });
-        await check(prefix + "-page-retained", async () => { await mode("device"); insist(await readPage() === retained, "Mode selection changed the current reader page"); });
+        await check(prefix + "-page-retained", async () => { await mode("device"); await restoreReader(); await until(readPage, value => value === retained, "Settings return changed the current raw reader page"); await sameRealm(); });
         const observed = await check(prefix + "-durable-progress", async () => {
           const row = await until(deviceRows, rows => rows.some(row => row.family === "chapters" && row.id === ids.chapter && row.page === retained && (retained !== 3 || row.completed)), "Reentered current device context failed to durably save the unchanged page");
           return row.find(row => row.family === "chapters" && row.id === ids.chapter);
         });
         await check(prefix + "-reload-progress", async () => {
-          await page.reload({ waitUntil: "domcontentloaded" }); await ready(); const durable = (await deviceRows()).find(row => row.family === "chapters" && row.id === ids.chapter);
+          await page.reload({ waitUntil: "domcontentloaded" }); await until(readPage, value => value === retained, "Reload lost the durable raw reader page"); const durable = (await deviceRows()).find(row => row.family === "chapters" && row.id === ids.chapter);
           insist(durable?.page === retained && (retained !== 3 || durable.completed), "Device page/completion did not survive reload");
         });
         await check(prefix + "-stable-revision", async () => { await page.waitForTimeout(500); const revision = await deviceRevision(); await stable(async () => await deviceRevision() === revision, "Same-context refresh caused an endless durable progress-save loop"); });
-        return { actual_page: retained, completed: !!observed.completed, real_timer_or_lock_gate: gateKind, durable_after_reload: true };
-      } finally { await gate.close(); }
+        return { actual_page: retained, completed: !!observed.completed, real_timer_or_lock_gate: gateKind, settings_mode_roundtrip_same_document: true, old_lifetime: cancelled, new_reader_lifetime_durable: true, durable_after_reload: true };
+      } finally { await gate.close(); await posts.close(); }
     });
   }
 
@@ -429,14 +506,29 @@ export async function runUi11To16Journeys(h) {
       // feed is reached through document navigation only for this startup case.
       const held = await hold(origin + "/api/chapter/feed*", request => requestPath(request, "/api/chapter/feed"));
       const scope = await hold(origin + "/api/protocol/capabilities", request => requestPath(request, "/api/protocol/capabilities"));
-      try { await open(`/updates?initial=${marker}-${readiness}`); await Promise.all([held.wait(), scope.wait()]); await expand(panel()); await panel().getByText(/Scope verification: pending\./).waitFor({ state: "visible" }); if (readiness === "offline") await scope.fail(); else await scope.release(); await panel().getByText(new RegExp(`Scope verification: ${readiness}\\.`)).waitFor({ state: "visible" }); await held.release(); await until(() => page.locator('section a[href^="/chapter/"]').count(), async count => count > 0 || await bodyHas("No results found") || await page.getByRole("button", { name: "Retry feed", exact: true }).isVisible(), "Public updates remained an orphaned spinner after unrelated local initialization"); insist(await page.locator('section a[href^="/chapter/"]').count() > 0 || await bodyHas("No results found") || await page.getByRole("button", { name: "Retry feed", exact: true }).isVisible(), "Public read never reached results, genuine empty or actionable error"); return { actual_pending_observed: true, actual_pending_settlement: readiness, held_native_response: held.disposition, usable_terminal_state: true }; }
+      try {
+        await open(`/updates?initial=${marker}-${readiness}`); await Promise.all([held.wait(), scope.wait()]); await realm(); await noManagementPanel();
+        // The still-held genuine capability acknowledgement is the pending
+        // initialization seam. Do not leave this mounted feed to inspect its
+        // status in Settings before its current public read has settled.
+        insist(scope.heldNativeStatus === 200, "Pending initialization did not hold a genuine successful catalogue capability read");
+        if (readiness === "offline") await scope.fail(); else await scope.release();
+        await held.release();
+        const terminal = async () => await page.locator('section a[href^="/chapter/"]').count() > 0 || await bodyHas("No results found") || await page.getByRole("button", { name: "Retry feed", exact: true }).isVisible();
+        await until(terminal, Boolean, "Public updates remained an orphaned spinner after unrelated local initialization");
+        insist(await terminal(), "Public read never reached results, genuine empty or actionable error");
+        await sameRealm();
+        await inManagement(() => scopeStatus(readiness));
+        await sameRealm(); await until(terminal, Boolean, "Returning from management lost the current usable public terminal state");
+        return { actual_pending_scope_acknowledgement_held: true, actual_pending_settlement: readiness, feed_settled_before_management_navigation: true, held_native_response: held.disposition, usable_terminal_state: true, same_document: true };
+      }
       finally { await held.close(); await scope.close(); }
     });
     await step("UI13 private feed: old account rows cannot attach after selecting device library", async () => {
       await signup(); await ready(); await mode("account");
       const follow = await api(`/api/user/follows/manga/${ids.manga}`, { method: "POST", data: { status: "reading", notification: true } }); insist(follow.status === 204, "Native account-follow prerequisite failed");
       const held = await hold(origin + "/api/user/follows/chapter/feed*", request => requestPath(request, "/api/user/follows/chapter/feed"));
-      try { await open("/library/updates"); await held.wait(); await ready(); await mode("device"); await held.release(); await page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }); insist(await page.locator(`section a[href^="/chapter/${ids.chapter}"]`).count() === 0, "Obsolete private account rows attached to the empty device feed"); return { actual_account_read_held: true, actual_device_selection: true, obsolete_rows_absent: true, current_device_empty_settled: true }; } finally { await held.close(); }
+      try { await open("/library/updates"); await held.wait(); await realm(); await ready(); await mode("device"); await held.release(); await page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }); insist(await page.locator(`section a[href^="/chapter/${ids.chapter}"]`).count() === 0, "Obsolete private account rows attached to the empty device feed"); await noManagementPanel(); await sameRealm(); return { actual_account_read_held: true, actual_device_selection: true, obsolete_rows_absent: true, current_device_empty_settled: true, settings_mode_roundtrip_same_document: true }; } finally { await held.close(); }
     });
   }
 
@@ -528,16 +620,22 @@ export async function runUi11To16Journeys(h) {
         return { genuine_status: status, native_denial: status === 403 ? "actual owner readonly bearer lacks mutation permission" : status === 429 ? "bounded owned sockets exhausted actual native request permits" : "real cookie withdrawn with cached UI Session retained", actual_write_count: 1, feedback_visible: true, durable_state_unchanged: true };
       });
       if (phase === "ui15-reader-feedback") {
-        await step("UI15 automatic account history: actual200 acknowledgement is durable once across reader rerenders", async () => {
+        await step("UI15 automatic account history: actual200 acknowledgement is durable once per reader lifetime", async () => {
           const endpoint = `/api/user/history/manga/${ids.manga}`; const cleared = await api(endpoint, { method: "POST", data: { unread_ids: [ids.chapter] } }); insist(cleared.status === 200, "Genuine account-history clear prerequisite failed");
           await open(`/title/${ids.manga}`); await ready(); await mode("account"); const posts = countPosts(endpoint);
           try {
             await page.locator(`a[href="/chapter/${ids.chapter}"]`).first().click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`));
             await until(() => posts.rows, rows => rows.some(row => row.status === 200 && row.body), "Actual reader-entry history did not receive its required200 acknowledgement");
             const durable = await api(endpoint); insist(durable.status === 200 && Object.hasOwn(durable.body[ids.manga] ?? {}, ids.chapter), "Acknowledged reader entry did not persist actual account history");
-            await settings(); await selectReaderPage("2", 2); await expand(panel()); const download = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); await download;
-            await stable(async () => posts.requests === 1, "Harmless reader/page/local refresh replayed the successful account-history mutation");
-            return { native_acknowledgement200: true, durable_account_history: true, same_authority_posts: posts.requests, actual_page_and_local_refresh: true };
+            await settings(); await selectReaderPage("2", 2); await realm();
+            await stable(async () => posts.requests === 1, "Harmless mounted reader/page refresh replayed the successful account-history mutation");
+            const restore = await visitManagement();
+            const download = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); await download;
+            await stable(async () => posts.requests === 1, "Settings backup refresh replayed a disposed reader's account-history mutation");
+            await restore(); await until(readPage, value => value === 2, "Management return lost the exact account reader page"); await sameRealm();
+            await until(() => posts.rows, rows => rows.filter(row => row.status === 200 && row.body).length === 2, "Restored reader lifetime did not receive exactly one new genuine account-history acknowledgement");
+            await stable(async () => posts.requests === 2, "The restored reader replayed its account-history entry mutation");
+            return { native_acknowledgement200: true, durable_account_history: true, first_reader_posts: 1, settings_backup_posts: 0, restored_reader_posts: 1, total_posts: posts.requests, same_page_and_document_restored: true, actual_page_and_local_refresh: true };
           } finally { await posts.close(); }
         });
         for (const abandoned of [false, true]) await step(`UI15 automatic account history: real committed200 with lost delivery ${abandoned ? "after reader disposal" : "reports uncertainty"}`, async () => {

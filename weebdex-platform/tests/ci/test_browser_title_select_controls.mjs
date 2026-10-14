@@ -116,5 +116,39 @@ test('closed, empty-string open, and already-open native details expand idempote
     assert.notEqual(attribute, null); assert.equal(clicks, initial === null ? 1 : 0); assert.equal(waits, 2);
   }
   const journey = fs.readFileSync(path.join(root, 'scripts/browser-journeys.mjs'), 'utf8');
-  assert.match(journey, /const expandPanel = \(\) => expandDetailsPanel\(panel\(\)\)/);
+  assert.match(journey, /expandDetailsPanel\(target\.locator\('details'\)\.filter\(\{ has: page\.getByText\('Custom device lists'/);
+  assert.match(journey, /expandDetailsPanel\(target\.locator\('details'\)\.filter\(\{ has: page\.getByText\('Public sync & recovery'/);
+  assert.doesNotMatch(journey, /expandDetailsPanel\(panel\(\)\)/);
+});
+
+test('actual library-management helper follows the visible link to one normal Settings section', async () => {
+  const journey = fs.readFileSync(path.join(root, 'scripts/browser-journeys.mjs'), 'utf8');
+  const start = journey.indexOf('\tconst panel = '), end = journey.indexOf('\n\tconst follow = ', start);
+  assert(start > 0 && end > start);
+  const management = journey.slice(start, end);
+  for (const duplicates of [0, 1, 2]) {
+    const events = []; let route = '/title/synthetic';
+    const scope = vm.createContext({
+      async open(target) { assert.equal(target, '/library'); events.push('library-route'); route = target; },
+      page: {
+        getByRole(role, options) {
+          assert.equal(role, 'link'); assert.equal(options.name, 'Manage library'); assert.equal(options.exact, true);
+          return { async click() { assert.equal(route, '/library'); events.push('management-link'); route = '/settings/preferences#local-library'; } };
+        },
+        async waitForURL(accepts) {
+          assert(accepts(new URL('http://127.0.0.1:4000' + route)));
+          for (const rejected of ['/library', '/settings/preferences', '/settings/preferences#other']) assert.equal(accepts(new URL('http://127.0.0.1:4000' + rejected)), false);
+          events.push('settings-route');
+        },
+        locator(selector) {
+          assert.equal(selector, 'section[data-local-library-panel]');
+          return { async waitFor(options) { assert.equal(options.state, 'visible'); assert.deepEqual(Object.keys(options), ['state']); assert.equal(route, '/settings/preferences#local-library'); assert.equal(duplicates, 1, 'normal management section must be visible and unique'); events.push('settings-section'); } };
+        },
+      },
+    });
+    vm.runInContext(management, scope);
+    const run = vm.runInContext('openLibraryManagement', scope);
+    if (duplicates === 1) { await run(); assert.deepEqual(events, ['library-route', 'management-link', 'settings-route', 'settings-section']); }
+    else await assert.rejects(run(), /management section must be visible and unique/);
+  }
 });

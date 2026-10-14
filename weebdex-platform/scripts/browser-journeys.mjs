@@ -1,10 +1,12 @@
 // Real user-control journeys. Synthetic secrets stay only in harness memory.
 import { actAndWaitForPageEvent } from "./browser-action-events.mjs";
 import { randomBytes } from "node:crypto";
+import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
 import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
 import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel, selectListboxTrigger, clickListboxOption, setListboxOptions, searchRatingTrigger } from "./browser-select-controls.mjs";
 import { expandDetailsPanel } from "./browser-details-controls.mjs";
+const journeyRootUrl = new URL("../", import.meta.url);
 export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Object.freeze([
   'device-title-navigation', ...titleFollowCheckSuffixes.map(suffix => 'device-follow-' + suffix),
   'device-status-durable', 'device-authority-unpublished', 'device-reload-status', 'device-library-navigation',
@@ -96,8 +98,13 @@ export async function runJourneys(h) {
 		const db = await new Promise((resolve, reject) => { const query = indexedDB.open('weebdex-protocol-library-v1'); query.onsuccess = () => resolve(query.result); query.onerror = () => reject(query.error); });
 		try { return await new Promise((resolve, reject) => { const query = db.transaction('jobs').objectStore('jobs').count(); query.onsuccess = () => resolve(query.result); query.onerror = () => reject(query.error); }); } finally { db.close(); }
 	});
-	const panel = () => page.locator('[data-local-library-panel]').first();
-	const expandPanel = () => expandDetailsPanel(panel());
+	const panel = () => page.locator('section[data-local-library-panel]');
+	const openLibraryManagement = async () => {
+		await open('/library');
+		await page.getByRole('link', { name: 'Manage library', exact: true }).click();
+		await page.waitForURL(url => url.pathname === '/settings/preferences' && url.hash === '#local-library');
+		await panel().waitFor({ state: 'visible' });
+	};
 	const follow = status => selectTitleLibraryStatus(page, status);
 	const confirm = async name => { await page.getByRole('button', { name, exact: true }).first().click(); const dialog = page.getByRole('dialog'); await dialog.getByRole('button', { name, exact: true }).click(); };
 	const image = png(64, 96, marker);
@@ -435,6 +442,57 @@ export async function runJourneys(h) {
 			insist(reply, 'Reply prerequisite failed'); await open(`/forums/threads/${thread}`); await page.locator(`#p${reply.id}`).getByRole('button', { name: 'Delete', exact: true }).click(); await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click(); const removed = await until(() => api(`/thread/${thread}/replies/${reply.id}`), value => value.status === 404 || value.body?.state?.startsWith('deleted'), 'Soft comment deletion not persisted'); await page.reload({ waitUntil: 'domcontentloaded' }); insist(await page.getByText(`Edited ${marker}`, { exact: true }).count() === 0, 'Deleted comment body remained visible'); return { removal_status: removed.status, original_body_not_rendered: true };
 		});
 	} else if (phase === 'local-library') {
+		await step('relocated native Library and contextual comments fit desktop and mobile without global panels', async () => {
+			insist((await api('/auth/check')).status === 401, 'Relocation check requires an anonymous browser');
+			const runId = process.env.BROWSER_RUN_ID ?? 'first'; insist(/^[a-zA-Z0-9_-]{1,60}$/.test(runId), 'Unsafe relocation evidence identifier');
+			const screenshots = [], observations = [];
+			const capture = async (name, fullPage = false) => {
+				const relative = `test-evidence/frontend/browser/${phase}-${runId}/relocation-${name}.png`;
+				await page.screenshot({ path: fileURLToPath(new URL(relative, journeyRootUrl)), fullPage });
+				report.screenshots.push(relative); screenshots.push(relative);
+			};
+			const geometry = async label => {
+				const value = await page.evaluate(() => ({ width: innerWidth, scroll_width: document.documentElement.scrollWidth, horizontal_overflow: document.documentElement.scrollWidth > innerWidth + 1 }));
+				insist(!value.horizontal_overflow, `${label} overflows the viewport horizontally`); observations.push({ surface: label, ...value });
+			};
+			const noGlobalPanels = async () => insist(await page.locator('[data-local-library-panel], [data-protocol-identity-panel]').count() === 0, 'Management controls remain mounted outside Settings');
+			for (const [viewport, width, height] of [['desktop', 1440, 1000], ['mobile', 390, 844]]) {
+				await page.setViewportSize({ width, height });
+				for (const [name, route] of [['home', '/'], ['search', '/search'], ['title', `/title/${manga}`], ['reader', `/chapter/${chapter}/1`]]) {
+					await open(route); await noGlobalPanels();
+					if (name === 'reader') {
+						await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.some(image => image.complete && image.naturalWidth > 0)), Boolean, 'Reader did not decode genuine local media');
+						const visibleImage = await page.locator('img[src^="blob:"]').evaluateAll(images => images.some(image => { const box = image.getBoundingClientRect(); return image.complete && image.naturalWidth > 0 && box.width > 0 && box.height > 0 && box.left < innerWidth && box.right > 0 && box.top < innerHeight && box.bottom > 0; }));
+						insist(visibleImage, 'Reader media is outside the initial unobstructed viewport');
+					}
+					await geometry(`${viewport}-${name}`); await capture(`${viewport}-${name}`, name !== 'reader');
+				}
+				const show = page.getByRole('button', { name: 'Show Comments', exact: true }); if (await show.isVisible()) await show.click();
+				const conversation = page.locator(`section[data-source-conversation][data-resource-kind="chapter"][data-resource-id="${chapter}"]`);
+				await conversation.waitFor({ state: 'visible' });
+				const signed = conversation.getByRole('button', { name: 'Signed comments', exact: true });
+				insist(await signed.getAttribute('aria-expanded') === 'false', 'Technical signed controls were expanded before a contextual user action');
+				await signed.click();
+				insist(await conversation.getByRole('link', { name: 'Manage public identity', exact: true }).getAttribute('href') === '/settings/preferences#public-identity', 'Disconnected contextual action has no anonymous signer Settings path');
+				insist(await conversation.getByLabel('Current instance catalogue ID', { exact: true }).count() === 0 && await conversation.getByLabel('Target type', { exact: true }).count() === 0, 'Contextual comments permit editing a different resource target');
+				await geometry(`${viewport}-reader-discussion`); await capture(`${viewport}-reader-discussion`);
+				await open(`/title/${manga}?tab=comments`); await noGlobalPanels();
+				await page.locator(`section[data-source-conversation][data-resource-kind="manga"][data-resource-id="${manga}"]`).waitFor({ state: 'visible' });
+				await geometry(`${viewport}-title-comments`); await capture(`${viewport}-title-comments`);
+				await openLibraryManagement();
+				insist(await page.locator('section[data-local-library-panel]').count() === 1 && await page.locator('section[data-protocol-identity-panel]').count() === 1 && await page.locator('[data-source-conversation]').count() === 0, 'Settings does not own exactly one management surface of each kind');
+				for (const summary of ['Advanced library settings', 'Public sync & recovery', 'Signing identity & instances', 'Public profile and follow/relay lists', 'Saved exact signed public-action outbox']) {
+					const details = page.locator('summary').filter({ hasText: new RegExp('^' + summary.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$') }).locator('..');
+					insist(await details.count() === 1 && await details.getAttribute('open') === null, `Technical Settings disclosure is missing, duplicated or open: ${summary}`);
+				}
+				await panel().scrollIntoViewIfNeeded(); await geometry(`${viewport}-library-settings`); await capture(`${viewport}-library-settings`);
+				await page.locator('#public-identity').scrollIntoViewIfNeeded(); await geometry(`${viewport}-public-identity`); await capture(`${viewport}-public-identity`);
+				await page.reload({ waitUntil: 'domcontentloaded' }); await panel().waitFor({ state: 'visible' });
+				insist(new URL(page.url()).hash === '#local-library' && (await api('/auth/check')).status === 401, 'Anonymous management reload lost its deep link or created account authority');
+			}
+			await page.setViewportSize({ width: 1440, height: 1000 });
+			return { anonymous: true, actual_native_routes: true, no_global_management: true, route_bound_context: true, technical_controls_opt_in: true, screenshots_require_separate_visual_inspection: true, screenshots, observations };
+		});
 		const check = (id, operation) => {
 			insist(typeof h.check === 'function', 'The reviewed fixed-check diagnostic recorder is required for this local-library journey');
 			return h.check(id, operation);
@@ -459,13 +517,13 @@ export async function runJourneys(h) {
 			const progress = await until(device, value => value?.records.some(row => row.family === 'chapters' && row.id === chapter && row.page >= 1), 'Reader page control did not persist device progress');
 			const before = progress.records.map(row => row.family + ':' + row.key).sort();
 			await signup('user'); const after = await device(); insist(before.every(key => after.records.some(row => row.family + ':' + row.key === key)), 'Password signup replaced device library');
-			await expandPanel(); await panel().getByText('Library source: this browser device.', { exact: false }).waitFor({ state: 'visible' });
+			await openLibraryManagement(); await panel().getByText('Library source: this browser device.', { exact: false }).waitFor({ state: 'visible' });
 			await logout(); const loggedOut = await device(); insist(before.every(key => loggedOut.records.some(row => row.family + ':' + row.key === key)), 'Logout erased the independent device library');
 			return { reader_progress_saved: true, signup_did_not_select_account_mode: true, logout_preserved_device_records: true };
 		});
 		await step('custom list controls and reviewed scoped backup export/import persist actual device rows', async () => {
 			const target = panel();
-			await inspect('custom-list-navigation', async () => { await open('/library'); await expandPanel(); await target.getByText('Custom device lists', { exact: true }).click(); });
+			await inspect('custom-list-navigation', async () => { await openLibraryManagement(); await expandDetailsPanel(target.locator('details').filter({ has: page.getByText('Custom device lists', { exact: true }) })); });
 			const list = await inspect('custom-list-durable', async () => {
 				await target.getByLabel('List name', { exact: true }).fill(`Local ${marker}`); await target.getByRole('button', { name: 'Create list', exact: true }).click();
 				const listed = await until(device, value => value?.records.some(row => row.family === 'lists' && row.name === `Local ${marker}`), 'List control did not persist'); return listed.records.find(row => row.family === 'lists' && row.name === `Local ${marker}`);
@@ -484,18 +542,18 @@ export async function runJourneys(h) {
 			return { list_membership_persisted: true, actual_download_reviewed: true, foreign_scope_blocked: true, explicit_merge_succeeded: true, public_outbox_unchanged: true };
 		});
 		await step('explicit account mode and account import preserve independent device state', async () => {
-			const before = await inspect('account-mode-ready', async () => { insist(account, 'Synthetic account prerequisite failed'); await login(account.password); await until(() => api('/auth/check'), value => value.status === 200, 'Login failed'); await open(`/title/${manga}`); await expandPanel(); const saved = await device();
-				await panel().getByRole('button', { name: 'Use account library', exact: true }).click(); return saved; });
+			const before = await inspect('account-mode-ready', async () => { insist(account, 'Synthetic account prerequisite failed'); await login(account.password); await until(() => api('/auth/check'), value => value.status === 200, 'Login failed'); await openLibraryManagement(); const saved = await device();
+				await panel().getByRole('button', { name: 'Use account library', exact: true }).click(); await panel().getByText('Library source: signed-in WeebDex account.', { exact: false }).waitFor({ state: 'visible' }); await open(`/title/${manga}`); return saved; });
 			await selectTitleLibraryStatus(page, 'Plan to Read', { check, prefix: 'local-library-account-follow' });
 			const accountFollow = await inspect('account-status-durable', () => until(() => api(`/user/follows/manga?limit=100`), value => value.status === 200 && value.body?.data?.some(row => row.id === manga && row.reading_status === 'plan_to_read'), 'Explicit account follow did not persist'));
 			await inspect('account-device-preserved', async () => { const preserved = await device(); insist(JSON.stringify(preserved.records) === JSON.stringify(before.records), 'Account mode silently overwrote device records'); });
-			await inspect('account-import-reviewed', async () => { await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); await panel().getByText('Import preview: Explicit account-library import', { exact: false }).waitFor({ state: 'visible' }); await panel().getByRole('button', { name: 'Merge reviewed import', exact: true }).click();
-				await panel().getByRole('button', { name: 'Use device library', exact: true }).click(); await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga), 'Reviewed account import lost local series'); });
+			await inspect('account-import-reviewed', async () => { await openLibraryManagement(); await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); await panel().getByText('Import preview: Explicit account-library import', { exact: false }).waitFor({ state: 'visible' }); await panel().getByRole('button', { name: 'Merge reviewed import', exact: true }).click();
+				await panel().getByRole('button', { name: 'Use device library', exact: true }).click(); await panel().getByText('Library source: this browser device.', { exact: false }).waitFor({ state: 'visible' }); await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga), 'Reviewed account import lost local series'); });
 			return { account_follow_confirmed: accountFollow.status, explicit_mode_only: true, device_unchanged_before_reviewed_import: true, reviewed_merge_control_used: true };
 		});
 		await step('optional signer requires explicit selection and dismissal does not queue publication', async () => {
 			const target = panel();
-			await inspect('signer-section-open', async () => { await expandPanel(); await target.getByText('Optional Nostr publication and verified recovery', { exact: true }).click(); });
+			await inspect('signer-section-open', async () => { await expandDetailsPanel(target.locator('details').filter({ has: page.getByText('Public sync & recovery', { exact: true }) })); });
 			await inspect('signer-binding-installed', () => page.evaluate(() => { window.nostr = { getPublicKey: async () => { throw Error('Synthetic signer prompt dismissed'); }, signEvent: async () => { throw Error('Dismissed signer must never sign'); } }; }));
 			await inspect('signer-dismissal-visible', async () => { await target.getByRole('button', { name: 'Connect external browser signer', exact: true }).click(); await target.getByText('Synthetic signer prompt dismissed', { exact: false }).waitFor({ state: 'visible' }); });
 			await inspect('signer-outbox-empty', async () => { insist(await outboxCount() === 0, 'Dismissed signer created publication jobs'); await page.evaluate(() => { delete window.nostr; }); });
