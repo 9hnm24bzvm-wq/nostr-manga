@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "reviewed_commit": "54a709440bb9f2bce44824f17a55a048430b9576",
+  "reviewed_tree": "77e28088de24d2dff7f20faa5745c63c305b17aa",
+  "review_status": "cleared",
+  "blockers": [],
+  "independently_rerun": [
+    { "name": "focused_reader_account_and_reader_home_node_seams", "tests": 103, "passed": true },
+    { "name": "journey_projection_and_gate_seams", "tests": 12, "passed": true }
+  ],
+  "recorded_source_hashes_verified": 9,
+  "original_ordered_assertion_and_wait_payloads_preserved": true,
+  "scope": "Source-bound review and explicit stand-in seams only; product behavior, original assertions, timers, credential/observer cleanup and bounded real-outage ownership remain intact.",
+  "real_browser_acceptance": "Unrun for this revision. Fresh reviewed hosted evidence remains required.",
+  "receipt_only_change": true
+}
