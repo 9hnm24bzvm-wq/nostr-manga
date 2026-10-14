@@ -207,8 +207,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 451714,
-      "sha256": "cb92ce259a7d93d9a71a348efae0436215acd5317ea9db275d77b70df91c8fb5"
+      "bytes": 452687,
+      "sha256": "ddb2df007b63982c5c6e336739bc1bd401febe003eee2e60a43f655c2151face"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -282,8 +282,8 @@
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
-      "bytes": 29141,
-      "sha256": "2e0de23835968d8dd68febbd344054a4b5659be11a15d2f7d113754d64483b15"
+      "bytes": 29158,
+      "sha256": "c3c603ae4104c2ee5b491605ab27161dc926258b0326571f5c0a8aae22ebe164"
     },
     {
       "path": "platform-integrations/local-library/MangaFollow.ts",
@@ -376,7 +376,7 @@
       "sha256": "b047eaba5865ee6d83a522410f84b7e6b884e9074b4dc127c75341f92e8bf224"
     }
   ],
-  "integration_source_inventory_sha256": "9dd96ef30d9c41de98cad646909aca2ed43370835afeb6ef340cf6551eef0eb1",
+  "integration_source_inventory_sha256": "a730fc45ec167e6d919bd5a067ae9ec498caad066daaabc4e626bb3100ca609a",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -390,7 +390,7 @@
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
-      "sha256": "2e0de23835968d8dd68febbd344054a4b5659be11a15d2f7d113754d64483b15",
+      "sha256": "c3c603ae4104c2ee5b491605ab27161dc926258b0326571f5c0a8aae22ebe164",
       "intentional_rendered_extension": true
     },
     {
@@ -404,7 +404,7 @@
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "cb92ce259a7d93d9a71a348efae0436215acd5317ea9db275d77b70df91c8fb5",
+  "overlay_module_sha256": "ddb2df007b63982c5c6e336739bc1bd401febe003eee2e60a43f655c2151face",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -2905,6 +2905,12 @@
       "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
       "count": 1,
       "label": "replacement acknowledgement updates the guarded captured staging version"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "upload candidates share reactive identity between queued mutations and rendered controls"
     },
     {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
@@ -6568,6 +6574,12 @@
       "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
       "count": 1,
       "label": "replacement acknowledgement updates the guarded captured staging version"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "count": 1,
+      "label": "upload candidates share reactive identity between queued mutations and rendered controls"
     }
   ],
   "reader_script_repairs": [
@@ -8519,7 +8531,7 @@
     {
       "path": "src/lib/components/upload/UploadChapterPages.svelte",
       "original_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
-      "executed_source_sha256": "577f5174930f67f23080fe05838a0922ae5ff21502b3f1de60f9bd4e739f916c",
+      "executed_source_sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
