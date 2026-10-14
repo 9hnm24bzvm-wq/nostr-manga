@@ -3087,7 +3087,215 @@ const patches = [
     "before": "{#if !isFollowed}",
     "after": "{#if isBlocked || ($followState.ready && !isFollowed)}",
     "approved_follow_readiness_exception": "follow_current_status_block_guard"
-  }
+  },
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file gestures capture mutable owner staging before taking their shared mutex",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\tlet targetFile = $state<UploadSessionFile>();",
+  "after": "\t// Parent disabled includes this same mutex. Admit the gesture before locking,\r\n\t// then retain exact owner/session authority across every asynchronous decode.\r\n\tconst assertFileSession = (session: UploadSession) => {\r\n\t\towner.assert();\r\n\t\tif (uploadSession !== session || session.can_mutate === false) throw new Constants.Error.Error(\"Upload changed\", \"Old file selection was discarded. No mutation was replayed.\");\r\n\t};\r\n\tconst fileSession = () => !disabled && !mutex.isLocked() && uploadSession && uploadSession.can_mutate !== false ? uploadSession : undefined;\r\n\tlet targetFile = $state<UploadSessionFile>();"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement checks captured staging instead of rejecting its own mutex",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const replaceFile = async (file: File) => {\r\n\t\tif (!targetFile || !uploadSession || uploadSession.can_mutate === false || disabled) return;",
+  "after": "const replaceFile = async (file: File, session: UploadSession) => {\r\n\t\tassertFileSession(session);\r\n\t\tif (!targetFile) return;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement cannot apply a late page reconciliation to another session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "target = await resolveUploadPage(uploadSession, target, owner); owner.assert(); pages[idx] = target;",
+  "after": "target = await resolveUploadPage(session, target, owner); assertFileSession(session); pages[idx] = target;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement rechecks staging after image header read",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const actual = header.length >= 8",
+  "after": "assertFileSession(session);\r\n\t\tconst actual = header.length >= 8"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement rechecks staging after image decoding",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const decoded = await decodeUploadImage(file);\r\n\t\tif (decoded.width",
+  "after": "const decoded = await decodeUploadImage(file); assertFileSession(session);\r\n\t\tif (decoded.width"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement validates captured staging after authority read",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const current = await owner.request<UploadSession>(\"/upload\", \"GET\");\r\n\t\tif (current?.status",
+  "after": "const current = await owner.request<UploadSession>(\"/upload\", \"GET\"); assertFileSession(session);\r\n\t\tif (current?.status"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement rechecks staging after digest before atomic mutation",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const form = new FormData(); form.append(\"file\", file);",
+  "after": "assertFileSession(session);\r\n\t\tconst form = new FormData(); form.append(\"file\", file);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement cannot apply an acknowledged receipt after staging changed",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const result = await http.POST(); owner.assert();",
+  "after": "const result = await http.POST(); assertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement reconciliation remains bound to captured staging",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const latest = await owner.request<UploadSession>(\"/upload\", \"GET\").catch(() => undefined); owner.assert(); const confirmed",
+  "after": "const latest = await owner.request<UploadSession>(\"/upload\", \"GET\").catch(() => undefined); assertFileSession(session); const confirmed"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing retains captured staging while its own mutex is locked",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const processFiles = async (files: File[]) => {\r\n\t\tif (!uploadSession || uploadSession.can_mutate === false || disabled) return;",
+  "after": "const processFiles = async (files: File[], session: UploadSession) => {\r\n\t\tassertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing rechecks staging after decoding and splitting",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const decoded = await decodeUploadImage(file);\r\n\t\t\tconst pieces = decoded.width > maxImageWidth || decoded.height > maxImageHeight ? await splitImage(decoded, file.name) : [file];",
+  "after": "const decoded = await decodeUploadImage(file); assertFileSession(session);\r\n\t\t\tconst pieces = decoded.width > maxImageWidth || decoded.height > maxImageHeight ? await splitImage(decoded, file.name) : [file];\r\n\t\t\tassertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing rechecks staging after archive extraction",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const extracted = await extractArchive(file, remaining, maxSessionFiles - pages.length - processedFiles.length);",
+  "after": "const extracted = await extractArchive(file, remaining, maxSessionFiles - pages.length - processedFiles.length); assertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing rechecks staging before exposing candidates",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const newFiles = processedFiles.map(createPage);",
+  "after": "assertFileSession(session);\r\n\t\tconst newFiles = processedFiles.map(createPage);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "each admitted chunk remains bound to the captured session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "try { await uploadChunk(chunk, delta => { progress.loaded += delta; }); }",
+  "after": "try { assertFileSession(session); await uploadChunk(chunk, delta => { progress.loaded += delta; }); assertFileSession(session); }"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "stale file failures cannot annotate replacement staging",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "if (owner.alive()) { markUnsentUploadPages(newFiles, uploadSession.id);",
+  "after": "if (owner.alive() && uploadSession === session) { markUnsentUploadPages(newFiles, session.id);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "input admission happens before the shared mutex is taken",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\tconst onInputChange = (ev: Event) =>\r\n\t\tmutex.exec(async () => {",
+  "after": "\tconst onInputChange = (ev: Event) => {\r\n\t\tconst session = fileSession();\r\n\t\tif (!session) { targetFile = undefined; (ev.target as HTMLInputElement).value = \"\"; return; }\r\n\t\treturn mutex.exec(async () => {"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "input add and replace retain the admitted session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "if (targetFile) await replaceFile(target.files[0]);\r\n\t\t\t\t\telse await processFiles(Array.from(target.files));",
+  "after": "if (targetFile) await replaceFile(target.files[0], session);\r\n\t\t\t\t\telse await processFiles(Array.from(target.files), session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "input admission closes before drop admission",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\t\t});\r\n\r\n\tconst onDrop = (ev: DragEvent) => {",
+  "after": "\t\t});\r\n\t};\r\n\r\n\tconst onDrop = (ev: DragEvent) => {"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "drop admission happens before the shared mutex is taken",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\t\tev.preventDefault();\r\n\t\treturn mutex.exec(async () => {",
+  "after": "\t\tev.preventDefault();\r\n\t\tconst session = fileSession();\r\n\t\tif (!session) return;\r\n\t\treturn mutex.exec(async () => {"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "folder and plain drops retain the admitted session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "await processFiles(files.flat().filter(e => e instanceof File));",
+  "after": "assertFileSession(session);\r\n\t\t\t\t\tawait processFiles(files.flat().filter(e => e instanceof File), session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "plain drops retain the admitted session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "await processFiles(Array.from(ev.dataTransfer.files));",
+  "after": "await processFiles(Array.from(ev.dataTransfer.files), session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "batch results must retain the exact admitted staging object",
+  "before": "if (uploadSession?.id !== session.id) throw",
+  "after": "if (uploadSession !== session || session.can_mutate === false) throw"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "local replacement failure cannot restore a row into changed staging",
+  "before": "try { await uploadChunk([candidate]); revokeThumbnail(target); }\r\n\t\t\tcatch (error) { if (owner.alive())",
+  "after": "try { await uploadChunk([candidate]); assertFileSession(session); revokeThumbnail(target); }\r\n\t\t\tcatch (error) { if (owner.alive() && uploadSession === session)"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "batch owner retains exact admitted staging through authority reads and hashing",
+  "before": "const result = await runUploadBatch(session, chunk, owner, onProgress); owner.assert();",
+  "after": "const result = await runUploadBatch(session, chunk, { ...owner, assert: () => assertFileSession(session), alive: () => owner.alive() && uploadSession === session && session.can_mutate !== false }, onProgress); assertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "obsolete file input cannot attach feedback to newer editor authority",
+  "before": "\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\ttargetFile = undefined;",
+  "after": "\t\t\t} catch (e) {\r\n\t\t\t\tif (!owner.alive() || uploadSession !== session) return;\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\ttargetFile = undefined;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "obsolete file drop cannot attach feedback to newer editor authority",
+  "before": "\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t});\r\n\t};\r\n\r\n\tlet isDeletingPages",
+  "after": "\t\t\t} catch (e) {\r\n\t\t\t\tif (!owner.alive() || uploadSession !== session) return;\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t});\r\n\t};\r\n\r\n\tlet isDeletingPages"
+}
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {
