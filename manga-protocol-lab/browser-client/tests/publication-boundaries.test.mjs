@@ -168,6 +168,40 @@ test("event verification accepts valid events and refuses unknown input", async 
   }
 });
 
+for (const [label, tags] of [
+  ["sparse outer tags", new Array(1)],
+  ["sparse inner tag", [new Array(1)]],
+]) {
+  test(
+    "event verification rejects signed " + label + " in process and on wire",
+    async () => {
+      const signer = createSigner();
+      const event = await signer.signEvent({
+        kind: 11999,
+        created_at: now(),
+        tags,
+        content: "{}",
+      });
+      assert.equal(verifyEvent(event), false);
+      assert.equal(verifyEvent(JSON.parse(JSON.stringify(event))), false);
+    },
+  );
+}
+
+test("event verification preserves dense empty tag lists and empty tags", async () => {
+  const signer = createSigner();
+  for (const tags of [[], [[]]]) {
+    const event = await signer.signEvent({
+      kind: 11999,
+      created_at: now(),
+      tags,
+      content: "{}",
+    });
+    assert.equal(verifyEvent(event), true);
+    assert.equal(verifyEvent(JSON.parse(JSON.stringify(event))), true);
+  }
+});
+
 for (const [label, failure, state, message] of [
   ["null", null, "retryable", "Publication request failed"],
   ["string", "private response", "retryable", "Publication request failed"],
@@ -375,6 +409,27 @@ for (const [label, payload, message] of [
   [
     "invalid revision",
     { revision: "0", graph: buildGraph(emptyRecords) },
+    /Invalid snapshot preparation response/,
+  ],
+  [
+    "shadowed inventory array method",
+    structuredClone({
+      revision: 0,
+      graph: {
+        ...buildGraph(emptyRecords),
+        objects: Object.assign(buildGraph(emptyRecords).objects, {
+          every: null,
+        }),
+      },
+    }),
+    /Invalid snapshot preparation response/,
+  ],
+  [
+    "sparse object inventory",
+    structuredClone({
+      revision: 0,
+      graph: { ...buildGraph(emptyRecords), objects: new Array(1) },
+    }),
     /Invalid snapshot preparation response/,
   ],
   [

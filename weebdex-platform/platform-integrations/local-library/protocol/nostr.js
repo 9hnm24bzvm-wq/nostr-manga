@@ -16,19 +16,15 @@ function isObject(value) {
 }
 /** @param {unknown} value @returns {value is string[][]} */
 function isTags(value) {
-  return (
-    Array.isArray(value) &&
-    !value.some(
-      /** @param {unknown} tag */
-      (tag) =>
-        !Array.isArray(tag) ||
-        tag.some(
-          /** @param {unknown} entry */
-          (entry) => typeof entry !== "string",
-        ),
-    )
-  );
+  if (!Array.isArray(value)) return false;
+  // Dense iteration rejects holes before signed arrays become JSON null values.
+  for (const tag of value) {
+    if (!Array.isArray(tag)) return false;
+    for (const entry of tag) if (typeof entry !== "string") return false;
+  }
+  return true;
 }
+
 export const now = () => Math.floor(Date.now() / 1000);
 /** @param {unknown} e @returns {e is SignedEvent} */
 export function verifyEvent(e) {

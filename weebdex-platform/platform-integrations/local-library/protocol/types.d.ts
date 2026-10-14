@@ -115,7 +115,10 @@ export type NewJob = Omit<Job, "objectCount"> & {
   objectCount?: number;
   objects: GraphObject[];
 };
-export type StoredJob = Job & { objects?: GraphObject[] };
+export type StoredJob = Omit<Job, "objectCount"> & {
+  objectCount?: number;
+  objects?: GraphObject[];
+};
 export type JobObjectRow = { job: string; index: number; object: GraphObject };
 export type JobBatch = { objects: GraphObject[]; next: number };
 export type JsonObject = { [key: string]: unknown };

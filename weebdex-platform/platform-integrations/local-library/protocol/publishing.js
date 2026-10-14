@@ -46,11 +46,16 @@ function isPreparedSnapshot(value) {
   )
     return false;
   const graph = value.graph;
+  if (
+    !isGraphObject(graph.root) ||
+    graph.root.type !== "root" ||
+    !Array.isArray(graph.objects) ||
+    Object.keys(graph.objects).length !== graph.objects.length
+  )
+    return false;
+  // Iteration visits sparse-array holes, which must never become outbox objects.
+  for (const object of graph.objects) if (!isGraphObject(object)) return false;
   return (
-    isGraphObject(graph.root) &&
-    graph.root.type === "root" &&
-    Array.isArray(graph.objects) &&
-    graph.objects.every(isGraphObject) &&
     typeof graph.records === "number" &&
     Number.isSafeInteger(graph.records) &&
     graph.records >= 0
