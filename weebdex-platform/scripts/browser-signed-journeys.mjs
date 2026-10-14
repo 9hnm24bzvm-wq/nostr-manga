@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { selectTitleLibraryStatus, titleLibraryTrigger } from "./browser-select-controls.mjs";
 
 export const signedJourneyPhases = ["signed-library", "signed-profile", "signed-social", "signed-context", "signed-source-controls", "signed-namespace", "signed-recipients", "signed-restart"];
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -145,7 +146,7 @@ export async function runSignedJourneys(h) {
     const dialog = page.waitForEvent("dialog"); const click = button.click(); const prompt = await dialog;
     insist(prompt.type() === "confirm" && prompt.message().includes(expected), "Unexpected browser confirmation"); await prompt.accept(); await click;
   };
-  const follow = async status => { await page.getByRole("combobox", { name: /Add to Library|Reading|Plan to Read|On Hold|Completed|Dropped|Re-reading/ }).first().click(); await page.getByRole("option", { name: status, exact: true }).click(); };
+  const follow = status => selectTitleLibraryStatus(page, status);
   const databases = async () => page.evaluate(async () => {
     const available = await indexedDB.databases();
     async function read(name, stores, keys) {
@@ -288,7 +289,7 @@ export async function runSignedJourneys(h) {
       await step("ordinary reload keeps genuine migration fence and refuses current title identity adoption", async () => {
         insist(rebuilt?.result.success && before, "Genuine namespace rebuild prerequisite failed"); await page.reload({ waitUntil: "domcontentloaded" }); await expand(library()); await library().getByText("Scope verification: migration_required.", { exact: false }).waitFor({ state: "visible" });
         const backup = JSON.parse((await downloadBytes(library().getByRole("button", { name: "Export device backup", exact: true }))).toString("utf8")); insist(backup.scope.catalogNamespace === seeded.catalog_namespace && eventDigest(backup.records) === eventDigest(before.device.records), "Reload/export lost the previous saved-device namespace");
-        await open("/title/" + rebuilt.current.protocol_seed.series.native_id); await expand(library()); await library().getByText("Scope verification: migration_required.", { exact: false }).waitFor({ state: "visible" }); insist(await page.getByRole("combobox", { name: /Add to Library|Reading|Plan to Read|On Hold|Completed|Dropped|Re-reading/ }).count() === 0, "Current catalogue title offered native save controls under a mismatched old scope");
+        await open("/title/" + rebuilt.current.protocol_seed.series.native_id); await expand(library()); await library().getByText("Scope verification: migration_required.", { exact: false }).waitFor({ state: "visible" }); insist(await titleLibraryTrigger(page).count() === 0, "Current catalogue title offered native save controls under a mismatched old scope");
         const state = await databases(); insist(eventDigest(state.device.records) === eventDigest(before.device.records) && state.device.instanceScope.catalogNamespace === seeded.catalog_namespace, "Current title navigation rebound old IDs after real rebuild");
         return { reload_kept_migration_required: true, old_backup_scope_retained: true, new_catalogue_native_controls_fenced: true, no_implicit_scope_adoption: true };
       });
