@@ -9,7 +9,7 @@ import test from 'node:test';
 import { selectTitleLibraryStatus, titleLibraryTrigger } from '../../scripts/browser-select-controls.mjs';
 
 const source = fs.readFileSync(new URL('../../scripts/browser-signed-journeys.mjs', import.meta.url), 'utf8');
-assert.match(source, /import \{ selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes \} from "\.\/browser-select-controls\.mjs";/);
+assert.match(source, /import \{ selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel \} from "\.\/browser-select-controls\.mjs";/);
 const followSource = source.match(/const follow = ([^\n]+);/);
 assert.ok(followSource, 'Signed journey must keep its actual shared-helper call site');
 const negativeSource = source.match(/insist\((await titleLibraryTrigger\(page\)\.count\(\) === 0), "(Current catalogue title offered native save controls under a mismatched old scope)"\);/);

@@ -68,3 +68,31 @@ These are local source/driver seams, not browser acceptance. No browser,
 application, signer, service, fixture, database, package installation, hosted
 workflow or publication was run for this correction. Hosted rerun remains
 required to establish actual signed behavior after the shared follow fix.
+
+## Native-select labels exposed during source review
+
+The same review found an independent label mismatch in unentered downstream
+controls. LocalLibraryPanel wraps native selects inside labels for List, Series
+and the saved-series status. ProtocolIdentityPanel does the same for Verified
+recipient and Target type. The label's descendant text includes option text, so
+an exact `getByLabel` request for only the leading label text can fail.
+
+All eight signed native select calls now use the shared `nativeSelectForLabel`
+helper, which selects a direct native select under a scoped label whose immediate
+normalized text exactly matches. No prefix matching, first-match fallback or
+option-value change is introduced. Library scope, recipient selection, source
+target selection and the saved-series status choice remain explicit.
+
+`test_browser_signed_native_select_controls.mjs` executes every actual signed
+selection expression with explicit strict-locator stand-ins. Its three cases
+check all eight exact panel/label/value combinations, the actual option-bearing
+panel markup, and rejection of missing or duplicate controls. The shared helper's
+source seam separately executes the pinned Playwright native-label and immediate
+text matching engines. Neither test establishes actual publication, recipient
+or saved-library acceptance.
+
+Combined local verification with ordinary shared-helper corrections `766abf0`
+and `03fb4d7`: all 62 browser-source seam tests, 11 Python journey-diagnostic
+contract tests, and 676 canonical frontend file hashes passed. The dependency
+stage was the existing exact-lock frontend and JSDOM stage; nothing was
+installed. This combined result remains source/DOM/driver evidence only.
