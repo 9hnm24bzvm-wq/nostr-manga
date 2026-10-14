@@ -1,0 +1,99 @@
+#!/usr/bin/env node
+// Read-only artifact validation for a completed local semantic projection.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const work = path.resolve(process.argv[2] ?? path.join(root, '.build/composed-semantic-check-hardened2'));
+const evidence = path.join(work, 'evidence');
+const read = name => JSON.parse(fs.readFileSync(path.join(evidence, name)));
+const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+const summary = read('summary.json'), manifest = read('projection-manifest.json'), graph = read('production-module-graph.json'), diagnostics = read('diagnostics.json'), isolation = read('isolation-and-fidelity-verification.json');
+const production = JSON.parse(fs.readFileSync(path.join(root, 'test-evidence/frontend/integration-source-manifest.json')));
+const expected = new Map(production.transformed_sources.map(entry => [entry.path, entry.executed_source_sha256]));
+assert.equal(summary.canonical_frontend_files, 679);
+assert.equal(summary.canonical_frontend_unchanged, true);
+const canonicalInventory = read('canonical-source-hashes.json');
+assert.equal(Object.keys(canonicalInventory).length, 679, 'Actual canonical inventory must contain 679 records');
+const tracked = spawnSync('git', ['ls-files', '-z', '--', 'frontend'], { cwd: root, encoding: 'utf8' });
+assert.equal(tracked.status, 0);
+assert.deepEqual(Object.keys(canonicalInventory).sort(), tracked.stdout.split('\0').filter(Boolean).sort(), 'Canonical inventory identities must equal tracked frontend source identities');
+for (const [file, expectedHash] of Object.entries(canonicalInventory)) assert.equal(hash(fs.readFileSync(path.join(root, file))), expectedHash, file);
+for (const [file, expectedHash] of expected) assert.equal(manifest.find(entry => entry.canonical === file)?.production_composed_sha256, expectedHash, file);
+assert.equal(expected.size, 110);
+assert.equal(graph.filter(edge => edge.resolver.startsWith('unresolved')).length, 0);
+assert.ok(graph.length > 0, 'Source graph must not be empty');
+const mapped = manifest.filter(entry => entry.source_map);
+assert.equal(mapped.length, 591, 'Actual manifest must contain 591 mapped application sources');
+assert.equal(new Set(manifest.map(entry => entry.projection)).size, manifest.length, 'Projection source identities must be unique');
+for (const entry of manifest) {
+  assert.match(entry.projection, /^(src|platform-integrations)\//);
+  assert.ok(!entry.projection.includes('node_modules'));
+  if (!entry.source_map) continue;
+  const mapPath = path.join(work, entry.source_map), map = JSON.parse(fs.readFileSync(mapPath));
+  assert.equal(hash(fs.readFileSync(mapPath)), entry.source_map_sha256);
+  assert.equal(map.sources.length, 1);
+  const source = path.resolve(path.dirname(mapPath), map.sources[0]);
+  assert.equal(hash(fs.readFileSync(source)), entry.production_composed_sha256, source);
+  assert.equal(hash(map.sourcesContent[0]), entry.production_composed_sha256);
+  assert.equal(path.resolve(path.dirname(mapPath), map.file), path.join(work, 'project', entry.projection));
+  assert.equal(hash(fs.readFileSync(path.join(work, 'project', entry.projection))), entry.projection_sha256);
+}
+const mapValidation = read('source-map-validation.json');
+assert.equal(mapValidation.status, 'passed');
+assert.equal(mapValidation.validated_maps, mapped.length);
+assert.equal(mapValidation.maps.length, mapped.length, 'Map validation records must match actual manifest map count');
+assert.deepEqual(mapValidation.maps.map(entry => entry.map).sort(), mapped.map(entry => entry.source_map).sort(), 'Map validation identities must match every manifest map');
+for (const record of mapValidation.maps) {
+  const entry = mapped.find(entry => entry.source_map === record.map);
+  assert.equal(record.source_sha256, entry.production_composed_sha256);
+  assert.equal(hash(fs.readFileSync(path.join(work, record.source))), record.source_sha256);
+  assert.equal(record.embedded_content_matches, true);
+}
+assert.deepEqual(isolation.cache_byte_and_metadata_changes, []);
+assert.equal(isolation.protected_write_attempts, 0);
+const dependencyRoot = name => {
+  const value = summary.production_aliases.find(entry => entry.find === name)?.replacement;
+  assert.equal(typeof value, 'string');
+  const actualEntry = fs.realpathSync(value);
+  const marker = actualEntry.indexOf('/node_modules/'); assert.ok(marker >= 0);
+  return actualEntry.slice(0, marker + '/node_modules'.length);
+};
+const expectedCacheRoots = [...new Set([dependencyRoot('svelte-sonner'), dependencyRoot('@noble/curves')])].sort();
+assert.equal(expectedCacheRoots.length, 2, 'Both original production dependency caches must be protected');
+assert.deepEqual(isolation.protected_cache_roots.sort(), expectedCacheRoots);
+assert.ok(Array.isArray(isolation.node_process_audits) && isolation.node_process_audits.length > 0, 'At least one configured cache-guard process audit is required');
+assert.equal(new Set(isolation.node_process_audits.map(audit => audit.pid)).size, isolation.node_process_audits.length);
+for (const audit of isolation.node_process_audits) {
+  assert.ok(Number.isInteger(audit.pid) && audit.pid > 0);
+  assert.deepEqual(audit.protected_roots.sort(), expectedCacheRoots, 'Each audit must cover both exact dependency roots');
+  assert.ok(Number.isInteger(audit.checked_node_mutations) && audit.checked_node_mutations >= 0);
+  assert.equal(audit.protected_write_attempts, 0);
+  assert.deepEqual(audit.denied, []);
+}
+assert.ok(isolation.node_process_audits.some(audit => audit.checked_node_mutations > 0), 'Guard evidence must contain observed filesystem activity');
+const cacheInventory = read('cache-source-inventory.json');
+assert.ok(Object.keys(cacheInventory).length > 0, 'Actual cache inventory must not be empty');
+assert.equal(Object.keys(cacheInventory).length, isolation.snapshot_entries);
+for (const cacheRoot of expectedCacheRoots) assert.ok(Object.keys(cacheInventory).some(file => file.startsWith(cacheRoot + path.sep)), `Cache inventory must cover ${cacheRoot}`);
+assert.ok(Object.keys(cacheInventory).every(file => expectedCacheRoots.some(cacheRoot => file.startsWith(cacheRoot + path.sep))), 'Cache snapshot entries must belong to the protected dependency roots');
+assert.equal(isolation.checker_source_sha256, hash(fs.readFileSync(path.join(root, 'scripts/check-composed-frontend.mjs'))));
+assert.equal(isolation.guard_source_sha256, hash(fs.readFileSync(path.join(root, 'scripts/semantic-readonly-cache-guard.cjs'))));
+assert.equal(summary.source_diagnostic_suppressions_added, false);
+assert.equal(summary.strict, true);
+assert.equal(summary.checkJs, true);
+assert.equal(summary.service_worker_receipt.exit_code, 0);
+assert.equal(summary.status, 'passed', 'Current production semantics must pass');
+assert.equal(summary.errors, 0, 'Current generation must have zero semantic errors');
+assert.equal(diagnostics.filter(entry => entry.severity === 'error').length, summary.errors);
+assert.equal(diagnostics.filter(entry => entry.severity === 'warning').length, summary.warnings);
+assert.equal(diagnostics.filter(entry => /Cannot find module/.test(entry.message)).length, 0);
+assert.deepEqual(summary.worker_platform_type_bindings.map(entry => entry.file).sort(), ['platform-integrations/local-library/projection-worker.ts', 'platform-integrations/local-library/protocol/worker.js']);
+assert.ok(fs.readFileSync(path.join(work, 'project/platform-integrations/local-library/projection-worker.ts'), 'utf8').includes('declare const self: DedicatedWorkerGlobalScope;'));
+assert.ok(fs.readFileSync(path.join(work, 'project/platform-integrations/local-library/protocol/worker.js'), 'utf8').includes('const __semanticWorkerSelf ='));
+assert.deepEqual(isolation.error_categories, { implicit_any_or_inference: 0, assignability_or_call_signature: 0, nullability_or_unknown: 0, property_or_never: 0 });
+assert.deepEqual(isolation.errors_by_graph, { protocol_js: 0, integration_ts: 0, frontend_svelte: 0 });
+console.log(JSON.stringify({ status: 'passed', canonical_files: Object.keys(canonicalInventory).length, composed_overlay_hashes: expected.size, valid_source_maps: mapped.length, unresolved_graph_edges: 0, protected_node_write_attempts: isolation.node_process_audits.reduce((total, audit) => total + audit.protected_write_attempts, 0), semantic_check_status: summary.status, errors: summary.errors, warnings: summary.warnings, qualification: 'Semantic failures are type diagnostics, not a count of proven runtime bugs. The cache audit is in-process verification, not OS syscall enforcement.' }));

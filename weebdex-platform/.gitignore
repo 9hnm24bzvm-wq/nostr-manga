@@ -4,6 +4,8 @@
 /.cache/
 /runtime/
 /test-runtime/
+/ci-evidence/
+/ci-sanitized-evidence/
 /backend/target/
 /frontend/node_modules/
 /frontend/.svelte-kit/

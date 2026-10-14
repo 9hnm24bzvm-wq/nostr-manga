@@ -7,7 +7,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": ".build/frontend-restore3",
+  "frontend": ".build/frontend-semantic-contracts/projection-combined2/production-input",
   "original_files_written": false,
   "reconstructed_routes": [
     {
@@ -71,9 +71,19 @@
       "sha256": "4edf40151a8773574ae95c8630405fdd47ac864f4eac1d7d96c1f72ccf60816a"
     },
     {
+      "path": "platform-integrations/frontend-behavior/install-prompt.ts",
+      "bytes": 425,
+      "sha256": "9951f26a7511776487beeee0915cab197306ef2e20ee7f450974984d075dccb3"
+    },
+    {
       "path": "platform-integrations/frontend-behavior/latest-search.ts",
       "bytes": 2122,
       "sha256": "74e655e622d2503deb70ff495ac57f8ef14051954efd179d00e15dced4db5571"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/manga-search-query.ts",
+      "bytes": 11360,
+      "sha256": "db7130ddb28f6b4c3c71f3a1d41f2f6547ea907f67a00e7fb83d3d4e52105998"
     },
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -192,8 +202,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 419540,
-      "sha256": "1d69c7b365e9730e5d1ee6308ffa5d4b3cd273db38a4fdf414f9835922bbd3bc"
+      "bytes": 431746,
+      "sha256": "6e5682c74a29b5fc8e8a54bf7ac5cf3b8c44073df12384f5a1f03480a1d13d15"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -251,6 +261,11 @@
       "sha256": "5c2bf2331c467b0d165a75618fdc03a5fdda91becc97b16a320d1c2c23bc6937"
     },
     {
+      "path": "platform-integrations/local-library/graph-transfer.ts",
+      "bytes": 581,
+      "sha256": "0cbee4047d8bc0d1c3d6c7632e27ef98b2ce18bdc869dccb4df11d669275f669"
+    },
+    {
       "path": "platform-integrations/local-library/library.ts",
       "bytes": 29081,
       "sha256": "e30fdf5e0dcec64f8eeefa1e9fd98bd49887381514c0b36f646a4b494dec1b68"
@@ -262,8 +277,8 @@
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
-      "bytes": 29073,
-      "sha256": "fa384eb25f3702e4bbcc7fec694620dfc6f4ac37d3f4a95bb9e35da5b713cff3"
+      "bytes": 29141,
+      "sha256": "2e0de23835968d8dd68febbd344054a4b5659be11a15d2f7d113754d64483b15"
     },
     {
       "path": "platform-integrations/local-library/MangaFollow.ts",
@@ -272,38 +287,43 @@
     },
     {
       "path": "platform-integrations/local-library/overlays.mjs",
-      "bytes": 132683,
-      "sha256": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473"
+      "bytes": 132695,
+      "sha256": "bffaba61a133992f7d09c412b38cc39c3d75823f46d10e784c816211a5033804"
     },
     {
       "path": "platform-integrations/local-library/projection-worker.ts",
-      "bytes": 3593,
-      "sha256": "c4615962137e033539e8ba07f0acd6d383449af5cdbea83213a7f9e895f92403"
+      "bytes": 3685,
+      "sha256": "2282ce3ba78cf2cbeb44d9fd8a8b0dfbffe407f433c31e1009e8065491d430ed"
     },
     {
       "path": "platform-integrations/local-library/protocol-identity.ts",
-      "bytes": 20808,
-      "sha256": "c44f1954da876759d4a9ad0f602d9d1e82c26ddc3b96760e902bb3a5ae9c6f58"
+      "bytes": 20965,
+      "sha256": "26b3640e7fac950c24649792be7a156174c82a89af32656dcff2c102231f9a41"
+    },
+    {
+      "path": "platform-integrations/local-library/protocol-receipt.ts",
+      "bytes": 647,
+      "sha256": "881cd529c16654606ecdae475efa35f75c7782a8dd0892189ed39c62e497b0a0"
     },
     {
       "path": "platform-integrations/local-library/protocol-source-manifest.json",
-      "bytes": 2530,
-      "sha256": "e76ecd8d4a2ef46ed724587fa68608d8be9dcaec051711dad6764f5621874dc1"
+      "bytes": 2786,
+      "sha256": "690956655601d6d52fa1acc1355f399864747e7554f871ded7be9a216ea116e4"
     },
     {
       "path": "platform-integrations/local-library/protocol/backup.js",
-      "bytes": 7995,
-      "sha256": "1523359dd73fe16f2b245b1bd77545ff065f97bd495399a1c3e6b601a2389f8f"
+      "bytes": 9051,
+      "sha256": "77e6e9626557dd7b87134d518beab3e8cdb7d8f2e0c9c7c051e9a7f03a792c53"
     },
     {
       "path": "platform-integrations/local-library/protocol/codec.js",
-      "bytes": 12466,
-      "sha256": "73610f21767c733fe9945604960413666c851f061cd61efaf789172c0754d24f"
+      "bytes": 16914,
+      "sha256": "b899dc54a81099038cbed3ccbec7eaa2ddef38c7cf5cee4a2355d5a31f04a9c5"
     },
     {
       "path": "platform-integrations/local-library/protocol/indexeddb.js",
-      "bytes": 1319,
-      "sha256": "098639a2a7c546adafd6419310e86554f633f12bcdecfc372bbb55ef77c826b7"
+      "bytes": 1839,
+      "sha256": "2383b25505953ce79e8c204ba482b2eee2268f3b66ddb420de87e40d60025908"
     },
     {
       "path": "platform-integrations/local-library/protocol/limits.js",
@@ -312,28 +332,33 @@
     },
     {
       "path": "platform-integrations/local-library/protocol/nostr.js",
-      "bytes": 6903,
-      "sha256": "6fb879046de20efa265afba47000804446c3f728dfb47f3d4d568cde26ce7135"
+      "bytes": 9219,
+      "sha256": "1e71954b97415c36cb42b432148bfa32129be521d57e6ba125b2bce736c63603"
     },
     {
       "path": "platform-integrations/local-library/protocol/outbox.js",
-      "bytes": 7055,
-      "sha256": "b065cd96b0e374887d3a7f4f22abe6fe74e63f663cac006a629fa9c2db2216fd"
+      "bytes": 8837,
+      "sha256": "97c272cf60023915686347cc19d3a4ba655f02fc2fb96f151cbf831efdb46902"
     },
     {
       "path": "platform-integrations/local-library/protocol/publishing.js",
-      "bytes": 9382,
-      "sha256": "dde8414497727c2654e5449db4bdd63e8554a6522f72cc3130846954dd46579f"
+      "bytes": 13464,
+      "sha256": "0d589492e970ff9f8a1a72d1f0300aa696def080bc708337ae3f9a4a3004c69f"
     },
     {
       "path": "platform-integrations/local-library/protocol/store.js",
-      "bytes": 10983,
-      "sha256": "4d722b95e24bf6af756b2513e83d79ead5f788a6a1362d27b6c8da6204a77bf0"
+      "bytes": 14244,
+      "sha256": "1aa41728148c566b84716937385fc5daf05b8c61c0f14ba0a383b8792120ccf7"
+    },
+    {
+      "path": "platform-integrations/local-library/protocol/types.d.ts",
+      "bytes": 3103,
+      "sha256": "cf4ffcfd7cc7f2173d3cbb7855f0c3b0d0287600fd0bf855302f52bf8118eaca"
     },
     {
       "path": "platform-integrations/local-library/protocol/worker.js",
-      "bytes": 520,
-      "sha256": "21e6bbda67f432332fc4b2e7fa1cbb79b949325989c5af3d527b011ade7a4fa3"
+      "bytes": 666,
+      "sha256": "fa2e0a9f8f34b508469932421c9364aafd905f30ae99b6b6ed53334ef5a9046c"
     },
     {
       "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
@@ -342,11 +367,11 @@
     },
     {
       "path": "platform-integrations/local-library/publication.ts",
-      "bytes": 22276,
-      "sha256": "754c99ba955622a2ced7c7d3cfe0c276e83201ca565b95fd5fa87edeb8ca512e"
+      "bytes": 22499,
+      "sha256": "b047eaba5865ee6d83a522410f84b7e6b884e9074b4dc127c75341f92e8bf224"
     }
   ],
-  "integration_source_inventory_sha256": "08b4788aa51bdec2919f05596a76dc366b0785a7c66f38c0f8c4b3ad43af2e2c",
+  "integration_source_inventory_sha256": "b86055be4bcabb8cafe2df297958b23cb9eb5f3ae521a328ffd90f4ed58dbc7a",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -360,7 +385,7 @@
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
-      "sha256": "fa384eb25f3702e4bbcc7fec694620dfc6f4ac37d3f4a95bb9e35da5b713cff3",
+      "sha256": "2e0de23835968d8dd68febbd344054a4b5659be11a15d2f7d113754d64483b15",
       "intentional_rendered_extension": true
     },
     {
@@ -374,7 +399,7 @@
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "1d69c7b365e9730e5d1ee6308ffa5d4b3cd273db38a4fdf414f9835922bbd3bc",
+  "overlay_module_sha256": "6e5682c74a29b5fc8e8a54bf7ac5cf3b8c44073df12384f5a1f03480a1d13d15",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -2473,6 +2498,150 @@
       "sha256": "fdf62a1220d8e13f446f4fc070788c78aded93baeef360ae88cee2b67827e799",
       "count": 1,
       "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority"
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "bootstrap Session depends on the authentication leaf instead of the API barrel",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "session initialization uses its authentication leaf",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Auth.ts",
+      "label": "authentication leaf depends on HTTP without reentering the application barrel",
+      "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/prefs.ts",
+      "label": "bootstrap preferences read initialized constants outside the API Session cycle",
+      "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search UI imports field-specific query normalization",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search initialization keeps a reviewable query issue state",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search URL values are normalized before typed field assignment",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search Apply validates edits and preserves separate query passthrough",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "explicit false chapter filter remains meaningful",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "Reset explicitly clears rejected query state",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearch.svelte",
+      "label": "search validation uses existing feed error surface before cache restoration",
+      "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearch.svelte",
+      "label": "malformed discovery links do not load replacement results",
+      "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppHeader.svelte",
+      "label": "install prompt extensions are narrow runtime-guarded browser members",
+      "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppHeader.svelte",
+      "label": "Safari standalone is read only when present",
+      "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppHeader.svelte",
+      "label": "install state only retains callable browser prompt events",
+      "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/Lightbox.svelte",
+      "label": "Lightbox types only its own exact exposed browser actions",
+      "sha256": "0d3f2f488e7d73b8a5d0b84ab3f2c7ea3c0e60d11fa86abe559efe7333a17d76",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "optional HTTP reads enter their current acknowledgement failure path",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "label": "optional HTTP reads enter their current acknowledgement failure path",
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "optional HTTP reads enter their current acknowledgement failure path",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/search/+page.svelte",
+      "label": "actual search read imports its canonical query admission seam",
+      "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/search/+page.svelte",
+      "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+      "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "label": "actual search read imports its canonical query admission seam",
+      "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+      "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search Apply validates the final wire after sentinel and default-key mutations",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
     },
     {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
@@ -5734,6 +5903,150 @@
       "sha256": "fdf62a1220d8e13f446f4fc070788c78aded93baeef360ae88cee2b67827e799",
       "count": 1,
       "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority"
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "bootstrap Session depends on the authentication leaf instead of the API barrel",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/Session.ts",
+      "label": "session initialization uses its authentication leaf",
+      "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+      "count": 1
+    },
+    {
+      "path": "src/lib/API/Auth.ts",
+      "label": "authentication leaf depends on HTTP without reentering the application barrel",
+      "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+      "count": 1
+    },
+    {
+      "path": "src/lib/stores/prefs.ts",
+      "label": "bootstrap preferences read initialized constants outside the API Session cycle",
+      "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search UI imports field-specific query normalization",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search initialization keeps a reviewable query issue state",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search URL values are normalized before typed field assignment",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search Apply validates edits and preserves separate query passthrough",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "explicit false chapter filter remains meaningful",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "Reset explicitly clears rejected query state",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearch.svelte",
+      "label": "search validation uses existing feed error surface before cache restoration",
+      "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearch.svelte",
+      "label": "malformed discovery links do not load replacement results",
+      "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppHeader.svelte",
+      "label": "install prompt extensions are narrow runtime-guarded browser members",
+      "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppHeader.svelte",
+      "label": "Safari standalone is read only when present",
+      "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/AppHeader.svelte",
+      "label": "install state only retains callable browser prompt events",
+      "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/Lightbox.svelte",
+      "label": "Lightbox types only its own exact exposed browser actions",
+      "sha256": "0d3f2f488e7d73b8a5d0b84ab3f2c7ea3c0e60d11fa86abe559efe7333a17d76",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/ReportDialog.svelte",
+      "label": "optional HTTP reads enter their current acknowledgement failure path",
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "label": "optional HTTP reads enter their current acknowledgement failure path",
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "optional HTTP reads enter their current acknowledgement failure path",
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/search/+page.svelte",
+      "label": "actual search read imports its canonical query admission seam",
+      "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/search/+page.svelte",
+      "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+      "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "label": "actual search read imports its canonical query admission seam",
+      "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+      "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "count": 1
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "label": "search Apply validates the final wire after sentinel and default-key mutations",
+      "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "count": 1
     }
   ],
   "reader_script_repairs": [
@@ -6902,7 +7215,7 @@
       "approved_public_carousel_exception": "public_carousel_error_retry"
     }
   ],
-  "local_library_overlay_sha256": "d394e81fdd7f6e02745ea905ec69f52d278bdac942ef9b2794110cc4ca6fc473",
+  "local_library_overlay_sha256": "bffaba61a133992f7d09c412b38cc39c3d75823f46d10e784c816211a5033804",
   "approved_local_protocol_extensions": [
     {
       "path": "src/routes/(app)/+layout.svelte",
@@ -7404,7 +7717,7 @@
     {
       "path": "src/lib/stores/prefs.ts",
       "original_sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
-      "executed_source_sha256": "54ef681d5cc60d33c8c0163e690fdc53f6269ccfe2801af94691a72b2be40229",
+      "executed_source_sha256": "971f219e3baa8cafb34da79330b6c93e692c659c35a5e8bcd74b018a44c38c8e",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -7437,7 +7750,7 @@
     {
       "path": "src/lib/components/MangaSearchFilter.svelte",
       "original_sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
-      "executed_source_sha256": "7c502853799a155ee9c80f54571d1cd7b44b032a08f893e7c3f8342f2ce34f91",
+      "executed_source_sha256": "ae758a8523c8df74fe0864555fc09284c29fcfe2a172f4749621b451837d36e4",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -7481,7 +7794,7 @@
     {
       "path": "src/lib/stores/Session.ts",
       "original_sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
-      "executed_source_sha256": "d991c7c8a01b001ac10eed590e6d6ec1b689a28a69608c91511ddeb2a0ea49a0",
+      "executed_source_sha256": "32fb8ae653bb9df123a46373e490ee6b886bdc7454c98ee5d599e9ea52158320",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -7613,7 +7926,7 @@
     {
       "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
       "original_sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
-      "executed_source_sha256": "578d5a5b1e89de4301ff47f333a41160d4afb3f27a68ada6962f2f387c2ac74b",
+      "executed_source_sha256": "8a2861de12aa32d3e1f70a74b8e2ceacecba4a070aadeb383111f7d1bbaed1bb",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
@@ -7833,7 +8146,7 @@
     {
       "path": "src/lib/components/ReportDialog.svelte",
       "original_sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
-      "executed_source_sha256": "80f89eed3756c0ce6905b25ae76176b6aab5ab0b2fa4f14405a7cd6e8d99b7d3",
+      "executed_source_sha256": "0b83b84b1d288e100fdf7cf58cd474b79d9b16331da63d1ead744aa03c35bd2d",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -7855,7 +8168,7 @@
     {
       "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
       "original_sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
-      "executed_source_sha256": "1a71bfb167d752f0566228cd4894dbddc09fba14e7d647ddb1cc24b9449ec4aa",
+      "executed_source_sha256": "bc8765c437333eb3ccf613368efbfa39da4b3567bf797cc5fdaf0d7932a33f97",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8249,6 +8562,72 @@
       "approved_event_handler_javascript_changed": false
     },
     {
+      "path": "src/lib/API/Auth.ts",
+      "original_sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+      "executed_source_sha256": "c7124a7dd2d6f8fe25ad34992af0cf59ab60c72afdecc1534ced1213d30705b9",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/components/MangaSearch.svelte",
+      "original_sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+      "executed_source_sha256": "af038cd1d33ae5e8f49d4ccc9d77e56e4f73af0039b502a8d8b09c8fdc059d4f",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/components/AppHeader.svelte",
+      "original_sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "executed_source_sha256": "67c9123993ae5788928925404b9fea8fb675fc59c40aa7a0d2bf39618fd54740",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/components/Lightbox.svelte",
+      "original_sha256": "0d3f2f488e7d73b8a5d0b84ab3f2c7ea3c0e60d11fa86abe559efe7333a17d76",
+      "executed_source_sha256": "b1485d20bdb126fd6730b86a8743b55aa669d65094c85be6ba108f8d626d368e",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/routes/(app)/search/+page.svelte",
+      "original_sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+      "executed_source_sha256": "0e373a4be0a9b37c0e56d155dcf7c4473c86c7e76f6744027c5bcb9e976b9726",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": false,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/routes/(app)/library/+page.svelte",
+      "original_sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+      "executed_source_sha256": "a70017ec8ce59fccea4557cd3200d3dbc8fad2829d82662ee824f65cf24872cb",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
       "original_sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
       "executed_source_sha256": "31996302c5c5bf92c41aeddff8d6f746f65c3135ea1afd46cb7a64f73a0b87a1",
@@ -8403,31 +8782,9 @@
       "approved_event_handler_javascript_changed": false
     },
     {
-      "path": "src/lib/components/MangaSearch.svelte",
-      "original_sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
-      "executed_source_sha256": "fb2dccb1cc196f5793eff2b64959f8175cb1ecde573adb653609faf2a7e86511",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
       "path": "src/lib/components/MyUpdatesCarousel.svelte",
       "original_sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
       "executed_source_sha256": "bd08476345f658fd9046ad85f1b81eecee6ed7dfbc3bf7637e3d48b8f7248f85",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/library/+page.svelte",
-      "original_sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
-      "executed_source_sha256": "996753637b4e55ac1218554994106b3c4358fbf73eafff4675f7c0b61fa3d635",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8526,7 +8883,7 @@
     {
       "path": "src/lib/components/MostReadCarousel.svelte",
       "original_sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c",
-      "executed_source_sha256": "d100ac54b43ec92997b44c20053f54153103b422addf9354e73c32a1feeb32d2",
+      "executed_source_sha256": "7ef942e2591072bf261ec018793929277fe806932a704245e842f32ad0e607a3",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8537,7 +8894,7 @@
     {
       "path": "src/lib/components/RecentlyAddedCarousel.svelte",
       "original_sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf",
-      "executed_source_sha256": "85c9bec27cb875e58cf25a569eed10b8e731daf60c012c85e25ef057544fa097",
+      "executed_source_sha256": "ea9cace7ede18a60997b3ec118b01ef5aec69972f1a13d3f101949a805028e34",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,

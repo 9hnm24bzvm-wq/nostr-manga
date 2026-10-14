@@ -2792,7 +2792,199 @@ const patches = [
     "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority",
     "before": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tif (!Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && (manga?.locked || !manga?.deleted_at)) {\r\n\t\treturn false;\r\n\t}\r\n\treturn Session.hasPerm(\"manga.relation.edit\");\r\n};",
     "after": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tconst actor = get(Session);\r\n\tif (!actor?.identity?.id) return false;\r\n\t// The create form has no saved title yet; its future draft owner needs manga.create.\r\n\tif (!manga) return Session.hasPerm(\"manga.create\");\r\n\tconst current = manga as Manga & { can_mutate?: boolean; is_unavailable?: boolean };\r\n\tif (manga.deleted_at || current.can_mutate === false || current.is_unavailable) return false;\r\n\tif (Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && Session.hasPerm(\"manga.relation.edit\")) return true;\r\n\tif (manga.locked) return false;\r\n\tif (manga.state === State.Published) return Session.hasPerm(\"manga.relation.edit\");\r\n\treturn manga.relationships?.submitter?.id === actor.identity.id && Session.hasPerm(\"manga.create\");\r\n};"
-  }
+  },
+  {
+    "path": "src/lib/stores/Session.ts",
+    "label": "bootstrap Session depends on the authentication leaf instead of the API barrel",
+    "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "count": 1,
+    "before": "import API from \"$lib/API\";",
+    "after": "import * as Auth from \"$lib/API/Auth\";"
+  },
+  {
+    "path": "src/lib/stores/Session.ts",
+    "label": "session initialization uses its authentication leaf",
+    "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "count": 1,
+    "before": "API.Auth.Check()",
+    "after": "Auth.Check()"
+  },
+  {
+    "path": "src/lib/API/Auth.ts",
+    "label": "authentication leaf depends on HTTP without reentering the application barrel",
+    "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+    "count": 1,
+    "before": "import { HTTP } from \"$lib\";",
+    "after": "import HTTP from \"$lib/HTTP\";"
+  },
+  {
+    "path": "src/lib/stores/prefs.ts",
+    "label": "bootstrap preferences read initialized constants outside the API Session cycle",
+    "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+    "count": 1,
+    "before": "import { Constants } from \"$lib\";",
+    "after": "import * as Constants from \"$lib/constants\";"
+  },
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search UI imports field-specific query normalization",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\timport type { SearchMangaRequest } from \"$lib/API/Manga\";",
+  "after": "\timport type { SearchMangaRequest } from \"$lib/API/Manga\";\r\n\timport { parseMangaSearchQuery, serializeMangaSearchQuery, searchValidationError, unresolvedSearchIssues, validateMangaSearchQuery, type MangaFilterRequest, type SearchIssue } from \"$platform/manga-search-query\";\r\n\timport { toast } from \"svelte-sonner\";"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search initialization keeps a reviewable query issue state",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\tlet search = $state<SearchMangaRequest>(",
+  "after": "\tlet searchIssues = $state<SearchIssue[]>([]), searchPassthrough = new URLSearchParams(), explicitHasChapters = false, explicitEmptyRating = false;\r\n\tlet initialParsedSearch: MangaFilterRequest;\r\n\tlet search = $state<MangaFilterRequest>("
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search URL values are normalized before typed field assignment",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\t\tconst map: Record<string, any> = {};\r\n\t\t\tfor (const [key, value] of searchParams.entries()) {\r\n\t\t\t\tif (arrayFields.includes(key)) (map[key] ??= []).push(value);\r\n\t\t\t\telse map[key] = value;\r\n\t\t\t}\r\n\t\t\tfor (const [key, value] of Object.entries(map)) {\r\n\t\t\t\tinit[key as keyof SearchMangaRequest] = key === \"contentRating\" && Array.isArray(value) ? value.filter(v => v !== \"__none__\") : value;\r\n\t\t\t}\r\n\t\t\treturn init;",
+  "after": "\t\t\tconst parsed = parseMangaSearchQuery(init, searchParams, isLibrary);\r\n\t\t\tsearchIssues = parsed.issues; searchPassthrough = parsed.passthrough; explicitHasChapters = parsed.explicitHasChapters; explicitEmptyRating = isLibrary && parsed.explicitEmptyRating;\r\n\t\t\tinitialParsedSearch = structuredClone(parsed.search);\r\n\t\t\treturn parsed.search;"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search Apply validates edits and preserves separate query passthrough",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams();\r\n\t\tfor (const [key, value] of Object.entries(search)) {\r\n\t\t\tif (value === undefined || value === null || (typeof value === \"string\" && !value.length)) {\r\n\t\t\t\tcontinue;\r\n\t\t\t}\r\n\r\n\t\t\tif (Array.isArray(value)) {\r\n\t\t\t\tvalue.forEach(v => q.append(key, v));\r\n\t\t\t} else {\r\n\t\t\t\tq.set(key, value);\r\n\t\t\t}\r\n\t\t}\r\n",
+  "after": "\t\tconst unresolved = unresolvedSearchIssues(searchIssues, initialParsedSearch, $state.snapshot(search));\r\n\t\tconst q = serializeMangaSearchQuery($state.snapshot(search), searchPassthrough, explicitHasChapters, explicitEmptyRating);\r\n\t\tconst validation = searchValidationError(unresolved) ?? validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (validation) { toast.error(validation.title, { description: validation.body }); return; }\r\n\t\tsearchIssues = [];"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "explicit false chapter filter remains meaningful",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "if (!search.hasChapters) q.delete(\"hasChapters\");",
+  "after": "if (!search.hasChapters && !explicitHasChapters) q.delete(\"hasChapters\");"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "Reset explicitly clears rejected query state",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tsearch = structuredClone(defaultSearch);",
+  "after": "\t\tsearchIssues = []; searchPassthrough = new URLSearchParams(); explicitHasChapters = false; explicitEmptyRating = false;\r\n\t\tsearch = structuredClone(defaultSearch);"
+},
+{
+  "path": "src/lib/components/MangaSearch.svelte",
+  "label": "search validation uses existing feed error surface before cache restoration",
+  "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+  "count": 1,
+  "before": "\timport { Constants } from \"$lib\";",
+  "after": "\timport { Constants } from \"$lib\";\r\n\timport { validateMangaSearchQuery, effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/lib/components/MangaSearch.svelte",
+  "label": "malformed discovery links do not load replacement results",
+  "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+  "count": 1,
+  "before": "\tonMount(async () => {",
+  "after": "\tonMount(async () => {\r\n\t\tif (window.location.pathname === \"/search\" || window.location.pathname === \"/library\") {\r\n\t\t\tconst input = new URLSearchParams(window.location.search), library = window.location.pathname === \"/library\";\r\n\t\t\tconst validation = validateMangaSearchQuery(input, library) ?? effectiveMangaSearchReadQuery(input, library, prefs, $prefs.items_per_page).error;\r\n\t\t\tif (validation) { error = validation; feed = undefined; isMounted = true; return; }\r\n\t\t}"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "install prompt extensions are narrow runtime-guarded browser members",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "\tlet deferredPrompt = $state<Event>();",
+  "after": "\timport { isInstallPromptEvent, isStandaloneNavigator, type InstallPromptEvent } from \"$platform/install-prompt\";\r\n\tlet deferredPrompt = $state<InstallPromptEvent>();"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "Safari standalone is read only when present",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "window.navigator.standalone === true",
+  "after": "isStandaloneNavigator(window.navigator)"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "install state only retains callable browser prompt events",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "\t\tdeferredPrompt = e;",
+  "after": "\t\tif (isInstallPromptEvent(e)) deferredPrompt = e;"
+},
+{
+  "path": "src/lib/components/Lightbox.svelte",
+  "label": "Lightbox types only its own exact exposed browser actions",
+  "sha256": "0d3f2f488e7d73b8a5d0b84ab3f2c7ea3c0e60d11fa86abe559efe7333a17d76",
+  "count": 1,
+  "before": "\twindow._lightbox_ = {",
+  "after": "\tdeclare global {\r\n\t\tinterface Window {\r\n\t\t\t_lightbox_: { open: typeof open; close: typeof close; prev: typeof prev; next: typeof next };\r\n\t\t}\r\n\t}\r\n\twindow._lightbox_ = {"
+},
+{
+  "path": "src/lib/components/ReportDialog.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+  "count": 1,
+  "before": "void API.Report.Reasons(type).then(res => {",
+  "after": "void (async () => API.Report.Reasons(type))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+  "count": 1,
+  "before": "void API.User.Get(actor).then(res => {",
+  "after": "void (async () => API.User.Get(actor))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+  "count": 1,
+  "before": "void API.User.Get(actor).then(res => {",
+  "after": "void (async () => API.User.Get(actor))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/search/+page.svelte",
+  "label": "actual search read imports its canonical query admission seam",
+  "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+  "count": 1,
+  "before": "\timport { StatusCodes } from \"http-status-codes\";",
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/routes/(app)/search/+page.svelte",
+  "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+  "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);\r\n\t\tprefs.applyMangaPreferences(q);\r\n\r\n\t\tif (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);",
+  "after": "\t\tconst admitted = effectiveMangaSearchReadQuery(new URLSearchParams(window.location.search), false, prefs, $prefs.items_per_page);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+},
+{
+  "path": "src/routes/(app)/library/+page.svelte",
+  "label": "actual search read imports its canonical query admission seam",
+  "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+  "count": 1,
+  "before": "\timport { StatusCodes } from \"http-status-codes\";",
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/routes/(app)/library/+page.svelte",
+  "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+  "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);\r\n\r\n\t\tif (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);",
+  "after": "\t\tconst admitted = effectiveMangaSearchReadQuery(new URLSearchParams(window.location.search), true, prefs, $prefs.items_per_page);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search Apply validates the final wire after sentinel and default-key mutations",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tconst target = window.location.pathname + q.toString();",
+  "after": "\t\tconst finalValidation = validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (finalValidation) { toast.error(finalValidation.title, { description: finalValidation.body }); return; }\r\n\t\tconst target = window.location.pathname + q.toString();"
+}
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {

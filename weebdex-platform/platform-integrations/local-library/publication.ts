@@ -8,6 +8,7 @@ import { buildGraph, normalize, recordKey, families } from './protocol/codec.js'
 import { proveService, origin, signerRequest, signedRequest, signExact, verifyEvent } from './protocol/nostr.js';
 import { queueSnapshot, deliverJob, cancelJob, recoverPublic } from './protocol/publishing.js';
 import { backupBlob } from './protocol/backup.js';
+import type { NewJob } from './protocol/types.d.ts';
 export type Relay = { origin: string; serviceKey: string; selected: boolean };
 export type Capabilities = { catalog_namespace: string | null; available: boolean; schema_ready: boolean; origin: string | null; service_key: string | null; connect_origins: string[]; external_signer_required: true; account_admission_required: true };
 export type SourceMapping = { kind: 'manga' | 'chapter'; id: string; event_id: string; compatibility_id: string; publisher?: string; source_kind?: number };
@@ -44,14 +45,17 @@ export function assertAllowedRelay(relayOrigin: string, policy: Capabilities) {
   if (canonical !== window.location.origin && !policy.connect_origins.includes(canonical)) throw Error('This origin is not allowed by the instance relay/CSP policy. Ask the instance operator to allow it before publishing.');
   return canonical;
 }
-export async function relayPreferences() { const { protocol } = await stores(); return protocol.relayPreferences(); }
+export async function relayPreferences() {
+  const { protocol } = await stores(), preferences = await protocol.relayPreferences();
+  return { ...preferences, relays: preferences.relays.map(row => ({ ...row, selected: row.selected === true })) };
+}
 export async function rememberRelay(input: string, key: string, expectedRevision: number) {
   const policy = await capabilities(), canonical = assertAllowedRelay(input, policy);
   if (key && !/^[0-9a-f]{64}$/.test(key)) throw Error('Invalid expected service public key');
   const verified = await proveService(canonical, key || undefined), { protocol } = await stores();
   const current = await protocol.relayPreferences();
   if (current.revision !== expectedRevision) throw Error('Instance selection changed. Review it again.');
-  const next = [...current.relays.filter((row: Relay) => row.origin !== canonical), { ...verified, selected: false }];
+  const next = [...current.relays.filter(row => row.origin !== canonical), { ...verified, selected: false }];
   await protocol.setRelays(next, expectedRevision);
   return verified;
 }
@@ -63,7 +67,7 @@ export async function selectRelays(relays: Relay[], expectedRevision: number) {
 export async function forgetRelay(relayOrigin: string, expectedRevision: number) {
   const { protocol } = await stores(), current = await protocol.relayPreferences();
   if (current.revision !== expectedRevision) throw Error('Instance selection changed. Review again.');
-  return protocol.setRelays(current.relays.filter((row: Relay) => row.origin !== relayOrigin), expectedRevision);
+  return protocol.setRelays(current.relays.filter(row => row.origin !== relayOrigin), expectedRevision);
 }
 export async function admitAccount(relay: Relay) {
   const policy = await capabilities(); assertAllowedRelay(relay.origin, policy);
@@ -113,7 +117,7 @@ function graphWorker(data: unknown): Promise<any> {
 export type PublicationReview = { mappingProof: string; deviceRevision: number; protocolRevision: number; relayRevision: number; owner: string; generation: number; recipients: Relay[]; graph: ReturnType<typeof buildGraph>; excluded: string[]; sourceOrigin: string; serviceKey: string };
 export async function previewPublication(): Promise<PublicationReview> {
   const identity = selectedSigner(), snapshot = await currentDeviceSnapshot(), { protocol } = await stores();
-  const preferences = await protocol.relayPreferences(), recipients = preferences.relays.filter((row: Relay) => row.selected);
+  const preferences = await protocol.relayPreferences(), recipients = preferences.relays.filter(row => row.selected === true).map(row => ({ ...row, selected: true }));
   if (!recipients.length) throw Error('Choose at least one verified publication instance');
   const { maps, policy } = await resourceMappings(snapshot);
   for (const relay of recipients) assertAllowedRelay(relay.origin, policy);
@@ -137,8 +141,8 @@ export async function publishReviewed(review: PublicationReview, publicConsent: 
   // Keep device projections out of the canonical recovery database. Otherwise a
   // later native unfollow could accidentally survive as a stale canonical record.
   // The original codec builds the reviewed graph; original outbox owns its bytes.
-  const guarded = Object.create(protocol);
-  guarded.createJob = (job: object) => deviceWriteLock(async () => {
+  const guarded: typeof protocol = Object.create(protocol);
+  guarded.createJob = (job: NewJob) => deviceWriteLock(async () => {
     identity.check();
     const latest = await device.publicationState();
     if (latest.migration_reason) throw Error(latest.migration_reason);

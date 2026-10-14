@@ -1,0 +1,30 @@
+{
+  "application_source_commit": "47c4ec7a65e2a5f298939fae118c76a7373b9ccc",
+  "acceptance_expectations_commit": "9feb005d52eb04fa706efc7a7d5dcbbd8cbbb65b",
+  "status": "passed",
+  "canonical_files": 679,
+  "attachment_files": 676,
+  "canonical_inventory_file": "../canonical-source-hashes.json",
+  "canonical_inventory_sha256": "2a110cb9c78de2fc2b790c64dfd564d7acaf934a4e3dd9a596615c62185f6e09",
+  "transformed_sources": 110,
+  "mapped_sources": 591,
+  "reachable_integration_files": 52,
+  "integration_inventory_files": 68,
+  "integration_inventory_sha256": "b86055be4bcabb8cafe2df297958b23cb9eb5f3ae521a328ffd90f4ed58dbc7a",
+  "errors": 0,
+  "warnings": 15,
+  "strict": true,
+  "checkJs": true,
+  "seam_cases": 132,
+  "negative_controls": 10,
+  "independent_source_review": {
+    "approved_source_commit": "47c4ec7a65e2a5f298939fae118c76a7373b9ccc",
+    "includes_budget_ownership_commit": "0a18be23b5e43979f7f5b6336faa7d91a038a412",
+    "seams": 132,
+    "additional_checks": 12,
+    "exact_final_wire_limit_admitted": 16384,
+    "exact_final_wire_limit_rejected": 16385
+  },
+  "runtime_browser_database_services_started": false,
+  "installed_dependencies": false
+}

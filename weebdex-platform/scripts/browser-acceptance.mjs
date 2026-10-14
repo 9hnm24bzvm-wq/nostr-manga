@@ -4,26 +4,16 @@
 import fs from "node:fs";
 import path from "node:path";
 import http from "node:http";
-import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { createHash } from "node:crypto";
+import { loadBrowserRuntime } from "./ci/browser-runtime.mjs";
 import { runJourneys } from "./browser-journeys.mjs";
 import { runSignedJourneys, signedJourneyPhases } from "./browser-signed-journeys.mjs";
 import { runUi10Journeys, ui10JourneyPhases } from "./browser-ui10-journeys.mjs";
 import { runUi11To16Journeys, ui11To16JourneyPhases } from "./browser-ui11-16-journeys.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-// The supervised fixture deliberately strips NODE_PATH. Resolve only the
-// already-installed official runtime package, never arbitrary inherited paths.
-const playwrightRoot = "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright";
-const playwrightPins = { "package.json": "ca170ec143a88ed3043ac953eb3b2377b2b97304104f4e1e23316684ce2c35af", "index.js": "4e98f65f0a9d9bcab8cffc0c5cfdd87fd3f5b0be74fc494ff166a466b204cd44" };
-for (const [file, expected] of Object.entries(playwrightPins)) {
-  const absolute = path.join(playwrightRoot, file);
-  if (fs.realpathSync(absolute) !== absolute || createHash("sha256").update(fs.readFileSync(absolute)).digest("hex") !== expected) throw Error("Reviewed installed Playwright source changed; inspect before browser launch");
-}
-const playwrightPackage = JSON.parse(fs.readFileSync(path.join(playwrightRoot, "package.json"), "utf8"));
-if (playwrightPackage.name !== "playwright" || playwrightPackage.version !== "1.62.1" || playwrightPackage.repository?.url !== "git+https://github.com/microsoft/playwright.git") throw Error("Unrecognized installed browser package");
-const require = createRequire(import.meta.url);
-const { chromium } = require(path.join(playwrightRoot, "index.js"));
+// The supervisor strips NODE_PATH. The portable seam permits only the exact
+// reviewed local package or the isolated lock-integrity-installed CI generation.
+const { chromium, executablePath, description: browserDescription } = loadBrowserRuntime();
 const phase = process.env.BROWSER_PHASE ?? "startup";
 const fixture = process.env.BROWSER_FIXTURE_FILE ? JSON.parse(fs.readFileSync(process.env.BROWSER_FIXTURE_FILE, "utf8")) : {};
 const origin = new URL(process.env.BROWSER_ORIGIN ?? fixture.origin ?? fixture.platform_origin ?? "http://127.0.0.1:0").origin;
@@ -58,7 +48,8 @@ const runId = process.env.BROWSER_RUN_ID ?? "first";
 if (!/^[a-zA-Z0-9_-]{1,60}$/.test(runId)) throw new Error("Unsafe evidence run identifier");
 const output = path.join(root, "test-evidence/frontend/browser", `${phase}-${runId}`);
 fs.mkdirSync(output, { recursive: true });
-const report = { phase, origin, browser: "system Chromium via installed Playwright", source_artifact: "artifacts/frontend", started_utc: new Date().toISOString(), steps: [], pages: [], external_requests_blocked: [], proxy_requests_blocked: [], page_errors: [], console_errors: [], csp_violations: [], response_errors: [], screenshots: [], limitations: ["Supplied archive lacks an independently runnable original-render baseline. Source/DOM/style preservation and browser operation are distinct from pixel parity."] };
+const report = { phase, origin, browser: browserDescription, source_artifact: "artifacts/frontend", started_utc: new Date().toISOString(), steps: [], pages: [], external_requests_blocked: [], proxy_requests_blocked: [], page_errors: [], console_errors: [], csp_violations: [], response_errors: [], screenshots: [], limitations: ["Supplied archive lacks an independently runnable original-render baseline. Source/DOM/style preservation and browser operation are distinct from pixel parity."] };
+if (phase === "startup") { report.startup_network = []; report.startup_observations_truncated = false; }
 const safeUrl = value => { try { const url = new URL(value); return url.origin + url.pathname + (url.pathname.startsWith("/api/") && !/auth|client/.test(url.pathname) ? url.search : ""); } catch { return "invalid URL"; } };
 const redactions = new Set();
 const safeError = error => {
@@ -87,7 +78,7 @@ proxy.on("connection", socket => { sockets.add(socket); socket.on("close", () =>
 await new Promise(resolve => proxy.listen(0, "127.0.0.1", resolve));
 const proxyAddress = proxy.address();
 try {
-	browser = await chromium.launch({ executablePath: "/usr/bin/chromium", headless: true,
+	browser = await chromium.launch({ executablePath, headless: true,
 		proxy: { server: `http://127.0.0.1:${proxyAddress.port}`, bypass: "127.0.0.1,localhost" },
 		args: ["--disable-background-networking", "--disable-component-update", "--disable-sync", "--no-first-run", "--disable-default-apps", "--disable-features=MediaRouter"] });
 	const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1, serviceWorkers: phase === "pwa" ? "allow" : "block" });
@@ -104,9 +95,14 @@ try {
 	await context.addInitScript(() => { window.__acceptanceCsp = []; document.addEventListener("securitypolicyviolation", event => { window.__acceptanceCsp.push({ directive: event.effectiveDirective, blocked_uri: event.blockedURI?.split("?")[0], disposition: event.disposition }); }); });
 	context.on("page", page => {
 		page.setDefaultTimeout(7000); page.setDefaultNavigationTimeout(15000);
-		page.on("pageerror", error => report.page_errors.push({ url: safeUrl(page.url()), error: safeError(error) }));
+		page.on("pageerror", error => report.page_errors.push({ url: safeUrl(page.url()), error: safeError(error), error_class: error.name }));
 		page.on("console", message => { if (message.type() === "error") report.console_errors.push({ url: safeUrl(page.url()), error: safeError(message.text()) }); });
 		page.on("response", response => { if (response.status() >= 400) report.response_errors.push({ status: response.status(), method: response.request().method(), url: safeUrl(response.url()) }); });
+		if (phase === "startup") {
+			const observe = value => { if (report.startup_network.length < 256) report.startup_network.push(value); else report.startup_observations_truncated = true; };
+			page.on("response", response => observe({ url: safeUrl(response.url()), resource: response.request().resourceType(), status: response.status(), content_type: response.headers()["content-type"] ?? "" }));
+			page.on("requestfailed", request => observe({ url: safeUrl(request.url()), resource: request.resourceType(), status: 0, failure: request.failure()?.errorText ?? "" }));
+		}
 	});
 	const page = await context.newPage();
 	async function open(route) { const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" }); await page.waitForTimeout(1200); insist(response?.status() === 200, `Navigation returned ${response?.status()}`); return response; }

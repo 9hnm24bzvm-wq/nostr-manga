@@ -4,6 +4,7 @@ import { request, transaction } from './protocol/indexeddb.js';
 import { stores, currentDeviceSnapshot } from './library';
 import { capabilities, assertAllowedRelay, selectedSigner, type Relay, type SourceMapping } from './publication';
 import { origin, proveService, bytesResponse, signExact, signedRequest, verifyEvent, now } from './protocol/nostr.js';
+import { isPublicActionReceipt } from './protocol-receipt';
 export type SignedEvent = { id: string; pubkey: string; kind: number; created_at: number; tags: string[][]; content: string; sig: string };
 export type PublicReview = { relay: Relay; owner: string; generation: number; kind: number; content: string; tags: string[][]; purpose: string; source?: SourceMapping; parent?: SignedEvent };
 export async function sourceResource(kind: 'manga' | 'chapter', id: string): Promise<SourceMapping> {
@@ -193,12 +194,13 @@ export async function deliverPublicAction(id: string, assertContext: () => void 
     await active(); await updatePublicAction(id, { state: 'sending', message: 'Delivering this exact saved signed action' });
     try {
       const receipt = await signedRequest(record.relay, identity.signer, identity.owner, record.path, 'POST', record.event, 65536, active);
-      if (receipt.data.id !== id || ![200, 202, 409].includes(receipt.status)) {
+      const accepted = isPublicActionReceipt(receipt.data) ? receipt.data : undefined;
+      if (!accepted || accepted.id !== id || ![200, 202, 409].includes(receipt.status)) {
         if ([400, 401, 403, 404, 422].includes(receipt.status)) { await updatePublicAction(id, { state: 'refused', message: `Original service refused this exact action: HTTP ${receipt.status}`, receipt }); throw Error(`Original service refused this action: HTTP ${receipt.status}`); }
         throw Error(`A reliable matching event receipt was not received: HTTP ${receipt.status}`);
       }
-      if (receipt.status === 409 && receipt.data.superseded !== true) throw Error('Unexpected publication conflict');
-      await updatePublicAction(id, { state: receipt.status === 409 ? 'superseded' : 'accepted', message: receipt.status === 409 ? 'Superseded by a newer signed public event' : receipt.data.projected ? 'Accepted and projected' : 'Accepted; projection/withdrawal may still be pending', receipt });
+      if (receipt.status === 409 && accepted.superseded !== true) throw Error('Unexpected publication conflict');
+      await updatePublicAction(id, { state: receipt.status === 409 ? 'superseded' : 'accepted', message: receipt.status === 409 ? 'Superseded by a newer signed public event' : accepted.projected === true ? 'Accepted and projected' : 'Accepted; projection/withdrawal may still be pending', receipt });
       return { event: record.event, receipt };
     } catch (error) {
       record = (await publicActionRecords()).find(row => row.event.id === id)!;

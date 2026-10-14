@@ -1,0 +1,19 @@
+{
+  "application_source_commit": "47c4ec7a65e2a5f298939fae118c76a7373b9ccc",
+  "command": [
+    "node",
+    "tests/ci/test_composed_semantic_projection.mjs",
+    ".build/frontend-semantic-contracts/projection-final-47c4ec7"
+  ],
+  "cwd": "<project>",
+  "deadline_seconds": 60.0,
+  "elapsed_seconds": 0.416,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 7,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

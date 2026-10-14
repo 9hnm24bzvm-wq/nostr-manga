@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "scope": "Three pre-existing reconstructed announcement routes; not part of the original 676 attachment files",
+  "files": [
+    {"path": "src/routes/(app)/announcements/+page.svelte", "bytes": 2126, "source_sha256": "7ac91824c310f09f7516075c95e414e9300a3810bfe7e0ae31c1777d080e5c36"},
+    {"path": "src/routes/(app)/announcements/[id]/+page.svelte", "bytes": 1664, "source_sha256": "989cbda910a76e46a5306c5fdc4631c4d9955124b126c54d3ad61d16f3244a2a"},
+    {"path": "src/routes/(app)/announcements/manage/+page.svelte", "bytes": 7873, "source_sha256": "0b8e1fb9939652dcd1ae964bcc85b0d215cceff577e9357906665fd0790b006e"}
+  ]
+}

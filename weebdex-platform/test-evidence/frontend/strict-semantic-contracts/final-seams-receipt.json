@@ -1,0 +1,19 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "tests/ci/test_frontend_semantic_contracts.mjs"
+  ],
+  "cwd": "<project>",
+  "deadline_seconds": 60.0,
+  "elapsed_seconds": 0.266,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 80,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false,
+  "application_source_commit": "0a18be23b5e43979f7f5b6336faa7d91a038a412"
+}

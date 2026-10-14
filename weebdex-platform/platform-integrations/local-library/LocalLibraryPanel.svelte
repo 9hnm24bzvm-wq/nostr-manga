@@ -6,6 +6,8 @@
   import { Button } from '$lib/components/ui/button';
   import { localLibraryState, libraryIdentity, openLibrary, verifyCatalogueScope, useMode, message, currentDeviceSnapshot, previewImport, previewAccountImport, applyImport, exportBackup, downloadBlob, createList, saveListMember, saveSavedSeries, removeLocalRecord, captureLibraryContext, assertLibraryContext, type ImportReview } from './library';
   import { sameScope, statuses } from './device-store';
+  import { recordKey } from './protocol/codec.js';
+  import type { Counts, LibraryRecord } from './protocol/types.d.ts';
   import { connectSigner, disconnectSigner, signerIdentity, capabilities, relayPreferences, rememberRelay, selectRelays, forgetRelay, admitAccount, previewPublication, publishReviewed, publicationJobs, retryPublication, cancelPublication, removePublication, previewServiceAdoption, adoptServiceIdentity, type ServiceAdoptionReview, previewRecovery, applyRecovery, exportCanonicalBackup, canonicalRecords, removeCanonicalRecord, previewCanonicalImport, applyCanonicalImport, type CanonicalImportReview, type Relay, type PublicationReview, type RecoveryReview, type Capabilities } from './publication';
   let notice = $state('Device saves stay in IndexedDB. Publication is off.'), error = $state(''), pending = $state('');
   let relays = $state<Relay[]>([]), relayRevision = $state(0), jobs = $state<any[]>([]);
@@ -13,7 +15,7 @@
   let publicConsent = $state(false), publication = $state<PublicationReview>(), imported = $state<ImportReview>(), recovery = $state<RecoveryReview>();
   let listName = $state(''), memberList = $state(''), memberSeries = $state(''), memberPosition = $state(0), scopeText = $state('');
   let adoption = $state<ServiceAdoptionReview>(), adoptionPage = $state(0);
-  let scopeMatches = $state(true), canonicalFamily = $state('series'), canonicalRows = $state<any[]>([]), canonicalCounts = $state<Record<string, number>>({}), canonicalAfter = $state<string | null>(null), canonicalImport = $state<CanonicalImportReview>();
+  let scopeMatches = $state(true), canonicalFamily = $state('series'), canonicalRows = $state<LibraryRecord[]>([]), canonicalCounts = $state<Partial<Counts>>({}), canonicalAfter = $state<string | null>(null), canonicalImport = $state<CanonicalImportReview>();
   let canonicalGeneration = 0, canonicalLoadedFamily = '', canonicalDisposed = false;
   function invalidateCanonical() { canonicalGeneration++; canonicalLoadedFamily = ''; canonicalRows = []; canonicalAfter = null; }
   async function canonicalFamilyChanged() { invalidateCanonical(); await run('canonical-read', () => loadCanonical()); }
@@ -25,10 +27,10 @@
     const result = await canonicalRecords(family, after);
     if (canonicalDisposed || generation !== canonicalGeneration || family !== canonicalFamily) return;
     canonicalLoadedFamily = family; canonicalRows = [...previous, ...result.records]; canonicalCounts = result.counts;
-    const last = result.records.at(-1); canonicalAfter = last ? (family === 'members' ? last.list + last.series : last.id) : after;
+    const last = result.records.at(-1); canonicalAfter = last ? recordKey(family, last) : after;
   }
-  async function removeCanonicalRow(row: any) {
-    const family = canonicalLoadedFamily, key = family === 'members' ? row.list + row.series : row.id;
+  async function removeCanonicalRow(row: LibraryRecord) {
+    const family = canonicalLoadedFamily, key = recordKey(family, row);
     if (!family || family !== canonicalFamily || !canonicalRows.includes(row)) throw Error('Canonical selection changed; refresh and review the current record');
     if (!confirm('Remove this local canonical record? Already published snapshots remain public.')) return;
     await run('canonical-remove', async () => {

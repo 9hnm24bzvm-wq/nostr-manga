@@ -1,0 +1,13 @@
+{
+  "application_source_commit": "0a18be23b5e43979f7f5b6336faa7d91a038a412",
+  "status": "passed",
+  "canonical_files": 679,
+  "composed_overlay_hashes": 110,
+  "valid_source_maps": 591,
+  "unresolved_graph_edges": 0,
+  "protected_node_write_attempts": 0,
+  "semantic_check_status": "passed",
+  "errors": 0,
+  "warnings": 15,
+  "qualification": "Semantic failures are type diagnostics, not a count of proven runtime bugs. The cache audit is in-process verification, not OS syscall enforcement."
+}

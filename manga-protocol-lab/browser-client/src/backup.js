@@ -1,17 +1,25 @@
-import { families, normalize, recordKey } from "./codec.js";
+/** @typedef {import("./store.js").LocalLibrary} LocalLibrary
+ * @typedef {import("./types.js").RecordRow} RecordRow
+ * @typedef {import("./types.js").Family} Family
+ * @typedef {Pick<Blob, "size" | "slice" | "text">} BackupFile
+ */
+import { families, isFamily, normalize, recordKey } from "./codec.js";
 import { request, transaction, cursor } from "./indexeddb.js";
 import { MAX_RECORDS } from "./limits.js";
 const PAGE = 500,
   PART = 65536,
   MAX_FILE = 4 * 1024 ** 3;
 const header = { format: "manga-local-library", version: 2 };
+/** @param {IDBDatabase} db */
 const importLock = (db) => "manga-backup-import:" + db.name;
+/** @param {IDBDatabase} db */
 const clearStage = (db) =>
   transaction(db, "backupStage", "readwrite", (tx) => {
     tx.objectStore("backupStage").clear();
   });
 // Internal lifecycle seam used by LocalLibrary.open. Only the import lock proves
 // that no live tab owns these temporary records; age and tab IDs do not.
+/** @param {IDBDatabase} db */
 export async function reclaimBackupStage(db) {
   if (!globalThis.navigator?.locks) return;
   try {
@@ -26,22 +34,32 @@ export async function reclaimBackupStage(db) {
     // Reclamation is best-effort; storage/lock failure must not hide saved data.
   }
 }
+/** @param {unknown} value
+ * @returns {value is Record<string, unknown>}
+ */
+const object = (value) => value !== null && typeof value === "object";
 const utf8 = new TextEncoder(),
   decoder = new TextDecoder("utf-8", { fatal: true });
+/** @param {unknown} value */
 function line(value) {
   const result = JSON.stringify(value) + "\n";
   if (utf8.encode(result).length > PART) throw Error("Backup line limit");
   return result;
 }
+/** @param {LocalLibrary} store */
 export async function* exportBackup(store) {
   yield* exportRecords(store, false);
 }
 // Rescue streams intentionally are not normal importable backups: old libraries
 // may exceed the supported total. Consumers must stream to a sink, then review
 // and split records into supported libraries using write/replace/import.
+/** @param {LocalLibrary} store */
 export async function* exportRescue(store) {
   yield* exportRecords(store, true);
 }
+/** @param {LocalLibrary} store
+ * @param {boolean} rescue
+ */
 async function* exportRecords(store, rescue) {
   const { revision, overBudget } = await store.counts();
   if (overBudget && !rescue)
@@ -66,13 +84,14 @@ async function* exportRecords(store, rescue) {
         yield line([family, record]);
       }
       if (rows.length < PAGE) break;
-      after = recordKey(family, rows.at(-1));
+      after = recordKey(family, rows[rows.length - 1]);
     }
   }
   if (((await store.getMeta("revision")) ?? 0) !== revision)
     throw Error("Local library changed during export; try again");
   yield line({ end: count });
 }
+/** @param {LocalLibrary} store */
 export async function backupBlob(store) {
   const parts = [];
   let buffer = new Uint8Array(PART),
@@ -97,6 +116,9 @@ export async function backupBlob(store) {
   if (used) parts.push(new Blob([buffer.subarray(0, used)]));
   return new Blob(parts, { type: "application/x-ndjson" });
 }
+/** @param {BackupFile} file
+ * @returns {AsyncGenerator<unknown>}
+ */
 async function* lines(file) {
   let buffer = new Uint8Array(PART),
     used = 0;
@@ -124,19 +146,24 @@ async function* lines(file) {
   }
   if (used) throw Error("Truncated backup");
 }
+/** @param {LocalLibrary} store
+ * @param {BackupFile} file
+ * @param {number} expectedRevision
+ */
 export async function importBackup(store, file, expectedRevision) {
   if (!Number.isSafeInteger(file.size) || file.size < 0 || file.size > MAX_FILE)
     throw Error("Backup file limit");
   const beginning = await file.slice(0, 4096).text();
+  /** @type {unknown} */
   let first;
   try {
     first = JSON.parse(beginning.split("\n")[0]);
   } catch {}
-  if (first?.format === "manga-local-library-rescue")
+  if (object(first) && first.format === "manga-local-library-rescue")
     throw Error(
       "Unsupported backup: split the rescue archive into supported libraries before import",
     );
-  if (first?.format !== header.format || first.version !== 2) {
+  if (!object(first) || first.format !== header.format || first.version !== 2) {
     if (file.size > 256 * 1024 * 1024)
       throw Error(
         "Legacy JSON backup exceeds 256 MiB; use a version-two backup",
@@ -151,11 +178,11 @@ export async function importBackup(store, file, expectedRevision) {
     let count = 0,
       started = false,
       ended = false,
-      committed = false,
-      batch = [];
-    const statistics = Object.fromEntries(
-      families.map((family) => [family, 0]),
-    );
+      committed = false;
+    /** @type {RecordRow[]} */
+    let batch = [];
+    /** @type {Record<Family, number>} */
+    const statistics = { chapters: 0, series: 0, lists: 0, members: 0 };
     const stage = async () => {
       await transaction(store.db, "backupStage", "readwrite", (tx) => {
         for (const row of batch) tx.objectStore("backupStage").add(row);
@@ -165,23 +192,27 @@ export async function importBackup(store, file, expectedRevision) {
     try {
       for await (const value of lines(file)) {
         if (!started) {
-          if (value?.format !== header.format || value.version !== 2)
+          if (
+            !object(value) ||
+            value.format !== header.format ||
+            value.version !== 2
+          )
             throw Error("Unsupported backup");
           started = true;
           continue;
         }
         if (ended) throw Error("Data after backup footer");
         if (!Array.isArray(value)) {
-          if (value?.end !== count || Object.keys(value).join() !== "end")
+          if (
+            !object(value) ||
+            value.end !== count ||
+            Object.keys(value).join() !== "end"
+          )
             throw Error("Invalid backup footer");
           ended = true;
           continue;
         }
-        if (
-          value.length !== 2 ||
-          !families.includes(value[0]) ||
-          ++count > MAX_RECORDS
-        )
+        if (value.length !== 2 || !isFamily(value[0]) || ++count > MAX_RECORDS)
           throw Error("Invalid backup record or record limit");
         const family = value[0],
           record = normalize(family, value[1]);

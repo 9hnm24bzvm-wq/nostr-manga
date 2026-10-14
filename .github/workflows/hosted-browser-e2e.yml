@@ -1,0 +1,72 @@
+name: Hosted browser E2E
+
+# Only publication to this explicitly reviewed CI branch starts a run.
+on:
+  push:
+    branches: [ci/hosted-browser-e2e]
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: Bounded batch, or all 38 phases with fresh fixtures
+        required: true
+        default: all
+        type: choice
+        options: [all, startup, ordinary-a, ordinary-b, ui10, signed-a, signed-b, signed-c, signed-d, ui-feed, ui-reader, ui-home]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hosted-browser-e2e-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  browser:
+    # Standard public runner only. Never fall back to private/paid/self-hosted.
+    if: github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && github.ref == 'refs/heads/ci/hosted-browser-e2e'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 345
+    env:
+      CARGO_BUILD_JOBS: 2
+      NODE_OPTIONS: --max-old-space-size=2048
+      CI: 'true'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.19.0
+      - name: Prepare pinned dependencies and frozen-source builds
+        timeout-minutes: 90
+        run: |
+          mkdir -p weebdex-platform/.build/hosted-browser
+          if ! bash weebdex-platform/scripts/ci/prepare-hosted-browser.sh >weebdex-platform/.build/hosted-browser/preparation.log 2>&1; then
+            echo 'Pinned hosted-browser preparation failed; no browser phases were started.'
+            exit 1
+          fi
+      - name: Run genuine browser batches under the owned fixture supervisor
+        timeout-minutes: 245
+        env:
+          SELECTED_BATCH: ${{ inputs.batch || 'all' }}
+        run: |
+          weebdex-platform/.build/hosted-python/bin/python \
+            weebdex-platform/scripts/ci/run-hosted-browser.py \
+            --batch "$SELECTED_BATCH" --budget-seconds 14400
+      - name: Validate the closed public evidence schemas
+        id: evidence-validation
+        if: always()
+        run: python3 weebdex-platform/scripts/ci/validate-ci-evidence.py
+      - name: Upload allowlisted sanitized evidence only
+        if: always() && steps.evidence-validation.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hosted-browser-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            weebdex-platform/ci-sanitized-evidence/preparation.json
+            weebdex-platform/ci-sanitized-evidence/summary.json
+            weebdex-platform/ci-sanitized-evidence/phases.json
+          if-no-files-found: warn
+          retention-days: 1
+          include-hidden-files: false
