@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "source-tests-passed-fresh-browser-pending",
+  "source_commit": "7261ff249c24d9eb43a416e074452f1e9544cefd",
+  "source_tree": "6a1d248a5268bbb24fd52bc5092d106211940acb",
+  "original_build_and_test_receipts": "test-evidence/frontend/native-settings-tabs",
+  "original_build_source_commit": "1a40416f7e0d3f54c1395120ff03eb1f8188b072",
+  "original_complete_freeze": "4fe4ffa153a26a0e40b6024bb781ed7eb6012af3",
+  "correction": "Strictly select the actual native reader Sidebar.Header close control; mobile Sheet has a separate legitimate built-in X. Original dismiss/hidden assertions remain.",
+  "source_files": {
+    "scripts/browser-journeys.mjs": "c56035edb88fcb2bfa8a3c205eb7b9464318f9727e0416d49f4942bb4223e48b",
+    "tests/ci/test_browser_library_relocation.mjs": "0e267aa811b4ecb5b3a9d890c7bc01bddb1384f3dff54ce8af08c9e747db8bdf"
+  },
+  "focused_tests": {
+    "passed": 72,
+    "failed": 0,
+    "skipped": 0,
+    "log_sha256": "c1318f70dc3008b309316c7b61085fd241c824fcdc8d353a0da19771420c80bb"
+  },
+  "changed_frozen_runtime_inputs": [
+    "weebdex-platform/scripts/browser-journeys.mjs"
+  ],
+  "integration_build_inputs_unchanged": 76,
+  "artifact_files_unchanged": 425,
+  "artifact_manifest_sha256": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+  "index_sha256": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+  "current_actor_bindings_unchanged": 16,
+  "frontend_rebuilt": false,
+  "browser_boundary": "Previous4fe actual run passed startup19 and desktop native-tab visual checks, then stopped on ambiguous mobile harness close. Remaining mobile/subsequent checks were not accepted. Fresh actual browser rerun required; original partial evidence retained separately by runtime owner."
+}
