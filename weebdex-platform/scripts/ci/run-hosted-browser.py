@@ -260,6 +260,13 @@ def main():
     journal = {'schema': 1, 'phases': [], 'batches': []}
     deadline = time.monotonic() + args.budget_seconds
     try:
+        spec = importlib.util.spec_from_file_location('browser_native_feed_contract', ROOT / 'scripts/ci/native-feed-diagnostics.py')
+        native_feed = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(native_feed)
+        prepared = read(PUBLIC / 'preparation.json')
+        native_feed.validate(prepared.get('native_feed_regression'))
+        if prepared.get('status') != 'prepared' or prepared['native_feed_regression']['status'] != 'passed':
+            raise RuntimeError('Genuine native-feed regression must pass before any browser fixture')
         plan = read(STAGE / 'plan.json')
         expected_paths = {'normal_binary': str(ROOT / '.build/hosted-native/debug/weebdex-platform'), 'provisioner': str(ROOT / '.build/hosted-native/debug/examples/browser_fixture_provisioner'), 'frontend_manifest': str(ROOT / 'test-evidence/frontend/artifact-manifest.json')}
         if plan.get('schema') != 1 or any(plan.get(key) != value for key, value in expected_paths.items()):

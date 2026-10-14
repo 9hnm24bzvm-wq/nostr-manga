@@ -208,3 +208,23 @@ is introduced. The upload gate validates every nested diagnostic field, count,
 fixed path and category, binds failed check indices to the phase projection and
 page-error counts to the original count, rejects duplicate keys, and emits fresh
 canonical JSON only after the entire evidence set passes.
+# Native compact-feed prerequisite
+
+After the fresh pinned build, a separate hosted-only stage runs
+`scripts/run-feed-projection-tests.sh` through the retained owned-command
+supervisor, with a 600-second command bound and a 12-minute workflow step bound.
+The native test retains its own 180-second bound and unchanged PostgreSQL
+five-second statement/one-second lock budgets. It uses a fresh disposable
+loopback PostgreSQL database and must establish genuine HTTP200, canonical
+projection parity, pagination and visibility assertions before browser fixtures
+may start. A failed, absent or malformed native result blocks browser execution.
+
+Only the closed `native_feed_regression` object is added to `preparation.json`;
+the artifact allowlist remains preparation, phases and summary JSON. Native
+stdout, raw owned-command receipts, database logs, paths and DSNs remain private.
+The result distinguishes not-run, failed and passed, and a pass requires the
+real command's zero exit, terminal ownership receipt, no cleanup signals or
+surviving members, successful PostgreSQL cleanup and exactly one validated
+finite measurement record emitted after every native assertion. Timing values
+are observations, not a local or future performance claim. `backend/tests` is
+included in the frozen source snapshot because this stage now executes it.

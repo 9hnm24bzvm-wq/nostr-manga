@@ -19,6 +19,9 @@ spec.loader.exec_module(journey_diagnostics)
 spec = importlib.util.spec_from_file_location('hosted_runner_contract', ROOT / 'scripts/ci/runner-diagnostics.py')
 runner_diagnostics = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner_diagnostics)
+spec = importlib.util.spec_from_file_location('hosted_native_feed_contract', ROOT / 'scripts/ci/native-feed-diagnostics.py')
+native_feed = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(native_feed)
 ERRORS = {'RuntimeError', 'TimeoutError', 'InterruptedError', 'FileNotFoundError', 'PermissionError', 'IsADirectoryError', 'NotADirectoryError', 'OSError', 'JSONDecodeError', 'KeyError', 'TypeError', 'ValueError', 'ProcessLookupError', 'ChildProcessError'}
 SCOPE = 'actual browser controls and persisted-result assertions; pixel parity remains unverified'
 
@@ -65,7 +68,7 @@ def error_fields(value):
 def preparation(value):
     required = {'schema', 'status', 'browser_phases_started', 'stage', 'source_files_checked', 'frontend_preserved', 'artifacts_uploaded'}
     hashes = {'source_snapshot_sha256', 'frontend_manifest_sha256', 'frontend_index_sha256', 'normal_binary_sha256', 'provisioner_sha256', 'chromium_binary_sha256'}
-    optional = hashes | {'error_class', 'playwright', 'chromium_revision', 'fresh_build', 'historical_binaries_reused', 'ipc_success_established'}
+    optional = hashes | {'error_class', 'playwright', 'chromium_revision', 'fresh_build', 'historical_binaries_reused', 'ipc_success_established', 'native_feed_regression'}
     fields(value, required, optional)
     insist(value['schema'] == 1 and type(value['schema']) is int)
     insist(value['status'] in ['prepared', 'preparation_failed'])
@@ -79,6 +82,7 @@ def preparation(value):
         digest(value[key])
     if value['status'] == 'prepared':
         insist(hashes <= set(value) and value['source_files_checked'] == 676 and value['frontend_preserved'] is True and value.get('fresh_build') is True and value.get('historical_binaries_reused') is False and value.get('playwright') == '1.62.1' and value.get('chromium_revision') == '1234' and value['stage'] == 'complete')
+        native_feed.validate(value.get('native_feed_regression'))
     else:
         # Failed preparation has no unbound hash-shaped or success-only text.
         # Such fields could otherwise carry private 64-hex signer material.
@@ -324,6 +328,8 @@ def validate(directory, canonical=None):
         import hashlib
         before = source.source_snapshot()
         prep = values['preparation.json']
+        if values.get('phases.json', {}).get('phases'):
+            insist(prep['native_feed_regression']['status'] == 'passed')
         insist(prep['source_snapshot_sha256'] == hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest())
         expected = {'normal_binary_sha256': ROOT / '.build/hosted-native/debug/weebdex-platform', 'provisioner_sha256': ROOT / '.build/hosted-native/debug/examples/browser_fixture_provisioner', 'frontend_manifest_sha256': ROOT / 'test-evidence/frontend/artifact-manifest.json', 'frontend_index_sha256': ROOT / 'artifacts/frontend/index.html'}
         for key, path in expected.items():

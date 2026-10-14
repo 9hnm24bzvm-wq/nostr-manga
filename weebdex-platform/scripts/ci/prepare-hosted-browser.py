@@ -23,7 +23,7 @@ def write(path, value):
 
 def source_snapshot():
     # Build outputs, historical evidence and runtime state are not frozen inputs.
-    directories = [ROOT / name for name in ['frontend', 'platform-integrations', 'scripts', 'backend/src', 'backend/examples', 'backend/migrations']]
+    directories = [ROOT / name for name in ['frontend', 'platform-integrations', 'scripts', 'backend/src', 'backend/examples', 'backend/migrations', 'backend/tests']]
     directories += [REPO / 'manga-protocol-lab/server/src', REPO / 'manga-protocol-lab/server/migrations', ROOT / 'tests/runtime']
     paths = [path for directory in directories for path in directory.rglob('*') if path.is_file()]
     paths += [ROOT / 'backend/Cargo.toml', ROOT / 'backend/Cargo.lock', REPO / 'manga-protocol-lab/server/Cargo.toml', REPO / 'manga-protocol-lab/server/Cargo.lock', REPO / 'manga-protocol-lab/browser-client/package-lock.json', REPO / '.ci/browser/package.json', REPO / '.ci/browser/package-lock.json']
@@ -107,7 +107,11 @@ def main():
         runtime = json.loads((STAGE / 'runtime.json').read_text())
         plan = {'schema': 1, 'normal_binary': str(normal), 'normal_sha256': sha(normal), 'provisioner': str(provisioner), 'provisioner_sha256': sha(provisioner), 'frontend_manifest': str(manifest), 'frontend_manifest_sha256': sha(manifest), 'frontend_index_sha256': sha(ROOT / 'artifacts/frontend/index.html'), 'node': subprocess.check_output(['node', '-p', 'process.execPath'], text=True).strip(), 'runtime_sha256': sha(STAGE / 'runtime.json')}
         write(STAGE / 'plan.json', plan)
-        public.update(status='prepared', stage='complete', source_snapshot_sha256=hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest(), frontend_manifest_sha256=plan['frontend_manifest_sha256'], frontend_index_sha256=plan['frontend_index_sha256'], normal_binary_sha256=plan['normal_sha256'], provisioner_sha256=plan['provisioner_sha256'], playwright='1.62.1', chromium_revision='1234', chromium_binary_sha256=runtime['executable_sha256'], fresh_build=True, historical_binaries_reused=False, browser_phases_started=False, ipc_success_established=False)
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('prepared_native_feed_contract', ROOT / 'scripts/ci/native-feed-diagnostics.py')
+        native_feed = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(native_feed)
+        public.update(status='prepared', stage='complete', source_snapshot_sha256=hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest(), frontend_manifest_sha256=plan['frontend_manifest_sha256'], frontend_index_sha256=plan['frontend_index_sha256'], normal_binary_sha256=plan['normal_sha256'], provisioner_sha256=plan['provisioner_sha256'], playwright='1.62.1', chromium_revision='1234', chromium_binary_sha256=runtime['executable_sha256'], fresh_build=True, historical_binaries_reused=False, browser_phases_started=False, ipc_success_established=False, native_feed_regression=native_feed.not_run())
         write(PUBLIC / 'preparation.json', public)
         return 0
     except Exception as error:

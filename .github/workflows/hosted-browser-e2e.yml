@@ -46,6 +46,9 @@ jobs:
             echo 'Pinned hosted-browser preparation failed; no browser phases were started.'
             exit 1
           fi
+      - name: Prove native compact-feed PostgreSQL parity before browser execution
+        timeout-minutes: 12
+        run: python3 weebdex-platform/scripts/ci/run-hosted-feed-regression.py
       - name: Run genuine browser batches under the owned fixture supervisor
         timeout-minutes: 245
         env:
