@@ -181,22 +181,33 @@ def journey_checks(value, phase):
 
 
 def runner_checks(value, phase):
-    fields(value, {'schema', 'record_valid', 'stage', 'fatal_kind', 'fatal_stage', 'exit_observed', 'exit_code', 'owned_exit_code', 'report_finalized', 'report_passed', 'private_values_omitted', 'raw_messages_exported'})
+    fields(value, {'schema', 'record_valid', 'stage', 'fatal_kind', 'fatal_code', 'fatal_stage', 'exit_observed', 'exit_code', 'owned_exit_code', 'report_finalized', 'report_passed', 'proxy_diagnostics', 'private_values_omitted', 'raw_messages_exported'})
     insist(type(value['schema']) is int and value['schema'] == 1)
     for key in ['record_valid', 'exit_observed', 'report_finalized', 'report_passed']:
         boolean(value[key])
     insist(value['private_values_omitted'] is True and value['raw_messages_exported'] is False)
     insist(type(value['stage']) is str and value['stage'] in runner_diagnostics.STAGES | {'unavailable'})
     insist(type(value['fatal_kind']) is str and value['fatal_kind'] in runner_diagnostics.FATAL_KINDS | {'unavailable'})
+    insist(type(value['fatal_code']) is str and value['fatal_code'] in runner_diagnostics.FATAL_CODES | {'unavailable'})
     insist(type(value['fatal_stage']) is str and value['fatal_stage'] in runner_diagnostics.STAGES | {'none', 'unavailable'})
     for key, low in [('exit_code', 0), ('owned_exit_code', -64)]:
         if value[key] is not None:
             integer(value[key], low, 255)
     insist(phase['runner_exit_zero'] is (value['owned_exit_code'] == 0))
     if value['record_valid']:
-        insist(value['stage'] != 'unavailable' and value['fatal_kind'] != 'unavailable' and value['fatal_stage'] != 'unavailable')
+        insist(all(value[key] != 'unavailable' for key in ['stage', 'fatal_kind', 'fatal_code', 'fatal_stage']))
         insist(value['exit_observed'] or value['exit_code'] is None)
         insist((value['fatal_kind'] == 'none') is (value['fatal_stage'] == 'none'))
+        insist((value['fatal_kind'] == 'none') is (value['fatal_code'] == 'none'))
+    proxy = value['proxy_diagnostics']
+    fields(proxy, {'schema', 'record_valid', 'connect_denials', 'expected_connect_resets', 'remaining_socket_count', 'observations_truncated', 'shutdown_started', 'closed'})
+    insist(type(proxy['schema']) is int and proxy['schema'] == 1)
+    for key in ['record_valid', 'observations_truncated', 'shutdown_started', 'closed']:
+        boolean(proxy[key])
+    for key in ['connect_denials', 'expected_connect_resets', 'remaining_socket_count']:
+        integer(proxy[key], 0, 65535)
+    if proxy['record_valid'] and proxy['closed']:
+        insist(proxy['shutdown_started'] and proxy['remaining_socket_count'] == 0)
     if phase['status'] == 'passed':
         insist(runner_diagnostics.passed(value))
 

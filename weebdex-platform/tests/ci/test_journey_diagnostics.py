@@ -34,7 +34,7 @@ process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui}))
     def phase(self, phase, statuses=None):
         statuses = statuses or ['passed'] * len(contract.CHECKS[phase])
         key = 'account_recovery_checks' if phase == 'account-recovery' else 'journey_checks'
-        acceptance = {'phase': phase, 'passed': True, 'completed_utc': 'synthetic-finalized', 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_stage': 'none', 'exit_observed': True, 'exit_code': 0}, 'steps': [{'status': 'passed'}], 'page_errors': [],
+        acceptance = {'phase': phase, 'passed': True, 'completed_utc': 'synthetic-finalized', 'proxy_lifecycle': {'connect_denials': 0, 'expected_connect_resets': 0, 'remaining_socket_count': 0, 'observations_truncated': False, 'shutdown_started': True, 'closed': True}, 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'exit_observed': True, 'exit_code': 0}, 'steps': [{'status': 'passed'}], 'page_errors': [],
                       key: [{'check_id': check_id, 'status': status} for check_id, status in zip(contract.CHECKS[phase], statuses)]}
         owned = {'fixture_only': True, 'phase': phase, 'verified_stopped': True, 'forced': False, 'returncode': 0}
         return acceptance, owned, key

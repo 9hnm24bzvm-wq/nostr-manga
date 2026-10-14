@@ -3,12 +3,12 @@
 // Never record credentials, cookies, authentication query strings or request bodies.
 import fs from "node:fs";
 import path from "node:path";
-import http from "node:http";
 import { fileURLToPath } from "node:url";
 import { loadBrowserRuntime } from "./ci/browser-runtime.mjs";
 import { observeSeedTitleReadiness, waitForSeedTitleReady } from "./startup-readiness-probe.mjs";
 import { createJourneyCheck } from "./journey-checks.mjs";
 import { installRunnerLifecycle } from "./runner-lifecycle.mjs";
+import { createBrowserDenyProxy } from "./browser-deny-proxy.mjs";
 import { runJourneys } from "./browser-journeys.mjs";
 import { runSignedJourneys, signedJourneyPhases } from "./browser-signed-journeys.mjs";
 import { runUi10Journeys, ui10JourneyPhases } from "./browser-ui10-journeys.mjs";
@@ -75,13 +75,7 @@ async function step(name, action) {
 	process.stdout.write(JSON.stringify({ phase, step: name, status: entry.status }) + "\n");
 }
 let browser;
-const sockets = new Set();
-const proxy = http.createServer((request, response) => {
-	report.proxy_requests_blocked.push({ method: request.method, url: safeUrl(request.url ?? "") });
-	response.writeHead(403, { "Content-Type": "text/plain" }); response.end("External browser traffic blocked by acceptance fixture");
-});
-proxy.on("connect", (request, socket) => { report.proxy_requests_blocked.push({ method: "CONNECT", destination: String(request.url).split("?")[0] }); socket.end("HTTP/1.1 403 Forbidden\r\n\r\n"); });
-proxy.on("connection", socket => { sockets.add(socket); socket.on("close", () => sockets.delete(socket)); });
+const { proxy, close: closeDenyProxy } = createBrowserDenyProxy(report, safeUrl, save);
 await new Promise(resolve => proxy.listen(0, "127.0.0.1", resolve));
 const proxyAddress = proxy.address();
 try {
@@ -163,8 +157,7 @@ finally {
 	runnerStage("closing-browser");
 	if (browser) await browser.close();
 	runnerStage("closing-proxy");
-	for (const socket of sockets) socket.destroy();
-	await new Promise(resolve => proxy.close(resolve));
+	await closeDenyProxy();
 	runnerStage("finalizing-report");
 	report.completed_utc = new Date().toISOString(); report.passed = !report.harness_error && report.steps.length > 0 && report.steps.every(entry => entry.status === "passed"); save();
 	process.stdout.write(JSON.stringify({ phase, passed: report.passed, steps: report.steps.length, failed_steps: report.steps.filter(entry => entry.status === "failed").map(entry => entry.name), page_errors: report.page_errors.length, network_guard: "Exact validated fixture-origin HTTP/WS routing plus owned external-deny proxy", evidence: path.relative(root, output) }) + "\n");

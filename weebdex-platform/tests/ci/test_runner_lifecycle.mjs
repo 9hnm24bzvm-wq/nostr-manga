@@ -35,4 +35,12 @@ try {
     assert.throws(() => stage('private unknown stage'), /Unknown fixed runner stage/);
     assert.equal(JSON.stringify(report).includes('private'), false);
   });
+  test('fatal-code recorder copies only the fixed finite allowlist', () => {
+    for (const code of ['ECONNRESET','EPIPE','ERR_STREAM_DESTROYED','ERR_SERVER_NOT_RUNNING','private-value',null,{},undefined]) {
+      const listeners={},report={};installRunnerLifecycle(report,()=>{}, {on:(key,callback)=>listeners[key]=callback});
+      listeners.uncaughtExceptionMonitor(Object.assign(Error('private-value'),{code}),'uncaughtException');
+      assert.equal(report.runner_lifecycle.fatal_code,['ECONNRESET','EPIPE','ERR_STREAM_DESTROYED','ERR_SERVER_NOT_RUNNING'].includes(code)?code:'unknown');
+      assert.equal(JSON.stringify(report).includes('private-value'),false);
+    }
+  });
 } finally { fs.rmSync(root, { recursive: true, force: true }); }
