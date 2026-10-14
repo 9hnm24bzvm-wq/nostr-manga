@@ -8,6 +8,11 @@ CHECKS = {
         'account-settings-reached', 'old-password-rejected', 'new-password-authenticated',
         'device-library-retained-after-reset', 'recovery-link-replay-rejected',
     ],
+    'ui10-recovery-lifetimes': ['recovery-reset-' + check for check in [
+        'realm', 'hold-session', 'submit', 'held-session', 'newer-search',
+        'late-response', 'no-stale-ui', 'logout', 'old-login-form', 'old-password',
+        'old-login-settled', 'old-session-denied', 'new-password', 'link-replay',
+    ]],
     'ui11-device-progress': ['device-progress-signup-context', *[
         'device-progress-' + gate + '-page' + str(page) + '-' + check
         for gate in ['timer', 'lock'] for page in [1, 3]

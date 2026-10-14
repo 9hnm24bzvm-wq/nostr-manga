@@ -90,7 +90,7 @@
   ],
   "source_sha256": {
     "scripts/browser-ui11-16-journeys.mjs": "cb59a1c9900e9a46b75770ced2231c56ce84f50b68b5d653139954f1e82e31aa",
-    "scripts/browser-select-controls.mjs": "d40a8a8fc0f7252936a9c28ae6cb0d23167ec8740d3fc79dcc6b569b3755ef90",
+    "scripts/browser-select-controls.mjs": "63f8fe4de3a97c0224188a6e8a8e16d6b0f9c3621a29cd04912c921c06a8deb6",
     "tests/ci/test_browser_select_controls.mjs": "57d693912b6a680c912eca5aee9ecc5305fecbaa4936d760ee79664d0ef3aa07"
   },
   "browser_started": false,
@@ -98,5 +98,12 @@
   "databases_started": false,
   "network_requests_made": false,
   "public_writes_made": false,
-  "real_browser_acceptance": "Required after independent review. No browser success is inferred from these bounded seams."
+  "real_browser_acceptance": "Required after independent review. No browser success is inferred from these bounded seams.",
+  "original_worker_commit": "2aecbad6def7148772796282a319f3110150da33",
+  "original_worker_source_sha256": {
+    "scripts/browser-ui11-16-journeys.mjs": "cb59a1c9900e9a46b75770ced2231c56ce84f50b68b5d653139954f1e82e31aa",
+    "scripts/browser-select-controls.mjs": "d40a8a8fc0f7252936a9c28ae6cb0d23167ec8740d3fc79dcc6b569b3755ef90",
+    "tests/ci/test_browser_select_controls.mjs": "57d693912b6a680c912eca5aee9ecc5305fecbaa4936d760ee79664d0ef3aa07"
+  },
+  "integration": "Generic listbox helper is unchanged and shares one module with the unchanged title-specific helper API. Original title probe suite is retained separately as test_browser_title_select_controls.mjs; generic probe suite retains its original filename. Source hashes below describe the integrated files."
 }

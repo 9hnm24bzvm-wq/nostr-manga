@@ -95,7 +95,7 @@ an existing verified frozen-lock dependency staging copy, without installing:
 
 ```sh
 WEEBDEX_FRONTEND_ROOT=/path/to/verified/frontend-stage \
-  node --test weebdex-platform/tests/ci/test_browser_select_controls.mjs \
+  node --test weebdex-platform/tests/ci/test_browser_title_select_controls.mjs \
   weebdex-platform/tests/ci/test_browser_account_recovery.mjs
 ```
 

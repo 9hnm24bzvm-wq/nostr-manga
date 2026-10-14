@@ -21,7 +21,7 @@ export function seedTitleReady() {
 
 export async function waitForSeedTitleReady(page, { timeoutMs = 7000 } = {}) {
   const deadline = Date.now() + Math.max(1, Math.min(7000, Number.isFinite(timeoutMs) ? timeoutMs : 7000));
-  const timeout = () => { const error = Error('Expected seeded title did not become ready'); error.name = 'TimeoutError'; return error; };
+  const timeout = () => { const error = Error('Expected seeded title readiness timeout'); error.name = 'TimeoutError'; return error; };
   const bounded = async action => {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw timeout();

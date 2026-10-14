@@ -26,7 +26,8 @@ class JourneyDiagnosticSeams(unittest.TestCase):
     def test_inventory_matches_actual_node_exports(self):
         code = '''import {accountRecoveryCheckIds as account} from './scripts/browser-account-recovery.mjs';
 import {ui11To16DiagnosticChecks as ui} from './scripts/browser-ui11-16-journeys.mjs';
-process.stdout.write(JSON.stringify({'account-recovery':account,...ui}));'''
+import {ui10DiagnosticChecks as ui10} from './scripts/browser-ui10-journeys.mjs';
+process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui}));'''
         value = json.loads(subprocess.run(['node', '--input-type=module', '-e', code], cwd=ROOT, text=True, check=True, capture_output=True).stdout)
         self.assertEqual(value, contract.CHECKS)
 
