@@ -2,6 +2,8 @@
 import { randomBytes } from "node:crypto";
 import { deflateSync } from "node:zlib";
 import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
+import { selectTitleLibraryStatus, titleLibraryTrigger } from "./browser-select-controls.mjs";
+import { expandDetailsPanel } from "./browser-details-controls.mjs";
 export async function runJourneys(h) {
 	const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
 	const ids = fixture.ids ?? {};
@@ -79,8 +81,8 @@ export async function runJourneys(h) {
 		try { return await new Promise((resolve, reject) => { const query = db.transaction('jobs').objectStore('jobs').count(); query.onsuccess = () => resolve(query.result); query.onerror = () => reject(query.error); }); } finally { db.close(); }
 	});
 	const panel = () => page.locator('[data-local-library-panel]').first();
-	const expandPanel = async () => { const target = panel(); await target.waitFor({ state: 'visible' }); if (!(await target.getAttribute('open'))) await target.locator(':scope > summary').click(); };
-	const follow = async (status) => { await page.getByRole('combobox', { name: /Add to Library|Reading|Plan to Read|On Hold|Completed|Dropped|Re-reading/ }).first().click(); await page.getByRole('option', { name: status, exact: true }).click(); };
+	const expandPanel = () => expandDetailsPanel(panel());
+	const follow = status => selectTitleLibraryStatus(page, status);
 	const confirm = async name => { await page.getByRole('button', { name, exact: true }).first().click(); const dialog = page.getByRole('dialog'); await dialog.getByRole('button', { name, exact: true }).click(); };
 	const image = png(64, 96, marker);
 	if (["account", "account-recovery", "upload", "announcements", "community", "editorial"].includes(phase)) await step("register and verify synthetic account using real forms and local email", () => signup(["announcements", "editorial"].includes(phase) ? "staff" : phase === "community" ? "moderator" : "user"));
@@ -405,7 +407,7 @@ export async function runJourneys(h) {
 			insist((await api('/auth/check')).status !== 200, 'Anonymous journey unexpectedly has an account');
 			insist(snapshot.scope.origin === origin && snapshot.scope.catalogNamespace, 'Device library is missing instance provenance');
 			insist(await outboxCount() === 0, 'A local save automatically queued public transmission');
-			await page.reload({ waitUntil: 'domcontentloaded' }); await page.getByRole('combobox', { name: 'Reading', exact: true }).first().waitFor({ state: 'visible' });
+			await page.reload({ waitUntil: 'domcontentloaded' }); await titleLibraryTrigger(page, 'Reading').waitFor({ state: 'visible' });
 			await open('/library'); await page.locator(`a[href^="/title/${manga}"]`).first().waitFor({ state: 'visible' });
 			return { anonymous_saved: true, scoped_device_persistence: true, reload_and_library_control: true, outbox_jobs: 0 };
 		});

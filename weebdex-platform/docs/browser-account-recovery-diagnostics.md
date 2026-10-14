@@ -58,3 +58,48 @@ failure and complete assertion sequence against explicit stand-ins. The existing
 additions remain unchanged. These checks launch no services, database, browser,
 network operation, or dependency install. A targeted genuine browser rerun with
 the reviewed shared diagnostic integration is still required.
+
+## Genuine device-setup localization and selector correction
+
+The subsequent verified hosted diagnostic run `38498307038` on public source
+`d62c0e8b3db57d3ee024676e8bdec67f425abadd` / tree
+`f016ada9e111b15e3ec919e48bf5a242695e35c2` passed signup and failed the first
+`device-library-seeded` checkpoint. All 17 following recovery checks stayed
+pending, so the mail/password recovery controls were never reached. The final
+prerequisite step now failed cleanly instead of being unresolved.
+
+Inspection of the preserved title component and actual exact-lock Bits UI
+2.16.5 package establishes a concrete harness selector defect: the title's
+`SelectPrimitive.Trigger` renders a native `button` with `aria-haspopup=listbox`;
+it does not have `role=combobox`. Bits UI's separate input does have that role.
+The ordinary follow helper and post-reload Reading assertion incorrectly
+searched for a combobox and therefore could not locate the real title trigger.
+The helper now intersects the native button role and exact visible status name
+with the retained title-control wrapper, trigger data slot, and listbox-popup
+attribute. It deliberately does not choose the first of ambiguous matches.
+The actual Reading option click and subsequent durable-record assertions are
+unchanged. No application or authentication behavior was rewritten.
+
+A separate source-proven ordinary helper defect affected repeated panel use:
+the native `details` boolean `open` attribute is commonly present as the empty
+string. A truthiness test incorrectly clicked an already-open panel closed.
+The helper now clicks only when the attribute is `null`, with repeated-call
+regressions for closed, empty-string-open, and explicitly-open panels.
+
+The five added control seams execute the hash-pinned installed Trigger props
+expression using explicit rune/DOM stand-ins, verify its retained title markup,
+reproduce the impossible old role lookup, exercise the corrected exact scoped
+selection against decoy controls, require the exact Reading readback, and prove
+idempotent details expansion. The existing six recovery seams still pass. Use
+an existing verified frozen-lock dependency staging copy, without installing:
+
+```sh
+WEEBDEX_FRONTEND_ROOT=/path/to/verified/frontend-stage \
+  node --test weebdex-platform/tests/ci/test_browser_select_controls.mjs \
+  weebdex-platform/tests/ci/test_browser_account_recovery.mjs
+```
+
+The test fails closed if either inspected Bits UI source file differs from its
+recorded hash or the retained lock no longer pins 2.16.5. These eleven finite
+checks do not constitute real browser acceptance; the corrected journey still
+needs a coordinated genuine rerun.
