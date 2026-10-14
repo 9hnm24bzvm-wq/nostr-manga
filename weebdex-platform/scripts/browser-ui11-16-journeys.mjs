@@ -17,8 +17,35 @@ export const ui11To16JourneyPhases = Object.freeze([
   "ui16-home-preferences", "ui16-search-cap"
 ]);
 
+// Closed diagnostic vocabulary. IDs encode reviewed controls only, never fixture
+// identities, paths, URLs, credentials, request bodies or exception text.
+const progressCases = Object.freeze(["timer-page1", "timer-page3", "lock-page1", "lock-page3"]);
+const progressChecks = Object.freeze([
+  "setup", "select-page", "no-prior-progress", "gate-captured",
+  "old-intent-cancelled", "page-retained", "durable-progress",
+  "reload-progress", "stable-revision"
+]);
+export const ui11To16DiagnosticChecks = Object.freeze({
+  "ui11-device-progress": Object.freeze([
+    "device-progress-signup-context",
+    ...progressCases.flatMap(control => progressChecks.map(check => `device-progress-${control}-${check}`))
+  ]),
+  "ui12-compact-feed": Object.freeze([
+    "compact-feed-seed-pagination", "compact-feed-spanish-preferences", "compact-feed-fixture-total",
+    "compact-feed-open-updates", "compact-feed-third-page", "compact-feed-resume-visible",
+    "compact-feed-bounded-burst", "compact-feed-compact-geometry", "compact-feed-trimmed-cards",
+    "compact-feed-manual-terminal-page", "compact-feed-unique-sequential-pages",
+    "compact-feed-scenario-membership", "compact-feed-all-compact-chapters",
+    "compact-feed-terminal-idle", "compact-feed-resize-retains-entries", "compact-feed-back-restores-entries"
+  ])
+});
+
 export async function runUi11To16Journeys(h) {
   const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
+  const check = (id, operation) => {
+    insist(typeof h.check === "function", "The reviewed fixed-check diagnostic recorder is required for this journey");
+    return h.check(id, operation);
+  };
   insist(ui11To16JourneyPhases.includes(phase), "Unknown UI11–16 journey phase");
   const started = Date.now(), marker = randomBytes(6).toString("hex"), ids = fixture.ids ?? {};
   let extras = fixture.ui_regressions;
@@ -293,47 +320,63 @@ export async function runUi11To16Journeys(h) {
   }
 
   if (phase === "ui11-device-progress") {
-    await step("UI11 progress: synthetic verified account and durable device context", async () => { await signup(); await ready(); await mode("device"); return { real_account: true, device_scope_verified: true }; });
+    await step("UI11 progress: synthetic verified account and durable device context", async () => {
+      await check("device-progress-signup-context", async () => { await signup(); await ready(); await mode("device"); });
+      return { real_account: true, device_scope_verified: true };
+    });
     for (const gateKind of ["timer", "lock"]) for (const targetPage of [1, 3]) await step(`UI11 progress: ${gateKind} device→account→device retains same page ${targetPage}`, async () => {
-      await open(`/title/${ids.manga}`); await ready(); await mode("account"); await removeDeviceChapter(ids.chapter);
-      const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); await settings();
-      if (targetPage !== 1) await selectReaderPage(String(targetPage), targetPage);
-      insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Device progress already existed before the controlled reentry test");
+      const prefix = `device-progress-${gateKind}-page${targetPage}`;
+      await check(prefix + "-setup", async () => {
+        await open(`/title/${ids.manga}`); await ready(); await mode("account"); await removeDeviceChapter(ids.chapter);
+        const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); await settings();
+      });
+      await check(prefix + "-select-page", async () => { if (targetPage !== 1) await selectReaderPage(String(targetPage), targetPage); });
+      await check(prefix + "-no-prior-progress", async () => { insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Device progress already existed before the controlled reentry test"); });
       const gate = await browserGate(gateKind);
       try {
-        await mode("device"); await gate.wait(); const retained = await readPage();
-        await mode("account"); await gate.release(); await page.waitForTimeout(100);
-        insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "The old device intent wrote after its actual mode authority was lost");
-        await mode("device"); insist(await readPage() === retained, "Mode selection changed the current reader page");
-        const row = await until(deviceRows, rows => rows.some(row => row.family === "chapters" && row.id === ids.chapter && row.page === retained && (retained !== 3 || row.completed)), "Reentered current device context failed to durably save the unchanged page");
-        const observed = row.find(row => row.family === "chapters" && row.id === ids.chapter);
-        await page.reload({ waitUntil: "domcontentloaded" }); await ready(); const durable = (await deviceRows()).find(row => row.family === "chapters" && row.id === ids.chapter);
-        insist(durable?.page === retained && (retained !== 3 || durable.completed), "Device page/completion did not survive reload");
-        await page.waitForTimeout(500); const revision = await deviceRevision(); await stable(async () => await deviceRevision() === revision, "Same-context refresh caused an endless durable progress-save loop");
+        const retained = await check(prefix + "-gate-captured", async () => { await mode("device"); await gate.wait(); return readPage(); });
+        await check(prefix + "-old-intent-cancelled", async () => {
+          await mode("account"); await gate.release(); await page.waitForTimeout(100);
+          insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "The old device intent wrote after its actual mode authority was lost");
+        });
+        await check(prefix + "-page-retained", async () => { await mode("device"); insist(await readPage() === retained, "Mode selection changed the current reader page"); });
+        const observed = await check(prefix + "-durable-progress", async () => {
+          const row = await until(deviceRows, rows => rows.some(row => row.family === "chapters" && row.id === ids.chapter && row.page === retained && (retained !== 3 || row.completed)), "Reentered current device context failed to durably save the unchanged page");
+          return row.find(row => row.family === "chapters" && row.id === ids.chapter);
+        });
+        await check(prefix + "-reload-progress", async () => {
+          await page.reload({ waitUntil: "domcontentloaded" }); await ready(); const durable = (await deviceRows()).find(row => row.family === "chapters" && row.id === ids.chapter);
+          insist(durable?.page === retained && (retained !== 3 || durable.completed), "Device page/completion did not survive reload");
+        });
+        await check(prefix + "-stable-revision", async () => { await page.waitForTimeout(500); const revision = await deviceRevision(); await stable(async () => await deviceRevision() === revision, "Same-context refresh caused an endless durable progress-save loop"); });
         return { actual_page: retained, completed: !!observed.completed, real_timer_or_lock_gate: gateKind, durable_after_reload: true };
       } finally { await gate.close(); }
     });
   }
 
   if (phase === "ui12-compact-feed") await step("UI12 compact feed: native505 rows continue beyond200 and bounded burst has a real resume", async () => {
-    await ensurePagination();
-    const data = dependency("compact"); insist(data.total >= 501 && data.language === "es", "Compact fixture must contain over500 isolated Spanish chapters");
-    await chapterLanguagePreference("Spanish"); await page.setViewportSize({ width: 1440, height: 1800 });
-    const probe = await api("/api/chapter/feed?tlang=es&limit=100"); insist(probe.status === 200 && [data.total, data.total + (extras.bilingual?.manga_id ? 1 : 0)].includes(probe.body?.total), "Actual Spanish fixture has unrelated rows outside the recorded compact/bilingual scenarios"); const nativeTotal = probe.body.total;
+    await check("compact-feed-seed-pagination", async () => { await ensurePagination(); const data = dependency("compact"); insist(data.total >= 501 && data.language === "es", "Compact fixture must contain over500 isolated Spanish chapters"); });
+    const data = dependency("compact");
+    await check("compact-feed-spanish-preferences", async () => { await chapterLanguagePreference("Spanish"); await page.setViewportSize({ width: 1440, height: 1800 }); });
+    const nativeTotal = await check("compact-feed-fixture-total", async () => { const probe = await api("/api/chapter/feed?tlang=es&limit=100"); insist(probe.status === 200 && [data.total, data.total + (extras.bilingual?.manga_id ? 1 : 0)].includes(probe.body?.total), "Actual Spanish fixture has unrelated rows outside the recorded compact/bilingual scenarios"); return probe.body.total; });
     const seen = observe(request => requestPath(request, "/api/chapter/feed"));
     try {
-      await open("/updates"); await until(() => seen.rows, rows => rows.some(row => row.body?.page >= 3 && row.status === 200), "Compact updates never requested page3 while cards remained trimmed");
-      const more = page.getByRole("button", { name: "Load more updates", exact: true }); await more.waitFor({ state: "visible" });
-      await seen.settle(); const admitted = seen.rows.filter(row => row.status === 200); insist(admitted.length === 5 && admitted.every((row, index) => row.body.page === index + 1), "Automatic compact burst did not stop after its finite four continuation reads");
-      const rect = await page.locator("section footer").last().boundingBox(); insist(rect && rect.y <= 3600, "Compact footer did not stay inside the genuine expanded loading geometry");
-      insist(await page.getByRole("button", { name: "Show Less", exact: true }).count() === 0, "Test expanded cards instead of exercising compact continuation");
-      await more.click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === Math.ceil(nativeTotal / 100)), "Explicit real Load more did not reach the remaining compact page"); await seen.settle();
-      const pages = seen.rows.filter(row => row.status === 200).map(row => row.body.page); insist(new Set(pages).size === pages.length && seen.maximum === 1, "Compact continuation issued duplicate or parallel native page reads");
-      insist(seen.rows.every(row => row.status === 200 && row.body.total === nativeTotal && row.body.data.every(chapter => [data.manga_id, extras.bilingual?.manga_id].includes(chapter.relationships.manga.id))), "Feed was not the actual recorded compact/bilingual backend scenario");
-      const compactIds = new Set(seen.rows.flatMap(row => row.body.data.filter(chapter => chapter.relationships.manga.id === data.manga_id).map(chapter => chapter.id))); insist(compactIds.size === data.total, "The505 genuine compact chapters did not all become reachable");
-      await stable(async () => seen.rows.length === pages.length, "True compact exhaustion continued to request pages");
-      await page.setViewportSize({ width: 1200, height: 800 }); insist(!await bodyHas("No results found"), "Acknowledged compact entries disappeared after resize");
-      await realm(); await search(); await page.goBack({ waitUntil: "domcontentloaded" }); await sameRealm(); insist(!await bodyHas("No results found"), "Back lost acknowledged public compact results");
+      await check("compact-feed-open-updates", async () => { await open("/updates"); });
+      await check("compact-feed-third-page", async () => { await until(() => seen.rows, rows => rows.some(row => row.body?.page >= 3 && row.status === 200), "Compact updates never requested page3 while cards remained trimmed"); });
+      const more = page.getByRole("button", { name: "Load more updates", exact: true });
+      await check("compact-feed-resume-visible", async () => { await more.waitFor({ state: "visible" }); });
+      await check("compact-feed-bounded-burst", async () => { await seen.settle(); const admitted = seen.rows.filter(row => row.status === 200); insist(admitted.length === 5 && admitted.every((row, index) => row.body.page === index + 1), "Automatic compact burst did not stop after its finite four continuation reads"); });
+      await check("compact-feed-compact-geometry", async () => { const rect = await page.locator("section footer").last().boundingBox(); insist(rect && rect.y <= 3600, "Compact footer did not stay inside the genuine expanded loading geometry"); });
+      await check("compact-feed-trimmed-cards", async () => { insist(await page.getByRole("button", { name: "Show Less", exact: true }).count() === 0, "Test expanded cards instead of exercising compact continuation"); });
+      await check("compact-feed-manual-terminal-page", async () => { await more.click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === Math.ceil(nativeTotal / 100)), "Explicit real Load more did not reach the remaining compact page"); await seen.settle(); });
+      const pages = seen.rows.filter(row => row.status === 200).map(row => row.body.page);
+      await check("compact-feed-unique-sequential-pages", async () => { insist(new Set(pages).size === pages.length && seen.maximum === 1, "Compact continuation issued duplicate or parallel native page reads"); });
+      await check("compact-feed-scenario-membership", async () => { insist(seen.rows.every(row => row.status === 200 && row.body.total === nativeTotal && row.body.data.every(chapter => [data.manga_id, extras.bilingual?.manga_id].includes(chapter.relationships.manga.id))), "Feed was not the actual recorded compact/bilingual backend scenario"); });
+      const compactIds = new Set(seen.rows.flatMap(row => row.body.data.filter(chapter => chapter.relationships.manga.id === data.manga_id).map(chapter => chapter.id)));
+      await check("compact-feed-all-compact-chapters", async () => { insist(compactIds.size === data.total, "The505 genuine compact chapters did not all become reachable"); });
+      await check("compact-feed-terminal-idle", async () => { await stable(async () => seen.rows.length === pages.length, "True compact exhaustion continued to request pages"); });
+      await check("compact-feed-resize-retains-entries", async () => { await page.setViewportSize({ width: 1200, height: 800 }); insist(!await bodyHas("No results found"), "Acknowledged compact entries disappeared after resize"); });
+      await check("compact-feed-back-restores-entries", async () => { await realm(); await search(); await page.goBack({ waitUntil: "domcontentloaded" }); await sameRealm(); insist(!await bodyHas("No results found"), "Back lost acknowledged public compact results"); });
       return { native_total: nativeTotal, recorded_compact_title_rows: compactIds.size, pages, maximum_parallel_reads: seen.maximum, cards_remained_trimmed: true, genuine_manual_resume: true, coherent_back_restore: true };
     } finally { await seen.close(); }
   });
