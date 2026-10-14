@@ -3327,6 +3327,14 @@ const patches = [
   "label": "replacement acknowledgement updates the guarded captured staging version",
   "before": "pages[idx] = replacement; pages = pages; uploadSession.version = version;",
   "after": "pages[idx] = replacement; pages = pages; session.version = version;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "upload candidates share reactive identity between queued mutations and rendered controls",
+  "before": "\tconst createPage = (file: File) => {\r\n\t\treturn <UploadSessionFile>{\r\n\t\t\tid: crypto.randomUUID(),\r\n\t\t\toriginal_file_name: file.name,\r\n\r\n\t\t\tfile: file,\r\n\t\t\tthumbnail: URL.createObjectURL(file)\r\n\t\t};\r\n\t};",
+  "after": "\tconst createPage = (file: File) => {\r\n\t\t// The upload queue and rendered array must share this exact reactive row.\r\n\t\t// Mutating a pre-proxy raw row after an awaited request is invisible.\r\n\t\tconst candidate = $state(<UploadSessionFile>{\r\n\t\t\tid: crypto.randomUUID(),\r\n\t\t\toriginal_file_name: file.name,\r\n\r\n\t\t\tfile: file,\r\n\t\t\tthumbnail: URL.createObjectURL(file)\r\n\t\t});\r\n\t\treturn candidate;\r\n\t};"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
