@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel } from "./browser-select-controls.mjs";
 import { signedEventDigest } from "./browser-signed-event-envelope.mjs";
+import { watchSignedConversationResponses } from "./browser-signed-conversation-observer.mjs";
 
 export const signedJourneyPhases = ["signed-library", "signed-profile", "signed-social", "signed-context", "signed-source-controls", "signed-namespace", "signed-recipients", "signed-restart"];
 // Fixed identities only. No fixture keys, IDs, records or inspected values enter
@@ -27,6 +28,7 @@ export const signedDownstreamCheckSuffixes = Object.freeze(Object.fromEntries(Ob
     "auth-intent-bound",
     "auth-unadmitted-retry",
     "auth-refusal-verified",
+    "admission-exact-prerequisite",
     "admission-exact-retry",
     "admission-exact-accepted",
     "admission-exact-projected",
@@ -34,6 +36,11 @@ export const signedDownstreamCheckSuffixes = Object.freeze(Object.fromEntries(Ob
   ],
   "signed-social": [
     "social-conversation-loaded",
+    "conversation-target-controls",
+    "conversation-mapping-response",
+    "conversation-root-response",
+    "conversation-feed-response",
+    "conversation-source-visible",
     "social-comment-reviewed",
     "social-comment-sent",
     "social-comment-counterpart",
@@ -47,6 +54,11 @@ export const signedDownstreamCheckSuffixes = Object.freeze(Object.fromEntries(Ob
     "source-account-admitted",
     "source-identity-selected",
     "source-conversation-loaded",
+    "conversation-target-controls",
+    "conversation-mapping-response",
+    "conversation-root-response",
+    "conversation-feed-response",
+    "conversation-source-visible",
     "source-comment-reviewed",
     "source-snapshot-reviewed",
     "source-revoked",
@@ -67,7 +79,11 @@ export const signedDownstreamCheckSuffixes = Object.freeze(Object.fromEntries(Ob
     "two-snapshot-reviewed",
     "two-snapshot-published",
     "two-snapshot-accepted",
+    "two-snapshot-job-retained",
+    "two-snapshot-primary-receipt",
+    "two-snapshot-secondary-receipt",
     "two-snapshot-projected",
+    "peers-published-prerequisite",
     "peers-revoked",
     "peers-revoked-reads",
     "peers-restored",
@@ -269,7 +285,23 @@ export async function runSignedJourneys(h) {
   const reviewSnapshot = async () => { await library().getByRole("button", { name: "Preview public snapshot", exact: true }).click(); await library().getByText(/^Reviewed device revision/).waitFor({ state: "visible", timeout: 45000 }); const send = library().getByRole("button", { name: "Sign and publish reviewed snapshot", exact: true }); insist(await send.isDisabled(), "Snapshot sending enabled before explicit public consent"); await library().getByLabel("I understand that this reviewed snapshot becomes public at these recipients.", { exact: true }).check(); return send; };
   const prepareIdentity = async () => { await expand(identity()); await identity().getByRole("button", { name: "Refresh verified instances", exact: true }).click(); await idle(identity()); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(protocol); };
   const target = async (kind, id) => { await section(identity(), "Public source comments and reactions"); await nativeSelectForLabel(identity(), "Target type").selectOption(kind); await identity().getByLabel("Current instance catalogue ID", { exact: true }).fill(id); };
-  const loadConversation = async (kind, id, eventId) => { await target(kind, id); await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click(); await identity().getByText("Verified canonical source: " + eventId, { exact: false }).waitFor({ state: "visible", timeout: 45000 }); };
+  let firstConversationObserved = false;
+  const loadConversation = async (kind, id, eventId) => {
+    if (!['signed-social', 'signed-source-controls'].includes(phase) || firstConversationObserved) { await target(kind, id); await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click(); await identity().getByText("Verified canonical source: " + eventId, { exact: false }).waitFor({ state: "visible", timeout: 45000 }); return; }
+    firstConversationObserved = true;
+    const observed = watchSignedConversationResponses(page, { nativeOrigin: origin, protocolOrigin: protocol, kind, id, eventId });
+    try {
+      await inspect('conversation-target-controls', async () => { await target(kind, id); insist(await nativeSelectForLabel(identity(), "Target type").inputValue() === kind && await identity().getByLabel("Current instance catalogue ID", { exact: true }).inputValue() === id, "Conversation controls did not select the exact reviewed native target"); });
+      observed.start(); await identity().getByRole("button", { name: "Load verified public conversation", exact: true }).click();
+      let visibilityError;
+      try { await identity().getByText("Verified canonical source: " + eventId, { exact: false }).waitFor({ state: "visible", timeout: 45000 }); } catch (error) { visibilityError = error; }
+      await observed.close();
+      const source = await inspect('conversation-mapping-response', async () => { const mapping = observed.one('mapping'); const source = mapping.body.data?.find(row => row.kind === kind && row.id === id); insist(mapping.status === 200 && mapping.body.origin === protocol && mapping.body.service_key === fixture.service_key && mapping.body.catalog_namespace === seeded.catalog_namespace && source?.event_id === eventId && identifier(source.publisher) && source.source_kind === (kind === 'manga' ? 1002 : 1001), "Exact native conversation mapping response was not the verified current source"); return source; });
+      await inspect('conversation-root-response', async () => { const root = observed.one('root'); insist(root.status === 200 && verify(root.body) && root.body.id === eventId && root.body.pubkey === source.publisher && root.body.kind === source.source_kind, "Exact original conversation source response was not a genuine verified event"); });
+      await inspect('conversation-feed-response', async () => { const feed = observed.one('feed'); insist(feed.status === 200 && feed.body.public === true && Array.isArray(feed.body.events) && feed.body.events.length <= 50 && feed.body.events.every(event => verify(event)), "Exact original public conversation feed was unavailable or unverified"); });
+      await inspect('conversation-source-visible', async () => { if (visibilityError) throw visibilityError; });
+    } finally { await observed.close(); }
+  };
   const sendAction = async () => { const button = identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }); insist(await button.isDisabled(), "Public action enabled before exact-action consent"); await identity().getByLabel("I approve this exact public action and recipient.", { exact: true }).check(); await button.click(); await idle(identity()); };
   const reviewComment = async text => { await identity().getByLabel("Public comment", { exact: true }).fill(text); await identity().getByRole("button", { name: "Review public comment", exact: true }).click(); await identity().getByText("Publish this public source comment. Recipient: " + protocol, { exact: false }).waitFor({ state: "visible" }); };
   const changedSourceNotice = "The selected target, recipient or signing identity changed.";
@@ -396,7 +428,10 @@ export async function runSignedJourneys(h) {
       await step("two independently verified real recipients accept the identical reviewed library event", async () => {
         await inspect('secondary-admitted', async () => { await admit(true); await admit(true, second.origin); }); await inspect('secondary-remembered', async () => { await library().getByLabel("Instance origin", { exact: true }).fill(second.origin); await library().getByLabel("Expected service public key", { exact: true }).fill(second.service_key); await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); });
         await inspect('secondary-selected', async () => { const remembered = (await databases()).protocol.relays.find(row => row.origin === second.origin); insist(remembered?.serviceKey === second.service_key && remembered.selected === false, "Second real service proof was not independently pinned/unselected"); await library().getByLabel("Select " + second.origin, { exact: true }).check(); await idle(library()); });
-        const send = await inspect('two-snapshot-reviewed', reviewSnapshot); await inspect('two-snapshot-published', async () => { await send.click(); await idle(library()); }); const job = await inspect('two-snapshot-accepted', async () => { const job = (await jobs()).at(-1); insist(job.recipients.length === 2 && job.recipients.every(row => row.state === "accepted") && new Set(job.recipients.map(row => row.origin)).size === 2, "One genuine recipient failed or a fake second receipt was used"); return job; });
+        const send = await inspect('two-snapshot-reviewed', reviewSnapshot); await inspect('two-snapshot-published', async () => { await send.click(); await idle(library()); }); const job = await inspect('two-snapshot-accepted', async () => { const job = await inspect('two-snapshot-job-retained', async () => { const job = (await jobs()).at(-1); insist(job && job.id === job.event.id && verify(job.event) && !job.cancelled && job.recipients.length === 2, "The exact reviewed two-recipient signed snapshot was not retained"); return job; });
+          await inspect('two-snapshot-primary-receipt', async () => { insist(job.recipients.filter(row => row.origin === protocol && row.serviceKey === fixture.service_key && row.state === 'accepted').length === 1, "The original primary recipient did not accept the retained snapshot"); });
+          await inspect('two-snapshot-secondary-receipt', async () => { insist(job.recipients.filter(row => row.origin === second.origin && row.serviceKey === second.service_key && row.state === 'accepted').length === 1, "The original secondary recipient did not accept the retained snapshot"); });
+          insist(job.recipients.length === 2 && job.recipients.every(row => row.state === "accepted") && new Set(job.recipients.map(row => row.origin)).size === 2, "One genuine recipient failed or a fake second receipt was used"); return job; });
         await inspect('two-snapshot-projected', async () => { for (const recipient of recipients) { const event = await counterpartAt(recipient.origin, job.id); insist(signedEventDigest(event.body) === signedEventDigest(job.event), "Actual recipient projected different signed library bytes"); } });
         lifecycleCoverage.two_real_recipients = true; return { event_id: job.id, genuine_service_origins: recipients.map(row => row.origin), actual_independent_service_proofs: true, real_library_receipts_and_projections: 2, identical_signed_event: true };
       });
@@ -411,6 +446,7 @@ export async function runSignedJourneys(h) {
         return { original_recipient: protocol, newly_selected_recipient: second.origin, exact_event_id: saved.event.id, exact_body_digest: exact, original_recipient_only_browser_transport: true, no_event_resigning: true };
       });
       await step("actual mutual peer revocation never grants browser accounts federation authority", async () => {
+        await inspect('peers-published-prerequisite', async () => { insist(lifecycleCoverage.two_real_recipients === true, "Exact publication to both genuine recipients must complete before peer-policy reads"); });
         for (const allowed of [false, true]) {
           await inspect(allowed ? 'peers-restored' : 'peers-revoked', async () => { const control = await privateControl("peer-policy", { allowed }); insist(control.result.operation.mutual_recorded_peer_approval === allowed && control.result.operation.arbitrary_endpoint_received === false, "Actual recorded service peer policy did not change"); });
           await inspect(allowed ? 'peers-restored-reads' : 'peers-revoked-reads', async () => { for (const recipient of recipients) { const response = await originalAt(recipient.origin, "/federation/libraries/" + owner); insist([401, 403].includes(response.status) && !response.body?.event, "Browser public account bypassed exact service-peer authority"); const head = await originalAt(recipient.origin, "/libraries/" + owner); insist(head.status === 200 && verify(head.body.event), "Peer revocation incorrectly disabled the separate genuine public library read policy"); } });
@@ -434,6 +470,7 @@ export async function runSignedJourneys(h) {
         return { snapshot_id: firstJob.id, kind: 11999, genuine_signature: true, denied_authentication_no_post: true, real_admission_refusal: rejected.recipients[0].message, exact_body_retained: true };
       });
       await step("explicit original account admission and exact approved retry reach genuine public projection", async () => {
+        await inspect('admission-exact-prerequisite', async () => { insist(firstJob && firstJob.id === firstJob.event.id && verify(firstJob.event), "A retained exact verified approved snapshot is required before explicit admission and retry"); });
         let count; await inspect('admission-exact-retry', async () => { await admit(true); count = signedCounts.get(11999); await consentDialog(jobCard(firstJob.id).getByRole("button", { name: "Retry approved snapshot", exact: true }), "original recipients"); await idle(library()); });
         const accepted = await inspect('admission-exact-accepted', async () => { const accepted = (await jobs()).find(job => job.id === firstJob.id); insist(accepted.recipients[0].state === "accepted" && signedEventDigest(accepted.event) === signedEventDigest(firstJob.event) && signedCounts.get(11999) === count, "Explicit retry signed different snapshot or lacked a real receipt"); return accepted; });
         await inspect('admission-exact-projected', async () => { const visible = await counterpart(firstJob.id); insist(signedEventDigest(visible.body) === signedEventDigest(firstJob.event), "Projected original counterpart differs from the saved event"); });

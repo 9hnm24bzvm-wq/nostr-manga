@@ -205,7 +205,7 @@
             <p class="break-all">Manifest {publication.graph.root.hash}. Signing key {publication.owner}. Recipients: {publication.recipients.map(row => row.origin).join(', ')}</p>
             {#if publication.excluded.length}<p class="break-all text-xs">Excluded IDs: {publication.excluded.slice(0, 30).join(', ')}{publication.excluded.length > 30 ? '…' : ''}</p>{/if}
             <label><input type="checkbox" bind:checked={publicConsent} /> I understand that this reviewed snapshot becomes public at these recipients.</label>
-            <Button disabled={!!pending || !publicConsent} onclick={() => run('publish', async () => { const reviewed = publication!; publicConsent = false; publication = undefined; await publishReviewed(reviewed, true); notice = 'Publication attempt finished. Review every instance receipt below.'; })}>Sign and publish reviewed snapshot</Button>
+            <Button disabled={!!pending || !publicConsent} onclick={() => run('publish', async () => { const reviewed = $state.snapshot(publication!); publicConsent = false; publication = undefined; await publishReviewed(reviewed, true); notice = 'Publication attempt finished. Review every instance receipt below.'; })}>Sign and publish reviewed snapshot</Button>
             <Button variant="outline" disabled={!!pending} onclick={resetReviews}>Cancel preview</Button>
           </div>
         {/if}

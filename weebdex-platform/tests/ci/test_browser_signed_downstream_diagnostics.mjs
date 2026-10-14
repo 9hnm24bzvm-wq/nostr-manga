@@ -14,6 +14,7 @@ const expected = {
     "auth-intent-bound",
     "auth-unadmitted-retry",
     "auth-refusal-verified",
+    "admission-exact-prerequisite",
     "admission-exact-retry",
     "admission-exact-accepted",
     "admission-exact-projected",
@@ -21,6 +22,11 @@ const expected = {
   ],
   "signed-social": [
     "social-conversation-loaded",
+    "conversation-target-controls",
+    "conversation-mapping-response",
+    "conversation-root-response",
+    "conversation-feed-response",
+    "conversation-source-visible",
     "social-comment-reviewed",
     "social-comment-sent",
     "social-comment-counterpart",
@@ -34,6 +40,11 @@ const expected = {
     "source-account-admitted",
     "source-identity-selected",
     "source-conversation-loaded",
+    "conversation-target-controls",
+    "conversation-mapping-response",
+    "conversation-root-response",
+    "conversation-feed-response",
+    "conversation-source-visible",
     "source-comment-reviewed",
     "source-snapshot-reviewed",
     "source-revoked",
@@ -54,7 +65,11 @@ const expected = {
     "two-snapshot-reviewed",
     "two-snapshot-published",
     "two-snapshot-accepted",
+    "two-snapshot-job-retained",
+    "two-snapshot-primary-receipt",
+    "two-snapshot-secondary-receipt",
     "two-snapshot-projected",
+    "peers-published-prerequisite",
     "peers-revoked",
     "peers-revoked-reads",
     "peers-restored",
@@ -108,8 +123,10 @@ async function probe(phase, failAt) {
         if (suffix === failAt) throw failure;
         // Only this callback must run to preserve the enclosing lexical assignment;
         // its actions/counterpart reads above are explicit private stand-ins.
-        if (suffix === 'social-comment-counterpart') return operation();
+        if (suffix === 'social-comment-counterpart' || suffix === 'peers-published-prerequisite') return operation();
+        if (suffix === 'social-conversation-loaded' || suffix === 'source-conversation-loaded') { for (const name of ['conversation-target-controls', 'conversation-mapping-response', 'conversation-root-response', 'conversation-feed-response', 'conversation-source-visible']) await globals.inspect(name, async () => {}); }
         if (suffix === 'auth-exact-job-retained') return [job];
+        if (suffix === 'two-snapshot-accepted') { for (const name of ['two-snapshot-job-retained','two-snapshot-primary-receipt','two-snapshot-secondary-receipt']) await globals.inspect(name, async () => {}); }
         if (suffix === 'auth-refusal-verified' || suffix === 'admission-exact-accepted' || suffix === 'two-snapshot-accepted') return job;
         if (suffix === 'admission-peer-denied') return { status: 403 };
         if (suffix === 'social-reaction-counterpart') return event;
