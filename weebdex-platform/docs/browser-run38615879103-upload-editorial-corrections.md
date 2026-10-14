@@ -60,11 +60,14 @@ remain possible; the new finite checkpoints identify their reached boundary.
 Using existing verified frontend yarn-lock dependencies (Svelte5.55.1,
 TypeScript5.9.3) and existing JSDOM27.0.1, with no installation:
 
-- `test_upload_reactive_candidates.mjs`: four actual Svelte client/compiler + real
+- `test_upload_reactive_candidates.mjs`: ten actual Svelte client/compiler + real
   composed factory/chunk/session guards + real `upload-batch.ts` cases. The former
   raw factory reproduces zero controls after an awaited500; the reactive factory
   shares exact queue/render row identity and exposes truthful recovery after500,
-  transport failure, and item rejection. HTTP/owner services are finite stand-ins;
+  transport failure, and item rejection. Additional cases cover acknowledged remote
+  identity, actual local rejected-candidate replacement success/failure, and held-POST
+  owner expiry/staging switch/freeze refusing late receipts. Decoder, HTTP/owner
+  services are finite stand-ins;
   the DOM mirrors the retained entry condition, not the full Bits/ImageLoader UI.
 - `test_upload_file_admission.mjs`:37 cases pass, including actual retained Mutex,
   add/drop/replace admission, invalid files, concurrent/frozen gates, real batch
@@ -78,7 +81,7 @@ TypeScript5.9.3) and existing JSDOM27.0.1, with no installation:
   create statuses and false cover200 receipts. Controls/API/database are finite
   stand-ins; the actual retained PNG generator supplies the original image input.
 - Upload diagnostics and original selector/assertion suites add six more cases:
-  all86 strict Node cases pass. All13 Python diagnostic/gate cases pass.
+  all92 strict Node cases pass. All13 Python diagnostic/gate cases pass.
 - `verify-frontend-parity.py`:676 attachment hashes unchanged.
 - Fresh actual composed strict projection:0 errors,15 pre-existing warnings,
   53 reachable integration files,679 canonical/checker inputs unchanged. The first
