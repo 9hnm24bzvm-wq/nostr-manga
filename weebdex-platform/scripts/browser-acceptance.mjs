@@ -6,6 +6,8 @@ import path from "node:path";
 import http from "node:http";
 import { fileURLToPath } from "node:url";
 import { loadBrowserRuntime } from "./ci/browser-runtime.mjs";
+import { observeSeedTitleReadiness } from "./startup-readiness-probe.mjs";
+import { createJourneyCheck } from "./journey-checks.mjs";
 import { runJourneys } from "./browser-journeys.mjs";
 import { runSignedJourneys, signedJourneyPhases } from "./browser-signed-journeys.mjs";
 import { runUi10Journeys, ui10JourneyPhases } from "./browser-ui10-journeys.mjs";
@@ -50,6 +52,8 @@ const output = path.join(root, "test-evidence/frontend/browser", `${phase}-${run
 fs.mkdirSync(output, { recursive: true });
 const report = { phase, origin, browser: browserDescription, source_artifact: "artifacts/frontend", started_utc: new Date().toISOString(), steps: [], pages: [], external_requests_blocked: [], proxy_requests_blocked: [], page_errors: [], console_errors: [], csp_violations: [], response_errors: [], screenshots: [], limitations: ["Supplied archive lacks an independently runnable original-render baseline. Source/DOM/style preservation and browser operation are distinct from pixel parity."] };
 if (phase === "startup") { report.startup_network = []; report.startup_observations_truncated = false; }
+let seedTitleCapture = false;
+if (phase === "startup") report.seed_title_network = [];
 const safeUrl = value => { try { const url = new URL(value); return url.origin + url.pathname + (url.pathname.startsWith("/api/") && !/auth|client/.test(url.pathname) ? url.search : ""); } catch { return "invalid URL"; } };
 const redactions = new Set();
 const safeError = error => {
@@ -58,6 +62,7 @@ const safeError = error => {
 	return value.length > 9000 ? value.slice(0, 2000) + "\n[diagnostic middle omitted]\n" + value.slice(-7000) : value;
 };
 function save() { fs.writeFileSync(path.join(output, "acceptance.json"), JSON.stringify(report, null, 2) + "\n"); }
+const check = createJourneyCheck(report, save);
 function insist(condition, message) { if (!condition) throw new Error(message); }
 async function step(name, action) {
 	const entry = { name, started_utc: new Date().toISOString() };
@@ -100,8 +105,9 @@ try {
 		page.on("response", response => { if (response.status() >= 400) report.response_errors.push({ status: response.status(), method: response.request().method(), url: safeUrl(response.url()) }); });
 		if (phase === "startup") {
 			const observe = value => { if (report.startup_network.length < 256) report.startup_network.push(value); else report.startup_observations_truncated = true; };
-			page.on("response", response => observe({ url: safeUrl(response.url()), resource: response.request().resourceType(), status: response.status(), content_type: response.headers()["content-type"] ?? "" }));
-			page.on("requestfailed", request => observe({ url: safeUrl(request.url()), resource: request.resourceType(), status: 0, failure: request.failure()?.errorText ?? "" }));
+			const seedObserve = value => { if (seedTitleCapture) { if (report.seed_title_network.length < 64) report.seed_title_network.push(value); else report.seed_title_network_truncated = true; } };
+			page.on("response", response => { const value = { url: safeUrl(response.url()), resource: response.request().resourceType(), status: response.status(), content_type: response.headers()["content-type"] ?? "" }; observe(value); if (["document", "fetch", "xhr"].includes(value.resource)) seedObserve(value); });
+			page.on("requestfailed", request => { const value = { url: safeUrl(request.url()), resource: request.resourceType(), status: 0, failure: request.failure()?.errorText ?? "" }; observe(value); seedObserve(value); });
 		}
 	});
 	const page = await context.newPage();
@@ -127,7 +133,10 @@ try {
 		const ids = fixture.ids ?? {};
 		for (const [kind, prefix] of [["manga", "/title/"], ["group", "/group/"], ["chapter", "/chapter/"]]) if (ids[kind]) routes.push(prefix + ids[kind]);
 		for (const route of routes) await step(`fresh deep link ${route}`, async () => {
+			seedTitleCapture = route === "/title/SeedManga1";
 			const before = report.page_errors.length; await open(route); const observation = await snapshot(); report.pages.push(observation);
+			if (route === "/title/SeedManga1") { report.seed_title_readiness = await observeSeedTitleReadiness(page, observation.text.trim().length > 20); save(); }
+			seedTitleCapture = false;
 			insist(observation.text.trim().length > 20, "Page never rendered meaningful content");
 			insist(report.page_errors.length === before, "Deep link has JavaScript page errors");
 			if (["/search", "/announcements", "/title/random"].includes(route)) await screenshot(route.slice(1).replaceAll("/", "-"));
@@ -140,7 +149,7 @@ try {
 			}
 			return results;
 		});
-	} else await (signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, insist, open, report, redactions });
+	} else await (signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions });
 	insist(report.page_errors.length === 0, "Application JavaScript page errors were observed during the journey");
 	await context.close();
 } catch (error) { report.harness_error = safeError(error); }

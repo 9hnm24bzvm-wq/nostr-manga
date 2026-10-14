@@ -1,9 +1,9 @@
 name: Hosted browser E2E
 
-# Only publication to this explicitly reviewed CI branch starts a run.
+# Only publication to these exact reviewed CI/diagnostic branches starts a run.
 on:
   push:
-    branches: [ci/hosted-browser-e2e]
+    branches: [ci/hosted-browser-e2e, ci/browser-failure-diagnostics]
   workflow_dispatch:
     inputs:
       batch:
@@ -23,7 +23,7 @@ concurrency:
 jobs:
   browser:
     # Standard public runner only. Never fall back to private/paid/self-hosted.
-    if: github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && github.ref == 'refs/heads/ci/hosted-browser-e2e'
+    if: github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && (github.ref == 'refs/heads/ci/hosted-browser-e2e' || github.ref == 'refs/heads/ci/browser-failure-diagnostics')
     runs-on: ubuntu-24.04
     timeout-minutes: 345
     env:

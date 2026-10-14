@@ -13,6 +13,9 @@ spec.loader.exec_module(runner)
 spec = importlib.util.spec_from_file_location('hosted_diagnostic_contract', ROOT / 'scripts/ci/startup-diagnostics.py')
 diagnostics = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(diagnostics)
+spec = importlib.util.spec_from_file_location('hosted_journey_contract', ROOT / 'scripts/ci/journey-diagnostics.py')
+journey_diagnostics = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(journey_diagnostics)
 ERRORS = {'RuntimeError', 'TimeoutError', 'InterruptedError', 'FileNotFoundError', 'PermissionError', 'IsADirectoryError', 'NotADirectoryError', 'OSError', 'JSONDecodeError', 'KeyError', 'TypeError', 'ValueError', 'ProcessLookupError', 'ChildProcessError'}
 SCOPE = 'actual browser controls and persisted-result assertions; pixel parity remains unverified'
 
@@ -81,7 +84,7 @@ def preparation(value):
 
 
 def startup_diagnostics(value, phase):
-    fields(value, {'schema', 'check_results', 'private_values_omitted', 'raw_messages_exported', 'observations_truncated', 'page_errors', 'console_errors', 'csp_violations', 'network'})
+    fields(value, {'schema', 'check_results', 'private_values_omitted', 'raw_messages_exported', 'observations_truncated', 'page_errors', 'console_errors', 'csp_violations', 'network'}, {'seed_title_readiness', 'seed_title_network'})
     insist(type(value['schema']) is int and value['schema'] == 1)
     insist(value['private_values_omitted'] is True and value['raw_messages_exported'] is False)
     boolean(value['observations_truncated'])
@@ -99,19 +102,46 @@ def startup_diagnostics(value, phase):
         else:
             insist(row['error_class'] != 'None' and row['category'] != 'none')
     insist([{'index': row['index'], 'status': row['status']} for row in checks if row['status'] != 'passed'] == [row for row in phase['failed_steps'] if row['index'] < len(checks)])
+    if len(checks) > 15:
+        insist({'seed_title_readiness', 'seed_title_network'} <= set(value))
+        if phase['status'] == 'passed':
+            insist(value['seed_title_readiness']['record_valid'] is True)
+            insist(any(row.get('path') == '/title/SeedManga1' and row.get('resource') == 'document' and row.get('status') == 200 for row in value['seed_title_network']))
+    if 'seed_title_readiness' in value:
+        probe = value['seed_title_readiness']
+        fields(probe, {'schema', 'record_valid', 'original_body_meaningful', 'wait_outcome', 'initial', 'late'})
+        insist(type(probe['schema']) is int and probe['schema'] == 1)
+        boolean(probe['record_valid'])
+        boolean(probe['original_body_meaningful'])
+        insist(type(probe['wait_outcome']) is str and probe['wait_outcome'] in diagnostics.READINESS_OUTCOMES)
+        for key in ['initial', 'late']:
+            fields(probe[key], diagnostics.READINESS_FLAGS)
+            for flag in diagnostics.READINESS_FLAGS:
+                boolean(probe[key][flag])
+        if probe['record_valid']:
+            insist(len(checks) > 15 and checks[15]['check_identity_verified'])
+            if checks[15]['status'] == 'passed':
+                insist(probe['original_body_meaningful'])
+            if checks[15]['category'] == 'no-rendered-content':
+                insist(probe['original_body_meaningful'] is False)
+            insist(probe['wait_outcome'] != 'ready' or probe['original_body_meaningful'] is False and all(probe['late'][key] for key in diagnostics.READINESS_FLAGS))
+            insist(probe['wait_outcome'] != 'not-needed' or probe['original_body_meaningful'] is True)
     contracts = {
         'page_errors': {'path', 'error_class', 'category', 'missing_global', 'count'},
         'console_errors': {'path', 'error_class', 'category', 'missing_global', 'count'},
         'csp_violations': {'path', 'directive', 'disposition', 'blocked', 'count'},
         'network': {'path', 'resource', 'status', 'mime', 'failure', 'count'},
     }
+    if 'seed_title_network' in value:
+        contracts['seed_title_network'] = contracts['network']
     for key, required in contracts.items():
         rows = value[key]
-        insist(type(rows) is list and len(rows) <= diagnostics.LIMIT)
+        limit = 64 if key == 'seed_title_network' else diagnostics.LIMIT
+        insist(type(rows) is list and len(rows) <= limit)
         for row in rows:
             fields(row, required)
             insist(type(row['path']) is str and row['path'] in diagnostics.PATHS)
-            integer(row['count'], 1, diagnostics.LIMIT)
+            integer(row['count'], 1, limit)
             if key in ['page_errors', 'console_errors']:
                 diagnostic_error(row)
                 insist(row['error_class'] != 'None' and row['category'] != 'none')
@@ -122,7 +152,7 @@ def startup_diagnostics(value, phase):
                 integer(row['status'], 0, 599)
                 insist(row['status'] == 0 or row['status'] >= 100)
         count = sum(row['count'] for row in rows)
-        insist(count <= diagnostics.LIMIT)
+        insist(count <= limit)
         if key == 'page_errors':
             insist(count == min(phase['page_error_count'], diagnostics.LIMIT))
 
@@ -130,6 +160,21 @@ def startup_diagnostics(value, phase):
 def diagnostic_error(row):
     insist(type(row['error_class']) is str and row['error_class'] in diagnostics.CLASSES and type(row['category']) is str and row['category'] in diagnostics.CATEGORIES and type(row['missing_global']) is str and row['missing_global'] in diagnostics.GLOBALS | {'none'})
     insist(row['missing_global'] == 'none' or row['category'] == 'missing-global' and row['error_class'] == 'ReferenceError')
+
+
+def journey_checks(value, phase):
+    fields(value, {'schema', 'record_valid', 'private_values_omitted', 'raw_messages_exported', 'check_results'})
+    insist(type(value['schema']) is int and value['schema'] == 1)
+    boolean(value['record_valid'])
+    insist(value['private_values_omitted'] is True and value['raw_messages_exported'] is False)
+    expected = journey_diagnostics.CHECKS[phase['phase']]
+    rows = value['check_results']
+    insist(type(rows) is list and len(rows) == len(expected))
+    for check_id, row in zip(expected, rows):
+        fields(row, {'check_id', 'status'})
+        insist(type(row['check_id']) is str and row['check_id'] == check_id and type(row['status']) is str and row['status'] in journey_diagnostics.STATUSES)
+    if phase['status'] == 'passed':
+        insist(value['record_valid'] and all(row['status'] == 'passed' for row in rows))
 
 
 def phases(value):
@@ -140,7 +185,7 @@ def phases(value):
         boolean(value['budget_exhausted'])
     insist(type(value['phases']) is list and len(value['phases']) <= 49 and type(value['batches']) is list and len(value['batches']) <= 10)
     for row in value['phases']:
-        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope'}, {'startup_diagnostics'})
+        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope'}, {'startup_diagnostics', 'journey_diagnostics'})
         insist(row['batch'] in ['startup', *runner.BATCHES] and row['phase'] in runner.ALL_PHASES and row['status'] in ['passed', 'failed'] and row['evidence_scope'] == SCOPE)
         integer(row['actual_steps'])
         integer(row['page_error_count'])
@@ -154,6 +199,11 @@ def phases(value):
         if 'startup_diagnostics' in row:
             insist(row['phase'] == 'startup')
             startup_diagnostics(row['startup_diagnostics'], row)
+        insist(row['phase'] != 'startup' or 'startup_diagnostics' in row)
+        if 'journey_diagnostics' in row:
+            insist(row['phase'] in journey_diagnostics.CHECKS)
+            journey_checks(row['journey_diagnostics'], row)
+        insist(row['phase'] not in journey_diagnostics.CHECKS or 'journey_diagnostics' in row)
         if row['status'] == 'passed':
             insist(row['actual_steps'] > 0 and row['failed_steps'] == [] and row['page_error_count'] == 0 and row['harness_error_observed'] is False and all(row[key] is True for key in ['runner_report_present', 'owned_runner_terminal', 'runner_exit_zero']))
     for row in value['batches']:

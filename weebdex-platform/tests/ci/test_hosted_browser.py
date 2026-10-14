@@ -294,8 +294,9 @@ class HostedBrowserSeams(unittest.TestCase):
 
     def test_workflow_has_one_readonly_standard_job(self):
         workflow = (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text()
-        self.assertIn('branches: [ci/hosted-browser-e2e]', workflow)
+        self.assertIn('branches: [ci/hosted-browser-e2e, ci/browser-failure-diagnostics]', workflow)
         self.assertIn("github.ref == 'refs/heads/ci/hosted-browser-e2e'", workflow)
+        self.assertIn("github.ref == 'refs/heads/ci/browser-failure-diagnostics'", workflow)
         self.assertIn('contents: read', workflow)
         self.assertIn('runs-on: ubuntu-24.04', workflow)
         self.assertIn('persist-credentials: false', workflow)

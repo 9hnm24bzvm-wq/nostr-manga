@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 CHECKS = ['homepage', 'search', 'groups', 'users', 'popular', 'trending', 'updates', 'announcements', 'about', 'guidelines', 'terms', 'privacy', 'login', 'register', 'random-title', 'seed-title', 'seed-group', 'seed-chapter', 'missing-assets']
 ROUTES = ['/', '/search', '/groups', '/users', '/popular', '/trending', '/updates', '/announcements', '/about', '/guidelines', '/terms', '/privacy', '/auth/login', '/auth/register', '/title/random', '/title/SeedManga1', '/group/SeedGroup1', '/chapter/SeedChapt1']
 CHECK_NAMES = ['homepage bootstraps under exact generated CSP', *['fresh deep link ' + route for route in ROUTES[1:]], 'missing built/static assets produce real 404']
-PATHS = set(ROUTES) | {'/_app/immutable/entry/<module>.js', '/_app/immutable/chunks/<module>.js', '/_app/immutable/nodes/<module>.js', '/_app/immutable/assets/<asset>', '/_app/<asset>', '/fonts/<asset>', '/images/<asset>', '/service-worker.js', '/manifest.webmanifest', '/api/<endpoint>', '/auth/<endpoint>', '/<unlisted-path>', '<other-origin>', '<unavailable>'}
+PATHS = set(ROUTES) | {'/_app/immutable/entry/<module>.js', '/_app/immutable/chunks/<module>.js', '/_app/immutable/nodes/<module>.js', '/_app/immutable/assets/<asset>', '/_app/<asset>', '/fonts/<asset>', '/images/<asset>', '/service-worker.js', '/manifest.webmanifest', '/api/manga/SeedManga1', '/api/<endpoint>', '/auth/<endpoint>', '/<unlisted-path>', '<other-origin>', '<unavailable>'}
 CLASSES = {'None', 'Error', 'TypeError', 'ReferenceError', 'SyntaxError', 'RangeError', 'EvalError', 'AggregateError', 'TimeoutError', 'Unknown'}
 GLOBALS = {'process', 'Buffer', 'require', 'module', 'global', 'exports', 'window', 'document', 'navigator', 'crypto', 'indexedDB', 'localStorage', '$state', '$derived', '$effect', '$props', '$inspect', '$bindable'}
 CATEGORIES = {'none', 'module-fetch', 'module-export', 'module-specifier', 'module-mime', 'missing-global', 'reference-error', 'undefined-property', 'non-callable-value', 'svelte-runtime', 'csp-blocked', 'bootstrap-csp-missing', 'bootstrap-csp-unsafe', 'document-status', 'locator-or-navigation-timeout', 'no-rendered-content', 'page-javascript', 'syntax-error', 'runtime-error', 'unknown'}
@@ -15,6 +15,21 @@ RESOURCES = {'document', 'script', 'stylesheet', 'fetch', 'xhr', 'image', 'font'
 MIMES = {'html', 'javascript', 'json', 'css', 'image', 'font', 'octet-stream', 'empty', 'other'}
 FAILURES = {'none', 'blocked-client', 'blocked-response', 'aborted', 'connection-refused', 'connection-reset', 'network-failed', 'unknown'}
 LIMIT = 256
+READINESS_FLAGS = {'document_ready', 'body_meaningful', 'fixture_heading_visible', 'fixture_route'}
+READINESS_OUTCOMES = {'not-needed', 'ready', 'deadline', 'probe-error'}
+
+
+def readiness_projection(value):
+    value = value if type(value) is dict else {}
+    valid = set(value) == {'original_body_meaningful', 'initial', 'late', 'wait_outcome'} and type(value.get('original_body_meaningful')) is bool and type(value.get('wait_outcome')) is str and value['wait_outcome'] in READINESS_OUTCOMES
+    result = {'schema': 1, 'record_valid': False, 'original_body_meaningful': value.get('original_body_meaningful') is True,
+              'wait_outcome': value.get('wait_outcome') if type(value.get('wait_outcome')) is str and value['wait_outcome'] in READINESS_OUTCOMES else 'probe-error'}
+    for key in ['initial', 'late']:
+        sample = value.get(key)
+        valid = valid and type(sample) is dict and set(sample) == READINESS_FLAGS and all(type(item) is bool for item in sample.values())
+        result[key] = {flag: type(sample) is dict and sample.get(flag) is True for flag in sorted(READINESS_FLAGS)}
+    result['record_valid'] = bool(valid)
+    return result
 
 
 def public_path(value, origin):
@@ -27,7 +42,7 @@ def public_path(value, origin):
         if (target.scheme, target.netloc) != (expected.scheme, expected.netloc):
             return '<other-origin>'
         path = target.path
-        if path in ROUTES or path in ['/service-worker.js', '/manifest.webmanifest']:
+        if path in ROUTES or path in ['/service-worker.js', '/manifest.webmanifest', '/api/manga/SeedManga1']:
             return path
         for prefix, label in [('/_app/immutable/entry/', '/_app/immutable/entry/<module>.js'), ('/_app/immutable/chunks/', '/_app/immutable/chunks/<module>.js'), ('/_app/immutable/nodes/', '/_app/immutable/nodes/<module>.js'), ('/_app/immutable/assets/', '/_app/immutable/assets/<asset>'), ('/_app/', '/_app/<asset>'), ('/fonts/', '/fonts/<asset>'), ('/images/', '/images/<asset>'), ('/api/', '/api/<endpoint>'), ('/auth/', '/auth/<endpoint>')]:
             if path.startswith(prefix):
@@ -98,6 +113,8 @@ def project(acceptance):
         kind = {'error_class': 'None', 'category': 'none', 'missing_global': 'none'} if status == 'passed' else error_kind(row.get('error'))
         checks.append(dict(index=index, check_id=CHECKS[index], check_identity_verified=row.get('name') == CHECK_NAMES[index], status=status, **kind))
     output = {'schema': 1, 'check_results': checks, 'private_values_omitted': True, 'raw_messages_exported': False, 'observations_truncated': len(steps) > len(CHECKS) or acceptance.get('startup_observations_truncated') is True}
+    if 'seed_title_readiness' in acceptance or len(steps) > 15:
+        output['seed_title_readiness'] = readiness_projection(acceptance.get('seed_title_readiness'))
     for field in ['page_errors', 'console_errors']:
         rows = acceptance.get(field, [])
         output['observations_truncated'] |= len(rows) > LIMIT
@@ -111,12 +128,15 @@ def project(acceptance):
         directive = row.get('directive')
         projected.append({'path': public_path(row.get('page'), origin), 'directive': directive if type(directive) is str and directive in DIRECTIVES else 'unknown', 'disposition': row.get('disposition') if row.get('disposition') in ['enforce', 'report'] else 'unknown', 'blocked': blocked if blocked in ['inline', 'eval'] else 'same-origin' if public_path(blocked, origin) not in ['<other-origin>', '<unavailable>'] else 'other-origin'})
     output['csp_violations'] = grouped(projected, ['path', 'directive', 'disposition', 'blocked'])
-    network = acceptance.get('startup_network', [])
-    output['observations_truncated'] |= len(network) > LIMIT
-    projected = []
-    for row in network[:LIMIT]:
-        status = row.get('status')
-        resource = row.get('resource')
-        projected.append({'path': public_path(row.get('url'), origin), 'resource': resource if type(resource) is str and resource in RESOURCES else 'other', 'status': status if type(status) is int and 100 <= status <= 599 else 0, 'mime': mime_kind(row.get('content_type')), 'failure': failure_kind(row.get('failure'))})
-    output['network'] = grouped(projected, ['path', 'resource', 'status', 'mime', 'failure'])
+    for private_key, public_key, limit in [('startup_network', 'network', LIMIT), ('seed_title_network', 'seed_title_network', 64)]:
+        if private_key not in acceptance and public_key != 'network' and len(steps) <= 15:
+            continue
+        network = acceptance.get(private_key, [])
+        output['observations_truncated'] |= len(network) > limit or acceptance.get('seed_title_network_truncated') is True
+        projected = []
+        for row in network[:limit]:
+            status = row.get('status')
+            resource = row.get('resource')
+            projected.append({'path': public_path(row.get('url'), origin), 'resource': resource if type(resource) is str and resource in RESOURCES else 'other', 'status': status if type(status) is int and 100 <= status <= 599 else 0, 'mime': mime_kind(row.get('content_type')), 'failure': failure_kind(row.get('failure'))})
+        output[public_key] = grouped(projected, ['path', 'resource', 'status', 'mime', 'failure'])
     return output
