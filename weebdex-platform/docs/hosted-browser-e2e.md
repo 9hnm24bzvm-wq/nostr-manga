@@ -5,15 +5,24 @@
 Published on the dedicated CI branch in [draft PR #22](https://github.com/9hnm24bzvm-wq/nostr-manga/pull/22).
 The [first actual hosted run](https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/38458085821)
 prepared the pinned stack and executed Chromium controls on ten fresh fixtures.
-Startup failed on each; zero unique phases passed and the other 37 remain
-pending. All ten physical fixture teardowns verified closed ports, removed
+Startup failed on each; that initial run passed zero unique phases. All ten
+physical fixture teardowns verified closed ports, removed
 synthetic keys and zero owned survivors, without forced cleanup. Browser failure
-correctly prevents clean lifecycle/full-suite success. This establishes real
-Chromium IPC, but establishes neither startup acceptance nor pixel parity.
+correctly prevented clean lifecycle/full-suite success for that run.
+
+The subsequently repaired [startup-only run 38486342057](https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/38486342057)
+on commit `5d4a1f85a4a4945add24206ba21283b50e4e659e`, tree
+`e5f9ca67a53db94302bcd9af935447d50dacf881`, passed all 19 identified checks
+with zero JavaScript page errors and a clean owned lifecycle/physical teardown.
+The exact three-file sanitized artifact passed the hosted gate and independent
+ZIP-digest, schema, summary and frozen-source checks. This proves startup on
+that generation only. The other 37 phases and rendered pixel parity remain
+unverified; later source revisions require fresh acceptance.
+
 Validator, scheduling and short owned OS-process seam checks are separate from
-browser execution and are never acceptance evidence. Original runtime/application
-source has no change; test-runner changes are the pinned browser dependency path
-seam and passive startup diagnostics described below.
+browser execution and are never acceptance evidence. Subsequent independently
+reviewed application repairs are retained as incremental source commits; the
+supplied frontend files are not edited by their executed-source overlays.
 All 676 original frontend files remain byte-preserved.
 The three pre-existing reconstructed announcement route additions are separately
 pinned in `scripts/ci/frontend-additions.json`; no other frontend additions are allowed.
@@ -150,13 +159,26 @@ the batch and stops further fixtures; no late cleanup turns it into a pass.
 Stop-marker and terminal-receipt errors still enter the owned cleanup path,
 retain the partial journal, and block all subsequent fixtures.
 
-## Startup-only failure diagnosis
+## Startup diagnosis and full-suite selection
 
-Until the first startup failure is explained, a dedicated-branch push selects
-only `startup`, using one new fixture. Explicit dispatch still accepts its
-selected batch. This diagnostic subset cannot become a 38-phase pass: its
-summary continues to list the other 37 phases as pending. The original CSP,
-rendering, page-error, missing-asset and cleanup assertions are unchanged.
+Dedicated-branch pushes now select `all`, preserving the original 38 unique
+phases in ten fresh-fixture batches. The 49 scheduled executions include each
+fixture's startup and repeated reader/compact prerequisite controls. Explicit
+dispatch still accepts its selected batch, including startup-only diagnosis on
+one new fixture. A subset cannot become a 38-phase pass: its summary lists
+unrun phases as pending. Restoring the full selection is not a completed-suite
+claim. The original CSP, rendering, page-error, missing-asset and cleanup
+assertions, dependency pins, permissions, budgets and evidence gates are
+unchanged.
+
+The successful startup diagnostic retained 36 enforced script CSP blocks and
+56 console-error observations, including 20 classified as unknown. The supplied
+root layout includes an external Google tag and inline tracking body that the
+privacy policy intentionally refuses to authorize; the per-page inline/external
+block counts are consistent with that enforcement. Sanitized evidence omits
+blocked URLs, so it does not establish every event's exact identity. Unknown
+console observations remain unresolved. Startup success does not imply a clean
+console or an absence of CSP events, and none are suppressed to obtain a pass.
 
 Passive startup listeners record response status/resource/MIME and failed-request
 categories privately, capped at 256 observations. Private page/console/CSP

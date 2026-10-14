@@ -49,7 +49,7 @@ jobs:
       - name: Run genuine browser batches under the owned fixture supervisor
         timeout-minutes: 245
         env:
-          SELECTED_BATCH: ${{ inputs.batch || 'startup' }}
+          SELECTED_BATCH: ${{ inputs.batch || 'all' }}
         run: |
           weebdex-platform/.build/hosted-python/bin/python \
             weebdex-platform/scripts/ci/run-hosted-browser.py \
