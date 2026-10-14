@@ -31,7 +31,7 @@ Every dialog/task has a synchronous open/generation fence as well as the child's
 route/disposal fence. Close, Escape, task replacement or navigation invalidates
 pending reviews and new signer/transport work. An already returned signed snapshot
 still passes the original CAS checks and is durably saved before transport stops.
-The existing final asynchronous IDB/beforeSend fence is retained. Lists check both
+Actual deferred public-action signer invocation also checks its view before a new prompt; after a returned action signature the exact original action is saved before stopping delivery. Fresh HTTP proof signing checks both sides of its prompt. The existing final asynchronous IDB/beforeSend fence is retained. Lists check both
 dialog and route ownership after awaited reads before changing mode or navigating.
 No IndexedDB schema, record normalization, publication policy or backend query is
 changed.

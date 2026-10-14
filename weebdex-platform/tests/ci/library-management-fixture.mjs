@@ -52,7 +52,7 @@ export async function fixture({ gateAt, changeDuringSign } = {}) {
     async getPublicKey() { calls.publicKey++; if (signerMode === 'connect') { entered.resolve(); await gate.promise; } return owner; },
     async signEvent(template) {
       calls.kinds.push(template.kind);
-      if ((signerMode === 'snapshot' && template.kind === 11999) || (['proof', 'recovery-proof'].includes(signerMode) && template.kind === 27235)) { entered.resolve(); await gate.promise; }
+      if ((signerMode === 'snapshot' && template.kind === 11999) || (signerMode === 'action' && template.kind === 5) || (['proof', 'recovery-proof'].includes(signerMode) && template.kind === 27235)) { entered.resolve(); await gate.promise; }
       return signed(template);
     },
   };
@@ -122,7 +122,7 @@ export async function fixture({ gateAt, changeDuringSign } = {}) {
     };
   }
   return {
-    calls, review, owner, graph, nostr, protocol, device, publication, assertCurrent, entered: entered.promise,
+    load, calls, review, owner, graph, nostr, protocol, device, publication, assertCurrent, entered: entered.promise,
     close() { alive = false; }, release: gate.resolve,
     async change() {
       if (changeDuringSign === 'device') await device.writeBatch([{ family: 'series', key: 'TitleOne01', id: 'TitleOne01', status: 'reading', notification: false, followedAt: new Date().toISOString(), updated_at: 1 }]);
@@ -131,4 +131,3 @@ export async function fixture({ gateAt, changeDuringSign } = {}) {
     async dispose() { device.db.close(); device.channel?.close(); protocol.close(); },
   };
 }
-

@@ -118,7 +118,10 @@ export async function sendReviewed(review: PublicReview, publicConsent: boolean,
     if (timestamp > now() + 60) throw Error('Metadata publication clock is ahead. Wait before signing.');
   }
   assertContext();
-  const event = await signExact(identity.signer, identity.owner, { kind: review.kind, created_at: timestamp, tags: review.tags, content: review.content });
+  // signExact invokes the external signer on a deferred turn. Check the view at
+  // that actual invocation, but retain a returned exact signed intent below.
+  const actionSigner = { signEvent: async (template: unknown) => { assertContext(); return identity.signer.signEvent(template); } };
+  const event = await signExact(actionSigner, identity.owner, { kind: review.kind, created_at: timestamp, tags: review.tags, content: review.content });
   identity.check();
   const path = review.kind === 5 ? '/account-deletions' : [0, 3, 10002].includes(review.kind) ? '/account-metadata' : '/social';
   const record = await rememberPublicAction({ event, relay: review.relay, path, purpose: review.purpose, state: 'prepared', message: 'Signed and saved locally; not sent yet', cancelled: false, createdAt: Date.now() });
@@ -193,7 +196,11 @@ export async function deliverPublicAction(id: string, assertContext: () => void 
     const active = async () => { const current = (await publicActionRecords()).find(row => row.event.id === id); identity.check(); assertContext(); if (!current || current.cancelled) throw Error('Further sending cancelled; an already sent request cannot be recalled'); };
     await active(); await updatePublicAction(id, { state: 'sending', message: 'Delivering this exact saved signed action' });
     try {
-      const receipt = await signedRequest(record.relay, identity.signer, identity.owner, record.path, 'POST', record.event, 65536, active);
+      // A fresh HTTP proof is disposable; closing its view must prevent another
+      // extension prompt or transport after a pending proof returns. The saved
+      // original action and final IDB/beforeSend cancellation check stay intact.
+      const proofSigner = { signEvent: async (template: unknown) => { assertContext(); const signed = await identity.signer.signEvent(template); assertContext(); return signed; } };
+      const receipt = await signedRequest(record.relay, proofSigner, identity.owner, record.path, 'POST', record.event, 65536, active);
       const accepted = isPublicActionReceipt(receipt.data) ? receipt.data : undefined;
       if (!accepted || accepted.id !== id || ![200, 202, 409].includes(receipt.status)) {
         if ([400, 401, 403, 404, 422].includes(receipt.status)) { await updatePublicAction(id, { state: 'refused', message: `Original service refused this exact action: HTTP ${receipt.status}`, receipt }); throw Error(`Original service refused this action: HTTP ${receipt.status}`); }
