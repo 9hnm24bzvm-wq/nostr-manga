@@ -71,6 +71,12 @@ COMPACT_HTTP_OUTCOMES = [
     'other5xx', 'otherstatus', 'transportfailure', 'invalidJSON',
 ]
 
+COMPACT_DATABASE_FAILURES = [
+    'none', 'unavailable', 'pool-wait-timeout', 'pool-create-timeout',
+    'pool-recycle-timeout', 'pool-closed', 'pool-backend', 'pool-other',
+    'query-canceled', 'query-lock', 'query-connection', 'query-database', 'query-client',
+]
+
 STATUSES = {'pending', 'running', 'passed', 'failed'}
 
 
@@ -98,10 +104,14 @@ def project(phase, acceptance):
     outcome = acceptance.get('compact_feed_http_outcome')
     if phase == 'ui12-compact-feed' and 'compact_feed_http_outcome' in acceptance:
         valid = valid and type(outcome) is str and outcome in COMPACT_HTTP_OUTCOMES
+    failure = acceptance.get('compact_feed_database_failure')
+    if phase == 'ui12-compact-feed' and 'compact_feed_database_failure' in acceptance:
+        valid = valid and type(failure) is str and failure in COMPACT_DATABASE_FAILURES
     value = {'schema': 1, 'record_valid': bool(valid), 'private_values_omitted': True,
             'raw_messages_exported': False,
             'check_results': [{'check_id': check_id, 'status': rows[check_id]} for check_id in identifiers]}
 
     if phase == 'ui12-compact-feed':
         value['compact_feed_http_outcome'] = outcome if type(outcome) is str and outcome in COMPACT_HTTP_OUTCOMES else 'unavailable'
+        value['compact_feed_database_failure'] = failure if type(failure) is str and failure in COMPACT_DATABASE_FAILURES else 'unavailable'
     return value

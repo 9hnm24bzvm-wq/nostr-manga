@@ -1,4 +1,5 @@
 mod derivatives;
+mod feed_diagnostics;
 pub mod languages;
 mod mutations;
 mod protocol_bridge;

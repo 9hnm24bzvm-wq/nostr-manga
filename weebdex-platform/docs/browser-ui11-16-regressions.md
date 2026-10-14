@@ -65,6 +65,34 @@ chapter, so global Spanish feed total can be 506; the compact title itself stays
 and prove all 505 title-specific IDs instead of pretending the additional row
 does not exist.
 
+## Compact-feed HTTP503 observation
+
+The disposable supervisor explicitly enables `fixture_feed_diagnostics`. Its
+production default is false, and production configuration rejects enabling it.
+Only chapter-feed database failures then add
+`X-WeebDex-Fixture-Feed-Failure`; the ordinary503 `unavailable` JSON and
+`Cache-Control: no-store` remain unchanged. Successful feeds and validation
+errors have no diagnostic header. No SQL, SQLSTATE, schema/type details,
+parameters, addresses or server messages are exposed by the header.
+
+The closed values distinguish pool wait/create/recycle timeouts, closed pool,
+backend/other checkout failure, query cancellation, lock contention, connection,
+and generic database/client failure. `query-canceled` observes PostgreSQL's
+cancellation category; it does not by itself prove a statement timeout or a slow
+projection. Missing, unknown or inconsistent header values become `unavailable`
+in evidence. The actual compact preflight records this separately from its HTTP
+outcome before the existing success/count assertions. The closed public evidence
+gate requires `success200` and diagnostic `none` for a phase to pass.
+
+Hosted run38554048951 returned HTTP503 in both compact-feed batches after the
+native pagination seed and Spanish preference checks passed. Its existing
+artifacts do not identify the database failure category. Repeated full parent
+and group projections inside each chapter DTO are a source-level performance
+hypothesis, not an established cause. This diagnostic addition changes no SQL,
+fixture data,505/506 expectation, PostgreSQL/deadpool implementation or time
+budget. A real PostgreSQL reproduction and hosted browser verification remain
+unrun for this change; no installed PostgreSQL binaries were available locally.
+
 ## Genuine fixture dependencies
 
 Use the disposable combined supervisor and the opt-in

@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { runUi11To16Journeys, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
 import { createJourneyCheck } from '../../scripts/journey-checks.mjs';
-import { compactFeedHttpOutcomes, compactFeedHttpStatus } from '../../scripts/compact-feed-http-outcome.mjs';
+import { compactFeedHttpOutcomes, compactFeedHttpStatus, compactFeedDatabaseFailures, compactFeedDatabaseFailure } from '../../scripts/compact-feed-http-outcome.mjs';
 
 const phase = 'ui12-compact-feed', prefix = 'compact-feed-fixture-';
 const checks = ['response-received', 'http-200', 'total-integer', 'total-at-least-seeded', 'total-within-known-scenarios'].map(id => prefix + id);
@@ -14,6 +14,13 @@ const privateError = message => Error('private fixture URL and response: ' + mes
 let cases = 0;
 assert.deepEqual(compactFeedHttpOutcomes, ['success200', 'rate-limited429', 'unavailable503', 'other4xx', 'other5xx', 'otherstatus', 'transportfailure', 'invalidJSON']);
 assert(Object.isFrozen(compactFeedHttpOutcomes));
+assert(Object.isFrozen(compactFeedDatabaseFailures));
+for (const failure of compactFeedDatabaseFailures.slice(2)) assert.equal(compactFeedDatabaseFailure(503, failure), failure);
+for (const failure of [undefined, null, '', 'none', 'unavailable', 'query-canceled private fixture', 'PRIVATE', 503, {}, []]) {
+  assert.equal(compactFeedDatabaseFailure(503, failure), 'unavailable');
+}
+assert.equal(compactFeedDatabaseFailure(200, undefined), 'none');
+for (const status of [200, 429, 500, undefined]) assert.equal(compactFeedDatabaseFailure(status, 'query-canceled'), 'unavailable');
 let classificationCases = 0;
 for (let status = 100; status <= 599; status++) {
   const expected = new Map([[200, 'success200'], [429, 'rate-limited429'], [503, 'unavailable503']]).get(status)
@@ -25,7 +32,7 @@ for (const status of [undefined, null, NaN, Infinity, -1, 0, 600, 429.5, 'privat
 }
 
 async function probe(options) {
-  const { status = 200, contentType = 'application/json', bilingual = false, fetchError, jsonError, failedCheck } = options;
+  const { status = 200, contentType = 'application/json', bilingual = false, fetchError, jsonError, failedCheck, databaseFailureHeader } = options;
   const body = Object.hasOwn(options, 'body') ? options.body : { total: 505 };
   const report = {}, saved = [], listeners = new Map(), calls = [], steps = [];
   const nextControl = Error('stop before browser-dependent update controls');
@@ -40,7 +47,7 @@ async function probe(options) {
   const context = { request: { async fetch(url, options) {
     calls.push({ url, options });
     if (fetchError) throw fetchError;
-    return { status: () => status, headers: () => ({ 'content-type': contentType }), async json() { if (jsonError) throw jsonError; return body; } };
+    return { status: () => status, headers: () => ({ 'content-type': contentType, ...(databaseFailureHeader === undefined ? {} : { 'x-weebdex-fixture-feed-failure': databaseFailureHeader }) }), async json() { if (jsonError) throw jsonError; return body; } };
   } } };
   await runUi11To16Journeys({ phase, fixture, page, context, origin: 'http://127.0.0.1:1', report, save, redactions: new Set(),
     insist(value, message) { assert(value, message); },
@@ -61,8 +68,10 @@ async function probe(options) {
   assert.equal(listeners.size, 0, 'A successful preflight must still release later observation listeners');
   assert.equal(report.compact_feed_http_outcome, fetchError ? 'transportfailure' : jsonError ? 'invalidJSON' : compactFeedHttpStatus(status));
   assert(compactFeedHttpOutcomes.includes(report.compact_feed_http_outcome));
-  assert.deepEqual(Object.keys(report), ['journey_checks', 'compact_feed_http_outcome']);
+  assert.equal(report.compact_feed_database_failure, fetchError ? 'unavailable' : compactFeedDatabaseFailure(status, databaseFailureHeader));
+  assert.deepEqual(Object.keys(report), ['journey_checks', 'compact_feed_http_outcome', 'compact_feed_database_failure']);
   assert(saved.some(row => row.compact_feed_http_outcome === report.compact_feed_http_outcome
+    && row.compact_feed_database_failure === report.compact_feed_database_failure
     && row.journey_checks.some(check => check.check_id === prefix + 'response-received' && check.status === 'running')),
   'The closed outcome must persist before the request checkpoint finishes');
   const rows = new Map(report.journey_checks.map(row => [row.check_id, row.status]));
@@ -95,6 +104,10 @@ await probe({ body: { total: 505, private_response: 'private fixture body must n
 await probe({ bilingual: true, body: { total: 506 } });
 for (const status of [302, 400, 401, 403, 429, 500, 503]) await probe({ status, failedCheck: 'http-200' });
 await probe({ status: 503, contentType: 'text/html', failedCheck: 'http-200' });
+for (const databaseFailureHeader of [...compactFeedDatabaseFailures.slice(2), 'private fixture query detail']) {
+  await probe({ status: 503, databaseFailureHeader, failedCheck: 'http-200' });
+}
+await probe({ status: 503, databaseFailureHeader: 'query-canceled', jsonError: privateError('bad JSON with observed database failure'), failedCheck: 'response-received' });
 for (const body of [undefined, null, {}, { total: null }, { total: '505' }, { total: 505.5 }, { total: NaN }, { total: Infinity }, { total: Number.MAX_SAFE_INTEGER + 1 }]) {
   await probe({ body, failedCheck: 'total-integer' });
 }

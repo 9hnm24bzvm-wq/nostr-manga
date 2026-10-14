@@ -1,4 +1,5 @@
 use super::{
+    feed_diagnostics::FeedError,
     query::{QueryParams, Sql, chapter_filters, manga_filters, window_seconds},
     repository::CatalogRepository,
     validation as v,
@@ -413,32 +414,32 @@ pub async fn chapter_get(
 pub async fn chapter_search(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, true, false, false).await
 }
 pub async fn chapter_latest(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, true, false, false).await
 }
 pub async fn chapter_updates(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, false, false, true).await
 }
 pub async fn chapter_top(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, true, true, false).await
 }
 pub async fn chapter_list(
     State(state): State<AppState>,
     Path(id): Path<String>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     CatalogRepository::new(state.db.clone())
         .get_manga(&id)
         .await?;
@@ -451,7 +452,7 @@ async fn chapter_feed(
     mapped: bool,
     top: bool,
     updates: bool,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     let q = QueryParams::parse(raw)?;
     let is_manga_list = manga.is_some();
     let mut sql = Sql::default();
@@ -472,7 +473,7 @@ async fn chapter_feed(
     let sort = if top {
         ranking(&q, &mut sql, "chapter", "c.id")?
     } else {
-        match q.first("sort").unwrap_or(if is_manga_list{"chapter"}else{"publishedAt"}){"publishedAt"=>"c.published_at".to_owned(),"createdAt"=>"c.created_at".to_owned(),"updatedAt"=>"c.updated_at".to_owned(),"chapter"=>"CASE WHEN c.chapter ~ '^[0-9]' THEN substring(c.chapter FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"volume"=>"CASE WHEN c.volume ~ '^[0-9]' THEN substring(c.volume FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"views"=>"COALESCE(s.views,0)".to_owned(),_=>return Err(ApiError::bad_request("Invalid chapter sort"))}
+        match q.first("sort").unwrap_or(if is_manga_list{"chapter"}else{"publishedAt"}){"publishedAt"=>"c.published_at".to_owned(),"createdAt"=>"c.created_at".to_owned(),"updatedAt"=>"c.updated_at".to_owned(),"chapter"=>"CASE WHEN c.chapter ~ '^[0-9]' THEN substring(c.chapter FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"volume"=>"CASE WHEN c.volume ~ '^[0-9]' THEN substring(c.volume FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"views"=>"COALESCE(s.views,0)".to_owned(),_=>return Err(ApiError::bad_request("Invalid chapter sort").into())}
     };
     let sort_text = match q.first("sort").unwrap_or(if is_manga_list {
         "chapter"
@@ -509,10 +510,13 @@ async fn chapter_feed(
     Ok(Json(
         state
             .db
-            .client()
-            .await?
+            .pool()
+            .get()
+            .await
+            .map_err(|error| FeedError::pool(error, state.config.fixture_feed_diagnostics))?
             .query_one(&query, &sql.params())
-            .await?
+            .await
+            .map_err(|error| FeedError::query(error, state.config.fixture_feed_diagnostics))?
             .get(0),
     ))
 }

@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "status": "diagnostic-seams-passed",
+  "root_cause_established": false,
+  "runtime_fix_claimed": false,
+  "source_base_commit": "01a593b7d167add9a4c8e7936d4e86abd10fcf21",
+  "source_base_tree": "0103a59fdbbab71750ddbda27b3ac9b58843ccbb",
+  "hosted_observation": {
+    "run_id": 38554048951,
+    "batches": [
+      "ui-feed",
+      "ui-reader"
+    ],
+    "compact_seed_and_preferences": "passed",
+    "compact_fixture_http_outcome": "unavailable503",
+    "database_failure_category": "not_recorded_by_that_run"
+  },
+  "changes": {
+    "fixture_opt_in_default": false,
+    "diagnostics_rejected_in_production": true,
+    "raw_sqlstate_or_server_messages_in_header": false,
+    "sql_unchanged": true,
+    "native_postgresql_deadpool_unchanged": true,
+    "timeouts_unchanged": true,
+    "fixture_counts_and_505_506_assertions_unchanged": true,
+    "journey_identical_except_finite_observation_callback": true,
+    "ordinary_503_json_and_no_store_unchanged": true
+  },
+  "verification": {
+    "rust_library": {
+      "command": "cargo test --offline --locked --manifest-path weebdex-platform/backend/Cargo.toml --lib -j2",
+      "passed": 69,
+      "failed": 0,
+      "ignored": 0
+    },
+    "rust_all_targets": {
+      "command": "cargo check --offline --locked --manifest-path weebdex-platform/backend/Cargo.toml --all-targets -j2",
+      "status": "passed",
+      "existing_warning": "unused helper in protocol_bridge_http"
+    },
+    "python_ci": {
+      "command": "python3 -m unittest discover -s weebdex-platform/tests/ci -p 'test_*.py' -v",
+      "passed": 43,
+      "failed": 0
+    },
+    "compact_node": {
+      "cases": 46,
+      "http_classification_cases": 511,
+      "status": "passed"
+    },
+    "library_wiring_node": {
+      "cases": 61,
+      "status": "passed"
+    },
+    "other_node_ci": {
+      "test_files_passed": 12,
+      "test_files_missing_artifacts": 2,
+      "missing_artifacts": [
+        "test_composed_semantic_projection.mjs needs a completed local semantic projection",
+        "test_semantic_validation_fail_closed.mjs needs the same completed local projection"
+      ],
+      "vm_module_tests_rerun_with_required_flag": true,
+      "title_selector_rerun_with_existing_hash_pinned_readonly_dependencies": true
+    },
+    "frontend_source_parity": {
+      "preserved_original_files": 676,
+      "all_identical": true
+    },
+    "format": {
+      "changed_rust_files": "passed",
+      "git_diff_check": "passed",
+      "workspace_wide_format_check": "preexisting unrelated original protocol formatting differences; no unrelated formatting applied"
+    },
+    "typed_error_seams": [
+      "real closed deadpool PoolError without a connection",
+      "real tokio-postgres query ErrorResponse decoding over an in-memory protocol peer; no SQL execution",
+      "fixture flag disabled/enabled response headers and exact503 JSON",
+      "production configuration explicitly rejects diagnostic enablement"
+    ]
+  },
+  "not_executed": [
+    "real PostgreSQL SQL/plan/runtime reproduction because no installed or vendored PostgreSQL binaries were present",
+    "hosted CI or browser rerun",
+    "fresh composed frontend semantic projection",
+    "any upload or publication"
+  ],
+  "limitations": [
+    "Repeated nested parent/group projection work is only a source-level performance hypothesis.",
+    "query-canceled identifies the cancellation category and does not alone prove a statement timeout.",
+    "The in-memory protocol peer is an explicit transport/error stand-in, not PostgreSQL execution or performance evidence.",
+    "The original hosted failure remains unresolved until a real database category or reproduction is observed."
+  ],
+  "local_receipt_sha256": {
+    "compact-feed-all-rust-lib-tests-final.txt": "71cbc04373f081847939fc6ce26466448d4198a5ac4cc664240ff95101a2fea3",
+    "compact-feed-all-target-check.txt": "69844b24cf5f31279a407ac94f4336c8fb5ef7c46db3b76d683ef41c6013ef6d",
+    "compact-feed-all-python-ci.txt": "e2df7908f71818f7dfc6e60b0c2df7bdafa149f8c3d3b368be41de80f0fad2b6",
+    "compact-feed-node-ci-tests.txt": "7e90f8c4f32af9200ede2491c65c024cc60adb77a1cc1b693e8fd521a5c9f75c",
+    "compact-feed-bootstrap-vm.txt": "a3c44f5a92410b6a68fb5ba766130beffe5e77fde13c8a799f967883dae8139e",
+    "compact-feed-semantic-vm.txt": "2614d3816f633a16d59e3c2271e9bf6dd284fc1d3e28d7813f09982361ea254d",
+    "compact-feed-title-pinned-readonly.txt": "3b9a578eb254e4fbb1ae9d1f6ac8d989eecb81bdb100541294698eef10d2ee04",
+    "compact-feed-frontend-parity.txt": "f222f2b3bb57e3aab334e503970a172cef004bd7703e4af619f1475a74135583"
+  }
+}

@@ -17,6 +17,8 @@ pub struct Config {
     pub trusted_proxy_hops: usize,
     /// Explicit production gate; local fixtures must leave this disabled.
     pub production: bool,
+    /// Closed feed failure headers for disposable fixtures only; rejected in production.
+    pub fixture_feed_diagnostics: bool,
     /// An explicitly limited protocol reader does not need a publisher signer.
     pub protocol_read_only: bool,
     pub json_body_timeout_seconds: u64,
@@ -52,6 +54,7 @@ impl Default for Config {
             trusted_proxy_peers: Vec::new(),
             trusted_proxy_hops: 1,
             production: false,
+            fixture_feed_diagnostics: false,
             protocol_read_only: false,
             json_body_timeout_seconds: 30,
             upload_body_timeout_seconds: 180,
@@ -282,6 +285,10 @@ impl Config {
     }
 
     pub fn validate(&self) -> Result<()> {
+        ensure!(
+            !self.production || !self.fixture_feed_diagnostics,
+            "fixture feed diagnostics are forbidden in production"
+        );
         ensure!(
             self.trusted_proxy_peers.len() <= 32 && (1..=8).contains(&self.trusted_proxy_hops),
             "trusted proxy address/hop bounds"
@@ -660,6 +667,22 @@ mod tests {
         });
         (root, config)
     }
+    #[test]
+    fn fixture_feed_diagnostics_are_opt_in_and_forbidden_in_production() {
+        let mut config: Config = serde_json::from_str("{}").unwrap();
+        assert!(!config.fixture_feed_diagnostics);
+        config.fixture_feed_diagnostics = true;
+        assert!(config.validate().is_ok());
+        config.production = true;
+        assert!(
+            config
+                .validate()
+                .unwrap_err()
+                .to_string()
+                .contains("fixture feed diagnostics are forbidden in production")
+        );
+    }
+
     #[test]
     fn standalone_publication_backend_is_rejected_even_in_development() {
         let (_root, mut config) = runtime_fixture();

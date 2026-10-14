@@ -362,7 +362,7 @@ export async function runUi11To16Journeys(h) {
     const data = dependency("compact");
     await check("compact-feed-spanish-preferences", async () => { await chapterLanguagePreference("Spanish"); await page.setViewportSize({ width: 1440, height: 1800 }); });
     const nativeTotal = await check("compact-feed-fixture-total", async () => {
-      const probe = await check("compact-feed-fixture-response-received", async () => api("/api/chapter/feed?tlang=es&limit=100", {}, outcome => { report.compact_feed_http_outcome = outcome; h.save?.(); }));
+      const probe = await check("compact-feed-fixture-response-received", async () => api("/api/chapter/feed?tlang=es&limit=100", {}, (outcome, failure) => { report.compact_feed_http_outcome = outcome; report.compact_feed_database_failure = failure; h.save?.(); }));
       await check("compact-feed-fixture-http-200", async () => { insist(probe.status === 200, "The actual Spanish fixture feed did not return HTTP200"); });
       await check("compact-feed-fixture-total-integer", async () => { insist(Number.isSafeInteger(probe.body?.total), "The actual Spanish fixture feed did not return an integer total"); });
       await check("compact-feed-fixture-total-at-least-seeded", async () => { insist(probe.body.total >= data.total, "The actual Spanish fixture feed contains fewer chapters than the recorded compact seed"); });

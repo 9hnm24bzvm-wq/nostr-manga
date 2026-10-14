@@ -342,7 +342,7 @@ class Fixture:
         if self.recipient_enabled:self.psql('CREATE DATABASE weebdex_browser_recipient_test;',database='postgres')
     def config(self):
         uploads=self.run/'uploads'; uploads.mkdir()
-        config={'production':False,'protocol_read_only':False,'bind':f'127.0.0.1:{self.http_port}',
+        config={'production':False,'fixture_feed_diagnostics':True,'protocol_read_only':False,'bind':f'127.0.0.1:{self.http_port}',
                 'public_origin':self.origin,'ui_dir':str(self.ui_dir),'uploads_dir':str(uploads),
                 'database_connections':8,'database_plaintext_local':True,'maximum_requests':32,'registration_enabled':True,
                 'json_body_timeout_seconds':30,'upload_body_timeout_seconds':180,'shutdown_grace_seconds':210,

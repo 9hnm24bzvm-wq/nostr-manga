@@ -38,7 +38,9 @@ process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui,..
         key = 'account_recovery_checks' if phase == 'account-recovery' else 'journey_checks'
         acceptance = {'phase': phase, 'passed': True, 'completed_utc': 'synthetic-finalized', 'proxy_lifecycle': {'connect_denials': 0, 'expected_connect_resets': 0, 'remaining_socket_count': 0, 'observations_truncated': False, 'shutdown_started': True, 'closed': True}, 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'exit_observed': True, 'exit_code': 0}, 'steps': [{'status': 'passed'}], 'page_errors': [],
                       key: [{'check_id': check_id, 'status': status} for check_id, status in zip(contract.CHECKS[phase], statuses)]}
-        if phase == 'ui12-compact-feed': acceptance['compact_feed_http_outcome'] = 'success200'
+        if phase == 'ui12-compact-feed':
+            acceptance['compact_feed_http_outcome'] = 'success200'
+            acceptance['compact_feed_database_failure'] = 'none'
         owned = {'fixture_only': True, 'phase': phase, 'verified_stopped': True, 'forced': False, 'returncode': 0}
         return acceptance, owned, key
 
@@ -119,6 +121,33 @@ process.stdout.write(JSON.stringify({'account-recovery':account,...ui10,...ui,..
             row = runner.project_phase(phase, 'ui-reader', dict(acceptance, compact_feed_http_outcome=outcome), owned)
             self.assertEqual(row['journey_diagnostics']['compact_feed_http_outcome'], outcome)
             validator.phases({'schema':1,'phases':[row],'batches':[]})
+
+    def test_compact_database_failure_is_closed_and_required_for_pass(self):
+        code = "import {compactFeedDatabaseFailures as values} from './scripts/compact-feed-http-outcome.mjs';process.stdout.write(JSON.stringify(values));"
+        result = subprocess.run(['node','--input-type=module','-e',code],cwd=ROOT,text=True,check=True,capture_output=True)
+        self.assertEqual(json.loads(result.stdout), contract.COMPACT_DATABASE_FAILURES)
+        phase = 'ui12-compact-feed'; acceptance, owned, _ = self.phase(phase)
+        baseline = runner.project_phase(phase, 'ui-reader', acceptance, owned)
+        secret = 'private SQL URL and server detail'
+        for failure in [None, secret, {}, [], False, 503]:
+            row = runner.project_phase(phase, 'ui-reader', dict(acceptance, compact_feed_database_failure=failure), owned)
+            self.assertFalse(row['journey_diagnostics']['record_valid'])
+            self.assertNotIn(secret, json.dumps(row))
+            with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
+        for failure in contract.COMPACT_DATABASE_FAILURES[1:]:
+            row = copy.deepcopy(baseline); row['journey_diagnostics']['compact_feed_database_failure'] = failure
+            with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
+        missing = dict(acceptance); missing.pop('compact_feed_database_failure')
+        row = runner.project_phase(phase, 'ui-reader', missing, owned)
+        self.assertEqual(row['journey_diagnostics']['compact_feed_database_failure'], 'unavailable')
+        with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
+        for failure in contract.COMPACT_DATABASE_FAILURES[1:]:
+            failed = dict(acceptance, passed=False, compact_feed_http_outcome='unavailable503', compact_feed_database_failure=failure, steps=[{'status':'failed'}])
+            row = runner.project_phase(phase, 'ui-reader', failed, dict(owned, returncode=1))
+            self.assertEqual(row['journey_diagnostics']['compact_feed_database_failure'], failure)
+            validator.phases({'schema':1,'phases':[row],'batches':[]})
+        row = copy.deepcopy(baseline); row['journey_diagnostics'].pop('compact_feed_database_failure')
+        with self.assertRaises(ValueError): validator.phases({'schema':1,'phases':[row],'batches':[]})
 
     def test_all_instrumented_phases_reject_missing_duplicate_reversed_or_private_check_rows(self):
         for phase in contract.CHECKS:
