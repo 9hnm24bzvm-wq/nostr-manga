@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "run_id": 38615879103,
+  "run_attempt": 1,
+  "job_id": 116030694258,
+  "remote_commit": "e94029800c1ffde6f1d7e90d36d121ef54c12651",
+  "remote_tree": "83141fce1dba67dbd529cc1da53b065bba672133",
+  "artifact_id": 11921810806,
+  "zip_bytes": 8667,
+  "zip_sha256": "ac3d15d39de5350e5fdc3910b474899e6d1df20652077e6f58fce49db59acf4a",
+  "zip_digest_matches_github": true,
+  "strict_three_name_allowlist": true,
+  "official_file_count": 3,
+  "closed_schemas_valid": true,
+  "summary_present": true,
+  "summary_recomputed_exact": true,
+  "prepared_source_snapshot_bound": true,
+  "reviewed_source_snapshot_sha256": "aa21028dea7b2b521bcc4a3c75d723824f8da0cdb295f88e87ebbc5ad3e20366",
+  "source_snapshot_inputs": 1058,
+  "original_676_plus_3_preserved": true,
+  "required_unique_phases": 39,
+  "planned_batches": 11,
+  "planned_phase_executions": 51,
+  "preparation_status": "prepared",
+  "native_feed_regression": {
+    "cleanup_verified": true,
+    "deadline_exceeded": false,
+    "fixture_cleanup_verified": true,
+    "measurement": {
+      "all_505_ids_reached": true,
+      "baseline_ms": 3450,
+      "baseline_outcome": "success",
+      "batched_first_page_ms": 1163,
+      "bilingual506_preserved": true,
+      "canonical_sample_parity": true,
+      "scenario": "compact-feed505-plus10000-metadata",
+      "statement_timeout_unchanged": true,
+      "visibility_withdrawals_verified": true
+    },
+    "owned_terminal": true,
+    "process_exit_code": 0,
+    "process_started": true,
+    "schema": 1,
+    "status": "passed"
+  },
+  "summary": {
+    "actual_phase_runs": 36,
+    "all_fixture_lifecycles_clean": false,
+    "all_fixture_teardowns_verified": true,
+    "budget_exhausted": false,
+    "failed_unique_phases": [
+      "editorial",
+      "reader",
+      "signed-library",
+      "signed-recipients",
+      "signed-social",
+      "signed-source-controls",
+      "ui14-account-failures",
+      "ui14-actor-follow",
+      "ui14-entity-pagination",
+      "upload"
+    ],
+    "full_suite_passed": false,
+    "interrupted": false,
+    "passed_unique_phases": [
+      "account",
+      "account-recovery",
+      "filters",
+      "local-library",
+      "startup",
+      "ui10-api-client",
+      "ui10-auth-lifetimes",
+      "ui10-preferences",
+      "ui10-reader-transition",
+      "ui10-recovery-lifetimes",
+      "ui11-device-navigation",
+      "ui11-device-progress",
+      "ui12-compact-feed",
+      "ui13-feed-authority",
+      "ui13-terminal-feed"
+    ],
+    "pending_unique_phases": [
+      "announcements",
+      "community",
+      "pwa",
+      "signed-context",
+      "signed-namespace",
+      "signed-profile",
+      "signed-restart",
+      "ui14-home-failures",
+      "ui15-16-empty-tabs",
+      "ui15-chapter-filter",
+      "ui15-reader-feedback",
+      "ui15-reader-geometry",
+      "ui16-home-preferences",
+      "ui16-search-cap"
+    ],
+    "pixel_parity_established": false,
+    "private_runtime_artifacts_uploaded": false,
+    "required_unique_phases": 39,
+    "schema": 1,
+    "screenshots_or_raw_logs_uploaded": false,
+    "selected_scope_passed": false,
+    "selection": "all"
+  },
+  "safe_json_files": {
+    "summary.json": {
+      "bytes": 1170,
+      "sha256": "3a848620fbe9c0ea11a2e5f620a38acf8fcdd18e215c59809565554235b754a3"
+    },
+    "phases.json": {
+      "bytes": 209989,
+      "sha256": "cf19b0c52c71ef7c51824e3de254df4fa62e9678d72ab63026480d5675eb97e8"
+    },
+    "preparation.json": {
+      "bytes": 1353,
+      "sha256": "9932deaf9411dda46a3848324e7e33a2a50a733aa08c3658e7f95059cb84b419"
+    }
+  }
+}
