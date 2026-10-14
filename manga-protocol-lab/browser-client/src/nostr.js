@@ -17,10 +17,13 @@ function isObject(value) {
 /** @param {unknown} value @returns {value is string[][]} */
 function isTags(value) {
   if (!Array.isArray(value)) return false;
-  // Dense iteration rejects holes before signed arrays become JSON null values.
-  for (const tag of value) {
+  // JSON serialization reads indexed values, not a signer-supplied iterator.
+  for (let index = 0; index < value.length; index++) {
+    /** @type {unknown} */
+    const tag = value[index];
     if (!Array.isArray(tag)) return false;
-    for (const entry of tag) if (typeof entry !== "string") return false;
+    for (let entry = 0; entry < tag.length; entry++)
+      if (typeof tag[entry] !== "string") return false;
   }
   return true;
 }

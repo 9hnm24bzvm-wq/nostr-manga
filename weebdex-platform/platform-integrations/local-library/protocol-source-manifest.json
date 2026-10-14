@@ -25,7 +25,7 @@
     {
       "source": "manga-protocol-lab/browser-client/src/nostr.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/nostr.js",
-      "sha256": "6155e88279746fc060c00fa728afd8dd7aba20dfffc9b72e2c05097462d72e08"
+      "sha256": "1e71954b97415c36cb42b432148bfa32129be521d57e6ba125b2bce736c63603"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/outbox.js",

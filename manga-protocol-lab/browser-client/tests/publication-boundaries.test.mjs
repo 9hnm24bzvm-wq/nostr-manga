@@ -168,9 +168,20 @@ test("event verification accepts valid events and refuses unknown input", async 
   }
 });
 
+const spoofedOuterTags = new Array(1);
+spoofedOuterTags[Symbol.iterator] = function* () {
+  yield [];
+};
+const spoofedInnerTag = new Array(1);
+spoofedInnerTag[Symbol.iterator] = function* () {
+  yield "p";
+};
+
 for (const [label, tags] of [
   ["sparse outer tags", new Array(1)],
   ["sparse inner tag", [new Array(1)]],
+  ["sparse outer tags with spoofed iterator", spoofedOuterTags],
+  ["sparse inner tag with spoofed iterator", [spoofedInnerTag]],
 ]) {
   test(
     "event verification rejects signed " + label + " in process and on wire",
