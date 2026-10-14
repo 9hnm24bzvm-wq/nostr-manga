@@ -30,7 +30,9 @@ That evidence does not contain an editorial native error or prove a new hosted p
 4. `/cover?manga=...` is not a native GET route. The actual editor reads draft covers
    at `/manga/{id}/covers?draft=true`, with browser owner/staff authorization. The
    journey uses that route and retains its200 assertion, adding an exact nonempty
-   original PNG identity/dimensions/version check against the private draft's cover.
+   original PNG identity/dimensions/version check against the private draft's cover. Both IDs must independently satisfy the native
+   ten-ASCII-alphanumeric contract; version must be a positive safe integer, so
+   two absent IDs or a coerced/fractional version cannot fake confirmation.
 
 All98 original assertion predicates/messages remain in the same order, with only
 that explicit title200→201 contract correction. The historical fingerprint test
@@ -76,12 +78,13 @@ TypeScript5.9.3) and existing JSDOM27.0.1, with no installation:
   restore and actual checked/stage callbacks against native DOM controls, including
   old disabled-field reproduction, already-numbered mode, and disabled-checkbox
   fail-closed behavior. Bindings are explicit stand-ins, not a full Bits mount.
-- `test_browser_editorial_diagnostics.mjs`:35 cases execute the actual outer branch,
+- `test_browser_editorial_diagnostics.mjs`:46 cases execute the actual outer branch,
   recorder and owned event helper, including every checkpoint interruption, wrong
-  create statuses and false cover200 receipts. Controls/API/database are finite
+  create statuses and false cover200 receipts, including missing IDs on both sides
+  and non-native IDs/string/fractional/infinite/unsafe versions. Controls/API/database are finite
   stand-ins; the actual retained PNG generator supplies the original image input.
 - Upload diagnostics and original selector/assertion suites add six more cases:
-  all92 strict Node cases pass. All13 Python diagnostic/gate cases pass.
+  all103 strict Node cases pass. All13 Python diagnostic/gate cases pass.
 - `verify-frontend-parity.py`:676 attachment hashes unchanged.
 - Fresh actual composed strict projection:0 errors,15 pre-existing warnings,
   53 reachable integration files,679 canonical/checker inputs unchanged. The first
