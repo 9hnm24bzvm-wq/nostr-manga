@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "status": "local-native-and-source-passed-browser-unverified",
+  "postgres_version": "18.6",
+  "native_fixture_kind": "synthetic-sql-dto-505-plus10000-metadata-with-original-schema-and-installed-canonical-policy",
+  "unchanged_statement_budget_ms": 5000,
+  "unchanged_lock_budget_ms": 1000,
+  "native_full_regressions": [
+    {
+      "observation": "regression-fixed",
+      "baseline_ms": 5001,
+      "baseline_outcome": "query-canceled",
+      "candidate_first_page_ms": 190,
+      "fixture_only": true,
+      "full_canonical_first_page_comparison": true,
+      "installed_policy": "plpgsql",
+      "maximum_discarded_join_pairs": 1,
+      "parent_point_lookup": true,
+      "statistics_rows": 0,
+      "supervisor_elapsed_seconds": 21.396,
+      "owned_cleanup_verified": true,
+      "fixture_cleanup_verified": true
+    },
+    {
+      "observation": "regression-final",
+      "baseline_ms": 5001,
+      "baseline_outcome": "query-canceled",
+      "candidate_first_page_ms": 172,
+      "fixture_only": true,
+      "full_canonical_first_page_comparison": true,
+      "installed_policy": "plpgsql",
+      "maximum_discarded_join_pairs": 1,
+      "parent_point_lookup": true,
+      "statistics_rows": 0,
+      "supervisor_elapsed_seconds": 20.047,
+      "owned_cleanup_verified": true,
+      "fixture_cleanup_verified": true
+    },
+    {
+      "observation": "final-reviewed-plan-counter",
+      "baseline_ms": 5001,
+      "baseline_outcome": "query-canceled",
+      "candidate_first_page_ms": 187,
+      "fixture_only": true,
+      "full_canonical_first_page_comparison": true,
+      "installed_policy": "plpgsql",
+      "maximum_discarded_join_pairs": 1,
+      "parent_point_lookup": true,
+      "statistics_rows": 0,
+      "supervisor_elapsed_seconds": 19.558,
+      "owned_cleanup_verified": true,
+      "fixture_cleanup_verified": true
+    }
+  ],
+  "source_tests": {
+    "rust_library_passed": 74,
+    "plan_counter_unit_passed": 1,
+    "all_targets_check": "passed",
+    "python_ci_passed": 56,
+    "compact_node_cases": 46,
+    "compact_classification_cases": 511,
+    "library_wiring_cases": 61,
+    "rustfmt": "passed",
+    "shell_syntax": "passed",
+    "diff_check": "passed",
+    "frontend_source_parity_files": 676,
+    "native_closed_projection": "passed"
+  },
+  "corrected_development_failures": [
+    "duplicate user-thread insert conflicted with existing trigger; use real trigger-created thread",
+    "temporary profiling-helper syntax error; no accepted result and owned cleanup verified"
+  ],
+  "acceptance_limits": {
+    "genuine_browser_native_media_candidate": "unrun",
+    "hosted_candidate": "unrun",
+    "generalized_performance_claim": false,
+    "original_hosted_cancellation_reason_uniquely_proven": false,
+    "live_preview_touched": false,
+    "non_null_event_lookup_changed": false
+  }
+}

@@ -1,5 +1,14 @@
 # Compact feed request-local projection reuse
 
+## Later correction
+
+The first batching patch was insufficient in hosted run38626003249. Its passing
+native gate used the trivial migration policy rather than the installed runtime
+policy and did not pin stale statistics. See [correlation planning correction](compact-feed-correlated-lookups.md)
+for the additive0088 fix and its stronger native regression. The historical
+observations below describe the original batching implementation and its initial
+verification boundary, not current completion evidence.
+
 ## Evidence and current boundary
 
 Verified hosted run38584846100 returned HTTP503 and the closed category

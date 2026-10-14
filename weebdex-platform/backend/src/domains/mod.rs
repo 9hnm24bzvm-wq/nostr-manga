@@ -193,4 +193,9 @@ pub const MIGRATIONS: &[Migration] = &[
         name: "0087_catalog_chapter_relationship_projection",
         sql: include_str!("../../migrations/0087_catalog_chapter_relationship_projection.sql"),
     },
+    Migration {
+        version: 88,
+        name: "0088_catalog_correlated_visibility_lookups",
+        sql: include_str!("../../migrations/0088_catalog_correlated_visibility_lookups.sql"),
+    },
 ];

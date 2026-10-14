@@ -2,6 +2,11 @@
 //! `selected` is already paginated. Materialization makes projection work
 //! proportional to distinct selected parents/groups, not the chapter count.
 
+// Keep the parent point lookup correlated before evaluating public filters.
+// Without the boundary, stale statistics can turn this into a join-filter scan
+// of every eligible metadata-only title for every chapter. OFFSET 0 is deliberate.
+pub(super) const CHAPTER_PARENT_LOOKUP: &str = "JOIN LATERAL(SELECT * FROM platform.catalog_manga parent WHERE parent.id=c.manga_id OFFSET 0)m ON TRUE";
+
 pub(super) fn chapter_page_projection(order: &str, limit: i64, page: i64, mapped: bool) -> String {
     // `order` is the validated ASC/DESC vocabulary from QueryParams::order.
     let map = if mapped {
@@ -28,11 +33,11 @@ mod tests {
                 .all(|pair| pair[0].version < pair[1].version)
         );
         assert_eq!(
-            migrations[migrations.len() - 3..]
+            migrations[migrations.len() - 4..]
                 .iter()
                 .map(|m| m.version)
                 .collect::<Vec<_>>(),
-            [85, 86, 87]
+            [85, 86, 87, 88]
         );
         let prerequisite = migrations.iter().find(|m| m.version == 86).unwrap();
         assert_eq!(prerequisite.name, "0086_visibility_policy_preparation");
@@ -40,6 +45,53 @@ mod tests {
             hex::encode(Sha256::digest(prerequisite.sql.as_bytes())),
             "04d617d8836d47d7ab572c03ac7dc2e3a5b362415bffe34f99d94d3ed07b87b6"
         );
+    }
+
+    #[test]
+    fn parent_join_is_a_correlated_primary_key_lookup_before_filters() {
+        assert_eq!(
+            CHAPTER_PARENT_LOOKUP,
+            "JOIN LATERAL(SELECT * FROM platform.catalog_manga parent WHERE parent.id=c.manga_id OFFSET 0)m ON TRUE"
+        );
+    }
+
+    #[test]
+    fn correlation_migration_preserves_canonical_fields_and_authority() {
+        let migration =
+            include_str!("../../../migrations/0088_catalog_correlated_visibility_lookups.sql");
+        let previous =
+            include_str!("../../../migrations/0087_catalog_chapter_relationship_projection.sql")
+                .split("AS $$\n")
+                .nth(1)
+                .unwrap()
+                .split("\n$$;")
+                .next()
+                .unwrap();
+        let chapter = migration
+            .split("AS $$\n")
+            .nth(1)
+            .unwrap()
+            .split("\n$$;")
+            .next()
+            .unwrap();
+        assert_eq!(chapter.replace(" OFFSET 0", ""), previous);
+        assert_eq!(chapter.matches(" OFFSET 0").count(), 1);
+        let previous_thread = include_str!("../../../migrations/0081_community_visibility.sql")
+            .split("CREATE OR REPLACE FUNCTION platform.community_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n")
+            .nth(1).unwrap().split("\n$$;").next().unwrap();
+        let thread = migration.split("CREATE OR REPLACE FUNCTION platform.community_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n")
+            .nth(1).unwrap().split("\n$$;").next().unwrap();
+        assert_eq!(
+            thread
+                .replace(
+                    CHAPTER_PARENT_LOOKUP,
+                    "JOIN platform.catalog_manga m ON m.id=c.manga_id"
+                )
+                .replace(" OFFSET 0", ""),
+            previous_thread
+        );
+        assert_eq!(thread.matches(" OFFSET 0").count(), 2);
+        assert!(!migration.contains("SECURITY DEFINER"));
     }
 
     #[test]

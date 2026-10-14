@@ -1,6 +1,6 @@
 use super::{
     feed_diagnostics::FeedError,
-    feed_projection::chapter_page_projection,
+    feed_projection::{CHAPTER_PARENT_LOOKUP, chapter_page_projection},
     query::{QueryParams, Sql, chapter_filters, manga_filters, window_seconds},
     repository::CatalogRepository,
     validation as v,
@@ -499,7 +499,7 @@ async fn chapter_feed(
     };
     let projection = chapter_page_projection(order, q.limit, q.page, mapped);
     let query = format!(
-        "WITH matched AS(SELECT {unique} c.id,c.manga_id,{sort} AS sort_value,{sort_text} AS sort_text FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id LEFT JOIN platform.catalog_chapter_counters s ON s.chapter_id=c.id WHERE {} {match_order}),selected AS MATERIALIZED(SELECT * FROM matched ORDER BY sort_value {order} NULLS LAST,sort_text {order},id LIMIT {limit} OFFSET {offset}){projection}",
+        "WITH matched AS(SELECT {unique} c.id,c.manga_id,{sort} AS sort_value,{sort_text} AS sort_text FROM platform.catalog_chapters c {CHAPTER_PARENT_LOOKUP} LEFT JOIN platform.catalog_chapter_counters s ON s.chapter_id=c.id WHERE {} {match_order}),selected AS MATERIALIZED(SELECT * FROM matched ORDER BY sort_value {order} NULLS LAST,sort_text {order},id LIMIT {limit} OFFSET {offset}){projection}",
         sql.predicate(),
     );
     Ok(Json(

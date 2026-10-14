@@ -40,6 +40,63 @@ async fn feed(app: &axum::Router, path: &str) -> Value {
     .unwrap()
 }
 
+fn max_discarded_pairs(plan: &Value) -> u64 {
+    // PostgreSQL reports a per-loop average, so account for node executions.
+    let here = (plan["Rows Removed by Join Filter"].as_f64().unwrap_or(0.0)
+        * plan["Actual Loops"].as_f64().unwrap_or(1.0)) as u64;
+    plan["Plans"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(max_discarded_pairs)
+        .fold(here, u64::max)
+}
+
+#[test]
+fn discarded_pairs_include_repeated_node_executions() {
+    assert_eq!(
+        max_discarded_pairs(&json!({"Rows Removed by Join Filter":10000.0,"Actual Loops":505})),
+        5_050_000
+    );
+    assert_eq!(
+        max_discarded_pairs(
+            &json!({"Plans":[{"Rows Removed by Join Filter":0.5,"Actual Loops":2}]})
+        ),
+        1
+    );
+    assert_eq!(
+        max_discarded_pairs(&json!({"Rows Removed by Join Filter":10000,"Actual Loops":0})),
+        0
+    );
+}
+
+fn has_parent_point_lookup(plan: &Value) -> bool {
+    (plan["Relation Name"] == "catalog_manga"
+        && plan["Index Name"] == "catalog_manga_pkey"
+        && plan["Index Cond"]
+            .as_str()
+            .is_some_and(|value| value.contains("id = c.manga_id"))
+        && plan["Actual Rows"].as_f64().is_some_and(|rows| rows <= 1.0))
+        || plan["Plans"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .any(has_parent_point_lookup)
+}
+
+async fn assert_thread_visibility_parity(client: &tokio_postgres::Client) {
+    for id in [
+        "BatchThr01",
+        "BatchThr02",
+        "BtCp000001",
+        "BtCp000002",
+        "NoThread00",
+    ] {
+        assert!(client.query_one("SELECT pg_temp.original_thread_visible($1) IS NOT DISTINCT FROM platform.community_thread_visible($1)", &[&id]).await.unwrap().get::<_,bool>(0), "Every current thread authority result must equal the unchanged canonical predicate");
+    }
+    assert!(client.query_one("SELECT bool_and(pg_temp.original_thread_visible(id) IS NOT DISTINCT FROM platform.community_thread_visible(id)) FROM platform.catalog_threads WHERE entity_type='user' AND entity_id='BatchUser1'", &[]).await.unwrap().get::<_,bool>(0));
+}
+
 fn chapter_without_sort(mut value: Value) -> Value {
     let object = value.as_object_mut().unwrap();
     object.remove("_sort_value");
@@ -59,10 +116,27 @@ async fn compact_feed_postgres_projection_parity_visibility_and_pagination() {
         assert!(!pg.get_hosts().is_empty());
         assert!(std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap().contains("weebdex-platform/test-runtime/"));
         let state = AppState::connect(Config { public_origin: "https://feed.fixture.invalid".into(), database_plaintext_local: true, fixture_feed_diagnostics: true, ..Config::default() }, dsn).await.unwrap();
-        state.db.migrate(domains::MIGRATIONS).await.unwrap();
+        // Reproduce the exact previous87 schema before applying the additive fix.
+        let previous = &domains::MIGRATIONS[..domains::MIGRATIONS.len()-1];
+        assert_eq!(previous.last().unwrap().version, 87);
+        state.db.migrate(previous).await.unwrap();
+        let mut repo = manga_node::db::Repository::connect(manga_node::db::DbConfig {
+            dsn: std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").unwrap(), connections: 1,
+            acquisition_timeout: std::time::Duration::from_secs(2), cache_weight: 1024*1024, plaintext_local: true,
+        }).await.unwrap();
+        repo.pool = state.db.pool().clone();
+        repo.migrate().await.unwrap();
+        state.protocol.verify_schema().await.unwrap();
+        state.protocol.install_visibility_function().await.unwrap();
         let client = state.db.client().await.unwrap();
+        let original_thread = include_str!("../migrations/0081_community_visibility.sql").split("CREATE OR REPLACE FUNCTION platform.community_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n").nth(1).unwrap().split("\n$$;").next().unwrap();
+        client.batch_execute(&format!("CREATE FUNCTION pg_temp.original_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n{original_thread}\n$$;")).await.unwrap();
         assert_eq!(client.query_one("SHOW statement_timeout", &[]).await.unwrap().get::<_,String>(0), "5s");
         assert_eq!(client.query_one("SHOW lock_timeout", &[]).await.unwrap().get::<_,String>(0), "1s");
+        // Pin deliberately stale fixture statistics. Automatic ANALYZE can hide
+        // this regression after its first minute; production policy is untouched.
+        client.batch_execute("ALTER TABLE platform.catalog_manga SET(autovacuum_enabled=false); ALTER TABLE platform.catalog_chapters SET(autovacuum_enabled=false)").await.unwrap();
+        assert_eq!(client.query_one("SELECT l.lanname FROM pg_proc p JOIN pg_language l ON l.oid=p.prolang WHERE p.oid='platform.protocol_source_is_visible(text)'::regprocedure", &[]).await.unwrap().get::<_,String>(0), "plpgsql");
         // The same relevant cardinalities as the real compact scenario:505
         // Spanish chapters sharing a parent/group, plus10000 metadata-only titles.
         // These are SQL-only synthetic DTO inputs, not genuine media publications.
@@ -85,18 +159,40 @@ UPDATE platform.catalog_chapters SET is_unavailable=TRUE WHERE id='BaCp000003';
 "#).await.unwrap();
         let app = weebdex_platform::router::router(state.clone());
         let baseline_start = Instant::now();
-        let baseline = client.query_one(include_str!("fixtures/compact-feed-before-batching.sql"), &[&vec!["es".to_owned()], &vec!["safe".to_owned(),"suggestive".to_owned(),"erotica".to_owned()], &100_i64, &0_i64]).await;
+        let baseline = client.query_one(include_str!("fixtures/compact-feed-before-correlated-lookups.sql"), &[&vec!["es".to_owned()], &vec!["safe".to_owned(),"suggestive".to_owned(),"erotica".to_owned()], &100_i64, &0_i64]).await;
         let baseline_ms = baseline_start.elapsed().as_millis();
         let (baseline_outcome, baseline_value) = match baseline {
             Ok(row) => ("success", Some(row.get::<_,Value>(0))),
-            Err(error) if error.code() == Some(&tokio_postgres::error::SqlState::QUERY_CANCELED) => ("query-canceled", None),
+            Err(error) if error.code() == Some(&tokio_postgres::error::SqlState::QUERY_CANCELED) => {
+                assert_eq!(error.as_db_error().unwrap().message(), "canceling statement due to statement timeout", "This owned reproduction must distinguish a real statement timeout from an explicit cancellation");
+                ("query-canceled", None)
+            },
             Err(_) => panic!("Baseline failed outside its expected success/cancellation observation boundary"),
         };
+        state.db.migrate(domains::MIGRATIONS).await.unwrap();
         let batched_start = Instant::now();
         let first = feed(&app, "/api/chapter/feed?tlang=es&limit=100").await;
         let batched_ms = batched_start.elapsed().as_millis();
         assert_eq!(first["total"], 505);
+        let stats: i64 = client.query_one("SELECT count(*) FROM pg_statistic WHERE starelid IN('platform.catalog_manga'::regclass,'platform.catalog_chapters'::regclass)", &[]).await.unwrap().get(0);
+        assert_eq!(stats, 0, "The regression must pass without ANALYZE warming or a statistics workaround");
+        let current_sql = include_str!("fixtures/compact-feed-before-correlated-lookups.sql").replace("JOIN platform.catalog_manga m ON m.id=c.manga_id", "JOIN LATERAL(SELECT * FROM platform.catalog_manga parent WHERE parent.id=c.manga_id OFFSET 0)m ON TRUE");
+        let plan: Value = client.query_one(&format!("EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON,TIMING OFF) {current_sql}"), &[&vec!["es".to_owned()], &vec!["safe".to_owned(),"suggestive".to_owned(),"erotica".to_owned()], &100_i64, &0_i64]).await.unwrap().get(0);
+        assert!(has_parent_point_lookup(&plan[0]["Plan"]), "The fresh-statistics feed must parameterize the parent primary-key lookup");
+        assert!(max_discarded_pairs(&plan[0]["Plan"]) < 10_000, "No repeated unrelated parent catalogue join-filter scan");
+
         if let Some(baseline) = baseline_value { assert_eq!(first, baseline, "Complete first-page JSON parity, including full map and nested relationships"); }
+        // Full first-page canonical parity is mandatory even when the frozen
+        // old aggregate cancels. Each canonical row retains its own unchanged5s
+        // budget; no long aggregate timeout is introduced for comparison.
+        let mut canonical_data = Vec::new();
+        for number in 1..=100 {
+            let id = format!("BaCp{number:06}");
+            canonical_data.push(client.query_one("SELECT platform.catalog_chapter_json(id) || jsonb_build_object('_sort_value',published_at,'_sort_text','') FROM platform.catalog_chapters WHERE id=$1", &[&id]).await.unwrap().get::<_,Value>(0));
+        }
+        let canonical_parent: Value = client.query_one("SELECT platform.catalog_manga_json('BatchM0001')", &[]).await.unwrap().get(0);
+        assert_eq!(first, json!({"total":505,"limit":100,"page":1,"data":canonical_data,"map":{"manga":{"BatchM0001":canonical_parent}}}), "Complete canonical100-row response and map parity is unconditional");
+        assert_thread_visibility_parity(&client).await;
         let mut seen = BTreeSet::new();
         for page in 1..=7 {
             let value = if page == 1 { first.clone() } else { feed(&app, &format!("/api/chapter/feed?tlang=es&limit=100&page={page}")).await };
@@ -151,12 +247,14 @@ UPDATE platform.catalog_chapters SET is_unavailable=TRUE WHERE id='BaCp000003';
             if chapter["id"] == "BaBi000001" { assert_eq!(chapter["relationships"]["groups"], json!([])); }
         }
         client.batch_execute("DELETE FROM platform.catalog_chapters WHERE id='BaBi000001'; UPDATE platform.catalog_groups SET deleted_at=clock_timestamp() WHERE id='BatchGrp01'").await.unwrap();
+        assert_thread_visibility_parity(&client).await;
         let removed_group = feed(&app, "/api/chapter/feed?tlang=es&limit=1").await;
         assert_eq!(removed_group["data"][0]["relationships"]["groups"], json!([]));
         let canonical: Value = client.query_one("SELECT platform.catalog_chapter_json('BaCp000001')", &[]).await.unwrap().get(0);
         assert_eq!(chapter_without_sort(removed_group["data"][0].clone()), canonical);
         for withdrawal in ["deleted_at=clock_timestamp()", "state='draft'", "protocol_source_visible=FALSE", "protocol_series_id=repeat('a',64)"] {
             client.batch_execute(&format!("UPDATE platform.catalog_manga SET {withdrawal} WHERE id='BatchM0001'")).await.unwrap();
+            assert_thread_visibility_parity(&client).await;
             let hidden = feed(&app, "/api/chapter/feed?tlang=es&limit=100").await;
             assert_eq!(hidden["total"], 0); assert_eq!(hidden["data"], json!([])); assert_eq!(hidden["map"]["manga"], json!({}));
             let stale_parent: Option<Value> = client.query_one("SELECT platform.catalog_chapter_json('BaCp000001',$1::jsonb,$2::jsonb)", &[&first["map"]["manga"]["BatchM0001"], &first["data"][0]["relationships"]["groups"]]).await.unwrap().get(0);
@@ -164,11 +262,18 @@ UPDATE platform.catalog_chapters SET is_unavailable=TRUE WHERE id='BaCp000003';
             client.batch_execute("UPDATE platform.catalog_manga SET deleted_at=NULL,state='published',protocol_source_visible=TRUE,protocol_series_id=NULL WHERE id='BatchM0001'").await.unwrap();
         }
         client.batch_execute("UPDATE platform.catalog_chapters SET deleted_at=clock_timestamp() WHERE id='BaCp000002'").await.unwrap();
+        assert_thread_visibility_parity(&client).await;
         let deleted_chapter = feed(&app, "/api/chapter/feed?tlang=es&limit=100").await;
         assert_eq!(deleted_chapter["total"], 504); assert!(deleted_chapter["data"].as_array().unwrap().iter().all(|row|row["id"] != "BaCp000002"));
         client.batch_execute("UPDATE platform.catalog_chapters SET deleted_at=NULL WHERE id='BaCp000002'; UPDATE platform.catalog_chapters SET protocol_event_id=repeat('b',64) WHERE id='BaCp000001'").await.unwrap();
+        assert_thread_visibility_parity(&client).await;
         let hidden_chapter = feed(&app, "/api/chapter/feed?tlang=es&limit=100").await;
         assert_eq!(hidden_chapter["total"], 504); assert!(hidden_chapter["data"].as_array().unwrap().iter().all(|row|row["id"] != "BaCp000001"));
+        std::fs::write(std::path::Path::new(&std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap()).join("compact-feed-correlation-evidence.json"), serde_json::to_vec_pretty(&json!({"fixture_only":true,"installed_policy":"plpgsql","statistics_rows":stats,"parent_point_lookup":true,"maximum_discarded_join_pairs":max_discarded_pairs(&plan[0]["Plan"]),"full_canonical_first_page_comparison":true,"baseline_outcome":baseline_outcome,"baseline_ms":baseline_ms,"candidate_first_page_ms":batched_ms})).unwrap()).unwrap();
+        client.batch_execute("UPDATE platform.users SET disabled=TRUE WHERE id='BatchUser1'").await.unwrap();
+        assert_thread_visibility_parity(&client).await;
+        assert!(!client.query_one("SELECT platform.community_thread_visible(id) FROM platform.catalog_threads WHERE entity_type='user' AND entity_id='BatchUser1'", &[]).await.unwrap().get::<_,bool>(0));
+        client.batch_execute("UPDATE platform.users SET disabled=FALSE WHERE id='BatchUser1'").await.unwrap();
         println!("{}", json!({"scenario":"compact-feed505-plus10000-metadata","baseline_outcome":baseline_outcome,"baseline_ms":baseline_ms,"batched_first_page_ms":batched_ms,"all_505_ids_reached":true,"bilingual506_preserved":true,"canonical_sample_parity":true,"visibility_withdrawals_verified":true,"statement_timeout_unchanged":true}));
     }).await.expect("Finite180-second PostgreSQL regression deadline");
 }
