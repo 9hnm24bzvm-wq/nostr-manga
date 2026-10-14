@@ -40,3 +40,8 @@ test('closing during a fresh action HTTP proof retains its original event and st
   const {f,identity,review}=await prepared({gateAt:'proof'});
   try{const sending=identity.sendReviewed(review,true,f.assertCurrent);await f.entered;const before=(await identity.publicActionRecords())[0];f.close();f.release();await assert.rejects(sending,/Management closed/);const after=(await identity.publicActionRecords())[0];assert.deepEqual(JSON.parse(JSON.stringify(after.event)),JSON.parse(JSON.stringify(before.event)));assert.equal(after.state,'outcome_unknown');assert.equal(f.calls.posts,0);assert.deepEqual(f.calls.kinds,[5,27235]);}finally{f.release();await f.dispose()}
 });
+
+test('closing before deferred identity selection starts no new external prompt', {timeout:5000},async()=>{
+  const f=await fixture();
+  try{f.publication.disconnectSigner();f.calls.publicKey=0;let first=true;const current=()=>{f.assertCurrent();if(first){first=false;queueMicrotask(()=>f.close())}};await assert.rejects(f.publication.connectSigner(current),/Management closed/);assert.equal(f.calls.publicKey,0);let identity;f.publication.signerIdentity.subscribe(value=>{identity=value})();assert.equal(identity.owner,null);assert.equal(f.calls.posts,0);}finally{await f.dispose()}
+});

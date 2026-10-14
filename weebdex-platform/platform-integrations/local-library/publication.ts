@@ -21,7 +21,7 @@ export async function connectSigner(assertCurrent = () => {}) {
   if (!candidate?.getPublicKey || !candidate.signEvent) throw Error('A compatible NIP-07 browser signer is required for publication. Device saving works without one.');
   const generation = get(signerIdentity).generation + 1;
   signerIdentity.set({ owner: null, generation }); signer = null;
-  const owner = await signerRequest(() => candidate.getPublicKey());
+  const owner = await signerRequest(() => { assertCurrent(); return candidate.getPublicKey(); });
   assertCurrent();
   if (!/^[0-9a-f]{64}$/.test(owner)) throw Error('Signer returned an invalid public key');
   if (get(signerIdentity).generation !== generation) throw Error('Signer selection changed');
