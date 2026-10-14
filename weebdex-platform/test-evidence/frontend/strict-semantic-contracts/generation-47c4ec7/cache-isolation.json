@@ -1,0 +1,454 @@
+{
+  "application_source_commit": "47c4ec7a65e2a5f298939fae118c76a7373b9ccc",
+  "status": "passed",
+  "snapshot_entries": 42805,
+  "inventory_before_sha256": "3caa2cd9624db249eaa7add46c1ac52ccade2fd546640decded1ec9197daa2b8",
+  "inventory_after_sha256": "3caa2cd9624db249eaa7add46c1ac52ccade2fd546640decded1ec9197daa2b8",
+  "inventory_byte_and_metadata_changes": [],
+  "protected_write_attempts": 0,
+  "node_process_audits": [
+    {
+      "pid": 10,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 7386,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 11,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 7376,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 16,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 168,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 17,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 168,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 19,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 168,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 24,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 25,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 26,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 125,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 27,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 28,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 15,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 29,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 125,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 30,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 125,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 32,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 33,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 34,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 318,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 35,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 37,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 318,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 38,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 318,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 41,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 42,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 43,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 540,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 44,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 50,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 51,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 53,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 59,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 6,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 7386,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 60,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 62,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 64,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 68,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 69,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 7,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 1,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 70,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 71,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 74,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 3,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 76,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 0,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 78,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 3,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 8,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 3,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 80,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 3,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 83,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 3,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 87,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 3,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 89,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 3,
+      "protected_write_attempts": 0,
+      "denied": []
+    },
+    {
+      "pid": 9,
+      "protected_roots": [
+        "<verified-frontend-cache>",
+        "<verified-noble-cache>"
+      ],
+      "checked_node_mutations": 1,
+      "protected_write_attempts": 0,
+      "denied": []
+    }
+  ],
+  "checker_source_sha256": "ad526c8bc80d8792c0bc81e61ee4533717e27e95c5fe0a02a0e7d1e0db064bc6",
+  "guard_source_sha256": "6fe2a5f0756d661a3455e569e01d96247413a61cf00263fdccc8c932554b77dd",
+  "enforcement": "Configured in-process Node mutation guard plus complete byte/stat snapshots; not OS syscall enforcement."
+}

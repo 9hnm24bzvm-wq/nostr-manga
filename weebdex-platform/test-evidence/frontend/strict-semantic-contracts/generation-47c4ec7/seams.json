@@ -1,0 +1,6 @@
+{
+  "application_source_commit": "47c4ec7a65e2a5f298939fae118c76a7373b9ccc",
+  "status": "passed",
+  "cases": 132,
+  "boundary": "Actual anchored overlays and pure helper/script seams, using explicit UI/browser stand-ins; no real browser, network, database, service or package install."
+}

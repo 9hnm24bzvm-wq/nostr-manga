@@ -1,5 +1,22 @@
 # Reviewed strict-semantic generation
 
+Latest independently approved application source:
+`47c4ec7a65e2a5f298939fae118c76a7373b9ccc`.
+Its exact-source checker, 132 seams, bootstrap, parity, 110/591 artifact
+acceptance, all ten negative controls, cache proof, and bounded ownership receipts
+are in [`generation-47c4ec7`](generation-47c4ec7/). The records below remain the
+historical source-bound generation at `0a18be23`; they are not overwritten.
+
+The final follow-on validates the complete outgoing Apply query after sentinel
+and default-key mutations. A shared effective-read helper also validates the
+preference/default-expanded query before both API reads and cache admission,
+while retaining early invalid-link rejection. Independent source review passed
+132 seams plus 12 additional checks, including exact final 16,384-byte admission
+and 16,385-byte rejection, owned-field corrections in both modes, and retention
+and blocking of invalid unknown passthrough. Valid boundary counterparts retain
+limit zero, nondefault sort/order and the selected tag modes. The source/map
+cardinalities and acceptance tests are unchanged by this final follow-on.
+
 Application source: `0a18be23b5e43979f7f5b6336faa7d91a038a412`.
 Checker baseline: `899e0be3cb2d22874faae765dac6db291c6a1986`.
 These structured results were collected locally against that exact application
