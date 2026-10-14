@@ -183,4 +183,14 @@ pub const MIGRATIONS: &[Migration] = &[
         name: "0085_cover_extension_contract",
         sql: include_str!("../../migrations/0085_cover_extension_contract.sql"),
     },
+    Migration {
+        version: 86,
+        name: "0086_visibility_policy_preparation",
+        sql: include_str!("../../migrations/0086_visibility_policy_preparation.sql"),
+    },
+    Migration {
+        version: 87,
+        name: "0087_catalog_chapter_relationship_projection",
+        sql: include_str!("../../migrations/0087_catalog_chapter_relationship_projection.sql"),
+    },
 ];

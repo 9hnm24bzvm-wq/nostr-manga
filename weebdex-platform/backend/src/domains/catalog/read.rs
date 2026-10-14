@@ -1,5 +1,6 @@
 use super::{
     feed_diagnostics::FeedError,
+    feed_projection::chapter_page_projection,
     query::{QueryParams, Sql, chapter_filters, manga_filters, window_seconds},
     repository::CatalogRepository,
     validation as v,
@@ -496,16 +497,10 @@ async fn chapter_feed(
     } else {
         ""
     };
-    let map = if mapped {
-        ",'map',jsonb_build_object('manga',COALESCE((SELECT jsonb_object_agg(manga_id,platform.catalog_manga_json(manga_id)) FROM(SELECT DISTINCT manga_id FROM selected)ids),'{}'::jsonb))"
-    } else {
-        ""
-    };
+    let projection = chapter_page_projection(order, q.limit, q.page, mapped);
     let query = format!(
-        "WITH matched AS(SELECT {unique} c.id,c.manga_id,{sort} AS sort_value,{sort_text} AS sort_text FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id LEFT JOIN platform.catalog_chapter_counters s ON s.chapter_id=c.id WHERE {} {match_order}),selected AS(SELECT * FROM matched ORDER BY sort_value {order} NULLS LAST,sort_text {order},id LIMIT {limit} OFFSET {offset}) SELECT jsonb_build_object('total',(SELECT count(*) FROM matched),'limit',{},'page',{},'data',COALESCE((SELECT jsonb_agg(platform.catalog_chapter_json(id) || jsonb_build_object('_sort_value',sort_value,'_sort_text',sort_text) ORDER BY sort_value {order} NULLS LAST,sort_text {order},id) FROM selected),'[]'::jsonb){map})",
+        "WITH matched AS(SELECT {unique} c.id,c.manga_id,{sort} AS sort_value,{sort_text} AS sort_text FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id LEFT JOIN platform.catalog_chapter_counters s ON s.chapter_id=c.id WHERE {} {match_order}),selected AS MATERIALIZED(SELECT * FROM matched ORDER BY sort_value {order} NULLS LAST,sort_text {order},id LIMIT {limit} OFFSET {offset}){projection}",
         sql.predicate(),
-        q.limit,
-        q.page
     );
     Ok(Json(
         state
