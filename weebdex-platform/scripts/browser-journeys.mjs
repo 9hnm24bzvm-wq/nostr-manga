@@ -14,7 +14,8 @@ export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Obj
   'account-device-preserved', 'account-import-reviewed', 'signer-section-open', 'signer-binding-installed',
   'signer-dismissal-visible', 'signer-outbox-empty'
 ].map(suffix => 'local-library-' + suffix)) });
-export const ordinaryUploadDiagnosticChecks = Object.freeze({ upload: Object.freeze(["account-ready", "begin-control", "begin-uncertainty", "begin-staging", "corrupt-image-input", "corrupt-image-feedback", "corrupt-archive-input", "corrupt-archive-feedback", "corrupt-no-persisted-pages", "failed-batch-feedback", "failed-page-controls", "cancel-conflict-retained", "cancel-confirmed", "stage-selection", "stage-metadata", "stage-durable", "stage-reload", "replacement-prerequisite", "replacement-invalid-retained", "replacement-lost-reply", "replacement-durable", "commit-prerequisite", "commit-response", "commit-receipt", "published-reader", "revert-prerequisite", "revert-controls", "page-edit-prerequisite", "page-edit-controls"].map(suffix => "upload-" + suffix)) });
+export const ordinaryUploadDiagnosticChecks = Object.freeze({ upload: Object.freeze(["account-ready", "begin-control", "begin-uncertainty", "begin-staging", "corrupt-image-input", "corrupt-image-feedback", "corrupt-archive-input", "corrupt-archive-feedback", "corrupt-no-persisted-pages", "failed-batch-feedback", "failed-page-controls", "failed-page-removal", "failed-page-retained", "cancel-conflict-retained", "cancel-confirmed", "stage-selection", "stage-metadata", "stage-volume", "stage-chapter", "stage-language-trigger", "stage-language-option", "stage-durable", "stage-reload", "replacement-prerequisite", "replacement-invalid-retained", "replacement-lost-reply", "replacement-durable", "commit-prerequisite", "commit-response", "commit-receipt", "published-reader", "revert-prerequisite", "revert-controls", "page-edit-prerequisite", "page-edit-controls"].map(suffix => "upload-" + suffix)) });
+export const ordinaryEditorialDiagnosticChecks = Object.freeze({ editorial: Object.freeze(['account-ready', 'author-ready', 'create-controls', 'author-control', 'artist-control', 'cover-input', 'create-response', 'create-receipt', 'create-feedback', 'draft-readable', 'cover-readable', 'edit-navigation', 'transition-prerequisite', 'submit-version', 'reject-version', 'revise-version', 'resubmit-version', 'publish-prerequisite', 'publish-response', 'publish-receipt', 'public-readable', 'lock-version', 'unlock-version'].map(suffix => "editorial-" + suffix)) });
 export const ordinaryReaderDiagnosticChecks = Object.freeze({ reader: Object.freeze(["open", "double", "deep-link", "first-images", "reload", "reloaded-images", "selected-page", "quality", "quality-images", "single"].map(suffix => "reader-spread-" + suffix)) });
 export async function runJourneys(h) {
 	const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
@@ -25,6 +26,7 @@ export async function runJourneys(h) {
 	let account, uploaded;
 	const uploadCheck = (suffix, operation) => { insist(typeof h.check === "function", "The fixed upload diagnostic recorder is required"); return h.check("upload-" + suffix, operation); };
 	const readerCheck = (suffix, operation) => h.check("reader-spread-" + suffix, operation);
+	const editorialCheck = (suffix, operation) => { insist(typeof h.check === "function", "The fixed editorial diagnostic recorder is required"); return h.check("editorial-" + suffix, operation); };
 	const marker = randomBytes(6).toString("hex");
 	const api = async (route, options = {}) => {
 		insist(route.startsWith("/") && !route.startsWith("//") && !route.includes("://"), "API must stay inside the local fixture");
@@ -99,7 +101,7 @@ export async function runJourneys(h) {
 	const follow = status => selectTitleLibraryStatus(page, status);
 	const confirm = async name => { await page.getByRole('button', { name, exact: true }).first().click(); const dialog = page.getByRole('dialog'); await dialog.getByRole('button', { name, exact: true }).click(); };
 	const image = png(64, 96, marker);
-	if (["account", "account-recovery", "upload", "announcements", "community", "editorial"].includes(phase)) await step("register and verify synthetic account using real forms and local email", () => phase === "upload" ? uploadCheck("account-ready", () => signup("user")) : signup(["announcements", "editorial"].includes(phase) ? "staff" : phase === "community" ? "moderator" : "user"));
+	if (["account", "account-recovery", "upload", "announcements", "community", "editorial"].includes(phase)) await step("register and verify synthetic account using real forms and local email", () => phase === "upload" ? uploadCheck("account-ready", () => signup("user")) : phase === "editorial" ? editorialCheck("account-ready", () => signup("staff")) : signup(["announcements", "editorial"].includes(phase) ? "staff" : phase === "community" ? "moderator" : "user"));
 	if (phase === "account") {
 		await step("preference save uses authoritative version and persists after reload", async () => {
 			insist(account, "Registration prerequisite failed");
@@ -193,9 +195,9 @@ export async function runJourneys(h) {
       try { await uploadCheck('failed-batch-feedback', async () => { await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: "failed-single.png", mimeType: "image/png", buffer: image }); await page.getByText("Upload was not confirmed", { exact: true }).last().waitFor({ state: "visible" }); }); }
       finally { await context.unroute(endpoint, rejectPost); }
       const card = page.locator('div[class~="!visible"]').filter({ has: page.getByText("failed-single.png", { exact: true }) });
-      await uploadCheck('failed-page-controls', async () => { insist(await card.getByRole("button").count() >= 2, "Failed single page has no per-item Replace/Remove controls");
-      await card.getByRole("button").last().click(); await page.getByText("Page outcome is still unknown", { exact: true }).last().waitFor({ state: "visible" });
-      insist(posts === 1 && (await api("/upload")).body.id === original.body.id, "Ambiguous page was replayed or staging discarded"); });
+      await uploadCheck('failed-page-controls', async () => { insist(await card.getByRole("button").count() >= 2, "Failed single page has no per-item Replace/Remove controls"); });
+      await uploadCheck('failed-page-removal', async () => { await card.getByRole("button").last().click(); await page.getByText("Page outcome is still unknown", { exact: true }).last().waitFor({ state: "visible" }); });
+      await uploadCheck('failed-page-retained', async () => { insist(posts === 1 && (await api("/upload")).body.id === original.body.id, "Ambiguous page was replayed or staging discarded"); });
       const rejectCancel = async route => { if (route.request().method() === "DELETE") return route.fulfill({ status: 409, contentType: "application/json", body: '{"error":"synthetic immutable-stage rejection"}' }); return route.continue(); };
       await context.route(endpoint, rejectCancel);
       try { await uploadCheck('cancel-conflict-retained', async () => { await confirm("Cancel staged upload"); await page.getByText("Upload session changed", { exact: true }).last().waitFor({ state: "visible" }); insist((await api("/upload")).body.id === original.body.id && await card.count() === 1, "Cancel409 discarded private staged state"); }); }
@@ -206,9 +208,11 @@ export async function runJourneys(h) {
     });
 		await step("real image upload privately saves metadata and exact order then resumes on reload", async () => {
 			await uploadCheck('stage-selection', async () => { await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles([{ name: "page1.png", mimeType: "image/png", buffer: image }, { name: "page2.png", mimeType: "image/png", buffer: png(64, 96, marker + "next") }]); });
-			await uploadCheck('stage-metadata', async () => { await page.getByPlaceholder("Chapter Name", { exact: true }).fill(`Staged ${marker}`);
-			await page.getByPlaceholder("Volume No.", { exact: true }).fill("1"); await page.getByPlaceholder("Chapter No.", { exact: true }).fill("7");
-			await selectListboxTrigger(page.locator('form').filter({ has: page.locator("#terms") })).filter({ hasText: /^\s*Select Language\s*$/ }).click(); await clickListboxOption(page, "English"); });
+			await uploadCheck('stage-metadata', async () => { await checked("#oneshot", false); await page.getByPlaceholder("Chapter Name", { exact: true }).fill(`Staged ${marker}`); });
+			await uploadCheck('stage-volume', () => page.getByPlaceholder("Volume No.", { exact: true }).fill("1"));
+			await uploadCheck('stage-chapter', () => page.getByPlaceholder("Chapter No.", { exact: true }).fill("7"));
+			await uploadCheck('stage-language-trigger', () => selectListboxTrigger(page.locator('form').filter({ has: page.locator("#terms") })).filter({ hasText: /^\s*Select Language\s*$/ }).click());
+			await uploadCheck('stage-language-option', () => clickListboxOption(page, "English"));
 			const saved = await uploadCheck("stage-durable", () => until(() => api("/upload"), value => value.body?.relationships?.files?.length === 2 && value.body?.draft?.title === `Staged ${marker}` && value.body?.draft?.language === "en" && value.body?.page_order?.length === 2, "Private staging metadata/order did not autosave", 25000));
 			const previews = await uploadCheck('stage-reload', async () => { await page.reload({ waitUntil: "domcontentloaded" });
 			await until(() => page.getByPlaceholder("Chapter Name", { exact: true }).inputValue(), value => value === `Staged ${marker}`, "Reload lost chapter draft");
@@ -376,26 +380,37 @@ export async function runJourneys(h) {
 		});
 	} else if (phase === 'editorial') {
 		let title;
+		const chooseContributor = async (index, name) => { await page.getByText('Search...', { exact: true }).nth(index).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Search...', { exact: true }).fill(name); await dialog.getByRole('button', { name, exact: true }).click(); await page.keyboard.press('Escape'); };
 		await step('staff creates real title draft with author artist and original cover controls', async () => {
-			insist(account, 'Staff registration prerequisite failed'); const author = await api(`/author/${ids.author ?? 'SeedAuthr1'}`); insist(author.status === 200 && author.body?.name, 'Real seeded author missing');
-			await open('/create/title'); await page.locator('#title').fill(`Browser Draft ${marker}`); await page.locator('#synopsis').fill(`Synthetic editorial draft ${marker}`); await page.getByRole('tab', { name: 'Metadata', exact: true }).click();
-			for (let index = 0; index < 2; index++) { await page.getByText('Search...', { exact: true }).nth(index).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Search...', { exact: true }).fill(author.body.name); await dialog.getByRole('button', { name: author.body.name, exact: true }).click(); await page.keyboard.press('Escape'); }
-			await page.getByRole('tab', { name: 'Covers', exact: true }).click(); await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: 'cover.png', mimeType: 'image/png', buffer: image });
-			const response = await actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Save', exact: true }).click(), response => new URL(response.url()).pathname === '/api/manga' && response.request().method() === 'POST'); insist(response.status() === 200, 'Title creation did not persist'); title = await response.json();
-			await page.getByText('Draft successfully created', { exact: true }).waitFor({ state: 'visible' }); const privateDraft = await api(`/manga/draft/${title.id}`); insist(privateDraft.status === 200 && privateDraft.body.state === 'draft', 'Created draft not privately readable'); const covers = await api(`/cover?manga=${title.id}`); insist(covers.status === 200, 'Original cover was not saved');
-			await page.getByRole('link', { name: 'Edit draft', exact: true }).click(); await page.locator('#title').waitFor({ state: 'visible' });
+			const author = await editorialCheck('author-ready', async () => { insist(account, 'Staff registration prerequisite failed'); const author = await api(`/author/${ids.author ?? 'SeedAuthr1'}`); insist(author.status === 200 && author.body?.name, 'Real seeded author missing'); return author; });
+			await editorialCheck('create-controls', async () => { await open('/create/title'); await page.locator('#title').fill(`Browser Draft ${marker}`); await page.locator('#synopsis').fill(`Synthetic editorial draft ${marker}`); await page.getByRole('tab', { name: 'Metadata', exact: true }).click(); });
+			await editorialCheck('author-control', () => chooseContributor(0, author.body.name));
+			await editorialCheck('artist-control', () => chooseContributor(1, author.body.name));
+			await editorialCheck('cover-input', async () => { await page.getByRole('tab', { name: 'Covers', exact: true }).click(); await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: 'cover.png', mimeType: 'image/png', buffer: image }); });
+			const response = await editorialCheck('create-response', () => actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Save', exact: true }).click(), response => new URL(response.url()).pathname === '/api/manga' && response.request().method() === 'POST'));
+			await editorialCheck('create-receipt', async () => { insist(response.status() === 201, 'Title creation did not persist'); title = await response.json(); });
+			await editorialCheck('create-feedback', () => page.getByText('Draft successfully created', { exact: true }).waitFor({ state: 'visible' }));
+			const privateDraft = await editorialCheck('draft-readable', async () => { const privateDraft = await api(`/manga/draft/${title.id}`); insist(privateDraft.status === 200 && privateDraft.body.state === 'draft', 'Created draft not privately readable'); return privateDraft; });
+			await editorialCheck('cover-readable', async () => { const covers = await api(`/manga/${title.id}/covers?draft=true`); insist(covers.status === 200, 'Original cover was not saved');
+				insist(Array.isArray(covers.body) && covers.body.length === 1 && covers.body[0].id === privateDraft.body.relationships?.cover?.id && covers.body[0].ext === '.png' && covers.body[0].dimensions?.[0] === 64 && covers.body[0].dimensions?.[1] === 96 && covers.body[0].version > 0, 'Original PNG cover bytes and authoritative identity were not persisted'); });
+			await editorialCheck('edit-navigation', async () => { await page.getByRole('link', { name: 'Edit draft', exact: true }).click(); await page.locator('#title').waitFor({ state: 'visible' }); });
 			return { create_form_persisted: true, author_and_artist_controls_used: true, actual_png_cover_saved: true, original_editor_opened: true };
 		});
 		await step('submit reject revise submit preserve actual authoritative transition versions', async () => {
-			insist(title, 'Draft prerequisite failed'); const first = await api(`/manga/draft/${title.id}`); await confirm('Submit'); const submitted = await until(() => api(`/manga/draft/${title.id}`), value => value.body?.state === 'submitted' && value.body.version > first.body.version, 'Submit did not advance authoritative version');
-			await confirm('Reject'); const rejected = await until(() => api(`/manga/draft/${title.id}`), value => value.body?.state === 'rejected' && value.body.version > submitted.body.version, 'Reject did not advance version');
-			await page.locator('#title').fill(`Revised ${marker}`); await page.getByRole('button', { name: 'Save', exact: true }).click(); await until(() => api(`/manga/draft/${title.id}`), value => value.body?.title === `Revised ${marker}` && value.body.version > rejected.body.version, 'Revision did not persist after rejection');
-			await confirm('Submit'); const again = await until(() => api(`/manga/draft/${title.id}`), value => value.body?.state === 'submitted', 'Second submit failed');
+			const first = await editorialCheck('transition-prerequisite', async () => { insist(title, 'Draft prerequisite failed'); return api(`/manga/draft/${title.id}`); });
+			const submitted = await editorialCheck('submit-version', async () => { await confirm('Submit'); return until(() => api(`/manga/draft/${title.id}`), value => value.body?.state === 'submitted' && value.body.version > first.body.version, 'Submit did not advance authoritative version'); });
+			const rejected = await editorialCheck('reject-version', async () => { await confirm('Reject'); return until(() => api(`/manga/draft/${title.id}`), value => value.body?.state === 'rejected' && value.body.version > submitted.body.version, 'Reject did not advance version'); });
+			await editorialCheck('revise-version', async () => { await page.locator('#title').fill(`Revised ${marker}`); await page.getByRole('button', { name: 'Save', exact: true }).click(); await until(() => api(`/manga/draft/${title.id}`), value => value.body?.title === `Revised ${marker}` && value.body.version > rejected.body.version, 'Revision did not persist after rejection'); });
+			const again = await editorialCheck('resubmit-version', async () => { await confirm('Submit'); return until(() => api(`/manga/draft/${title.id}`), value => value.body?.state === 'submitted', 'Second submit failed'); });
 			return { submitted_version: submitted.body.version, rejected_version: rejected.body.version, revised_and_resubmitted_version: again.body.version };
 		});
 		await step('publish local scope and repeated lock unlock controls refresh actual versions', async () => {
-			insist(title, 'Draft prerequisite failed'); const response = await actAndWaitForPageEvent(page, 'response', () => confirm('Publish'), response => new URL(response.url()).pathname === `/api/manga/draft/${title.id}/publish` && response.request().method() === 'POST'); insist(response.status() === 200, 'Publish was not acknowledged'); const receipt = await response.json(); insist(receipt.publication_scope === 'instance-local' && receipt.publication_status === 'local', 'Native-only fixture publish scope is dishonest');
-			const published = await until(() => api(`/manga/${title.id}`), value => value.body?.state === 'published', 'Published title not genuinely publicly readable'); await confirm('Lock'); const locked = await until(() => api(`/manga/${title.id}`), value => value.body?.locked === true && value.body.version > published.body.version, 'Lock did not persist actual version'); await confirm('Unlock'); const unlocked = await until(() => api(`/manga/${title.id}`), value => value.body?.locked === false && value.body.version > locked.body.version, 'Unlock did not persist after lock');
+			await editorialCheck('publish-prerequisite', async () => { insist(title, 'Draft prerequisite failed'); });
+			const response = await editorialCheck('publish-response', () => actAndWaitForPageEvent(page, 'response', () => confirm('Publish'), response => new URL(response.url()).pathname === `/api/manga/draft/${title.id}/publish` && response.request().method() === 'POST'));
+			const receipt = await editorialCheck('publish-receipt', async () => { insist(response.status() === 200, 'Publish was not acknowledged'); const receipt = await response.json(); insist(receipt.publication_scope === 'instance-local' && receipt.publication_status === 'local', 'Native-only fixture publish scope is dishonest'); return receipt; });
+			const published = await editorialCheck('public-readable', () => until(() => api(`/manga/${title.id}`), value => value.body?.state === 'published', 'Published title not genuinely publicly readable'));
+			const locked = await editorialCheck('lock-version', async () => { await confirm('Lock'); return until(() => api(`/manga/${title.id}`), value => value.body?.locked === true && value.body.version > published.body.version, 'Lock did not persist actual version'); });
+			const unlocked = await editorialCheck('unlock-version', async () => { await confirm('Unlock'); return until(() => api(`/manga/${title.id}`), value => value.body?.locked === false && value.body.version > locked.body.version, 'Unlock did not persist after lock'); });
 			return { scope: receipt.publication_scope, publication_publicly_readable: true, lock_version: locked.body.version, unlock_version: unlocked.body.version, real_signed_pending_receipt_requires_original_fixture: true };
 		});
 	} else if (phase === 'community') {

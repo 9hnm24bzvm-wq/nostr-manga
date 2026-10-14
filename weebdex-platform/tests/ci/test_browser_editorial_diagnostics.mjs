@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+// Real editorial branch, fixed recorder and owned page-event observer. Controls,
+// native transport/database and layout are explicit finite stand-ins.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {EventEmitter} from 'node:events';
+import {deflateSync} from 'node:zlib';
+import test from 'node:test';
+import {ordinaryEditorialDiagnosticChecks} from '../../scripts/browser-journeys.mjs';
+import {createJourneyCheck} from '../../scripts/journey-checks.mjs';
+import {actAndWaitForPageEvent} from '../../scripts/browser-action-events.mjs';
+import {createFrontendOverlays} from '../../platform-integrations/frontend-overlays.mjs';
+const root=new URL('../../',import.meta.url),read=file=>fs.readFileSync(new URL(file,root),'utf8');
+const source=read('scripts/browser-journeys.mjs'),start=source.indexOf("} else if (phase === 'editorial') {")+"} else if (phase === 'editorial') {".length,end=source.indexOf("\n\t} else if (phase === 'community')",start),branch=source.slice(start,end);
+assert(start>0&&end>start);
+const png=vm.runInNewContext('('+source.slice(source.lastIndexOf('function png('))+')',{Buffer,deflateSync}),image=png(64,96,'Synthetic');
+const expected=['account-ready','author-ready','create-controls','author-control','artist-control','cover-input','create-response','create-receipt','create-feedback','draft-readable','cover-readable','edit-navigation','transition-prerequisite','submit-version','reject-version','revise-version','resubmit-version','publish-prerequisite','publish-response','publish-receipt','public-readable','lock-version','unlock-version'].map(id=>'editorial-'+id);
+test('editorial fixed inventory is unique, deeply frozen and bound to actual calls',()=>{assert.deepEqual(ordinaryEditorialDiagnosticChecks,{editorial:expected});assert(Object.isFrozen(ordinaryEditorialDiagnosticChecks));assert(Object.isFrozen(ordinaryEditorialDiagnosticChecks.editorial));assert.equal(new Set(expected).size,expected.length);assert.deepEqual([...source.matchAll(/editorialCheck\(['"]([^'"]+)/g)].map(row=>'editorial-'+row[1]),expected);assert.doesNotMatch(branch,/waitForTimeout|timeout:/);assert.match(source,/phase === "editorial" \? editorialCheck\("account-ready", \(\) => signup\("staff"\)\)/);});
+function response(status,url,body){return{status:()=>status,url:()=>url,request:()=>({method:()=> 'POST'}),json:async()=>structuredClone(body)};}
+async function probe({failAt,status=201,covers=[{id:'Cover00001',ext:'.png',dimensions:[64,96],version:1}]}={}){
+ const failure=Error('synthetic fixed editorial failure'),report={},record=createJourneyCheck(report),steps=[],calls={routes:[],actions:[],posts:0},page=new EventEmitter();
+ let draft={id:'Draft00001',state:'draft',title:'Browser Draft Synthetic',version:1,locked:false,relationships:{cover:{id:'Cover00001'}}},saved=false,titleValue='';
+ const snapshot=()=>structuredClone(draft),origin='http://127.0.0.1:1';
+ const control=(kind,name)=>({nth(index){calls.actions.push('contributor-index:'+index);return this;},async fill(value){calls.actions.push('fill:'+name);if(name==='#title')titleValue=value;},async waitFor(){calls.actions.push('visible:'+name);},async setInputFiles(file){assert.equal(file.name,'cover.png');assert.equal(file.mimeType,'image/png');assert.deepEqual(file.buffer,image);assert.equal(file.buffer.readUInt32BE(16),64);assert.equal(file.buffer.readUInt32BE(20),96);calls.actions.push('original-png-input');},async click(){calls.actions.push(kind+':'+name);if(kind==='button'&&name==='Save'){draft.title=titleValue;if(saved)draft.version++;else{saved=true;calls.posts++;page.emit('response',response(status,origin+'/api/manga',snapshot()));}}}});
+ page.locator=selector=>control('locator',selector);page.getByText=(name,{exact})=>{assert.equal(exact,true);return control('text',name);};page.getByRole=(kind,{name,exact})=>{assert.equal(exact,true);if(kind==='dialog')return page;return control(kind,name);};
+ // The actual code asks for dialog without options. Keep its exact object scope.
+ const getByRole=page.getByRole;page.getByRole=(kind,options)=>kind==='dialog'?page:getByRole(kind,options);
+ page.getByPlaceholder=(name,{exact})=>{assert.equal(exact,true);return control('placeholder',name);};page.keyboard={async press(value){assert.equal(value,'Escape');calls.actions.push('close-contributor');}};
+ const api=async route=>{calls.routes.push(route);if(route==='/author/SeedAuthr1')return{status:200,body:{name:'Synthetic Author'}};if(route==='/manga/Draft00001/covers?draft=true')return{status:200,body:covers};assert(['/manga/draft/Draft00001','/manga/Draft00001'].includes(route),'Exact native draft/public route required');return{status:200,body:snapshot()};};
+ const confirm=async name=>{calls.actions.push('confirm:'+name);draft.version++;if(name==='Submit')draft.state='submitted';if(name==='Reject')draft.state='rejected';if(name==='Publish'){draft.state='published';page.emit('response',response(200,origin+'/api/manga/draft/Draft00001/publish',{...snapshot(),publication_scope:'instance-local',publication_status:'local'}));}if(name==='Lock')draft.locked=true;if(name==='Unlock')draft.locked=false;};
+ const env=vm.createContext({account:{},ids:{},marker:'Synthetic',image,page,origin,URL,api,confirm,actAndWaitForPageEvent,
+  insist(value,message){assert(value,message);},open:async route=>calls.actions.push('open:'+route),until:async(read,valid,message)=>{const value=await read();assert(valid(value),message);return value;},
+  editorialCheck:(id,operation)=>record('editorial-'+id,async()=>{if('editorial-'+id===failAt)throw failure;return operation();}),
+  step:async(name,operation)=>{try{const value=await operation();steps.push({name,passed:true,value});}catch(error){steps.push({name,passed:false,error});}}
+ });
+ await vm.runInContext('(async()=>{'+branch+'})()',env);assert.equal(steps.length,3);assert.equal(page.eventNames().length,0,'Owned observers all removed');
+ const rows=report.journey_checks,order=rows.map(row=>expected.indexOf(row.check_id));assert(order.every((v,i)=>v>=0&&(!i||v>order[i-1])));assert(rows.every(row=>Object.keys(row).sort().join()=== 'check_id,status'));
+ if(failAt){assert(rows.some(row=>row.check_id===failAt&&row.status==='failed'));assert(steps.some(row=>row.error===failure));}
+ return{rows,steps,calls};
+}
+test('real branch uses exactly201 creation and private native cover route, then all original transitions',async()=>{const value=await probe();assert(value.steps.every(row=>row.passed));assert.deepEqual(value.rows.map(row=>row.check_id),expected.slice(1));assert.equal(value.calls.posts,1);assert(value.calls.routes.includes('/manga/Draft00001/covers?draft=true'));assert.deepEqual(value.calls.actions.filter(row=>row.startsWith('confirm:')),['confirm:Submit','confirm:Reject','confirm:Submit','confirm:Publish','confirm:Lock','confirm:Unlock']);assert(value.calls.actions.includes('original-png-input'));});
+for(const id of expected.slice(1))test('checkpoint failure remains visible and owns observers: '+id,async()=>{const value=await probe({failAt:id});if(expected.indexOf(id)<expected.indexOf('editorial-create-receipt')+1){assert(!value.calls.actions.some(row=>row==='confirm:Publish'),'Uncreated title is never published');}});
+for(const status of [200,202,400,500])test('wrong title creation status fails exact contract: '+status,async()=>{const value=await probe({status});assert.equal(value.steps[0].passed,false);assert.match(value.steps[0].error.message,/Title creation did not persist/);assert(!value.calls.actions.includes('confirm:Publish'));});
+for(const covers of [[],[{id:'Other00001',ext:'.png',dimensions:[64,96],version:1}],[{id:'Cover00001',ext:'.jpg',dimensions:[64,96],version:1}],[{id:'Cover00001',ext:'.png',dimensions:[1,1],version:1}],[{id:'Cover00001',ext:'.png',dimensions:[64,96],version:0}],{}])test('a200 cover read cannot pretend the genuine original PNG persisted: '+JSON.stringify(covers),async()=>{const value=await probe({covers});assert.equal(value.steps[0].passed,false);assert.match(value.steps[0].error.message,/Original PNG cover bytes/);});
+test('exact expectations match real composed creator and native handlers/DTO',()=>{const file=new URL('frontend/src/lib/components/draft/manga/MangaCreate.svelte',root);const frontend=new URL('frontend/',root);const composed=createFrontendOverlays(frontend.pathname).transform.handler(fs.readFileSync(file,'utf8'),file.pathname).code;assert.match(composed,/requireMutationAcknowledgement\(result, 201, true\)/);const mutations=read('backend/src/domains/catalog/mutations.rs'),create=mutations.slice(mutations.indexOf('pub async fn manga_create('),mutations.indexOf('pub async fn manga_update('));assert.match(create,/Ok\(\(StatusCode::CREATED, Json\(data\)\)\)/);assert.match(read('backend/src/domains/catalog/mod.rs'),/"\/manga\/\{id\}\/covers"/);assert.match(read('platform-integrations/frontend-behavior/editor-cover-read.ts'),/\/covers\$\{manga.state === 'published' \? '' : '\?draft=true'\}/);assert.match(read('backend/src/domains/catalog/read.rs'),/q.bool\("draft"\)\? == Some\(true\)[\s\S]*?Only the draft owner may read covers/);assert.match(read('backend/migrations/0085_cover_extension_contract.sql'),/'ext','\.'\|\|c.ext,'dimensions',c.dimensions/);});

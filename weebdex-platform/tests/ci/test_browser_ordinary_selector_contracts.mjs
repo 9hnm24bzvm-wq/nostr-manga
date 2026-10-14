@@ -37,15 +37,15 @@ test('upload language scope and popup use exact visible text instead of duplicat
   assert.match(metadata, /<Combobox.Root type="single" bind:value=\{draft.language\}/);
   assert.match(metadata, /<span class="truncate">Select Language<\/span>/);
   assert.match(metadata, /<Combobox.Item value=\{key\}>[\s\S]*?alt=\{value\}[\s\S]*?\{value\}/);
-  assert.match(source, /selectListboxTrigger\(page.locator\('form'\).filter\(\{ has: page.locator\("#terms"\) \}\)\).filter\(\{ hasText: \/\^\\s\*Select Language\\s\*\$\/ \}\).click\(\); await clickListboxOption\(page, "English"\)/);
+  assert.match(source, /selectListboxTrigger\(page.locator\('form'\).filter\(\{ has: page.locator\("#terms"\) \}\)\).filter\(\{ hasText: \/\^\\s\*Select Language\\s\*\$\/ \}\).click\(\)\);[\s\S]*?clickListboxOption\(page, "English"\)/);
   assert.doesNotMatch(source, /getByText\("English"[^\n]*\.last\(\)/);
 });
-test('all98 original behavioral assertions survive wrappers and ownership repairs byte-for-byte after whitespace normalization', () => {
+test('all98 original behavioral assertions survive with only the source-proven exact title201 contract correction', () => {
   assert(process.env.WEEBDEX_FRONTEND_ROOT, 'Use the verified exact-lock dependency root');
   const require = createRequire(path.join(process.env.WEEBDEX_FRONTEND_ROOT, 'package.json')), ts = require('typescript');
   const ast = ts.createSourceFile('browser-journeys.mjs',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS), predicates=[];
-  const additions = ['The fixed upload diagnostic recorder is required','Actual uploaded staging prerequisite failed; replacement was not attempted','Actual image upload/replacement prerequisites failed; publication was not attempted'];
-  function walk(node) { if (ts.isCallExpression(node) && node.expression.getText(ast) === 'insist') { if (!additions.includes(node.arguments[1]?.text)) predicates.push(node.arguments.map(arg => arg.getText(ast).replace(/\s+/g,' ')).join(',')); } ts.forEachChild(node,walk); } walk(ast);
+  const additions = ['The fixed upload diagnostic recorder is required','Actual uploaded staging prerequisite failed; replacement was not attempted','Actual image upload/replacement prerequisites failed; publication was not attempted','The fixed editorial diagnostic recorder is required','Original PNG cover bytes and authoritative identity were not persisted'];
+  function walk(node) { if (ts.isCallExpression(node) && node.expression.getText(ast) === 'insist') { if (!additions.includes(node.arguments[1]?.text)) { const parts=node.arguments.map(arg => arg.getText(ast).replace(/\s+/g,' ')); if(node.arguments[1]?.text==='Title creation did not persist') { assert.equal(parts[0],'response.status() === 201'); parts[0]='response.status() === 200'; } predicates.push(parts.join(',')); } } ts.forEachChild(node,walk); } walk(ast);
   assert.equal(predicates.length,98);
   assert.equal(createHash('sha256').update(JSON.stringify(predicates.sort())).digest('hex'),'18f03e9f77e369b0d7a85d8f1ec6cfaba88cb217ef1b27986d253653687e9d9a');
 });
