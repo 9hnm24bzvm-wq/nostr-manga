@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "status": "independently-verified-failed-native-tabs-local-browser",
+  "source_commit": "4fe4ffa153a26a0e40b6024bb781ed7eb6012af3",
+  "source_tree": "784ac9b9dcbd3b32128ff956e3db2b43469e3593",
+  "startup_passed": 19,
+  "local_library_actual_steps": 6,
+  "local_library_failed_step_indices": [
+    0,
+    2,
+    4
+  ],
+  "primary_failure": "strict-native-reader-header-close-ambiguity",
+  "later_five_phases": "not-run",
+  "full_suite_passed": false,
+  "source_archive_files_checked": 2571,
+  "artifact_files_checked": 425,
+  "sanitized_screenshots_checked": 12,
+  "closed_nested_schemas_and_owned_reprojection_exact": true,
+  "strict_cleanup_verified": true,
+  "lifecycle_failure_preserved": true,
+  "source_only_stage_delta_sandbox_tightening": true,
+  "sanitized_json_scan_clean": true,
+  "screenshots": [
+    {
+      "file": "screenshots/relocation-desktop-home.png",
+      "width": 1440,
+      "height": 1426
+    },
+    {
+      "file": "screenshots/relocation-desktop-library-settings.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-public-identity.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-reader-discussion.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-reader.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-search.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-title-comments.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-title.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-mobile-home.png",
+      "width": 390,
+      "height": 1343
+    },
+    {
+      "file": "screenshots/relocation-mobile-reader.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-search.png",
+      "width": 390,
+      "height": 1064
+    },
+    {
+      "file": "screenshots/relocation-mobile-title.png",
+      "width": 390,
+      "height": 882
+    }
+  ],
+  "files": [
+    {
+      "path": "bindings.json",
+      "bytes": 1453,
+      "sha256": "28ca7aa09a98d4c170b62cdf378d3e354a409ffb7dafcfeabc44b1e30b6b3dcf"
+    },
+    {
+      "path": "failed-runtime-summary.json",
+      "bytes": 31360,
+      "sha256": "8b07890954d30119f007aa160c9ec2dd6dff2ceeeb112b55134ed719cbd73125"
+    },
+    {
+      "path": "geometry.json",
+      "bytes": 2545,
+      "sha256": "b90845c1f9a2548a2c853662c7994b41210b98d98384976611366a48e2be2ec6"
+    },
+    {
+      "path": "screenshots/relocation-desktop-home.png",
+      "bytes": 168759,
+      "sha256": "b8556d6503d6e36b97cbbe9febf0d63034e232d26ed4118c193ef5251079e02b"
+    },
+    {
+      "path": "screenshots/relocation-desktop-library-settings.png",
+      "bytes": 91393,
+      "sha256": "8992789006e2f9bab14158b558cd7f1931d4a491a8809fdc18c142e851c85879"
+    },
+    {
+      "path": "screenshots/relocation-desktop-public-identity.png",
+      "bytes": 68481,
+      "sha256": "00996a8c5eecdd0ab6b1c1f23ecb8ba4edb9d4476d0e5205859f1bba430b25a8"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader-discussion.png",
+      "bytes": 45489,
+      "sha256": "3b9c231d83e92a2b1c2cd015a52ebcc6e60692f139d81370eed3f50be25d5041"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader.png",
+      "bytes": 75661,
+      "sha256": "f34cfcdeff1b041633df56269c94a75c9376f7ad29ad861fbf0c0164afc914ac"
+    },
+    {
+      "path": "screenshots/relocation-desktop-search.png",
+      "bytes": 109042,
+      "sha256": "2919672c94613b0fa36e29be40ac04508479a8683a78f6141b167079d96fad1c"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title-comments.png",
+      "bytes": 96952,
+      "sha256": "0f0ed6033ea1d44322ba8882a71eae548e3855358a1846df8156826f05f7a9ef"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title.png",
+      "bytes": 90001,
+      "sha256": "e26b40b32bd140e07a5d89e9ad1da41cde3e1e1e85977471490ab70925c855f2"
+    },
+    {
+      "path": "screenshots/relocation-mobile-home.png",
+      "bytes": 123470,
+      "sha256": "9204b1b942a4b2f808118837c79ea46e78ed95dbb26e88573738efc2edab8f47"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader.png",
+      "bytes": 4017,
+      "sha256": "5e75ec8892ea0eb591cf80a2593b6c979cc42a51f8b51431e9f675dd6fbd0475"
+    },
+    {
+      "path": "screenshots/relocation-mobile-search.png",
+      "bytes": 92865,
+      "sha256": "b4a28d845b5487bb4c372d3f0dfed5a97d2016756315a32059840e61a127b69d"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title.png",
+      "bytes": 60328,
+      "sha256": "a85d7ad4c8fafa98f15dd0b8e6b99c4190af03cf7142a72fa753b6d981a8026e"
+    },
+    {
+      "path": "screenshots.json",
+      "bytes": 4116,
+      "sha256": "41bd0e95ea1b65d813ae41c12760d76fa0084f5cb0c4a73c2c6b8f33bae2c39e"
+    }
+  ],
+  "limits": [
+    "Actual startup passed; local-library failed before completing mobile layout and later account controls.",
+    "Two legitimate mobile close controls caused strict locator failure; corrected test still requires a fresh complete run.",
+    "Failed lifecycle and nonzero supervisor exit retained despite verified final cleanup.",
+    "Desktop main/settings pixels and initial mobile reader inspected separately; no current full visual/runtime acceptance."
+  ]
+}
