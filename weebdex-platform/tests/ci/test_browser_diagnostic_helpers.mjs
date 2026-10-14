@@ -20,7 +20,7 @@ await test('DOM sampler exports only four fixed booleans', () => {
 await test('late ready observation retains the original failed checkpoint', async () => {
   let reads = 0, waitCalls = 0;
   const page = { evaluate: async () => state(reads++ > 0), waitForFunction: async (_, arg, options) => {
-    waitCalls++; assert.equal(arg, undefined); assert.equal(options.polling, 100); assert.ok(options.timeout > 0 && options.timeout <= 7000);
+    waitCalls++; assert.equal(arg, undefined); assert.equal(options.polling, 100); assert.ok(options.timeout > 0 && options.timeout <= 6750);
   } };
   const result = await observeSeedTitleReadiness(page, false);
   assert.equal(result.original_body_meaningful, false);
@@ -61,6 +61,14 @@ await test('late sampler resolution cannot mutate an already returned report', a
   const frozen = JSON.stringify(result);
   resolve(state(true)); await new Promise(done => setTimeout(done, 20));
   assert.equal(JSON.stringify(result), frozen); assert.equal(result.initial, undefined);
+});
+await test('deadline leaves no time for an additional renderer operation', async () => {
+  let calls = 0;
+  const result = await observeSeedTitleReadiness({ evaluate: async () => {
+    calls++; await new Promise(done => setTimeout(done, 25)); return state(true);
+  }, waitForFunction: async () => { calls++; } }, false, { timeoutMs: 5 });
+  assert.equal(result.wait_outcome, 'deadline'); assert.equal(calls, 1);
+  await new Promise(done => setTimeout(done, 30)); assert.equal(calls, 1);
 });
 await test('check persists running and terminal passed state and returns original value', async () => {
   const report = {}, saved = [], check = createJourneyCheck(report, () => saved.push(JSON.parse(JSON.stringify(report))));
