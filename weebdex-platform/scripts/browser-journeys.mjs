@@ -2,8 +2,17 @@
 import { randomBytes } from "node:crypto";
 import { deflateSync } from "node:zlib";
 import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
-import { selectTitleLibraryStatus, titleLibraryTrigger } from "./browser-select-controls.mjs";
+import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes } from "./browser-select-controls.mjs";
 import { expandDetailsPanel } from "./browser-details-controls.mjs";
+export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Object.freeze([
+  'device-title-navigation', ...titleFollowCheckSuffixes.map(suffix => 'device-follow-' + suffix),
+  'device-status-durable', 'device-authority-unpublished', 'device-reload-status', 'device-library-navigation',
+  'custom-list-navigation', 'custom-list-durable', 'custom-member-durable', 'custom-backup-export',
+  'custom-foreign-backup-fenced', 'custom-backup-merged', 'account-mode-ready',
+  ...titleFollowCheckSuffixes.map(suffix => 'account-follow-' + suffix), 'account-status-durable',
+  'account-device-preserved', 'account-import-reviewed', 'signer-section-open', 'signer-binding-installed',
+  'signer-dismissal-visible', 'signer-outbox-empty'
+].map(suffix => 'local-library-' + suffix)) });
 export async function runJourneys(h) {
 	const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
 	const ids = fixture.ids ?? {};
@@ -400,15 +409,22 @@ export async function runJourneys(h) {
 			insist(reply, 'Reply prerequisite failed'); await open(`/forums/threads/${thread}`); await page.locator(`#p${reply.id}`).getByRole('button', { name: 'Delete', exact: true }).click(); await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click(); const removed = await until(() => api(`/thread/${thread}/replies/${reply.id}`), value => value.status === 404 || value.body?.state?.startsWith('deleted'), 'Soft comment deletion not persisted'); await page.reload({ waitUntil: 'domcontentloaded' }); insist(await page.getByText(`Edited ${marker}`, { exact: true }).count() === 0, 'Deleted comment body remained visible'); return { removal_status: removed.status, original_body_not_rendered: true };
 		});
 	} else if (phase === 'local-library') {
+		const check = (id, operation) => {
+			insist(typeof h.check === 'function', 'The reviewed fixed-check diagnostic recorder is required for this local-library journey');
+			return h.check(id, operation);
+		};
+		const inspect = (suffix, operation) => check('local-library-' + suffix, operation);
 		let snapshot, backup;
 		await step('anonymous default device follow persists without account or automatic publication', async () => {
-			await open(`/title/${manga}`); await follow('Reading');
-			snapshot = await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga && row.status === 'reading'), 'Anonymous follow was not saved in IndexedDB');
-			insist((await api('/auth/check')).status !== 200, 'Anonymous journey unexpectedly has an account');
-			insist(snapshot.scope.origin === origin && snapshot.scope.catalogNamespace, 'Device library is missing instance provenance');
-			insist(await outboxCount() === 0, 'A local save automatically queued public transmission');
-			await page.reload({ waitUntil: 'domcontentloaded' }); await titleLibraryTrigger(page, 'Reading').waitFor({ state: 'visible' });
-			await open('/library'); await page.locator(`a[href^="/title/${manga}"]`).first().waitFor({ state: 'visible' });
+			await inspect('device-title-navigation', () => open(`/title/${manga}`)); await selectTitleLibraryStatus(page, 'Reading', { check, prefix: 'local-library-device-follow' });
+			snapshot = await inspect('device-status-durable', () => until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga && row.status === 'reading'), 'Anonymous follow was not saved in IndexedDB'));
+			await inspect('device-authority-unpublished', async () => {
+				insist((await api('/auth/check')).status !== 200, 'Anonymous journey unexpectedly has an account');
+				insist(snapshot.scope.origin === origin && snapshot.scope.catalogNamespace, 'Device library is missing instance provenance');
+				insist(await outboxCount() === 0, 'A local save automatically queued public transmission');
+			});
+			await inspect('device-reload-status', async () => { await page.reload({ waitUntil: 'domcontentloaded' }); await titleLibraryTrigger(page, 'Reading').waitFor({ state: 'visible' }); });
+			await inspect('device-library-navigation', async () => { await open('/library'); await page.locator(`a[href^="/title/${manga}"]`).first().waitFor({ state: 'visible' }); });
 			return { anonymous_saved: true, scoped_device_persistence: true, reload_and_library_control: true, outbox_jobs: 0 };
 		});
 		await step('real reader progress persists locally and survives password identity changes', async () => {
@@ -422,31 +438,41 @@ export async function runJourneys(h) {
 			return { reader_progress_saved: true, signup_did_not_select_account_mode: true, logout_preserved_device_records: true };
 		});
 		await step('custom list controls and reviewed scoped backup export/import persist actual device rows', async () => {
-			await open('/library'); await expandPanel(); const target = panel(); await target.getByText('Custom device lists', { exact: true }).click();
-			await target.getByLabel('List name', { exact: true }).fill(`Local ${marker}`); await target.getByRole('button', { name: 'Create list', exact: true }).click();
-			const listed = await until(device, value => value?.records.some(row => row.family === 'lists' && row.name === `Local ${marker}`), 'List control did not persist'); const list = listed.records.find(row => row.family === 'lists' && row.name === `Local ${marker}`);
-			await target.getByLabel('List', { exact: true }).selectOption(list.id); await target.getByLabel('Series', { exact: true }).selectOption(manga); await target.getByLabel('Position', { exact: true }).fill('3'); await target.getByRole('button', { name: 'Save member', exact: true }).click();
-			await until(device, value => value?.records.some(row => row.family === 'members' && row.list === list.id && row.series === manga && row.position === 3), 'Membership control did not persist');
-			const downloading = page.waitForEvent('download'); await target.getByRole('button', { name: 'Export device backup', exact: true }).click(); const download = await downloading; const stream = await download.createReadStream(); const chunks = []; for await (const chunk of stream) chunks.push(chunk); backup = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-			insist(backup.format === 'weebdex-device-library' && backup.scope.origin === origin && backup.records.length >= 4, 'UI export was not the scoped device backup');
-			const foreign = { ...backup, scope: { ...backup.scope, origin: 'https://foreign.example.invalid' } }; await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'foreign.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(foreign)) }); await target.getByText('Native IDs belong to a different instance.', { exact: false }).waitFor({ state: 'visible' }); insist(await target.getByRole('button', { name: 'Merge reviewed import', exact: true }).count() === 0, 'Foreign native IDs could be merged silently');
-			await target.getByRole('button', { name: 'Cancel import', exact: true }).click(); await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'same-instance.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) }); await target.getByRole('button', { name: 'Merge reviewed import', exact: true }).click(); await target.getByText('Backup merged locally.', { exact: true }).waitFor({ state: 'visible' });
-			insist(await outboxCount() === 0, 'Backup/list controls automatically published');
+			const target = panel();
+			await inspect('custom-list-navigation', async () => { await open('/library'); await expandPanel(); await target.getByText('Custom device lists', { exact: true }).click(); });
+			const list = await inspect('custom-list-durable', async () => {
+				await target.getByLabel('List name', { exact: true }).fill(`Local ${marker}`); await target.getByRole('button', { name: 'Create list', exact: true }).click();
+				const listed = await until(device, value => value?.records.some(row => row.family === 'lists' && row.name === `Local ${marker}`), 'List control did not persist'); return listed.records.find(row => row.family === 'lists' && row.name === `Local ${marker}`);
+			});
+			await inspect('custom-member-durable', async () => {
+				await target.getByLabel('List', { exact: true }).selectOption(list.id); await target.getByLabel('Series', { exact: true }).selectOption(manga); await target.getByLabel('Position', { exact: true }).fill('3'); await target.getByRole('button', { name: 'Save member', exact: true }).click();
+				await until(device, value => value?.records.some(row => row.family === 'members' && row.list === list.id && row.series === manga && row.position === 3), 'Membership control did not persist');
+			});
+			await inspect('custom-backup-export', async () => {
+				const downloading = page.waitForEvent('download'); await target.getByRole('button', { name: 'Export device backup', exact: true }).click(); const download = await downloading; const stream = await download.createReadStream(); const chunks = []; for await (const chunk of stream) chunks.push(chunk); backup = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+				insist(backup.format === 'weebdex-device-library' && backup.scope.origin === origin && backup.records.length >= 4, 'UI export was not the scoped device backup');
+			});
+			await inspect('custom-foreign-backup-fenced', async () => { const foreign = { ...backup, scope: { ...backup.scope, origin: 'https://foreign.example.invalid' } }; await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'foreign.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(foreign)) }); await target.getByText('Native IDs belong to a different instance.', { exact: false }).waitFor({ state: 'visible' }); insist(await target.getByRole('button', { name: 'Merge reviewed import', exact: true }).count() === 0, 'Foreign native IDs could be merged silently'); });
+			await inspect('custom-backup-merged', async () => { await target.getByRole('button', { name: 'Cancel import', exact: true }).click(); await target.getByLabel('Preview device backup', { exact: true }).setInputFiles({ name: 'same-instance.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) }); await target.getByRole('button', { name: 'Merge reviewed import', exact: true }).click(); await target.getByText('Backup merged locally.', { exact: true }).waitFor({ state: 'visible' });
+				insist(await outboxCount() === 0, 'Backup/list controls automatically published'); });
 			return { list_membership_persisted: true, actual_download_reviewed: true, foreign_scope_blocked: true, explicit_merge_succeeded: true, public_outbox_unchanged: true };
 		});
 		await step('explicit account mode and account import preserve independent device state', async () => {
-			insist(account, 'Synthetic account prerequisite failed'); await login(account.password); await until(() => api('/auth/check'), value => value.status === 200, 'Login failed'); await open(`/title/${manga}`); await expandPanel(); const before = await device();
-			await panel().getByRole('button', { name: 'Use account library', exact: true }).click(); await follow('Plan to Read');
-			const accountFollow = await until(() => api(`/user/follows/manga?limit=100`), value => value.status === 200 && value.body?.data?.some(row => row.id === manga && row.reading_status === 'plan_to_read'), 'Explicit account follow did not persist');
-			const preserved = await device(); insist(JSON.stringify(preserved.records) === JSON.stringify(before.records), 'Account mode silently overwrote device records');
-			await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); await panel().getByText('Import preview: account', { exact: false }).waitFor({ state: 'visible' }); await panel().getByRole('button', { name: 'Merge reviewed import', exact: true }).click();
-			await panel().getByRole('button', { name: 'Use device library', exact: true }).click(); await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga), 'Reviewed account import lost local series');
+			const before = await inspect('account-mode-ready', async () => { insist(account, 'Synthetic account prerequisite failed'); await login(account.password); await until(() => api('/auth/check'), value => value.status === 200, 'Login failed'); await open(`/title/${manga}`); await expandPanel(); const saved = await device();
+				await panel().getByRole('button', { name: 'Use account library', exact: true }).click(); return saved; });
+			await selectTitleLibraryStatus(page, 'Plan to Read', { check, prefix: 'local-library-account-follow' });
+			const accountFollow = await inspect('account-status-durable', () => until(() => api(`/user/follows/manga?limit=100`), value => value.status === 200 && value.body?.data?.some(row => row.id === manga && row.reading_status === 'plan_to_read'), 'Explicit account follow did not persist'));
+			await inspect('account-device-preserved', async () => { const preserved = await device(); insist(JSON.stringify(preserved.records) === JSON.stringify(before.records), 'Account mode silently overwrote device records'); });
+			await inspect('account-import-reviewed', async () => { await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); await panel().getByText('Import preview: account', { exact: false }).waitFor({ state: 'visible' }); await panel().getByRole('button', { name: 'Merge reviewed import', exact: true }).click();
+				await panel().getByRole('button', { name: 'Use device library', exact: true }).click(); await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga), 'Reviewed account import lost local series'); });
 			return { account_follow_confirmed: accountFollow.status, explicit_mode_only: true, device_unchanged_before_reviewed_import: true, reviewed_merge_control_used: true };
 		});
 		await step('optional signer requires explicit selection and dismissal does not queue publication', async () => {
-			await expandPanel(); const target = panel(); await target.getByText('Optional Nostr publication and verified recovery', { exact: true }).click(); await page.evaluate(() => { window.nostr = { getPublicKey: async () => { throw Error('Synthetic signer prompt dismissed'); } }; });
-			await target.getByRole('button', { name: 'Connect external browser signer', exact: true }).click(); await target.getByText('Synthetic signer prompt dismissed', { exact: false }).waitFor({ state: 'visible' });
-			insist(await outboxCount() === 0, 'Dismissed signer created publication jobs'); await page.evaluate(() => { delete window.nostr; });
+			const target = panel();
+			await inspect('signer-section-open', async () => { await expandPanel(); await target.getByText('Optional Nostr publication and verified recovery', { exact: true }).click(); });
+			await inspect('signer-binding-installed', () => page.evaluate(() => { window.nostr = { getPublicKey: async () => { throw Error('Synthetic signer prompt dismissed'); } }; }));
+			await inspect('signer-dismissal-visible', async () => { await target.getByRole('button', { name: 'Connect external browser signer', exact: true }).click(); await target.getByText('Synthetic signer prompt dismissed', { exact: false }).waitFor({ state: 'visible' }); });
+			await inspect('signer-outbox-empty', async () => { insist(await outboxCount() === 0, 'Dismissed signer created publication jobs'); await page.evaluate(() => { delete window.nostr; }); });
 			return { explicit_signer_control: true, dismissed_prompt_truthful: true, no_job_or_auto_key: true, signed_delivery_recovery_requires_real_original_fixture: true };
 		});
 	} else if (phase === "pwa") {

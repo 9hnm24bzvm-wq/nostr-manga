@@ -6,9 +6,20 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { selectTitleLibraryStatus, titleLibraryTrigger } from "./browser-select-controls.mjs";
+import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes } from "./browser-select-controls.mjs";
 
 export const signedJourneyPhases = ["signed-library", "signed-profile", "signed-social", "signed-context", "signed-source-controls", "signed-namespace", "signed-recipients", "signed-restart"];
+// Fixed identities only. No fixture keys, IDs, records or inspected values enter
+// the public diagnostic vocabulary; missing later checks remain pending.
+const signedLibraryCheckSuffixes = Object.freeze([
+  'mapped-title-navigation', ...titleFollowCheckSuffixes.map(suffix => 'mapped-follow-' + suffix),
+  'mapped-status-durable', 'native-title-navigation', ...titleFollowCheckSuffixes.map(suffix => 'native-follow-' + suffix),
+  'reader-bytes', 'reader-progress-durable', 'library-navigation', 'device-list-durable',
+  'device-member-durable', 'device-authority-unpublished', 'missing-signer-refused',
+  'signer-binding-installed', 'signer-selection-denied', 'signer-connected',
+  'recipient-wrong-key-refused', 'recipient-disallowed-origin-refused', 'recipient-verified', 'recipient-selected'
+]);
+export const signedLibraryDiagnosticChecks = Object.freeze(Object.fromEntries(signedJourneyPhases.map(phase => [phase, Object.freeze(signedLibraryCheckSuffixes.map(suffix => phase + '-' + suffix))])));
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const digest = value => createHash("sha256").update(value).digest("hex");
 const hex = value => Buffer.from(value).toString("hex");
@@ -48,6 +59,11 @@ function exactLoopback(value, protocol, insist, label) {
 
 export async function runSignedJourneys(h) {
   const { phase, page, context, origin, fixture, step, insist, open, report } = h;
+  const check = (id, operation) => {
+    insist(typeof h.check === 'function', 'The reviewed fixed-check diagnostic recorder is required for this signed journey');
+    return h.check(id, operation);
+  };
+  const inspect = (suffix, operation) => check(phase + '-' + suffix, operation);
   insist(signedJourneyPhases.includes(phase), "Unknown signed browser journey phase");
   const protocol = exactLoopback(fixture.protocol_origin, "http:", insist, "original service").origin;
   const sink = exactLoopback(fixture.mail_origin ?? fixture.control_origin, "http:", insist, "fixture control").origin;
@@ -146,7 +162,7 @@ export async function runSignedJourneys(h) {
     const dialog = page.waitForEvent("dialog"); const click = button.click(); const prompt = await dialog;
     insist(prompt.type() === "confirm" && prompt.message().includes(expected), "Unexpected browser confirmation"); await prompt.accept(); await click;
   };
-  const follow = status => selectTitleLibraryStatus(page, status);
+  const follow = (status, prefix) => selectTitleLibraryStatus(page, status, prefix ? { check, prefix } : undefined);
   const databases = async () => page.evaluate(async () => {
     const available = await indexedDB.databases();
     async function read(name, stores, keys) {
@@ -223,33 +239,44 @@ export async function runSignedJourneys(h) {
       return { real_original_seed_ready: true, canonical_namespace: seeded.catalog_namespace, real_mappings: mappings.body.data.length, native_only_excluded: true, exact_original_origin: protocol, genuine_root_websocket_read: true };
     });
     await step("anonymous device controls persist mapped and native-only records without signer or publication", async () => {
-      await open(`/title/${manga}`); await follow("Reading");
-      await until(databases, state => state.device?.records.some(row => row.family === "series" && row.id === manga && row.status === "reading"), "Visible follow did not persist mapped device series");
-      await open(`/title/${nativeOnly}`); await follow("Plan to Read");
-      await open(`/chapter/${chapter}/1`); await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), count => count > 0, "Canonical chapter reader did not decode real local bytes");
-      await until(databases, state => state.device?.records.some(row => row.family === "chapters" && row.id === chapter && row.page >= 1), "Canonical reader progress did not persist locally");
-      await open("/library"); await expand(library()); await section(library(), "Optional Nostr publication and verified recovery");
-      await section(library(), "Custom device lists"); await library().getByLabel("List name", { exact: true }).fill("Synthetic signed list " + marker); await library().getByRole("button", { name: "Create list", exact: true }).click(); await idle(library());
-      deviceList = (await databases()).device.records.find(row => row.family === "lists" && row.name === "Synthetic signed list " + marker); insist(deviceList && /^[0-9a-f]{32}$/.test(deviceList.id), "Visible custom list control did not persist its original 128-bit ID");
-      await library().getByLabel("List", { exact: true }).selectOption(deviceList.id); await library().getByLabel("Series", { exact: true }).selectOption(manga); await library().getByLabel("Position", { exact: true }).fill("2"); await library().getByRole("button", { name: "Save member", exact: true }).click(); await idle(library());
-      await until(databases, state => state.device.records.some(row => row.family === "members" && row.list === deviceList.id && row.series === manga && row.position === 2), "Visible list membership control did not persist scoped native reference");
-      const state = await databases(); insist(state.device.instanceScope.catalogNamespace === seeded.catalog_namespace && state.device.instanceScope.serviceKey === fixture.service_key && state.protocol.jobs.length === 0 && mutationRequests.length === 0, "Anonymous local controls published or lost their namespace");
-      insist((await native("/api/auth/check")).status !== 200 && await page.evaluate(() => typeof window.nostr === "undefined"), "A password session or signer was silently created");
-      await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("A compatible NIP-07 browser signer is required", { exact: false }).waitFor({ state: "visible" });
+      await inspect('mapped-title-navigation', () => open(`/title/${manga}`)); await follow("Reading", phase + '-mapped-follow');
+      await inspect('mapped-status-durable', () => until(databases, state => state.device?.records.some(row => row.family === "series" && row.id === manga && row.status === "reading"), "Visible follow did not persist mapped device series"));
+      await inspect('native-title-navigation', () => open(`/title/${nativeOnly}`)); await follow("Plan to Read", phase + '-native-follow');
+      await inspect('reader-bytes', async () => { await open(`/chapter/${chapter}/1`); await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), count => count > 0, "Canonical chapter reader did not decode real local bytes"); });
+      await inspect('reader-progress-durable', () => until(databases, state => state.device?.records.some(row => row.family === "chapters" && row.id === chapter && row.page >= 1), "Canonical reader progress did not persist locally"));
+      await inspect('library-navigation', async () => { await open("/library"); await expand(library()); await section(library(), "Optional Nostr publication and verified recovery"); });
+      await inspect('device-list-durable', async () => {
+        await section(library(), "Custom device lists"); await library().getByLabel("List name", { exact: true }).fill("Synthetic signed list " + marker); await library().getByRole("button", { name: "Create list", exact: true }).click(); await idle(library());
+        deviceList = (await databases()).device.records.find(row => row.family === "lists" && row.name === "Synthetic signed list " + marker); insist(deviceList && /^[0-9a-f]{32}$/.test(deviceList.id), "Visible custom list control did not persist its original 128-bit ID");
+      });
+      await inspect('device-member-durable', async () => {
+        await library().getByLabel("List", { exact: true }).selectOption(deviceList.id); await library().getByLabel("Series", { exact: true }).selectOption(manga); await library().getByLabel("Position", { exact: true }).fill("2"); await library().getByRole("button", { name: "Save member", exact: true }).click(); await idle(library());
+        await until(databases, state => state.device.records.some(row => row.family === "members" && row.list === deviceList.id && row.series === manga && row.position === 2), "Visible list membership control did not persist scoped native reference");
+      });
+      await inspect('device-authority-unpublished', async () => {
+        const state = await databases(); insist(state.device.instanceScope.catalogNamespace === seeded.catalog_namespace && state.device.instanceScope.serviceKey === fixture.service_key && state.protocol.jobs.length === 0 && mutationRequests.length === 0, "Anonymous local controls published or lost their namespace");
+        insist((await native("/api/auth/check")).status !== 200 && await page.evaluate(() => typeof window.nostr === "undefined"), "A password session or signer was silently created");
+      });
+      await inspect('missing-signer-refused', async () => { await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("A compatible NIP-07 browser signer is required", { exact: false }).waitFor({ state: "visible" }); });
       return { anonymous_scope_preserved: true, actual_reader_bytes_decoded: true, original_list_id: deviceList.id, scoped_list_membership: true, no_auto_signer: true, original_mutation_requests: 0, outbox_jobs: 0 };
     });
     await step("external signer and actual service recipient require explicit independent selection", async () => {
-      await installSigner(); deniedConnect = true; await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("Synthetic signer selection denied", { exact: false }).waitFor({ state: "visible" }); insist((await jobs()).length === 0, "Denied signer selection queued a snapshot");
-      deniedConnect = false; await selectSigner();
-      await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await library().getByLabel("Expected service public key", { exact: true }).fill("0".repeat(64));
-      await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); await library().getByText("Service identity mismatch", { exact: false }).waitFor({ state: "visible" });
-      insist(((await databases()).protocol.relays ?? []).length === 0, "Wrong service proof was remembered");
-      await library().getByLabel("Instance origin", { exact: true }).fill("http://127.0.0.1:1");
-      await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); await library().getByText("This origin is not allowed by the instance relay/CSP policy", { exact: false }).waitFor({ state: "visible" });
-      await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await library().getByLabel("Expected service public key", { exact: true }).fill(fixture.service_key);
-      await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library());
-      const remembered = (await databases()).protocol.relays; insist(remembered.length === 1 && remembered[0].origin === protocol && remembered[0].serviceKey === fixture.service_key && remembered[0].selected === false, "Verified instance was automatically selected");
-      await library().getByLabel("Select " + protocol, { exact: true }).check(); await idle(library());
+      await inspect('signer-binding-installed', installSigner);
+      await inspect('signer-selection-denied', async () => { deniedConnect = true; await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("Synthetic signer selection denied", { exact: false }).waitFor({ state: "visible" }); insist((await jobs()).length === 0, "Denied signer selection queued a snapshot"); });
+      await inspect('signer-connected', async () => { deniedConnect = false; await selectSigner(); });
+      await inspect('recipient-wrong-key-refused', async () => {
+        await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await library().getByLabel("Expected service public key", { exact: true }).fill("0".repeat(64));
+        await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); await library().getByText("Service identity mismatch", { exact: false }).waitFor({ state: "visible" });
+        insist(((await databases()).protocol.relays ?? []).length === 0, "Wrong service proof was remembered");
+      });
+      await inspect('recipient-disallowed-origin-refused', async () => { await library().getByLabel("Instance origin", { exact: true }).fill("http://127.0.0.1:1");
+        await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library()); await library().getByText("This origin is not allowed by the instance relay/CSP policy", { exact: false }).waitFor({ state: "visible" }); });
+      await inspect('recipient-verified', async () => {
+        await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await library().getByLabel("Expected service public key", { exact: true }).fill(fixture.service_key);
+        await consentDialog(library().getByRole("button", { name: "Verify and remember instance", exact: true }), "Verify and remember"); await idle(library());
+        const remembered = (await databases()).protocol.relays; insist(remembered.length === 1 && remembered[0].origin === protocol && remembered[0].serviceKey === fixture.service_key && remembered[0].selected === false, "Verified instance was automatically selected");
+      });
+      await inspect('recipient-selected', async () => { await library().getByLabel("Select " + protocol, { exact: true }).check(); await idle(library()); });
       return { explicit_memory_only_nip07: true, synthetic_public_key: owner, wrong_service_key_rejected: true, unapproved_recipient_rejected: true, actual_identity_proof_verified: true, initial_recipient_unselected: true };
     });
 

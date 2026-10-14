@@ -7,9 +7,27 @@ export function titleLibraryTrigger(page, status) {
     .and(page.locator('div.min-w-45 button[data-slot="select-trigger"][aria-haspopup="listbox"]'));
 }
 
-export async function selectTitleLibraryStatus(page, status) {
-  await titleLibraryTrigger(page).click();
-  await page.getByRole('option', { name: status, exact: true }).click();
+export const titleFollowCheckSuffixes = Object.freeze(['trigger-visible-unique', 'popup-open', 'option-selected']);
+export async function selectTitleLibraryStatus(page, status, diagnostics) {
+  const trigger = titleLibraryTrigger(page);
+  // Existing callers keep their original two actions. Only the reviewed finite
+  // diagnostic callers add read-only readiness checks and fixed status receipts.
+  if (!diagnostics) {
+    await trigger.click();
+    await page.getByRole('option', { name: status, exact: true }).click();
+    return;
+  }
+  const { check, prefix } = diagnostics;
+  if (typeof check !== 'function' || typeof prefix !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(prefix)) throw Error('Invalid fixed title-follow diagnostic contract');
+  await check(prefix + '-trigger-visible-unique', () => trigger.waitFor({ state: 'visible' }));
+  await check(prefix + '-popup-open', async () => {
+    await trigger.click();
+    await page.locator('[data-slot="select-content"][role="listbox"]:visible').waitFor({ state: 'visible' });
+  });
+  await check(prefix + '-option-selected', async () => {
+    await page.getByRole('option', { name: status, exact: true }).click();
+    await titleLibraryTrigger(page, status).waitFor({ state: 'visible' });
+  });
 }
 // Browser-journey controls for the retained Select-based UI. These are native
 // buttons opening listboxes; the retained Combobox wrapper aliases Select.Trigger.
