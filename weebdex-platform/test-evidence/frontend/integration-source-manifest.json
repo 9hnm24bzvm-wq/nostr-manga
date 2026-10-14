@@ -82,8 +82,8 @@
     },
     {
       "path": "platform-integrations/frontend-behavior/manga-search-query.ts",
-      "bytes": 10468,
-      "sha256": "7fe3699b772b08a381c0c81c0adaafe5d6cef933bf984f07a3b8d1c77f3b834d"
+      "bytes": 10638,
+      "sha256": "23d9b9a6e5b191b114df873d633aa97c9e77f8b3bec89fd98a08114c605099c8"
     },
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
@@ -371,7 +371,7 @@
       "sha256": "b047eaba5865ee6d83a522410f84b7e6b884e9074b4dc127c75341f92e8bf224"
     }
   ],
-  "integration_source_inventory_sha256": "41239ec61d78882ec3e788bd234d8f66888687151c9b78a6a76da8f82742c525",
+  "integration_source_inventory_sha256": "8dca0e78b6e5f8cc92bb1f451492ac705657616d61a7224f08c901c868e0c7a6",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",

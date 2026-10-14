@@ -45,9 +45,12 @@ export function parseMangaSearchQuery(defaults: SearchMangaRequest, query: URLSe
   const apply = (fields: (keyof MangaFilterRequest)[], operation: () => void) => {
     try { operation(); } catch (error) { issues.push({ fields, message: error instanceof Error ? error.message : 'Invalid search filter' }); }
   };
-  if (new TextEncoder().encode(query.toString().replace(/^\?/, '')).length > 16384) issues.push({ fields: [], message: 'Query is too long' });
+  if (new TextEncoder().encode(query.toString().replace(/^\?/, '')).length > 16384) issues.push({ fields: [...arrayKeys, ...scalarKeys].filter(key => values.has(key)), message: 'Query is too long' });
   for (const [key, rows] of values) {
-    if (new TextEncoder().encode(key).length > 64 || rows.length > 100 || rows.some(value => new TextEncoder().encode(value).length > 1000)) issues.push({ fields: [], message: 'Invalid query value budget' });
+    if (new TextEncoder().encode(key).length > 64 || rows.length > 100 || rows.some(value => new TextEncoder().encode(value).length > 1000)) {
+      const field = [...arrayKeys, ...scalarKeys].find(field => field === key);
+      issues.push({ fields: field ? [field] : [], message: 'Invalid query value budget' });
+    }
   }
   for (const key of sharedScalarKeys) {
     const rows = values.get(key); if (rows && rows.length !== 1) issues.push({ fields: [], message: key + ' must occur once' });

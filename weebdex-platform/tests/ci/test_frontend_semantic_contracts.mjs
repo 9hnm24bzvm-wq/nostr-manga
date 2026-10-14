@@ -162,6 +162,27 @@ for (const input of ['?page=0','?page=1000001','?page=1&page[]=2','?page=bad','?
 check('valid pagination is retained for reads and excluded from Apply state', () => { const result = query.mangaSearchReadQuery(new URLSearchParams('page[]=2&limit[]=0'), false); assert.equal(result.error, undefined); assert.equal(result.query.get('page'), '2'); assert.equal(result.query.get('limit'), '0'); const parsed = parse('page=2'); assert.equal(Object.hasOwn(parsed.search, 'page'), false); assert.equal(parsed.passthrough.has('page'), false); });
 check('library username singleton does not narrow public unowned fields', () => { assert.ok(query.validateMangaSearchQuery(new URLSearchParams('username=a&username[]=b'), true)); assert.equal(query.validateMangaSearchQuery(new URLSearchParams('username=a&username=b'), false), undefined); });
 check('unowned future fields stay separate and survive initial read normalization', () => { const result = query.mangaSearchReadQuery(new URLSearchParams('future[]=one&future[]=two&tlang[]=mx&manga[]=native'), false); assert.equal(result.error, undefined); assert.deepEqual(result.query.getAll('future[]'), ['one','two']); assert.deepEqual(result.query.getAll('tlang'), ['mx']); assert.deepEqual(result.query.getAll('manga'), ['native']); });
+for (const [field, input, corrected] of [['title', 'title=' + 'a'.repeat(1001), 'short title'], ['lang', Array.from({ length: 101 }, () => 'lang=en').join('&'), ['en']]]) {
+  const errors = [], targets = [], window = { location: { pathname: '/search', search: '?' + input } };
+  const value = script('src/lib/components/MangaSearchFilter.svelte', { submit: 'onSubmit', edit: '(field, value) => { search[field] = value; }' }, { window, goto: target => targets.push(target), toast: { error: (...args) => errors.push(args) } });
+  value.api.submit(); assert.equal(targets.length, 0); value.api.edit(field, corrected); value.api.submit();
+  check('owned field budget error clears only after a valid correction ' + field, () => { assert.equal(errors.length, 1); assert.equal(targets.length, 1); });
+}
+const longTags = Array.from({ length: 100 }, (_, i) => 'a'.repeat(125) + String(i).padStart(3, '0'));
+const multiBudget = new URLSearchParams(); longTags.forEach(value => { multiBudget.append('tag', value); multiBudget.append('tagx', value); }); multiBudget.set('title', 'a');
+check('total budget is owned by all present editable fields', () => { const parsed = parse(multiBudget.toString()); const issue = parsed.issues.find(issue => issue.message === 'Query is too long'); assert.deepEqual([...issue.fields].sort(), ['tag','tagx','title']); });
+check('correcting one total-budget field cannot forgive remaining excess', () => {
+  const errors = [], targets = [], window = { location: { pathname: '/search', search: multiBudget.toString() } };
+  const value = script('src/lib/components/MangaSearchFilter.svelte', { submit: 'onSubmit', edit: '(field, value) => { search[field] = value; }' }, { window, goto: target => targets.push(target), toast: { error: (...args) => errors.push(args) } });
+  value.api.edit('title', 'b'); value.api.submit(); assert.equal(targets.length, 0); assert.equal(errors.length, 1);
+  value.api.edit('tagx', []); value.api.submit(); assert.equal(targets.length, 1);
+});
+check('valid owned-field edits do not discard over-budget unknown passthrough', () => {
+  const input = new URLSearchParams(); for (let i = 0; i < 30; i++) input.append('future', 'a'.repeat(700)); input.set('title', 'a');
+  const errors = [], targets = [], window = { location: { pathname: '/search', search: input.toString() } };
+  const value = script('src/lib/components/MangaSearchFilter.svelte', { submit: 'onSubmit', edit: 'value => { search.title = value; }' }, { window, goto: target => targets.push(target), toast: { error: (...args) => errors.push(args) } });
+  value.api.edit('b'); value.api.submit(); assert.equal(targets.length, 0); assert.equal(errors.length, 1);
+});
 check('actual library Apply preserves explicit empty rating and resets page', () => { let target; const window = { location: { pathname: '/library', search: '?contentRating=__none__&page=2' } }; const value = script('src/lib/components/MangaSearchFilter.svelte', { submit: 'onSubmit' }, { window, goto: value => { target = value; }, toast: { error() { assert.fail('valid explicit empty selection rejected'); } } }); value.api.submit(); const next = new URL(target, 'http://localhost'); assert.equal(next.searchParams.get('contentRating'), '__none__'); assert.equal(next.searchParams.has('page'), false); });
 check('explicit library Reset clears its empty-rating selection deliberately', () => { let target; const window = { location: { pathname: '/library', search: '?contentRating=__none__&page=2' } }; const value = script('src/lib/components/MangaSearchFilter.svelte', { reset: 'onReset' }, { window, goto: value => { target = value; }, toast: { error() { assert.fail('explicit Reset was blocked'); } } }); value.api.reset(); assert.equal(target, '/library'); });
 const flush = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };
