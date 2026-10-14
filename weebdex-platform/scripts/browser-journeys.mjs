@@ -1,6 +1,7 @@
 // Real user-control journeys. Synthetic secrets stay only in harness memory.
 import { randomBytes } from "node:crypto";
 import { deflateSync } from "node:zlib";
+import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
 export async function runJourneys(h) {
 	const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
 	const ids = fixture.ids ?? {};
@@ -104,31 +105,40 @@ export async function runJourneys(h) {
 			return { logout_invalidated: true, wrong_password_rejected: true, spa_session_controls_updated: true };
 		});
 	} else if (phase === "account-recovery") {
-    let localBefore, oneTimeLink, newPassword;
+    let localBefore, oneTimeLink, newPassword, restrictedReady = false;
+    const recoveryCheck = createAccountRecoveryChecks(report, h.save);
     await step("real mail recovery mounts reset-only UI without personal account or library authority", async () => {
-      insist(account, "Synthetic registration prerequisite failed"); await open(`/title/${manga}`); await follow("Reading"); localBefore = await until(device, value => value?.records.some(row => row.family === "series" && row.id === manga), "Device record was not persisted before recovery");
-      await logout(); await open("/auth/recovery"); await page.locator('input[name="email"]').fill(account.email); await page.getByRole("button", { name: "Send Recovery Link", exact: true }).click();
-      const mail = await until(async () => { const response = await control(`/mail/latest?to=${encodeURIComponent(account.email)}&kind=recovery`); return response.ok() ? response.json() : undefined; }, value => value?.fixture_only && value.link, "Actual local recovery email was not delivered");
-      const link = new URL(mail.link); insist(link.origin === origin, "Recovery email link left the exact local fixture"); oneTimeLink = link.href; redactions.add(link.href); for (const [, value] of link.searchParams) redactions.add(value);
-      await page.goto(link.href, { waitUntil: "domcontentloaded" }); await page.getByRole("button", { name: "Reset Password", exact: true }).waitFor({ state: "visible" });
-      insist(new URL(page.url()).pathname === "/auth/recovery", "Recovery link redirected into inaccessible account-settings guards");
-      const capability = await api("/auth/check"); insist(capability.status === 200 && capability.body?.session_purpose === "recovery" && capability.body?.recovery?.can_reset_password === true && capability.body.identity === undefined && capability.body.follows === undefined && capability.body.preferences === undefined && !capability.body.roles.length && !capability.body.permissions.length, "Recovery check exposed normal Session/personal authority");
-      insist(await page.locator('input[name="email"],input[name="username"]').count() === 0 && await page.getByRole("link", { name: "Logout", exact: true }).count() === 0, "Reset-only page mounted normal account/profile controls");
-      const privateRead = await api("/user/follows/manga"); insist(privateRead.status === 403, "Recovery credential read private account library");
-      insist(JSON.stringify((await device()).records) === JSON.stringify(localBefore.records), "Recovery silently changed the separate device library");
+      await recoveryCheck('device-library-seeded', async () => {
+        insist(account, "Synthetic registration prerequisite failed"); await open(`/title/${manga}`); await follow("Reading"); localBefore = await until(device, value => value?.records.some(row => row.family === "series" && row.id === manga), "Device record was not persisted before recovery");
+      });
+      await recoveryCheck('logout-before-recovery', logout);
+      const mail = await recoveryCheck('recovery-mail-delivered', async () => {
+        await open("/auth/recovery"); await page.locator('input[name="email"]').fill(account.email); await page.getByRole("button", { name: "Send Recovery Link", exact: true }).click();
+        return until(async () => { const response = await control(`/mail/latest?to=${encodeURIComponent(account.email)}&kind=recovery`); return response.ok() ? response.json() : undefined; }, value => value?.fixture_only && value.link, "Actual local recovery email was not delivered");
+      });
+      const link = await recoveryCheck('mail-link-local', async () => {
+        const link = new URL(mail.link); insist(link.origin === origin, "Recovery email link left the exact local fixture"); oneTimeLink = link.href; redactions.add(link.href); for (const [, value] of link.searchParams) redactions.add(value); return link;
+      });
+      await recoveryCheck('reset-ui-mounted', async () => { await page.goto(link.href, { waitUntil: "domcontentloaded" }); await page.getByRole("button", { name: "Reset Password", exact: true }).waitFor({ state: "visible" }); });
+      await recoveryCheck('reset-route', async () => { insist(new URL(page.url()).pathname === "/auth/recovery", "Recovery link redirected into inaccessible account-settings guards"); });
+      await recoveryCheck('restricted-capability', async () => { const capability = await api("/auth/check"); insist(capability.status === 200 && capability.body?.session_purpose === "recovery" && capability.body?.recovery?.can_reset_password === true && capability.body.identity === undefined && capability.body.follows === undefined && capability.body.preferences === undefined && !capability.body.roles.length && !capability.body.permissions.length, "Recovery check exposed normal Session/personal authority"); });
+      await recoveryCheck('password-only-controls', async () => { insist(await page.locator('input[name="email"],input[name="username"]').count() === 0 && await page.getByRole("link", { name: "Logout", exact: true }).count() === 0, "Reset-only page mounted normal account/profile controls"); });
+      await recoveryCheck('private-library-denied', async () => { const privateRead = await api("/user/follows/manga"); insist(privateRead.status === 403, "Recovery credential read private account library"); });
+      await recoveryCheck('device-library-retained', async () => { insist(JSON.stringify((await device()).records) === JSON.stringify(localBefore.records), "Recovery silently changed the separate device library"); });
+      restrictedReady = true;
       return { actual_mail_link_redeemed: true, correct_mounted_route: true, password_only_ui: true, capability_not_session: true, private_library_403: true, device_records_unchanged: true };
     });
     await step("password-only CSRF form rotates session and only the new password authenticates", async () => {
+      insist(restrictedReady, "The actual restricted recovery prerequisite did not pass; password reset was not attempted");
       newPassword = `Recovered!${randomBytes(24).toString("base64url")}9a`; redactions.add(newPassword);
-      const responsePromise = page.waitForResponse(response => new URL(response.url()).pathname === "/auth/self-service/settings" && response.request().method() === "POST");
-      await page.locator('input[name="password"]').fill(newPassword); await page.getByRole("button", { name: "Reset Password", exact: true }).click(); const response = await responsePromise; insist(response.status() === 200, "Real CSRF-bound password reset was rejected");
-      await page.getByText("Password reset completed", { exact: true }).waitFor({ state: "visible" });
-      const check = await api("/auth/check"); insist(check.status === 200 && check.body?.identity?.username === account.username && check.body.session_purpose !== "recovery", "Password reset did not rotate into an actual normal account session");
-      await page.getByRole("button", { name: "Continue to Account Settings", exact: true }).click(); await page.waitForURL(url => url.pathname === "/settings/account");
-      await logout(); await login(account.password); await page.waitForTimeout(1000); insist((await api("/auth/check")).status === 401, "Old password remained valid after reset");
-      await login(newPassword); await until(() => api("/auth/check"), value => value.body?.identity?.username === account.username, "New password could not establish a real session");
-      insist(JSON.stringify((await device()).records) === JSON.stringify(localBefore.records), "Password reset changed device library");
-      const replay = await context.request.get(oneTimeLink); insist(replay.status() === 400, "One-time recovery link was reusable");
+      await recoveryCheck('password-reset-accepted', async () => { const response = await submitRecoveryPassword(page, newPassword); insist(response.status() === 200, "Real CSRF-bound password reset was rejected"); });
+      await recoveryCheck('reset-completion-visible', async () => { await page.getByText("Password reset completed", { exact: true }).waitFor({ state: "visible" }); });
+      await recoveryCheck('normal-session-confirmed', async () => { const check = await api("/auth/check"); insist(check.status === 200 && check.body?.identity?.username === account.username && check.body.session_purpose !== "recovery", "Password reset did not rotate into an actual normal account session"); });
+      await recoveryCheck('account-settings-reached', async () => { await page.getByRole("button", { name: "Continue to Account Settings", exact: true }).click(); await page.waitForURL(url => url.pathname === "/settings/account"); });
+      await recoveryCheck('old-password-rejected', async () => { await logout(); await login(account.password); await page.waitForTimeout(1000); insist((await api("/auth/check")).status === 401, "Old password remained valid after reset"); });
+      await recoveryCheck('new-password-authenticated', async () => { await login(newPassword); await until(() => api("/auth/check"), value => value.body?.identity?.username === account.username, "New password could not establish a real session"); });
+      await recoveryCheck('device-library-retained-after-reset', async () => { insist(JSON.stringify((await device()).records) === JSON.stringify(localBefore.records), "Password reset changed device library"); });
+      await recoveryCheck('recovery-link-replay-rejected', async () => { const replay = await context.request.get(oneTimeLink); insist(replay.status() === 400, "One-time recovery link was reusable"); });
       return { genuine_settings_post_200: true, normal_session_rehydrated: true, old_password_rejected: true, new_password_accepted: true, one_time_link_consumed: true, local_library_retained: true };
     });
 	} else if (phase === "upload") {
