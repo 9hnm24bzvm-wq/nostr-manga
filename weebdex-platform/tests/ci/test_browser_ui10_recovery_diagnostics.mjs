@@ -52,7 +52,7 @@ test('actual old-password checkpoint owns later response rejection when click fa
 });
 
 test('UI10 exported checkpoint contract is fixed, ordered and frozen', () => {
-  assert.deepEqual(ui10DiagnosticChecks, { 'ui10-recovery-lifetimes': identifiers });
+  assert.deepEqual(ui10DiagnosticChecks, { 'ui10-reader-transition': ['403','404','delayed','normal'].flatMap(control => ['open','page-one','image-bytes','settings','shortcut-focus','navigation','destination'].map(suffix => `reader-transition-${control}-${suffix}`)), 'ui10-recovery-lifetimes': identifiers });
   assert.ok(Object.isFrozen(ui10DiagnosticChecks));
   assert.ok(Object.isFrozen(ui10DiagnosticChecks['ui10-recovery-lifetimes']));
   assert.equal(new Set(identifiers).size, 14);

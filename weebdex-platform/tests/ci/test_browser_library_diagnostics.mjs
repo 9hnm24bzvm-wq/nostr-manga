@@ -12,9 +12,13 @@ const expected = {
   'ui11-device-progress': ['device-progress-signup-context', ...controls.flatMap(control => suffixes.map(suffix => `device-progress-${control}-${suffix}`))],
   'ui12-compact-feed': ['compact-feed-seed-pagination', 'compact-feed-spanish-preferences', 'compact-feed-fixture-total', 'compact-feed-fixture-response-received', 'compact-feed-fixture-http-200', 'compact-feed-fixture-total-integer', 'compact-feed-fixture-total-at-least-seeded', 'compact-feed-fixture-total-within-known-scenarios', 'compact-feed-open-updates', 'compact-feed-third-page', 'compact-feed-resume-visible', 'compact-feed-bounded-burst', 'compact-feed-compact-geometry', 'compact-feed-trimmed-cards', 'compact-feed-manual-terminal-page', 'compact-feed-unique-sequential-pages', 'compact-feed-scenario-membership', 'compact-feed-all-compact-chapters', 'compact-feed-terminal-idle', 'compact-feed-resize-retains-entries', 'compact-feed-back-restores-entries']
 };
-// Original probes below remain intact; the supplemental phase has its own
-// explicit expected inventory and negative-control suite.
-assert.deepEqual(ui11To16DiagnosticChecks, { ...expected, ...actorFollowDiagnosticChecks });
+// Original probes remain intact. The actor-follow supplemental phase and
+// account-429 probes each retain their exact independently expected inventory.
+assert.deepEqual(ui11To16DiagnosticChecks, {
+  'ui14-account-failures': ['prerequisite','open','account-mode','durable-baseline','trigger','option','pressure-captured','capacity-ready','pressure-released','denial','feedback','no-replay','durable-unchanged'].map(suffix => `account429-title-${suffix}`),
+  ...expected,
+  ...actorFollowDiagnosticChecks
+});
 assert(Object.isFrozen(ui11To16DiagnosticChecks));
 for (const ids of Object.values(ui11To16DiagnosticChecks)) {
   assert(Object.isFrozen(ids)); assert.equal(ids.length, new Set(ids).size);

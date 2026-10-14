@@ -35,6 +35,13 @@ CHECKS['ui14-actor-follow'] = ['actor-follow-account', *[
     for case in ['initial-readiness', 'read-retry', 'unblock-loading', 'unblock-error',
                  'pending-ack', 'pending-lost', 'pending-disposed']
 ]]
+CHECKS['ui10-reader-transition'] = ['reader-transition-' + control + '-' + check
+    for control in ['403', '404', 'delayed', 'normal']
+    for check in ['open', 'page-one', 'image-bytes', 'settings', 'shortcut-focus', 'navigation', 'destination']]
+CHECKS['ui14-account-failures'] = ['account429-title-' + check for check in [
+    'prerequisite', 'open', 'account-mode', 'durable-baseline', 'trigger', 'option',
+    'pressure-captured', 'capacity-ready', 'pressure-released', 'denial', 'feedback',
+    'no-replay', 'durable-unchanged']]
 
 CHECKS['local-library'] = ['local-library-' + suffix for suffix in ['device-title-navigation', 'device-follow-trigger-visible-unique',
  'device-follow-popup-open', 'device-follow-option-selected', 'device-status-durable',

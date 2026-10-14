@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { selectListboxTrigger, clickListboxOption, setListboxOptions } from "./browser-select-controls.mjs";
 import { observeCompactFeedResponse } from "./compact-feed-http-outcome.mjs";
 import { actorFollowPhase, actorFollowDiagnosticChecks, runActorFollowJourneys } from "./browser-actor-follow-journeys.mjs";
+import { runHeldAccountDenial } from "./browser-account-capacity.mjs";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export const ui11To16JourneyPhases = Object.freeze([
@@ -30,6 +31,7 @@ const progressChecks = Object.freeze([
 ]);
 export const ui11To16DiagnosticChecks = Object.freeze({
   ...actorFollowDiagnosticChecks,
+  "ui14-account-failures": Object.freeze(["prerequisite", "open", "account-mode", "durable-baseline", "trigger", "option", "pressure-captured", "capacity-ready", "pressure-released", "denial", "feedback", "no-replay", "durable-unchanged"].map(check => `account429-title-${check}`)),
   "ui11-device-progress": Object.freeze([
     "device-progress-signup-context",
     ...progressCases.flatMap(control => progressChecks.map(check => `device-progress-${control}-${check}`))
@@ -451,39 +453,51 @@ export async function runUi11To16Journeys(h) {
     try {
       for (const status of [403, 429, 401]) for (const gesture of phase === "ui15-reader-feedback" ? ["reader-entry"] : ["chapter-read", "card-follow", "title-unfollow"]) await step(`UI${gesture === "reader-entry" ? "15" : "14"} ${gesture}: genuine${status} gives owned feedback without replay`, async () => {
         if (status === 401) { const auth = await api("/api/auth/check"); if (auth.status !== 200) await login(); await ready(); await mode("account"); }
+        const probe = (suffix, operation) => phase === "ui14-account-failures" && status === 429 && gesture === "title-unfollow" ? check("account429-title-" + suffix, operation) : operation();
         const historyPath = `/api/user/history/manga/${ids.manga}`, followPath = `/api/user/follows/manga/${ids.manga}`, endpoint = gesture === "chapter-read" || gesture === "reader-entry" ? historyPath : followPath;
-        if (gesture === "title-unfollow") { const prepared = await api(followPath, { method: "POST", data: { status: "reading", notification: true } }); insist(prepared.status === 204, "Actual account follow prerequisite failed"); }
+        if (gesture === "title-unfollow") await probe("prerequisite", async () => { const prepared = await api(followPath, { method: "POST", data: { status: "reading", notification: true } }); insist(prepared.status === 204, "Actual account follow prerequisite failed"); });
         if (gesture === "card-follow") { const removed = await api(followPath, { method: "DELETE" }); insist(removed.status === 204, "Actual cleared follow prerequisite failed"); }
         const title = (await api(`/api/manga/${ids.manga}`)).body?.title;
-        await open(gesture === "card-follow" ? `/search?title=${encodeURIComponent(title)}` : `/title/${ids.manga}`); await ready(); await mode("account");
-        const before = await api(historyPath); const followBefore = await api("/api/user/follows/manga?limit=100");
+        await probe("open", () => open(gesture === "card-follow" ? `/search?title=${encodeURIComponent(title)}` : `/title/${ids.manga}`));
+        await probe("account-mode", async () => { await ready(); await mode("account"); });
+        const [before, followBefore] = await probe("durable-baseline", async () => [await api(historyPath), await api("/api/user/follows/manga?limit=100")]);
         const posts = observe(request => new URL(request.url()).pathname === endpoint && request.method() !== "GET");
-        const action = async () => {
+        const gestureAction = async () => {
           if (status === 401) await context.clearCookies();
           if (gesture === "reader-entry") { await page.locator(`a[href="/chapter/${ids.chapter}"]`).first().click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); }
           else if (gesture === "chapter-read") await page.locator("article").filter({ has: page.locator(`a[href="/chapter/${ids.chapter}"]`) }).getByRole("button", { name: "Mark as unread", exact: true }).click();
-          else if (gesture === "title-unfollow") { await selectListboxTrigger(page).filter({ hasText: /^\s*Reading\s*$/ }).click(); await clickListboxOption(page, "None"); }
+          else if (gesture === "title-unfollow") { await probe("trigger", () => selectListboxTrigger(page).filter({ hasText: /^\s*Reading\s*$/ }).click()); await probe("option", () => clickListboxOption(page, "None")); }
           else { const card = page.locator("article").filter({ has: page.locator(`a[href^="/title/${ids.manga}"]`) }).first(); await card.hover(); await card.locator("button").filter({ has: page.locator("svg.lucide-plus") }).first().click(); }
-          await until(() => posts.rows, rows => rows.some(row => row.status === status), `The actual ${gesture} request did not reach its genuine${status} backend denial`);
-          const title = gesture === "reader-entry" ? "History save failed" : gesture === "chapter-read" ? "Read history update failed" : "Library update failed";
-          await page.getByText(title, { exact: true }).last().waitFor({ state: "visible" }); await page.getByText(status === 401 ? /account session expired/ : status === 429 ? /request was rate limited/ : /does not have permission/).last().waitFor({ state: "visible" });
-          await stable(async () => posts.requests === 1, "Rejected native mutation automatically replayed"); await posts.settle(); insist(posts.requests === 1 && posts.rows.length === 1, "A single gesture issued repeated native writes");
         };
+        const denial = async () => {
+          await probe("denial", () => until(() => posts.rows, rows => rows.some(row => row.status === status), `The actual ${gesture} request did not reach its genuine${status} backend denial`));
+          const title = gesture === "reader-entry" ? "History save failed" : gesture === "chapter-read" ? "Read history update failed" : "Library update failed";
+          await probe("feedback", async () => { await page.getByText(title, { exact: true }).last().waitFor({ state: "visible" }); await page.getByText(status === 401 ? /account session expired/ : status === 429 ? /request was rate limited/ : /does not have permission/).last().waitFor({ state: "visible" }); });
+          await probe("no-replay", async () => { await stable(async () => posts.requests === 1, "Rejected native mutation automatically replayed"); await posts.settle(); insist(posts.requests === 1 && posts.rows.length === 1, "A single gesture issued repeated native writes"); });
+        };
+        const action = async () => { await gestureAction(); await denial(); };
         try {
           if (status === 403) await withBearer(endpoint, client.key, action);
           else if (status === 429) {
             // Let the real public chapter route load before saturating. Hold
             // only its actual admitted history/follow write before forwarding.
-            const pressure = await hold(origin + endpoint + "*", request => new URL(request.url()).pathname === endpoint && request.method() !== "GET", true);
-            try { const attempt = action(); attempt.catch(() => {}); await pressure.wait(); await withCapacity(async () => { await pressure.release(); await attempt; }); }
-            finally { await pressure.close(); }
+            const pattern = origin + endpoint + "*", match = request => new URL(request.url()).pathname === endpoint && request.method() !== "GET";
+            if (phase === "ui14-account-failures" && gesture === "title-unfollow") {
+              await runHeldAccountDenial({ hold, pattern, match, gesture: gestureAction, capacity: withCapacity, denial, check: probe });
+            } else {
+              const pressure = await hold(pattern, match, true);
+              try { const attempt = action(); attempt.catch(() => {}); await pressure.wait(); await withCapacity(async () => { await pressure.release(); await attempt; }); }
+              finally { await pressure.close(); }
+            }
           } else await action();
         }
         finally { await posts.close(); }
         if (status === 401) await login();
-        const after = await api(historyPath), followAfter = await api("/api/user/follows/manga?limit=100");
-        insist(before.status === 200 && after.status === 200 && JSON.stringify(before.body) === JSON.stringify(after.body), "A rejected mutation changed genuine durable account history");
-        insist(followBefore.status === 200 && followAfter.status === 200 && JSON.stringify(followBefore.body) === JSON.stringify(followAfter.body), "A rejected mutation changed genuine durable follows");
+        await probe("durable-unchanged", async () => {
+          const after = await api(historyPath), followAfter = await api("/api/user/follows/manga?limit=100");
+          insist(before.status === 200 && after.status === 200 && JSON.stringify(before.body) === JSON.stringify(after.body), "A rejected mutation changed genuine durable account history");
+          insist(followBefore.status === 200 && followAfter.status === 200 && JSON.stringify(followBefore.body) === JSON.stringify(followAfter.body), "A rejected mutation changed genuine durable follows");
+        });
         return { genuine_status: status, native_denial: status === 403 ? "actual owner readonly bearer lacks mutation permission" : status === 429 ? "bounded owned sockets exhausted actual native request permits" : "real cookie withdrawn with cached UI Session retained", actual_write_count: 1, feedback_visible: true, durable_state_unchanged: true };
       });
       if (phase === "ui15-reader-feedback") {
