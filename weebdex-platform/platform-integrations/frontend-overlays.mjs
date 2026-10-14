@@ -2824,7 +2824,127 @@ const patches = [
     "count": 1,
     "before": "import { Constants } from \"$lib\";",
     "after": "import * as Constants from \"$lib/constants\";"
-  }
+  },
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search UI imports field-specific query normalization",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\timport type { SearchMangaRequest } from \"$lib/API/Manga\";",
+  "after": "\timport type { SearchMangaRequest } from \"$lib/API/Manga\";\r\n\timport { parseMangaSearchQuery, serializeMangaSearchQuery, searchValidationError, unresolvedSearchIssues, validateMangaSearchQuery, type MangaFilterRequest, type SearchIssue } from \"$platform/manga-search-query\";\r\n\timport { toast } from \"svelte-sonner\";"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search initialization keeps a reviewable query issue state",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\tlet search = $state<SearchMangaRequest>(",
+  "after": "\tlet searchIssues = $state<SearchIssue[]>([]), searchPassthrough = new URLSearchParams(), explicitHasChapters = false;\r\n\tlet initialParsedSearch: MangaFilterRequest;\r\n\tlet search = $state<MangaFilterRequest>("
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search URL values are normalized before typed field assignment",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\t\tconst map: Record<string, any> = {};\r\n\t\t\tfor (const [key, value] of searchParams.entries()) {\r\n\t\t\t\tif (arrayFields.includes(key)) (map[key] ??= []).push(value);\r\n\t\t\t\telse map[key] = value;\r\n\t\t\t}\r\n\t\t\tfor (const [key, value] of Object.entries(map)) {\r\n\t\t\t\tinit[key as keyof SearchMangaRequest] = key === \"contentRating\" && Array.isArray(value) ? value.filter(v => v !== \"__none__\") : value;\r\n\t\t\t}\r\n\t\t\treturn init;",
+  "after": "\t\t\tconst parsed = parseMangaSearchQuery(init, searchParams, isLibrary);\r\n\t\t\tsearchIssues = parsed.issues; searchPassthrough = parsed.passthrough; explicitHasChapters = parsed.explicitHasChapters;\r\n\t\t\tinitialParsedSearch = structuredClone(parsed.search);\r\n\t\t\treturn parsed.search;"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search Apply validates edits and preserves separate query passthrough",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams();\r\n\t\tfor (const [key, value] of Object.entries(search)) {\r\n\t\t\tif (value === undefined || value === null || (typeof value === \"string\" && !value.length)) {\r\n\t\t\t\tcontinue;\r\n\t\t\t}\r\n\r\n\t\t\tif (Array.isArray(value)) {\r\n\t\t\t\tvalue.forEach(v => q.append(key, v));\r\n\t\t\t} else {\r\n\t\t\t\tq.set(key, value);\r\n\t\t\t}\r\n\t\t}\r\n",
+  "after": "\t\tconst unresolved = unresolvedSearchIssues(searchIssues, initialParsedSearch, $state.snapshot(search));\r\n\t\tconst q = serializeMangaSearchQuery($state.snapshot(search), searchPassthrough, explicitHasChapters);\r\n\t\tconst validation = searchValidationError(unresolved) ?? validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (validation) { toast.error(validation.title, { description: validation.body }); return; }\r\n\t\tsearchIssues = [];"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "explicit false chapter filter remains meaningful",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "if (!search.hasChapters) q.delete(\"hasChapters\");",
+  "after": "if (!search.hasChapters && !explicitHasChapters) q.delete(\"hasChapters\");"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "Reset explicitly clears rejected query state",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tsearch = structuredClone(defaultSearch);",
+  "after": "\t\tsearchIssues = []; searchPassthrough = new URLSearchParams(); explicitHasChapters = false;\r\n\t\tsearch = structuredClone(defaultSearch);"
+},
+{
+  "path": "src/lib/components/MangaSearch.svelte",
+  "label": "search validation uses existing feed error surface before cache restoration",
+  "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+  "count": 1,
+  "before": "\timport { Constants } from \"$lib\";",
+  "after": "\timport { Constants } from \"$lib\";\r\n\timport { validateMangaSearchQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/lib/components/MangaSearch.svelte",
+  "label": "malformed discovery links do not load replacement results",
+  "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+  "count": 1,
+  "before": "\tonMount(async () => {",
+  "after": "\tonMount(async () => {\r\n\t\tif (window.location.pathname === \"/search\" || window.location.pathname === \"/library\") {\r\n\t\t\tconst validation = validateMangaSearchQuery(new URLSearchParams(window.location.search), window.location.pathname === \"/library\");\r\n\t\t\tif (validation) { error = validation; feed = undefined; isMounted = true; return; }\r\n\t\t}"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "install prompt extensions are narrow runtime-guarded browser members",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "\tlet deferredPrompt = $state<Event>();",
+  "after": "\timport { isInstallPromptEvent, isStandaloneNavigator, type InstallPromptEvent } from \"$platform/install-prompt\";\r\n\tlet deferredPrompt = $state<InstallPromptEvent>();"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "Safari standalone is read only when present",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "window.navigator.standalone === true",
+  "after": "isStandaloneNavigator(window.navigator)"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "install state only retains callable browser prompt events",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "\t\tdeferredPrompt = e;",
+  "after": "\t\tif (isInstallPromptEvent(e)) deferredPrompt = e;"
+},
+{
+  "path": "src/lib/components/Lightbox.svelte",
+  "label": "Lightbox types only its own exact exposed browser actions",
+  "sha256": "0d3f2f488e7d73b8a5d0b84ab3f2c7ea3c0e60d11fa86abe559efe7333a17d76",
+  "count": 1,
+  "before": "\twindow._lightbox_ = {",
+  "after": "\tdeclare global {\r\n\t\tinterface Window {\r\n\t\t\t_lightbox_: { open: typeof open; close: typeof close; prev: typeof prev; next: typeof next };\r\n\t\t}\r\n\t}\r\n\twindow._lightbox_ = {"
+},
+{
+  "path": "src/lib/components/ReportDialog.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+  "count": 1,
+  "before": "void API.Report.Reasons(type).then(res => {",
+  "after": "void (async () => API.Report.Reasons(type))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+  "count": 1,
+  "before": "void API.User.Get(actor).then(res => {",
+  "after": "void (async () => API.User.Get(actor))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+  "count": 1,
+  "before": "void API.User.Get(actor).then(res => {",
+  "after": "void (async () => API.User.Get(actor))().then(res => {"
+}
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {
