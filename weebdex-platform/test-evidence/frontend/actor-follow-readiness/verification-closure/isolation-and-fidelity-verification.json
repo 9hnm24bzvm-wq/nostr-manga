@@ -1,0 +1,154 @@
+{
+  "after_inventory_sha256": "ec4004a06952251dc5453f0c496916ac4103680bc7cbf53207f859d26f2fe96f",
+  "before_inventory_sha256": "ec4004a06952251dc5453f0c496916ac4103680bc7cbf53207f859d26f2fe96f",
+  "cache_byte_and_metadata_changes": [],
+  "checker_source_sha256": "ad526c8bc80d8792c0bc81e61ee4533717e27e95c5fe0a02a0e7d1e0db064bc6",
+  "error_categories": {
+    "assignability_or_call_signature": 0,
+    "implicit_any_or_inference": 0,
+    "nullability_or_unknown": 0,
+    "property_or_never": 0
+  },
+  "errors_by_graph": {
+    "frontend_svelte": 0,
+    "integration_ts": 0,
+    "protocol_js": 0
+  },
+  "guard_source_sha256": "6fe2a5f0756d661a3455e569e01d96247413a61cf00263fdccc8c932554b77dd",
+  "node_process_audits": [
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 100,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 108,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 7388,
+      "denied": [],
+      "pid": 11,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 117,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 126,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 135,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 144,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 125,
+      "denied": [],
+      "pid": 32,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 318,
+      "denied": [],
+      "pid": 40,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 74,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 0,
+      "denied": [],
+      "pid": 83,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    },
+    {
+      "checked_node_mutations": 167,
+      "denied": [],
+      "pid": 92,
+      "protected_roots": [
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+        "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ],
+      "protected_write_attempts": 0
+    }
+  ],
+  "protected_cache_roots": [
+    "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/frontend-hosted-retry/node_modules",
+    "/workspace/scratch/3eafc9756ff3/production-build-verification-3911a07/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+  ],
+  "protected_write_attempts": 0,
+  "snapshot_entries": 42805,
+  "snapshot_fields": "type, mode, uid, gid, size, mtime_ns, ctime_ns and SHA-256 for regular files or target for symlinks; access times excluded because reads may advance them",
+  "source_bound_map_count": 592,
+  "source_bound_map_count_delta": {
+    "base_without_controller": 591,
+    "current": 592,
+    "new_controller_sources": 1
+  },
+  "status": "passed"
+}
