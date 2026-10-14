@@ -4,6 +4,7 @@
 // never application behavior or genuine browser acceptance.
 import assert from 'node:assert/strict';
 import { runUi11To16Journeys, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
+import { homeFailureDiagnosticChecks } from '../../scripts/browser-home-controls.mjs';
 import { actorFollowDiagnosticChecks } from '../../scripts/browser-actor-follow-journeys.mjs';
 
 const controls = ['timer-page1', 'timer-page3', 'lock-page1', 'lock-page3'];
@@ -15,6 +16,7 @@ const expected = {
 // Original probes remain intact. The actor-follow supplemental phase and
 // account-429 probes each retain their exact independently expected inventory.
 assert.deepEqual(ui11To16DiagnosticChecks, {
+  ...homeFailureDiagnosticChecks,
   'ui14-account-failures': ['prerequisite','open','account-mode','durable-baseline','trigger','option','pressure-captured','capacity-ready','pressure-released','denial','feedback','no-replay','durable-unchanged'].map(suffix => `account429-title-${suffix}`),
   ...expected,
   ...actorFollowDiagnosticChecks

@@ -19,7 +19,7 @@ import { createLocalLibraryOverlays } from '../../platform-integrations/local-li
 
 const controls = ['403', '404', 'delayed', 'normal'];
 const suffixes = ['open', 'page-one', 'image-bytes', 'settings', 'shortcut-focus', 'navigation', 'destination'];
-const ids = controls.flatMap(control => suffixes.map(suffix => `reader-transition-${control}-${suffix}`));
+const ids = [...controls.flatMap(control => suffixes.map(suffix => `reader-transition-${control}-${suffix}`)), ...['title-control','title-route','chapter-link','page-one','image-bytes','realm','progress','incomplete','settled'].map(suffix => `reader-transition-normal-destination-${suffix}`)];
 const accountSuffixes = ['prerequisite', 'open', 'account-mode', 'durable-baseline', 'trigger', 'option', 'pressure-captured', 'capacity-ready', 'pressure-released', 'denial', 'feedback', 'no-replay', 'durable-unchanged'];
 
 test('new phase inventories are fixed, ordered and frozen', () => {
@@ -91,7 +91,7 @@ for (const failAt of [undefined, ...ids]) test('actual reader checkpoints propag
       if (steps.length === 1) return; // Original prerequisite is outside this seam.
       try { await operation(); row.status = 'passed'; } catch (error) { row.status = 'failed'; row.error = error; }
     },
-    async check(id, operation) { assert(ids.includes(id)); assert.equal(typeof operation, 'function'); return record(id, async () => { if (id === failAt) throw failure; }); },
+    async check(id, operation) { assert(ids.includes(id)); assert.equal(typeof operation, 'function'); return record(id, async () => { if (id === failAt) throw failure; if (id === 'reader-transition-normal-destination') return operation(); }); },
   });
   assert.equal(steps.length, 5);
   assert.equal(routes.size, 0);
@@ -100,7 +100,7 @@ for (const failAt of [undefined, ...ids]) test('actual reader checkpoints propag
   const failedControl = failAt && controls.find(control => failAt.startsWith(`reader-transition-${control}-`));
   const reached = ids.filter(id => !failAt || !id.startsWith(`reader-transition-${failedControl}-`) || ids.indexOf(id) <= ids.indexOf(failAt));
   assert.deepEqual(report.journey_checks.map(row => row.check_id), reached);
-  assert.deepEqual(report.journey_checks.map(row => row.status), reached.map(id => id === failAt ? 'failed' : 'passed'));
+  assert.deepEqual(report.journey_checks.map(row => row.status), reached.map(id => id === failAt || id === 'reader-transition-normal-destination' && failAt?.startsWith('reader-transition-normal-destination-') ? 'failed' : 'passed'));
   assert.doesNotMatch(JSON.stringify(snapshots), /private synthetic|127\.0\.0\.1/);
 });
 

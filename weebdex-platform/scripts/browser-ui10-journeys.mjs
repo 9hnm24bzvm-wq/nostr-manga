@@ -12,7 +12,10 @@ export const ui10JourneyPhases = Object.freeze([
 const readerCases = Object.freeze(["403", "404", "delayed", "normal"]);
 const readerCheckSuffixes = Object.freeze(["open", "page-one", "image-bytes", "settings", "shortcut-focus", "navigation", "destination"]);
 export const ui10DiagnosticChecks = Object.freeze({
-  "ui10-reader-transition": Object.freeze(readerCases.flatMap(control => readerCheckSuffixes.map(check => `reader-transition-${control}-${check}`))),
+  "ui10-reader-transition": Object.freeze([
+    ...readerCases.flatMap(control => readerCheckSuffixes.map(check => `reader-transition-${control}-${check}`)),
+    ...["title-control", "title-route", "chapter-link", "page-one", "image-bytes", "realm", "progress", "incomplete", "settled"].map(check => `reader-transition-normal-destination-${check}`)
+  ]),
   "ui10-recovery-lifetimes": Object.freeze([
     "recovery-reset-realm", "recovery-reset-hold-session", "recovery-reset-submit",
     "recovery-reset-held-session", "recovery-reset-newer-search", "recovery-reset-late-response",
@@ -455,15 +458,18 @@ export async function runUi10Journeys(h) {
       await check(prefix + "shortcut-focus", () => focusReaderShortcut(page, insist));
       await realm();
     };
-    const unrelatedFromTitle = async () => {
-      await page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`));
-      await page.locator(`a[href="/chapter/${unrelated}"]`).first().click();
+    const unrelatedFromTitle = async prefix => {
+      const checkpoint = (suffix, operation) => prefix ? check(prefix + suffix, operation) : operation();
+      await checkpoint("title-route", () => page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`)));
+      await checkpoint("chapter-link", () => page.locator(`a[href="/chapter/${unrelated}"]`).first().click());
       // The retained title entry is a normal chapter link; the reader supplies1.
-      await readyReader(unrelated); await sameRealm();
-      const row = await until(() => deviceRow(unrelated), value => value?.page === 1, "Unrelated reader page-one progress did not persist on this device");
-      insist(row.completed === false && !row.readAt, "Unrelated page-one navigation recorded completion without reading");
-      await page.waitForTimeout(500); const settled = await deviceRow(unrelated);
-      insist(new URL(page.url()).pathname === `/chapter/${unrelated}/1` && settled?.page === 1 && settled.completed === false, "A late previous-chapter intent completed an unrelated reader");
+      await readyReader(unrelated, prefix); await checkpoint("realm", sameRealm);
+      const row = await checkpoint("progress", () => until(() => deviceRow(unrelated), value => value?.page === 1, "Unrelated reader page-one progress did not persist on this device"));
+      await checkpoint("incomplete", async () => { insist(row.completed === false && !row.readAt, "Unrelated page-one navigation recorded completion without reading"); });
+      await checkpoint("settled", async () => {
+        await page.waitForTimeout(500); const settled = await deviceRow(unrelated);
+        insist(new URL(page.url()).pathname === `/chapter/${unrelated}/1` && settled?.page === 1 && settled.completed === false, "A late previous-chapter intent completed an unrelated reader");
+      });
     };
     const unrelatedViaControls = async () => {
       // Keep the same JS realm: a page.goto here would conceal the old module-global flag.
@@ -525,7 +531,14 @@ export async function runUi10Journeys(h) {
         await sameRealm(); const persisted = await until(() => deviceRow(previous), row => row?.page === count && row.completed === true, "Intended last-page progress was not really persisted");
         insist(persisted.completed, "Normal previous last-page progress lost completion");
       });
-      await check("reader-transition-normal-destination", async () => { await page.locator(`a[href^="/title/${manga}"]`).first().click(); await unrelatedFromTitle(); });
+      await check("reader-transition-normal-destination", async () => {
+        const prefix = "reader-transition-normal-destination-";
+        // End-of-chapter Title links stop bubbling and use browser navigation.
+        // The retained current sidebar heading link keeps this SPA-lifetime case
+        // in the same realm, as required by the original assertion.
+        await check(prefix + "title-control", () => page.locator(`[data-sidebar="header"] h1 a[href^="/title/${manga}"]`).click());
+        await unrelatedFromTitle(prefix);
+      });
       return { successful_previous_target_exact: true, actual_last_page: count, target_progress_completed: true, unrelated_transition_not_inherited: true };
     });
   }

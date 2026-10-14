@@ -47,6 +47,13 @@ CHECKS['ui14-actor-follow'] = ['actor-follow-account', *[
 CHECKS['ui10-reader-transition'] = ['reader-transition-' + control + '-' + check
     for control in ['403', '404', 'delayed', 'normal']
     for check in ['open', 'page-one', 'image-bytes', 'settings', 'shortcut-focus', 'navigation', 'destination']]
+CHECKS['ui10-reader-transition'] += ['reader-transition-normal-destination-' + check for check in [
+    'title-control', 'title-route', 'chapter-link', 'page-one', 'image-bytes', 'realm', 'progress', 'incomplete', 'settled']]
+CHECKS['ui14-home-failures'] = [*['home-pg-' + check for check in [
+    'capability', 'open', 'held', 'begin', 'outage', 'first-failure', 'retry-second', 'retry-third',
+    'three-denials', 'no-false-empty', 'resume', 'restored', 'recovery-retry', 'recovery-read']],
+    *['home-private403-' + check for check in ['login', 'logout', 'request-form', 'mail', 'link', 'cached-session',
+        'redemption', 'restricted-auth', 'native-denial', 'widget-open', 'feedback', 'single-read', 'retry', 'repeated-denial']]]
 CHECKS['ui14-account-failures'] = ['account429-title-' + check for check in [
     'prerequisite', 'open', 'account-mode', 'durable-baseline', 'trigger', 'option',
     'pressure-captured', 'capacity-ready', 'pressure-released', 'denial', 'feedback',

@@ -11,6 +11,7 @@ import { selectListboxTrigger, clickListboxOption, setListboxOptions } from "./b
 import { observeCompactFeedResponse } from "./compact-feed-http-outcome.mjs";
 import { actorFollowPhase, actorFollowDiagnosticChecks, runActorFollowJourneys } from "./browser-actor-follow-journeys.mjs";
 import { runHeldAccountDenial } from "./browser-account-capacity.mjs";
+import { homeFailureDiagnosticChecks, retryDeniedHomeRead } from "./browser-home-controls.mjs";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export const ui11To16JourneyPhases = Object.freeze([
@@ -30,6 +31,7 @@ const progressChecks = Object.freeze([
   "reload-progress", "stable-revision"
 ]);
 export const ui11To16DiagnosticChecks = Object.freeze({
+  ...homeFailureDiagnosticChecks,
   ...actorFollowDiagnosticChecks,
   "ui14-account-failures": Object.freeze(["prerequisite", "open", "account-mode", "durable-baseline", "trigger", "option", "pressure-captured", "capacity-ready", "pressure-released", "denial", "feedback", "no-replay", "durable-unchanged"].map(check => `account429-title-${check}`)),
   "ui11-device-progress": Object.freeze([
@@ -550,25 +552,37 @@ export async function runUi11To16Journeys(h) {
       } finally { await held.close(); await seen.close(); }
     });
     await step("UI14 public home Grid: the owned real PostgreSQL outage gives503 and recovery Retry gives200", async () => {
+      const probe = (suffix, operation) => check("home-pg-" + suffix, operation);
       const capability = fixture.fixture_control?.pg_home_fault;
-      insist(capability?.fixture_only === true && capability.enabled === true && capability.outage_seconds === 15 && capability.independent_restart_watchdog === true && capability.allowed_browser_kind === phase, "UNIMPLEMENTED FIXTURE DEPENDENCY: reviewed opt-in genuine home503 control is required");
+      await probe("capability", async () => { insist(capability?.fixture_only === true && capability.enabled === true && capability.outage_seconds === 15 && capability.independent_restart_watchdog === true && capability.allowed_browser_kind === phase, "UNIMPLEMENTED FIXTURE DEPENDENCY: reviewed opt-in genuine home503 control is required"); });
       const held = await hold(origin + "/api/chapter/updates*", request => requestPath(request, "/api/chapter/updates"), true), seen = observe(request => requestPath(request, "/api/chapter/updates"));
       let active = false, restored;
       try {
         // Healthy document/auth/catalogue initialization happens before the
         // deliberate outage. Only the real mounted update read is withheld.
-        await open(`/?ui14_pg_fault=${marker}`); await held.wait();
-        const receipt = await privateControl("pg-home-fault-begin"), fault = receipt.pg_home_fault ?? receipt.operation;
+        await probe("open", () => open(`/?ui14_pg_fault=${marker}`)); await probe("held", () => held.wait());
+        const receipt = await probe("begin", () => privateControl("pg-home-fault-begin")), fault = receipt.pg_home_fault ?? receipt.operation;
         active = true;
-        insist(fault?.fixture_only === true && fault.status === "outage" && fault.active === true && fault.independent_restart_watchdog === true && fault.restart_deadline_unix * 1000 > Date.now() && fault.native503_observed?.status === 503 && fault.native503_observed?.code === "unavailable", "The real fixed-cluster fault receipt did not prove its current native503 outage");
-        await held.release(); await page.getByText("Updates unavailable", { exact: true }).last().waitFor({ state: "visible" }); await seen.settle();
-        insist(seen.rows.length === 3 && seen.rows.every(row => row.status === 503 && row.body?.code === "unavailable"), "Mounted home Grid did not receive its three real final dependency503 reads");
-        insist(!await bodyHas("No updates found"), "Real home dependency503 became a successful empty catalogue");
-        const resume = await privateControl("pg-home-fault-resume"); restored = resume.pg_home_fault ?? resume.operation; active = false;
-        insist(restored?.fixture_only === true && restored.status === "ready" && restored.active === false && restored.fixed_cluster_preserved === true && restored.postgres_binary_sha256 === fault.postgres_binary_sha256 && JSON.stringify(restored.cluster_config_hashes) === JSON.stringify(fault.cluster_config_hashes) && restored.native_recovery?.readyz_status === 200 && restored.native_recovery?.read_status === 200, "Real PostgreSQL recovery did not preserve its exact original cluster/executable/config and native readiness");
-        const boundary = seen.rows.length, section = page.locator("section").filter({ has: page.getByRole("heading", { name: "Latest Updates", exact: true }) }); await section.getByRole("button", { name: "Retry updates", exact: true }).click();
-        await until(() => seen.rows.slice(boundary), rows => rows.some(row => row.status === 200 && Array.isArray(row.body?.data)), "Actual home Retry did not recover after the real fixed-cluster restart");
-        return { genuine_dependency503: true, native_503_attempts: 3, fixed_outage_seconds: 15, independent_restart_watchdog: true, original_cluster_and_config_preserved: true, real_readyz_and_read200: true, visible_retry200: true, watchdog_terminal_cleanup_required_by_supervisor: true };
+        await probe("outage", async () => { insist(fault?.fixture_only === true && fault.status === "outage" && fault.active === true && fault.independent_restart_watchdog === true && fault.restart_deadline_unix * 1000 > Date.now() && fault.native503_observed?.status === 503 && fault.native503_observed?.code === "unavailable", "The real fixed-cluster fault receipt did not prove its current native503 outage"); });
+        await probe("first-failure", async () => {
+          await held.release(); await page.getByText("Updates unavailable", { exact: true }).last().waitFor({ state: "visible" }); await seen.settle();
+          insist(seen.rows.length === 1 && seen.rows[0].status === 503 && seen.rows[0].body?.code === "unavailable", "The initial mounted home read did not settle its single genuine dependency503");
+        });
+        const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "Latest Updates", exact: true }) });
+        // The real HTTP wrapper settles503 once. Exercise two explicit visible
+        // safe-read retries; do not mislabel these as automatic503 retries.
+        await probe("retry-second", () => retryDeniedHomeRead(section, seen, until, insist));
+        await probe("retry-third", () => retryDeniedHomeRead(section, seen, until, insist));
+        await probe("three-denials", async () => {
+          insist(seen.rows.length === 3 && seen.rows.every(row => row.status === 503 && row.body?.code === "unavailable"), "Mounted home Grid did not receive its three real final dependency503 reads");
+          await stable(async () => seen.requests === 3, "Home dependency503 reads replayed without an explicit Retry gesture");
+        });
+        await probe("no-false-empty", async () => { insist(!await bodyHas("No updates found"), "Real home dependency503 became a successful empty catalogue"); });
+        const resume = await probe("resume", () => privateControl("pg-home-fault-resume")); restored = resume.pg_home_fault ?? resume.operation; active = false;
+        await probe("restored", async () => { insist(restored?.fixture_only === true && restored.status === "ready" && restored.active === false && restored.fixed_cluster_preserved === true && restored.postgres_binary_sha256 === fault.postgres_binary_sha256 && JSON.stringify(restored.cluster_config_hashes) === JSON.stringify(fault.cluster_config_hashes) && restored.native_recovery?.readyz_status === 200 && restored.native_recovery?.read_status === 200, "Real PostgreSQL recovery did not preserve its exact original cluster/executable/config and native readiness"); });
+        const boundary = seen.rows.length; await probe("recovery-retry", () => section.getByRole("button", { name: "Retry updates", exact: true }).click());
+        await probe("recovery-read", () => until(() => seen.rows.slice(boundary), rows => rows.some(row => row.status === 200 && Array.isArray(row.body?.data)), "Actual home Retry did not recover after the real fixed-cluster restart"));
+        return { genuine_dependency503: true, native_503_attempts: 3, explicit_denied_retry_gestures: 2, automatic_503_retries: 0, fixed_outage_seconds: 15, independent_restart_watchdog: true, original_cluster_and_config_preserved: true, real_readyz_and_read200: true, visible_retry200: true, watchdog_terminal_cleanup_required_by_supervisor: true };
       } finally {
         try { if (active) { const receipt = await privateControl("pg-home-fault-resume"); restored = receipt.pg_home_fault ?? receipt.operation; insist(restored?.active === false && restored.native_recovery?.read_status === 200, "The real PG fault did not reach its required finally recovery"); } }
         finally { await held.close(); await seen.close(); }
@@ -580,25 +594,32 @@ export async function runUi11To16Journeys(h) {
       try { await context.clearCookies(); await spaLink("/"); await sameRealm(); const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "My Updates", exact: true }) }); await section.getByText(/Catalogue request failed: HTTP 401/).waitFor({ state: "visible" }); await section.getByRole("button", { name: "Retry updates", exact: true }).waitFor({ state: "visible" }); await seen.settle(); insist(seen.rows.some(row => row.status === 401), "My Updates failure did not come from the genuine expired-cookie backend"); return { genuine_private401: true, permanent_skeleton_absent: true, current_retry_visible: true, same_document: true }; } finally { await seen.close(); }
     });
     await step("UI14 private My Updates: real restricted recovery cookie gives403 to a cached normal-account widget", async () => {
+      const probe = (suffix, operation) => check("home-private403-" + suffix, operation);
       // Obtain the capability using the real visible request form and genuine
-      // one-time mail. Redeem through this browser's request context with no
-      // redirect, so the retained SPA still owns its cached normal Session. The
-      // server-issued cookie is not edited or fabricated, and no password reset
-      // or broader account capability is performed.
-      await login(); await page.getByRole("link", { name: "Logout", exact: true }).first().click();
-      await until(() => api("/api/auth/check"), value => value.status === 401, "Actual logout did not retire normal account authority before requesting recovery");
-      await open("/auth/recovery"); await page.locator('input[name="email"]').fill(account.email); await page.getByRole("button", { name: "Send Recovery Link", exact: true }).click();
-      const mail = await until(async () => { const value = await context.request.get(sink() + `/mail/latest?to=${encodeURIComponent(account.email)}&kind=recovery`, { maxRedirects: 0 }); return value.ok() ? value.json() : undefined; }, value => value?.fixture_only === true && typeof value.link === "string", "Real recovery mail was not delivered to the synthetic fixture recipient");
-      const link = new URL(mail.link); insist(link.origin === origin && link.pathname === "/auth/self-service/recovery" && !!link.searchParams.get("token"), "Actual recovery link escaped its exact native redemption endpoint"); remember(link.href); for (const [, token] of link.searchParams) remember(token);
-      await login(); await ready(); await mode("account"); await open("/search"); await realm();
-      const redeemed = await context.request.get(link.href, { maxRedirects: 0, timeout: 12000 }); insist(redeemed.status() === 303 && new URL(redeemed.headers().location, origin).pathname === "/auth/recovery", "Actual one-time recovery redemption did not install its restricted server credential");
-      const capability = await api("/api/auth/check"); insist(capability.status === 200 && capability.body?.session_purpose === "recovery" && capability.body.identity === undefined && capability.body.follows === undefined && capability.body.preferences === undefined && !capability.body.roles?.length && !capability.body.permissions?.length, "Real recovery cookie acquired normal private account capability");
-      insist((await api("/api/user/follows/chapter/updates?limit=1")).status === 403, "Actual restricted recovery principal was not denied native private updates");
+      // one-time mail, retaining the cached normal Session in this document.
+      await probe("login", login);
+      await probe("logout", async () => {
+        await page.getByRole("link", { name: "Logout", exact: true }).first().click();
+        await until(() => api("/api/auth/check"), value => value.status === 401, "Actual logout did not retire normal account authority before requesting recovery");
+      });
+      await probe("request-form", async () => { await open("/auth/recovery"); await page.locator('input[name="email"]').fill(account.email); await page.getByRole("button", { name: "Send Recovery Link", exact: true }).click(); });
+      const mail = await probe("mail", () => until(async () => { const value = await context.request.get(sink() + `/mail/latest?to=${encodeURIComponent(account.email)}&kind=recovery`, { maxRedirects: 0 }); return value.ok() ? value.json() : undefined; }, value => value?.fixture_only === true && typeof value.link === "string", "Real recovery mail was not delivered to the synthetic fixture recipient"));
+      const link = await probe("link", async () => {
+        const link = new URL(mail.link); insist(link.origin === origin && link.pathname === "/auth/self-service/recovery" && !!link.searchParams.get("token"), "Actual recovery link escaped its exact native redemption endpoint"); remember(link.href); for (const [, token] of link.searchParams) remember(token); return link;
+      });
+      await probe("cached-session", async () => { await login(); await ready(); await mode("account"); await open("/search"); await realm(); });
+      await probe("redemption", async () => { const redeemed = await context.request.get(link.href, { maxRedirects: 0, timeout: 12000 }); insist(redeemed.status() === 303 && new URL(redeemed.headers().location, origin).pathname === "/auth/recovery", "Actual one-time recovery redemption did not install its restricted server credential"); });
+      await probe("restricted-auth", async () => { const capability = await api("/api/auth/check"); insist(capability.status === 200 && capability.body?.session_purpose === "recovery" && capability.body.identity === undefined && capability.body.follows === undefined && capability.body.preferences === undefined && !capability.body.roles?.length && !capability.body.permissions?.length, "Real recovery cookie acquired normal private account capability"); });
+      await probe("native-denial", async () => { insist((await api("/api/user/follows/chapter/updates?limit=1")).status === 403, "Actual restricted recovery principal was not denied native private updates"); });
       const seen = observe(request => requestPath(request, "/api/user/follows/chapter/updates"));
       try {
-        await spaLink("/"); await sameRealm(); const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "My Updates", exact: true }) }); await section.getByText(/Catalogue request failed: HTTP 403/).waitFor({ state: "visible" }); const retry = section.getByRole("button", { name: "Retry updates", exact: true }); await retry.waitFor({ state: "visible" });
-        await until(() => seen.rows, rows => rows.length === 1 && rows[0].status === 403, "Cached normal-account widget did not receive its real current restricted-cookie403"); await stable(async () => seen.requests === 1, "Private403 read was automatically replayed or stayed in a skeleton loop");
-        await retry.click(); await until(() => seen.rows, rows => rows.length === 2 && rows.every(row => row.status === 403), "Visible private Retry did not perform a new genuine currently denied safe read");
+        await probe("widget-open", async () => { await spaLink("/"); await sameRealm(); });
+        const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "My Updates", exact: true }) });
+        const retry = section.getByRole("button", { name: "Retry updates", exact: true });
+        await probe("feedback", async () => { await section.getByText(/Catalogue request failed: HTTP 403/).waitFor({ state: "visible" }); await retry.waitFor({ state: "visible" }); });
+        await probe("single-read", async () => { await until(() => seen.rows, rows => rows.length === 1 && rows[0].status === 403, "Cached normal-account widget did not receive its real current restricted-cookie403"); await stable(async () => seen.requests === 1, "Private403 read was automatically replayed or stayed in a skeleton loop"); });
+        await probe("retry", () => retry.click());
+        await probe("repeated-denial", () => until(() => seen.rows, rows => rows.length === 2 && rows.every(row => row.status === 403), "Visible private Retry did not perform a new genuine currently denied safe read"));
         return { genuine_one_time_recovery_redemption303: true, actual_restricted_capability_without_identity: true, native_private403: true, retained_normal_ui_session: true, real_widget403: true, explicit_retry403: true, permanent_skeleton_absent: true, same_document: true };
       } finally { await seen.close(); await context.clearCookies(); }
     });
