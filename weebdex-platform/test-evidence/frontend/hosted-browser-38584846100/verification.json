@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "run_id": 38584846100,
+  "run_attempt": 1,
+  "job_id": 115923951921,
+  "remote_commit": "e1ea103f2d8c0d8091eb63acf11f240c1e350591",
+  "remote_tree": "6950c9b7a819874d630831e61ea1907a0c8c40fc",
+  "artifact_id": 11907995328,
+  "zip_bytes": 7464,
+  "zip_sha256": "3d697a94b31ea7390019a290bd01c7c096d1c28dfe4ee24661f0ca25d65f53f8",
+  "zip_digest_matches_github": true,
+  "exact_three_file_allowlist": true,
+  "closed_schemas_valid": true,
+  "summary_recomputed_exact": true,
+  "frozen_source_snapshot_matches_reviewed_tree": true,
+  "original_676_plus_3_preserved": true,
+  "required_unique_phases": 39,
+  "planned_batches": 11,
+  "planned_phase_executions": 51,
+  "source_snapshot_inputs": 1038,
+  "summary": {
+    "actual_phase_runs": 31,
+    "all_fixture_lifecycles_clean": false,
+    "all_fixture_teardowns_verified": true,
+    "budget_exhausted": false,
+    "failed_unique_phases": [
+      "local-library",
+      "signed-library",
+      "signed-recipients",
+      "signed-social",
+      "signed-source-controls",
+      "ui10-reader-transition",
+      "ui12-compact-feed",
+      "ui14-actor-follow",
+      "ui14-home-failures",
+      "upload"
+    ],
+    "full_suite_passed": false,
+    "interrupted": false,
+    "passed_unique_phases": [
+      "account",
+      "account-recovery",
+      "startup",
+      "ui10-api-client",
+      "ui10-auth-lifetimes",
+      "ui10-preferences",
+      "ui10-recovery-lifetimes",
+      "ui11-device-navigation",
+      "ui11-device-progress",
+      "ui14-account-failures"
+    ],
+    "pending_unique_phases": [
+      "announcements",
+      "community",
+      "editorial",
+      "filters",
+      "pwa",
+      "reader",
+      "signed-context",
+      "signed-namespace",
+      "signed-profile",
+      "signed-restart",
+      "ui13-feed-authority",
+      "ui13-terminal-feed",
+      "ui14-entity-pagination",
+      "ui15-16-empty-tabs",
+      "ui15-chapter-filter",
+      "ui15-reader-feedback",
+      "ui15-reader-geometry",
+      "ui16-home-preferences",
+      "ui16-search-cap"
+    ],
+    "pixel_parity_established": false,
+    "private_runtime_artifacts_uploaded": false,
+    "required_unique_phases": 39,
+    "schema": 1,
+    "screenshots_or_raw_logs_uploaded": false,
+    "selected_scope_passed": false,
+    "selection": "all"
+  },
+  "safe_json_files": {
+    "phases.json": {
+      "bytes": 195672,
+      "sha256": "b5f964a5fc07321653834a8cada9b95845e961714bbbf6fc9d1bbcdccf4f2aee"
+    },
+    "summary.json": {
+      "bytes": 1170,
+      "sha256": "6f834cc15280a5aed7e72a13e3decb2fae6286d6f1faa69787cfffeae4fb1d9a"
+    },
+    "preparation.json": {
+      "bytes": 845,
+      "sha256": "cfdaddf2ef9b3e9517e6bd088704f8154e401e2c8a6ea897b3d90b9f2047e253"
+    }
+  }
+}
