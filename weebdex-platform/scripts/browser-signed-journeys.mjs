@@ -202,6 +202,14 @@ export async function runSignedJourneys(h) {
     return event;
   };
   const installSigner = async () => { await context.exposeBinding(binding, signerCall); await context.addInitScript(name => { window.nostr = { getPublicKey: () => window[name]("getPublicKey"), signEvent: template => window[name]("signEvent", template) }; }, binding); await page.evaluate(name => { window.nostr = { getPublicKey: () => window[name]("getPublicKey"), signEvent: template => window[name]("signEvent", template) }; }, binding); };
+  // Each outer step records its failure and continues. Do not depend on the
+  // preceding local-save step reaching its later /library navigation: a failed
+  // title follow leaves this always-mounted panel closed on the title route.
+  const prepareSignerControls = async () => {
+    await open("/library"); await expand(library());
+    await section(library(), "Optional Nostr publication and verified recovery");
+    await library().getByRole("button", { name: "Connect external browser signer", exact: true }).waitFor({ state: "visible" });
+  };
   const selectSigner = async () => { await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("Signer connected. No library data sent.", { exact: true }).waitFor({ state: "visible" }); };
   const reviewSnapshot = async () => { await library().getByRole("button", { name: "Preview public snapshot", exact: true }).click(); await library().getByText(/^Reviewed device revision/).waitFor({ state: "visible", timeout: 45000 }); const send = library().getByRole("button", { name: "Sign and publish reviewed snapshot", exact: true }); insist(await send.isDisabled(), "Snapshot sending enabled before explicit public consent"); await library().getByLabel("I understand that this reviewed snapshot becomes public at these recipients.", { exact: true }).check(); return send; };
   const prepareIdentity = async () => { await expand(identity()); await identity().getByRole("button", { name: "Refresh verified instances", exact: true }).click(); await idle(identity()); await identity().getByLabel("Verified recipient", { exact: true }).selectOption(protocol); };
@@ -262,7 +270,7 @@ export async function runSignedJourneys(h) {
     });
     await step("external signer and actual service recipient require explicit independent selection", async () => {
       await inspect('signer-binding-installed', installSigner);
-      await inspect('signer-selection-denied', async () => { deniedConnect = true; await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("Synthetic signer selection denied", { exact: false }).waitFor({ state: "visible" }); insist((await jobs()).length === 0, "Denied signer selection queued a snapshot"); });
+      await inspect('signer-selection-denied', async () => { await prepareSignerControls(); deniedConnect = true; await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("Synthetic signer selection denied", { exact: false }).waitFor({ state: "visible" }); insist((await jobs()).length === 0, "Denied signer selection queued a snapshot"); });
       await inspect('signer-connected', async () => { deniedConnect = false; await selectSigner(); });
       await inspect('recipient-wrong-key-refused', async () => {
         await library().getByLabel("Instance origin", { exact: true }).fill(protocol); await library().getByLabel("Expected service public key", { exact: true }).fill("0".repeat(64));
