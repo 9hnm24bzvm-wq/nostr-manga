@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "status": "source-tests-passed-fresh-ui11-runtime-pending",
+  "source_commit": "5a3afb62f323b810f81a63e09a21fcf40a9235a2",
+  "source_tree": "eccc336048f936d58a457fe3ffce8f23d432b558",
+  "scope": "Await exact outgoing Library manager DOM detachment, bounded at5000ms, then preserve original zero-count error/assertion before releasing held native callback. No fixed sleep or app edit.",
+  "source_files": {
+    "scripts/browser-ui11-16-journeys.mjs": "e626139a94836a1f42ab9e05d68b49a191b712e6c6027a227a11a2a547dffd16",
+    "tests/ci/test_browser_management_dom_settlement.mjs": "0548f1481fecfee327e2b4dbc84241c20522e22cd5d10f1f892b38e011a508d6"
+  },
+  "focused_node_tests": {
+    "passed": 201,
+    "failed": 0,
+    "skipped": 0,
+    "log_sha256": "0e4a358d476d278e172026627a2cf72e194525838262e484b9100b5c92f3785e"
+  },
+  "new_helper_seams": {
+    "cases": 4,
+    "persistent_panel_rejected": true,
+    "wait_failure_preserved": true,
+    "held_callback_unreleased_before_dom_disposal": true
+  },
+  "original_build_receipts": "test-evidence/frontend/native-settings-tabs",
+  "build_artifact_lineage": "4fe4ffa153a26a0e40b6024bb781ed7eb6012af3",
+  "integration_inputs_unchanged": 76,
+  "artifact_files_unchanged": 425,
+  "artifact_manifest_sha256": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+  "index_sha256": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+  "current_actor_plan_bindings_verified": 16,
+  "changed_original_runtime_inputs": [
+    "weebdex-platform/scripts/browser-journeys.mjs",
+    "weebdex-platform/scripts/browser-signed-journeys.mjs",
+    "weebdex-platform/scripts/browser-ui11-16-journeys.mjs"
+  ],
+  "frontend_rebuilt": false,
+  "actual_runtime_boundary": "Fresh finite compact diagnostic passed unchanged predicate with505rows,6unique sequential200pages andmax1; prior intermittent117failure remains unexplained. Corrected signed-social9/context9 actual phases passed. UI11 navigation4/7passed;3stopped at immediate outgoing-manager DOM count before held callback release. SPA URL readiness preceding Svelte DOM disposal is a supported harness-race hypothesis, not yet established by a fresh runtime pass. UI11 progress remained unrun."
+}
