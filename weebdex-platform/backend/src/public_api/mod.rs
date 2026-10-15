@@ -15,3 +15,6 @@ pub use identity::{PublicIdResolver,PublicIdTarget,ResolvedPublicId,ResourceKind
 
 pub mod postgres_identity;
 pub use postgres_identity::PostgresPublicIdResolver;
+
+pub mod routes;
+pub fn router()->axum::Router<crate::AppState>{routes::router()}
