@@ -1,0 +1,3 @@
+# Bounded public catalogue browser acceptance
+
+The corrected source passed thirteen actual browser stages and fifteen HTTP stages against one owned disposable fixture. See summary.json for exact source/build/binary hashes and honest coverage limits. The browser retained all47 console errors (mostly anonymous-session and CSP-blocked original external analytics/favicon requests); only uncaught page errors and native catalogue requests were zero. No full-site or write-readiness approval is implied. PNGs/maps/runtime databases/credentials/private keys are excluded from this text-only evidence commit. The earlier failed157 attempt remains preserved separately.

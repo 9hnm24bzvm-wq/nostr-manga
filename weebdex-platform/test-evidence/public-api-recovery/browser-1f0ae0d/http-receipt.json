@@ -1,0 +1,417 @@
+{
+  "status": "passed",
+  "reconstructed_source": true,
+  "fixture_manifest_sha256": "562ef020199fa0f18df50ab42b0e07e868c1c8c0d484664963b02e7f5437a6cb",
+  "fixture_source": "64973e5194f16068d8de32d43a8bdcef62f13fd2",
+  "origin": "http://127.0.0.1:37239",
+  "steps": [
+    {
+      "name": "browse search filters use canonical UUID relationships and exact query arrays",
+      "status": "passed",
+      "requests": 1
+    },
+    {
+      "name": "title detail uses actual chapter availability and explicit native forum companion",
+      "status": "passed",
+      "requests": 3
+    },
+    {
+      "name": "chapter feed and chapter detail use actual at-home pages and nullable DTO fields",
+      "status": "passed",
+      "requests": 7
+    },
+    {
+      "name": "tags author and group are canonical public resources",
+      "status": "passed",
+      "requests": 4
+    },
+    {
+      "name": "aggregate identifies the actual visible chapter UUID",
+      "status": "passed",
+      "requests": 1
+    },
+    {
+      "name": "retained random available-chapter and language constraints select actual public manga",
+      "status": "passed",
+      "requests": 4
+    },
+    {
+      "name": "author chapter count and upload views compose actual scoped resources",
+      "status": "passed",
+      "requests": 6
+    },
+    {
+      "name": "group count title list and manga search use precise standard UUID filter cardinalities",
+      "status": "passed",
+      "requests": 5
+    },
+    {
+      "name": "retained aggregate selector expands actual positive group chapter metadata",
+      "status": "passed",
+      "requests": 4
+    },
+    {
+      "name": "absent native forum contexts leave real title group and reader resources available",
+      "status": "passed",
+      "requests": 9
+    },
+    {
+      "name": "explicit typed native and UUID mapping proofs preserve preferred identities",
+      "status": "passed",
+      "requests": 2
+    },
+    {
+      "name": "cover original and actual 256/512 rendition media URLs retain opaque filename",
+      "status": "passed",
+      "requests": 3
+    },
+    {
+      "name": "reader original and advertised data-saver bytes are delivered by actual routes",
+      "status": "passed",
+      "requests": 3
+    },
+    {
+      "name": "legacy short links resolve only through scoped server aliases",
+      "status": "passed",
+      "requests": 5
+    },
+    {
+      "name": "statistics stay partial and missing resources/errors remain explicit",
+      "status": "passed",
+      "requests": 2
+    }
+  ],
+  "request_count": 59,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?authors%5B%5D=072d4b75-58a6-8d48-9c0a-31c1d748d110&limit=20&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&order%5Btitle%5D=asc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=100&order%5Bchapter%5D=asc&includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/0b0cb610-24a8-8701-b8b9-98a93393dc29?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/author/072d4b75-58a6-8d48-9c0a-31c1d748d110",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/group/7d70c4ad-5497-8243-b33e-f7d3aec48d89",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/tag",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?hasAvailableChapters=true&originalLanguage%5B%5D=ja&contentRating%5B%5D=safe&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist&limit=0&offset=0",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?hasAvailableChapters=true&originalLanguage%5B%5D=ja&contentRating%5B%5D=safe&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist&limit=1&offset=0",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&offset=0&authorOrArtist=072d4b75-58a6-8d48-9c0a-31c1d748d110",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user&limit=1&offset=0",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&offset=0&authorOrArtist=072d4b75-58a6-8d48-9c0a-31c1d748d110",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user&limit=500&offset=0",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter?groups%5B%5D=7d70c4ad-5497-8243-b33e-f7d3aec48d89&limit=0&order%5BpublishAt%5D=desc&includes=manga&includes=scanlation_group&includes=user",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter?groups%5B%5D=7d70c4ad-5497-8243-b33e-f7d3aec48d89&limit=100&order%5Bchapter%5D=desc&includes=manga&includes=scanlation_group&includes=user&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?group=7d70c4ad-5497-8243-b33e-f7d3aec48d89&limit=100&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate?groups%5B%5D=7d70c4ad-5497-8243-b33e-f7d3aec48d89&translatedLanguage%5B%5D=en",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter?groups%5B%5D=7d70c4ad-5497-8243-b33e-f7d3aec48d89&translatedLanguage%5B%5D=en&limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/group/70ac3e63-2175-8fe7-9c18-1a49458cb7cc",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/c8a06240-764f-8c9d-9976-3beba7d7e3d4?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/at-home/server/c8a06240-764f-8c9d-9976-3beba7d7e3d4",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/protocol/capabilities",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/legacy/resolve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/covers/9ad406dd-eb14-8934-b0a0-725b65bc90e8/CatCover01.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/covers/9ad406dd-eb14-8934-b0a0-725b65bc90e8/CatCover01.256.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/covers/9ad406dd-eb14-8934-b0a0-725b65bc90e8/CatCover01.512.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/data/0b0cb610-24a8-8701-b8b9-98a93393dc29/OrigPage01.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/data-saver/0b0cb610-24a8-8701-b8b9-98a93393dc29/SavePage01.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/protocol/capabilities",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/legacy/resolve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/statistics/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/00000000-0000-8000-8000-000000000000",
+      "status": 404
+    }
+  ],
+  "client_sources": [
+    {
+      "path": "platform-integrations/public-api/author-chapter-feed.ts",
+      "sha256": "38828c187518ae88e4061bb3c723468ec953a7c9b5c3d3dcf687e10e61768a27"
+    },
+    {
+      "path": "platform-integrations/public-api/client.ts",
+      "sha256": "5337f711748bdf73f9df63d8b764d747fc44501f544913f7e60e535261213cfa"
+    },
+    {
+      "path": "platform-integrations/public-api/normalize.ts",
+      "sha256": "206dea4e1c61c217de968478984e427d93d5c8bef62329b8878bde173c1bc9ea"
+    },
+    {
+      "path": "platform-integrations/public-api/query.ts",
+      "sha256": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193"
+    },
+    {
+      "path": "platform-integrations/public-api/random-manga.ts",
+      "sha256": "9edb6bbffb27281a8b145330f3bf9a934a784667b8662fcbf267c69c37ca3602"
+    },
+    {
+      "path": "platform-integrations/public-api/site-client.ts",
+      "sha256": "515eb833771c0452f2916e09267d6663a3e3becc928cfeaac8dfa7dc2121c880"
+    },
+    {
+      "path": "platform-integrations/public-api/validation.ts",
+      "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce"
+    }
+  ],
+  "limits": [
+    "Real HTTP only; browser decoding/rendering and IndexedDB migration not covered.",
+    "No full-site or complete MangaDex endpoint claim.",
+    "Product activation remains independently staged and off by default."
+  ]
+}

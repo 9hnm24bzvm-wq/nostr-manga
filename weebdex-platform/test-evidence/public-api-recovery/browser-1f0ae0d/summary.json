@@ -1,0 +1,291 @@
+{
+  "status": "passed",
+  "scope": "13 finite public catalogue/read-preview browser stages; no full-site or write-readiness approval",
+  "frontend_source": "1f0ae0d029f391eb140e4eca72a8da115de0d408",
+  "frontend_parent": "157e1cb20716a3c836e39c5636a42ca201f13c58",
+  "repair_source": "3f03389755777393713560f9e28eb75721bb8ea6",
+  "backend_source": "64973e5194f16068d8de32d43a8bdcef62f13fd2",
+  "fixture_binary_sha256": "af211dd62c5fa732cbafc4a592890c3197c1972e7ea7c8fea2314140920474da",
+  "build": {
+    "status": "passed",
+    "vite_seconds": 50.77,
+    "gate": true,
+    "profile": "serial-terser",
+    "options": {
+      "terser_max_workers": 1,
+      "report_compressed_size": false,
+      "minification_disabled": false,
+      "node_options": "--max-old-space-size=2048"
+    },
+    "spa_sha256": "14a34311a01c40d674a2ae4aefb92727d62712388ac2f1e33e024e54cfe0db16",
+    "receipt_sha256": "d0751308a1bf5f56265735e94c9d26908c0a83e1c8af5a724149541bb1fc1dbd"
+  },
+  "http": {
+    "status": "passed",
+    "stages": 15,
+    "requests": 59,
+    "client_sources": [
+      {
+        "path": "platform-integrations/public-api/author-chapter-feed.ts",
+        "sha256": "38828c187518ae88e4061bb3c723468ec953a7c9b5c3d3dcf687e10e61768a27"
+      },
+      {
+        "path": "platform-integrations/public-api/client.ts",
+        "sha256": "5337f711748bdf73f9df63d8b764d747fc44501f544913f7e60e535261213cfa"
+      },
+      {
+        "path": "platform-integrations/public-api/normalize.ts",
+        "sha256": "206dea4e1c61c217de968478984e427d93d5c8bef62329b8878bde173c1bc9ea"
+      },
+      {
+        "path": "platform-integrations/public-api/query.ts",
+        "sha256": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193"
+      },
+      {
+        "path": "platform-integrations/public-api/random-manga.ts",
+        "sha256": "9edb6bbffb27281a8b145330f3bf9a934a784667b8662fcbf267c69c37ca3602"
+      },
+      {
+        "path": "platform-integrations/public-api/site-client.ts",
+        "sha256": "515eb833771c0452f2916e09267d6663a3e3becc928cfeaac8dfa7dc2121c880"
+      },
+      {
+        "path": "platform-integrations/public-api/validation.ts",
+        "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce"
+      }
+    ]
+  },
+  "browser": {
+    "runtime": "system Chromium via reviewed Playwright 1.62.1",
+    "sandbox_enabled": true,
+    "fresh_owned_context": true,
+    "stages": [
+      {
+        "name": "home-public-feed",
+        "status": "passed",
+        "responses": 166
+      },
+      {
+        "name": "search-author-title-filters",
+        "status": "passed",
+        "responses": 152
+      },
+      {
+        "name": "title-feed-and-real-cover",
+        "status": "passed",
+        "responses": 193
+      },
+      {
+        "name": "start-reading-uses-public-availability",
+        "status": "passed",
+        "responses": 21
+      },
+      {
+        "name": "cover-gallery-decodes-actual-rendition",
+        "status": "passed",
+        "responses": 191
+      },
+      {
+        "name": "reader-original-at-home",
+        "status": "passed",
+        "responses": 173
+      },
+      {
+        "name": "reader-advertised-data-saver",
+        "status": "passed",
+        "responses": 173
+      },
+      {
+        "name": "author-and-group-public-details",
+        "status": "passed",
+        "responses": 321
+      },
+      {
+        "name": "legacy-title-server-alias",
+        "status": "passed",
+        "responses": 195
+      },
+      {
+        "name": "missing-title-error-visible",
+        "status": "passed",
+        "responses": 183
+      },
+      {
+        "name": "absent-forum-title-and-group-remain-readable",
+        "status": "passed",
+        "responses": 364
+      },
+      {
+        "name": "absent-forum-reader-keeps-real-page",
+        "status": "passed",
+        "responses": 173
+      },
+      {
+        "name": "popular-placeholder-is-honest-open-backlog",
+        "status": "passed",
+        "responses": 122
+      }
+    ],
+    "requests": 2431,
+    "responses": 2427,
+    "public_api_requests": 79,
+    "native_catalogue_requests": [],
+    "uncaught_page_errors": [],
+    "console_error_count": 47,
+    "console_errors_are_retained_not_claimed_zero": true,
+    "decoded_reader_images": [
+      {
+        "step": "start-reading-uses-public-availability",
+        "media_prefix": "/data/0b0cb610-24a8-8701-b8b9-98a93393dc29/",
+        "wire_dimensions": [
+          32,
+          48
+        ],
+        "decoded": [
+          {
+            "source": "blob",
+            "naturalWidth": 32,
+            "naturalHeight": 48,
+            "renderedWidth": 32,
+            "renderedHeight": 48
+          }
+        ]
+      },
+      {
+        "step": "reader-original-at-home",
+        "media_prefix": "/data/0b0cb610-24a8-8701-b8b9-98a93393dc29/",
+        "wire_dimensions": [
+          32,
+          48
+        ],
+        "decoded": [
+          {
+            "source": "blob",
+            "naturalWidth": 32,
+            "naturalHeight": 48,
+            "renderedWidth": 32,
+            "renderedHeight": 48
+          }
+        ]
+      },
+      {
+        "step": "reader-advertised-data-saver",
+        "media_prefix": "/data-saver/0b0cb610-24a8-8701-b8b9-98a93393dc29/",
+        "wire_dimensions": [
+          16,
+          24
+        ],
+        "decoded": [
+          {
+            "source": "blob",
+            "naturalWidth": 16,
+            "naturalHeight": 24,
+            "renderedWidth": 16,
+            "renderedHeight": 24
+          }
+        ]
+      },
+      {
+        "step": "absent-forum-reader-keeps-real-page",
+        "media_prefix": "/data/c8a06240-764f-8c9d-9976-3beba7d7e3d4/",
+        "wire_dimensions": [
+          16,
+          24
+        ],
+        "decoded": [
+          {
+            "source": "blob",
+            "naturalWidth": 16,
+            "naturalHeight": 24,
+            "renderedWidth": 16,
+            "renderedHeight": 24
+          }
+        ]
+      }
+    ],
+    "proxy_lifecycle": {
+      "connect_denials": 5,
+      "expected_connect_resets": 0,
+      "observations_truncated": false,
+      "shutdown_started": true,
+      "closed": true,
+      "remaining_socket_count": 0
+    }
+  },
+  "teardown": {
+    "acceptance_exit": "acceptance_exit=0",
+    "fixture_exit": "fixture_exit=0",
+    "stopfile_created": true,
+    "postgres_wrapper": "run-auth-tests.sh verifies its owned PostgreSQL process stopped before exiting0"
+  },
+  "preservation": {
+    "failed157_artifact_retained_separately": true,
+    "failed157_browser_receipts_retained_separately": true,
+    "current_full_report_sha256": "9b525dc279edc1770551e00c8e02b5326b01268c7db9e3594017a331d7f78c11",
+    "browser_runner_sha256": "1a5b16ea3671c13c6839f7d4c83a98c5829b53663464886cd862a2ab9cbfd2e1",
+    "screenshots": [
+      {
+        "file": "01-home-public-feed.png",
+        "sha256": "f0e1b6665b7d362d814e18171f41e5dc75af11c31a2600e910a669532c1f0372"
+      },
+      {
+        "file": "02-search-author-title-filters.png",
+        "sha256": "ab3d5879e75098dea645041b0c1adcc55cb7d7bc3511f4ab4c16447b6f1640aa"
+      },
+      {
+        "file": "03-title-feed-and-real-cover.png",
+        "sha256": "17143a728342391f2bd48f75a5a873631a3fb9b69818981db77ff2e21fff7283"
+      },
+      {
+        "file": "04-start-reading-uses-public-availability.png",
+        "sha256": "ea7d53a9b016e2d5c334f7f3b9b7fa8879494dfbfbc8b358ffeffb757a644b9e"
+      },
+      {
+        "file": "05-cover-gallery-decodes-actual-rendition.png",
+        "sha256": "5402fe544fc8027ce29ec52c793b51d9eafc4bc10444202842605d76c08e741e"
+      },
+      {
+        "file": "06-reader-original-at-home.png",
+        "sha256": "ea7d53a9b016e2d5c334f7f3b9b7fa8879494dfbfbc8b358ffeffb757a644b9e"
+      },
+      {
+        "file": "07-reader-advertised-data-saver.png",
+        "sha256": "58f61074b486b0a48e9e7ad08dec9bfdeb8059b9b37dee9f570bb1e855664e14"
+      },
+      {
+        "file": "08-author-and-group-public-details.png",
+        "sha256": "c89527d8fc67c883e3cc46da9f2f1788e5f7eb7b0fe491708a08ce11f35987ec"
+      },
+      {
+        "file": "09-legacy-title-server-alias.png",
+        "sha256": "3130b5a671d7fa96c18a0178b58d220655030f5d54da6511dd74ce4f146ea4f2"
+      },
+      {
+        "file": "10-missing-title-error-visible.png",
+        "sha256": "86dfbe876c2be35cfd9a2736afa6226a3105d187db0f96942f72be2adb647ad1"
+      },
+      {
+        "file": "11-absent-forum-title-and-group-remain-readable.png",
+        "sha256": "45cd90e1e2554bd920a11e6859af75427b51183ec6144e518f33473b80fe7d3f"
+      },
+      {
+        "file": "12-absent-forum-reader-keeps-real-page.png",
+        "sha256": "8a68b90a667330e9cfbe97ff8ba08a83be77c08aadbacc7c205e7ce2334daa27"
+      },
+      {
+        "file": "13-popular-placeholder-is-honest-open-backlog.png",
+        "sha256": "b480f5d68c7c92a8a7001bdd1fd356d9f1f269fdf7666c99c1d8bd5696687d73"
+      }
+    ]
+  },
+  "remaining_activation_blockers": [
+    "UUID public-user profile route adapter",
+    "Compatible local/account/public library writes and migration UI activation",
+    "Recommendation edge frontend adapter",
+    "All-unchecked content-rating sentinel bridge",
+    "Preference-ID serialization and other retained settings/report/upload request adapters",
+    "Real time-window analytics/Popular ranking"
+  ],
+  "default_product_gate": "off",
+  "product_library_migration": "hard-disabled"
+}

@@ -1,0 +1,987 @@
+{
+  "requests": [
+    {
+      "step": "home-public-feed",
+      "method": "GET",
+      "path": "/api/v1/chapter?limit=70&order%5BpublishAt%5D=desc&includes=manga&includes=scanlation_group&includes=user"
+    },
+    {
+      "step": "home-public-feed",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=10&order%5BcreatedAt%5D=desc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "home-public-feed",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "home-public-feed",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "search-author-title-filters",
+      "method": "GET",
+      "path": "/api/v1/manga?contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&authors%5B%5D=072d4b75-58a6-8d48-9c0a-31c1d748d110&title=Alpha+Fixture&limit=42&order%5Btitle%5D=asc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=100&order%5Bchapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "method": "GET",
+      "path": "/api/v1/statistics/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/chapter?limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/chapter/0b0cb610-24a8-8701-b8b9-98a93393dc29?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "method": "GET",
+      "path": "/api/v1/statistics/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "method": "GET",
+      "path": "/api/v1/cover?manga%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&limit=100&offset=0"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "GET",
+      "path": "/api/v1/chapter/0b0cb610-24a8-8701-b8b9-98a93393dc29?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "GET",
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "GET",
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-original-at-home",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "GET",
+      "path": "/api/v1/chapter/0b0cb610-24a8-8701-b8b9-98a93393dc29?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "GET",
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "GET",
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "method": "GET",
+      "path": "/api/v1/author/072d4b75-58a6-8d48-9c0a-31c1d748d110"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "method": "GET",
+      "path": "/api/v1/manga?authorOrArtist=072d4b75-58a6-8d48-9c0a-31c1d748d110&limit=100&order%5Btitle%5D=asc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&offset=0&authorOrArtist=072d4b75-58a6-8d48-9c0a-31c1d748d110"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "method": "GET",
+      "path": "/api/v1/group/7d70c4ad-5497-8243-b33e-f7d3aec48d89"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "method": "GET",
+      "path": "/api/v1/manga?group=7d70c4ad-5497-8243-b33e-f7d3aec48d89&limit=100&order%5Btitle%5D=asc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "method": "GET",
+      "path": "/api/v1/chapter?groups%5B%5D=7d70c4ad-5497-8243-b33e-f7d3aec48d89&limit=0&order%5BpublishAt%5D=desc&includes=manga&includes=scanlation_group&includes=user"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "POST",
+      "path": "/api/v1/legacy/resolve"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "GET",
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=100&order%5Bchapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "GET",
+      "path": "/api/v1/statistics/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "missing-title-error-visible",
+      "method": "GET",
+      "path": "/api/v1/manga/00000000-0000-8000-8000-000000000000?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "GET",
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "GET",
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "GET",
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff/feed?limit=100&order%5Bchapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "GET",
+      "path": "/api/v1/statistics/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "GET",
+      "path": "/api/v1/group/70ac3e63-2175-8fe7-9c18-1a49458cb7cc"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "method": "GET",
+      "path": "/api/v1/chapter?groups%5B%5D=70ac3e63-2175-8fe7-9c18-1a49458cb7cc&limit=0&order%5BpublishAt%5D=desc&includes=manga&includes=scanlation_group&includes=user"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "GET",
+      "path": "/api/v1/chapter/c8a06240-764f-8c9d-9976-3beba7d7e3d4?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "GET",
+      "path": "/api/v1/at-home/server/c8a06240-764f-8c9d-9976-3beba7d7e3d4"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "GET",
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "GET",
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=66ce02f7-7487-8982-a23f-a8b2d0a428ff&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "GET",
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts"
+    }
+  ],
+  "responses": [
+    {
+      "step": "home-public-feed",
+      "status": 200,
+      "path": "/api/v1/chapter?limit=70&order%5BpublishAt%5D=desc&includes=manga&includes=scanlation_group&includes=user"
+    },
+    {
+      "step": "home-public-feed",
+      "status": 200,
+      "path": "/api/v1/manga?limit=10&order%5BcreatedAt%5D=desc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "home-public-feed",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "home-public-feed",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "search-author-title-filters",
+      "status": 200,
+      "path": "/api/v1/manga?contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&authors%5B%5D=072d4b75-58a6-8d48-9c0a-31c1d748d110&title=Alpha+Fixture&limit=42&order%5Btitle%5D=asc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "status": 200,
+      "path": "/api/v1/statistics/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=100&order%5Bchapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/chapter?limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/chapter/0b0cb610-24a8-8701-b8b9-98a93393dc29?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "start-reading-uses-public-availability",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "status": 200,
+      "path": "/api/v1/statistics/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "status": 200,
+      "path": "/api/v1/cover?manga%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&limit=100&offset=0"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/chapter/0b0cb610-24a8-8701-b8b9-98a93393dc29?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-original-at-home",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/chapter/0b0cb610-24a8-8701-b8b9-98a93393dc29?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/at-home/server/0b0cb610-24a8-8701-b8b9-98a93393dc29"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=9ad406dd-eb14-8934-b0a0-725b65bc90e8&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "status": 200,
+      "path": "/api/v1/author/072d4b75-58a6-8d48-9c0a-31c1d748d110"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "status": 200,
+      "path": "/api/v1/manga?authorOrArtist=072d4b75-58a6-8d48-9c0a-31c1d748d110&limit=100&order%5Btitle%5D=asc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&offset=0&authorOrArtist=072d4b75-58a6-8d48-9c0a-31c1d748d110"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "status": 200,
+      "path": "/api/v1/group/7d70c4ad-5497-8243-b33e-f7d3aec48d89"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "status": 200,
+      "path": "/api/v1/chapter?groups%5B%5D=7d70c4ad-5497-8243-b33e-f7d3aec48d89&limit=0&order%5BpublishAt%5D=desc&includes=manga&includes=scanlation_group&includes=user"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "status": 200,
+      "path": "/api/v1/manga?group=7d70c4ad-5497-8243-b33e-f7d3aec48d89&limit=100&order%5Btitle%5D=asc&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/legacy/resolve"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/statistics/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/manga/9ad406dd-eb14-8934-b0a0-725b65bc90e8/feed?limit=100&order%5Bchapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=9ad406dd-eb14-8934-b0a0-725b65bc90e8&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "missing-title-error-visible",
+      "status": 404,
+      "path": "/api/v1/manga/00000000-0000-8000-8000-000000000000?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff/feed?limit=1&offset=0&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/statistics/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff/feed?limit=100&order%5Bchapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/group/70ac3e63-2175-8fe7-9c18-1a49458cb7cc"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "status": 200,
+      "path": "/api/v1/chapter?groups%5B%5D=70ac3e63-2175-8fe7-9c18-1a49458cb7cc&limit=0&order%5BpublishAt%5D=desc&includes=manga&includes=scanlation_group&includes=user"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/chapter/c8a06240-764f-8c9d-9976-3beba7d7e3d4?includes%5B%5D=manga&includes%5B%5D=scanlation_group&includes%5B%5D=user"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/at-home/server/c8a06240-764f-8c9d-9976-3beba7d7e3d4"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/manga/66ce02f7-7487-8982-a23f-a8b2d0a428ff/aggregate?translatedLanguage%5B%5D=en"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/chapter?translatedLanguage%5B%5D=en&limit=100&manga=66ce02f7-7487-8982-a23f-a8b2d0a428ff&offset=0&includes=manga&includes=scanlation_group&includes=user&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeEmptyPages=1&includeFuturePublishAt=1&includeFutureUpdates=1&includeExternalUrl=1"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/manga?limit=100&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&ids%5B%5D=66ce02f7-7487-8982-a23f-a8b2d0a428ff&includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "status": 200,
+      "path": "/api/v1/nostr/native-forum/contexts"
+    }
+  ],
+  "console_errors": [
+    {
+      "step": "home-public-feed",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "home-public-feed",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "home-public-feed",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "search-author-title-filters",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "search-author-title-filters",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "search-author-title-filters",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "search-author-title-filters",
+      "text": "Z"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "title-feed-and-real-cover",
+      "text": "Loading the image 'https://www.google.com/s2/favicons?sz=14&domain_url=https://anilist.co' violates the following Content Security Policy directive: \"img-src 'self' data: blob:\". The action has been blocked."
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "cover-gallery-decodes-actual-rendition",
+      "text": "Loading the image 'https://www.google.com/s2/favicons?sz=14&domain_url=https://anilist.co' violates the following Content Security Policy directive: \"img-src 'self' data: blob:\". The action has been blocked."
+    },
+    {
+      "step": "reader-original-at-home",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "reader-original-at-home",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "reader-original-at-home",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "reader-advertised-data-saver",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "author-and-group-public-details",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "author-and-group-public-details",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "author-and-group-public-details",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "author-and-group-public-details",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "author-and-group-public-details",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "legacy-title-server-alias",
+      "text": "Loading the image 'https://www.google.com/s2/favicons?sz=14&domain_url=https://anilist.co' violates the following Content Security Policy directive: \"img-src 'self' data: blob:\". The action has been blocked."
+    },
+    {
+      "step": "missing-title-error-visible",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "missing-title-error-visible",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "step": "missing-title-error-visible",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "missing-title-error-visible",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "absent-forum-title-and-group-remain-readable",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "absent-forum-reader-keeps-real-page",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    },
+    {
+      "step": "popular-placeholder-is-honest-open-backlog",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "step": "popular-placeholder-is-honest-open-backlog",
+      "text": "Loading the script 'https://www.googletagmanager.com/gtag/js?id=G-W464K5049G' violates the following Content Security Policy directive: \"script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4='\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+    },
+    {
+      "step": "popular-placeholder-is-honest-open-backlog",
+      "text": "Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'sha256-kQchrjjOb1RfwQ8iwtTtt6wgVUnk9wa7AjWw8dRZ8y4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-L7ihqKo2vtmxBqyONJyen6d9yoYVo2RBlKni746g+6Q='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    }
+  ],
+  "page_errors": []
+}
