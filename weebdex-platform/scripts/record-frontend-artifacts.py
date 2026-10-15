@@ -56,6 +56,7 @@ manifest = {"ui_directory": "artifacts/frontend", "file_count": len(files), "tot
             "approved_client_name_exceptions": len(integration.get("approved_client_name_exceptions", [])),
             "approved_search_callback_exceptions": len(integration.get("approved_search_callback_exceptions", [])),
             "approved_auth_flow_key_exceptions": len(integration.get("approved_auth_flow_key_exceptions", [])),
+            "approved_registration_onboarding_exceptions": len(integration.get("approved_registration_onboarding_exceptions", [])),
             "approved_create_recovery_exceptions": len(integration.get("approved_create_recovery_exceptions", [])),
             "approved_feed_pagination_exceptions": len(integration.get("approved_feed_pagination_exceptions", [])),
             "approved_widget_error_exceptions": len(integration.get("approved_widget_error_exceptions", [])),

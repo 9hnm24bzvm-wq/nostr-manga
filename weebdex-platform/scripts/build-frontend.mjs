@@ -24,6 +24,7 @@ const env = {
 function run(args) {
   const result = spawnSync(process.execPath, args, { cwd: frontend, env, stdio: "inherit" });
   if (result.error) throw result.error;
+  if (result.signal) throw new Error(`Frontend build subprocess terminated by signal ${result.signal}`);
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 const integration = prepareFrontendIntegration(frontend);
