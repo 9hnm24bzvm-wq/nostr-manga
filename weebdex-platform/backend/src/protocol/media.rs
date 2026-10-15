@@ -90,6 +90,25 @@ fn descriptor(page: &Value, hash: &str) -> ApiResult<(String, u64)> {
         .ok_or_else(ApiError::unavailable)?;
     Ok((mime.to_owned(), size))
 }
+/// Reuse the original module's live immutable chapter and parent authority for
+/// both descriptor and byte adapters; this never relies solely on cached data.
+pub(crate) async fn visible_chapter_source(
+    state: &AppState,
+    event: &str,
+) -> ApiResult<manga_node::catalogue::Entry> {
+    let entry = visible_source(state, event).await?;
+    if entry.event.kind != 1001 {
+        return Err(ApiError::unavailable());
+    }
+    let series = entry.metadata["series"]
+        .as_str()
+        .ok_or_else(ApiError::unavailable)?;
+    let parent = visible_source(state, series).await?;
+    if parent.event.kind != 1002 {
+        return Err(ApiError::unavailable());
+    }
+    Ok(entry)
+}
 /// Return None only for an ordinary native chapter; source failures fail closed.
 pub(crate) async fn chapter(
     state: &AppState,
@@ -101,7 +120,7 @@ pub(crate) async fn chapter(
 ) -> ApiResult<Option<Response>> {
     let source: Option<String> = {
         let client = state.db.client().await?;
-        let row=client.query_opt("SELECT c.protocol_event_id,(c.deleted_at IS NULL AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published') FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1",&[&chapter]).await?;
+        let row=client.query_opt("SELECT c.protocol_event_id,(c.deleted_at IS NULL AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible) FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1",&[&chapter]).await?;
         if let Some(row) = row {
             let event: Option<String> = row.get(0);
             if event.is_some() && !row.get::<_, bool>(1) {
@@ -115,17 +134,7 @@ pub(crate) async fn chapter(
         }
     };
     let Some(event) = source else { return Ok(None) };
-    let entry = visible_source(state, &event).await?;
-    if entry.event.kind != 1001 {
-        return Err(ApiError::unavailable());
-    }
-    let series = entry.metadata["series"]
-        .as_str()
-        .ok_or_else(ApiError::unavailable)?;
-    let parent = visible_source(state, series).await?;
-    if parent.event.kind != 1002 {
-        return Err(ApiError::unavailable());
-    }
+    let entry = visible_chapter_source(state, &event).await?;
     if !auth::valid_hash(name) {
         if name.split_once('.').is_some_and(|(id, ext)| {
             id.len() == 10
@@ -166,7 +175,7 @@ pub(crate) async fn cover(
     }
     let source = {
         let client = state.db.client().await?;
-        client.query_opt("SELECT s.event_id,s.blob_hash,c.ext FROM platform.protocol_cover_sources s JOIN platform.catalog_covers c ON c.id=s.cover_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.manga_id=$2 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published'",&[&id,&manga]).await?
+        client.query_opt("SELECT s.event_id,s.blob_hash,c.ext FROM platform.protocol_cover_sources s JOIN platform.catalog_covers c ON c.id=s.cover_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.manga_id=$2 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible",&[&id,&manga]).await?
     };
     let Some(source) = source else {
         return Ok(None);

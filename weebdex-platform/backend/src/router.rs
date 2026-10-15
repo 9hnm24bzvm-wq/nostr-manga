@@ -52,6 +52,7 @@ pub fn router(state: AppState) -> Router {
         &native_media,
     );
     let api = domains::api_router()
+        .nest("/v1", crate::public_api::router())
         .route("/health", get(health))
         .fallback(api_not_found)
         .layer(DefaultBodyLimit::max(state.config.maximum_json_bytes))
@@ -167,6 +168,7 @@ fn spa_navigation(path: &str, headers: &HeaderMap) -> bool {
     if [
         "/api",
         "/data",
+        "/data-saver",
         "/covers",
         "/originals",
         "/uploads",
@@ -213,6 +215,7 @@ async fn static_fallback(State(state): State<AppState>, request: Request) -> Res
     if [
         "/api",
         "/data",
+        "/data-saver",
         "/covers",
         "/originals",
         "/uploads",

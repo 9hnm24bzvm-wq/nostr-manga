@@ -29,6 +29,12 @@ pub async fn chapter(
     headers: HeaderMap,
     method: Method,
 ) -> ApiResult<Response> {
+    let chapter = crate::public_api::media::native_media_id(
+        &state,
+        crate::public_api::ResourceKind::Chapter,
+        &chapter,
+    )
+    .await?;
     let mut lease = Some(permits(&state).await?);
     if let Some(response) =
         crate::protocol::media::chapter(&state, &chapter, &name, &headers, &method, &mut lease)
@@ -38,7 +44,7 @@ pub async fn chapter(
     }
     let permits = lease.take().ok_or_else(ApiError::unavailable)?;
     valid_name(&name)?;
-    let row=state.db.client().await?.query_opt("SELECT o.storage_key,o.digest,o.mime,o.bytes,c.protocol_event_id,p.derived FROM (SELECT chapter_id,name,object_id,FALSE derived FROM platform.chapter_pages UNION ALL SELECT chapter_id,name,object_id,TRUE derived FROM platform.chapter_page_derivatives) p JOIN platform.media_objects o ON o.id=p.object_id JOIN platform.catalog_chapters c ON c.id=p.chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE p.chapter_id=$1 AND p.name=$2 AND c.deleted_at IS NULL AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published' AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id) LIMIT 1",&[&chapter,&name]).await?.ok_or_else(||ApiError::not_found("Chapter page not found"))?;
+    let row=state.db.client().await?.query_opt("SELECT o.storage_key,o.digest,o.mime,o.bytes,c.protocol_event_id,p.derived FROM (SELECT chapter_id,name,object_id,FALSE derived FROM platform.chapter_pages UNION ALL SELECT chapter_id,name,object_id,TRUE derived FROM platform.chapter_page_derivatives) p JOIN platform.media_objects o ON o.id=p.object_id JOIN platform.catalog_chapters c ON c.id=p.chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE p.chapter_id=$1 AND p.name=$2 AND c.deleted_at IS NULL AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id) LIMIT 1",&[&chapter,&name]).await?.ok_or_else(||ApiError::not_found("Chapter page not found"))?;
     if row.get::<_, Option<String>>(4).is_some() && !row.get::<_, bool>(5) {
         return Err(ApiError::unavailable());
     }
@@ -67,6 +73,30 @@ pub async fn cover(
     headers: HeaderMap,
     method: Method,
 ) -> ApiResult<Response> {
+    let manga = crate::public_api::media::native_media_id(
+        &state,
+        crate::public_api::ResourceKind::Manga,
+        &manga,
+    )
+    .await?;
+    let name = if let Some((id, suffix)) = name.split_once('.') {
+        if id.len() == 36 {
+            format!(
+                "{}.{}",
+                crate::public_api::media::native_media_id(
+                    &state,
+                    crate::public_api::ResourceKind::Cover,
+                    id
+                )
+                .await?,
+                suffix
+            )
+        } else {
+            name
+        }
+    } else {
+        name
+    };
     let mut lease = Some(permits(&state).await?);
     if let Some(response) =
         crate::protocol::media::cover(&state, &manga, &name, &headers, &method, &mut lease).await?
@@ -75,7 +105,7 @@ pub async fn cover(
     }
     let permits = lease.take().ok_or_else(ApiError::unavailable)?;
     let (id, variant, ext) = cover_name(&name)?;
-    let row=state.db.client().await?.query_opt("SELECT o.storage_key,o.digest,o.mime,o.bytes,m.state,m.owner_id FROM platform.cover_media media JOIN platform.media_objects o ON o.id=media.object_id JOIN platform.catalog_covers c ON c.id=media.cover_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.manga_id=$2 AND media.variant=$3 AND o.extension=$4 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id)",&[&id,&manga,&variant,&ext]).await?.ok_or_else(||ApiError::not_found("Cover image not found"))?;
+    let row=state.db.client().await?.query_opt("SELECT o.storage_key,o.digest,o.mime,o.bytes,m.state,m.owner_id FROM platform.cover_media media JOIN platform.media_objects o ON o.id=media.object_id JOIN platform.catalog_covers c ON c.id=media.cover_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.manga_id=$2 AND media.variant=$3 AND o.extension=$4 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id)",&[&id,&manga,&variant,&ext]).await?.ok_or_else(||ApiError::not_found("Cover image not found"))?;
     let private = row.get::<_, String>(4) != "published";
     if private {
         let actor = auth::optional_principal(&state, &headers)

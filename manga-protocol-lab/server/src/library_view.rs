@@ -85,7 +85,9 @@ impl LibraryObjects {
         let bytes = self.public_object(root_hash).await?;
         let root = crate::read_diagnostics::during(
             crate::read_diagnostics::Phase::DecodeResponse,
-            crate::node::spawn_blocking_owned_scope(move || Root::decode(&bytes, &Limits::default())),
+            crate::node::spawn_blocking_owned_scope(move || {
+                Root::decode(&bytes, &Limits::default())
+            }),
         )
         .await??;
         let view = View {
@@ -128,7 +130,9 @@ impl LibraryObjects {
         ensure!(bytes.len() as u64 == d.size, "chunk size mismatch");
         let (chunk, summary) = crate::read_diagnostics::during(
             crate::read_diagnostics::Phase::DecodeResponse,
-            crate::node::spawn_blocking_owned_scope(move || Chunk::decode(&bytes, &Limits::default())),
+            crate::node::spawn_blocking_owned_scope(move || {
+                Chunk::decode(&bytes, &Limits::default())
+            }),
         )
         .await??;
         ensure!(
@@ -294,5 +298,126 @@ mod tests {
         assert_eq!(value["id"], hex::encode([7; 32]));
         assert_eq!(value["completed"], false);
         assert_eq!(value["page"], 3);
+    }
+}
+
+// RECONSTRUCTED UNVERIFIED. Merge into existing library_view.rs with its imports.
+pub struct ReadMarkerSnapshot {
+    pub head: Option<String>,
+    pub root: Option<crate::db::Id>,
+    pub chapters: Vec<ReadMarkerChapter>,
+}
+pub struct ReadMarkerChapter {
+    pub chapter: crate::db::Id,
+    pub series: crate::db::Id,
+}
+impl LibraryObjects {
+    pub async fn public_read_markers(
+        self: &Arc<Self>,
+        capability: &crate::http_auth::AdmittedHttpCapability,
+        series: &[Id],
+        expected_head: Option<&str>,
+    ) -> Result<ReadMarkerSnapshot> {
+        ensure!(
+            !series.is_empty() && series.len() <= 100,
+            ViewBudget("manga_ids")
+        );
+        let _read = crate::library_admission::wait(self.reads.clone()).await?;
+        let publisher = capability.principal();
+        let Some(view) = self.public_view(publisher, expected_head).await? else {
+            return Ok(ReadMarkerSnapshot {
+                head: None,
+                root: None,
+                chapters: vec![],
+            });
+        };
+        let keys: Vec<Vec<u8>> = series.iter().map(|id| id.to_vec()).collect();
+        let mut client = self.repo.pool.get().await?;
+        let tx = client.transaction().await?;
+        tx.batch_execute("SET LOCAL statement_timeout='2s'; SET LOCAL lock_timeout='500ms'")
+            .await?;
+        capability.recheck_transaction(&tx).await?;
+        let parent_visibility = crate::catalogue::VISIBLE.replace("e.", "s.");
+        let rows=tx.query(&format!("SELECT e.id,e.series FROM events e WHERE e.kind=1001 AND e.series=ANY($1) AND {} AND EXISTS(SELECT 1 FROM events s WHERE s.id=e.series AND s.kind=1002 AND {}) ORDER BY e.id LIMIT 5001",crate::catalogue::VISIBLE,parent_visibility),&[&keys]).await?;
+        tx.commit().await?;
+        drop(client);
+        ensure!(rows.len() <= 5000, ViewBudget("manga_chapters"));
+        let ids = rows
+            .iter()
+            .map(|r| r.get::<_, Vec<u8>>(0))
+            .collect::<Vec<_>>();
+        let records = self.view_lookup(&view, Family::Chapters, &ids).await?;
+        let completed = records
+            .into_iter()
+            .filter_map(|r| match r {
+                Record::Chapter {
+                    id,
+                    completed: true,
+                    ..
+                } => Some(id),
+                _ => None,
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        let mut chapters = vec![];
+        for row in rows {
+            let chapter: Id = row
+                .get::<_, Vec<u8>>(0)
+                .try_into()
+                .map_err(|_| anyhow::anyhow!("invalid stored chapter identifier"))?;
+            if completed.contains(&chapter) {
+                chapters.push(ReadMarkerChapter {
+                    chapter,
+                    series: row
+                        .get::<_, Vec<u8>>(1)
+                        .try_into()
+                        .map_err(|_| anyhow::anyhow!("invalid stored series identifier"))?,
+                });
+            }
+        }
+        self.verify_view(&view).await?;
+        Ok(ReadMarkerSnapshot {
+            head: Some(view.event.id),
+            root: Some(view.root_hash),
+            chapters,
+        })
+    }
+    /// Final original service/admission/current-health fence in one bounded
+    /// transaction. Public graph availability alone never grants authority.
+    pub async fn verify_admitted_public_head(
+        &self,
+        capability: &crate::http_auth::AdmittedHttpCapability,
+        publisher: Id,
+        expected: Option<&str>,
+    ) -> Result<()> {
+        ensure!(
+            publisher == capability.principal(),
+            "library owner mismatch"
+        );
+        let mut client = self.repo.pool.get().await?;
+        let tx = client.transaction().await?;
+        tx.batch_execute("SET LOCAL statement_timeout='2s'; SET LOCAL lock_timeout='500ms'")
+            .await?;
+        capability.recheck_transaction(&tx).await?;
+        let current = self
+            .repo
+            .current_library_head_transaction(&tx, publisher)
+            .await?;
+        if current.as_ref().map(|head| head.event.id.as_str()) != expected {
+            return Err(SnapshotChanged.into());
+        }
+        tx.commit().await?;
+        Ok(())
+    }
+    pub async fn verify_read_marker_snapshot(
+        &self,
+        capability: &crate::http_auth::AdmittedHttpCapability,
+        snapshot: &ReadMarkerSnapshot,
+    ) -> Result<()> {
+        self.verify_admitted_public_head(
+            capability,
+            capability.principal(),
+            snapshot.head.as_deref(),
+        )
+        .await
     }
 }

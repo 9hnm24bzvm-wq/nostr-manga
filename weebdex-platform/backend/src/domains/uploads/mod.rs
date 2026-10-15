@@ -77,6 +77,10 @@ pub fn media_router() -> Router<AppState> {
             "/data/{chapter}/{name}",
             get(media::chapter).head(media::chapter),
         )
+        .route(
+            "/data-saver/{chapter}/{name}",
+            get(media::chapter).head(media::chapter),
+        )
         .route("/uploads/{name}", get(media::preview).head(media::preview))
         .route(
             "/covers/{manga}/{name}",

@@ -1111,12 +1111,36 @@ pub async fn serve_prepared_with_store(
     ready: Option<tokio::sync::oneshot::Sender<()>>,
     shutdown_receiver: Option<tokio::sync::oneshot::Receiver<()>>,
 ) -> Result<()> {
+    serve_prepared_with_shared_library(
+        config,
+        repo,
+        serving,
+        injected_storage,
+        None,
+        ready,
+        shutdown_receiver,
+    )
+    .await
+}
+
+/// One exact original LibraryObjects/cache/admission/UploadStore owner shared by
+/// the embedded native listener and trusted in-process compatibility adapters.
+pub async fn serve_prepared_with_shared_library(
+    config: NodeConfig,
+    repo: Repository,
+    serving: Option<crate::serving_role::ServingRole>,
+    injected_storage: Option<Arc<crate::upload::UploadStore>>,
+    injected_library: Option<Arc<crate::library_storage::LibraryObjects>>,
+    ready: Option<tokio::sync::oneshot::Sender<()>>,
+    shutdown_receiver: Option<tokio::sync::oneshot::Receiver<()>>,
+) -> Result<()> {
     let worker_owner = EmbeddedWorkerOwner::new(injected_storage.is_some());
     let operation = serve_prepared_inner(
         config,
         repo,
         serving,
         injected_storage,
+        injected_library,
         ready,
         shutdown_receiver,
         &worker_owner,
@@ -1139,6 +1163,7 @@ async fn serve_prepared_inner(
     repo: Repository,
     mut serving: Option<crate::serving_role::ServingRole>,
     injected_storage: Option<Arc<crate::upload::UploadStore>>,
+    injected_library: Option<Arc<crate::library_storage::LibraryObjects>>,
     ready: Option<tokio::sync::oneshot::Sender<()>>,
     shutdown_receiver: Option<tokio::sync::oneshot::Receiver<()>>,
     worker_owner: &EmbeddedWorkerOwner,
@@ -1333,16 +1358,27 @@ async fn serve_prepared_inner(
         None
     };
     let snapshots = crate::inventory::Snapshots::new(repo.clone());
-    let library_objects = storage
-        .clone()
-        .map(|store| {
-            crate::library_storage::LibraryObjects::configured(
-                repo.clone(),
-                store,
-                config.library_concurrency.clone(),
-            )
-        })
-        .transpose()?;
+    let library_objects = if let Some(library) = injected_library {
+        let store = storage
+            .as_ref()
+            .context("injected library requires its original storage owner")?;
+        ensure!(
+            library.shares_storage(store),
+            "injected library/store ownership mismatch"
+        );
+        Some(library)
+    } else {
+        storage
+            .clone()
+            .map(|store| {
+                crate::library_storage::LibraryObjects::configured(
+                    repo.clone(),
+                    store,
+                    config.library_concurrency.clone(),
+                )
+            })
+            .transpose()?
+    };
     if config.sync_worker_enabled
         && let Some(sync) = peer_sync.clone()
     {
