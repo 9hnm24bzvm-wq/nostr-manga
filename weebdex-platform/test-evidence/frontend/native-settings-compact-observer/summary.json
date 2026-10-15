@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "status": "source-tests-passed-actual-diagnosis-pending",
+  "source_commit": "07f71ce0c09bf570fb6809ad6457cd77c385dff8",
+  "source_tree": "43ae0221aeadf7fe261377fe3bcc7313b44e573d",
+  "original_build_receipts": "test-evidence/frontend/native-settings-tabs",
+  "build_artifact_lineage": "4fe4ffa153a26a0e40b6024bb781ed7eb6012af3",
+  "scope": [
+    "Persist finite compact request/event/native-timing observations before the unchanged unique-sequential predicate and on finalization",
+    "Bind signed setup to the actual native service-key input by its unique ID; label help text legitimately extends the accessible name"
+  ],
+  "unchanged_predicate": "new Set(pages).size === pages.length && seen.maximum === 1",
+  "diagnostic_limits": {
+    "request_records": 32,
+    "event_records": 256
+  },
+  "source_files": {
+    "scripts/browser-signed-journeys.mjs": "f431a549981caadc1ddd0a7c739bce68f9494b3f060f5e598eaef53f4de7c5d5",
+    "scripts/browser-ui11-16-journeys.mjs": "00a8bba81bca17b9ad58e46302d43f6b8f69329390dcee39c5132f800457a81a",
+    "tests/ci/test_browser_compact_fixture_diagnostics.mjs": "fbba61c44728093d75d6911773b26c4e3cd5694e6bb37591348bad64b24a0f6c",
+    "tests/ci/test_browser_compact_observer_diagnostics.mjs": "4d7e1ba954a79f8ed506c74f3bbe03c2e74b624a338a81c07194482a933b5c87",
+    "tests/ci/test_browser_signed_signer_setup.mjs": "a68d4467e86513e8528c0bb103efcaedca2053049be98da2abd52e3c4ba9a0f7"
+  },
+  "focused_tests": {
+    "passed": 197,
+    "failed": 0,
+    "skipped": 0,
+    "log_sha256": "5464f163691c6543fb623165d2ec1115c59031e21313a9cb4742807b42876d4e"
+  },
+  "changed_original_frozen_runtime_inputs": [
+    "weebdex-platform/scripts/browser-journeys.mjs",
+    "weebdex-platform/scripts/browser-signed-journeys.mjs",
+    "weebdex-platform/scripts/browser-ui11-16-journeys.mjs"
+  ],
+  "integration_build_inputs_unchanged": 76,
+  "artifact_files_unchanged": 425,
+  "artifact_manifest_sha256": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+  "index_sha256": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+  "current_actor_plan_bindings_verified": 16,
+  "frontend_rebuilt": false,
+  "actual_runtime_boundary": "11706 actual startup19 and local-library6 including desktop/mobile native-tab visuals passed. Compact genuine HTTP200, initial pages1-5 bounded burst and manual terminal read passed, then unique-sequential OR predicate failed without retained counters. Cause is unknown; duplicate, actual transport overlap and observer event order remain unproven alternatives. Remaining serial phases were stopped. New diagnostics require a fresh real fixture run."
+}
