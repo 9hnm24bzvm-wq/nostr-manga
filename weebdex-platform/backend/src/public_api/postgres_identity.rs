@@ -19,6 +19,37 @@ impl PostgresPublicIdResolver {
         Self { db }
     }
 
+    /// Resolve against the caller's protected transaction so binding, authority,
+    /// UUID inputs and mutation share one snapshot/lock lifetime. Read-only.
+    pub async fn resolve_many_in<C: tokio_postgres::GenericClient + Sync>(
+        client: &C,
+        kind: ResourceKind,
+        ids: &[PublicUuid],
+    ) -> ApiResult<BTreeMap<PublicUuid, ResolvedPublicId>> {
+        validate_batch(ids.len())?;
+        if ids.is_empty() {
+            return Ok(BTreeMap::new());
+        }
+        let ids = ids.iter().map(PublicUuid::as_str).collect::<Vec<_>>();
+        let rows=client.query("SELECT requested.id,a.native_id,p.public_id::text,a.principal_type FROM unnest($2::text[]) requested(id) JOIN platform.public_resource_ids a ON a.kind=$1 AND a.public_id=requested.id::uuid JOIN platform.public_resource_ids p ON p.kind=a.kind AND p.native_id=a.native_id AND p.preferred",&[&kind.as_str(),&ids]).await?;
+        rows.into_iter()
+            .map(|row| {
+                Ok((
+                    persisted_uuid(row.get::<_, &str>(0))?,
+                    ResolvedPublicId {
+                        native_id: row.get(1),
+                        preferred_id: persisted_uuid(row.get::<_, &str>(2))?,
+                        target: persisted_target(
+                            kind,
+                            row.get::<_, &str>(1),
+                            row.get::<_, &str>(3),
+                        )?,
+                    },
+                ))
+            })
+            .collect()
+    }
+
     /// Preferred IDs and typed targets for one bounded relationship batch.
     pub async fn describe_many(
         &self,
@@ -197,7 +228,7 @@ fn validate_batch(len: usize) -> ApiResult<()> {
     Ok(())
 }
 fn validate_native_id(id: &str) -> ApiResult<()> {
-    if id.is_empty() || id.len() > 128 || id.contains('\0') {
+    if id.is_empty() || id.len() > 384 || id.contains('\0') {
         return Err(ApiError::bad_request("Invalid native resource ID"));
     }
     Ok(())
@@ -211,7 +242,11 @@ fn persisted_target(
     principal_type: &str,
 ) -> ApiResult<PublicIdTarget> {
     match principal_type {
-        "native" if kind != ResourceKind::User || !native_id.starts_with("protocol:") => {
+        "protocol_list" => persisted_protocol_list_target(kind, native_id),
+        "native"
+            if (kind != ResourceKind::User || !native_id.starts_with("protocol:"))
+                && (kind != ResourceKind::List || !native_id.starts_with("protocol-list:")) =>
+        {
             Ok(PublicIdTarget::NativeResource)
         }
         "protocol_publisher" if kind == ResourceKind::User => {
@@ -250,7 +285,7 @@ mod tests {
     fn batches_and_native_keys_are_bounded_before_database_work() {
         assert!(validate_batch(MAX_PUBLIC_ID_BATCH).is_ok());
         assert!(validate_batch(MAX_PUBLIC_ID_BATCH + 1).is_err());
-        for id in ["", "a\0b", &"a".repeat(129)] {
+        for id in ["", "a\0b", &"a".repeat(385)] {
             assert!(validate_native_id(id).is_err());
         }
         for id in [
@@ -301,5 +336,63 @@ mod tests {
             )
             .is_err()
         );
+    }
+}
+
+// RECONSTRUCTED UNVERIFIED. Add ProtocolList{owner:String,list_id:String} to the
+// PublicIdTarget enum. In persisted_target, handle principal_type protocol_list
+// by calling this helper. Native List keys with protocol-list: prefix must fail.
+fn persisted_protocol_list_target(
+    kind: ResourceKind,
+    native_id: &str,
+) -> ApiResult<PublicIdTarget> {
+    if kind != ResourceKind::List {
+        return Err(ApiError::unavailable());
+    }
+    let (owner, list_id) = native_id
+        .strip_prefix("protocol-list:")
+        .and_then(|value| value.split_once(':'))
+        .ok_or_else(ApiError::unavailable)?;
+    if !manga_node::auth::valid_hash(owner)
+        || list_id.len() != 32
+        || !list_id
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    {
+        return Err(ApiError::unavailable());
+    }
+    Ok(PublicIdTarget::ProtocolList {
+        owner: owner.to_owned(),
+        list_id: list_id.to_owned(),
+    })
+}
+#[cfg(test)]
+mod protocol_list_recovery_tests {
+    use super::*;
+    #[test]
+    fn protocol_lists_require_exact_owner_and_list_type() {
+        let owner = "a".repeat(64);
+        let list = "b".repeat(32);
+        let key = format!("protocol-list:{owner}:{list}");
+        assert_eq!(
+            persisted_protocol_list_target(ResourceKind::List, &key).unwrap(),
+            PublicIdTarget::ProtocolList {
+                owner: owner.clone(),
+                list_id: list.clone()
+            }
+        );
+        for malformed in [
+            format!("protocol-list:bad:{list}"),
+            format!("protocol-list:{}:{list}", "A".repeat(64)),
+            format!("protocol-list:{owner}:bad"),
+            format!("protocol-list:{owner}:{}", "B".repeat(32)),
+            format!("{key}:extra"),
+            format!("{owner}:{list}"),
+        ] {
+            assert!(persisted_protocol_list_target(ResourceKind::List, &malformed).is_err());
+        }
+        assert!(persisted_protocol_list_target(ResourceKind::User, &key).is_err());
+        assert!(persisted_target(ResourceKind::List, &key, "native").is_err());
+        assert!(persisted_target(ResourceKind::List, &key, "protocol_publisher").is_err());
     }
 }

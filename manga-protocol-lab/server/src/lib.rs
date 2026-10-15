@@ -145,3 +145,5 @@ pub mod relay_dispatch;
 pub mod platform_bridge;
 
 pub mod http_auth;
+
+pub mod library_lists;

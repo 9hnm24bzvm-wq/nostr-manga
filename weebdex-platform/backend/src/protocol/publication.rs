@@ -87,6 +87,7 @@ pub struct PublicationReceipt {
 pub struct PublicationRuntime {
     repository: Repository,
     storage: Arc<UploadStore>,
+    pub(super) library_objects: Arc<manga_node::library_storage::LibraryObjects>,
     publications: Arc<Publications>,
     groups: Option<Arc<Groups>>,
     peer_sync: Arc<manga_node::peers::PeerSync>,
@@ -147,6 +148,20 @@ impl PublicationRuntime {
             identity(&config.storage_holder)?,
         )
         .await?;
+        let library_limits = config
+            .native_node
+            .as_ref()
+            .map(|value| {
+                serde_json::from_value::<manga_node::node::NodeConfig>(value.clone())
+                    .map(|node| node.library_concurrency)
+            })
+            .transpose()?
+            .unwrap_or_default();
+        let library_objects = manga_node::library_storage::LibraryObjects::configured(
+            repository.clone(),
+            storage.clone(),
+            library_limits,
+        )?;
         let publications = Publications::new(repository.clone(), storage.clone());
         let groups = config
             .group_keys_dir
@@ -179,6 +194,7 @@ impl PublicationRuntime {
         Ok(Arc::new(Self {
             repository,
             storage,
+            library_objects,
             publications,
             groups,
             peer_sync,
@@ -200,6 +216,8 @@ impl PublicationRuntime {
     ) -> Result<Arc<Self>> {
         identity(expected_publisher)?;
         let secret = load_signer(key_file, expected_publisher)?;
+        let library_objects =
+            manga_node::library_storage::LibraryObjects::new(repository.clone(), storage.clone());
         let publications = Publications::new(repository.clone(), storage.clone());
         let peer_sync = manga_node::peers::PeerSync::new(
             repository.clone(),
@@ -210,6 +228,7 @@ impl PublicationRuntime {
         Ok(Arc::new(Self {
             repository,
             storage,
+            library_objects,
             publications,
             groups,
             peer_sync,
@@ -242,12 +261,14 @@ impl PublicationRuntime {
         let (shutdown_sender, shutdown_receiver) = tokio::sync::oneshot::channel();
         let repo = self.repository.clone();
         let storage = self.storage.clone();
+        let library_objects = self.library_objects.clone();
         let task = tokio::spawn(async move {
-            manga_node::node::serve_prepared_with_store(
+            manga_node::node::serve_prepared_with_shared_library(
                 config,
                 repo,
                 serving,
                 Some(storage),
+                Some(library_objects),
                 Some(ready_sender),
                 Some(shutdown_receiver),
             )

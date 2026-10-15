@@ -1,4 +1,5 @@
 use super::{
+    entity_mutations::{self, AuthorCreate, AuthorUpdate, GroupCreate, GroupUpdate},
     repository::{audit, create_thread, require_manga_edit, require_mutable_manga},
     validation as v,
 };
@@ -16,54 +17,6 @@ use axum::{
 use serde_json::{Value, json};
 use tokio_postgres::Transaction;
 
-const AUTHOR_FIELDS: &[&str] = &[
-    "name",
-    "description",
-    "twitter",
-    "pixiv",
-    "fanbox",
-    "fantia",
-    "skeb",
-    "youtube",
-    "website",
-    "locked",
-    "version",
-];
-const AUTHOR_META: &[&str] = &[
-    "description",
-    "twitter",
-    "pixiv",
-    "fanbox",
-    "fantia",
-    "skeb",
-    "youtube",
-    "website",
-];
-const GROUP_FIELDS: &[&str] = &[
-    "name",
-    "description",
-    "contact_email",
-    "discord",
-    "mangaupdates",
-    "twitter",
-    "website",
-    "locked",
-    "inactive",
-    "focused_languages",
-    "leader",
-    "officers",
-    "members",
-    "version",
-];
-const GROUP_META: &[&str] = &[
-    "description",
-    "contact_email",
-    "discord",
-    "mangaupdates",
-    "twitter",
-    "website",
-    "focused_languages",
-];
 const MANGA_FIELDS: &[&str] = &[
     "title",
     "description",
@@ -97,20 +50,10 @@ pub async fn author_create(
     let actor = mutation_principal(&state, &headers).await?;
     actor.require_permission("author.create")?;
     v::allowed(&payload, &["name"])?;
-    let name = v::string(&payload, "name", 200, true)?.unwrap();
-    let id = v::new_id("author");
+    let input = AuthorCreate::parse(&payload)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    tx.execute(
-        "INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES($1,$2,$3,$4)",
-        &[&id, &actor.user_id, &actor.username, &name],
-    )
-    .await?;
-    audit(&tx, &actor.user_id, "author", &id, "create", None, Some(1)).await?;
-    let data = tx
-        .query_one("SELECT platform.catalog_author_json($1)", &[&id])
-        .await?
-        .get(0);
+    let data = entity_mutations::author_create(&tx, &actor, input).await?;
     tx.commit().await?;
     Ok((StatusCode::CREATED, Json(data)))
 }
@@ -123,39 +66,10 @@ pub async fn author_update(
     let actor = mutation_principal(&state, &headers).await?;
     actor.require_permission("author.update")?;
     v::id(&id)?;
-    v::allowed(&payload, AUTHOR_FIELDS)?;
-    let version = v::version(&payload)?;
-    let name = v::string(&payload, "name", 200, false)?;
-    if name.as_deref() == Some("") {
-        return Err(ApiError::bad_request("Name must not be empty"));
-    }
-    let locked = v::boolean(&payload, "locked")?;
-    if locked.is_some() {
-        staff_permission(&actor, "author.lock.update")?;
-    }
-    let metadata = v::metadata(&payload, AUTHOR_META)?;
+    let input = AuthorUpdate::parse(&actor, &payload)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let row=tx.query_opt("SELECT locked,version FROM platform.catalog_authors WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Author not found"))?;
-    if row.get::<_, bool>(0) && !actor.is_moderator() {
-        return Err(ApiError::forbidden("Author is locked"));
-    }
-    check_version(row.get(1), version)?;
-    tx.execute("UPDATE platform.catalog_authors SET name=COALESCE($2,name),metadata=metadata || $3,locked=COALESCE($4,locked),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&name,&metadata,&locked]).await?;
-    audit(
-        &tx,
-        &actor.user_id,
-        "author",
-        &id,
-        "update",
-        Some(version),
-        Some(version + 1),
-    )
-    .await?;
-    let data = tx
-        .query_one("SELECT platform.catalog_author_json($1)", &[&id])
-        .await?
-        .get(0);
+    let data = entity_mutations::author_update(&tx, &actor, &id, input).await?;
     tx.commit().await?;
     Ok(Json(data))
 }
@@ -169,15 +83,7 @@ pub async fn author_delete(
     v::id(&id)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let used:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_manga_creators mc JOIN platform.catalog_manga m ON m.id=mc.manga_id WHERE mc.author_id=$1 AND m.deleted_at IS NULL)",&[&id]).await?.get(0);
-    if used {
-        return Err(ApiError::conflict("Author is still referenced by a manga"));
-    }
-    let n=tx.execute("UPDATE platform.catalog_authors SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?;
-    if n == 0 {
-        return Err(ApiError::not_found("Author not found"));
-    }
-    audit(&tx, &actor.user_id, "author", &id, "remove", None, None).await?;
+    entity_mutations::author_delete(&tx, &actor, &id).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }
@@ -188,30 +94,11 @@ pub async fn group_create(
 ) -> ApiResult<(StatusCode, Json<Value>)> {
     let actor = mutation_principal(&state, &headers).await?;
     actor.require_permission("scanlation_group.create")?;
-    v::allowed(
-        &payload,
-        &[
-            "name",
-            "description",
-            "contact_email",
-            "discord",
-            "mangaupdates",
-            "twitter",
-            "website",
-        ],
-    )?;
-    let name = v::string(&payload, "name", 200, true)?.unwrap();
-    let metadata = v::metadata(&payload, GROUP_META)?;
-    let id = v::new_id("group");
+    v::allowed(&payload, &["name", "description", "contact_email", "discord", "mangaupdates", "twitter", "website"])?;
+    let input = GroupCreate::parse(&payload)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    tx.execute("INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name,metadata) VALUES($1,$2,$3,$4,$5)",&[&id,&actor.user_id,&actor.username,&name,&metadata]).await?;
-    create_thread(&tx, "group", &id, &actor.user_id, &actor.username, &name).await?;
-    audit(&tx, &actor.user_id, "group", &id, "create", None, Some(1)).await?;
-    let data = tx
-        .query_one("SELECT platform.catalog_group_json($1)", &[&id])
-        .await?
-        .get(0);
+    let data = entity_mutations::group_create(&tx, &actor, input).await?;
     tx.commit().await?;
     Ok((StatusCode::CREATED, Json(data)))
 }
@@ -223,94 +110,10 @@ pub async fn group_update(
 ) -> ApiResult<Json<Value>> {
     let actor = mutation_principal(&state, &headers).await?;
     v::id(&id)?;
-    v::allowed(&payload, GROUP_FIELDS)?;
-    let version = v::version(&payload)?;
-    let name = v::string(&payload, "name", 200, false)?;
-    if name.as_deref() == Some("") {
-        return Err(ApiError::bad_request("Name must not be empty"));
-    }
-    let locked = v::boolean(&payload, "locked")?;
-    let inactive = v::boolean(&payload, "inactive")?;
-    let metadata = v::metadata(&payload, GROUP_META)?;
-    let leader = v::string(&payload, "leader", 128, false)?;
-    if let Some(l) = &leader {
-        v::id(l)?;
-    }
-    let officers = v::ids(&payload, "officers", false)?;
-    let members = v::ids(&payload, "members", false)?;
+    let input = GroupUpdate::parse(&payload)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let row=tx.query_opt("SELECT locked,version FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Group not found"))?;
-    let staff = actor.is_moderator() && actor.has_perm("scanlation_group.update");
-    if !staff {
-        actor.require_permission("self.scanlation_group.update")?;
-        let owns:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_group_members WHERE group_id=$1 AND user_id=$2 AND is_leader)",&[&id,&actor.user_id]).await?.get(0);
-        if !owns || row.get::<_, bool>(0) {
-            return Err(ApiError::forbidden("Group leader permission required"));
-        }
-        if name.is_some() || locked.is_some() {
-            return Err(ApiError::forbidden("Only staff may rename or lock groups"));
-        }
-    }
-    check_version(row.get(1), version)?;
-    if leader.is_some() || officers.is_some() || members.is_some() {
-        let current=tx.query("SELECT user_id,is_leader,is_officer FROM platform.catalog_group_members WHERE group_id=$1",&[&id]).await?;
-        let leader = leader
-            .or_else(|| {
-                current
-                    .iter()
-                    .find(|r| r.get::<_, bool>(1))
-                    .map(|r| r.get::<_, String>(0))
-            })
-            .ok_or_else(|| ApiError::bad_request("Group must have a leader"))?;
-        let officers = officers.unwrap_or_else(|| {
-            current
-                .iter()
-                .filter(|r| r.get::<_, bool>(2))
-                .map(|r| r.get::<_, String>(0))
-                .collect()
-        });
-        let members =
-            members.unwrap_or_else(|| current.iter().map(|r| r.get::<_, String>(0)).collect());
-        let mut all: std::collections::BTreeSet<String> = members.into_iter().collect();
-        all.insert(leader.clone());
-        all.extend(officers.iter().cloned());
-        let ids: Vec<String> = all.into_iter().collect();
-        let users = tx
-            .query(
-                "SELECT id,username FROM platform.users WHERE id=ANY($1) AND NOT disabled",
-                &[&ids],
-            )
-            .await?;
-        if users.len() != ids.len() {
-            return Err(ApiError::bad_request("Unknown group member"));
-        }
-        tx.execute(
-            "DELETE FROM platform.catalog_group_members WHERE group_id=$1",
-            &[&id],
-        )
-        .await?;
-        for user in users {
-            let uid: String = user.get(0);
-            let uname: String = user.get(1);
-            tx.execute("INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES($1,$2,$3,$4,$5)",&[&id,&uid,&uname,&(uid==leader),&officers.contains(&uid)]).await?;
-        }
-    }
-    tx.execute("UPDATE platform.catalog_groups SET name=COALESCE($2,name),metadata=metadata || $3,locked=COALESCE($4,locked),inactive=COALESCE($5,inactive),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&name,&metadata,&locked,&inactive]).await?;
-    audit(
-        &tx,
-        &actor.user_id,
-        "group",
-        &id,
-        "update",
-        Some(version),
-        Some(version + 1),
-    )
-    .await?;
-    let data = tx
-        .query_one("SELECT platform.catalog_group_json($1)", &[&id])
-        .await?
-        .get(0);
+    let data = entity_mutations::group_update(&tx, &actor, &id, input).await?;
     tx.commit().await?;
     Ok(Json(data))
 }
@@ -324,11 +127,7 @@ pub async fn group_delete(
     v::id(&id)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let n=tx.execute("UPDATE platform.catalog_groups SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?;
-    if n == 0 {
-        return Err(ApiError::not_found("Group not found"));
-    }
-    audit(&tx, &actor.user_id, "group", &id, "remove", None, None).await?;
+    entity_mutations::group_delete(&tx, &actor, &id).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }

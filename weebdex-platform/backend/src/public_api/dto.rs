@@ -25,6 +25,8 @@ pub enum ResourceType {
     CustomList,
     #[serde(rename = "report")]
     Report,
+    #[serde(rename = "report_reason")]
+    ReportReason,
     #[serde(rename = "upload_session")]
     UploadSession,
     #[serde(rename = "upload_session_file")]
@@ -40,7 +42,7 @@ pub enum ResourceType {
 pub struct Relationship {
     pub id: PublicUuid,
     #[serde(rename = "type")]
-    pub kind: ResourceType,
+    pub resource_type: ResourceType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub related: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -50,7 +52,7 @@ pub struct Relationship {
 pub struct Resource {
     pub id: PublicUuid,
     #[serde(rename = "type")]
-    pub kind: ResourceType,
+    pub resource_type: ResourceType,
     pub attributes: Value,
     #[serde(default)]
     pub relationships: Vec<Relationship>,
@@ -78,14 +80,14 @@ pub struct CollectionResponse<T> {
     pub result: &'static str,
     pub response: &'static str,
     pub data: Vec<T>,
-    pub limit: usize,
-    pub offset: usize,
-    pub total: usize,
+    pub limit: u32,
+    pub offset: u32,
+    pub total: u64,
     #[serde(flatten)]
     pub extensions: Map<String, Value>,
 }
 impl<T> CollectionResponse<T> {
-    pub fn new(data: Vec<T>, limit: usize, offset: usize, total: usize) -> Self {
+    pub fn new(data: Vec<T>, limit: u32, offset: u32, total: u64) -> Self {
         Self {
             result: "ok",
             response: "collection",

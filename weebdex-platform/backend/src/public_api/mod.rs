@@ -18,9 +18,27 @@ pub use postgres_identity::PostgresPublicIdResolver;
 
 pub mod routes;
 pub fn router() -> axum::Router<crate::AppState> {
-    routes::router().merge(auth::router())
+    routes::router()
+        .merge(auth::router())
+        .merge(library::router())
+        .merge(lists::router())
+        .merge(profiles::router())
+        .merge(reports::router())
+        .merge(statistics::router())
+        .merge(catalogue::router())
 }
 
 pub mod auth;
 
 pub mod catalogue_dto;
+
+pub mod edge_identity;
+pub mod library;
+pub mod lists;
+pub mod profiles;
+
+pub mod reports;
+
+pub mod statistics;
+
+pub mod catalogue;

@@ -1,0 +1,34 @@
+// RECONSTRUCTED UNVERIFIED pending foundation shared feed helper.
+// Restore this handler only when catalogue::feed_for_manga_ids is available.
+async fn feed(
+    State(state): State<AppState>,
+    Path(value): Path<String>,
+    RawQuery(raw): RawQuery,
+) -> PublicApiResult<Json<Value>> {
+    let (head, query) = feed_query(raw)?;
+    let (owner, list) = target(&state, &value).await?;
+    let snapshot = snapshot(&state, owner, head.as_deref(), 0, 1, Some(list)).await?;
+    if snapshot.lists.is_empty() {
+        return Err(PublicApiError::not_found());
+    }
+    projected(&state, &snapshot).await?;
+    let scope = manga(&state, &snapshot)
+        .await?
+        .into_values()
+        .map(|(native, _)| native)
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect();
+    let Json(response) = super::catalogue::feed_for_manga_ids(state.clone(), query, scope).await?;
+    state
+        .protocol
+        .verify_public_list_snapshot(&snapshot, None)
+        .await
+        .map_err(error)?;
+    let mut response = serde_json::to_value(response).map_err(|_| unavailable())?;
+    response
+        .as_object_mut()
+        .ok_or_else(unavailable)?
+        .insert("nostr".into(), metadata(&snapshot));
+    Ok(Json(response))
+}

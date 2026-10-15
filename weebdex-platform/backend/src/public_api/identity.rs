@@ -16,9 +16,12 @@ pub enum ResourceKind {
     User,
     List,
     Report,
+    ReportReason,
     UploadSession,
     UploadFile,
     Client,
+    MangaRelation,
+    MangaRecommendation,
 }
 impl ResourceKind {
     pub const fn as_str(self) -> &'static str {
@@ -32,15 +35,19 @@ impl ResourceKind {
             Self::User => "user",
             Self::List => "list",
             Self::Report => "report",
+            Self::ReportReason => "report_reason",
             Self::UploadSession => "upload_session",
             Self::UploadFile => "upload_file",
             Self::Client => "client",
+            Self::MangaRelation => "manga_relation",
+            Self::MangaRecommendation => "manga_recommendation",
         }
     }
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum PublicIdTarget {
     NativeResource,
+    ProtocolList { owner: String, list_id: String },
     ProtocolPublisher { pubkey: String },
 }
 #[derive(Clone, Debug, Eq, PartialEq)]

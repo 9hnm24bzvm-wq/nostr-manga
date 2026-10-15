@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-PG_BIN="$ROOT/../manga-protocol-lab/vendor/pgsql/bin"
+PG_BIN="${PLATFORM_TEST_PG_BIN:-$ROOT/../manga-protocol-lab/vendor/pgsql/bin}"
 mkdir -p "$ROOT/test-runtime"
 RUN="$(mktemp -d "$ROOT/test-runtime/auth-XXXXXX")"
 chmod 700 "$RUN"

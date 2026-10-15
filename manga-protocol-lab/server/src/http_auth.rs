@@ -119,7 +119,29 @@ impl Repository {
         let event = auth::token(authorization).map_err(|_| HttpAuthError::Invalid)?;
         let request_url = format!("{}{}", service.origin, external_uri);
         auth::http(&event, &request_url, method, body).map_err(|_| HttpAuthError::Invalid)?;
-        if event.one("service").map_err(|_| HttpAuthError::Invalid)? != hex::encode(service.key) {
+        // Empty GET proofs may omit payload under the original NIP-98 policy.
+        // If supplied, the public adapter extension never ignores an ambiguous
+        // or inconsistent raw-body binding. Native auth::http is unchanged.
+        let payloads: Vec<_> = event
+            .tags
+            .iter()
+            .filter(|tag| tag.first().map(String::as_str) == Some("payload"))
+            .collect();
+        if !payloads.is_empty()
+            && (payloads.len() != 1 || payloads[0].len() != 2 || payloads[0][1] != auth::hash(body))
+        {
+            return Err(HttpAuthError::Invalid);
+        }
+
+        let services: Vec<_> = event
+            .tags
+            .iter()
+            .filter(|tag| tag.first().map(String::as_str) == Some("service"))
+            .collect();
+        if services.len() != 1
+            || services[0].len() != 2
+            || services[0][1] != hex::encode(service.key)
+        {
             return Err(HttpAuthError::Invalid);
         }
         let principal = identifier(&event.pubkey).ok_or(HttpAuthError::Invalid)?;

@@ -30,7 +30,7 @@ pub struct PublicQuery {
 }
 impl PublicQuery {
     pub fn parse(raw: Option<&str>, schema: &QuerySchema<'_>) -> PublicApiResult<Self> {
-        let mut query = Self::parse_unchecked(raw)?;
+        let mut query = Self::parse_with_arrays(raw, schema.arrays)?;
         for (key, _) in &query.pairs {
             let allowed = matches!(key.as_str(), "limit" | "offset" | "includes[]")
                 || schema.scalar.contains(&key.as_str())
@@ -55,6 +55,9 @@ impl PublicQuery {
         Ok(query)
     }
     pub fn parse_unchecked(raw: Option<&str>) -> PublicApiResult<Self> {
+        Self::parse_with_arrays(raw, &[])
+    }
+    fn parse_with_arrays(raw: Option<&str>, repeatable: &[&str]) -> PublicApiResult<Self> {
         let raw = raw.unwrap_or("");
         if raw.len() > MAX_QUERY_BYTES {
             return Err(bad("Query is too long"));
@@ -80,7 +83,7 @@ impl PublicQuery {
             if key.is_empty() || key.len() > 128 || value.len() > MAX_QUERY_VALUE_BYTES {
                 return Err(bad("Invalid query field length"));
             }
-            if key.ends_with("[]") {
+            if key.ends_with("[]") || repeatable.contains(&key.as_str()) {
                 let count = array_counts.entry(key.clone()).or_default();
                 *count += 1;
                 if *count > MAX_ARRAY_VALUES {
@@ -167,7 +170,8 @@ impl PublicQuery {
             .collect()
     }
     pub fn includes(&self, allowed: &[&str]) -> PublicApiResult<BTreeSet<String>> {
-        let values = self.values("includes[]");
+        let mut values = self.values("includes[]");
+        values.extend(self.values("includes"));
         if values.len() > MAX_INCLUDES {
             return Err(bad("Too many relationship includes"));
         }
@@ -256,6 +260,28 @@ fn hex(b: u8) -> Option<u8> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn operation_schema_controls_bare_array_repetition() {
+        let schema = QuerySchema {
+            default_limit: 10,
+            max_limit: 100,
+            max_offset: 10000,
+            scalar: &["title"],
+            arrays: &["chapter", "uploader", "includes"],
+            includes: &["manga", "user"],
+            order: &[],
+        };
+        let query = PublicQuery::parse(
+            Some("chapter=1&chapter=2&uploader=a&uploader=b&includes=manga&includes=user"),
+            &schema,
+        )
+        .unwrap();
+        assert_eq!(query.list("chapter"), vec!["1", "2"]);
+        assert_eq!(query.includes.len(), 2);
+        assert!(PublicQuery::parse(Some("title=a&title=b"), &schema).is_err());
+        assert!(PublicQuery::parse_unchecked(Some("chapter=1&chapter=2")).is_err());
+    }
     #[test]
     fn arrays_orders_and_strictness() {
         let q = PublicQuery::parse_unchecked(Some(
@@ -275,3 +301,6 @@ mod tests {
         );
     }
 }
+
+/// Original public adapter name retained for shared report/editorial readers.
+pub type Direction = SortDirection;

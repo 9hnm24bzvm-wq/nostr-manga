@@ -7,7 +7,7 @@ use super::{
     dto::{Relationship, Resource, ResourceType},
 };
 use crate::AppState;
-use serde_json::{Map, Value, json};
+use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub struct AliasIndex {
@@ -94,7 +94,7 @@ impl AliasIndex {
         };
         Ok(Some(Relationship {
             id: row.preferred_id.clone(),
-            kind: role,
+            resource_type: role,
             related: None,
             attributes,
         }))
@@ -247,7 +247,7 @@ impl AliasIndex {
                 if let Some(manga) = value["_manga_id"].as_str() {
                     relationships.push(Relationship {
                         id: self.id(ResourceKind::Manga, manga)?,
-                        kind: ResourceType::Manga,
+                        resource_type: ResourceType::Manga,
                         related: None,
                         attributes: None,
                     });
@@ -345,7 +345,7 @@ impl AliasIndex {
         };
         Ok(Resource {
             id,
-            kind: wire,
+            resource_type: wire,
             attributes,
             relationships,
         })

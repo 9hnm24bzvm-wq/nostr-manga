@@ -1,0 +1,9 @@
+# Reconstructed Nostr adapter source checkpoint
+
+This source was reconstructed after the execution filesystem was replaced on 2026-10-15. The original manga-node library has passed a fresh locked/offline cargo check against the restored wrapper dependency graph (2026-10-15). The wrapper adapters and all test sources also passed a fresh offline cargo check --tests (8.21s), after restoring the original fixture’s cached ciborium/secp256k1 dev-dependencies. Genuine HTTP/PostgreSQL tests have not yet run against the restored repository. Earlier local commits and test logs are unavailable; no historical acceptance is transferred to these bytes.
+
+The checkpoint restores request-authority consumers, the exact shared original LibraryObjects/UploadStore ownership seam, public graph read markers, typed public lists and bounded alias backfill, and public profiles. The foundation owns the admitted capability and bound native-account helper. The list-feed route explicitly returns501 while the foundation catalogue feed helper is restored; its planned handler is preserved in reconstructed-list-feed-pending.rs.txt. This route is not counted as recovered implemented coverage. Migration90 and catalogue integration must be merged before running the full platform.
+
+Signed library mutation changes remain a design document only. Current POST read-marker behavior truthfully requires a client-signed publication extension. New runtime credentials are not included; test fixture key values are synthetic.
+
+The final authenticated head check now reuses the original repository head SQL and signed-event decoder inside the same bounded transaction as service/admission revalidation. It does not hold one checkout while waiting for another.
