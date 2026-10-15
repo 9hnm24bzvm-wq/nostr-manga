@@ -55,11 +55,15 @@ export async function runJourneys(h) {
 		const email = `browser_${marker}@example.invalid`, username = `Browser${marker}`, password = `Fixture!${randomBytes(24).toString("base64url")}9a`;
 		redactions.add(password); redactions.add(email);
 		await open("/auth/register");
+		insist(await page.getByRole("heading", { name: "Your account is ready", exact: true }).count() === 0, "Account welcome appeared before account creation");
 		await page.locator('input[name="email"]').fill(email);
 		await page.locator('input[name="username"]').fill(username);
 		await page.locator('input[name="password"]').fill(password);
 		await page.getByRole("button", { name: "Create Account", exact: true }).click();
 		await until(() => api("/auth/check"), value => value.status === 200 && value.body?.identity?.username === username, "Registration did not establish a real session");
+		await page.getByRole("heading", { name: "Your account is ready", exact: true }).waitFor({ state: "visible" });
+		await page.getByRole("button", { name: "Continue", exact: true }).click();
+		await page.waitForURL(url => url.pathname === "/" && url.search === "" && url.hash === "");
 		const provision = await control("/fixture/provision", { email, profile, join_seed_group: true });
 		insist(provision.status() === 200, "Fixture could not provision synthetic account permissions");
 		account = { email, username, password };
@@ -72,7 +76,7 @@ export async function runJourneys(h) {
 		await page.goto(link.href, { waitUntil: "domcontentloaded" });
 		await until(() => api("/auth/check"), value => value.status === 200 && (value.body?.identity?.is_verified || value.body?.roles?.includes("verified")), "One-time verification link did not verify account");
 		await open("/");
-		return { registered_by_ui: true, verified_by_one_time_local_mail: true, profile, session_cookie_present: (await context.cookies()).some(cookie => /session/i.test(cookie.name)) };
+		return { registered_by_ui: true, welcome_completed_by_ui: true, verified_by_one_time_local_mail: true, profile, session_cookie_present: (await context.cookies()).some(cookie => /session/i.test(cookie.name)) };
 	};
 	const logout = async () => {
 		await open("/");

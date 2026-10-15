@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "utc": "2026-10-15T02:58:20.971Z",
+  "command": "WEEBDEX_FRONTEND_ROOT=<existing exact-lock frontend root> WEEBDEX_BROWSER_DOM_NODE_MODULES=<existing pinned DOM dependency root> node --experimental-vm-modules --test --test-reporter=tap tests/ci/test_account_onboarding_seams.mjs tests/ci/test_browser_account_recovery.mjs tests/ci/test_frontend_bootstrap.mjs tests/ci/test_frontend_semantic_contracts.mjs tests/ci/test_recovery_successor_contract.mjs tests/ci/test_library_identity_route_ownership.mjs",
+  "node": "v24.19.0",
+  "total_tests": 114,
+  "passed": 114,
+  "failed": 0,
+  "new_onboarding_tests": 46,
+  "browser_started": false,
+  "network_started": false,
+  "services_started": false,
+  "original_frontend_files_written": false,
+  "boundary": "Finite actual anchored-overlay registration/login/verification scripts, actual local-library store, real auth/navigation owners and Mutex, public markup-bound form/guide controls; explicit UI/lifecycle/transport/browser adapters. Existing pinned Svelte/JSDOM regression covers library route ownership. These tests do not establish browser layout, keyboard navigation, mobile viewport, signer or end-to-end acceptance.",
+  "coverage": [
+    "guide only after accepted fresh registration and authoritative account refresh",
+    "no welcome for browse, login, existing session or registration-flow retrieval",
+    "double-submit and consumed-flow replay fencing",
+    "validation, malformed/rejected/non-200 responses",
+    "back, navigation-start and unmount before initial flow/write/refresh settles",
+    "safe same-origin continuation, auth-loop rejection, literal percent/query/hash preservation through actual login and verification consumers",
+    "exact retained URLSearchParams prototype patch counterexample retained and fixed",
+    "account switch/logout and refresh-failure fallback",
+    "repeat Continue and navigation failure retry",
+    "actual library device default, chosen mode and saved manga preservation",
+    "native control semantics, heading focus callback, minimum touch-target utility source contracts"
+  ],
+  "source_sha256": {
+    "platform-integrations/frontend-overlays.mjs": "33b62c0d955cb3e05d997ead078896f40d501ea615406c54fe639bd99f6907c2",
+    "platform-integrations/frontend-behavior/AccountOnboarding.svelte": "a81906e7c7f78ca68be41ea745056dcfa2cdb1f6d142544fdacc089ed6e4f46b",
+    "platform-integrations/frontend-behavior/account-onboarding.ts": "0f540c62ea99384dbf841327e8645849cfe629459518e8edf6f444632802db1a",
+    "scripts/browser-journeys.mjs": "8a38ac748c426b4b6c9c00a85137bf2043241dfd58d2946b1925c8a279a83273",
+    "tests/ci/test_account_onboarding_seams.mjs": "800658898f557c502e6390fbec801666b90923a3635015a82565f3d898ace2ef",
+    "tests/ci/test_browser_account_recovery.mjs": "57755dffeb3f2f178f3414891914e61f51bfe7aacb76b4add14e7931e04d21a2"
+  },
+  "tap": "seams.tap"
+}

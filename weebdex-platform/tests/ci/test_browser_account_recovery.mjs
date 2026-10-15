@@ -73,6 +73,7 @@ test('proved old waiter crash is handled after the repaired click failure', () =
 function journeyStandIns({ failSeed = false } = {}) {
   const origin = 'http://127.0.0.1:1', report = { steps: [] }, inputs = {}, calls = [];
   const device = { records: [{ family: 'series', id: 'SeedManga1', status: 'reading' }] };
+  let welcome = false;
   let session = 'none', initialPassword, currentPassword, verified = false, responseWaits = 0;
   const response = (status, body) => ({ status: () => status, ok: () => status >= 200 && status < 300, json: async () => body, headers: () => ({ 'content-type': 'application/json' }) });
   const locator = selector => ({
@@ -81,10 +82,13 @@ function journeyStandIns({ failSeed = false } = {}) {
     first() { return this; }, waitFor: async () => {},
   });
   const role = (kind, options) => ({
-    first() { return this; }, and() { return this; }, waitFor: async () => {}, count: async () => 0,
+    first() { return this; }, and() { return this; },
+    waitFor: async () => { if (kind === 'heading' && options.name === 'Your account is ready') assert.equal(welcome, true); },
+    count: async () => kind === 'heading' && options.name === 'Your account is ready' && welcome ? 1 : 0,
     click: async () => {
       calls.push(options.name);
-      if (options.name === 'Create Account') { session = 'normal'; initialPassword = currentPassword = inputs['input[name="password"]']; }
+      if (options.name === 'Create Account') { welcome = true; session = 'normal'; initialPassword = currentPassword = inputs['input[name="password"]']; }
+      if (options.name === 'Continue') { assert.equal(welcome, true); welcome = false; page.current = origin + '/'; }
       if (options.name === 'Logout') session = 'none';
       if (options.name === 'Reset Password') { currentPassword = inputs['input[name="password"]']; session = 'normal'; }
       if (options.name === 'Sign in') session = inputs['input[name="password"]'] === currentPassword ? 'normal' : 'none';
@@ -137,6 +141,8 @@ test('actual journey keeps every recovery assertion and all eighteen checkpoints
   assert.deepEqual(value.report.account_recovery_checks.map(row => row.check_id), [...accountRecoveryCheckIds]);
   assert.ok(value.report.account_recovery_checks.every(row => row.status === 'passed'));
   assert.equal(value.responseWaits(), 1);
+  assert.equal(value.calls.filter(name => name === 'Continue').length, 1);
+  assert.ok(value.calls.indexOf('Create Account') < value.calls.indexOf('Continue'));
   assert.notEqual(...value.passwords());
   assert.doesNotMatch(JSON.stringify(value.report.account_recovery_checks), /private-fixture-token|browser_|Fixture!|Recovered!/);
 });
