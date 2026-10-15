@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "status": "independently-verified-native-tabs-local-pass-and-compact-failure",
+  "source_commit": "11706deb4dce8ae374e05e878e7f06f0ecb9bae4",
+  "source_tree": "ef3034fa06a80b8ff096c9a7e5df6ed40e00285d",
+  "startup_passed": 19,
+  "local_library_actual_steps_passed": 6,
+  "passed_steps": 25,
+  "compact_failed_step_indices": [
+    0
+  ],
+  "compact_failure": "compact-feed-unique-sequential-pages",
+  "compact_http_outcome": "success200",
+  "compact_database_failure": "none",
+  "duplicate_vs_parallel_cause": "not-established-by-retained-receipt",
+  "later_signed_context_device_phases": "not-run-in-this-batch",
+  "full_suite_passed": false,
+  "source_archive_files_checked": 2572,
+  "artifact_files_checked": 425,
+  "sanitized_screenshots_checked": 16,
+  "closed_nested_schemas_and_owned_reprojection_exact": true,
+  "strict_cleanup_verified": true,
+  "lifecycle_failure_preserved": true,
+  "source_only_stage_delta_sandbox_tightening": true,
+  "sanitized_json_scan_clean": true,
+  "screenshots": [
+    {
+      "file": "screenshots/relocation-desktop-home.png",
+      "width": 1440,
+      "height": 1426
+    },
+    {
+      "file": "screenshots/relocation-desktop-library-settings.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-public-identity.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-reader-discussion.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-reader.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-search.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-title-comments.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-desktop-title.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/relocation-mobile-home.png",
+      "width": 390,
+      "height": 1343
+    },
+    {
+      "file": "screenshots/relocation-mobile-library-settings.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-public-identity.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-reader-discussion.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-reader.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-search.png",
+      "width": 390,
+      "height": 1064
+    },
+    {
+      "file": "screenshots/relocation-mobile-title-comments.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/relocation-mobile-title.png",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "files": [
+    {
+      "path": "bindings.json",
+      "bytes": 1453,
+      "sha256": "94388b639dd26baa582b2abe495aa019ac90be522eb0a5dafda110e0bb1a0d03"
+    },
+    {
+      "path": "focused-runtime-summary.json",
+      "bytes": 35007,
+      "sha256": "4cc302380f1c9b6b741b8cb4baf686f57819d8edd9ff3f4fbd36c6f8f920a828"
+    },
+    {
+      "path": "geometry.json",
+      "bytes": 5046,
+      "sha256": "043ef18a5f9322c819b82dd560af0b721e1d344ae4020b2f8568f7fb433602b4"
+    },
+    {
+      "path": "screenshots/relocation-desktop-home.png",
+      "bytes": 173228,
+      "sha256": "6d90dc29894f3dd4d7d7cff0f4cfaffcafc7e2bc69307f339f9cf7740ea307e4"
+    },
+    {
+      "path": "screenshots/relocation-desktop-library-settings.png",
+      "bytes": 91393,
+      "sha256": "8992789006e2f9bab14158b558cd7f1931d4a491a8809fdc18c142e851c85879"
+    },
+    {
+      "path": "screenshots/relocation-desktop-public-identity.png",
+      "bytes": 68481,
+      "sha256": "00996a8c5eecdd0ab6b1c1f23ecb8ba4edb9d4476d0e5205859f1bba430b25a8"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader-discussion.png",
+      "bytes": 45489,
+      "sha256": "3b9c231d83e92a2b1c2cd015a52ebcc6e60692f139d81370eed3f50be25d5041"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader.png",
+      "bytes": 75662,
+      "sha256": "6886d6812a0b7981d6bf1756c01fcd1d006760dedc0e66606e35fcee568a168d"
+    },
+    {
+      "path": "screenshots/relocation-desktop-search.png",
+      "bytes": 109151,
+      "sha256": "7726d9e9338db5920e580eab838abee54d9c5761d6a6edaaae11bc2c75d6fdfa"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title-comments.png",
+      "bytes": 96952,
+      "sha256": "0f0ed6033ea1d44322ba8882a71eae548e3855358a1846df8156826f05f7a9ef"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title.png",
+      "bytes": 6490,
+      "sha256": "4156019b50cd4c8f4e63389e9d5e48929e4888c60afaac02f02e98fe5da1f83a"
+    },
+    {
+      "path": "screenshots/relocation-mobile-home.png",
+      "bytes": 124782,
+      "sha256": "d5bc6aee0dc17fc61eaa7d99813854f55f2c46237ce298363535c89fbc361878"
+    },
+    {
+      "path": "screenshots/relocation-mobile-library-settings.png",
+      "bytes": 56479,
+      "sha256": "e89df2498c03238ef75e8ab9c93e6da7471e175f78c94aaf6b1440d491d83c04"
+    },
+    {
+      "path": "screenshots/relocation-mobile-public-identity.png",
+      "bytes": 48430,
+      "sha256": "98da4aa66664f784720bf97d0d4c9a4aa746879ea2a6627de7d6886713de1ad2"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader-discussion.png",
+      "bytes": 35142,
+      "sha256": "a036b3579b4262fedbbb9e8f446840a0819e957d5ab075bf5eaa3ee907dc3e97"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader.png",
+      "bytes": 4017,
+      "sha256": "5e75ec8892ea0eb591cf80a2593b6c979cc42a51f8b51431e9f675dd6fbd0475"
+    },
+    {
+      "path": "screenshots/relocation-mobile-search.png",
+      "bytes": 92828,
+      "sha256": "cfb8c88eb085518ce3c9fe22e56604d3cfe66f1938f87d0818b0b4719eb58fbf"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title-comments.png",
+      "bytes": 47515,
+      "sha256": "1c003126799a506819f6a69a891261edbc42446bac2ba946dccbe6599032b6c9"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title.png",
+      "bytes": 2741,
+      "sha256": "66441f6fdb29d4726426ee0c66f1e6794fbfb0ffb66568e61bb932d465817292"
+    },
+    {
+      "path": "screenshots.json",
+      "bytes": 5593,
+      "sha256": "c6e54588816a6da62de4a336c15879c851fa3989e92db0a9193ee256ebed5fc0"
+    }
+  ],
+  "limits": [
+    "Actual startup19 and local-library6 passed; compact unique sequential page assertion failed.",
+    "Compact native HTTP200 and no database failure were observed; duplicate versus observer concurrency distinction was not retained before throw, so cause is not established.",
+    "Signed/context/device phases did not run in this batch; separate independent scope must be bound on its own.",
+    "Failed lifecycle and nonzero supervisor exit retained despite verified final cleanup.",
+    "Six named desktop/mobile Settings/context screenshots inspected separately; no full pixel parity or whole-suite acceptance."
+  ]
+}
