@@ -1,63 +1,75 @@
-# Account-creation welcome
+# Account creation and public-key setup
 
-The native registration form is preserved. After a **successful HTTP 200
-registration response with an active session and identity ID**, the current form
-refreshes its session and shows a short native Card. This is an intentional
-rendered extension mounted only in `auth/register`; the supplied attachment files
-are never edited.
+The native registration form remains the site's email/username/password login.
+Only a newly accepted HTTP200 registration response with an active identity,
+followed by an authoritative matching session refresh, opens the public-identity
+setup card. The supplied frontend attachment is unchanged; exact anchored
+composition adds the card only to the registration route. Existing login,
+browsing, flow reads, already signed-in visits, refresh and URL flags cannot
+recreate it.
 
-The welcome explains that saved browser titles remain in the browser, library
-storage can be chosen later in Settings → Library, and separate public sharing is
-optional. An email-verification link appears only when the registration response
-explicitly identifies an unverified email address. Opening the guide does not
-request verification mail or claim that mail has been sent. Continue uses the
-captured safe intended return destination.
+The card explains the two identities in plain language. Users can create a new
+Nostr private/public key pair, paste an existing nsec or validated hexadecimal
+private key, or explicitly connect a NIP07 browser signer. An npub is displayed
+and can be copied for sharing; a public-only npub cannot sign and is rejected as
+a private-key import. The optional site-email verification link uses the existing
+route and does not claim or request an email automatically.
 
-## Lifecycle and privacy boundaries
+## Guided actions
 
-- The guide exists only in the fresh registration component's memory. Login,
-  ordinary browsing, registration flow reads, already signed-in visitors, refresh,
-  and query flags cannot create it.
-- Existing auth-form ownership fences protect all async work and Continue. A
-  late abandoned response cannot mount the guide or navigate an unrelated page.
-- The refreshed account ID must match the just-created identity before the guide
-  presents the ready state. A failed refresh, changed account, or lost session
-  shows a sign-in continuation instead. The completed form is not revived.
-- Pending and completed registration cannot be submitted again through queued or
-  repeated controls. The original registration API and validation UI remain.
-- Safe return URLs are restricted to the current origin, preserve local query
-  strings and fragments, and reject authentication-loop destinations. Query
-  values are decoded once by URLSearchParams. The login and verification
-  consumers receive a narrow script-only safe-return repair too, so a literal
-  percent or an already-encoded query value survives those existing routes. Retaining the safe redirect beside
-  the existing flow ID lets refresh bypass the welcome without replaying signup.
-- No library mode is selected, copied or imported. No signing extension is
-  contacted, key is created or stored, public identity is admitted, or public
-  action is published. Site-account recovery and public-signing-key recovery
-  remain separate.
-- The guide uses existing Card/Button components and utility tokens, the native
-  max-width auth wrapper, normal document scrolling, a focused heading, live
-  status, and at least 44px action targets. It adds no modal, accordion, dependency
-  or global style.
+1. **Choose a key.** Local creation uses secure WebCrypto randomness and the
+   pinned vetted curve library. Import is parsed locally with pinned Bech32 and
+   strict scalar checks. No signer is installed merely by creating/importing a
+   draft. Secret entry is not inside a form and has no input name, preventing a
+   browser GET-submit fallback from putting it in a URL.
+2. **Back up.** Private reveal and clipboard copy are separate explicit controls.
+   The UI warns that clipboard history/sync may keep a copy, the browser forgets
+   the session on reload/lock, and site-password recovery cannot restore a lost
+   key. A required acknowledgment neither creates nor verifies a backup.
+3. **Review.** Read-only capabilities, allowed-origin policy and service proof
+   identify the intended recipient. The public npub and verified origin are
+   shown before a separate **Join this instance** action.
+4. **Join.** Only that explicit action installs the selected local session signer
+   and invokes the existing signed enrollment/admission mechanism. It performs a
+   fresh service proof and checks the UI lifetime, key owner and signer generation
+   before signing/submission. Only a successful accepted admission presents the
+   public identity as ready. Uncertain errors never claim the request failed
+   remotely; retry is explicit and uses the same selected key.
 
-## Integration and verification
+**Finish later** discards an unfinished draft and follows the original safe
+return destination. Closing, navigating away, switching accounts, or changing
+signer selection invalidates pending work and suppresses late focus/UI changes.
+A request already received by the instance cannot be undone by leaving. An
+activated session remains selected until explicit lock/disconnect, replacement,
+or reload. Settings → Public identity provides manual create/import/signer
+setup and a local-key lock control, without automatic onboarding on login.
 
-The exact SHA-256/count-anchored registration additions live in
-`platform-integrations/frontend-overlays.mjs`. The preparation wrapper validates
-one narrowly scoped `fresh_registration_welcome` markup exception and includes
-both the new component and helper in the integration inventory. Unrelated
-retained markup and styles are still compared exactly after existing exceptions
-are reversed.
+## Privacy and lifecycle
 
-Use the normal composed-source compiler, semantic checker, frontend build,
-focused onboarding seam tests, and original-source parity check. These are
-separate evidence classes: source and finite stand-in tests do not establish
-actual rendered-browser acceptance.
+Private-key bytes are owned by a draft, then transferred to the session signer;
+discard/lock overwrite owned byte arrays. Secret strings required for manual
+paste, reveal and clipboard cannot be guaranteed to be erased from JavaScript,
+browser memory, extensions, clipboard history or compromised devices. See
+[browser-local-signing-key.md](browser-local-signing-key.md) for the threat model.
+No private key is sent to the backend, put in an error or URL, logged, persisted
+in browser storage or included in analytics. Session-only is the default and
+there is no encrypted-persistence option in this implementation.
 
-At the implementation freeze, 114 selected finite tests passed (46 new onboarding
-tests), the composed compiler passed 106 Svelte components and 65 scripts, and
-strict semantic checks reported zero errors with 15 retained warnings. The owned
-production build exited zero with no surviving processes and all 762 frozen
-inputs unchanged. All 676 supplied attachment files and all 111 supplied static
-files remain byte-identical. Real-browser acceptance is recorded separately and
-was still pending when this source/build checkpoint was made.
+The selected key signs through the existing publication registry. Key setup and
+admission do not publish a profile, library, follows, reading history or comments,
+and do not select/import an account library. Public profile editing remains a
+separate reviewed Settings action. Site credentials and Nostr identity remain
+separate; successful site registration does not imply verified email or accepted
+Nostr admission.
+
+The registration form is consumed after accepted creation, even if session
+refresh fails. Stale/changed sessions instead show safe sign-in/browsing links.
+Repeated pending/completed form submission and Continue navigation are fenced.
+Safe local returns preserve query/hash/percent values, are decoded once, and
+reject foreign origins, credentials, controls, backslashes and auth-loop paths.
+
+The UI uses native Card/Button/Input components, normal document/dialog scrolling,
+focused step headings, live status/errors, and minimum44px action targets. No
+accordion or global styling was added. Source/compiler, strict semantic, finite
+seams, production build, attachment parity and actual-browser acceptance are
+separate evidence classes; only the recorded final checks establish each class.

@@ -3480,7 +3480,7 @@ const patches = [
   "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
   "count": 1,
   "before": "\tlet isMounted = $state(false);",
-  "after": "\tlet isMounted = $state(false);\r\n\tlet registrationWelcome = $state<{ accountId: string; returnTo: string; needsVerification: boolean; sessionRefreshed: boolean; continue: () => void }>();"
+  "after": "\tlet isMounted = $state(false);\r\n\tlet registrationWelcome = $state<{ accountId: string; returnTo: string; needsVerification: boolean; sessionRefreshed: boolean; continue: () => void; current: () => boolean }>();"
 },
 {
   "path": "src/routes/(app)/auth/register/+page.svelte",
@@ -3512,7 +3512,7 @@ const patches = [
   "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
   "count": 1,
   "before": "\t\t\tif (data?.session?.active) {\r\n\t\t\t\tawait Session.initialize(true);\r\n\t\t\t\tif (!authIntent.alive()) return;\r\n\t\t\t\tif (returnTo && !returnTo?.startsWith(window.location.origin)) {\r\n\t\t\t\t\twindow.location.href = returnTo;\r\n\t\t\t\t} else goto(returnTo || \"/\");",
-  "after": "\t\t\tif (!(res instanceof AxiosError) && res.status === StatusCodes.OK && data?.session?.active) {\r\n\t\t\t\tconst accountId = data.session.identity?.id;\r\n\t\t\t\tif (!accountId) throw Constants.Error.Unknown;\r\n\t\t\t\tlet sessionRefreshed = false;\r\n\t\t\t\ttry { await Session.initialize(true); sessionRefreshed = true; }\r\n\t\t\t\tcatch { /* The accepted registration must not be replayed after a session-read failure. */ }\r\n\t\t\t\tif (!authIntent.alive()) return;\r\n\t\t\t\tconst destination = safeRegistrationReturnTo(returnTo);\r\n\t\t\t\tlet continuing = false;\r\n\t\t\t\tregistrationWelcome = {\r\n\t\t\t\t\taccountId, returnTo: destination, sessionRefreshed,\r\n\t\t\t\t\tneedsVerification: !!data.session.identity?.verifiable_addresses?.some(address => address.via === \"email\" && address.verified === false),\r\n\t\t\t\t\tcontinue: async () => {\r\n\t\t\t\t\t\tif (continuing || !sessionRefreshed || !authIntent.alive() || get(Session)?.identity?.id !== accountId) return;\r\n\t\t\t\t\t\tcontinuing = true;\r\n\t\t\t\t\t\ttry { await goto(destination); }\r\n\t\t\t\t\t\tcatch { if (authIntent.alive()) { continuing = false; toast.error(\"Could not continue\", { description: \"Please try again.\" }); } }\r\n\t\t\t\t\t}\r\n\t\t\t\t};"
+  "after": "\t\t\tif (!(res instanceof AxiosError) && res.status === StatusCodes.OK && data?.session?.active) {\r\n\t\t\t\tconst accountId = data.session.identity?.id;\r\n\t\t\t\tif (!accountId) throw Constants.Error.Unknown;\r\n\t\t\t\tlet sessionRefreshed = false;\r\n\t\t\t\ttry { await Session.initialize(true); sessionRefreshed = true; }\r\n\t\t\t\tcatch { /* The accepted registration must not be replayed after a session-read failure. */ }\r\n\t\t\t\tif (!authIntent.alive()) return;\r\n\t\t\t\tconst destination = safeRegistrationReturnTo(returnTo);\r\n\t\t\t\tlet continuing = false;\r\n\t\t\t\tregistrationWelcome = {\r\n\t\t\t\t\taccountId, returnTo: destination, sessionRefreshed,\r\n\t\t\t\t\tneedsVerification: !!data.session.identity?.verifiable_addresses?.some(address => address.via === \"email\" && address.verified === false),\r\n\t\t\t\t\tcontinue: async () => {\r\n\t\t\t\t\t\tif (continuing || !sessionRefreshed || !authIntent.alive() || get(Session)?.identity?.id !== accountId) return;\r\n\t\t\t\t\t\tcontinuing = true;\r\n\t\t\t\t\t\ttry { await goto(destination); }\r\n\t\t\t\t\t\tcatch { if (authIntent.alive()) { continuing = false; toast.error(\"Could not continue\", { description: \"Please try again.\" }); } }\r\n\t\t\t\t\t},\r\n\t\t\t\t\tcurrent: () => sessionRefreshed && authIntent.alive() && get(Session)?.identity?.id === accountId\r\n\t\t\t\t};"
 },
 {
   "path": "src/routes/(app)/auth/register/+page.svelte",
@@ -3528,7 +3528,7 @@ const patches = [
   "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
   "count": 1,
   "before": "{#if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
-  "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+  "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} current={registrationWelcome.current} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
   "approved_registration_onboarding_exception": "fresh_registration_welcome"
 },
 {
