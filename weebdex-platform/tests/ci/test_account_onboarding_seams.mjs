@@ -13,7 +13,7 @@ import { createFrontendOverlays } from '../../platform-integrations/frontend-ove
 import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const root = path.resolve(process.env.WEEBDEX_ONBOARDING_SOURCE_ROOT ?? path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'));
 const frontend = path.join(root, 'frontend');
 const behavior = path.join(root, 'platform-integrations/frontend-behavior');
 const registerRoute = 'src/routes/(app)/auth/register/+page.svelte';
@@ -323,22 +323,22 @@ function guideControls({ accountCurrent = true, needsVerification = true, return
   const heading = source.match(/<h1\b[^>]*bind:this=\{([^}]+)\}[^>]*>/);
   const verification = source.match(/<a\b[^>]*href=\{([^}]+)\}[^>]*>Verify email<\/a>/);
   const signin = source.match(/<Button\b[^>]*href=\{([^}]+)\}[^>]*>Sign in<\/Button>/);
-  const primary = source.match(/<Button\b[^>]*onclick=\{([^}]+)\}[^>]*>Continue<\/Button>/);
+  const primary = source.match(/<IdentitySetup\b[^>]*onfinish=\{([^}]+)\}/);
   assert.ok(heading && verification && signin && primary, 'exercise the actual guide controls');
   const api = vm.runInContext('(function(){' + transform(withoutImports(script)) + '\nreturn { heading: node => { ' + heading[1] + ' = node; }, verificationHref: () => (' + verification[1] + '), loginHref: () => (' + signin[1] + '), primary: () => (' + primary[1] + ') }; })()', context);
   return { source, api, mounts, props, helper, context };
 }
 
-test('welcome uses native, reachable keyboard controls, focus transfer and mobile touch targets', () => {
+test('welcome mounts the explicit identity wizard and preserves native focus and optional site links', () => {
   const value = guideControls();
   assert.match(value.source, /aria-labelledby="account-welcome-title"/);
   assert.match(value.source, /<h1\b[^>]*id="account-welcome-title"[^>]*tabindex="-1"/);
   const focused = []; value.api.heading({ focus: options => focused.push(clone(options)) }); value.mounts.forEach(fn => fn());
   assert.deepEqual(focused, [{ preventScroll: true }]);
   assert.equal(value.api.primary(), value.props.oncontinue);
-  assert.match(value.source, /<Button\b[^>]*class="[^"]*min-h-11[^\"]*w-full[^\"]*"[^>]*onclick=\{oncontinue\}>Continue<\/Button>/);
+  assert.match(value.source, /<IdentitySetup\b[^>]*onfinish=\{oncontinue\}/);
   assert.match(value.source, /\{#if needsVerification\}[\s\S]*?<a\b[^>]*min-h-11[^>]*>Verify email<\/a>/);
-  assert.match(value.source, /\{#if accountCurrent\}[\s\S]*?>Continue<\/Button>[\s\S]*?\{:else\}[\s\S]*?>Sign in<\/Button>/);
+  assert.match(value.source, /\{#if accountCurrent\}[\s\S]*?<IdentitySetup[\s\S]*?\{:else\}[\s\S]*?>Sign in<\/Button>/);
   assert.doesNotMatch(value.source, /onkeydown|onkeyup|role="dialog"|position:\s*fixed|\$protocol|signEvent|connectSigner|publishEvent|localStorage|sessionStorage/);
   const button = fs.readFileSync(path.join(frontend, 'src/lib/components/ui/button/button.svelte'), 'utf8');
   assert.match(button, /type = "button"/); assert.match(button, /<button\s/);

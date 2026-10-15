@@ -88,7 +88,7 @@ function journeyStandIns({ failSeed = false } = {}) {
     click: async () => {
       calls.push(options.name);
       if (options.name === 'Create Account') { welcome = true; session = 'normal'; initialPassword = currentPassword = inputs['input[name="password"]']; }
-      if (options.name === 'Continue') { assert.equal(welcome, true); welcome = false; page.current = origin + '/'; }
+      if (options.name === 'Finish later') { assert.equal(welcome, true); welcome = false; page.current = origin + '/'; }
       if (options.name === 'Logout') session = 'none';
       if (options.name === 'Reset Password') { currentPassword = inputs['input[name="password"]']; session = 'normal'; }
       if (options.name === 'Sign in') session = inputs['input[name="password"]'] === currentPassword ? 'normal' : 'none';
@@ -141,8 +141,8 @@ test('actual journey keeps every recovery assertion and all eighteen checkpoints
   assert.deepEqual(value.report.account_recovery_checks.map(row => row.check_id), [...accountRecoveryCheckIds]);
   assert.ok(value.report.account_recovery_checks.every(row => row.status === 'passed'));
   assert.equal(value.responseWaits(), 1);
-  assert.equal(value.calls.filter(name => name === 'Continue').length, 1);
-  assert.ok(value.calls.indexOf('Create Account') < value.calls.indexOf('Continue'));
+  assert.equal(value.calls.filter(name => name === 'Finish later').length, 1);
+  assert.ok(value.calls.indexOf('Create Account') < value.calls.indexOf('Finish later'));
   assert.notEqual(...value.passwords());
   assert.doesNotMatch(JSON.stringify(value.report.account_recovery_checks), /private-fixture-token|browser_|Fixture!|Recovered!/);
 });
