@@ -1,0 +1,101 @@
+MangaDex API foundation recovery manifest
+Recorded: 2026-10-15 04:36 UTC
+
+The execution filesystem was replaced at about 04:35 UTC. The former worktree
+/workspace/scratch/3eafc9756ff3/mangadex-contract-foundation-worktree and shared
+Rust tools are absent. This manifest describes previously observed state, not
+files currently recoverable from this workspace.
+
+Last clean foundation branch: feat/mangadex-contract-foundation
+Last clean HEAD: d093ae8
+Last broadly tested checkpoint: 7697bd9878cb141a53fb892d20e0a44888e5bcb3
+Its verification/evidence follow-up: 2c0a7b85512f7022613ac983d03e74ff3f127e9e
+
+Frozen 7697 verification:
+- Library tests: 95 passed, 0 failed, 1 explicit PostgreSQL-only ignored.
+- Nine genuine integration suites passed, each in its own disposable PostgreSQL:
+  public_catalogue_writes, public_nostr_auth, public_catalogue, public_identity,
+  public_identity_original_module, public_manga_edges, public_statistics,
+  public_nostr_read_markers, catalog_entity_mutations_http.
+- All nine PostgreSQL cleanups reported verified_stopped, exit 0.
+- Frontend: 56 client seams; both gates 125 transformed source checks;
+  31 device migration cases; 20 protected Nostr request cases passed.
+- Evidence was checked in under weebdex-platform/test-evidence/public-api/verify-7697bd9.
+
+Later foundation integrations, ordered:
+- frontend c89d890 -> b67943d: real HTTP client evidence, QA build profile/drivers.
+- 75767ca: reviewed fixture-only stdout logs for the 7697 verification.
+- frontend ac8ce7c -> c5a9187: backend binary hash/source/cleanup and call inventory.
+- lists 2ae4331b94ae8573005ffad558b33c481c677dcc -> 0e7424f: original public lists,
+  typed protocol-list UUID alias migration 91, bounded background projection.
+- cc81cc0c4594316be5e1732e8026aa9ffa4ac465: genuine BoundAccountWrite actor accessors.
+- list docs ef5417a2333a0fa6383b6b6e881ce5a75e3fbcae -> de26808.
+- b33e1e5b56828093bd56c87d1f14dd8a170042ed: write account lock directly FOR UPDATE,
+  binding lock FOR SHARE; read capability remains account FOR SHARE.
+- 6134ab2ef4d136ca5f6434d0e38b03842bb1ce84: cover extension leading-dot fix;
+  actual original/256/512 rendition fixture and dimensions/bytes checks.
+- c42eedef549a6a120971b4c751996cb25a0f0a33: UUID-resolved explicit native-forum
+  companion extension and real persisted-thread fixture/test.
+- 5475869: exact signed-library GET manga status single/all; shared original
+  final-head verifier; statuses are not inferred follows.
+- profiles e501e4cee74b5c0ab5bc5b54fec2a4e6fa802bcd -> d9cbf5f:
+  shared original public profile repository, native public username/roles/version.
+- profile docs 447d05750e5a33423717b1a9bd15b3cb43f5f339 -> d093ae8.
+
+Not yet integrated at filesystem replacement:
+- Reports 6e5f0dd99ff4efe5688ddda730e267cb36a1d2ee: migration 92; genuine
+  bound local report creation/list/reasons. Worker reported cargo check --tests,
+  19 public API units, signed report HTTP and native 25 community/report tests
+  passed. Independent review was incomplete; no confirmed blocker.
+- Frontend 6abba47: actual native-forum hydration/availability and true chapter
+  count fixes. Worker reported 62 seams, 129 gate composition targets and
+  semantic checks passed. Actual browser acceptance was ongoing.
+
+Current test outcome at replacement:
+- Session 37783 ran d093ae8. Compilation succeeded.
+- public_native_forum reached malformed-input checks and failed assertion at
+  tests/public_native_forum.rs:124: expected 400, actual 422.
+- Remaining queued suites did not run: public_catalogue, public_nostr_statuses,
+  public_nostr_lists, public_nostr_profiles, public_nostr_read_markers,
+  public_catalogue_writes, public_nostr_auth, public_identity, library units.
+- Do not claim the new forum/status/cover runtime tests passed.
+- The malformed-input test loop includes unsupported kind, native short ID,
+  101 resources and an unexpected top-level field. Inspect exact extractor
+  semantics and assert exact per-case status rather than broad weakening.
+
+Important recovery invariants:
+- Public API base /api/v1; unchanged MangaDex route suffixes. Existing /api is
+  explicitly native/legacy/module. Unknown API/media routes never become SPA200.
+- No MangaDex OAuth. Protected requests use genuine original Nostr exact
+  method/URL/raw body/service proof, original admission, shared replay storage.
+- Account-bound writes need explicit binding and active verified native account,
+  same-transaction proof/admission/binding/account recheck, current permissions.
+- No fake SessionPrincipal; BoundAccountWrite is privately constructed.
+- Preserve all native PK/FK/media filenames/historical migrations/signed IDs.
+  Public aliases are additive, immutable and namespace/kind scoped.
+- Author/artist identity is shared; relationship role differs.
+- Protocol publisher/list presentation UUIDs do not grant native auth/account binding.
+- Do not infer a follow flag from a saved library series or reading status.
+- Keep 679 supplied frontend canonical files byte-identical; overlays only.
+- No full parity claim. Pending/partial operation coverage remains explicit.
+
+Native forum companion contract:
+POST /api/v1/nostr/native-forum/contexts
+Request: {resources:[{kind:"manga"|"chapter"|"group",id:UUID}]}, max 100.
+Response: result ok; data [{kind,id:canonicalUUID,thread:realNativeThreadDTO|null}];
+unavailable [{kind,id}]; nostr identifies native_forum, /api, native thread IDs,
+public UUID catalogue IDs and readOnly true.
+Apply catalogue visibility and original live source gates; no thread invention
+or writes. Native forum is an explicit companion module, not MDex forum IDs.
+
+Review remaining for reports:
+Compare migration 91 and 92 public_backfill_resource_ids definitions, ensuring
+protocol-list readiness/backfill is not accidentally lost. This is a review
+question, not an established defect. Check private report/staff data and
+canonical reason/object/user UUID handling against the pinned upstream contract.
+
+Pinned official source:
+MangaDex API 5.13.1, OpenAPI 3.0.3, 113 operations, 80 paths, 102 schemas.
+https://gitlab.com/mangadex-pub/mangadex-api-docs/-/raw/60a3bb3c9f25675435a479c925d857015201739e/static/api.yaml
+195189 bytes; SHA256 004031ccdfc4b66727dd1f85d09b5300cf60235bbab2de6f6ea4816094bd6d33.
+Read inherited path-level parameters as well as operation-level parameters.

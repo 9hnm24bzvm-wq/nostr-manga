@@ -1,0 +1,75 @@
+Reconstructed source integration requirements (not executed):
+
+Identity/persistence:
+- Restore migration89 and postgres_identity.rs from its original owner first.
+- Preserve source custom-v8 SHA256(manga-compat-v1:kind:target) aliases exactly;
+  never silently substitute another version or alias scheme.
+- Immutable aliases are additive(kind,public_uuid,native_id,preferred,provenance).
+- Scoped persistent catalogue_namespace from migration73 prevents cross-instance
+  short-ID conflation. Seed compatibility IDs and source aliases, preserve first
+  canonical UUID. Public alias read paths do not write.
+- ProtocolPublisher target is protocol:<64lowerhex>, User kind, validated typed
+  provenance; distinct from real native account even when strings resemble.
+- ProtocolList target is protocol-list:<owner64hex>:<list32hex>; List kind and
+  typed principal. Preserve original per-owner 32hex signed ID and head/cursor
+  namespace. Migration91 is a separate worker deliverable.
+- Migration90 relation/recommendation composite identity encoding is NOT retained
+  exactly in this reconstruction. Do NOT invent a different encoding and claim
+  restored stable identity. Recover the original SQL/code or an original alias
+  table export before generating any replacement public edge UUIDs.
+
+Auth, exact interfaces from the clean checkpoint:
+- public_api::auth::admitted_request(&AppState,&axum::http::Uri OriginalUri,
+  &HeaderMap,method:&str,body:&[u8]) -> PublicApiResult<original AdmittedHttpCapability>
+- auth::bound_account_read(&tokio_postgres::Transaction,&capability)
+  -> PublicApiResult<BoundAccountRead>
+- auth::bound_account_write(same tx,same genuinecapability)
+  -> PublicApiResult<BoundAccountWrite> (crate-private)
+- bound_account common helper rechecks original AccountPermit version under
+  same transaction. Binding row FOR SHARE, active verified unrestricted native
+  user FOR UPDATE for write, FOR SHARE for read. Never SHARE then upgrade.
+- Native-account user row lock is shared with the native moderation rate/duplicate
+  serialization. Capability is not a SessionPrincipal and cannot be minted from
+  a publisher UUID, signed display metadata, native password or device state.
+- BoundAccountWrite genuine accessors: user_id, username, is_moderator,
+  has_perm, require_permission -> native ApiResult. Read capability cannot be
+  promoted to shared mutation actor. Original admission, service scope and replay
+  consumption remain the original module's responsibility.
+
+Transaction-owned editorial core (separate owner reconstruction):
+- sealed crate-private CatalogMutationActor five genuine methods above.
+- AuthorCreate::parse, AuthorUpdate::parse(actor,...), GroupCreate::parse,
+  GroupUpdate::parse; public-only parse_public_normalized constructors.
+- author_create/update/delete, group_create/update/delete take caller-owned
+  &tokio_postgres::Transaction, genuine actor, native ID when applicable and
+  validated input. No nested transaction, internal commit or fake session.
+- Preserve original native payload guards exactly. Public-only nullable bounded
+  metadata/biography, IRC/publishDelay, focusedLanguages, inactive support.
+- Public-only GroupCreate private assign_creator_leader flag inserts actual
+  actor ID/name as leader in same transaction. Native initial members stay empty.
+- Permission/invariant/version checks, row locks, audits and reference checks
+  remain in shared core. Group deletion and locked/leader rules stay authoritative.
+
+Queries and visibility:
+- Per operation, union path-level and operation-level upstream query definitions.
+- Filter all IDs, array filters, body IDs, relationship IDs, statistics/readmarker
+  IDs at adapter boundary; emit canonical UUIDs. Unknown and hidden overlap.
+- Batch alias queries. Resolve does not authorize public visibility.
+- Parent and child publication/deletion/cached protocol_source_visible and live
+  original helpers all apply consistently to catalogue, at-home and byte media.
+- Feed externalUrl/excludeExternalUrl path manga is already authoritative scope;
+  do not require redundant query manga=UUID for /manga/{UUID}/feed.
+- Do not mark an order semantically verified from HTTP acceptance alone.
+- Original publishAt==readableAt is intentional module behavior, documented.
+- Partial statistics: actual native library follows/counters; rating is not an
+  invented signed per-user model, comments=null absent numeric forum bridge.
+
+Frontend:
+- PUBLIC_MANGADEX_CATALOGUE=1 is opt-in, defaultoff.
+- Explicit DTO normalizers preserve raw UUID resource and relationships, nullable
+  chapter/volume, opaque media filenames and actual persisted dimensions.
+- No native catalogue fallback under enabledgate, no UUID sent to native writes.
+- Device migration uses atomic scoped batch /legacy/resolve and namespace,
+  preserves unresolved entries and untouched original snapshot recovery.
+- Native forum is explicit companion, never a false MDex numeric forum identity.
+- Supplied679 canonical frontend source files stay byte-identical, overlays only.
