@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "application_source_commit": "11706deb4dce8ae374e05e878e7f06f0ecb9bae4",
+  "application_source_tree": "ef3034fa06a80b8ff096c9a7e5df6ed40e00285d",
+  "harness_source_commit": "5b45e7069f8bd8660722593263b0c0eab8a98c32",
+  "harness_source_tree": "c141ddf8e3d110f6f3c38e22f9fe73586abe31b4",
+  "test_patch_commit": "c0efd3374eff29ba8b2c4074728722f002f7a9d1",
+  "frontend_and_native_pins": {
+    "index": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+    "manifest": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+    "normal": "276669a2c3dcb7827efce17cb627cb1b0e6cca74e6b662a2d2f43a88b8a18424",
+    "provisioner": "b0982ff2f08f325c60d502d206ef809340ae3d31450c9c180d7cc00cd439de12"
+  },
+  "sandbox_requested": true,
+  "full_suite_passed": false,
+  "private_delta_sha256": "ad5e0cad4840bae2f4af073a6c66051d8dfe245aa25de0962e2f243315de3eb6",
+  "launcher_sha256": "d432a38395305c3c160aff0469c49ec02a5b00f92cbddea97d055d3fa6a6abce",
+  "private_module_hash_roles": [
+    {
+      "role": "browser-acceptance.mjs",
+      "source_sha256": "34e487eceb3e6c56abdbb5faa6d74600c51e6bf935e782062160b3cf5c587989",
+      "private_sha256": "7175117613c9f41e9d0dfc287f76035bd7aba3f0f6991e84be64f11fc8ba07f4"
+    },
+    {
+      "role": "browser-signed-journeys.mjs",
+      "source_sha256": "f431a549981caadc1ddd0a7c739bce68f9494b3f060f5e598eaef53f4de7c5d5",
+      "private_sha256": "d38e231df6fc8c87df21b0768fd51312783d36c395173fdbd97c6277ddd498e4"
+    },
+    {
+      "role": "browser-ui11-16-journeys.mjs",
+      "source_sha256": "e626139a94836a1f42ab9e05d68b49a191b712e6c6027a227a11a2a547dffd16",
+      "private_sha256": "aa1e36223858d595386ceb61e473d9a44ed227ca35e81d3aa9eff892fba6aff0"
+    }
+  ]
+}

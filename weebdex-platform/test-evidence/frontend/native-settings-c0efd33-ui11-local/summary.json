@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "scope": "Focused UI11-only route disposal and device progress scope; prior failures retained; compact and signed phases outside this run; not full suite",
+  "actual_browser": true,
+  "mocked_services": false,
+  "status": "complete",
+  "selected_scope_passed": true,
+  "full_suite_passed": false,
+  "prior_failures_retained": true,
+  "phases": [
+    {
+      "phase": "startup",
+      "status": "passed",
+      "actual_steps": 19,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "ui11-device-navigation",
+      "status": "passed",
+      "actual_steps": 7,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "ui11-device-progress",
+      "status": "passed",
+      "actual_steps": 5,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    }
+  ],
+  "cleanup": {
+    "cleanup": {
+      "verified_stopped": true,
+      "ports_closed": true,
+      "keys_removed": true,
+      "remaining_owned_process_count": 0,
+      "final_teardown_clean": true,
+      "lifecycle_clean": true,
+      "expected_port_roles": [
+        "platform",
+        "mail",
+        "postgres",
+        "original"
+      ]
+    },
+    "outer_cleanup": {
+      "forced": false,
+      "verified_stopped": true,
+      "remaining_owned_process_count": 0
+    },
+    "supervisor_terminal": true,
+    "supervisor_exit_zero": true
+  },
+  "raw_receipt_hash_role": {
+    "role": "owned-ui11-only-result",
+    "sha256": "bf802ce4554c46b74fbc0f3009334584a9a3a72c36df9aaa08d681389bf395bd"
+  },
+  "raw_messages_exported": false
+}

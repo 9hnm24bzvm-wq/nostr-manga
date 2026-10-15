@@ -1,0 +1,11 @@
+# Fresh focused UI11 browser result, 2026-10-14
+
+Application source `11706deb4dce8ae374e05e878e7f06f0ecb9bae4`, tree `ef3034fa06a80b8ff096c9a7e5df6ed40e00285d`, and reviewed test-only harness `5b45e7069f8bd8660722593263b0c0eab8a98c32`, tree `c141ddf8e3d110f6f3c38e22f9fe73586abe31b4`, are bound separately. The private copies apply only documented relative-import/root rebasing. Original application archive, 425 built frontend artifacts, native binaries and ownership guard were unchanged. Chromium sandbox was enabled.
+
+Actual selected scope passed all 31 steps: startup 19, device navigation 7 and device progress 5, with zero page errors. Six held real IndexedDB final-read or committed-mode completions retain the exact newer route after outgoing manager disposal and permit one fresh saved-list gesture after reopening. Four timer/lock cases on reader pages 1 and 3 prove zero stale rows, revision writes and account POSTs, followed by durable fresh-reader progress and reload. All 37 fixed progress checkpoints passed. The navigation proof does not claim a committed preference was rolled back.
+
+The corrected test joins exact management DOM detachment with a bounded locator wait before the original zero-count assertion and before releasing held callbacks. Four helper negatives reject persistent DOM, wait failure and falsely successful waits. Earlier failed UI11 attempts remain in their separate evidence directories. This fresh pass supports the DOM-settlement harness correction; it does not erase the prior failures.
+
+Exact owned teardown passed: all four ports closed, synthetic keys removed, zero remaining processes, no forced cleanup, clean lifecycle, terminal supervisor exit zero. Independent verification checks source/native/frontend/hash roles, raw phase reprojection, closed observation schemas, fixed checkpoints and cleanup. Only sanitized projected evidence and hashes are copied; no URLs, raw errors/logs, signed data, credentials, private keys or runtime databases.
+
+This is a scoped private browser result, not a full 39-phase hosted acceptance or GitHub CI result. Separate native-tab visual/local-library, compact diagnostic and signed-social/context evidence is preserved alongside earlier failing attempts. The earlier intermittent compact sequencing failure remains unexplained despite the separate strict diagnostic pass.

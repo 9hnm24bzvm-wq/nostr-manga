@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "status": "independently-verified-actual-ui11-selected-scope-pass",
+  "application_source_commit": "11706deb4dce8ae374e05e878e7f06f0ecb9bae4",
+  "application_source_tree": "ef3034fa06a80b8ff096c9a7e5df6ed40e00285d",
+  "harness_source_commit": "5b45e7069f8bd8660722593263b0c0eab8a98c32",
+  "harness_source_tree": "c141ddf8e3d110f6f3c38e22f9fe73586abe31b4",
+  "private_delta_sha256": "ad5e0cad4840bae2f4af073a6c66051d8dfe245aa25de0962e2f243315de3eb6",
+  "app_frontend_native_pins": {
+    "index": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+    "manifest": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+    "normal": "276669a2c3dcb7827efce17cb627cb1b0e6cca74e6b662a2d2f43a88b8a18424",
+    "provisioner": "b0982ff2f08f325c60d502d206ef809340ae3d31450c9c180d7cc00cd439de12"
+  },
+  "actual_steps_passed": 31,
+  "page_errors": 0,
+  "phases": [
+    {
+      "phase": "startup",
+      "status": "passed",
+      "actual_steps": 19,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "ui11-device-navigation",
+      "status": "passed",
+      "actual_steps": 7,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "ui11-device-progress",
+      "status": "passed",
+      "actual_steps": 5,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    }
+  ],
+  "navigation_cases": {
+    "actual_native_read_or_committed_mode_gates": 6,
+    "outgoing_dom_disposal_joined": true,
+    "exact_newer_route_retained": true,
+    "fresh_reopened_saved_list_gesture_each": true,
+    "committed_preference_rollback_not_claimed": true
+  },
+  "progress_cases": {
+    "timer_and_lock_page1_page3": 4,
+    "old_rows_revision_account_writes_zero": true,
+    "new_lifetime_durable_and_reload_verified": true,
+    "fixed_checks_passed": 37
+  },
+  "raw_phase_reprojection_and_nested_schemas_verified": true,
+  "sanitized_numeric_boolean_observation_schemas_verified": true,
+  "all_four_ports_closed": true,
+  "synthetic_keys_removed": true,
+  "no_surviving_owned_processes": true,
+  "no_forced_cleanup": true,
+  "lifecycle_clean": true,
+  "supervisor_exit_zero": true,
+  "sanitized_scope_scan_clean": true,
+  "full_suite_passed": false,
+  "prior_failed_scopes_retained": true,
+  "limits": [
+    "Application117 and reviewed5b45 test-only private rebasing are bound separately; no full5b45 archive rebuild claimed.",
+    "This fresh scope establishes startup19/navigation7/progress5 only, not the full39-phase hosted suite.",
+    "The earlier compact intermittent failure remains retained and its cause unresolved despite a separate strict compact diagnostic pass.",
+    "Bits UI dialogue behavior was exercised by actual browser; screenshots/dialog pixel parity not newly claimed by this UI11 scope."
+  ],
+  "files": [
+    {
+      "name": "bindings.json",
+      "bytes": 1738,
+      "sha256": "2471f94fe4ecb202b9dfd8ff11d2e697f4097610d357dd1920643c7344d59dc9"
+    },
+    {
+      "name": "summary.json",
+      "bytes": 1889,
+      "sha256": "aa40b9d2450533ec60f8bf51af0a7538f4a9ab515e5a2d69e4346cb51c024fb9"
+    },
+    {
+      "name": "ui11-device-navigation.json",
+      "bytes": 4027,
+      "sha256": "843f78babb823795a9e502a1142ac69c49e5f37b16be122b18181a53785889d4"
+    },
+    {
+      "name": "ui11-device-progress.json",
+      "bytes": 6664,
+      "sha256": "e27e6859a6f3d7b9fcfdc1a85cda3c524aa55e90a4a3364b8ee28a39c4fe8ba5"
+    }
+  ]
+}

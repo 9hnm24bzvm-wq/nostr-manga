@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "phase": "ui11-device-navigation",
+  "actual_browser": true,
+  "passed": true,
+  "steps": [
+    {
+      "index": 0,
+      "status": "passed",
+      "observation": {
+        "real_ui_created_list": true,
+        "exact_list_route": true,
+        "selected_device": true,
+        "management_settings_only": true
+      }
+    },
+    {
+      "index": 1,
+      "status": "passed",
+      "observation": {
+        "gate": "real IndexedDB readonly final acknowledgement",
+        "exact_newer_route_retained": true,
+        "same_document": true,
+        "disposed_manager": true,
+        "reader_returned": false,
+        "native_tool_dialog": true,
+        "lifecycle_evidence": "dismissal_plus_navigation",
+        "committed_preference_not_claimed_rolled_back": true,
+        "reopened_saved_list_gestures": 1,
+        "reopened_exact_list_route": true,
+        "reopened_selected_device": true
+      }
+    },
+    {
+      "index": 2,
+      "status": "passed",
+      "observation": {
+        "gate": "real IndexedDB readonly final acknowledgement",
+        "exact_newer_route_retained": true,
+        "same_document": true,
+        "disposed_manager": true,
+        "reader_returned": false,
+        "native_tool_dialog": true,
+        "lifecycle_evidence": "dismissal_plus_navigation",
+        "committed_preference_not_claimed_rolled_back": true,
+        "reopened_saved_list_gestures": 1,
+        "reopened_exact_list_route": true,
+        "reopened_selected_device": true
+      }
+    },
+    {
+      "index": 3,
+      "status": "passed",
+      "observation": {
+        "gate": "real IndexedDB readonly final acknowledgement",
+        "exact_newer_route_retained": true,
+        "same_document": true,
+        "disposed_manager": true,
+        "reader_returned": true,
+        "native_tool_dialog": true,
+        "lifecycle_evidence": "route_back_disposal",
+        "committed_preference_not_claimed_rolled_back": true,
+        "reopened_saved_list_gestures": 1,
+        "reopened_exact_list_route": true,
+        "reopened_selected_device": true
+      }
+    },
+    {
+      "index": 4,
+      "status": "passed",
+      "observation": {
+        "gate": "real committed mode transaction completion",
+        "exact_newer_route_retained": true,
+        "same_document": true,
+        "disposed_manager": true,
+        "reader_returned": false,
+        "native_tool_dialog": true,
+        "lifecycle_evidence": "dismissal_plus_navigation",
+        "committed_preference_not_claimed_rolled_back": true,
+        "reopened_saved_list_gestures": 1,
+        "reopened_exact_list_route": true,
+        "reopened_selected_device": true
+      }
+    },
+    {
+      "index": 5,
+      "status": "passed",
+      "observation": {
+        "gate": "real committed mode transaction completion",
+        "exact_newer_route_retained": true,
+        "same_document": true,
+        "disposed_manager": true,
+        "reader_returned": false,
+        "native_tool_dialog": true,
+        "lifecycle_evidence": "dismissal_plus_navigation",
+        "committed_preference_not_claimed_rolled_back": true,
+        "reopened_saved_list_gestures": 1,
+        "reopened_exact_list_route": true,
+        "reopened_selected_device": true
+      }
+    },
+    {
+      "index": 6,
+      "status": "passed",
+      "observation": {
+        "gate": "real committed mode transaction completion",
+        "exact_newer_route_retained": true,
+        "same_document": true,
+        "disposed_manager": true,
+        "reader_returned": true,
+        "native_tool_dialog": true,
+        "lifecycle_evidence": "route_back_disposal",
+        "committed_preference_not_claimed_rolled_back": true,
+        "reopened_saved_list_gestures": 1,
+        "reopened_exact_list_route": true,
+        "reopened_selected_device": true
+      }
+    }
+  ],
+  "fixed_checks": [],
+  "raw_receipt_hash_role": {
+    "role": "ui11-device-navigation-acceptance",
+    "sha256": "ef7c0cdebb335ca8587be1695765c15c3ae45d884cf7a9ffe5b3f39899a56cab"
+  },
+  "raw_messages_exported": false
+}
