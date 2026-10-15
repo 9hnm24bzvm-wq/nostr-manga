@@ -1,0 +1,4 @@
+RECONSTRUCTED-UNVERIFIED
+Recovered from retained implementation context after executor reset.
+Historical commit objects and previous tests are not present or reproduced here.
+Requires integration into recovered base, compilation, migration and test reruns.

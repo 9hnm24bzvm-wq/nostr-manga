@@ -1,0 +1,44 @@
+{
+  "status": "RECONSTRUCTED-UNVERIFIED",
+  "baseline": "82290c732cc19b393b128fec0879885937f41054",
+  "historical_lost_refs": [
+    "3a18dcb",
+    "b32b922",
+    "14eb2e1"
+  ],
+  "claim_old_hash_match": false,
+  "fresh_tests_run": false,
+  "source_completeness": "Complete core, six native controller delegations, catalog module registration, four focused unit tests, isolated actual-account creator/rollback test, complete native real-loopback HTTP regression.",
+  "baseline_files": [
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/mutations.rs",
+      "sha256": "53e764a999f7fe00b85c122145f1a727588b44be92a90ff09630eecf04ca53d9"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/mod.rs",
+      "sha256": "f0a8aad76a58896eb6e8dec9d88d972a49933329de8de448e55844842627c8e6"
+    }
+  ],
+  "files": [
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/entity_mutations.rs",
+      "bytes": 28691,
+      "sha256": "7228309cf3e8ef58f73bf9e84ec1f2a20f4ba49bd400729637f2578edfff6a37"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/mod.rs",
+      "bytes": 2899,
+      "sha256": "518bdf6d915f907dd016557843649e3ead89ba59a67f5e7aee0f60dcfde870e3"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/mutations.rs",
+      "bytes": 27921,
+      "sha256": "0289bf0c8cabc1a05d4bffe4f4aed006deefa1ed13c172181956720f30e723e9"
+    },
+    {
+      "path": "weebdex-platform/backend/tests/catalog_entity_mutations_http.rs",
+      "bytes": 12312,
+      "sha256": "c2b7d7322bf97ea1ebd70742920f369c3eeece07840d27ae5c8952540002216f"
+    }
+  ]
+}

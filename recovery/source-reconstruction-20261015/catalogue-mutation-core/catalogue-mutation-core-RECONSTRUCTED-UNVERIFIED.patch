@@ -1,0 +1,1006 @@
+--- /dev/null
++++ b/weebdex-platform/backend/src/domains/catalog/entity_mutations.rs
+@@ -0,0 +1,559 @@
++//! Transaction-owned catalogue mutations shared by authenticated native and
++//! explicitly account-bound public adapters. This module never authenticates,
++//! opens a transaction, commits one, or turns a read capability into write authority.
++use super::{repository::{audit, create_thread}, validation as v};
++use crate::{domains::auth::SessionPrincipal, error::{ApiError, ApiResult}};
++use serde_json::Value;
++use tokio_postgres::Transaction;
++
++// Only genuine authenticated principals and the public adapter's privately
++// constructed, transaction-rechecked write capability implement this marker.
++pub(crate) mod sealed { pub trait Sealed {} }
++pub(crate) trait CatalogMutationActor: sealed::Sealed {
++    fn user_id(&self) -> &str;
++    fn username(&self) -> &str;
++    fn is_moderator(&self) -> bool;
++    fn has_perm(&self, permission: &str) -> bool;
++    fn require_permission(&self, permission: &str) -> ApiResult<()> {
++        if self.has_perm(permission) { Ok(()) }
++        else { Err(ApiError::forbidden("This account cannot perform that action")) }
++    }
++}
++impl sealed::Sealed for SessionPrincipal {}
++impl CatalogMutationActor for SessionPrincipal {
++    fn user_id(&self) -> &str { &self.user_id }
++    fn username(&self) -> &str { &self.username }
++    fn is_moderator(&self) -> bool { SessionPrincipal::is_moderator(self) }
++    fn has_perm(&self, permission: &str) -> bool { SessionPrincipal::has_perm(self, permission) }
++    fn require_permission(&self, permission: &str) -> ApiResult<()> {
++        SessionPrincipal::require_permission(self, permission)
++    }
++}
++pub(crate) const AUTHOR_FIELDS: &[&str] = &[
++    "name",
++    "description",
++    "twitter",
++    "pixiv",
++    "fanbox",
++    "fantia",
++    "skeb",
++    "youtube",
++    "website",
++    "locked",
++    "version",
++];
++pub(crate) const AUTHOR_META: &[&str] = &[
++    "description",
++    "twitter",
++    "pixiv",
++    "fanbox",
++    "fantia",
++    "skeb",
++    "youtube",
++    "website",
++];
++pub(crate) const GROUP_FIELDS: &[&str] = &[
++    "name",
++    "description",
++    "contact_email",
++    "discord",
++    "mangaupdates",
++    "twitter",
++    "website",
++    "locked",
++    "inactive",
++    "focused_languages",
++    "leader",
++    "officers",
++    "members",
++    "version",
++];
++pub(crate) const GROUP_META: &[&str] = &[
++    "description",
++    "contact_email",
++    "discord",
++    "mangaupdates",
++    "twitter",
++    "website",
++    "focused_languages",
++];
++
++pub(crate) const AUTHOR_CREATE_FIELDS: &[&str] = &[
++    "name", "description", "twitter", "pixiv", "fanbox", "fantia", "skeb", "youtube", "website",
++];
++// Additional normalized MDex metadata is accepted only by the explicitly
++// public constructors. Native controllers retain their original field contract.
++pub(crate) const AUTHOR_PUBLIC_METADATA: &[&str] = &[
++    "biography", "melonBook", "booth", "nicoVideo", "tumblr", "weibo", "naver",
++];
++pub(crate) const GROUP_PUBLIC_METADATA: &[&str] = &["ircServer", "ircChannel", "publishDelay"];
++fn public_allowed(payload: &Value, native: &[&str], additional: &[&str]) -> ApiResult<()> {
++    for key in v::object(payload)?.keys() {
++        if !native.contains(&key.as_str()) && !additional.contains(&key.as_str()) {
++            return Err(ApiError::bad_request(format!("Unknown field: {key}")));
++        }
++    }
++    Ok(())
++}
++/// Nullable metadata is preserved as JSON null. URL/host/duration semantics are
++/// checked by the MDex adapter; this boundary validates every stored value and
++/// bounds its size independently, without altering the legacy native validator.
++fn public_metadata(payload: &Value, native: &[&str], additional: &[&str]) -> ApiResult<Value> {
++    let mut out = serde_json::Map::new();
++    for key in native.iter().chain(additional) {
++        let Some(value) = payload.get(*key) else { continue; };
++        if value.is_null() { out.insert((*key).into(), Value::Null); continue; }
++        if *key == "biography" {
++            let localized = value.as_object().filter(|m| m.len() <= 100)
++                .ok_or_else(|| ApiError::bad_request("Invalid biography"))?;
++            let mut total = 0;
++            for (language, text) in localized {
++                let text = text.as_str().ok_or_else(|| ApiError::bad_request("Invalid biography"))?;
++                total += text.chars().count();
++                if language.is_empty() || language.len() > 100 || language.contains('\0')
++                    || text.contains('\0') || total > 50_000 {
++                    return Err(ApiError::bad_request("Invalid biography"));
++                }
++            }
++        } else if *key == "focused_languages" {
++            let languages = value.as_array().filter(|a| a.len() <= 100)
++                .ok_or_else(|| ApiError::bad_request("Invalid focused languages"))?;
++            for language in languages {
++                v::language(language.as_str().ok_or_else(|| ApiError::bad_request("Invalid language"))?)?;
++            }
++        } else {
++            v::string(payload, key, if *key == "description" { 50_000 } else { 2048 }, false)?;
++        }
++        out.insert((*key).into(), value.clone());
++    }
++    Ok(Value::Object(out))
++}
++/// Fields are private so adapters cannot bypass shared validation.
++pub(crate) struct AuthorCreate { name: String, metadata: Value }
++impl AuthorCreate {
++    pub(crate) fn parse(payload: &Value) -> ApiResult<Self> { Self::parse_impl(payload, false) }
++    pub(crate) fn parse_public_normalized(payload: &Value) -> ApiResult<Self> { Self::parse_impl(payload, true) }
++    fn parse_impl(payload: &Value, public: bool) -> ApiResult<Self> {
++        if public { public_allowed(payload, AUTHOR_CREATE_FIELDS, AUTHOR_PUBLIC_METADATA)?; }
++        else { v::allowed(payload, AUTHOR_CREATE_FIELDS)?; }
++        Ok(Self {
++            name: v::string(payload, "name", 200, true)?.unwrap(),
++            metadata: if public { public_metadata(payload, AUTHOR_META, AUTHOR_PUBLIC_METADATA)? }
++                else { v::metadata(payload, AUTHOR_META)? },
++        })
++    }
++}
++pub(crate) struct AuthorUpdate { version: i32, name: Option<String>, locked: Option<bool>, metadata: Value }
++impl AuthorUpdate {
++    pub(crate) fn parse(actor: &impl CatalogMutationActor, payload: &Value) -> ApiResult<Self> {
++        Self::parse_impl(actor, payload, false)
++    }
++    pub(crate) fn parse_public_normalized(actor: &impl CatalogMutationActor, payload: &Value) -> ApiResult<Self> {
++        Self::parse_impl(actor, payload, true)
++    }
++    fn parse_impl(actor: &impl CatalogMutationActor, payload: &Value, public: bool) -> ApiResult<Self> {
++        if public { public_allowed(payload, AUTHOR_FIELDS, AUTHOR_PUBLIC_METADATA)?; }
++        else { v::allowed(payload, AUTHOR_FIELDS)?; }
++        let version = v::version(payload)?;
++        let name = v::string(payload, "name", 200, false)?;
++        if name.as_deref() == Some("") { return Err(ApiError::bad_request("Name must not be empty")); }
++        let locked = v::boolean(payload, "locked")?;
++        if locked.is_some() { staff_permission(actor, "author.lock.update")?; }
++        let metadata = if public { public_metadata(payload, AUTHOR_META, AUTHOR_PUBLIC_METADATA)? }
++            else { v::metadata(payload, AUTHOR_META)? };
++        Ok(Self { version, name, locked, metadata })
++    }
++}
++pub(crate) const GROUP_CREATE_FIELDS: &[&str] = &[
++    "name", "description", "contact_email", "discord", "mangaupdates", "twitter", "website", "focused_languages",
++];
++pub(crate) struct GroupCreate { name: String, metadata: Value, inactive: bool, assign_creator_leader: bool }
++impl GroupCreate {
++    pub(crate) fn parse(payload: &Value) -> ApiResult<Self> { Self::parse_impl(payload, false) }
++    pub(crate) fn parse_public_normalized(payload: &Value) -> ApiResult<Self> { Self::parse_impl(payload, true) }
++    fn parse_impl(payload: &Value, public: bool) -> ApiResult<Self> {
++        if public { public_allowed(payload, GROUP_CREATE_FIELDS, &["inactive", "ircServer", "ircChannel", "publishDelay"])?; }
++        else { v::allowed(payload, GROUP_CREATE_FIELDS)?; }
++        Ok(Self {
++            name: v::string(payload, "name", 200, true)?.unwrap(),
++            metadata: if public { public_metadata(payload, GROUP_META, GROUP_PUBLIC_METADATA)? }
++                else { v::metadata(payload, GROUP_META)? },
++            inactive: if public { v::boolean(payload, "inactive")?.unwrap_or(false) } else { false },
++            // This is local editorial account membership, never a protocol
++            // group key or a capability inferred from a Nostr publisher alias.
++            assign_creator_leader: public,
++        })
++    }
++}
++pub(crate) struct GroupUpdate {
++    version: i32, name: Option<String>, locked: Option<bool>, inactive: Option<bool>, metadata: Value,
++    leader: Option<String>, officers: Option<Vec<String>>, members: Option<Vec<String>>,
++}
++impl GroupUpdate {
++    pub(crate) fn parse(payload: &Value) -> ApiResult<Self> { Self::parse_impl(payload, false) }
++    pub(crate) fn parse_public_normalized(payload: &Value) -> ApiResult<Self> { Self::parse_impl(payload, true) }
++    fn parse_impl(payload: &Value, public: bool) -> ApiResult<Self> {
++        if public { public_allowed(payload, GROUP_FIELDS, GROUP_PUBLIC_METADATA)?; }
++        else { v::allowed(payload, GROUP_FIELDS)?; }
++        let version = v::version(payload)?;
++        let name = v::string(payload, "name", 200, false)?;
++        if name.as_deref() == Some("") { return Err(ApiError::bad_request("Name must not be empty")); }
++        let locked = v::boolean(payload, "locked")?;
++        let inactive = v::boolean(payload, "inactive")?;
++        let metadata = if public { public_metadata(payload, GROUP_META, GROUP_PUBLIC_METADATA)? }
++            else { v::metadata(payload, GROUP_META)? };
++        let leader = v::string(payload, "leader", 128, false)?;
++        if let Some(l) = &leader { v::id(l)?; }
++        let officers = v::ids(payload, "officers", false)?;
++        let members = v::ids(payload, "members", false)?;
++        Ok(Self { version, name, locked, inactive, metadata, leader, officers, members })
++    }
++}
++pub(crate) async fn author_create(
++    tx: &Transaction<'_>,
++    actor: &impl CatalogMutationActor,
++    input: AuthorCreate,
++) -> ApiResult<Value> {
++    actor.require_permission("author.create")?;
++    let AuthorCreate { name, metadata } = input;
++    let id = v::new_id("author");
++    tx.execute(
++        "INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name,metadata) VALUES($1,$2,$3,$4,$5)",
++        &[&id, &actor.user_id(), &actor.username(), &name, &metadata],
++    )
++    .await?;
++    audit(tx, &actor.user_id(), "author", &id, "create", None, Some(1)).await?;
++    let data = tx
++        .query_one("SELECT platform.catalog_author_json($1)", &[&id])
++        .await?
++        .get(0);
++    Ok(data)
++}
++
++pub(crate) async fn author_update(
++    tx: &Transaction<'_>,
++    actor: &impl CatalogMutationActor,
++    id: &str,
++    input: AuthorUpdate,
++) -> ApiResult<Value> {
++    actor.require_permission("author.update")?;
++    v::id(id)?;
++    let AuthorUpdate { version, name, locked, metadata } = input;
++    if locked.is_some() { staff_permission(actor, "author.lock.update")?; }
++    let row=tx.query_opt("SELECT locked,version FROM platform.catalog_authors WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Author not found"))?;
++    if row.get::<_, bool>(0) && !actor.is_moderator() {
++        return Err(ApiError::forbidden("Author is locked"));
++    }
++    check_version(row.get(1), version)?;
++    tx.execute("UPDATE platform.catalog_authors SET name=COALESCE($2,name),metadata=metadata || $3,locked=COALESCE($4,locked),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&name,&metadata,&locked]).await?;
++    audit(
++        tx,
++        &actor.user_id(),
++        "author",
++        &id,
++        "update",
++        Some(version),
++        Some(version + 1),
++    )
++    .await?;
++    let data = tx
++        .query_one("SELECT platform.catalog_author_json($1)", &[&id])
++        .await?
++        .get(0);
++    Ok(data)
++}
++
++pub(crate) async fn author_delete(
++    tx: &Transaction<'_>,
++    actor: &impl CatalogMutationActor,
++    id: &str,
++) -> ApiResult<()> {
++    staff_permission(actor, "author.delete")?;
++    v::id(id)?;
++    let used:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_manga_creators mc JOIN platform.catalog_manga m ON m.id=mc.manga_id WHERE mc.author_id=$1 AND m.deleted_at IS NULL)",&[&id]).await?.get(0);
++    if used {
++        return Err(ApiError::conflict("Author is still referenced by a manga"));
++    }
++    let n=tx.execute("UPDATE platform.catalog_authors SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?;
++    if n == 0 {
++        return Err(ApiError::not_found("Author not found"));
++    }
++    audit(tx, &actor.user_id(), "author", &id, "remove", None, None).await?;
++    Ok(())
++}
++
++pub(crate) async fn group_create(
++    tx: &Transaction<'_>,
++    actor: &impl CatalogMutationActor,
++    input: GroupCreate,
++) -> ApiResult<Value> {
++    actor.require_permission("scanlation_group.create")?;
++    let GroupCreate { name, metadata, inactive, assign_creator_leader } = input;
++    let id = v::new_id("group");
++    tx.execute("INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name,metadata,inactive) VALUES($1,$2,$3,$4,$5,$6)",&[&id,&actor.user_id(),&actor.username(),&name,&metadata,&inactive]).await?;
++    if assign_creator_leader {
++        tx.execute(
++            "INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES($1,$2,$3,TRUE,FALSE)",
++            &[&id, &actor.user_id(), &actor.username()],
++        ).await?;
++    }
++    create_thread(tx, "group", &id, &actor.user_id(), &actor.username(), &name).await?;
++    audit(tx, &actor.user_id(), "group", &id, "create", None, Some(1)).await?;
++    let data = tx
++        .query_one("SELECT platform.catalog_group_json($1)", &[&id])
++        .await?
++        .get(0);
++    Ok(data)
++}
++
++pub(crate) async fn group_update(
++    tx: &Transaction<'_>,
++    actor: &impl CatalogMutationActor,
++    id: &str,
++    input: GroupUpdate,
++) -> ApiResult<Value> {
++    v::id(id)?;
++    let GroupUpdate { version, name, locked, inactive, metadata, leader, officers, members } = input;
++    let row=tx.query_opt("SELECT locked,version FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Group not found"))?;
++    let staff = actor.is_moderator() && actor.has_perm("scanlation_group.update");
++    if !staff {
++        actor.require_permission("self.scanlation_group.update")?;
++        let owns:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_group_members WHERE group_id=$1 AND user_id=$2 AND is_leader)",&[&id,&actor.user_id()]).await?.get(0);
++        if !owns || row.get::<_, bool>(0) {
++            return Err(ApiError::forbidden("Group leader permission required"));
++        }
++        if name.is_some() || locked.is_some() {
++            return Err(ApiError::forbidden("Only staff may rename or lock groups"));
++        }
++    }
++    check_version(row.get(1), version)?;
++    if leader.is_some() || officers.is_some() || members.is_some() {
++        let current=tx.query("SELECT user_id,is_leader,is_officer FROM platform.catalog_group_members WHERE group_id=$1",&[&id]).await?;
++        let leader = leader
++            .or_else(|| {
++                current
++                    .iter()
++                    .find(|r| r.get::<_, bool>(1))
++                    .map(|r| r.get::<_, String>(0))
++            })
++            .ok_or_else(|| ApiError::bad_request("Group must have a leader"))?;
++        let officers = officers.unwrap_or_else(|| {
++            current
++                .iter()
++                .filter(|r| r.get::<_, bool>(2))
++                .map(|r| r.get::<_, String>(0))
++                .collect()
++        });
++        let members =
++            members.unwrap_or_else(|| current.iter().map(|r| r.get::<_, String>(0)).collect());
++        let mut all: std::collections::BTreeSet<String> = members.into_iter().collect();
++        all.insert(leader.clone());
++        all.extend(officers.iter().cloned());
++        let ids: Vec<String> = all.into_iter().collect();
++        let users = tx
++            .query(
++                "SELECT id,username FROM platform.users WHERE id=ANY($1) AND NOT disabled",
++                &[&ids],
++            )
++            .await?;
++        if users.len() != ids.len() {
++            return Err(ApiError::bad_request("Unknown group member"));
++        }
++        tx.execute(
++            "DELETE FROM platform.catalog_group_members WHERE group_id=$1",
++            &[&id],
++        )
++        .await?;
++        for user in users {
++            let uid: String = user.get(0);
++            let uname: String = user.get(1);
++            tx.execute("INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES($1,$2,$3,$4,$5)",&[&id,&uid,&uname,&(uid==leader),&officers.contains(&uid)]).await?;
++        }
++    }
++    tx.execute("UPDATE platform.catalog_groups SET name=COALESCE($2,name),metadata=metadata || $3,locked=COALESCE($4,locked),inactive=COALESCE($5,inactive),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&name,&metadata,&locked,&inactive]).await?;
++    audit(
++        tx,
++        &actor.user_id(),
++        "group",
++        &id,
++        "update",
++        Some(version),
++        Some(version + 1),
++    )
++    .await?;
++    let data = tx
++        .query_one("SELECT platform.catalog_group_json($1)", &[&id])
++        .await?
++        .get(0);
++    Ok(data)
++}
++
++pub(crate) async fn group_delete(
++    tx: &Transaction<'_>,
++    actor: &impl CatalogMutationActor,
++    id: &str,
++) -> ApiResult<()> {
++    staff_permission(actor, "scanlation_group.delete")?;
++    v::id(id)?;
++    let n=tx.execute("UPDATE platform.catalog_groups SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?;
++    if n == 0 {
++        return Err(ApiError::not_found("Group not found"));
++    }
++    audit(tx, &actor.user_id(), "group", &id, "remove", None, None).await?;
++    Ok(())
++}
++
++fn staff_permission(actor: &impl CatalogMutationActor, permission: &str) -> ApiResult<()> {
++    if !actor.is_moderator() { return Err(ApiError::forbidden("Staff permission required")); }
++    actor.require_permission(permission)
++}
++fn check_version(actual: i32, expected: i32) -> ApiResult<()> {
++    if actual == expected { Ok(()) } else { Err(ApiError::conflict("Entity changed; reload before editing")) }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use serde_json::json;
++    fn principal(roles: &[&str], permissions: &[&str]) -> SessionPrincipal {
++        SessionPrincipal {
++            user_id: "CatalogActor".into(), username: "Catalog actor".into(),
++            email: "catalog-actor@fixture.invalid".into(), verified: true,
++            roles: roles.iter().map(|s| (*s).into()).collect(),
++            permissions: permissions.iter().map(|s| (*s).into()).collect(),
++            session_id: "synthetic-unit-session".into(), is_api_client: false,
++            authenticated_age_seconds: 0, recovery_session: false,
++        }
++    }
++    #[test]
++    fn create_inputs_validate_every_supported_field() {
++        let author = AuthorCreate::parse(&json!({"name":"  漫画作者  ","description":"bio","fanbox":"https://fixture.invalid/author"})).unwrap();
++        assert_eq!(author.name,"漫画作者");
++        assert_eq!(author.metadata["description"],"bio");
++        for bad in [json!({"name":" "}),json!({"name":"valid","ignored":true}),json!({"name":"valid","twitter":42}),json!({"name":"valid","version":1})] {
++            assert!(AuthorCreate::parse(&bad).is_err());
++        }
++        let group = GroupCreate::parse(&json!({"name":"Group","focused_languages":["en","zh-hk"]})).unwrap();
++        assert_eq!(group.metadata["focused_languages"],json!(["en","zh-hk"]));
++        assert!(GroupCreate::parse(&json!({"name":"Group","focused_languages":["unsupported"]})).is_err());
++    }
++    #[test]
++    fn public_normalized_metadata_is_typed_nullable_and_native_contract_stays_closed() {
++        let author_payload = json!({"name":"Author","biography":{"en":"A biography","ja":"漫画家"},"fanbox":null,"melonBook":"https://fixture.invalid/author","naver":null});
++        let author = AuthorCreate::parse_public_normalized(&author_payload).unwrap();
++        assert_eq!(author.metadata["biography"]["ja"],"漫画家");
++        assert!(author.metadata["fanbox"].is_null());
++        assert!(AuthorCreate::parse(&author_payload).is_err());
++        assert!(AuthorCreate::parse_public_normalized(&json!({"name":"Author","biography":{"en":false}})).is_err());
++        assert!(AuthorCreate::parse_public_normalized(&json!({"name":"Author","biography":{"en":"a".repeat(50_001)}})).is_err());
++        assert!(AuthorCreate::parse_public_normalized(&json!({"name":"Author","ignored":null})).is_err());
++        let actor = principal(&["user"],&["author.update"]);
++        let update = json!({"version":1,"biography":null,"twitter":null});
++        assert!(AuthorUpdate::parse_public_normalized(&actor,&update).is_ok());
++        assert!(AuthorUpdate::parse(&actor,&update).is_err());
++        let group_payload = json!({"name":"Group","inactive":true,"ircServer":"irc.fixture.invalid","publishDelay":null});
++        let group = GroupCreate::parse_public_normalized(&group_payload).unwrap();
++        assert!(group.inactive);
++        assert!(group.assign_creator_leader);
++        assert!(!GroupCreate::parse(&json!({"name":"Native group"})).unwrap().assign_creator_leader);
++        assert_eq!(group.metadata["ircServer"],"irc.fixture.invalid");
++        assert!(group.metadata["publishDelay"].is_null());
++        assert!(GroupCreate::parse(&group_payload).is_err());
++        assert!(GroupCreate::parse_public_normalized(&json!({"name":"Group","inactive":null})).is_err());
++        let update = json!({"version":1,"focused_languages":null,"publishDelay":"P1D","ircChannel":null});
++        let group = GroupUpdate::parse_public_normalized(&update).unwrap();
++        assert!(group.metadata["focused_languages"].is_null());
++        assert_eq!(group.metadata["publishDelay"],"P1D");
++        assert!(GroupUpdate::parse(&update).is_err());
++        assert!(GroupUpdate::parse_public_normalized(&json!({"version":1,"focused_languages":["unsupported"]})).is_err());
++    }
++    #[test]
++    fn author_lock_requires_both_real_staff_role_and_permission() {
++        let input = json!({"version":1,"locked":false});
++        let user = principal(&["user"],&["author.update","author.lock.update"]);
++        assert_eq!(AuthorUpdate::parse(&user,&input).err().unwrap().message,"Staff permission required");
++        let mut staff = principal(&["moderator"],&["author.update","author.lock.update"]);
++        assert!(AuthorUpdate::parse(&staff,&input).is_ok());
++        staff.permissions.retain(|p| p != "author.lock.update");
++        assert!(AuthorUpdate::parse(&staff,&input).is_err());
++        staff.permissions.push("author.lock.update".into()); staff.is_api_client = true;
++        assert!(AuthorUpdate::parse(&staff,&input).is_err());
++        staff.is_api_client = false; staff.recovery_session = true;
++        assert!(AuthorUpdate::parse(&staff,&input).is_err());
++    }
++    #[test]
++    fn update_inputs_keep_version_metadata_and_membership_validation() {
++        let user = principal(&["user"],&["author.update"]);
++        for bad in [json!({"name":"next"}),json!({"version":0}),json!({"version":1,"name":" "}),json!({"version":1,"description":false})] {
++            assert!(AuthorUpdate::parse(&user,&bad).is_err());
++        }
++        let input = GroupUpdate::parse(&json!({"version":7,"leader":"MemberA","officers":["MemberB","MemberB"],"members":["MemberA","MemberB"],"inactive":true})).unwrap();
++        assert_eq!(input.version,7);
++        assert_eq!(input.officers,Some(vec!["MemberB".into()]));
++        assert_eq!(input.inactive,Some(true));
++        for bad in [json!({"version":1,"leader":"bad/id"}),json!({"version":1,"members":[null]}),json!({"version":1,"locked":1}),json!({"version":1,"ignored":true})] {
++            assert!(GroupUpdate::parse(&bad).is_err());
++        }
++        assert!(check_version(7,7).is_ok());
++        assert_eq!(check_version(7,6).unwrap_err().message,"Entity changed; reload before editing");
++    }
++    #[tokio::test]
++    #[ignore = "Requires the explicitly isolated PostgreSQL runner"]
++    async fn public_group_creator_is_real_account_and_core_never_commits() {
++        use crate::{Config,domains,domains::auth::require_principal,state::AppState};
++        use axum::http::HeaderMap;
++        use sha2::{Digest,Sha256};
++        let dsn = std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL")
++            .expect("Use scripts/run-auth-tests.sh with the owned disposable fixture");
++        let config: tokio_postgres::Config = dsn.parse().unwrap();
++        assert_eq!(config.get_dbname(),Some("weebdex_platform_test"));
++        assert!(!config.get_hosts().is_empty());
++        for host in config.get_hosts() {
++            assert!(matches!(host,tokio_postgres::config::Host::Tcp(host) if host == "127.0.0.1"));
++        }
++        assert!(std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap().contains("weebdex-platform/test-runtime/"));
++        let state = AppState::connect(Config {
++            public_origin:"https://mutation-core.fixture.invalid".into(),database_plaintext_local:true,
++            registration_enabled:false,..Config::default()
++        },dsn).await.unwrap();
++        state.db.migrate(domains::MIGRATIONS).await.unwrap();
++        let db = state.db.client().await.unwrap();
++        db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,roles,permissions) VALUES('CoreGroupActor','Actual account name','core-group-actor@fixture.invalid','synthetic-no-password',TRUE,'[\"user\"]','[\"scanlation_group.create\",\"self.scanlation_group.update\"]')",&[]).await.unwrap();
++        let digest = Sha256::digest(b"core-group-fixture-session").to_vec();
++        db.execute("INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES('CoreGroupSession','CoreGroupActor',$1,clock_timestamp()+interval '1 hour')",&[&digest]).await.unwrap();
++        drop(db);
++        let mut headers = HeaderMap::new();
++        headers.insert("cookie","weebdex_session=core-group-fixture-session".parse().unwrap());
++        let actor = require_principal(&state,&headers).await.unwrap();
++        assert_eq!(actor.user_id,"CoreGroupActor");
++        assert_eq!(actor.username,"Actual account name");
++        let mut db = state.db.client().await.unwrap();
++        let tx = db.transaction().await.unwrap();
++        let input = GroupCreate::parse_public_normalized(&json!({"name":"Public editorial group","inactive":true,"ircServer":"irc.fixture.invalid","publishDelay":"P1D"})).unwrap();
++        let group = group_create(&tx,&actor,input).await.unwrap();
++        let id = group["id"].as_str().unwrap();
++        assert_eq!(group["inactive"],true);
++        assert_eq!(group["ircServer"],"irc.fixture.invalid");
++        assert_eq!(group["publishDelay"],"P1D");
++        assert_eq!(group["relationships"]["members"].as_array().unwrap().len(),1);
++        assert_eq!(group["relationships"]["members"][0]["id"],"CoreGroupActor");
++        assert_eq!(group["relationships"]["members"][0]["name"],"Actual account name");
++        assert_eq!(group["relationships"]["members"][0]["is_leader"],true);
++        let observer = state.db.client().await.unwrap();
++        assert_eq!(observer.query_one("SELECT count(*) FROM platform.catalog_groups WHERE id=$1",&[&id]).await.unwrap().get::<_,i64>(0),0);
++        tx.rollback().await.unwrap();
++        for table in ["catalog_groups","catalog_group_members"] {
++            let column = if table == "catalog_groups" {"id"} else {"group_id"};
++            let sql = format!("SELECT count(*) FROM platform.{table} WHERE {column}=$1");
++            assert_eq!(observer.query_one(&sql,&[&id]).await.unwrap().get::<_,i64>(0),0);
++        }
++        assert_eq!(observer.query_one("SELECT count(*) FROM platform.catalog_audit WHERE entity_id=$1",&[&id]).await.unwrap().get::<_,i64>(0),0);
++        assert_eq!(observer.query_one("SELECT count(*) FROM platform.catalog_threads WHERE entity_id=$1",&[&id]).await.unwrap().get::<_,i64>(0),0);
++        drop(observer);
++        let tx = db.transaction().await.unwrap();
++        let native = group_create(&tx,&actor,GroupCreate::parse(&json!({"name":"Native editorial group"})).unwrap()).await.unwrap();
++        assert_eq!(native["relationships"]["members"],json!([]));
++        assert_eq!(native["inactive"],false);
++        tx.rollback().await.unwrap();
++    }
++}
+--- a/weebdex-platform/backend/src/domains/catalog/mod.rs
++++ b/weebdex-platform/backend/src/domains/catalog/mod.rs
+@@ -1,4 +1,5 @@
+ mod derivatives;
++pub(crate) mod entity_mutations;
+ mod feed_diagnostics;
+ mod feed_projection;
+ pub mod languages;
+--- a/weebdex-platform/backend/src/domains/catalog/mutations.rs
++++ b/weebdex-platform/backend/src/domains/catalog/mutations.rs
+@@ -1,4 +1,5 @@
+ use super::{
++    entity_mutations::{self, AuthorCreate, AuthorUpdate, GroupCreate, GroupUpdate},
+     repository::{audit, create_thread, require_manga_edit, require_mutable_manga},
+     validation as v,
+ };
+@@ -16,54 +17,6 @@
+ use serde_json::{Value, json};
+ use tokio_postgres::Transaction;
+ 
+-const AUTHOR_FIELDS: &[&str] = &[
+-    "name",
+-    "description",
+-    "twitter",
+-    "pixiv",
+-    "fanbox",
+-    "fantia",
+-    "skeb",
+-    "youtube",
+-    "website",
+-    "locked",
+-    "version",
+-];
+-const AUTHOR_META: &[&str] = &[
+-    "description",
+-    "twitter",
+-    "pixiv",
+-    "fanbox",
+-    "fantia",
+-    "skeb",
+-    "youtube",
+-    "website",
+-];
+-const GROUP_FIELDS: &[&str] = &[
+-    "name",
+-    "description",
+-    "contact_email",
+-    "discord",
+-    "mangaupdates",
+-    "twitter",
+-    "website",
+-    "locked",
+-    "inactive",
+-    "focused_languages",
+-    "leader",
+-    "officers",
+-    "members",
+-    "version",
+-];
+-const GROUP_META: &[&str] = &[
+-    "description",
+-    "contact_email",
+-    "discord",
+-    "mangaupdates",
+-    "twitter",
+-    "website",
+-    "focused_languages",
+-];
+ const MANGA_FIELDS: &[&str] = &[
+     "title",
+     "description",
+@@ -97,20 +50,10 @@
+     let actor = mutation_principal(&state, &headers).await?;
+     actor.require_permission("author.create")?;
+     v::allowed(&payload, &["name"])?;
+-    let name = v::string(&payload, "name", 200, true)?.unwrap();
+-    let id = v::new_id("author");
+-    let mut client = state.db.client().await?;
+-    let tx = client.transaction().await?;
+-    tx.execute(
+-        "INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES($1,$2,$3,$4)",
+-        &[&id, &actor.user_id, &actor.username, &name],
+-    )
+-    .await?;
+-    audit(&tx, &actor.user_id, "author", &id, "create", None, Some(1)).await?;
+-    let data = tx
+-        .query_one("SELECT platform.catalog_author_json($1)", &[&id])
+-        .await?
+-        .get(0);
++    let input = AuthorCreate::parse(&payload)?;
++    let mut client = state.db.client().await?;
++    let tx = client.transaction().await?;
++    let data = entity_mutations::author_create(&tx, &actor, input).await?;
+     tx.commit().await?;
+     Ok((StatusCode::CREATED, Json(data)))
+ }
+@@ -123,39 +66,10 @@
+     let actor = mutation_principal(&state, &headers).await?;
+     actor.require_permission("author.update")?;
+     v::id(&id)?;
+-    v::allowed(&payload, AUTHOR_FIELDS)?;
+-    let version = v::version(&payload)?;
+-    let name = v::string(&payload, "name", 200, false)?;
+-    if name.as_deref() == Some("") {
+-        return Err(ApiError::bad_request("Name must not be empty"));
+-    }
+-    let locked = v::boolean(&payload, "locked")?;
+-    if locked.is_some() {
+-        staff_permission(&actor, "author.lock.update")?;
+-    }
+-    let metadata = v::metadata(&payload, AUTHOR_META)?;
+-    let mut client = state.db.client().await?;
+-    let tx = client.transaction().await?;
+-    let row=tx.query_opt("SELECT locked,version FROM platform.catalog_authors WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Author not found"))?;
+-    if row.get::<_, bool>(0) && !actor.is_moderator() {
+-        return Err(ApiError::forbidden("Author is locked"));
+-    }
+-    check_version(row.get(1), version)?;
+-    tx.execute("UPDATE platform.catalog_authors SET name=COALESCE($2,name),metadata=metadata || $3,locked=COALESCE($4,locked),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&name,&metadata,&locked]).await?;
+-    audit(
+-        &tx,
+-        &actor.user_id,
+-        "author",
+-        &id,
+-        "update",
+-        Some(version),
+-        Some(version + 1),
+-    )
+-    .await?;
+-    let data = tx
+-        .query_one("SELECT platform.catalog_author_json($1)", &[&id])
+-        .await?
+-        .get(0);
++    let input = AuthorUpdate::parse(&actor, &payload)?;
++    let mut client = state.db.client().await?;
++    let tx = client.transaction().await?;
++    let data = entity_mutations::author_update(&tx, &actor, &id, input).await?;
+     tx.commit().await?;
+     Ok(Json(data))
+ }
+@@ -169,15 +83,7 @@
+     v::id(&id)?;
+     let mut client = state.db.client().await?;
+     let tx = client.transaction().await?;
+-    let used:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_manga_creators mc JOIN platform.catalog_manga m ON m.id=mc.manga_id WHERE mc.author_id=$1 AND m.deleted_at IS NULL)",&[&id]).await?.get(0);
+-    if used {
+-        return Err(ApiError::conflict("Author is still referenced by a manga"));
+-    }
+-    let n=tx.execute("UPDATE platform.catalog_authors SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?;
+-    if n == 0 {
+-        return Err(ApiError::not_found("Author not found"));
+-    }
+-    audit(&tx, &actor.user_id, "author", &id, "remove", None, None).await?;
++    entity_mutations::author_delete(&tx, &actor, &id).await?;
+     tx.commit().await?;
+     Ok(StatusCode::NO_CONTENT)
+ }
+@@ -188,30 +94,11 @@
+ ) -> ApiResult<(StatusCode, Json<Value>)> {
+     let actor = mutation_principal(&state, &headers).await?;
+     actor.require_permission("scanlation_group.create")?;
+-    v::allowed(
+-        &payload,
+-        &[
+-            "name",
+-            "description",
+-            "contact_email",
+-            "discord",
+-            "mangaupdates",
+-            "twitter",
+-            "website",
+-        ],
+-    )?;
+-    let name = v::string(&payload, "name", 200, true)?.unwrap();
+-    let metadata = v::metadata(&payload, GROUP_META)?;
+-    let id = v::new_id("group");
+-    let mut client = state.db.client().await?;
+-    let tx = client.transaction().await?;
+-    tx.execute("INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name,metadata) VALUES($1,$2,$3,$4,$5)",&[&id,&actor.user_id,&actor.username,&name,&metadata]).await?;
+-    create_thread(&tx, "group", &id, &actor.user_id, &actor.username, &name).await?;
+-    audit(&tx, &actor.user_id, "group", &id, "create", None, Some(1)).await?;
+-    let data = tx
+-        .query_one("SELECT platform.catalog_group_json($1)", &[&id])
+-        .await?
+-        .get(0);
++    v::allowed(&payload, &["name", "description", "contact_email", "discord", "mangaupdates", "twitter", "website"])?;
++    let input = GroupCreate::parse(&payload)?;
++    let mut client = state.db.client().await?;
++    let tx = client.transaction().await?;
++    let data = entity_mutations::group_create(&tx, &actor, input).await?;
+     tx.commit().await?;
+     Ok((StatusCode::CREATED, Json(data)))
+ }
+@@ -223,94 +110,10 @@
+ ) -> ApiResult<Json<Value>> {
+     let actor = mutation_principal(&state, &headers).await?;
+     v::id(&id)?;
+-    v::allowed(&payload, GROUP_FIELDS)?;
+-    let version = v::version(&payload)?;
+-    let name = v::string(&payload, "name", 200, false)?;
+-    if name.as_deref() == Some("") {
+-        return Err(ApiError::bad_request("Name must not be empty"));
+-    }
+-    let locked = v::boolean(&payload, "locked")?;
+-    let inactive = v::boolean(&payload, "inactive")?;
+-    let metadata = v::metadata(&payload, GROUP_META)?;
+-    let leader = v::string(&payload, "leader", 128, false)?;
+-    if let Some(l) = &leader {
+-        v::id(l)?;
+-    }
+-    let officers = v::ids(&payload, "officers", false)?;
+-    let members = v::ids(&payload, "members", false)?;
+-    let mut client = state.db.client().await?;
+-    let tx = client.transaction().await?;
+-    let row=tx.query_opt("SELECT locked,version FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Group not found"))?;
+-    let staff = actor.is_moderator() && actor.has_perm("scanlation_group.update");
+-    if !staff {
+-        actor.require_permission("self.scanlation_group.update")?;
+-        let owns:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_group_members WHERE group_id=$1 AND user_id=$2 AND is_leader)",&[&id,&actor.user_id]).await?.get(0);
+-        if !owns || row.get::<_, bool>(0) {
+-            return Err(ApiError::forbidden("Group leader permission required"));
+-        }
+-        if name.is_some() || locked.is_some() {
+-            return Err(ApiError::forbidden("Only staff may rename or lock groups"));
+-        }
+-    }
+-    check_version(row.get(1), version)?;
+-    if leader.is_some() || officers.is_some() || members.is_some() {
+-        let current=tx.query("SELECT user_id,is_leader,is_officer FROM platform.catalog_group_members WHERE group_id=$1",&[&id]).await?;
+-        let leader = leader
+-            .or_else(|| {
+-                current
+-                    .iter()
+-                    .find(|r| r.get::<_, bool>(1))
+-                    .map(|r| r.get::<_, String>(0))
+-            })
+-            .ok_or_else(|| ApiError::bad_request("Group must have a leader"))?;
+-        let officers = officers.unwrap_or_else(|| {
+-            current
+-                .iter()
+-                .filter(|r| r.get::<_, bool>(2))
+-                .map(|r| r.get::<_, String>(0))
+-                .collect()
+-        });
+-        let members =
+-            members.unwrap_or_else(|| current.iter().map(|r| r.get::<_, String>(0)).collect());
+-        let mut all: std::collections::BTreeSet<String> = members.into_iter().collect();
+-        all.insert(leader.clone());
+-        all.extend(officers.iter().cloned());
+-        let ids: Vec<String> = all.into_iter().collect();
+-        let users = tx
+-            .query(
+-                "SELECT id,username FROM platform.users WHERE id=ANY($1) AND NOT disabled",
+-                &[&ids],
+-            )
+-            .await?;
+-        if users.len() != ids.len() {
+-            return Err(ApiError::bad_request("Unknown group member"));
+-        }
+-        tx.execute(
+-            "DELETE FROM platform.catalog_group_members WHERE group_id=$1",
+-            &[&id],
+-        )
+-        .await?;
+-        for user in users {
+-            let uid: String = user.get(0);
+-            let uname: String = user.get(1);
+-            tx.execute("INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES($1,$2,$3,$4,$5)",&[&id,&uid,&uname,&(uid==leader),&officers.contains(&uid)]).await?;
+-        }
+-    }
+-    tx.execute("UPDATE platform.catalog_groups SET name=COALESCE($2,name),metadata=metadata || $3,locked=COALESCE($4,locked),inactive=COALESCE($5,inactive),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&name,&metadata,&locked,&inactive]).await?;
+-    audit(
+-        &tx,
+-        &actor.user_id,
+-        "group",
+-        &id,
+-        "update",
+-        Some(version),
+-        Some(version + 1),
+-    )
+-    .await?;
+-    let data = tx
+-        .query_one("SELECT platform.catalog_group_json($1)", &[&id])
+-        .await?
+-        .get(0);
++    let input = GroupUpdate::parse(&payload)?;
++    let mut client = state.db.client().await?;
++    let tx = client.transaction().await?;
++    let data = entity_mutations::group_update(&tx, &actor, &id, input).await?;
+     tx.commit().await?;
+     Ok(Json(data))
+ }
+@@ -324,11 +127,7 @@
+     v::id(&id)?;
+     let mut client = state.db.client().await?;
+     let tx = client.transaction().await?;
+-    let n=tx.execute("UPDATE platform.catalog_groups SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?;
+-    if n == 0 {
+-        return Err(ApiError::not_found("Group not found"));
+-    }
+-    audit(&tx, &actor.user_id, "group", &id, "remove", None, None).await?;
++    entity_mutations::group_delete(&tx, &actor, &id).await?;
+     tx.commit().await?;
+     Ok(StatusCode::NO_CONTENT)
+ }
+--- /dev/null
++++ b/weebdex-platform/backend/tests/catalog_entity_mutations_http.rs
+@@ -0,0 +1,136 @@
++//! RECONSTRUCTED-UNVERIFIED after executor replacement. Fresh execution required.
++//! Native author/group regression over a real loopback HTTP listener and owned
++//! disposable PostgreSQL fixture. No successful response or authority stubs.
++use axum::http::StatusCode;
++use reqwest::{Client, Method};
++use serde_json::{Value, json};
++use sha2::{Digest, Sha256};
++use weebdex_platform::{AppState, Config, domains};
++
++async fn call(client: &Client, base: &str, method: Method, path: &str,
++              payload: Option<Value>, actor: Option<&str>, expected: StatusCode) -> Value {
++    let mut request = client.request(method, format!("{base}{path}"))
++        .header("origin", "https://catalog-entities.fixture.invalid");
++    if let Some(actor) = actor {
++        request = request.header("cookie", format!("weebdex_session=entity-fixture-{actor}"));
++    }
++    if let Some(payload) = payload { request = request.json(&payload); }
++    let response = request.send().await.unwrap();
++    let actual = response.status();
++    assert_eq!(response.headers().get("cache-control").unwrap(), "no-store");
++    let bytes = response.bytes().await.unwrap();
++    let result = if bytes.is_empty() { Value::Null } else { serde_json::from_slice(&bytes).unwrap() };
++    assert_eq!(actual, expected, "{path}: {result}");
++    result
++}
++
++#[tokio::test]
++#[ignore = "Requires the explicitly isolated PostgreSQL runner"]
++async fn native_entity_crud_preserves_locks_memberships_versions_and_audit() {
++    let dsn = std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL")
++        .expect("Use scripts/run-auth-tests.sh with the owned disposable fixture");
++    let pg: tokio_postgres::Config = dsn.parse().unwrap();
++    assert_eq!(pg.get_dbname(), Some("weebdex_platform_test"));
++    assert!(!pg.get_hosts().is_empty());
++    for host in pg.get_hosts() {
++        assert!(matches!(host, tokio_postgres::config::Host::Tcp(host) if host == "127.0.0.1"));
++    }
++    assert!(std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap().contains("weebdex-platform/test-runtime/"));
++    let state = AppState::connect(Config {
++        public_origin: "https://catalog-entities.fixture.invalid".into(),
++        database_plaintext_local: true, registration_enabled: false, ..Config::default()
++    }, dsn).await.unwrap();
++    state.db.migrate(domains::MIGRATIONS).await.unwrap();
++    let db = state.db.client().await.unwrap();
++    let permissions = json!(["author.create","author.update","author.delete","author.lock.update","scanlation_group.create","scanlation_group.update","scanlation_group.delete","self.scanlation_group.update"]);
++    for (id, role) in [("EntityStaff", "staff"), ("EntityLeader", "user"), ("EntityMember", "user")] {
++        let roles = json!([role]);
++        db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,roles,permissions) VALUES($1,$1,$1||'@fixture.invalid','synthetic-no-password',TRUE,$2,$3)", &[&id,&roles,&permissions]).await.unwrap();
++        let digest = Sha256::digest(format!("entity-fixture-{id}").as_bytes()).to_vec();
++        db.execute("INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES($1,$1,$2,clock_timestamp()+interval '1 hour')", &[&id,&digest]).await.unwrap();
++    }
++    drop(db);
++    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
++    let base = format!("http://{}",listener.local_addr().unwrap());
++    let app = weebdex_platform::router::router(state.clone());
++    let (stop,stopped) = tokio::sync::oneshot::channel();
++    let server = tokio::spawn(async move {
++        axum::serve(listener,app).with_graceful_shutdown(async {let _ = stopped.await;}).await.unwrap();
++    });
++    let client = Client::builder().timeout(std::time::Duration::from_secs(10)).build().unwrap();
++    let staff = Some("EntityStaff"); let leader = Some("EntityLeader"); let member = Some("EntityMember");
++    call(&client,&base,Method::POST,"/api/author",Some(json!({"name":"Anonymous"})),None,StatusCode::UNAUTHORIZED).await;
++    // Native creation's original name-only contract stays closed.
++    call(&client,&base,Method::POST,"/api/author",Some(json!({"name":"Author","description":"No native create expansion"})),staff,StatusCode::BAD_REQUEST).await;
++    let author = call(&client,&base,Method::POST,"/api/author",Some(json!({"name":"  Core author  "})),staff,StatusCode::CREATED).await;
++    let aid = author["id"].as_str().unwrap();
++    assert_eq!(author["name"],"Core author"); assert_eq!(author["version"],1);
++    let updated = call(&client,&base,Method::PUT,&format!("/api/author/{aid}"),Some(json!({"version":1,"description":"Author metadata","twitter":"https://fixture.invalid/author"})),staff,StatusCode::OK).await;
++    assert_eq!(updated["version"],2); assert_eq!(updated["created_at"],author["created_at"]);
++    assert_eq!(updated["description"],"Author metadata");
++    call(&client,&base,Method::PUT,&format!("/api/author/{aid}"),Some(json!({"version":1,"name":"Stale write"})),staff,StatusCode::CONFLICT).await;
++    call(&client,&base,Method::PUT,&format!("/api/author/{aid}"),Some(json!({"version":2,"locked":true})),staff,StatusCode::OK).await;
++    call(&client,&base,Method::PUT,&format!("/api/author/{aid}"),Some(json!({"version":3,"name":"Locked write"})),leader,StatusCode::FORBIDDEN).await;
++    call(&client,&base,Method::PUT,&format!("/api/author/{aid}"),Some(json!({"version":3,"locked":false})),leader,StatusCode::FORBIDDEN).await;
++    call(&client,&base,Method::DELETE,&format!("/api/author/{aid}"),None,leader,StatusCode::FORBIDDEN).await;
++    call(&client,&base,Method::PUT,&format!("/api/author/{aid}"),Some(json!({"version":3,"name":" "})),staff,StatusCode::BAD_REQUEST).await;
++    // Two requests with the same version must serialize on the native row lock.
++    let edit = |name: &'static str| client.put(format!("{base}/api/author/{aid}"))
++        .header("origin","https://catalog-entities.fixture.invalid")
++        .header("cookie","weebdex_session=entity-fixture-EntityStaff")
++        .json(&json!({"version":3,"name":name})).send();
++    let (first,second) = tokio::join!(edit("Concurrent one"),edit("Concurrent two"));
++    let statuses = [first.unwrap().status(),second.unwrap().status()];
++    assert_eq!(statuses.iter().filter(|s| **s == StatusCode::OK).count(),1);
++    assert_eq!(statuses.iter().filter(|s| **s == StatusCode::CONFLICT).count(),1);
++    // Canonical source visibility is checked in the locked entity lookup.
++    let db = state.db.client().await.unwrap(); let hidden = "0".repeat(64);
++    db.execute("INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name,protocol_event_id) VALUES('HiddenAuthor','EntityStaff','EntityStaff','Hidden source',$1)",&[&hidden]).await.unwrap();
++    db.execute("INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES('HiddenG001','EntityStaff','EntityStaff','Hidden group')",&[]).await.unwrap();
++    db.execute("INSERT INTO platform.protocol_resource_ids(kind,source_target,compatibility_id,catalog_id) VALUES('group','synthetic-hidden-source','11111111-1111-4111-8111-111111111111','HiddenG001')",&[]).await.unwrap();
++    drop(db);
++    call(&client,&base,Method::PUT,"/api/group/HiddenG001",Some(json!({"version":1,"description":"Must stay hidden"})),staff,StatusCode::NOT_FOUND).await;
++    call(&client,&base,Method::PUT,"/api/author/HiddenAuthor",Some(json!({"version":1,"name":"Must stay hidden"})),staff,StatusCode::NOT_FOUND).await;
++    call(&client,&base,Method::POST,"/api/group",Some(json!({"name":"Group","focused_languages":["en"]})),staff,StatusCode::BAD_REQUEST).await;
++    let group = call(&client,&base,Method::POST,"/api/group",Some(json!({"name":"Core group","description":"Initial group metadata"})),staff,StatusCode::CREATED).await;
++    let gid = group["id"].as_str().unwrap();
++    assert_eq!(group["relationships"]["members"],json!([]));
++    assert!(group["relationships"]["thread"]["id"].is_string());
++    call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":1,"description":"Not a leader"})),member,StatusCode::FORBIDDEN).await;
++    let group = call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":1,"leader":"EntityLeader","officers":["EntityMember"],"members":[]})),staff,StatusCode::OK).await;
++    assert_eq!(group["version"],2); assert_eq!(group["relationships"]["members"].as_array().unwrap().len(),2);
++    let group = call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":2,"description":"Leader updated","inactive":true,"focused_languages":["en","zh-hk"]})),leader,StatusCode::OK).await;
++    assert_eq!(group["version"],3); assert_eq!(group["inactive"],true);
++    call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":3,"name":"Leader rename"})),leader,StatusCode::FORBIDDEN).await;
++    call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":3,"locked":false})),leader,StatusCode::FORBIDDEN).await;
++    call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":2,"description":"Stale"})),staff,StatusCode::CONFLICT).await;
++    call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":3,"description":"Must roll back","members":["UnknownMember"]})),leader,StatusCode::BAD_REQUEST).await;
++    let db = state.db.client().await.unwrap();
++    let row = db.query_one("SELECT version,metadata->>'description',(SELECT count(*) FROM platform.catalog_group_members WHERE group_id=$1) FROM platform.catalog_groups WHERE id=$1",&[&gid]).await.unwrap();
++    assert_eq!(row.get::<_,i32>(0),3); assert_eq!(row.get::<_,String>(1),"Leader updated");
++    assert_eq!(row.get::<_,i64>(2),2); drop(db);
++    call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":3,"locked":true})),staff,StatusCode::OK).await;
++    call(&client,&base,Method::PUT,&format!("/api/group/{gid}"),Some(json!({"version":4,"description":"Locked group write"})),leader,StatusCode::FORBIDDEN).await;
++    call(&client,&base,Method::DELETE,&format!("/api/group/{gid}"),None,leader,StatusCode::FORBIDDEN).await;
++    call(&client,&base,Method::DELETE,&format!("/api/group/{gid}"),None,staff,StatusCode::NO_CONTENT).await;
++    call(&client,&base,Method::DELETE,&format!("/api/group/{gid}"),None,staff,StatusCode::NOT_FOUND).await;
++    // Referenced authors cannot be removed while a nondeleted manga uses them.
++    let db = state.db.client().await.unwrap();
++    db.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating) VALUES('EntityRefManga','EntityStaff','EntityStaff','Reference guard','en','ongoing','safe')",&[]).await.unwrap();
++    db.execute("INSERT INTO platform.catalog_manga_creators(manga_id,author_id,role) VALUES('EntityRefManga',$1,'author')",&[&aid]).await.unwrap(); drop(db);
++    call(&client,&base,Method::DELETE,&format!("/api/author/{aid}"),None,staff,StatusCode::CONFLICT).await;
++    let db = state.db.client().await.unwrap();
++    db.execute("UPDATE platform.catalog_manga SET deleted_at=clock_timestamp() WHERE id='EntityRefManga'",&[]).await.unwrap(); drop(db);
++    call(&client,&base,Method::DELETE,&format!("/api/author/{aid}"),None,staff,StatusCode::NO_CONTENT).await;
++    call(&client,&base,Method::DELETE,&format!("/api/author/{aid}"),None,staff,StatusCode::NOT_FOUND).await;
++    let db = state.db.client().await.unwrap();
++    let rows = db.query("SELECT entity_type,operation,old_version,new_version,actor_id FROM platform.catalog_audit WHERE entity_id=ANY($1) ORDER BY id",&[&vec![aid,gid]]).await.unwrap();
++    assert_eq!(rows.len(),10); // 5 author + 5 group successful operations only.
++    for row in &rows { assert!(matches!(row.get::<_,String>(4).as_str(),"EntityStaff"|"EntityLeader")); }
++    for row in rows.iter().filter(|r| r.get::<_,String>(1)=="update") {
++        assert_eq!(row.get::<_,Option<i32>>(3),row.get::<_,Option<i32>>(2).map(|n|n+1));
++    }
++    assert_eq!(db.query_one("SELECT version FROM platform.catalog_authors WHERE id='HiddenAuthor'",&[]).await.unwrap().get::<_,i32>(0),1);
++    drop(db); stop.send(()).unwrap(); server.await.unwrap();
++    println!("Native author/group real-HTTP CRUD, immutable create whitelist, metadata, locks, staff/leader authority, stale versions, source visibility, member rollback, soft deletion and exact audit counts passed");
++}

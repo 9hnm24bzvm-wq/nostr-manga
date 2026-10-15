@@ -1,0 +1,68 @@
+//! RECONSTRUCTED-UNVERIFIED. Requires a new disposable PostgreSQL test run.
+use weebdex_platform::{AppState,Config,domains,public_api::{PublicIdResolver,PublicIdTarget,PublicUuid,ResourceKind,PostgresPublicIdResolver}};
+use weebdex_platform::public_api::postgres_identity::MAX_PUBLIC_ID_BATCH;
+use axum::http::StatusCode;
+async fn fixture()->AppState {
+ let dsn=std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").expect("Use scripts/run-auth-tests.sh");
+ let pg:tokio_postgres::Config=dsn.parse().unwrap();assert_eq!(pg.get_dbname(),Some("weebdex_platform_test"));assert!(!pg.get_hosts().is_empty());
+ for host in pg.get_hosts(){assert!(matches!(host,tokio_postgres::config::Host::Tcp(host) if host=="127.0.0.1"));}
+ assert!(std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap().contains("weebdex-platform/test-runtime/"));
+ AppState::connect(Config{database_plaintext_local:true,..Config::default()},dsn).await.unwrap()
+}
+fn uuid(s:&str)->PublicUuid{PublicUuid::parse(s).unwrap()}
+#[tokio::test]
+#[ignore="Requires the explicitly isolated PostgreSQL runner"]
+async fn durable_alias_backfill_creation_collision_and_authority_boundaries(){
+ let state=fixture().await;
+ // This test targets migration89 specifically even when90+ are later appended.
+ let end=domains::MIGRATIONS.iter().position(|m|m.version==89).unwrap();
+ state.db.migrate(&domains::MIGRATIONS[..end]).await.unwrap();
+ let client=state.db.client().await.unwrap();
+ client.execute("INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES('UuidOld001','owner','Owner','Existing author'),('UuidOld002','protocol:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','Actual publisher display','Second author')",&[]).await.unwrap();
+ client.execute("INSERT INTO platform.protocol_resource_ids(kind,source_target,compatibility_id,catalog_id) VALUES('author','source-author','11111111-1111-8111-8111-111111111111','UuidOld001')",&[]).await.unwrap();
+ // Minimal optional facade seam; the genuine52-migration test is separate.
+ client.batch_execute("CREATE TABLE public.compatibility_ids(kind TEXT,id TEXT,target TEXT,preferred BOOLEAN); INSERT INTO public.compatibility_ids VALUES('author','22222222-2222-8222-8222-222222222222','source-author',FALSE),('user','33333333-3333-8333-8333-333333333333','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',TRUE)").await.unwrap();
+ client.execute("INSERT INTO platform.users(id,username,email,password_hash) VALUES('550e8400-e29b-41d4-a716-446655440000','UuidAccount','uuid-account@fixture.invalid','synthetic-no-password')",&[]).await.unwrap();drop(client);
+ state.db.migrate(&domains::MIGRATIONS[..=end]).await.unwrap();
+ state.db.verify_schema(&domains::MIGRATIONS[..=end]).await.unwrap();
+ let resolver=PostgresPublicIdResolver::new(state.db.clone());let canonical=uuid("11111111-1111-8111-8111-111111111111");let legacy=uuid("22222222-2222-8222-8222-222222222222");
+ assert_eq!(resolver.preferred(ResourceKind::Author,"UuidOld001").await.unwrap(),Some(canonical.clone()));
+ for alias in [&canonical,&legacy]{let r=resolver.resolve(ResourceKind::Author,alias).await.unwrap().unwrap();assert_eq!(r.native_id,"UuidOld001");assert_eq!(r.preferred_id,canonical);assert_eq!(r.target,PublicIdTarget::NativeResource);assert!(resolver.resolve(ResourceKind::Manga,alias).await.unwrap().is_none());}
+ let old_native=resolver.preferred(ResourceKind::Author,"UuidOld002").await.unwrap().unwrap();assert_eq!(old_native.as_str().as_bytes()[14],b'8');
+ assert_eq!(resolver.preferred(ResourceKind::User,"550e8400-e29b-41d4-a716-446655440000").await.unwrap(),Some(uuid("550e8400-e29b-41d4-a716-446655440000")));
+ let publisher=resolver.resolve(ResourceKind::User,&uuid("33333333-3333-8333-8333-333333333333")).await.unwrap().unwrap();assert_eq!(publisher.native_id,format!("protocol:{}","a".repeat(64)));assert_eq!(publisher.target,PublicIdTarget::ProtocolPublisher{pubkey:"a".repeat(64)});
+ let principals=resolver.describe_many(ResourceKind::User,&[publisher.native_id.clone(),"550e8400-e29b-41d4-a716-446655440000".into()]).await.unwrap();assert_eq!(principals[&publisher.native_id].target,publisher.target);assert_eq!(principals["550e8400-e29b-41d4-a716-446655440000"].target,PublicIdTarget::NativeResource);
+ let client=state.db.client().await.unwrap();client.execute("INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES('UuidNew001','owner','Owner','New author')",&[]).await.unwrap();
+ let native_alias=resolver.preferred(ResourceKind::Author,"UuidNew001").await.unwrap().unwrap();assert_eq!(resolver.ensure(ResourceKind::Author,"UuidNew001").await.unwrap(),native_alias);
+ client.execute("INSERT INTO platform.protocol_resource_ids(kind,source_target,compatibility_id,catalog_id) VALUES('author','new-source-author','44444444-4444-8444-8444-444444444444','UuidNew001')",&[]).await.unwrap();
+ let later=uuid("44444444-4444-8444-8444-444444444444");let r=resolver.resolve(ResourceKind::Author,&later).await.unwrap().unwrap();assert_eq!(r.native_id,"UuidNew001");assert_eq!(r.preferred_id,native_alias);
+ client.execute("INSERT INTO platform.catalog_tags(id,name,tag_group) VALUES('UuidOld001','Separate kind','genre')",&[]).await.unwrap();let tag=resolver.preferred(ResourceKind::Tag,"UuidOld001").await.unwrap().unwrap();assert_ne!(tag,canonical);assert_eq!(resolver.register_alias(ResourceKind::Tag,"UuidOld001",&legacy).await.unwrap(),tag);
+ assert_eq!(resolver.register_alias(ResourceKind::Author,"UuidNew001",&legacy).await.unwrap_err().status,StatusCode::CONFLICT);assert_eq!(resolver.resolve(ResourceKind::Author,&legacy).await.unwrap().unwrap().native_id,"UuidOld001");
+ let imported=uuid("55555555-5555-8555-8555-555555555555");for _ in 0..2{assert_eq!(resolver.register_alias(ResourceKind::Author,"UuidNew001",&imported).await.unwrap(),native_alias);}
+ client.execute("INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES('UuidRace01','owner','Owner','Race 1'),('UuidRace02','owner','Owner','Race 2')",&[]).await.unwrap();let race=uuid("99999999-9999-8999-8999-999999999999");let(a,b)=tokio::join!(resolver.register_alias(ResourceKind::Author,"UuidRace01",&race),resolver.register_alias(ResourceKind::Author,"UuidRace02",&race));assert!(a.is_ok()^b.is_ok());assert_eq!(a.err().or_else(||b.err()).unwrap().status,StatusCode::CONFLICT);
+ assert_eq!(resolver.ensure(ResourceKind::Author,"UuidAbsent").await.unwrap_err().status,StatusCode::NOT_FOUND);
+ assert!(client.execute("UPDATE platform.public_resource_ids SET native_id='UuidNew001' WHERE kind='author' AND public_id='22222222-2222-8222-8222-222222222222'",&[]).await.is_err());assert!(client.execute("DELETE FROM platform.public_resource_ids WHERE kind='author' AND native_id='UuidOld001'",&[]).await.is_err());assert!(client.execute("UPDATE platform.public_resource_ids SET preferred=FALSE WHERE kind='author' AND native_id='UuidOld001' AND preferred",&[]).await.is_err());
+ for _ in 0..2{client.query_one("SELECT platform.public_backfill_resource_ids()",&[]).await.unwrap();}assert_eq!(resolver.preferred(ResourceKind::Author,"UuidOld001").await.unwrap(),Some(canonical.clone()));assert_eq!(resolver.preferred(ResourceKind::Author,"UuidNew001").await.unwrap(),Some(native_alias.clone()));assert!(resolver.resolve(ResourceKind::Author,&imported).await.unwrap().is_some());
+ let row=client.query_one("SELECT platform.public_native_uuid('00000000-0000-4000-8000-000000000001','author','UuidNew001')::text,platform.public_native_uuid('00000000-0000-4000-8000-000000000002','author','UuidNew001')::text,platform.public_native_uuid('00000000-0000-4000-8000-000000000001','manga','UuidNew001')::text",&[]).await.unwrap();let a:String=row.get(0);assert_ne!(a,row.get::<_,String>(1));assert_ne!(a,row.get::<_,String>(2));assert_eq!(a,"d42a9ada-9e50-8eea-9eef-c06ffe1e3791");
+ let many=resolver.resolve_many(ResourceKind::Author,&[canonical.clone(),legacy.clone(),imported.clone(),uuid("00000000-0000-0000-0000-000000000000")]).await.unwrap();assert_eq!(many.len(),3);assert_eq!(many[&legacy].preferred_id,canonical);
+ assert_eq!(resolver.preferred_many(ResourceKind::Author,&["UuidOld001".into(),"UuidNew001".into(),"UuidAbsent".into()]).await.unwrap().len(),2);
+ assert!(resolver.resolve_many(ResourceKind::Author,&vec![legacy;MAX_PUBLIC_ID_BATCH+1]).await.is_err());assert!(resolver.preferred_many(ResourceKind::Author,&vec!["UuidOld001".into();MAX_PUBLIC_ID_BATCH+1]).await.is_err());assert!(resolver.resolve_many(ResourceKind::Author,&[]).await.unwrap().is_empty());assert!(resolver.preferred_many(ResourceKind::Author,&[]).await.unwrap().is_empty());
+ let key="b".repeat(64);client.execute("UPDATE platform.catalog_authors SET owner_id=$1 WHERE id='UuidNew001'",&[&format!("protocol:{key}")]).await.unwrap();let source_alias=uuid(&manga_node::mangadex_compat::uuid("user",&key));let principal=resolver.resolve(ResourceKind::User,&source_alias).await.unwrap().unwrap();assert_eq!(principal.target,PublicIdTarget::ProtocolPublisher{pubkey:key.clone()});
+ assert_eq!(client.query_one("SELECT count(*) FROM platform.users WHERE id=$1",&[&principal.native_id]).await.unwrap().get::<_,i64>(0),0);assert_eq!(client.query_one("SELECT count(*) FROM platform.protocol_identity_bindings",&[]).await.unwrap().get::<_,i64>(0),0);assert!(resolver.ensure(ResourceKind::User,&principal.native_id).await.is_err());assert!(client.execute("UPDATE platform.public_resource_ids SET principal_type='native' WHERE kind='user' AND native_id=$1",&[&principal.native_id]).await.is_err());
+ client.execute("INSERT INTO public.compatibility_ids VALUES('user','66666666-6666-8666-8666-666666666666',$1,TRUE)",&[&key]).await.unwrap();client.query_one("SELECT platform.public_register_protocol_publisher($1)",&[&key]).await.unwrap();assert_eq!(resolver.resolve(ResourceKind::User,&uuid("66666666-6666-8666-8666-666666666666")).await.unwrap().unwrap().preferred_id,source_alias);
+ client.execute("UPDATE platform.catalog_authors SET deleted_at=clock_timestamp() WHERE id='UuidNew001'",&[]).await.unwrap();assert!(resolver.resolve(ResourceKind::Author,&native_alias).await.unwrap().is_some());assert_eq!(client.query_one("SELECT count(*) FROM platform.catalog_authors WHERE id='UuidNew001' AND platform.catalog_author_json(id) IS NOT NULL",&[]).await.unwrap().get::<_,i64>(0),0);assert_eq!(resolver.preferred(ResourceKind::Author,"UuidOld002").await.unwrap(),Some(old_native));
+ client.batch_execute("INSERT INTO platform.users(id,username,email,password_hash) VALUES('550e8400-e29b-41d4-a716-446655440002','UuidNewAccount','uuid-new-account@fixture.invalid','synthetic-no-password');
+ INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating) VALUES('UuidManga1','550e8400-e29b-41d4-a716-446655440002','UuidNewAccount','Alias trigger fixture','en','ongoing','safe');
+ INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,language) VALUES('UuidChap01','UuidManga1','550e8400-e29b-41d4-a716-446655440002','UuidNewAccount','en');
+ INSERT INTO platform.catalog_covers(id,manga_id,uploader_id,uploader_name,ext,dimensions) VALUES('UuidCov001','UuidManga1','550e8400-e29b-41d4-a716-446655440002','UuidNewAccount','jpg',ARRAY[10,20]);
+ INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES('UuidGrp001','550e8400-e29b-41d4-a716-446655440002','UuidNewAccount','Fixture group');
+ INSERT INTO platform.library_lists(id,user_id,name) VALUES('list_uuidfixture','550e8400-e29b-41d4-a716-446655440002','Fixture list');
+ INSERT INTO platform.reports(id,submitter_id,entity_type,entity_id,reason_id,body) VALUES('report_uuidfixture','550e8400-e29b-41d4-a716-446655440002','author','UuidOld001','author_other','Fixture report');
+ INSERT INTO platform.upload_sessions(id,owner_id,manga_id) VALUES('UuidSess01','550e8400-e29b-41d4-a716-446655440002','UuidManga1');
+ INSERT INTO platform.media_objects(id,digest,storage_key,mime,extension,bytes,width,height) VALUES(repeat('c',64),repeat('c',64),repeat('c',64),'image/jpeg','jpg',10,1,1);
+ INSERT INTO platform.upload_files(id,session_id,object_id,original_name,position) VALUES('UuidFile01','UuidSess01',repeat('c',64),'UuidFile01.jpg',0);
+ INSERT INTO platform.api_clients(id,user_id,name,secret_hash,scopes) VALUES('550e8400-e29b-41d4-a716-446655440003','550e8400-e29b-41d4-a716-446655440002','Fixture client',decode(repeat('d',64),'hex'),'[]');").await.unwrap();
+ for(kind,native)in[(ResourceKind::Manga,"UuidManga1"),(ResourceKind::Chapter,"UuidChap01"),(ResourceKind::Cover,"UuidCov001"),(ResourceKind::Author,"UuidOld001"),(ResourceKind::Group,"UuidGrp001"),(ResourceKind::Tag,"UuidOld001"),(ResourceKind::User,"550e8400-e29b-41d4-a716-446655440002"),(ResourceKind::List,"list_uuidfixture"),(ResourceKind::Report,"report_uuidfixture"),(ResourceKind::UploadSession,"UuidSess01"),(ResourceKind::UploadFile,"UuidFile01"),(ResourceKind::Client,"550e8400-e29b-41d4-a716-446655440003")]{let p=resolver.preferred(kind,native).await.unwrap().unwrap();let r=resolver.resolve(kind,&p).await.unwrap().unwrap();assert_eq!(r.native_id,native);assert_eq!(r.target,PublicIdTarget::NativeResource);}
+ let media=client.query_one("SELECT c.manga_id,c.ext,u.original_name,u.object_id FROM platform.catalog_covers c JOIN platform.upload_files u ON u.id='UuidFile01' WHERE c.id='UuidCov001'",&[]).await.unwrap();assert_eq!(media.get::<_,String>(0),"UuidManga1");assert_eq!(media.get::<_,String>(1),"jpg");assert_eq!(media.get::<_,String>(2),"UuidFile01.jpg");assert_eq!(media.get::<_,String>(3),"c".repeat(64));
+ for bad in ["UuidOld001","not-a-uuid",&"a".repeat(64)]{assert!(PublicUuid::parse(bad).is_err());}
+}
