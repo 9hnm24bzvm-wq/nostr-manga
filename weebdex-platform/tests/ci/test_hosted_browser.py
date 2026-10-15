@@ -267,6 +267,52 @@ class HostedBrowserSeams(unittest.TestCase):
         for field, value in [('loopback_ports_closed', {}), ('synthetic_server_keys_absent', False), ('remaining_owned_processes', [{}]), ('process_tracking_errors', [{}]), ('final_teardown_clean', False)]:
             self.assertFalse(runner.project_cleanup(dict(good, **{field: value}))['verified_stopped'])
 
+    def test_native_publication_batches_have_explicit_isolated_mode(self):
+        plan = {key: key for key in ['normal_binary', 'normal_sha256', 'frontend_index_sha256', 'frontend_manifest', 'frontend_manifest_sha256', 'provisioner', 'provisioner_sha256']}
+        for name in runner.BATCHES:
+            args = runner.fixture_arguments(name, plan)
+            native = name in {'ordinary-a', 'ordinary-b'}
+            self.assertEqual('--native-only' in args, native)
+            self.assertEqual('--protocol-provisioner' in args, not native)
+            self.assertEqual('--second-protocol-recipient' in args, not native)
+            self.assertEqual('--ui-regression-controls' in args, not native)
+        self.assertEqual(runner.fixture_mode('startup'), 'combined')
+
+    def test_native_only_cli_rejects_combined_authority_before_constructing_fixture(self):
+        fixture = ROOT / 'tests/runtime/browser_fixture.py'
+        runtime = ROOT / 'test-runtime'
+        before = set(runtime.iterdir()) if runtime.exists() else set()
+        conflicts = [['--protocol-provisioner', '/not-an-owned-provisioner'], ['--provisioner-sha256', '0' * 64], ['--second-protocol-recipient'], ['--ui-regression-controls'], ['--pg-home-fault-controls'], ['--ubunchu-noncommercial']]
+        if '--protocol-self-enrollment' in fixture.read_text(): conflicts.append(['--protocol-self-enrollment'])
+        for conflict in conflicts:
+            with self.subTest(flag=conflict[0]):
+                result = subprocess.run([sys.executable, str(fixture), '--binary', '/not-an-owned-binary', '--frontend-index-sha256', '0' * 64, '--frontend-artifact-manifest-sha256', '0' * 64, '--native-only', *conflict], capture_output=True, text=True, timeout=10)
+                self.assertEqual(result.returncode, 2)
+                self.assertIn('native-only mode excludes protocol authorities, provisioner and combined controls', result.stderr)
+                self.assertNotIn('FIXTURE_ERROR', result.stdout)
+        self.assertEqual(set(runtime.iterdir()) if runtime.exists() else set(), before)
+
+    def test_native_only_readiness_binds_exact_mode_and_no_protocol_authority(self):
+        plan = {'normal_sha256': 'binary', 'frontend_manifest_sha256': 'frontend'}
+        good = {'status': 'ready', 'run_directory': '/owned', 'binary': {'sha256': 'binary'}, 'frontend': {'artifact_manifest_sha256': 'frontend'}, 'fixture_mode': 'native-only', 'seed': {'native_only': True, 'protocol_signed_publications': False}}
+        self.assertTrue(runner.ready_matches(good, Path('/owned'), plan, 'native-only'))
+        self.assertFalse(runner.ready_matches(good, Path('/owned'), plan))
+        for key in ['protocol_origin', 'relay_origin', 'protocol_recipients', 'protocol_provisioner', 'protocol_seed', 'service_key']:
+            self.assertFalse(runner.ready_matches(dict(good, **{key: {}}), Path('/owned'), plan, 'native-only'))
+        for key, value in [('fixture_mode', 'combined'), ('seed', {}), ('binary', {}), ('frontend', {}), ('status', 'starting'), ('run_directory', '/other')]:
+            self.assertFalse(runner.ready_matches(dict(good, **{key: value}), Path('/owned'), plan, 'native-only'))
+
+    def test_native_cleanup_requires_exact_owned_three_ports(self):
+        good = self.cleanup_input()
+        good['loopback_ports_closed'] = {name: True for name in ['platform', 'mail', 'postgres']}
+        self.assertTrue(runner.project_cleanup(good, 'native-only')['verified_stopped'])
+        self.assertFalse(runner.project_cleanup(good)['verified_stopped'])
+        self.assertFalse(runner.project_cleanup(self.cleanup_input(), 'native-only')['verified_stopped'])
+        for name in ['platform', 'mail', 'postgres']:
+            adverse = copy.deepcopy(good); adverse['loopback_ports_closed'][name] = False
+            self.assertFalse(runner.project_cleanup(adverse, 'native-only')['verified_stopped'])
+        with self.assertRaises(ValueError): runner.project_cleanup(good, 'unknown')
+
     def test_summary_cannot_promote_partial_scope_to_full_suite(self):
         journal = {'phases': [{'phase': 'startup', 'status': 'passed'}], 'batches': [{'passed': True, 'supervisor_terminal': True, 'supervisor_exit_zero': True, 'cleanup': {'verified_stopped': True, 'lifecycle_clean': True}}]}
         summary = runner.summarize(journal, 'startup', ['startup'])

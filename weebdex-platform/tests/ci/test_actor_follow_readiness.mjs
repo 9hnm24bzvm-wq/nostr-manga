@@ -73,7 +73,7 @@ async function component(kind, { blocked = false, target = 'target' } = {}) {
     async login(id = 'A') { auth[0].resolve({ status: 200, body: account(id) }); await until(() => get(context.Session)?.identity.id === id); await settle(); },
     setActor(id) { context.Session.set(id ? account(id) : undefined); },
     setTarget(id, flush = true) { api.targetStore.set({ id, name: id, version: 1 }); page.url = new URL('/' + entity + '/' + id, page.url); window.location = new URL(page.url); if (flush) runEffects(); },
-    async status(index, status = 204) { reads[index].gate.resolve({ status }); await settle(); },
+    async status(index, status = 204) { await settle(); reads[index].gate.resolve({ status }); await settle(); },
     async readError(index, cause = Error('synthetic read failure')) { reads[index].gate.reject(cause); await settle(); },
     async mutation(index, status = 204) { writes[index].gate.resolve({ status }); await settle(); },
     async preferences(index) { const request = settingsWrites[index], body = { ...get(prefs), version: 2, ...Object.fromEntries(Object.entries(request.payload).filter(([key]) => key !== 'version').map(([key, ids]) => [key, ids.map(id => ({ id, name: id, version: 1 }))])) }; request.gate.resolve({ status: 200, body }); await settle(); },
@@ -97,13 +97,13 @@ for (const kind of ['Group', 'User']) {
   for (const [first, second] of [['A', 'B'], ['B', 'A']]) test(`${kind}: ${first} to ${second} resets, late old actor status is discarded`, async () => {
     const value = await component(kind); await value.login(first);
     value.setActor(second); assert.equal(value.api.snapshot().ready, false); assert.equal(value.api.snapshot().followed, false);
-    assert.equal(value.reads.length, 2); await value.status(1, 404); await value.status(0, 204);
+    await settle(); assert.equal(value.reads.length, 2); await value.status(1, 404); await value.status(0, 204);
     assert.equal(value.api.snapshot().followed, false); assert.equal(value.api.snapshot().ready, true);
     const pending = value.api.activate(); assert.equal(value.writes[0].method, 'POST'); assert.equal(value.writes[0].actor, second);
     await value.mutation(0); await pending; value.destroy();
   });
   test(`${kind}: A to B to A fences first A and same-account logout/relogin reads`, async () => {
-    const value = await component(kind); await value.login(); value.setActor('B'); value.setActor('A');
+    const value = await component(kind); await value.login(); value.setActor('B'); await settle(); value.setActor('A'); await settle();
     await value.status(2, 404); await value.status(0, 204); await value.status(1, 204);
     assert.equal(value.api.snapshot().followed, false);
     value.setActor(); assert.equal(value.api.snapshot().ready, false); assert.equal(value.api.snapshot().followed, false);
@@ -147,7 +147,7 @@ for (const kind of ['Group', 'User']) {
   });
   test(`${kind}: same-actor Session revision cannot read ahead of acknowledged pending write`, async () => {
     const value = await component(kind); await value.login(); await value.status(0, 404); const pending = value.api.activate();
-    value.setActor('A'); assert.equal(value.reads.length, 1, 'matching pending write defers replacement GET');
+    value.setActor('A'); assert.equal(value.api.snapshot().ready, false, 'Session reset is synchronous'); await settle(); assert.equal(value.reads.length, 1, 'matching pending write defers replacement GET');
     assert.equal(value.api.snapshot().ready, false); assert.equal(value.api.snapshot().loading, true);
     await value.api.activate(); await value.api.block(); assert.equal(value.writes.length, 1); assert.equal(value.settingsWrites.length, 0);
     await value.mutation(0); await pending; assert.equal(value.reads.length, 2, 'acknowledgment starts post-settlement reconciliation');
@@ -163,7 +163,7 @@ for (const kind of ['Group', 'User']) {
   });
   for (const roundTrip of ['actor', 'target']) test(`${kind}: ${roundTrip} round trip waits for its original pending write before current reconciliation`, async () => {
     const value = await component(kind); await value.login(); await value.status(0, 404); const pending = value.api.activate();
-    if (roundTrip === 'actor') { value.setActor('B'); value.setActor('A'); }
+    if (roundTrip === 'actor') { value.setActor('B'); await settle(); value.setActor('A'); await settle(); }
     else { value.setTarget('other'); value.setTarget('target'); }
     assert.equal(value.reads.length, 2, 'different context can read, matching original context waits');
     await value.status(1, 404); assert.equal(value.api.snapshot().ready, false);
@@ -215,4 +215,14 @@ test('exact composed Follow control preserves permitted visibility, classes, ico
     if (kind === 'User') assert.ok(source.includes('{#if $Session && $user.id !== $Session.identity.id}'));
     else assert.ok(source.includes('{#if $Session}'));
   }
+});
+
+// Reconstructed after external runtime replacement; actual controller remains
+// the code executed by component(), with finite explicit transport stand-ins.
+test('disposed Session subscriber cannot admit its queued old read', async () => {
+  const old = await component('Group'); old.setActor('A');
+  assert.equal(old.api.snapshot().ready, false); assert.equal(old.reads.length, 0);
+  old.destroy(); await settle(); assert.equal(old.reads.length, 0);
+  const current = await component('Group'); current.setActor('A'); await settle();
+  assert.equal(current.reads.length, 1); current.destroy();
 });

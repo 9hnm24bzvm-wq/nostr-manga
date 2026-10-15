@@ -300,3 +300,10 @@ test('mocked safety: optional known-key input uses its exact native owner despit
     assert.deepEqual(calls, [...(initiallyOpen ? [] : [['reveal']]), ['fill', '0'.repeat(64)]]);
   }
 });
+
+test('missing-signer browser expectation matches current actionable create/import/extension guidance',()=>{
+ const product=fs.readFileSync(path.join(productRoot,'platform-integrations/local-library/publication.ts'),'utf8');
+ assert(product.includes('No compatible NIP-07 browser signer was found.'));
+ assert(product.includes('Create or import a key in Public identity settings, or install a signing extension.'));
+ assert(source.includes('getByText("No compatible NIP-07 browser signer was found.", { exact: false })'));
+});

@@ -478,7 +478,7 @@ export async function runSignedJourneys(h) {
         const state = await databases(); insist(state.device.instanceScope.catalogNamespace === seeded.catalog_namespace && state.device.instanceScope.serviceKey === fixture.service_key && state.protocol.jobs.length === 0 && mutationRequests.length === 0, "Anonymous local controls published or lost their namespace");
         insist((await native("/api/auth/check")).status !== 200 && await page.evaluate(() => typeof window.nostr === "undefined"), "A password session or signer was silently created");
       });
-      await inspect('missing-signer-refused', async () => { await prepareSignerControls(); await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("A compatible NIP-07 browser signer is required", { exact: false }).waitFor({ state: "visible" }); });
+      await inspect('missing-signer-refused', async () => { await prepareSignerControls(); await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("No compatible NIP-07 browser signer was found.", { exact: false }).waitFor({ state: "visible" }); });
       return { anonymous_scope_preserved: true, actual_reader_bytes_decoded: true, original_list_id: deviceList.id, scoped_list_membership: true, no_auto_signer: true, original_mutation_requests: 0, outbox_jobs: 0 };
     });
     await step("external signer and actual service recipient require explicit independent selection", async () => {

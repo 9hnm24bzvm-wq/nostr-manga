@@ -89,6 +89,7 @@ class Fixture:
         self.started=time.time(); self.ready_at=None; self.warning_sent=False
         self.browser=None; self.browser_deadline=None; self.browser_phase=None; self.browser_completed=set()
         self.receipt={'fixture_only':True,'production':False,'credentials_generated_by_supervisor':False,
+                      'fixture_mode':'combined' if self.protocol_enabled else 'native-only',
                       'database':'weebdex_browser_test','run_directory':str(self.run),'started_unix':self.started,
                       'platform_origin':self.origin,'mail_origin':self.mail_origin,'ids':IDS,'children':{},'listener_lifecycle':[]}
         write_json(self.run/'supervisor.json',self.receipt)
@@ -1092,6 +1093,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--binary',type=Path,required=True);parser.add_argument('--expected-sha256');parser.add_argument('--lifetime-seconds',type=int,default=2700)
     parser.add_argument('--ui-dir',type=Path,default=ROOT/'artifacts/frontend');parser.add_argument('--frontend-index-sha256')
     parser.add_argument('--frontend-artifact-manifest',type=Path,default=ROOT/'test-evidence/frontend/artifact-manifest.json');parser.add_argument('--frontend-artifact-manifest-sha256')
+    parser.add_argument('--native-only',action='store_true',help='Require instance-local native journeys with no protocol authority, key, node or provisioner; existing default selection is unchanged')
     parser.add_argument('--protocol-provisioner',type=Path);parser.add_argument('--provisioner-sha256')
     parser.add_argument('--second-protocol-recipient',action='store_true',help='Own a second actual original node/database/store for bounded two-recipient browser journeys')
     parser.add_argument('--ui-regression-controls',action='store_true',help='Enable private bounded named native pagination/reader regression controls; no bulk data is seeded automatically')
@@ -1100,6 +1102,7 @@ def main():
     args=parser.parse_args()
     if not 600<=args.lifetime_seconds<=3600:parser.error('fixture lifetime must be600..3600seconds')
     if not args.frontend_artifact_manifest_sha256 or not args.frontend_index_sha256:parser.error('fixture requires exact complete frontend manifest and index hashes')
+    if args.native_only and (args.protocol_provisioner or args.provisioner_sha256 or getattr(args,'protocol_self_enrollment',False) or args.second_protocol_recipient or args.ui_regression_controls or args.pg_home_fault_controls or args.ubunchu_noncommercial):parser.error('native-only mode excludes protocol authorities, provisioner and combined controls')
     if args.ubunchu_noncommercial and not args.protocol_provisioner:parser.error('Ubunchu input requires combined real-protocol fixture')
     if args.second_protocol_recipient and not args.protocol_provisioner:parser.error('second recipient requires combined real-protocol fixture')
     if args.ui_regression_controls and not args.protocol_provisioner:parser.error('native UI regression controls require the reviewed disposable fixture provisioner')

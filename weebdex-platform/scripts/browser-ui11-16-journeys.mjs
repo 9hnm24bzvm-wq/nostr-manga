@@ -131,6 +131,24 @@ export function observeUi11To16Requests(page, matcher, { compactDiagnostics = fa
   };
 }
 
+// Native timing uses Unix epoch milliseconds for startTime and milliseconds
+// relative to that start for responseEnd. Observer event delivery order is only
+// diagnostic. No positive overlap tolerance or missing-data fallback is used.
+export function compactNativeRequestsSequential(observation) {
+  if (!observation || !Array.isArray(observation.requests) || !Number.isSafeInteger(observation.request_count) || observation.request_count < 1 || observation.requests.length !== observation.request_count) return false;
+  if (!observation.truncated || ['requests', 'events', 'rows'].some(key => observation.truncated[key] !== false)) return false;
+  if (!observation.unavailable || ['request_event', 'request_page', 'response_page', 'status', 'timing'].some(key => observation.unavailable[key] !== false)) return false;
+  let previousEnd = -Infinity;
+  for (const row of observation.requests) {
+    const start = row?.timing?.startTime, duration = row?.timing?.responseEnd;
+    if (row.status !== 200 || !Number.isSafeInteger(row.response_page) || row.response_page < 1 || typeof start !== 'number' || !Number.isFinite(start) || start < 1e12 || typeof duration !== 'number' || !Number.isFinite(duration) || duration < 0) return false;
+    if (!Array.isArray(row.events) || !row.events.some(event => event.event === 'requestfinished') || row.events.some(event => event.event === 'requestfailed') || start < previousEnd) return false;
+    previousEnd = start + duration;
+    if (!Number.isFinite(previousEnd)) return false;
+  }
+  return true;
+}
+
 export async function runUi11To16Journeys(h) {
   const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
   const check = (id, operation) => {
@@ -604,7 +622,7 @@ export async function runUi11To16Journeys(h) {
       await check("compact-feed-manual-terminal-page", async () => { await more.click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === Math.ceil(nativeTotal / 100)), "Explicit real Load more did not reach the remaining compact page"); await seen.settle(); });
       const pages = seen.rows.filter(row => row.status === 200).map(row => row.body.page);
       saveObservation();
-      await check("compact-feed-unique-sequential-pages", async () => { insist(new Set(pages).size === pages.length && seen.maximum === 1, "Compact continuation issued duplicate or parallel native page reads"); });
+      await check("compact-feed-unique-sequential-pages", async () => { insist(new Set(pages).size === pages.length && compactNativeRequestsSequential(seen.observation()), "Compact continuation issued duplicate or parallel native page reads"); });
       await check("compact-feed-scenario-membership", async () => { insist(seen.rows.every(row => row.status === 200 && row.body.total === nativeTotal && row.body.data.every(chapter => [data.manga_id, extras.bilingual?.manga_id].includes(chapter.relationships.manga.id))), "Feed was not the actual recorded compact/bilingual backend scenario"); });
       const compactIds = new Set(seen.rows.flatMap(row => row.body.data.filter(chapter => chapter.relationships.manga.id === data.manga_id).map(chapter => chapter.id)));
       await check("compact-feed-all-compact-chapters", async () => { insist(compactIds.size === data.total, "The505 genuine compact chapters did not all become reachable"); });

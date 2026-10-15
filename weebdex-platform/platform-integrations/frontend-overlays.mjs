@@ -4,6 +4,14 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 const patches = [
   {
+    "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+    "label": "native unknown publication year is empty in the title editor, never invalid numeric zero",
+    "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+    "count": 1,
+    "before": "\t\t\tyear: snapshot.year ?? null!,",
+    "after": "\t\t\tyear: snapshot.year === 0 ? null! : snapshot.year ?? null!,"
+  },
+  {
     "path": "src/routes/(app)/settings/library/+page.svelte",
     "label": "weebdex import acknowledges persisted result",
     "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",

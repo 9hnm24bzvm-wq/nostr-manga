@@ -74,7 +74,13 @@ export function createActorFollowState(options: FollowOptions) {
     reset();
     // The initial target is selected by the component's pre-effect. Later
     // Session completions reset synchronously, before controls can be used.
-    if (selected !== undefined) void refresh();
+    // The authority-keyed parent disposes the old controller in Svelte's
+    // already queued flush. Reset unknown state synchronously, but admit only
+    // the still-current Session-triggered read after that actual flush.
+    const revision = generation;
+    if (selected !== undefined) void Promise.resolve().then(() => {
+      if (!disposed && generation === revision) void refresh();
+    });
   });
 
   const activate = () => {

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import fs from 'node:fs';
 import test from 'node:test';
-import { observeUi11To16Requests, runUi11To16Journeys, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
+import { compactNativeRequestsSequential, observeUi11To16Requests, runUi11To16Journeys, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
 import { createJourneyCheck } from '../../scripts/journey-checks.mjs';
 
 const origin = 'http://127.0.0.1:1', secret = 'PRIVATE_credentials_query_body_error';
@@ -102,7 +102,7 @@ for (const parallel of [false, true]) test('actual compact wiring saves before u
   const save = () => snapshots.push(structuredClone(report)), record = createJourneyCheck(report, save);
   let finalRequest, failure;
   async function emit(number, finish = true) {
-    const source = request(number); page.emit('request', source); page.emit('response', response(source));
+    const source = request(number, { startTime: 1792037000000 + number * 20, responseEnd: parallel && number === 5 ? 25 : 10 }); page.emit('request', source); page.emit('response', response(source));
     await Promise.resolve(); await Promise.resolve(); if (finish) page.emit('requestfinished', source); return source;
   }
   page.getByRole = (_kind, options) => options.name === 'Load more updates' ? { async waitFor() {}, async click() { await emit(6); if (finalRequest) page.emit('requestfinished', finalRequest); } } : { async count() { return 0; } };
@@ -128,6 +128,13 @@ for (const parallel of [false, true]) test('actual compact wiring saves before u
 
 test('original unique/sequential assertion and fixed diagnostic identity remain exact', () => {
   const source = fs.readFileSync(new URL('../../scripts/browser-ui11-16-journeys.mjs', import.meta.url), 'utf8');
-  assert.equal(source.split('new Set(pages).size === pages.length && seen.maximum === 1').length - 1, 1);
+  assert.equal(source.split('new Set(pages).size === pages.length && compactNativeRequestsSequential(seen.observation())').length - 1, 1);
   assert.equal(ui11To16DiagnosticChecks['ui12-compact-feed'].filter(id => id === 'compact-feed-unique-sequential-pages').length, 1);
+});
+
+test('native interval gate accepts delayed events but fails every real overlap and incomplete clock', () => {
+  const origin = 1792037000000;
+  const make = () => ({ request_count:2, truncated:{requests:false,events:false,rows:false}, unavailable:{request_event:false,request_page:false,response_page:false,status:false,timing:false},requests:[0,1].map(index=>({status:200,response_page:index+1,timing:{startTime:origin+index*10,responseEnd:10},events:[{event:'request'},{event:'requestfinished'}]})) });
+  assert.equal(compactNativeRequestsSequential(make()),true);
+  for(const alter of [value=>value.requests[1].timing.startTime-=0.001,value=>value.requests[0].timing.responseEnd=-1,value=>value.requests[0].timing.startTime=1000,value=>value.requests[0].timing.responseEnd=NaN,value=>value.requests[0].timing.startTime=Infinity,value=>delete value.requests[0].timing.responseEnd,value=>value.requests[0].events=[{event:'request'}],value=>value.requests[0].events.push({event:'requestfailed'}),value=>value.truncated.events=true,value=>delete value.unavailable,value=>value.requests.pop()]){const value=make();alter(value);assert.equal(compactNativeRequestsSequential(value),false);}
 });

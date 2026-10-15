@@ -95,3 +95,23 @@ test('snapshot does not bypass the actual original revision and recipient-intent
   for (const guard of ['review.owner !== identity.owner', 'review.generation !== identity.generation', 'current.revision !== review.deviceRevision', 'canonical.revision !== review.protocolRevision', 'preferences.revision !== review.relayRevision', 'fingerprint.mappingProof !== review.mappingProof', 'latest.revision !== review.deviceRevision']) assert(source.includes(guard), guard);
   assert.match(panel, /const reviewed = \$state\.snapshot\(publication!\); publicConsent = false; publication = undefined; await publishReviewed\(reviewed, true, assertActive\)/);
 });
+
+// Reconstructed relay-checkbox regression: actual pinned deep proxies and the
+// original outbox's real structured-clone transaction, without a network claim.
+const selection = panel.match(/run\('select-relay', (async \(\) => \{[^\n]+\})\)/)?.[1];
+assert(selection, 'Execute the exact destination checkbox handoff');
+const select = (relays, relay, relayRevision, selectRelays, resetReviews=()=>{}) => vm.runInNewContext('(' + stripTypeScriptTypes(selection) + ')()', {relays,relay,relayRevision,selectRelays,resetReviews,event:{target:{checked:true}},$state:{snapshot}});
+const destinations = () => [{origin:'http://127.0.0.1:4001',serviceKey:'a'.repeat(64),selected:true},{origin:'http://127.0.0.1:4002',serviceKey:'b'.repeat(64),selected:false}];
+
+test('old two-row shallow map fails actual outbox preference insertion and rolls back',async()=>{
+ await withOutbox(async outbox=>{const plain=destinations();await outbox.setRelays(plain,0);const relays=proxy(structuredClone(plain));const changed=relays.map(row=>row.origin===relays[1].origin?{...row,selected:true}:row);assert.throws(()=>structuredClone(changed),error=>error.name==='DataCloneError');await assert.rejects(outbox.setRelays(changed,1),error=>error.name==='DataCloneError');assert.deepEqual(await outbox.preferences(),{relays:plain,revision:1});});
+});
+
+test('compiled checkbox snapshots every row and exact handoff retains both identities across await',async()=>{
+ const {compile}=createRequire(import.meta.url)(path.join(svelte,'compiler/index.js'));const {js}=compile(panel,{filename:'LibraryManagementTools.svelte',generate:'client',dev:false,runes:true});assert.match(js.code,/selectRelays\(\$\.snapshot\(\$\.get\(relays\)\)\.map/);
+ await withOutbox(async outbox=>{const plain=destinations();await outbox.setRelays(plain,0);const relays=proxy(structuredClone(plain));let captured,release,entered,resets=0;const paused=new Promise(resolve=>release=resolve),started=new Promise(resolve=>entered=resolve);const pending=select(relays,relays[1],1,async(rows,revision)=>{captured=rows;assert.equal(revision,1);structuredClone(rows);entered();await paused;return outbox.setRelays(rows,revision);},()=>resets++);await started;const expected=plain.map(row=>({...row,selected:true}));assert.deepEqual(captured,expected);relays[0].origin='http://127.0.0.1:4999';relays[1].serviceKey='c'.repeat(64);assert.deepEqual(captured,expected);release();await pending;assert.equal(resets,1);assert.deepEqual(await outbox.preferences(),{relays:expected,revision:2});});
+});
+
+test('snapshot selection retains the original relay-revision CAS and does not change an approved job',async()=>{
+ await withOutbox(async outbox=>{const plain=destinations();await outbox.setRelays(plain,0);await outbox.setRelays(plain,1);let resets=0;await assert.rejects(select(proxy(structuredClone(plain)),plain[1],1,(rows,revision)=>outbox.setRelays(rows,revision),()=>resets++),/selection changed.*review/i);assert.equal(resets,0);assert.deepEqual(await outbox.preferences(),{relays:plain,revision:2});assert.deepEqual(await outbox.list(),[]);});
+});

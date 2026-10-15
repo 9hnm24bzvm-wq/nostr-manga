@@ -35,6 +35,7 @@ BATCHES = {
 ALL_PHASES = ['startup', *dict.fromkeys(phase for phases in BATCHES.values() for phase in phases)]
 assert len(ALL_PHASES) == 39
 MAX_PHASE_RUNS = sum(1 + len(phases) for phases in BATCHES.values())
+NATIVE_ONLY_BATCHES = frozenset({'ordinary-a', 'ordinary-b'})
 STOP = False
 
 
@@ -100,16 +101,42 @@ def project_phase(phase, batch, acceptance, owned):
     return value
 
 
-def project_cleanup(value):
+def fixture_mode(name):
+    return 'native-only' if name in NATIVE_ONLY_BATCHES else 'combined'
+
+
+def fixture_arguments(name, plan):
+    args = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--ui-dir', str(ROOT / 'artifacts/frontend'), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--lifetime-seconds', '3600']
+    if fixture_mode(name) == 'native-only':
+        return args + ['--native-only']
+    return args + ['--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls']
+
+
+def ready_matches(state, fixture, plan, mode='combined'):
+    if mode not in {'combined', 'native-only'}:
+        raise ValueError('Unknown fixture mode')
+    if state.get('status') != 'ready' or state.get('run_directory') != str(fixture) or state.get('binary', {}).get('sha256') != plan['normal_sha256'] or state.get('frontend', {}).get('artifact_manifest_sha256') != plan['frontend_manifest_sha256']:
+        return False
+    if mode == 'combined':
+        return state.get('protocol_seed', {}).get('fully_ready') is True
+    forbidden = ['protocol_origin', 'relay_origin', 'protocol_recipients', 'protocol_provisioner', 'protocol_seed', 'service_key']
+    seed = state.get('seed', {})
+    return state.get('fixture_mode') == 'native-only' and seed.get('native_only') is True and seed.get('protocol_signed_publications') is False and all(key not in state for key in forbidden)
+
+
+def project_cleanup(value, mode='combined'):
     ports = value.get('loopback_ports_closed', {})
-    ports_closed = set(ports) == {'platform', 'mail', 'postgres', 'original', 'recipient'} and all(item is True for item in ports.values())
+    if mode not in {'combined', 'native-only'}:
+        raise ValueError('Unknown fixture mode')
+    expected = {'platform', 'mail', 'postgres'} if mode == 'native-only' else {'platform', 'mail', 'postgres', 'original', 'recipient'}
+    ports_closed = set(ports) == expected and all(item is True for item in ports.values())
     stopped = value.get('fixture_only') is True and value.get('status') == 'verified_stopped' and value.get('synthetic_server_keys_absent') is True and ports_closed and value.get('remaining_owned_processes') == [] and value.get('process_tracking_errors') == [] and value.get('final_teardown_clean') is True
     fault = value.get('pg_home_fault_terminal')
     fault_clean = isinstance(fault, dict) and fault.get('terminal') is True and fault.get('status') == 'verified_stopped' and fault.get('returncode') == 0 and fault.get('watchdog_returncode') == 0 and fault.get('forced') is False and fault.get('remaining_owned_processes') == [] and fault.get('error') is None
     return {'verified_stopped': stopped, 'ports_closed': ports_closed, 'keys_removed': value.get('synthetic_server_keys_absent') is True, 'remaining_owned_process_count': len(value.get('remaining_owned_processes', [])), 'final_teardown_clean': value.get('final_teardown_clean') is True, 'lifecycle_clean': value.get('lifecycle_clean') is True, 'pg_fault_activated': fault is not None, 'pg_fault_terminal_clean': fault_clean}
 
 
-def finish_supervisor(owner, process, fixture, batch, seconds=600):
+def finish_supervisor(owner, process, fixture, batch, seconds=600, mode='combined'):
     """Always attempt owned terminal cleanup, even if a stop/receipt step fails."""
     terminal = False
     remaining = []
@@ -139,7 +166,7 @@ def finish_supervisor(owner, process, fixture, batch, seconds=600):
         batch['supervisor_exit_zero'] = process.returncode == 0
     try:
         if fixture and (fixture / 'cleanup.json').is_file():
-            batch['cleanup'] = project_cleanup(read(fixture / 'cleanup.json'))
+            batch['cleanup'] = project_cleanup(read(fixture / 'cleanup.json'), mode)
     except Exception as error:
         batch['cleanup_error_class'] = type(error).__name__
     if batch['outer_cleanup']['forced'] or not batch['outer_cleanup']['verified_stopped'] or 'cleanup_error_class' in batch:
@@ -159,7 +186,8 @@ def run_batch(name, phases, plan, journal, run_id):
     process = None
     batch = {'batch': name, 'readiness': False, 'cleanup': {'verified_stopped': False}}
     log = STAGE / ('fixture-' + name + '.log')
-    argv = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--ui-dir', str(ROOT / 'artifacts/frontend'), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls', '--lifetime-seconds', '3600']
+    mode = fixture_mode(name)
+    argv = fixture_arguments(name, plan)
     # No Actions token or provider/account secrets reach the fixture process.
     allowed = {'PATH', 'HOME', 'TMPDIR', 'TMP', 'TEMP', 'LANG', 'LC_ALL', 'LC_CTYPE', 'LD_LIBRARY_PATH', 'SSL_CERT_FILE', 'SSL_CERT_DIR'}
     env = {key: value for key, value in os.environ.items() if key in allowed}
@@ -183,7 +211,7 @@ def run_batch(name, phases, plan, journal, run_id):
                     if path.is_file():
                         state = read(path)
                         if state.get('status') == 'ready':
-                            if state.get('run_directory') != str(fixture) or state.get('protocol_seed', {}).get('fully_ready') is not True or state.get('binary', {}).get('sha256') != plan['normal_sha256'] or state.get('frontend', {}).get('artifact_manifest_sha256') != plan['frontend_manifest_sha256']:
+                            if not ready_matches(state, fixture, plan, mode):
                                 raise RuntimeError('Newly ready fixture differs from the actual build plan')
                             return state
                 return None
@@ -216,7 +244,7 @@ def run_batch(name, phases, plan, journal, run_id):
             batch['error_class'] = type(error).__name__
         finally:
             if process:
-                finish_supervisor(owner, process, fixture, batch)
+                finish_supervisor(owner, process, fixture, batch, mode=mode)
     if any(row['batch'] == name and row['phase'] == 'ui14-home-failures' and row['status'] == 'passed' for row in journal['phases']) and not batch['cleanup'].get('pg_fault_terminal_clean'):
         batch['cleanup']['verified_stopped'] = False
     journal['batches'].append(batch)

@@ -1,3 +1,4 @@
+import { contributorSearchTrigger } from "./browser-editorial-controls.mjs";
 // Real user-control journeys. Synthetic secrets stay only in harness memory.
 import { actAndWaitForPageEvent } from "./browser-action-events.mjs";
 import { randomBytes } from "node:crypto";
@@ -404,12 +405,12 @@ export async function runJourneys(h) {
 		});
 	} else if (phase === 'editorial') {
 		let title;
-		const chooseContributor = async (index, name) => { await page.getByText('Search...', { exact: true }).nth(index).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Search...', { exact: true }).fill(name); await dialog.getByRole('button', { name, exact: true }).click(); await page.keyboard.press('Escape'); };
+		const chooseContributor = async (family, name) => { await contributorSearchTrigger(page, family).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Search...', { exact: true }).fill(name); await dialog.getByRole('button', { name, exact: true }).click(); await page.keyboard.press('Escape'); };
 		await step('staff creates real title draft with author artist and original cover controls', async () => {
 			const author = await editorialCheck('author-ready', async () => { insist(account, 'Staff registration prerequisite failed'); const author = await api(`/author/${ids.author ?? 'SeedAuthr1'}`); insist(author.status === 200 && author.body?.name, 'Real seeded author missing'); return author; });
 			await editorialCheck('create-controls', async () => { await open('/create/title'); await page.locator('#title').fill(`Browser Draft ${marker}`); await page.locator('#synopsis').fill(`Synthetic editorial draft ${marker}`); await page.getByRole('tab', { name: 'Metadata', exact: true }).click(); });
-			await editorialCheck('author-control', () => chooseContributor(0, author.body.name));
-			await editorialCheck('artist-control', () => chooseContributor(1, author.body.name));
+			await editorialCheck('author-control', () => chooseContributor("authors", author.body.name));
+			await editorialCheck('artist-control', () => chooseContributor("artists", author.body.name));
 			await editorialCheck('cover-input', async () => { await page.getByRole('tab', { name: 'Covers', exact: true }).click(); await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: 'cover.png', mimeType: 'image/png', buffer: image }); });
 			const response = await editorialCheck('create-response', () => actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Save', exact: true }).click(), response => new URL(response.url()).pathname === '/api/manga' && response.request().method() === 'POST'));
 			await editorialCheck('create-receipt', async () => { insist(response.status() === 201, 'Title creation did not persist'); title = await response.json(); });

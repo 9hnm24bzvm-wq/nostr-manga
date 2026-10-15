@@ -128,7 +128,7 @@
         </form>
         {#each relays as relay}
           <div class="rounded border p-2">
-            <label><input type="checkbox" checked={relay.selected} disabled={!!pending} onchange={event => run('select-relay', async () => { await selectRelays(relays.map(row => row.origin === relay.origin ? { ...row, selected: (event.target as HTMLInputElement).checked } : row), relayRevision); resetReviews(); })} /> Select {relay.origin}</label>
+            <label><input type="checkbox" checked={relay.selected} disabled={!!pending} onchange={event => run('select-relay', async () => { await selectRelays($state.snapshot(relays).map(row => row.origin === relay.origin ? { ...row, selected: (event.target as HTMLInputElement).checked } : row), relayRevision); resetReviews(); })} /> Select {relay.origin}</label>
             <Button variant="ghost" size="sm" onclick={() => { inspectedRelay = inspectedRelay === relay.origin ? '' : relay.origin; }}>Check service identity</Button>{#if inspectedRelay === relay.origin}<p class="break-all text-xs">Verified service public key: {relay.serviceKey}</p>{/if}
             <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => { if (confirm(`Request admission for public key ${$signerIdentity.owner} at ${relay.origin}? This does not publish the library.`)) void run('enroll', async () => { await admitAccount(relay, assertActive); notice = 'Public-key account admitted. Library remains local.'; }); }}>Request public-key account admission</Button>
 
