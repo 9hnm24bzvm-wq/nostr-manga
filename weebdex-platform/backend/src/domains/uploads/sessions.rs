@@ -2,7 +2,7 @@ use super::storage::{self, MAX_FILES, MAX_SESSION_BYTES, StoredImage};
 use crate::{
     domains::{
         auth::{self, SessionPrincipal},
-        catalog::{CatalogPage, CatalogRepository, ChapterPublication, CoverPublication},
+        catalog::{CatalogPage, CatalogRepository, ChapterPublication, CoverPublication, entity_mutations::CatalogMutationActor},
     },
     error::{ApiError, ApiResult},
     state::AppState,
@@ -22,30 +22,30 @@ use tokio_postgres::{Row, Transaction};
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Begin {
-    manga: String,
+    pub(crate) manga: String,
     #[serde(default)]
-    groups: Vec<String>,
+    pub(crate) groups: Vec<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Edit {
     #[serde(default)]
-    replace: bool,
-    version: i32,
+    pub(crate) replace: bool,
+    pub(crate) version: i32,
 }
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Draft {
-    volume: Option<String>,
-    chapter: Option<String>,
-    title: Option<String>,
-    language: String,
+    pub(crate) volume: Option<String>,
+    pub(crate) chapter: Option<String>,
+    pub(crate) title: Option<String>,
+    pub(crate) language: String,
 }
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Commit {
-    draft: Draft,
-    page_order: Vec<String>,
+    pub(crate) draft: Draft,
+    pub(crate) page_order: Vec<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -122,7 +122,7 @@ fn valid_number(value: &str) -> bool {
     }
     parts.next().is_none()
 }
-async fn open_session(tx: &Transaction<'_>, id: &str, user: &str) -> ApiResult<Row> {
+pub(crate) async fn open_session(tx: &Transaction<'_>, id: &str, user: &str) -> ApiResult<Row> {
     open_session_for(tx, id, user, false).await
 }
 async fn open_session_for(
@@ -156,7 +156,7 @@ async fn open_session_for(
 }
 /// An independently prepared original publication fixes its signed input.
 /// Preserve those native files for exact commit retry and rollback recovery.
-async fn require_mutable_session(tx: &Transaction<'_>, id: &str) -> ApiResult<()> {
+pub(crate) async fn require_mutable_session(tx: &Transaction<'_>, id: &str) -> ApiResult<()> {
     let prepared: bool = tx.query_one(
         "SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE upload_session_id=$1 AND state IN ('prepared','source_accepted'))",
         &[&id],
@@ -169,7 +169,7 @@ async fn require_mutable_session(tx: &Transaction<'_>, id: &str) -> ApiResult<()
         Ok(())
     }
 }
-async fn session_json(tx: &Transaction<'_>, id: &str) -> ApiResult<Value> {
+pub(crate) async fn session_json(tx: &Transaction<'_>, id: &str) -> ApiResult<Value> {
     let row=tx.query_one("SELECT id,platform.catalog_timestamp(created_at),platform.catalog_timestamp(updated_at),version,state,manga_id,chapter_id,owner_id,groups,platform.catalog_timestamp(expires_at),expires_at>clock_timestamp(),resume_draft,resume_page_order,committed_chapter_id FROM platform.upload_sessions WHERE id=$1",&[&id]).await?;
     let manga: Option<Value> = tx
         .query_opt(
@@ -239,7 +239,7 @@ async fn session_json(tx: &Transaction<'_>, id: &str) -> ApiResult<Value> {
         json!({"id":row.get::<_,String>(0),"created_at":row.get::<_,String>(1),"updated_at":row.get::<_,String>(2),"version":row.get::<_,i32>(3),"state":session_state,"is_committed":session_state=="committed","is_processed":true,"is_deleted":session_state=="deleted","expires_at":row.get::<_,String>(9),"is_expired":!active,"can_mutate":session_state=="open"&&active&&!fixed,"can_cancel":session_state=="open"&&active&&!fixed,"can_retry_commit":session_state=="open"&&(active||fixed),"publication_status":publication_status,"publication_event_id":command.as_ref().and_then(|r|r.get::<_,Option<String>>(2)),"manga_id":row.get::<_,String>(5),"chapter_id":chapter_id,"draft":draft,"page_order":page_order,"receipt":if session_state=="committed"{chapter.clone()}else{None},"committed_result":if session_state=="committed"{chapter.clone()}else{None},"relationships":{"manga":manga,"chapter":chapter,"uploader":{"id":owner},"groups":group_json,"files":files}}),
     )
 }
-async fn file_rows(tx: &Transaction<'_>, id: &str) -> ApiResult<Vec<Row>> {
+pub(crate) async fn file_rows(tx: &Transaction<'_>, id: &str) -> ApiResult<Vec<Row>> {
     Ok(tx.query("SELECT f.id,o.digest,o.extension,o.bytes,f.original_name,o.width,o.height,o.id FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1 ORDER BY f.position,f.id",&[&id]).await?)
 }
 fn file_json(row: &Row) -> Value {
@@ -252,7 +252,7 @@ async fn current_committed_result(
     tx: &Transaction<'_>,
     chapter: &str,
     session: &str,
-    actor: &SessionPrincipal,
+    actor: &impl CatalogMutationActor,
 ) -> ApiResult<Value> {
     if let Some(value) = tx.query_opt(
         "SELECT platform.catalog_chapter_json(c.id) FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id)",
@@ -269,7 +269,7 @@ async fn current_committed_result(
     }
     let row = tx.query_one(
         "SELECT s.committed_result,c.protocol_event_id FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3",
-        &[&session,&actor.user_id,&chapter],
+        &[&session,&actor.user_id(),&chapter],
     ).await?;
     let saved: Value = row
         .get::<_, Option<Value>>(0)
@@ -449,12 +449,23 @@ pub async fn begin(
     actor.require_permission("chapter.create")?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    CatalogRepository::ensure_upload_target(&tx, &payload.manga, &actor, &payload.groups).await?;
-    expire_owner(&tx, &actor.user_id).await?;
+    let result = begin_in(&tx, &actor, &payload).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok((StatusCode::CREATED, Json(result)))
+}
+pub(crate) async fn begin_in(
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    payload: &Begin,
+) -> ApiResult<Value> {
+    actor.require_permission("chapter.create")?;
+    CatalogRepository::ensure_upload_target(&tx, &payload.manga, actor, &payload.groups).await?;
+    expire_owner(&tx, &actor.user_id()).await?;
     if tx
         .query_opt(
             "SELECT id FROM platform.upload_sessions WHERE owner_id=$1 AND state='open'",
-            &[&actor.user_id],
+            &[&actor.user_id()],
         )
         .await?
         .is_some()
@@ -466,13 +477,11 @@ pub async fn begin(
     let id = storage::short_id();
     tx.execute(
         "INSERT INTO platform.upload_sessions(id,owner_id,manga_id,groups) VALUES($1,$2,$3,$4)",
-        &[&id, &actor.user_id, &payload.manga, &payload.groups],
+        &[&id, &actor.user_id(), &payload.manga, &payload.groups],
     )
     .await?;
     let result = session_json(&tx, &id).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok((StatusCode::CREATED, Json(result)))
+    Ok(result)
 }
 pub async fn begin_edit(
     State(state): State<AppState>,
@@ -484,13 +493,24 @@ pub async fn begin_edit(
     actor.require_permission("self.chapter.update")?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
+    let result = begin_edit_in(&tx, &actor, &chapter, &payload).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok((StatusCode::CREATED, Json(result)))
+}
+pub(crate) async fn begin_edit_in(
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    chapter: &str, payload: &Edit,
+) -> ApiResult<Value> {
+    actor.require_permission("self.chapter.update")?;
     let old =
-        CatalogRepository::authorize_chapter_edit(&tx, &chapter, &actor, payload.version).await?;
-    expire_owner(&tx, &actor.user_id).await?;
+        CatalogRepository::authorize_chapter_edit(&tx, &chapter, actor, payload.version).await?;
+    expire_owner(&tx, &actor.user_id()).await?;
     if tx
         .query_opt(
             "SELECT id FROM platform.upload_sessions WHERE owner_id=$1 AND state='open'",
-            &[&actor.user_id],
+            &[&actor.user_id()],
         )
         .await?
         .is_some()
@@ -509,7 +529,7 @@ pub async fn begin_edit(
         .filter_map(|g| g["id"].as_str().map(str::to_owned))
         .collect();
     let id = storage::short_id();
-    tx.execute("INSERT INTO platform.upload_sessions(id,owner_id,manga_id,chapter_id,edit_version,groups) VALUES($1,$2,$3,$4,$5,$6)",&[&id,&actor.user_id,&manga,&chapter,&payload.version,&groups]).await?;
+    tx.execute("INSERT INTO platform.upload_sessions(id,owner_id,manga_id,chapter_id,edit_version,groups) VALUES($1,$2,$3,$4,$5,$6)",&[&id,&actor.user_id(),&manga,&chapter,&payload.version,&groups]).await?;
     if !payload.replace {
         for row in tx.query("SELECT p.object_id,p.position,o.extension FROM platform.chapter_pages p JOIN platform.media_objects o ON o.id=p.object_id WHERE p.chapter_id=$1 ORDER BY p.position",&[&chapter]).await? {
    let file=storage::short_id();let position:i32=row.get(1);let original=format!("{}.{}",position+1,row.get::<_,String>(2));
@@ -518,9 +538,7 @@ pub async fn begin_edit(
   }
     }
     let result = session_json(&tx, &id).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok((StatusCode::CREATED, Json(result)))
+    Ok(result)
 }
 pub async fn check_approval(
     State(state): State<AppState>,
@@ -733,7 +751,25 @@ async fn attach(
 ) -> ApiResult<Value> {
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    open_session(&tx, id, &actor.user_id).await?;
+    let result = attach_in(state, &tx, id, actor, original, image, variants).await?;
+    tx.commit().await?;
+    image.confirm_persisted().await;
+    for (_, derivative) in variants.iter_mut() {
+        derivative.confirm_persisted().await;
+    }
+    Ok(result)
+}
+pub(crate) async fn attach_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    id: &str,
+    actor: &impl CatalogMutationActor,
+    original: &str,
+    image: &mut StoredImage,
+    variants: &mut Vec<(String, StoredImage)>,
+) -> ApiResult<Value> {
+    actor.require_permission("self.chapter.update")?;
+    open_session(&tx, id, &actor.user_id()).await?;
     require_mutable_session(&tx, id).await?;
     let row=tx.query_one("SELECT count(*) AS count,COALESCE(sum(o.bytes),0)::BIGINT AS bytes,COALESCE(max(f.position),-1)::INTEGER AS position FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1",&[&id]).await?;
     if row.get::<_, i64>(0) >= MAX_FILES as i64
@@ -761,11 +797,6 @@ async fn attach(
     for (_, derivative) in variants.iter_mut() {
         derivative.protect_commit(&state.config.uploads_dir).await?;
     }
-    tx.commit().await?;
-    image.confirm_persisted().await;
-    for (_, derivative) in variants.iter_mut() {
-        derivative.confirm_persisted().await;
-    }
     Ok(
         json!({"id":file,"file_hash":image.digest,"file_name":format!("{}.{}",file,image.ext),"file_ext":format!(".{}",image.ext),"file_size":image.bytes.to_string(),"original_file_name":original}),
     )
@@ -787,14 +818,27 @@ pub async fn commit(
 ) -> ApiResult<Json<Value>> {
     let actor = actor(&state, &headers).await?;
     actor.require_permission("self.chapter.update")?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let result = commit_in(&state, &tx, &actor, &id, &payload).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok(Json(result))
+}
+pub(crate) async fn commit_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    id: &str,
+    payload: &Commit,
+) -> ApiResult<Value> {
+    actor.require_permission("self.chapter.update")?;
     session_id(&id)?;
     validate_draft(&payload.draft)?;
     let hash = hex::encode(Sha256::digest(
         serde_json::to_vec(&payload).map_err(|_| ApiError::bad_request("Invalid commit"))?,
     ));
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    let row=tx.query_opt("SELECT state,committed_chapter_id,commit_hash,committed_result FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",&[&id,&actor.user_id]).await?.ok_or_else(||ApiError::not_found("Upload session not found"))?;
+    let row=tx.query_opt("SELECT state,committed_chapter_id,commit_hash,committed_result FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",&[&id,&actor.user_id()]).await?.ok_or_else(||ApiError::not_found("Upload session not found"))?;
     if row.get::<_, String>(0) == "committed" {
         if row.get::<_, Option<String>>(2).as_deref() != Some(&hash) {
             return Err(ApiError::conflict(
@@ -804,10 +848,10 @@ pub async fn commit(
         let chapter: String = row
             .get::<_, Option<String>>(1)
             .ok_or_else(ApiError::unavailable)?;
-        let value = current_committed_result(&state, &tx, &chapter, &id, &actor).await?;
-        return Ok(Json(value));
+        let value = current_committed_result(&state, &tx, &chapter, &id, actor).await?;
+        return Ok(value);
     }
-    let session = open_session_for(&tx, &id, &actor.user_id, true).await?;
+    let session = open_session_for(&tx, &id, &actor.user_id(), true).await?;
     let native_commit_payload =
         serde_json::to_value(&payload).map_err(|_| ApiError::bad_request("Invalid commit"))?;
     let rows = file_rows(&tx, &id).await?;
@@ -865,7 +909,7 @@ pub async fn commit(
         let value = CatalogRepository::replace_chapter_pages(
             &tx,
             &chapter,
-            &actor,
+            actor,
             version,
             &patch,
             &state.config.public_origin,
@@ -875,13 +919,13 @@ pub async fn commit(
         (chapter, value)
     } else {
         actor.require_permission("chapter.create")?;
-        CatalogRepository::ensure_upload_target(&tx, &manga, &actor, &groups).await?;
+        CatalogRepository::ensure_upload_target(&tx, &manga, actor, &groups).await?;
         let chapter = storage::short_id();
         let mut record = ChapterPublication {
             id: chapter.clone(),
             manga_id: manga.clone(),
-            uploader_id: actor.user_id.clone(),
-            uploader_name: actor.username.clone(),
+            uploader_id: actor.user_id().to_owned(),
+            uploader_name: actor.username().to_owned(),
             title: draft.title.clone(),
             volume: draft.volume.clone(),
             chapter: draft.chapter.clone(),
@@ -922,7 +966,7 @@ pub async fn commit(
         let receipt = crate::protocol::publication::publish_native_upload(
             &state,
             &tx,
-            &actor,
+            actor,
             &id,
             &hash,
             &mut record,
@@ -986,9 +1030,7 @@ pub async fn commit(
     .await?;
     queue_unused(&tx).await?;
     crate::protocol::publication::finalize_native_upload(&tx, &id, &manga).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok(Json(result))
+    Ok(result)
 }
 pub fn validate_order(order: &[String], files: &[String]) -> ApiResult<()> {
     let unique: BTreeSet<_> = order.iter().collect();
@@ -1013,13 +1055,20 @@ pub async fn cancel(
 ) -> ApiResult<StatusCode> {
     let actor = actor(&state, &headers).await?;
     actor.require_permission("self.chapter.update")?;
-    session_id(&id)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
+    cancel_in(&tx, &actor, &id).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok(StatusCode::NO_CONTENT)
+}
+pub(crate) async fn cancel_in(tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str) -> ApiResult<()> {
+    actor.require_permission("self.chapter.update")?;
+    session_id(&id)?;
     let row = tx
         .query_opt(
             "SELECT state FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",
-            &[&id, &actor.user_id],
+            &[&id, &actor.user_id()],
         )
         .await?
         .ok_or_else(|| ApiError::not_found("Upload session not found"))?;
@@ -1036,9 +1085,7 @@ pub async fn cancel(
     )
     .await?;
     queue_unused(&tx).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok(StatusCode::NO_CONTENT)
+    Ok(())
 }
 pub async fn delete_file(
     State(state): State<AppState>,
@@ -1063,12 +1110,19 @@ async fn remove_files(
 ) -> ApiResult<StatusCode> {
     let actor = actor(state, headers).await?;
     actor.require_permission("self.chapter.update")?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    remove_files_in(&tx, &actor, id, files).await?;
+    tx.commit().await?;
+    cleanup(state).await;
+    Ok(StatusCode::NO_CONTENT)
+}
+pub(crate) async fn remove_files_in(tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str, files: &[String]) -> ApiResult<()> {
+    actor.require_permission("self.chapter.update")?;
     if files.len() > MAX_FILES || files.iter().any(|f| !storage::valid_id(f)) {
         return Err(ApiError::bad_request("Invalid upload file identifiers"));
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    open_session(&tx, id, &actor.user_id).await?;
+    open_session(&tx, id, &actor.user_id()).await?;
     require_mutable_session(&tx, id).await?;
     let count: i64 = tx
         .query_one(
@@ -1087,9 +1141,7 @@ async fn remove_files(
     .await?;
     tx.execute("UPDATE platform.upload_sessions SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
     queue_unused(&tx).await?;
-    tx.commit().await?;
-    cleanup(state).await;
-    Ok(StatusCode::NO_CONTENT)
+    Ok(())
 }
 async fn expire_owner(tx: &Transaction<'_>, owner: &str) -> ApiResult<()> {
     tx.execute("UPDATE platform.upload_sessions s SET state='deleted',version=version+1,updated_at=clock_timestamp() WHERE owner_id=$1 AND state='open' AND expires_at<=clock_timestamp() AND NOT EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.state IN ('prepared','source_accepted')) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.protocol_publication_originals pins ON pins.object_id=retained.object_id WHERE retained.session_id=s.id) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.upload_file_derivatives derivative ON derivative.file_id=retained.id JOIN platform.protocol_publication_originals pins ON pins.object_id=derivative.object_id WHERE retained.session_id=s.id)",&[&owner]).await?;

@@ -2,7 +2,7 @@
 use super::validation as v;
 use crate::{
     db::PgStore,
-    domains::auth::SessionPrincipal,
+    domains::catalog::entity_mutations::CatalogMutationActor,
     error::{ApiError, ApiResult},
 };
 use serde::{Deserialize, Serialize};
@@ -67,7 +67,7 @@ impl CatalogRepository {
     pub async fn ensure_upload_target(
         tx: &Transaction<'_>,
         manga_id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
         groups: &[String],
     ) -> ApiResult<()> {
         actor.require_permission("chapter.create")?;
@@ -79,7 +79,7 @@ impl CatalogRepository {
     pub async fn authorize_chapter_edit(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
         version: i32,
     ) -> ApiResult<Value> {
         let row=tx.query_opt("SELECT uploader_id,version,protocol_event_id FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga parent WHERE parent.id=manga_id AND parent.deleted_at IS NULL AND parent.state='published' AND parent.protocol_source_visible AND platform.protocol_source_is_visible(parent.protocol_series_id)) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Chapter not found"))?;
@@ -100,7 +100,7 @@ impl CatalogRepository {
     pub async fn replace_chapter_pages(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
         expected_version: i32,
         patch: &Value,
         node: &str,
@@ -248,7 +248,7 @@ impl CatalogRepository {
     pub async fn update_chapter(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
         patch: &Value,
     ) -> ApiResult<Value> {
         v::allowed(
@@ -287,11 +287,11 @@ impl CatalogRepository {
         let mut overlay = patch.clone();
         overlay.as_object_mut().unwrap().remove("version");
         overlay["scope"] = json!("instance-local");
-        overlay["updated_by"] = json!(actor.user_id);
+        overlay["updated_by"] = json!(actor.user_id());
         tx.execute("UPDATE platform.catalog_chapters SET title=COALESCE($2,title),volume=COALESCE($3,volume),chapter=COALESCE($4,chapter),language=COALESCE($5,language),metadata=CASE WHEN protocol_event_id IS NOT NULL THEN metadata || jsonb_build_object('instance_overlay',COALESCE(metadata->'instance_overlay','{}'::jsonb) || $6::jsonb) ELSE metadata END,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&title,&volume,&chapter,&language,&overlay]).await?;
         audit(
             tx,
-            &actor.user_id,
+            &actor.user_id(),
             "chapter",
             id,
             if protocol_overlay {
@@ -313,7 +313,7 @@ impl CatalogRepository {
     pub(crate) async fn check_chapter_delete_authority(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
     ) -> ApiResult<Option<String>> {
         v::id(id)?;
         let row = tx.query_opt(
@@ -326,7 +326,7 @@ impl CatalogRepository {
     pub async fn delete_chapter(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
     ) -> ApiResult<()> {
         let row=tx.query_opt("SELECT uploader_id,version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga parent WHERE parent.id=manga_id AND parent.deleted_at IS NULL AND parent.state='published' AND parent.protocol_source_visible AND platform.protocol_source_is_visible(parent.protocol_series_id)) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Chapter not found"))?;
         chapter_authority(tx, id, actor, &row.get::<_, String>(0), "remove", true).await?;
@@ -334,7 +334,7 @@ impl CatalogRepository {
         let version = row.get::<_, i32>(1);
         audit(
             tx,
-            &actor.user_id,
+            &actor.user_id(),
             "chapter",
             id,
             "remove",
@@ -347,23 +347,23 @@ impl CatalogRepository {
     pub async fn claim_chapter(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
     ) -> ApiResult<Value> {
         actor.require_permission("self.chapter.update")?;
         let row=tx.query_opt("SELECT uploader_id,uploader_name,version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga parent WHERE parent.id=manga_id AND parent.deleted_at IS NULL AND parent.state='published' AND parent.protocol_source_visible AND platform.protocol_source_is_visible(parent.protocol_series_id)) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Chapter not found"))?;
-        if row.get::<_, String>(0) == actor.user_id || row.get::<_, String>(1) == "system" {
+        if row.get::<_, String>(0) == actor.user_id() || row.get::<_, String>(1) == "system" {
             return Err(ApiError::forbidden("Chapter cannot be claimed"));
         }
-        if !group_authority(tx, id, &actor.user_id, true).await? {
+        if !group_authority(tx, id, &actor.user_id(), true).await? {
             return Err(ApiError::forbidden(
                 "A chapter group leader must claim this chapter",
             ));
         }
-        tx.execute("UPDATE platform.catalog_chapters SET uploader_id=$2,uploader_name=$3,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&actor.user_id,&actor.username]).await?;
+        tx.execute("UPDATE platform.catalog_chapters SET uploader_id=$2,uploader_name=$3,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&actor.user_id(),&actor.username()]).await?;
         let version = row.get::<_, i32>(2);
         audit(
             tx,
-            &actor.user_id,
+            &actor.user_id(),
             "chapter",
             id,
             "claim",
@@ -420,7 +420,7 @@ impl CatalogRepository {
     pub async fn update_cover(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
         patch: &Value,
     ) -> ApiResult<Value> {
         v::allowed(
@@ -460,7 +460,7 @@ impl CatalogRepository {
         tx.execute("UPDATE platform.catalog_covers SET is_main=COALESCE($5,is_main),volume=COALESCE($2,volume),description=COALESCE($3,description),language=COALESCE($4,language),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&volume,&description,&language,&main]).await?;
         audit(
             tx,
-            &actor.user_id,
+            &actor.user_id(),
             "cover",
             id,
             "update",
@@ -476,7 +476,7 @@ impl CatalogRepository {
     pub async fn delete_cover(
         tx: &Transaction<'_>,
         id: &str,
-        actor: &SessionPrincipal,
+        actor: &impl CatalogMutationActor,
     ) -> ApiResult<()> {
         if !actor.is_moderator() {
             return Err(ApiError::forbidden(
@@ -500,14 +500,14 @@ impl CatalogRepository {
         if changed == 0 {
             return Err(ApiError::not_found("Cover not found"));
         }
-        audit(tx, &actor.user_id, "cover", id, "remove", None, None).await?;
+        audit(tx, &actor.user_id(), "cover", id, "remove", None, None).await?;
         Ok(())
     }
 }
 pub async fn require_manga_edit(
     tx: &Transaction<'_>,
     id: &str,
-    actor: &SessionPrincipal,
+    actor: &impl CatalogMutationActor,
     permission: &str,
 ) -> ApiResult<()> {
     let row=tx.query_opt("SELECT owner_id,locked,state FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Manga not found"))?;
@@ -519,7 +519,7 @@ pub async fn require_manga_edit(
     }
     if row.get::<_, String>(2) == "published" {
         actor.require_permission(permission)?;
-    } else if row.get::<_, String>(0) == actor.user_id {
+    } else if row.get::<_, String>(0) == actor.user_id() {
         actor.require_permission("manga.create")?;
     } else {
         return Err(ApiError::forbidden("Only the draft owner can edit it"));
@@ -550,7 +550,7 @@ async fn group_authority(
 async fn chapter_authority(
     tx: &Transaction<'_>,
     id: &str,
-    actor: &SessionPrincipal,
+    actor: &impl CatalogMutationActor,
     owner: &str,
     action: &str,
     leader_only: bool,
@@ -559,7 +559,7 @@ async fn chapter_authority(
         return Ok(());
     }
     actor.require_permission(&format!("self.chapter.{action}"))?;
-    if owner == actor.user_id || group_authority(tx, id, &actor.user_id, leader_only).await? {
+    if owner == actor.user_id() || group_authority(tx, id, &actor.user_id(), leader_only).await? {
         Ok(())
     } else {
         Err(ApiError::forbidden(

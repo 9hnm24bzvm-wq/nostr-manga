@@ -21,6 +21,8 @@ pub enum ResourceType {
     Tag,
     #[serde(rename = "user")]
     User,
+    #[serde(rename = "creator")]
+    Creator,
     #[serde(rename = "leader")]
     Leader,
     #[serde(rename = "member")]

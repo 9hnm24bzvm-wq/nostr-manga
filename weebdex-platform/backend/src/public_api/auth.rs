@@ -9,7 +9,9 @@ use axum::{
     http::{HeaderMap, StatusCode, header},
     routing::get,
 };
-use manga_node::http_auth::{AdmittedHttpCapability, HttpAuthError, HttpService};
+use manga_node::http_auth::{
+    AdmittedHttpCapability, HttpAuthError, HttpRequestPreflight, HttpService,
+};
 use serde_json::{Value, json};
 use std::time::Duration;
 pub fn router() -> Router<AppState> {
@@ -48,6 +50,17 @@ pub async fn admitted_request(
     method: &str,
     body: &[u8],
 ) -> PublicApiResult<AdmittedHttpCapability> {
+    let (service, authorization) = request_credentials(state, headers)?;
+    state
+        .protocol
+        .verify_http_request(&service, authorization, &uri.to_string(), method, body)
+        .await
+        .map_err(map_error)
+}
+fn request_credentials<'a>(
+    state: &AppState,
+    headers: &'a HeaderMap,
+) -> PublicApiResult<(HttpService, &'a str)> {
     let mut values = headers.get_all(header::AUTHORIZATION).iter();
     let authorization = values.next().and_then(|v| v.to_str().ok()).ok_or_else(|| {
         error(
@@ -67,9 +80,43 @@ pub async fn admitted_request(
         .ok_or_else(|| map_error(HttpAuthError::Service))?;
     let service = HttpService::new(&state.config.public_origin, &publication.storage_holder)
         .map_err(map_error)?;
+    Ok((service, authorization))
+}
+/// Header-only preflight grants no write authority and consumes no replay.
+pub async fn admitted_preflight(
+    state: &AppState,
+    uri: &axum::http::Uri,
+    headers: &HeaderMap,
+    method: &str,
+) -> PublicApiResult<HttpRequestPreflight> {
+    let (service, authorization) = request_credentials(state, headers)?;
     state
         .protocol
-        .verify_http_request(&service, authorization, &uri.to_string(), method, body)
+        .preflight_http_request(&service, authorization, &uri.to_string(), method)
+        .await
+        .map_err(map_error)
+}
+/// The bounded raw-body reader owns digest/count correctness. Never hash only
+/// selected multipart fields, decoded objects, or a reserialized JSON value.
+pub async fn admitted_request_digest(
+    state: &AppState,
+    uri: &axum::http::Uri,
+    headers: &HeaderMap,
+    method: &str,
+    body_hash: [u8; 32],
+    body_empty: bool,
+) -> PublicApiResult<AdmittedHttpCapability> {
+    let (service, authorization) = request_credentials(state, headers)?;
+    state
+        .protocol
+        .verify_http_request_digest(
+            &service,
+            authorization,
+            &uri.to_string(),
+            method,
+            body_hash,
+            body_empty,
+        )
         .await
         .map_err(map_error)
 }

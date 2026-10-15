@@ -62,6 +62,57 @@ impl AliasIndex {
             user_attributes,
         })
     }
+    /// Build protected/private or newly-created responses on the caller's exact
+    /// transaction. No second connection can miss an uncommitted alias or let a
+    /// DTO failure happen after an editorial write has already committed.
+    pub(crate) async fn load_in(
+        tx: &tokio_postgres::Transaction<'_>,
+        resources: &[(ResourceKind, Value)],
+    ) -> PublicApiResult<Self> {
+        let mut keys = BTreeMap::<ResourceKind, BTreeSet<String>>::new();
+        for (kind, value) in resources {
+            collect(*kind, value, &mut keys, 0)?;
+        }
+        let mut rows = BTreeMap::new();
+        for (kind, ids) in keys {
+            if ids.len() > 4096 {
+                return Err(PublicApiError::unavailable());
+            }
+            let ids = ids.into_iter().collect::<Vec<_>>();
+            for batch in ids.chunks(super::postgres_identity::MAX_PUBLIC_ID_BATCH) {
+                for row in tx.query("SELECT native_id,public_id::text,principal_type FROM platform.public_resource_ids WHERE kind=$1 AND native_id=ANY($2::text[]) AND preferred", &[&kind.as_str(), &batch]).await? {
+                    let native: String = row.get(0);
+                    let target = super::postgres_identity::persisted_target(kind, &native, row.get(2))?;
+                    let preferred_id = PublicUuid::parse(row.get::<_, &str>(1)).map_err(|_| PublicApiError::unavailable())?;
+                    rows.insert((kind, native.clone()), ResolvedPublicId { native_id: native, preferred_id, target });
+                }
+            }
+        }
+        let native_users = rows
+            .iter()
+            .filter_map(|((kind, id), row)| {
+                (*kind == ResourceKind::User && row.target == PublicIdTarget::NativeResource)
+                    .then(|| id.clone())
+            })
+            .collect::<Vec<_>>();
+        let mut user_attributes = BTreeMap::new();
+        if !native_users.is_empty() {
+            for row in tx.query("SELECT id,username,roles,version FROM platform.users WHERE id=ANY($1::text[]) AND NOT disabled", &[&native_users]).await? {
+                user_attributes.insert(row.get::<_, String>(0), json!({"username":row.get::<_, String>(1),"roles":row.get::<_, Value>(2),"version":row.get::<_, i32>(3)}));
+            }
+        }
+        for ((kind, native), row) in &rows {
+            if *kind == ResourceKind::User {
+                if let PublicIdTarget::ProtocolPublisher { pubkey } = &row.target {
+                    user_attributes.insert(native.clone(), json!({"username":pubkey,"roles":[],"nostr":{"principalType":"protocol_publisher","pubkey":pubkey,"displayNameSource":"public_key"}}));
+                }
+            }
+        }
+        Ok(Self {
+            rows,
+            user_attributes,
+        })
+    }
     pub fn id(&self, kind: ResourceKind, native: &str) -> PublicApiResult<PublicUuid> {
         self.rows
             .get(&(kind, native.to_owned()))
@@ -165,6 +216,14 @@ impl AliasIndex {
                     ResourceType::CoverArt,
                     &value["relationships"]["cover"],
                     includes.contains("cover_art"),
+                )? {
+                    relationships.push(r);
+                }
+                if let Some(r) = self.relationship(
+                    ResourceKind::User,
+                    ResourceType::Creator,
+                    &value["relationships"]["submitter"],
+                    includes.contains("creator"),
                 )? {
                     relationships.push(r);
                 }
@@ -408,6 +467,7 @@ fn collect(
             ("cover", ResourceKind::Cover),
             ("tags", ResourceKind::Tag),
             ("relations", ResourceKind::Manga),
+            ("submitter", ResourceKind::User),
         ],
         ResourceKind::Chapter => &[
             ("manga", ResourceKind::Manga),

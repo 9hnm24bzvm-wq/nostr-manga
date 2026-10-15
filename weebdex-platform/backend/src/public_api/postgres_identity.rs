@@ -236,7 +236,7 @@ fn validate_native_id(id: &str) -> ApiResult<()> {
 fn persisted_uuid(id: &str) -> ApiResult<PublicUuid> {
     PublicUuid::parse(id).map_err(|_| ApiError::unavailable())
 }
-fn persisted_target(
+pub(super) fn persisted_target(
     kind: ResourceKind,
     native_id: &str,
     principal_type: &str,

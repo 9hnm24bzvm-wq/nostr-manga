@@ -9,7 +9,7 @@ use tokio_postgres::Transaction;
 // Only genuine authenticated principals and the public adapter's privately
 // constructed, transaction-rechecked write capability implement this marker.
 pub(crate) mod sealed { pub trait Sealed {} }
-pub(crate) trait CatalogMutationActor: sealed::Sealed {
+pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
     fn user_id(&self) -> &str;
     fn username(&self) -> &str;
     fn is_moderator(&self) -> bool;

@@ -1,7 +1,7 @@
 use crate::{domains, error::ApiError, runtime::BoundedBody, state::AppState};
 use axum::{
     Json, Router,
-    extract::{DefaultBodyLimit, Request, State},
+    extract::{DefaultBodyLimit, OriginalUri, Request, State},
     http::{HeaderMap, HeaderValue, Method, StatusCode, header},
     middleware::Next,
     response::{IntoResponse, Response},
@@ -267,24 +267,47 @@ async fn serve_ui(
     }
 }
 
+/// The original external path survives nested routers and middleware. It also
+/// keeps public envelopes/classification independent of stripped adapter URIs.
+fn original_path(request: &Request) -> &str {
+    request.extensions().get::<OriginalUri>().map(|uri| uri.0.path())
+        .unwrap_or_else(|| request.uri().path())
+}
+fn public_request(request: &Request) -> bool {
+    segment_prefix(original_path(request), "/api/v1")
+}
+fn boundary_error(public: bool, error: ApiError) -> Response {
+    if public {
+        crate::public_api::PublicApiError::new(error.status,
+            error.status.canonical_reason().unwrap_or("Request Failed"),error.message).into_response()
+    } else { error.into_response() }
+}
+fn read_class(request: &Request) -> Class {
+    let path=original_path(request);
+    let public=path.strip_prefix("/api/v1");
+    let path=public.or_else(||path.strip_prefix("/api")).unwrap_or(path);
+    let segments=path.split('/').filter(|s|!s.is_empty()).collect::<Vec<_>>();
+    let private=path.starts_with("/user/history") || path.starts_with("/user/follows")
+        || (public.is_some() && (path=="/manga/read" || path=="/manga/status"
+            || matches!(segments.as_slice(),["manga",_,"read"|"status"])
+            || path=="/user/list" || matches!(segments.as_slice(),["user",_,"list"])
+            || matches!(segments.as_slice(),["list",_] | ["list",_,"feed"])));
+    if private { Class::LibraryHead } else { Class::Catalogue }
+}
+
 /// Owned work keeps both request and read permits after client disconnect.
 /// Body deadlines are streaming intake limits, not cancellation of SQL work.
 async fn admitted(State(state): State<AppState>, request: Request, next: Next) -> Response {
+    let public=public_request(&request);
     let request_permit = match state.requests.clone().try_acquire_owned() {
         Ok(permit) => permit,
-        Err(_) => return ApiError::busy().into_response(),
+        Err(_) => return boundary_error(public, ApiError::busy()),
     };
     let read_permit = if matches!(*request.method(), Method::GET | Method::HEAD) {
-        let class = if request.uri().path().starts_with("/user/history")
-            || request.uri().path().starts_with("/user/follows")
-        {
-            Class::LibraryHead
-        } else {
-            Class::Catalogue
-        };
+        let class = read_class(&request);
         match state.reads.acquire(class).await {
             Ok(permit) => Some(permit),
-            Err(_) => return ApiError::busy().into_response(),
+            Err(_) => return boundary_error(public, ApiError::busy()),
         }
     } else {
         None
@@ -298,7 +321,7 @@ async fn admitted(State(state): State<AppState>, request: Request, next: Next) -
     });
     receiver
         .await
-        .unwrap_or_else(|_| ApiError::unavailable().into_response())
+        .unwrap_or_else(|_| boundary_error(public, ApiError::unavailable()))
 }
 
 fn request_origin(headers: &HeaderMap, expected: &str) -> Result<Option<HeaderValue>, ApiError> {
@@ -333,6 +356,12 @@ fn body_budget(path: &str, method: &Method, state: &AppState) -> (usize, Duratio
         .split('/')
         .filter(|part| !part.is_empty())
         .collect::<Vec<_>>();
+    if *method == Method::POST && parts.len() == 4
+        && parts[..3] == ["api", "v1", "upload"]
+        && crate::public_api::PublicUuid::parse(parts[3]).is_ok()
+    {
+        return (96 * 1024 * 1024, Duration::from_secs(state.config.upload_body_timeout_seconds));
+    }
     if *method == Method::POST
         && parts.len() == 6
         && parts[0] == "api"
@@ -372,26 +401,27 @@ async fn request_boundary(
     mut request: Request,
     next: Next,
 ) -> Response {
+    let public=public_request(&request);
     let probe = matches!(request.uri().path(), "/livez" | "/readyz" | "/healthz");
     if state.runtime.is_draining() && !probe {
-        return ApiError::unavailable().into_response();
+        return boundary_error(public, ApiError::unavailable());
     }
     if state.config.production && !probe {
         let expected = match url::Url::parse(&state.config.public_origin) {
             Ok(url) => url,
-            Err(_) => return ApiError::unavailable().into_response(),
+            Err(_) => return boundary_error(public, ApiError::unavailable()),
         };
         let authority = &expected[url::Position::BeforeHost..url::Position::AfterPort];
         let mut hosts = request.headers().get_all(header::HOST).iter();
         if hosts.next().and_then(|value| value.to_str().ok()) != Some(authority)
             || hosts.next().is_some()
         {
-            return ApiError::forbidden("Invalid request host").into_response();
+            return boundary_error(public, ApiError::forbidden("Invalid request host"));
         }
     }
     let origin = match request_origin(request.headers(), &state.config.public_origin) {
         Ok(origin) => origin,
-        Err(error) => return error.into_response(),
+        Err(error) => return boundary_error(public, error),
     };
     if request.method() == Method::OPTIONS {
         if let Some(origin) = origin {
@@ -411,7 +441,7 @@ async fn request_boundary(
                     })
                 });
             if !method.is_some_and(|m| allowed.contains(&m)) || !headers_allowed {
-                return ApiError::forbidden("Unsupported cross-origin request").into_response();
+                return boundary_error(public, ApiError::forbidden("Unsupported cross-origin request"));
             }
             let mut response = StatusCode::NO_CONTENT.into_response();
             response
@@ -450,12 +480,11 @@ async fn request_boundary(
             .and_then(|v| v.parse::<u64>().ok())
             .is_some_and(|n| n > maximum as u64)
         {
-            return ApiError::new(
+            return boundary_error(public, ApiError::new(
                 StatusCode::PAYLOAD_TOO_LARGE,
                 "body_too_large",
                 "Request body exceeds the route limit",
-            )
-            .into_response();
+            ));
         }
         let (parts, body) = request.into_parts();
         request = Request::from_parts(parts, BoundedBody::wrap(body, maximum, deadline));
@@ -626,5 +655,34 @@ mod tests {
         );
         headers.append(header::ORIGIN, "https://example.invalid".parse().unwrap());
         assert!(request_origin(&headers, "https://example.invalid").is_err());
+    }
+}
+
+#[cfg(test)]
+mod public_boundary_tests {
+    use super::*;
+    use axum::body::{Body,to_bytes};
+    #[tokio::test]
+    async fn outer_errors_keep_public_status_and_native_envelopes() {
+        for (public,status) in [(true,StatusCode::PAYLOAD_TOO_LARGE),(true,StatusCode::TOO_MANY_REQUESTS),(true,StatusCode::SERVICE_UNAVAILABLE),(true,StatusCode::FORBIDDEN),(false,StatusCode::PAYLOAD_TOO_LARGE)] {
+            let response=boundary_error(public,ApiError::new(status,"fixture_error","Fixture boundary"));
+            assert_eq!(response.status(),status);
+            let body:serde_json::Value=serde_json::from_slice(&to_bytes(response.into_body(),8192).await.unwrap()).unwrap();
+            if public { assert_eq!(body["result"],"error"); assert_eq!(body["errors"][0]["status"],status.as_u16()); assert!(body.get("code").is_none()); }
+            else { assert_eq!(body["code"],"fixture_error"); assert!(body.get("errors").is_none()); }
+        }
+    }
+    #[test]
+    fn nested_private_reads_use_original_external_uri() {
+        for path in ["/api/v1/manga/read","/api/v1/manga/status","/api/v1/manga/id/read","/api/v1/manga/id/status","/api/v1/user/list","/api/v1/user/id/list","/api/v1/list/id","/api/v1/list/id/feed","/api/user/history","/api/user/follows/manga"] {
+            let mut request=Request::builder().uri("/stripped").body(Body::empty()).unwrap();
+            request.extensions_mut().insert(OriginalUri(path.parse().unwrap()));
+            assert!(matches!(read_class(&request),Class::LibraryHead),"{path}");
+            assert_eq!(public_request(&request),path.starts_with("/api/v1/"));
+        }
+        for path in ["/api/v1/manga","/api/v1/chapter/id","/api/v10/manga/read","/api/manga/status"] {
+            let request=Request::builder().uri(path).body(Body::empty()).unwrap();
+            assert!(matches!(read_class(&request),Class::Catalogue),"{path}");
+        }
     }
 }

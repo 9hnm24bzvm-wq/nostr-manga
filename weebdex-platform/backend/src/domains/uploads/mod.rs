@@ -2,7 +2,7 @@
 mod derivatives;
 pub(crate) mod media;
 mod proxy;
-mod sessions;
+pub(crate) mod sessions;
 pub mod storage;
 use crate::{db::Migration, state::AppState};
 use axum::{
