@@ -895,24 +895,32 @@ impl EmbeddedLibraryOperations {
                 .is_some_and(|owner| Arc::ptr_eq(&owner, library)),
             "embedded library owner identity mismatch"
         );
-        let lease = self
-            .operations
-            .acquire()
-            .map_err(|_| {
-                anyhow::anyhow!(crate::library_admission::Busy {
-                    stage: "embedded_operations"
-                })
-            })?
-            .context("embedded library owner is disabled")?;
-        let operations = self.operations.clone();
-        // Acquisition and spawn occur before the first suspension point.
-        tokio::spawn(async move {
-            let _lease = lease;
-            OWNED_OPERATIONS.scope(operations, future).await
-        })
-        .await
-        .context("embedded library mutation task terminated unexpectedly")?
+        run_embedded_library_operation(self.operations.clone(), future).await
     }
+}
+async fn run_embedded_library_operation<F, T>(
+    operations: Arc<EmbeddedOperations>,
+    future: F,
+) -> Result<T>
+where
+    F: std::future::Future<Output = Result<T>> + Send + 'static,
+    T: Send + 'static,
+{
+    let lease = operations
+        .acquire()
+        .map_err(|_| {
+            anyhow::anyhow!(crate::library_admission::Busy {
+                stage: "embedded_operations"
+            })
+        })?
+        .context("embedded library owner is disabled")?;
+    // Acquisition and spawn occur before the first suspension point.
+    tokio::spawn(async move {
+        let _lease = lease;
+        OWNED_OPERATIONS.scope(operations, future).await
+    })
+    .await
+    .context("embedded library mutation task terminated unexpectedly")?
 }
 /// Capture a bounded child lease synchronously before its executor fork. No
 /// task handles are retained by the owner, so detached caller handles cannot
@@ -1180,6 +1188,10 @@ impl EmbeddedWorkerOwner {
 impl Drop for EmbeddedWorkerOwner {
     fn drop(&mut self) {
         if self.cancel_on_drop {
+            // An exported library handle can outlive abrupt listener teardown.
+            // Close new admissions even when async cleanup could not be awaited;
+            // already-owned finite children still retain their terminal leases.
+            self.operations.close();
             for (_, handle) in self.handles.get_mut().unwrap_or_else(|e| e.into_inner()) {
                 handle.abort();
             }
@@ -4310,6 +4322,82 @@ mod injected_worker_owner_tests {
         Arc,
         atomic::{AtomicBool, Ordering},
     };
+    #[tokio::test]
+    async fn adapter_mutation_cancel_before_poll_owns_nothing_and_after_acceptance_drains_children()
+    {
+        let operations = EmbeddedOperations::new(true);
+        let never_polled = super::run_embedded_library_operation(operations.clone(), async {
+            Ok::<_, anyhow::Error>(())
+        });
+        drop(never_polled);
+        assert_eq!(operations.state.lock().unwrap().active, 0);
+        let (started, ready) = tokio::sync::oneshot::channel();
+        let (release, released) = tokio::sync::oneshot::channel();
+        let owner = operations.clone();
+        let caller = tokio::spawn(async move {
+            super::run_embedded_library_operation(owner, async move {
+                let child = spawn_owned_scope(async move {
+                    let _ = started.send(());
+                    let _ = released.await;
+                });
+                child.await?;
+                Ok::<_, anyhow::Error>(())
+            })
+            .await
+        });
+        ready.await.unwrap();
+        caller.abort();
+        let _ = caller.await;
+        operations.close();
+        assert!(
+            operations
+                .drain(std::time::Duration::from_millis(20))
+                .await
+                .is_err()
+        );
+        release.send(()).unwrap();
+        operations
+            .drain(std::time::Duration::from_secs(1))
+            .await
+            .unwrap();
+        assert_eq!(operations.state.lock().unwrap().active, 0);
+    }
+    #[tokio::test]
+    async fn abrupt_embedded_owner_drop_closes_exported_operation_gate() {
+        let owner = EmbeddedWorkerOwner::new(true);
+        let operations = owner.operations.clone();
+        assert!(!operations.state.lock().unwrap().closed);
+        drop(owner);
+        assert!(operations.acquire().is_err());
+        operations
+            .drain(std::time::Duration::from_secs(1))
+            .await
+            .unwrap();
+    }
+    #[tokio::test]
+    async fn adapter_mutation_panic_releases_once_and_closed_owner_refuses_new_work() {
+        let operations = EmbeddedOperations::new(true);
+        let result = super::run_embedded_library_operation(operations.clone(), async {
+            panic!("Synthetic adapter mutation panic");
+            #[allow(unreachable_code)]
+            Ok::<_, anyhow::Error>(())
+        })
+        .await;
+        assert!(result.is_err());
+        assert_eq!(operations.state.lock().unwrap().active, 0);
+        operations
+            .drain(std::time::Duration::from_secs(1))
+            .await
+            .unwrap();
+        assert!(
+            super::run_embedded_library_operation(operations.clone(), async {
+                Ok::<_, anyhow::Error>(())
+            })
+            .await
+            .is_err()
+        );
+        assert_eq!(operations.state.lock().unwrap().active, 0);
+    }
     #[tokio::test]
     async fn disconnected_owned_work_and_nested_children_remain_in_drain_until_terminal() {
         let operations = EmbeddedOperations::new(true);

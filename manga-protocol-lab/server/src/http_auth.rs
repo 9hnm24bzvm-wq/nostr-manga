@@ -120,7 +120,7 @@ fn verified_scope(
     authorization: &str,
     external_uri: &str,
     method: &str,
-    body: Option<&[u8]>,
+    body: Option<(Id, bool)>,
 ) -> Result<(auth::Event, String), HttpAuthError> {
     if authorization.len() > 16384 || external_uri.len() > 32768 {
         return Err(HttpAuthError::Invalid);
@@ -136,10 +136,11 @@ fn verified_scope(
     }
     let event = auth::token(authorization).map_err(|_| HttpAuthError::Invalid)?;
     let request_url = format!("{}{}", service.origin, external_uri);
-    if let Some(body) = body {
-        auth::http(&event, &request_url, method, body).map_err(|_| HttpAuthError::Invalid)?;
-    } else {
-        auth::http_scope(&event, &request_url, method).map_err(|_| HttpAuthError::Invalid)?;
+    auth::http_scope(&event, &request_url, method).map_err(|_| HttpAuthError::Invalid)?;
+    if let Some((digest, empty)) = body {
+        if empty != (digest == body_digest(b"")) {
+            return Err(HttpAuthError::Invalid);
+        }
     }
     // Empty GET proofs may omit payload under the original NIP-98 policy.
     // If supplied, the public adapter extension never ignores an ambiguous
@@ -153,12 +154,15 @@ fn verified_scope(
         && (payloads.len() != 1
             || payloads[0].len() != 2
             || !auth::valid_hash(&payloads[0][1])
-            || body.is_some_and(|body| payloads[0][1] != auth::hash(body)))
+            || body.is_some_and(|(digest, _)| payloads[0][1] != hex::encode(digest)))
     {
         return Err(HttpAuthError::Invalid);
     }
 
-    if ["POST", "PUT", "PATCH", "DELETE"].contains(&method) && payloads.is_empty() {
+    if (["POST", "PUT", "PATCH", "DELETE"].contains(&method)
+        || body.is_some_and(|(_, empty)| !empty))
+        && payloads.is_empty()
+    {
         return Err(HttpAuthError::Invalid);
     }
     let services: Vec<_> = event
@@ -170,6 +174,10 @@ fn verified_scope(
         return Err(HttpAuthError::Invalid);
     }
     Ok((event, request_url))
+}
+fn body_digest(body: &[u8]) -> Id {
+    use sha2::Digest;
+    sha2::Sha256::digest(body).into()
 }
 impl Repository {
     pub async fn preflight_admitted_http_request(
@@ -194,8 +202,35 @@ impl Repository {
         method: &str,
         body: &[u8],
     ) -> Result<AdmittedHttpCapability, HttpAuthError> {
-        let (event, request_url) =
-            verified_scope(service, authorization, external_uri, method, Some(body))?;
+        self.verify_admitted_http_request_digest(
+            service,
+            authorization,
+            external_uri,
+            method,
+            body_digest(body),
+            body.is_empty(),
+        )
+        .await
+    }
+    /// For trusted bounded frame/spool adapters only: digest and empty flag must
+    /// be computed over every actual raw request byte. This changes no proof,
+    /// admission, selected-service, freshness, or durable replay policy.
+    pub async fn verify_admitted_http_request_digest(
+        &self,
+        service: &HttpService,
+        authorization: &str,
+        external_uri: &str,
+        method: &str,
+        body_hash: Id,
+        body_empty: bool,
+    ) -> Result<AdmittedHttpCapability, HttpAuthError> {
+        let (event, request_url) = verified_scope(
+            service,
+            authorization,
+            external_uri,
+            method,
+            Some((body_hash, body_empty)),
+        )?;
         let principal = identifier(&event.pubkey).ok_or(HttpAuthError::Invalid)?;
         let authorization = identifier(&event.id).ok_or(HttpAuthError::Invalid)?;
         let permit = self.verify_http_service_account(service, principal).await?;
@@ -211,7 +246,7 @@ impl Repository {
             service: service.key,
             request_url,
             method: method.to_owned(),
-            body_hash: identifier(&auth::hash(body)).ok_or(HttpAuthError::Invalid)?,
+            body_hash,
             authorization,
             permit,
         })

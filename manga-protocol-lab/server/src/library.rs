@@ -460,3 +460,34 @@ impl LibraryObjects {
         Ok(sizes)
     }
 }
+
+#[cfg(test)]
+mod http_guard_tests {
+    use super::*;
+    #[test]
+    fn adapter_strict_cas_precedes_native_current_idempotence_and_forbids_any() {
+        let id = [1u8; 32];
+        let other = [2u8; 32];
+        let head = Head {
+            time: 7,
+            winner: id.to_vec(),
+            current: Some(id.to_vec()),
+        };
+        assert!(matches!(
+            decide(Some(&head), 7, &id, ExpectedHead::Exact(other)).unwrap(),
+            Some(StageOutcome::Current)
+        ));
+        assert!(strict_expected(Some(&head), ExpectedHead::Exact(other)).is_err());
+        assert!(strict_expected(Some(&head), ExpectedHead::Absent).is_err());
+        assert!(strict_expected(Some(&head), ExpectedHead::Any).is_err());
+        assert!(strict_expected(None, ExpectedHead::Any).is_err());
+        assert!(strict_expected(Some(&head), ExpectedHead::Exact(id)).is_ok());
+        assert!(strict_expected(None, ExpectedHead::Absent).is_ok());
+        let tombstone = Head {
+            time: 7,
+            winner: id.to_vec(),
+            current: None,
+        };
+        assert!(strict_expected(Some(&tombstone), ExpectedHead::Absent).is_ok());
+    }
+}

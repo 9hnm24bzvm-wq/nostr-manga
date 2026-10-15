@@ -314,6 +314,14 @@ impl Fixture {
             _dir: dir,
         })
     }
+    pub fn signal_native_shutdown(&mut self) {
+        if let Some(shutdown) = self.native.shutdown.take() {
+            let _ = shutdown.send(());
+        }
+    }
+    pub fn native_finished(&self) -> bool {
+        self.native.task.is_finished()
+    }
     pub async fn shutdown(mut self) -> Result<()> {
         if let Some(shutdown) = self.native.shutdown.take() {
             let _ = shutdown.send(());
