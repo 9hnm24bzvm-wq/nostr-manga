@@ -1,0 +1,185 @@
+[
+  {
+    "path": "src/lib/components/MangaSearchEntryCard.svelte",
+    "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`, manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/lib/components/SearchDialogMangaEntry.svelte",
+    "sha256": "486dc00e4d09c719fc44537f8d9283642b0aca344edffae315ec489828697790",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`, manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
+    "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`, manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/routes/(app)/popular/MostReadChapter.svelte",
+    "sha256": "594316bd2d4b31652a093557ab44686f31d9a6d286b49d2fd4078c22ed9f431c",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`, manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\")",
+    "helper": "media",
+    "approved_public_media_exception": "uuid_cover_url_expression"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`, manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/lib/components/MostReadCarouselEntry.svelte",
+    "sha256": "861574c9d7f8573d4a35577cdf06af7a078628c7530ed978910dd4dd27798791",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.512.webp`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.512.webp`, \"512\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/lib/components/MostReadCarouselEntry.svelte",
+    "sha256": "861574c9d7f8573d4a35577cdf06af7a078628c7530ed978910dd4dd27798791",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.webp`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.webp`, \"original\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}${manga.relationships.cover.ext}`",
+    "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}${manga.relationships.cover.ext}`, \"original\")",
+    "helper": "media",
+    "approved_public_media_exception": "uuid_cover_url_expression"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+    "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${manga.id}/${v.id}${v.ext}`",
+    "after": "retainedCoverUrl(manga.id, v, `${PUBLIC_COVER_URL}/${manga.id}/${v.id}${v.ext}`, \"original\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaCoversSection.svelte",
+    "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
+    "count": 1,
+    "before": "src=\"{PUBLIC_COVER_URL}/{manga.id}/{cover.id}.512.webp\"",
+    "after": "src={retainedCoverUrl(manga.id, cover, `${PUBLIC_COVER_URL}/${manga.id}/${cover.id}.512.webp`, \"512\")}",
+    "helper": "media",
+    "approved_public_media_exception": "uuid_cover_url_expression"
+  },
+  {
+    "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+    "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${data.manga.id}/${cover.id}${cover.ext}`",
+    "after": "retainedCoverUrl(data.manga.id, cover, `${PUBLIC_COVER_URL}/${data.manga.id}/${cover.id}${cover.ext}`, \"original\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/lib/components/draft/manga/MangaEdit.svelte",
+    "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
+    "count": 1,
+    "before": "`${PUBLIC_COVER_URL}/${data.manga.id}/${cover.id}.512.webp`",
+    "after": "retainedCoverUrl(data.manga.id, cover, `${PUBLIC_COVER_URL}/${data.manga.id}/${cover.id}.512.webp`, \"512\")",
+    "helper": "media"
+  },
+  {
+    "path": "src/lib/components/reader/reader-queue.svelte",
+    "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+    "count": 1,
+    "before": "`${reader.chapter.node}/data/${reader.chapter.id}/${page.data.name}`",
+    "after": "retainedPageUrl(reader.chapter, page.data, `${reader.chapter.node}/data/${reader.chapter.id}/${page.data.name}`)",
+    "helper": "media"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "let isEmpty = $derived(!manga.relationships.available_languages || !manga.relationships.stats?.chapters);",
+    "after": "let isEmpty = $derived(retainedMangaIsEmpty(manga, !manga.relationships.available_languages || !manga.relationships.stats?.chapters));",
+    "helper": "presentation"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "{#if mangaStats && comments.stats && isPublished}",
+    "after": "{#if mangaStats && comments?.stats && isPublished}",
+    "approved_public_availability_exception": "missing_native_comments_statistics"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\t\t\tclass=\"hover:text-accent-foreground relative flex w-18 shrink-0 items-center gap-1.5\"\r\n\t\t\t\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\t\t\t\ttitle=\"Go to comments\"\r\n\t\t\t\t\t>\r\n\t\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t\t\t\t<span class=\"truncate\">{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</a>",
+    "after": "{#if chapter.relationships.thread}<a\r\n\t\t\t\t\t\tclass=\"hover:text-accent-foreground relative flex w-18 shrink-0 items-center gap-1.5\"\r\n\t\t\t\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\t\t\t\ttitle=\"Go to comments\"\r\n\t\t\t\t\t>\r\n\t\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t\t\t\t<span class=\"truncate\">{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
+    "approved_public_availability_exception": "actual_native_forum_context_only"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>",
+    "after": "{#if chapter.relationships.thread}<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
+    "approved_public_availability_exception": "actual_native_forum_context_only"
+  },
+  {
+    "path": "src/lib/components/reader/reader.svelte",
+    "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+    "count": 1,
+    "before": "import * as Comments from \"../comments\";",
+    "after": "import * as Comments from \"$publicApi/native-forum\";"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/+layout.svelte",
+    "sha256": "641924a49a8d67bd1ccf9b08ca454117e0046db5ca55afc1d8a75b4e20910869",
+    "count": 1,
+    "before": "import * as Comments from \"$lib/components/comments\";",
+    "after": "import * as Comments from \"$publicApi/native-forum\";"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/comments/+page.svelte",
+    "sha256": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
+    "count": 1,
+    "before": "import * as Comments from \"$lib/components/comments\";",
+    "after": "import * as Comments from \"$publicApi/native-forum\";"
+  },
+  {
+    "path": "src/routes/(app)/chapter/[id]/+page.ts",
+    "sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
+    "count": 1,
+    "before": "if (res?.body) {",
+    "after": "if (res?.body?.relationships.thread) {"
+  },
+  {
+    "path": "src/routes/(app)/chapter/[id]/[page]/+page.ts",
+    "sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
+    "count": 1,
+    "before": "if (res?.body) {",
+    "after": "if (res?.body?.relationships.thread) {"
+  },
+  {
+    "path": "src/lib/components/reader/reader.svelte",
+    "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+    "count": 1,
+    "before": "{#if reader.chapter.relationships.thread}<Comments.Comments />{/if}",
+    "after": "{#if reader.chapter.relationships.thread}<Comments.Comments />{:else}<p role=\"status\">Comments are unavailable for this resource.</p>{/if}",
+    "composed_before": true,
+    "approved_public_availability_exception": "missing_native_forum_context"
+  }
+]

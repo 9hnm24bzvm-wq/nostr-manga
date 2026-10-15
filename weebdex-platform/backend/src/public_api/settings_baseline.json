@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Instance native reading preferences",
+  "type": "object",
+  "required": [
+    "items_per_page",
+    "languages",
+    "show_safe",
+    "show_suggestive",
+    "show_erotic",
+    "show_hentai",
+    "tags",
+    "translated_languages",
+    "uploaders",
+    "groups",
+    "data_saver",
+    "version"
+  ],
+  "properties": {
+    "show_safe": {
+      "type": "boolean"
+    },
+    "show_suggestive": {
+      "type": "boolean"
+    },
+    "show_erotic": {
+      "type": "boolean"
+    },
+    "show_hentai": {
+      "type": "boolean"
+    },
+    "data_saver": {
+      "type": "boolean"
+    },
+    "items_per_page": {
+      "type": "string",
+      "pattern": "^(?:[1-9][0-9]?|100)$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "languages": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 128
+      }
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 128
+      }
+    },
+    "translated_languages": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 128
+      }
+    },
+    "uploaders": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 128
+      }
+    },
+    "groups": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 128
+      }
+    }
+  },
+  "additionalProperties": true
+}

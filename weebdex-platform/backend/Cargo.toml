@@ -17,6 +17,7 @@ http-body = "1"
 image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "gif"] }
 tokio-util = { version = "0.7", features = ["io"] }
 manga-node = { path = "../../manga-protocol-lab/server" }
+jsonschema = { version = "=0.33.0", default-features = false }
 moka = { version = "=0.12.16", features = ["future"] }
 rand = "0.8"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }

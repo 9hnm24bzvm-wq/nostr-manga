@@ -1,10 +1,11 @@
+import {assertCataloguePreviewLibraryReady} from '../public-api/library-staging';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { HTTPError } from '$lib/HTTP';
 import type { Constants } from '$lib';
 import { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isAccountMode, saveSeries, removeSeries, params, applyImport, type ImportReview, captureImportContext, assertImportContext, type LibraryImportContext, openLibrary, captureLibraryContext, assertLibraryContext } from './library';
 import { filteredCatalog, pageRows, compareValue, compareCatalogueRows } from './catalog';
 import { normalizeDevice } from './device-store';
-export async function Search(searchParams: URLSearchParams) {
+export async function Search(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady();
   await openLibrary();
   const q = params(searchParams), context = captureLibraryContext(), account = context.mode === 'account', view = captureLibraryView();
   const list = q.get('list');
@@ -30,8 +31,8 @@ export async function Search(searchParams: URLSearchParams) {
     : compareCatalogueRows(a, b, direction));
   assertLibraryView(view); return { status: 200, body: pageRows(data, q) };
 }
-export async function LatestFeed(searchParams: URLSearchParams) { const q = params(searchParams); q.delete('tagx'); q.delete('txmod'); return localUpdates(q, '/user/follows/chapter/feed', false); }
-export async function LatestUpdates(searchParams: URLSearchParams) { const q = params(searchParams); q.delete('tagx'); q.delete('txmod'); return localUpdates(q, '/user/follows/chapter/updates', true); }
+export async function LatestFeed(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady(); const q = params(searchParams); q.delete('tagx'); q.delete('txmod'); return localUpdates(q, '/user/follows/chapter/feed', false); }
+export async function LatestUpdates(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady(); const q = params(searchParams); q.delete('tagx'); q.delete('txmod'); return localUpdates(q, '/user/follows/chapter/updates', true); }
 async function localUpdates(searchParams: URLSearchParams, accountPath: string, latestOnly: boolean) {
   const q = params(searchParams), account = await isAccountMode(), view = captureLibraryView();
   if (account) { const body = await apiRead<MappedChapterFeedResponse>(accountPath, q, true); assertLibraryView(view); return { status: 200, body }; }
@@ -49,19 +50,19 @@ async function localUpdates(searchParams: URLSearchParams, accountPath: string, 
   assertLibraryView(view); return { status: 200, body: { ...result, map } };
 }
 interface UpdateMangaFollowRequest { status: Constants.Manga.ReadingStatus; notification?: boolean }
-export async function Update(id: string, payload: UpdateMangaFollowRequest, admitted?: { context: ReturnType<typeof captureLibraryContext>; assert(): void }) {
+export async function Update(id: string, payload: UpdateMangaFollowRequest, admitted?: { context: ReturnType<typeof captureLibraryContext>; assert(): void }) { assertCataloguePreviewLibraryReady();
   admitted?.assert(); await openLibrary(); admitted?.assert(); const context = admitted?.context ?? captureLibraryContext();
   const assert = () => { admitted?.assert(); assertLibraryContext(context); }; assert();
   if (context.mode === 'account') return accountRequest(`/user/follows/manga/${id}`, 'POST', payload, context.accountId!, assert);
   await saveSeries(id, payload.status, payload.notification ?? true, assert); assert(); return { status: 204 };
 }
-export async function Unfollow(id: string, admitted?: { context: ReturnType<typeof captureLibraryContext>; assert(): void }) {
+export async function Unfollow(id: string, admitted?: { context: ReturnType<typeof captureLibraryContext>; assert(): void }) { assertCataloguePreviewLibraryReady();
   admitted?.assert(); await openLibrary(); admitted?.assert(); const context = admitted?.context ?? captureLibraryContext();
   const assert = () => { admitted?.assert(); assertLibraryContext(context); }; assert();
   if (context.mode === 'account') return accountRequest(`/user/follows/manga/${id}`, 'DELETE', undefined, context.accountId!, assert);
   await removeSeries(id, assert); assert(); return { status: 204 };
 }
-export async function Import(payload: { weebdex?: Record<string, Constants.Manga.ReadingStatus>; myanimelist?: Record<string, Constants.Manga.ReadingStatus> }, frozenContext?: LibraryImportContext) {
+export async function Import(payload: { weebdex?: Record<string, Constants.Manga.ReadingStatus>; myanimelist?: Record<string, Constants.Manga.ReadingStatus> }, frozenContext?: LibraryImportContext) { assertCataloguePreviewLibraryReady();
   const context = frozenContext ?? await captureImportContext(); assertImportContext(context);
   if (context.mode === 'account') return accountRequest('/user/follows/manga/import', 'POST', payload, context.accountId!, () => assertImportContext(context));
   const current = await currentDeviceSnapshot(); assertImportContext(context, current.scope);

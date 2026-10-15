@@ -2,7 +2,7 @@
 
 Recovery status: RECONSTRUCTED-UNVERIFIED after the executor replacement on 2026-10-15. The original implementation was lost before upload. This document describes the reconstructed intended behavior; fresh verification is required before treating it as confirmed.
 
-Source: MangaDex OpenAPI 5.13.1, the pinned source and hash in `mangadex-operation-matrix-v1.json`.
+Source: MangaDex OpenAPI 5.13.1, the pinned source and hash in `mangadex-5.13.1-inventory.json`.
 
 The reconstructed instance implementation provides these report operations under `/api/v1`:
 

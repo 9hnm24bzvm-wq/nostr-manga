@@ -49,7 +49,7 @@ const externalStandIns = Object.freeze({
   '$app/state': 'export const page = { url: new URL("http://localhost:1/"), state: {} };',
   '$app/navigation': 'export const beforeNavigate = () => {}, afterNavigate = () => {};',
   '$app/environment': 'export const browser = true;',
-  '$env/static/public': 'export const PUBLIC_API_URL = "/api", PUBLIC_KRATOS_PUBLIC_API = "/auth", PUBLIC_COVER_URL = "/covers", PUBLIC_DATA_URL = "/data", PUBLIC_UPLOAD_URL = "/uploads", PUBLIC_PROXY_URL = "/proxy", PUBLIC_OPENGRAPH_URL = "/og-image", PUBLIC_SITE_NAME = "WeebDex";',
+  '$env/static/public': 'export const PUBLIC_MANGADEX_CATALOGUE = "0", PUBLIC_API_URL = "/api", PUBLIC_KRATOS_PUBLIC_API = "/auth", PUBLIC_COVER_URL = "/covers", PUBLIC_DATA_URL = "/data", PUBLIC_UPLOAD_URL = "/uploads", PUBLIC_PROXY_URL = "/proxy", PUBLIC_OPENGRAPH_URL = "/og-image", PUBLIC_SITE_NAME = "WeebDex";',
   'svelte/reactivity': 'export class MediaQuery { current = false; constructor(value) { this.value = value; } }',
   'svelte-sonner': 'export const toast = { error() {}, success() {}, info() {} };',
   'is-mobile': 'export default () => false;',
@@ -65,7 +65,7 @@ const externalStandIns = Object.freeze({
   '@noble/hashes/sha2.js': 'export const sha256 = value => value;',
 });
 
-async function composedGraph(entry, { regressImport = false } = {}) {
+async function composedGraph(entry, { regressImport = false, publicCatalogue = '0' } = {}) {
   const modules = new Map(), evaluated = [], requests = [], responses = [], storage = new Map();
   class FakeXHR extends EventTarget {
     withCredentials = false;
@@ -110,6 +110,7 @@ async function composedGraph(entry, { regressImport = false } = {}) {
   function moduleFor(identifier) {
     if (modules.has(identifier)) return modules.get(identifier);
     let code = externalStandIns[identifier];
+    if (identifier === '$env/static/public') code = code.replace('PUBLIC_MANGADEX_CATALOGUE = "0"', 'PUBLIC_MANGADEX_CATALOGUE = '+JSON.stringify(publicCatalogue));
     if (code === undefined) {
       code = fs.readFileSync(identifier, 'utf8');
       for (const overlay of overlays) code = overlay.transform.handler(code, identifier)?.code ?? code;
@@ -212,4 +213,23 @@ for (const entry of entries) {
   assert.ok(graph.requests.every(request => request.method === 'GET' && request.url === '/api/auth/check' && request.withCredentials));
   results.push({ entry, composed_modules_evaluated: graph.evaluated.length, passed: true });
 }
+// Real composed library/API exports reject the staged UUID view before any
+// device open, native request, or mutation. Existing rows remain inspectable.
+const preview = await composedGraph(entries[1], { publicCatalogue: '1' });
+const previewStore = preview.modules.get('svelte/store').namespace;
+const previewLibrary = preview.read('platform-integrations/local-library/library.ts');
+const preserved = { family: 'series', id: 'SeedManga1', status: 'reading', notification: true };
+previewLibrary.localLibraryState.update(state => ({ ...state, ready: true, scopeStatus: 'verified', records: [preserved] }));
+assert.equal(previewStore.get(previewLibrary.libraryIdentity).canUse, false);
+assert.equal(Object.keys(previewStore.get(previewLibrary.libraryIdentity).follows).length, 0);
+const requestsBefore = preview.requests.length;
+const unavailable = error => error.code === 501 && /Saved-library changes are unavailable/.test(error.error);
+for (const [name,args] of [['assertCatalogueScope',[]],['apiRead',['/manga',new URLSearchParams()]],['localAction',[()=>{throw Error('A staged mutation must not run');}]],['saveSeries',['11111111-1111-8111-8111-111111111111','reading']],['removeSeries',['11111111-1111-8111-8111-111111111111',()=>{}]],['updateChapters',['11111111-1111-8111-8111-111111111111',[],[],()=>{}]],['saveProgress',['11111111-1111-8111-8111-111111111111','22222222-2222-8222-8222-222222222222',1,false,()=>{}]]]) await assert.rejects(() => previewLibrary[name](...args),unavailable);
+for (const family of ['MangaFollow','ChapterHistory']) {
+ const api = preview.read('platform-integrations/local-library/'+family+'.ts');
+ for (const name of Object.keys(api)) if(typeof api[name]==='function') await assert.rejects(() => api[name](new URLSearchParams(),{}),unavailable);
+}
+assert.equal(preview.requests.length,requestsBefore);
+assert.equal(previewStore.get(previewLibrary.localLibraryState).records[0].id,'SeedManga1');
+results.push({entry:'gate-on library preview',passed:true,storage_opened:false,native_requests:0,records_preserved:true});
 console.log(JSON.stringify({ schema: 1, baseline_reproduction: { error_class: baselineError.name, property: 'LimitHeight', source: 'frontend/src/lib/stores/prefs.ts' }, preferences_only_reproduction: { error_class: sessionFirstError.name, source: 'platform-integrations/local-library/library.ts', binding: 'Session' }, results, package_browser_apis: 'explicit stand-ins', browser_e2e: false, network: false, original_files_written: false }, null, 2));

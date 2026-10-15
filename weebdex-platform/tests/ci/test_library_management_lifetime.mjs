@@ -82,7 +82,7 @@ test('closing recovery preview abandons a late HTTP signing prompt without start
   } finally { await f.dispose(); }
 });
 
-test('unchanged IndexedDB schemas reopen all saved device families and exact public jobs after management relocation', { timeout: 5000 }, async () => {
+test('additive device schema reopens unchanged v1 saved families and exact original public jobs', { timeout: 5000 }, async () => {
   const f = await fixture(); let reopenedDevice, reopenedProtocol;
   try {
     await f.publication.publishReviewed(f.review, true, f.assertCurrent);
@@ -100,7 +100,8 @@ test('unchanged IndexedDB schemas reopen all saved device families and exact pub
     reopenedDevice = await Device.open(before.scope, () => {}, () => {});
     reopenedProtocol = await Protocol.open(protocolName);
     const after = await reopenedDevice.snapshot();
-    assert.equal(reopenedDevice.db.version, 1); assert.equal(reopenedProtocol.db.version, 5);
+    assert.equal(reopenedDevice.db.version, 2); assert.equal(after.version, 1); assert.equal(reopenedProtocol.db.version, 5);
+    for (const name of ['publicAliases', 'idMigrationArchives', 'idMigrationIssues', 'idMigrationTombstones']) assert.equal(reopenedDevice.db.objectStoreNames.contains(name), true);
     assert.deepEqual(clean(after.records), clean(before.records)); assert.deepEqual(clean(after.scope), clean(before.scope)); assert.equal(after.revision, before.revision);
     assert.deepEqual(clean(await reopenedProtocol.jobs()), clean(jobs)); assert.deepEqual(clean(await reopenedProtocol.counts()), clean(counts));
     assert(f.nostr.verifyEvent((await reopenedProtocol.jobs())[0].event));

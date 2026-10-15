@@ -14,6 +14,7 @@ const env = {
   WEEBDEX_FRONTEND_ROOT: frontend,
   PUBLIC_SITE_NAME: process.env.PUBLIC_SITE_NAME ?? "WeebDex",
   PUBLIC_API_URL: process.env.PUBLIC_API_URL ?? "/api",
+  PUBLIC_MANGADEX_CATALOGUE: process.env.PUBLIC_MANGADEX_CATALOGUE ?? "0",
   PUBLIC_KRATOS_PUBLIC_API: process.env.PUBLIC_KRATOS_PUBLIC_API ?? "/auth",
   PUBLIC_COVER_URL: process.env.PUBLIC_COVER_URL ?? "/covers",
   PUBLIC_DATA_URL: process.env.PUBLIC_DATA_URL ?? "/data",
@@ -50,11 +51,16 @@ if (fs.existsSync(portableBuild)) {
 }
 fs.renameSync(portableStage, portableBuild);
 const publicEnv = Object.fromEntries([
-  "PUBLIC_SITE_NAME", "PUBLIC_API_URL", "PUBLIC_KRATOS_PUBLIC_API", "PUBLIC_COVER_URL",
+  "PUBLIC_SITE_NAME", "PUBLIC_API_URL", "PUBLIC_MANGADEX_CATALOGUE", "PUBLIC_KRATOS_PUBLIC_API", "PUBLIC_COVER_URL",
   "PUBLIC_DATA_URL", "PUBLIC_UPLOAD_URL", "PUBLIC_PROXY_URL", "PUBLIC_OPENGRAPH_URL",
 ].map(key => [key, env[key]]));
 const evidence = {
   source_changed: false,
+  public_api_catalogue_enabled: integration.public_api_catalogue_enabled,
+  public_api_overlay_module_sha256: integration.public_api_overlay_sha256,
+  public_api_reconstructed_unverified: true,
+  qa_build_resource_profile: process.env.WEEBDEX_QA_BUILD_RESOURCE_PROFILE ?? null,
+  qa_build_resource_options: process.env.WEEBDEX_QA_BUILD_RESOURCE_PROFILE === "serial-terser" ? { terser_max_workers: 1, report_compressed_size: false, minification_disabled: false, node_options: process.env.NODE_OPTIONS ?? null } : null,
   command: "node scripts/build-frontend.mjs",
   environment: publicEnv,
   spa_fallback_sha256: createHash("sha256").update(index).digest("hex"),

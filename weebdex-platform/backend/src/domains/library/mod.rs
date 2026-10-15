@@ -4,6 +4,7 @@ mod follows;
 mod history;
 mod lists;
 mod preferences;
+pub(crate) mod preference_core;
 mod progress;
 mod query;
 mod repository;

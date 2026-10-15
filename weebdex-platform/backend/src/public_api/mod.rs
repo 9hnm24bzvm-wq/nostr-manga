@@ -24,11 +24,16 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(lists::router())
         .merge(profiles::router())
         .merge(reports::router())
+        .merge(settings::router())
         .merge(statistics::router())
         .merge(catalogue::router())
         .merge(media::router())
         .merge(native_forum::router())
         .merge(legacy::router())
+        .merge(statuses::router())
+        .merge(editorial::router())
+        .merge(drafts::router())
+        .merge(edges::router())
 }
 
 pub mod auth;
@@ -51,3 +56,11 @@ pub mod media;
 pub mod native_forum;
 
 pub mod legacy;
+
+pub mod statuses;
+pub mod drafts;
+pub mod editorial;
+pub mod settings;
+mod settings_schema;
+
+pub mod edges;

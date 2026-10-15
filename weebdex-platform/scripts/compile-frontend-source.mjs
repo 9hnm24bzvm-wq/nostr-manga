@@ -7,13 +7,14 @@ import { createRequire } from 'node:module';
 import { prepareFrontendIntegration } from './prepare-frontend-integration.mjs';
 import { createFrontendOverlays } from '../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../platform-integrations/frontend-reader-overlays.mjs';
+import { createPublicApiOverlays } from '../platform-integrations/public-api/overlays.mjs';
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const frontend = process.env.WEEBDEX_FRONTEND_ROOT ?? path.join(root, 'frontend');
 const require = createRequire(path.join(root, '.build/frontend-restore3/package.json'));
 const { compile } = require('svelte/compiler'), { transform } = require('esbuild');
 const integration = prepareFrontendIntegration(frontend);
-const plugins = [createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend)];
+const plugins = [createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend)];
 const failures = [], warnings = []; let components = 0, scripts = 0;
 const compileOne = async (file, external = false) => {
   let source = fs.readFileSync(file, 'utf8');

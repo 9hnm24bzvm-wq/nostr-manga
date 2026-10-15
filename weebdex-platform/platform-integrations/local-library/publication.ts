@@ -3,7 +3,7 @@ import { writable, get } from 'svelte/store';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { stores, currentDeviceSnapshot, apiRead, refreshLibrary, verifyCatalogueScope, message } from './library';
 import { scopedCatalogCandidates } from './catalog';
-import { deviceWriteLock, type DeviceSnapshot } from './device-store';
+import { deviceWriteLock, PUBLIC_DEVICE_FORMAT_FENCE, type DeviceSnapshot } from './device-store';
 import { buildGraph, normalize, recordKey, families } from './protocol/codec.js';
 import { proveService, origin, signerRequest, signedRequest, signExact, verifyEvent } from './protocol/nostr.js';
 import { queueSnapshot, deliverJob, cancelJob, recoverPublic } from './protocol/publishing.js';
@@ -100,6 +100,7 @@ export async function admitAccount(relay: Relay, assertCurrent = () => {}) {
   return result;
 }
 async function resourceMappings(snapshot: DeviceSnapshot) {
+  if (snapshot.version === 2) throw Error(PUBLIC_DEVICE_FORMAT_FENCE);
   if (snapshot.migration_reason) throw Error(snapshot.migration_reason);
   const requests = new Map<string, { kind: 'manga' | 'chapter'; id: string }>();
   for (const row of snapshot.records) {

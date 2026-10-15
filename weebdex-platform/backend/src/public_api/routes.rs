@@ -35,6 +35,8 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                     | "/manga/tag"
                     | "/manga/{p0}/feed"
                     | "/manga/{p0}/aggregate"
+                    | "/manga/{p0}/relation"
+                    | "/manga/{p0}/recommendation"
                     | "/chapter"
                     | "/chapter/{p0}"
                     | "/author"
@@ -45,6 +47,18 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                     | "/cover/{p0}"
                     | "/at-home/server/{p0}"
             )
+        {
+            continue;
+        }
+        if (operation.method == "GET"
+            && matches!(
+                operation.path.as_str(),
+                "/manga/draft" | "/manga/draft/{id}"
+            ))
+            || (operation.method == "POST"
+                && matches!(operation.path.as_str(), "/author" | "/group"))
+            || (matches!(operation.method.as_str(), "PUT" | "DELETE")
+                && matches!(operation.path.as_str(), "/author/{id}" | "/group/{id}"))
         {
             continue;
         }
@@ -66,6 +80,8 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                 "/auth/check"
                     | "/manga/{id}/read"
                     | "/manga/read"
+                    | "/manga/status"
+                    | "/manga/{id}/status"
                     | "/user/list"
                     | "/user/{id}/list"
                     | "/list/{id}"
@@ -73,6 +89,16 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                     | "/user/{id}"
             ))
             || (operation.method == "POST" && operation.path == "/manga/{id}/read")
+        {
+            continue;
+        }
+        if (operation.method == "GET"
+            && matches!(
+                operation.path.as_str(),
+                "/settings" | "/settings/template" | "/settings/template/{version}"
+            ))
+            || (operation.method == "POST"
+                && matches!(operation.path.as_str(), "/settings" | "/settings/template"))
         {
             continue;
         }

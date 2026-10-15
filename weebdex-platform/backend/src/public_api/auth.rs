@@ -155,6 +155,7 @@ impl BoundAccountRead {
 /// deserialization, public UUID lookup, read capability promotion or fake session.
 pub(crate) struct BoundAccountWrite(BoundAccountRead);
 impl BoundAccountWrite {
+    pub(crate) fn has_role(&self, role: &str) -> bool { self.0.roles.iter().any(|value| value == role) }
     pub(crate) fn user_id(&self) -> &str {
         self.0.user_id()
     }
