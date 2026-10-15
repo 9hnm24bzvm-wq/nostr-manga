@@ -29,6 +29,8 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(media::router())
         .merge(native_forum::router())
         .merge(legacy::router())
+        .merge(editorial::router())
+        .merge(drafts::router())
 }
 
 pub mod auth;
@@ -51,3 +53,6 @@ pub mod media;
 pub mod native_forum;
 
 pub mod legacy;
+
+pub mod drafts;
+pub mod editorial;

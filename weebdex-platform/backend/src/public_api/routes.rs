@@ -48,6 +48,18 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
         {
             continue;
         }
+        if (operation.method == "GET"
+            && matches!(
+                operation.path.as_str(),
+                "/manga/draft" | "/manga/draft/{id}"
+            ))
+            || (operation.method == "POST"
+                && matches!(operation.path.as_str(), "/author" | "/group"))
+            || (matches!(operation.method.as_str(), "PUT" | "DELETE")
+                && matches!(operation.path.as_str(), "/author/{id}" | "/group/{id}"))
+        {
+            continue;
+        }
         if operation.method == "GET" && operation.path.starts_with("/statistics/") {
             continue;
         }
