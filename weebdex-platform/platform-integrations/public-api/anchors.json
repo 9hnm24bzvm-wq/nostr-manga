@@ -181,5 +181,29 @@
     "after": "{#if reader.chapter.relationships.thread}<Comments.Comments />{:else}<p role=\"status\">Comments are unavailable for this resource.</p>{/if}",
     "composed_before": true,
     "approved_public_availability_exception": "missing_native_forum_context"
+  },
+  {
+    "path": "src/lib/components/LatestUpdatesGridEntry.svelte",
+    "sha256": "89b8bbd1fc61d12159044baa534f6d04aea63257a109615bd0153a2cf9383688",
+    "count": 1,
+    "before": "<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>",
+    "after": "{#if chapter.relationships.thread}<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
+    "approved_public_availability_exception": "actual_native_forum_context_only"
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>",
+    "after": "{#if reader.chapter.relationships.thread}<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
+    "approved_public_availability_exception": "actual_native_forum_context_only"
+  },
+  {
+    "path": "src/routes/(app)/popular/MostReadChapter.svelte",
+    "sha256": "594316bd2d4b31652a093557ab44686f31d9a6d286b49d2fd4078c22ed9f431c",
+    "count": 1,
+    "before": "<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t\t<MessagesSquare size=\"16\" />\r\n\t\t\t\t\t\t\t\t<span>{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t\t<ThumbsUpIcon size=\"16\" />\r\n\t\t\t\t\t\t\t\t<span>{chapter.relationships.thread.relationships.stats.up.short()}</span>\r\n\t\t\t\t\t\t\t</div>",
+    "after": "{#if chapter.relationships.thread}<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t\t<MessagesSquare size=\"16\" />\r\n\t\t\t\t\t\t\t\t<span>{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t\t<ThumbsUpIcon size=\"16\" />\r\n\t\t\t\t\t\t\t\t<span>{chapter.relationships.thread.relationships.stats.up.short()}</span>\r\n\t\t\t\t\t\t\t</div>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
+    "approved_public_availability_exception": "actual_native_forum_context_only"
   }
 ]
