@@ -564,7 +564,7 @@ async fn signed_settings_roundtrip_native_site_state_without_authority_or_concur
     assert_eq!(custom_saved["template"], custom_id);
     assert_eq!(custom_saved["settings"]["version"], 3);
     let mut reopened_config = (*state.config).clone();
-    reopened_config.database_connections = 2;
+    reopened_config.database_connections = 4;
     let reopened = AppState::connect(
         reopened_config,
         std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").unwrap(),
