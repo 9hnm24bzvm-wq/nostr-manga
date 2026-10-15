@@ -3465,6 +3465,103 @@ const patches = [
   "before": "<nav class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
   "after": "<nav aria-label=\"Settings\" class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
   "approved_ui_extension": "route_owned_library_identity"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh registration imports presentation and safe local return only",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";",
+  "after": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";\r\n\timport AccountOnboarding from \"$platform/AccountOnboarding.svelte\";\r\n\timport { safeRegistrationReturnTo } from \"$platform/account-onboarding\";\r\n\timport { get } from \"svelte/store\";"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh registration keeps only in-memory welcome and current account ownership",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\tlet isMounted = $state(false);",
+  "after": "\tlet isMounted = $state(false);\r\n\tlet registrationWelcome = $state<{ accountId: string; returnTo: string; needsVerification: boolean; sessionRefreshed: boolean; continue: () => void }>();"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "registration redirect is single-decoded same-origin safe navigation",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");",
+  "after": "\t\tconst redirect = safeRegistrationReturnTo(page.url.searchParams.get(\"redirect\"));"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "registration refresh retains safe intended return without persisting a welcome trigger",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\t\t\tq.delete(\"redirect\");",
+  "after": "\t\t\t\tq.set(\"redirect\", safeRegistrationReturnTo(res.data.return_to || redirect));"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "accepted registration is not submitted again from repeated controls",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\tif (!flow || !ref) {",
+  "after": "\t\tif (!flow || !ref || registrationWelcome) {"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh accepted registration explicitly finishes through native welcome",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\t\tif (data?.session?.active) {\r\n\t\t\t\tawait Session.initialize(true);\r\n\t\t\t\tif (!authIntent.alive()) return;\r\n\t\t\t\tif (returnTo && !returnTo?.startsWith(window.location.origin)) {\r\n\t\t\t\t\twindow.location.href = returnTo;\r\n\t\t\t\t} else goto(returnTo || \"/\");",
+  "after": "\t\t\tif (!(res instanceof AxiosError) && res.status === StatusCodes.OK && data?.session?.active) {\r\n\t\t\t\tconst accountId = data.session.identity?.id;\r\n\t\t\t\tif (!accountId) throw Constants.Error.Unknown;\r\n\t\t\t\tlet sessionRefreshed = false;\r\n\t\t\t\ttry { await Session.initialize(true); sessionRefreshed = true; }\r\n\t\t\t\tcatch { /* The accepted registration must not be replayed after a session-read failure. */ }\r\n\t\t\t\tif (!authIntent.alive()) return;\r\n\t\t\t\tconst destination = safeRegistrationReturnTo(returnTo);\r\n\t\t\t\tlet continuing = false;\r\n\t\t\t\tregistrationWelcome = {\r\n\t\t\t\t\taccountId, returnTo: destination, sessionRefreshed,\r\n\t\t\t\t\tneedsVerification: !!data.session.identity?.verifiable_addresses?.some(address => address.via === \"email\" && address.verified === false),\r\n\t\t\t\t\tcontinue: async () => {\r\n\t\t\t\t\t\tif (continuing || !sessionRefreshed || !authIntent.alive() || get(Session)?.identity?.id !== accountId) return;\r\n\t\t\t\t\t\tcontinuing = true;\r\n\t\t\t\t\t\ttry { await goto(destination); }\r\n\t\t\t\t\t\tcatch { if (authIntent.alive()) { continuing = false; toast.error(\"Could not continue\", { description: \"Please try again.\" }); } }\r\n\t\t\t\t\t}\r\n\t\t\t\t};"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "registration ignores queued repeated submit after the first accepted response",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\tev.preventDefault();\r\n\t\treturn mutex.exec(async () => {",
+  "after": "\t\tev.preventDefault();\r\n\t\tif (mutex.isLocked() || registrationWelcome) return;\r\n\t\treturn mutex.exec(async () => {"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh registration welcome replaces only the completed signup form",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "{#if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+  "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+  "approved_registration_onboarding_exception": "fresh_registration_welcome"
+},
+{
+  "path": "src/routes/(app)/auth/login/+page.svelte",
+  "label": "login imports single-decoded safe continuation",
+  "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+  "count": 1,
+  "before": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";",
+  "after": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";\r\n\timport { safeRegistrationReturnTo } from \"$platform/account-onboarding\";"
+},
+{
+  "path": "src/routes/(app)/auth/login/+page.svelte",
+  "label": "login preserves onboarding continuation without double decoding",
+  "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+  "count": 1,
+  "before": "\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");",
+  "after": "\t\tconst redirect = safeRegistrationReturnTo(page.url.searchParams.get(\"redirect\"));"
+},
+{
+  "path": "src/routes/(app)/auth/verification/+page.svelte",
+  "label": "verification imports single-decoded safe continuation",
+  "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+  "count": 1,
+  "before": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";",
+  "after": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";\r\n\timport { safeRegistrationReturnTo } from \"$platform/account-onboarding\";"
+},
+{
+  "path": "src/routes/(app)/auth/verification/+page.svelte",
+  "label": "verification preserves onboarding continuation without double decoding",
+  "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+  "count": 1,
+  "before": "\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");",
+  "after": "\t\tconst redirect = safeRegistrationReturnTo(page.url.searchParams.get(\"redirect\"));"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -3517,3 +3614,5 @@ export const frontendApprovedAuthFlowKeyExceptions = patches.filter(patch => pat
 export const frontendApprovedCreateRecoveryExceptions = patches.filter(patch => patch.approved_create_recovery_exception).map(({ path, sha256, count, before, after, approved_create_recovery_exception }) => ({ path, sha256, count, before, after, approved_create_recovery_exception }));
 
 export const frontendApprovedFollowReadinessExceptions = patches.filter(patch => patch.approved_follow_readiness_exception).map(({ path, sha256, count, before, after, approved_follow_readiness_exception }) => ({ path, sha256, count, before, after, approved_follow_readiness_exception }));
+
+export const frontendApprovedRegistrationOnboardingExceptions = patches.filter(patch => patch.approved_registration_onboarding_exception).map(({ path, sha256, count, before, after, approved_registration_onboarding_exception }) => ({ path, sha256, count, before, after, approved_registration_onboarding_exception }));

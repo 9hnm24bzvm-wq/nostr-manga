@@ -1,0 +1,20 @@
+{
+  "command": [
+    "env",
+    "WEEBDEX_FRONTEND_ROOT=/workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/frontend-onboarding",
+    "NODE_OPTIONS=--max-old-space-size=2048",
+    "node",
+    "scripts/build-frontend.mjs"
+  ],
+  "cwd": "/workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform",
+  "deadline_seconds": 180.0,
+  "elapsed_seconds": 44.782,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 99,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

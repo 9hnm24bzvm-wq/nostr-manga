@@ -11,7 +11,7 @@
     "PUBLIC_PROXY_URL": "/proxy",
     "PUBLIC_OPENGRAPH_URL": "/og-image"
   },
-  "spa_fallback_sha256": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+  "spa_fallback_sha256": "518bde4f20a9152ceec9263a714a8c89b9ae827e6d6c15d14545de1b716c0b37",
   "original_post_build_script_executed": true,
   "source_import_case_repaired_externally": [
     "$lib/utils.js -> src/lib/Utils.ts",
@@ -50,10 +50,15 @@
     "directory": "platform-integrations",
     "original_stylesheet_unchanged": true
   },
-  "script_overlay_module_sha256": "baa32e246e20a0725e945096c7b390ef23aae96e146a98971f19250ff594236b",
+  "script_overlay_module_sha256": "33b62c0d955cb3e05d997ead078896f40d501ea615406c54fe639bd99f6907c2",
   "reader_overlay_module_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
-  "integration_source_inventory_sha256": "a1399e1d224dcb394bdecd4aae6b97e57406c9ec3efc040c4e63e049b02231b1",
+  "integration_source_inventory_sha256": "a558d9b95b85e1a8e69e39ef43559f386ad56308f3bba714106362712d91ca5d",
   "external_component_extensions": [
+    {
+      "path": "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
+      "sha256": "a81906e7c7f78ca68be41ea745056dcfa2cdb1f6d142544fdacc089ed6e4f46b",
+      "intentional_rendered_extension": true
+    },
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
       "sha256": "e1bde9c6271fd7fb72f78c368156c1fe76bb28a19101ff9b70828d7c2eb41ffe",
@@ -449,6 +454,16 @@
       "before": "\t\t{@render children?.()}",
       "after": "\t\t{#key JSON.stringify([page.url.pathname, page.url.searchParams.get(\"flow\")])}\r\n\t\t{@render children?.()}\r\n\t\t{/key}",
       "approved_auth_flow_key_exception": "auth_settings_requested_flow_key"
+    }
+  ],
+  "approved_registration_onboarding_exceptions": [
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1,
+      "before": "{#if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+      "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+      "approved_registration_onboarding_exception": "fresh_registration_welcome"
     }
   ],
   "anonymous_recovery_derivation": {
@@ -3096,6 +3111,79 @@
       "approved_ui_extension": "route_owned_library_identity"
     },
     {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration imports presentation and safe local return only",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration keeps only in-memory welcome and current account ownership",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration redirect is single-decoded same-origin safe navigation",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration refresh retains safe intended return without persisting a welcome trigger",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "accepted registration is not submitted again from repeated controls",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh accepted registration explicitly finishes through native welcome",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration ignores queued repeated submit after the first accepted response",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration welcome replaces only the completed signup form",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1,
+      "approved_registration_onboarding_exception": "fresh_registration_welcome"
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "login imports single-decoded safe continuation",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "login preserves onboarding continuation without double decoding",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/verification/+page.svelte",
+      "label": "verification imports single-decoded safe continuation",
+      "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/verification/+page.svelte",
+      "label": "verification preserves onboarding continuation without double decoding",
+      "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+      "count": 1
+    },
+    {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
       "label": "selected second page keeps its double spread visible",
       "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
@@ -4268,5 +4356,5 @@
     "templates/chapter.html",
     "templates/group.html"
   ],
-  "visual_parity": "Not asserted. Explicit local/protocol panels, scoped library guards, staging-cancel control and restricted-reset boundary are intentional UI extensions. Unrelated supplied markup/styles are preserved by exact exception comparison."
+  "visual_parity": "Not asserted. Explicit local/protocol panels, scoped library guards, staging-cancel control, restricted-reset boundary and fresh-registration welcome are intentional UI extensions. Unrelated supplied markup/styles are preserved by exact exception comparison."
 }

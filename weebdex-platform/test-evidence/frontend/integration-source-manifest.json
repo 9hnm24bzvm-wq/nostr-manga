@@ -7,7 +7,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": ".build/composed-native-tabs-final/production-input",
+  "frontend": ".build/frontend-onboarding",
   "original_files_written": false,
   "integration_utility_sources": {
     "method": "build-local explicit Tailwind source declaration",
@@ -43,9 +43,19 @@
   ],
   "integration_source_files": [
     {
+      "path": "platform-integrations/frontend-behavior/account-onboarding.ts",
+      "bytes": 1055,
+      "sha256": "0f540c62ea99384dbf841327e8645849cfe629459518e8edf6f444632802db1a"
+    },
+    {
       "path": "platform-integrations/frontend-behavior/account-preferences.ts",
       "bytes": 1850,
       "sha256": "861f2f36763f3d07497c31a498e90438707a8848e166afba3c836dac982a7ecd"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
+      "bytes": 2663,
+      "sha256": "a81906e7c7f78ca68be41ea745056dcfa2cdb1f6d142544fdacc089ed6e4f46b"
     },
     {
       "path": "platform-integrations/frontend-behavior/actor-follow-state.ts",
@@ -219,8 +229,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 464862,
-      "sha256": "baa32e246e20a0725e945096c7b390ef23aae96e146a98971f19250ff594236b"
+      "bytes": 472351,
+      "sha256": "33b62c0d955cb3e05d997ead078896f40d501ea615406c54fe639bd99f6907c2"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -423,8 +433,13 @@
       "sha256": "6885e2856293f7b6fa3197bba35a25ad2d1b9ecffa46554a725882820fb11dbe"
     }
   ],
-  "integration_source_inventory_sha256": "a1399e1d224dcb394bdecd4aae6b97e57406c9ec3efc040c4e63e049b02231b1",
+  "integration_source_inventory_sha256": "a558d9b95b85e1a8e69e39ef43559f386ad56308f3bba714106362712d91ca5d",
   "external_component_extensions": [
+    {
+      "path": "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
+      "sha256": "a81906e7c7f78ca68be41ea745056dcfa2cdb1f6d142544fdacc089ed6e4f46b",
+      "intentional_rendered_extension": true
+    },
     {
       "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
       "sha256": "e1bde9c6271fd7fb72f78c368156c1fe76bb28a19101ff9b70828d7c2eb41ffe",
@@ -471,7 +486,7 @@
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "baa32e246e20a0725e945096c7b390ef23aae96e146a98971f19250ff594236b",
+  "overlay_module_sha256": "33b62c0d955cb3e05d997ead078896f40d501ea615406c54fe639bd99f6907c2",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -3079,6 +3094,79 @@
       "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
       "count": 1,
       "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration imports presentation and safe local return only",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration keeps only in-memory welcome and current account ownership",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration redirect is single-decoded same-origin safe navigation",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration refresh retains safe intended return without persisting a welcome trigger",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "accepted registration is not submitted again from repeated controls",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh accepted registration explicitly finishes through native welcome",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration ignores queued repeated submit after the first accepted response",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration welcome replaces only the completed signup form",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1,
+      "approved_registration_onboarding_exception": "fresh_registration_welcome"
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "login imports single-decoded safe continuation",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "login preserves onboarding continuation without double decoding",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/verification/+page.svelte",
+      "label": "verification imports single-decoded safe continuation",
+      "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/verification/+page.svelte",
+      "label": "verification preserves onboarding continuation without double decoding",
+      "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+      "count": 1
     },
     {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
@@ -6843,6 +6931,79 @@
       "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
       "count": 1,
       "approved_ui_extension": "route_owned_library_identity"
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration imports presentation and safe local return only",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration keeps only in-memory welcome and current account ownership",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration redirect is single-decoded same-origin safe navigation",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration refresh retains safe intended return without persisting a welcome trigger",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "accepted registration is not submitted again from repeated controls",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh accepted registration explicitly finishes through native welcome",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "registration ignores queued repeated submit after the first accepted response",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "label": "fresh registration welcome replaces only the completed signup form",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1,
+      "approved_registration_onboarding_exception": "fresh_registration_welcome"
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "login imports single-decoded safe continuation",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/login/+page.svelte",
+      "label": "login preserves onboarding continuation without double decoding",
+      "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/verification/+page.svelte",
+      "label": "verification imports single-decoded safe continuation",
+      "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+      "count": 1
+    },
+    {
+      "path": "src/routes/(app)/auth/verification/+page.svelte",
+      "label": "verification preserves onboarding continuation without double decoding",
+      "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+      "count": 1
     }
   ],
   "reader_script_repairs": [
@@ -8416,6 +8577,16 @@
       "approved_follow_readiness_exception": "follow_current_status_block_guard"
     }
   ],
+  "approved_registration_onboarding_exceptions": [
+    {
+      "path": "src/routes/(app)/auth/register/+page.svelte",
+      "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+      "count": 1,
+      "before": "{#if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+      "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+      "approved_registration_onboarding_exception": "fresh_registration_welcome"
+    }
+  ],
   "approved_feed_pagination_exceptions": [
     {
       "path": "src/lib/components/ChapterFeed.svelte",
@@ -8733,7 +8904,7 @@
     {
       "path": "src/routes/(app)/auth/login/+page.svelte",
       "original_sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
-      "executed_source_sha256": "bbdb3c13a809e537868156d71ea5fdfe745eeb1a077224a409aa34dd74d9dc26",
+      "executed_source_sha256": "7c28944458162f8b341c5a26a5dd6feb729dea34e5ab5d08cde3025a9d6d0fab",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -8744,12 +8915,12 @@
     {
       "path": "src/routes/(app)/auth/register/+page.svelte",
       "original_sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
-      "executed_source_sha256": "7e8e2b82b9b89a29ca4a851d87e19f9914db9dd88cdbe9322f09940a94d937f4",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
+      "executed_source_sha256": "9b8736c5cf5ed25a3c179bb042655639aec1b75aa71e93137a5593181fa7a8df",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
+      "explicit_local_protocol_ui_extension": true,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -9371,7 +9542,7 @@
     {
       "path": "src/routes/(app)/auth/verification/+page.svelte",
       "original_sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
-      "executed_source_sha256": "10f7328e4d974ffccd099f4ed6dec598abf111bcad055154861c5edc0271041f",
+      "executed_source_sha256": "12ee80474b9fb4531dab4e5ba6b64855a0557664a391b6cd48f0486914570a4e",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
@@ -9875,5 +10046,5 @@
       "approved_event_handler_javascript_changed": false
     }
   ],
-  "qualification": "All supplied source bytes remain unchanged. Executed script source differs, including one exact approved onclick JavaScript body; unrelated retained markup/styles match after narrowly enumerated handler, local availability/key, target/discussion-key, existing share handler/name, supported client-name validation, staging cancel/reset, restricted recovery boundary and current-actor follow readiness/retry exceptions are normalized. Anonymous recovery executes a guarded script derivative of a checked byte-identical source copy; its original markup/styles match exactly. Executed HTML has necessary explicit local/protocol, staging-cancel, restricted-reset and current-actor follow readiness/retry UI extensions, so globally exact rendered HTML is not claimed. Absent announcements are reconstructed."
+  "qualification": "All supplied source bytes remain unchanged. Executed script source differs, including one exact approved onclick JavaScript body; unrelated retained markup/styles match after narrowly enumerated handler, local availability/key, target/discussion-key, existing share handler/name, supported client-name validation, staging cancel/reset, restricted recovery boundary, current-actor follow readiness/retry and fresh-registration welcome exceptions are normalized. Anonymous recovery executes a guarded script derivative of a checked byte-identical source copy; its original markup/styles match exactly. Executed HTML has necessary explicit local/protocol, staging-cancel, restricted-reset current-actor follow readiness/retry and fresh-registration welcome UI extensions, so globally exact rendered HTML is not claimed. Absent announcements are reconstructed."
 }

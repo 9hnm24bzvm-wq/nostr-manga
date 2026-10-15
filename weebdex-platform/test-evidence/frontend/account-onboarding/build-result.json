@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "command_exit": 0,
+  "remaining_owned_members": [],
+  "changed_inputs": [],
+  "owned_leader_reaped": true,
+  "source_inputs_checked": 762,
+  "input_manifest_sha256": "55b2c104f4412d3835722f85ff8cca913a7bdd5a01eec65534307ea6b6de4668",
+  "terminal_owner_receipt": "build-owner.json",
+  "runtime_browser_tests_executed": false
+}

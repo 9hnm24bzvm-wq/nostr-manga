@@ -75,6 +75,7 @@ const evidence = {
   approved_client_name_exceptions: integration.approved_client_name_exceptions,
   approved_search_callback_exceptions: integration.approved_search_callback_exceptions,
   approved_auth_flow_key_exceptions: integration.approved_auth_flow_key_exceptions,
+  approved_registration_onboarding_exceptions: integration.approved_registration_onboarding_exceptions,
   anonymous_recovery_derivation: integration.anonymous_recovery_derivation,
   approved_upload_recovery_exceptions: integration.approved_upload_recovery_exceptions,
   approved_recovery_boundary_exceptions: integration.approved_recovery_boundary_exceptions,
@@ -83,7 +84,7 @@ const evidence = {
   reconstruction_limit: "Public announcement listing/detail, pinned homepage data, and staff management are additive reconstruction against the new persisted Rust contract. Original missing announcement HTML/CSS and rendered parity remain unknown.",
   portable_ui_directory: "artifacts/frontend",
   original_go_templates_preserved: ["index", "manga", "chapter", "group"].map(name => `templates/${name}.html`),
-  visual_parity: "Not asserted. Explicit local/protocol panels, scoped library guards, staging-cancel control and restricted-reset boundary are intentional UI extensions. Unrelated supplied markup/styles are preserved by exact exception comparison.",
+  visual_parity: "Not asserted. Explicit local/protocol panels, scoped library guards, staging-cancel control, restricted-reset boundary and fresh-registration welcome are intentional UI extensions. Unrelated supplied markup/styles are preserved by exact exception comparison.",
 };
 const evidenceDir = path.join(root, "test-evidence/frontend");
 fs.mkdirSync(evidenceDir, { recursive: true });
