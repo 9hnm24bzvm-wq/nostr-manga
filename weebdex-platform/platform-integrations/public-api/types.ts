@@ -12,7 +12,7 @@ export interface StatisticsEnvelope { result: 'ok'; statistics: Record<string, R
 export type NativeForumKind = 'manga' | 'chapter' | 'group';
 export interface NativeForumResource { kind: NativeForumKind; id: string; }
 export interface NativeForumEnvelope { result:'ok'; data:(NativeForumResource & {thread:Record<string,unknown>|null})[]; unavailable:NativeForumResource[]; }
-export interface AtHome { result: 'ok'; baseUrl: string; chapter: { hash: string; data: string[]; dataSaver: string[] }; nostr?: { originalsOnly?: boolean; pageDimensions?: number[][] }; }
+export interface AtHome { result: 'ok'; baseUrl: string; chapter: { hash: string; data: string[]; dataSaver: string[] }; nostr?: { originalsOnly?: boolean; pageDimensions?: number[][]; dataSaverDimensions?: number[][] }; }
 export interface Aggregate { result: 'ok'; volumes: Record<string, { volume: string | null; count: number; chapters: Record<string, { chapter: string | null; id: PublicUuid; others: PublicUuid[]; count: number }> }>; }
 export interface PublicPage { name: string; dimensions: number[]; public_url: string; }
 export interface ViewProvenance { resource: Resource; chapter_count?: number; native_forum?: {status:number; available:boolean}; }

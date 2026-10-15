@@ -17,3 +17,18 @@ Remaining modules include ChapterHistory and MangaFollow device/publication comm
 Time-window popularity and recommendations remain real product backlog. An unavailable placeholder is honest staging behavior, not completion. Passive analytics cannot be replaced with a fabricated view/rating number. Current partial statistics omit unknown ratings rather than returning zero or5.5.
 
 The durable browser migration core was lost. A newly designed replacement and additive v2 store/write/publication fences now have21 owned fake-IDB tests plus an actual publication-module fence test; this is not the original recovered implementation. Product conversion is hard-disabled. Before activation, finish compatible write commands and reviewed recovery UI, then rerun genuine HTTP and browser acceptance including absent/disabled forum contexts and optimized page delivery. Preserve unresolved legacy records and exportable backups throughout.
+
+## Explicit catalogue-preview library fence
+
+When PUBLIC_MANGADEX_CATALOGUE=1, library controls report that saved-library
+changes are unavailable in this preview. All public MangaFollow/ChapterHistory
+module methods, current-resource local mutations, localAction writes, account
+library requests and native catalogue hydration reject with501 before storage
+or network side effects. The ordinary library identity cannot claim usable
+follows/history. Existing records remain inspectable and JSON/CSV backups remain
+available. Default0 behavior and Nostr publication/event formats are unchanged.
+
+This is an activation blocker, not completed library support. UUID-compatible
+save/status/progress/list/import/account adapters, reviewed conversion/recovery UI
+and end-to-end write acceptance are required before enabling the user default.
+Device UUID conversion remains independently hard-disabled.

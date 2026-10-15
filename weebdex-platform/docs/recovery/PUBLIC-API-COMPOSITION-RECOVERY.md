@@ -19,3 +19,11 @@ Those checks do not validate TypeScript semantics, actual backend responses, bro
 A newly reconstructed dependency-free Node VM suite now passes 18 finite client/query/DTO/media/native-forum/migration-transport seams. It imports the actual reconstructed TypeScript via Node's type-stripper; it uses fixture transports and performs no real network or database operations. The adult-parent chapter seam verifies that both visibility and chapter-parent proof send all four content ratings. This is not a replay of the old 62-test suite or lost HTTP/browser acceptance.
 
 Run: `node --experimental-vm-modules --test weebdex-platform/tests/ci/public-api-recovery.test.mjs` from the repository root with Node24.
+
+Optimized reader dimensions are independent persisted metadata. The at-home
+presentation extension `nostr.dataSaverDimensions` supplies one actual width/
+height pair for each advertised optimized filename, separately from original
+`pageDimensions`. Unknown optimized dimensions stay unknown; original pixel
+sizes are never copied onto a derivative. The retained reader requires positive
+actual dimensions before accepting either rendition. Backend6e341f2 or its
+verified descendant is required for a data-saver-enabled acceptance fixture.
