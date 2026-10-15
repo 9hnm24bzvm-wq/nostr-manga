@@ -55,6 +55,23 @@ impl AdmittedHttpCapability {
         &self,
         tx: &tokio_postgres::Transaction<'_>,
     ) -> Result<(), HttpAuthError> {
+        self.recheck_service_transaction(tx).await?;
+        crate::accounts::check_account_tx(tx, &self.permit)
+            .await
+            .map_err(|error| {
+                if error.is::<tokio_postgres::Error>() {
+                    HttpAuthError::Unavailable
+                } else {
+                    HttpAuthError::Denied
+                }
+            })
+    }
+    /// Service fence can precede the original author FOR UPDATE lock, avoiding
+    /// an account SHARE→UPDATE upgrade and preserving service→author ordering.
+    pub(crate) async fn recheck_service_transaction(
+        &self,
+        tx: &tokio_postgres::Transaction<'_>,
+    ) -> Result<(), HttpAuthError> {
         let service: Option<Vec<u8>> = tx
             .query_opt(
                 "SELECT service_key FROM node_identity WHERE singleton FOR SHARE",
@@ -66,15 +83,7 @@ impl AdmittedHttpCapability {
         if service.as_deref() != Some(self.service.as_slice()) {
             return Err(HttpAuthError::Service);
         }
-        crate::accounts::check_account_tx(tx, &self.permit)
-            .await
-            .map_err(|error| {
-                if error.is::<tokio_postgres::Error>() {
-                    HttpAuthError::Unavailable
-                } else {
-                    HttpAuthError::Denied
-                }
-            })
+        Ok(())
     }
 }
 #[derive(Debug, thiserror::Error)]
@@ -95,7 +104,88 @@ fn identifier(value: &str) -> Option<Id> {
         .then(|| hex::decode(value).ok()?.try_into().ok())
         .flatten()
 }
+/// Header-only admission check for bounded body receipt. It never consumes
+/// replay, grants a write capability, or permits a storage mutation. Exact body
+/// verification and one durable replay consume still mint the final capability.
+pub struct HttpRequestPreflight {
+    service: Id,
+}
+impl HttpRequestPreflight {
+    pub(crate) fn service(&self) -> Id {
+        self.service
+    }
+}
+fn verified_scope(
+    service: &HttpService,
+    authorization: &str,
+    external_uri: &str,
+    method: &str,
+    body: Option<&[u8]>,
+) -> Result<(auth::Event, String), HttpAuthError> {
+    if authorization.len() > 16384 || external_uri.len() > 32768 {
+        return Err(HttpAuthError::Invalid);
+    }
+    let uri: axum::http::Uri = external_uri.parse().map_err(|_| HttpAuthError::Invalid)?;
+    if !external_uri.starts_with('/')
+        || external_uri.starts_with("//")
+        || uri.scheme().is_some()
+        || uri.authority().is_some()
+        || uri.path_and_query().map(|v| v.as_str()) != Some(external_uri)
+    {
+        return Err(HttpAuthError::Invalid);
+    }
+    let event = auth::token(authorization).map_err(|_| HttpAuthError::Invalid)?;
+    let request_url = format!("{}{}", service.origin, external_uri);
+    if let Some(body) = body {
+        auth::http(&event, &request_url, method, body).map_err(|_| HttpAuthError::Invalid)?;
+    } else {
+        auth::http_scope(&event, &request_url, method).map_err(|_| HttpAuthError::Invalid)?;
+    }
+    // Empty GET proofs may omit payload under the original NIP-98 policy.
+    // If supplied, the public adapter extension never ignores an ambiguous
+    // or inconsistent raw-body binding. Native auth::http is unchanged.
+    let payloads: Vec<_> = event
+        .tags
+        .iter()
+        .filter(|tag| tag.first().map(String::as_str) == Some("payload"))
+        .collect();
+    if !payloads.is_empty()
+        && (payloads.len() != 1
+            || payloads[0].len() != 2
+            || !auth::valid_hash(&payloads[0][1])
+            || body.is_some_and(|body| payloads[0][1] != auth::hash(body)))
+    {
+        return Err(HttpAuthError::Invalid);
+    }
+
+    if ["POST", "PUT", "PATCH", "DELETE"].contains(&method) && payloads.is_empty() {
+        return Err(HttpAuthError::Invalid);
+    }
+    let services: Vec<_> = event
+        .tags
+        .iter()
+        .filter(|tag| tag.first().map(String::as_str) == Some("service"))
+        .collect();
+    if services.len() != 1 || services[0].len() != 2 || services[0][1] != hex::encode(service.key) {
+        return Err(HttpAuthError::Invalid);
+    }
+    Ok((event, request_url))
+}
 impl Repository {
+    pub async fn preflight_admitted_http_request(
+        &self,
+        service: &HttpService,
+        authorization: &str,
+        external_uri: &str,
+        method: &str,
+    ) -> Result<HttpRequestPreflight, HttpAuthError> {
+        let (event, _) = verified_scope(service, authorization, external_uri, method, None)?;
+        let principal = identifier(&event.pubkey).ok_or(HttpAuthError::Invalid)?;
+        self.verify_http_service_account(service, principal).await?;
+        Ok(HttpRequestPreflight {
+            service: service.key,
+        })
+    }
     pub async fn verify_admitted_http_request(
         &self,
         service: &HttpService,
@@ -104,67 +194,11 @@ impl Repository {
         method: &str,
         body: &[u8],
     ) -> Result<AdmittedHttpCapability, HttpAuthError> {
-        if authorization.len() > 16384 || external_uri.len() > 32768 {
-            return Err(HttpAuthError::Invalid);
-        }
-        let uri: axum::http::Uri = external_uri.parse().map_err(|_| HttpAuthError::Invalid)?;
-        if !external_uri.starts_with('/')
-            || external_uri.starts_with("//")
-            || uri.scheme().is_some()
-            || uri.authority().is_some()
-            || uri.path_and_query().map(|v| v.as_str()) != Some(external_uri)
-        {
-            return Err(HttpAuthError::Invalid);
-        }
-        let event = auth::token(authorization).map_err(|_| HttpAuthError::Invalid)?;
-        let request_url = format!("{}{}", service.origin, external_uri);
-        auth::http(&event, &request_url, method, body).map_err(|_| HttpAuthError::Invalid)?;
-        // Empty GET proofs may omit payload under the original NIP-98 policy.
-        // If supplied, the public adapter extension never ignores an ambiguous
-        // or inconsistent raw-body binding. Native auth::http is unchanged.
-        let payloads: Vec<_> = event
-            .tags
-            .iter()
-            .filter(|tag| tag.first().map(String::as_str) == Some("payload"))
-            .collect();
-        if !payloads.is_empty()
-            && (payloads.len() != 1 || payloads[0].len() != 2 || payloads[0][1] != auth::hash(body))
-        {
-            return Err(HttpAuthError::Invalid);
-        }
-
-        let services: Vec<_> = event
-            .tags
-            .iter()
-            .filter(|tag| tag.first().map(String::as_str) == Some("service"))
-            .collect();
-        if services.len() != 1
-            || services[0].len() != 2
-            || services[0][1] != hex::encode(service.key)
-        {
-            return Err(HttpAuthError::Invalid);
-        }
+        let (event, request_url) =
+            verified_scope(service, authorization, external_uri, method, Some(body))?;
         let principal = identifier(&event.pubkey).ok_or(HttpAuthError::Invalid)?;
         let authorization = identifier(&event.id).ok_or(HttpAuthError::Invalid)?;
-        let actual: Option<Vec<u8>> = self
-            .pool
-            .get()
-            .await
-            .map_err(|_| HttpAuthError::Unavailable)?
-            .query_opt("SELECT service_key FROM node_identity WHERE singleton", &[])
-            .await
-            .map_err(|_| HttpAuthError::Unavailable)?
-            .map(|row| row.get(0));
-        if actual.as_deref() != Some(service.key.as_slice()) {
-            return Err(HttpAuthError::Service);
-        }
-        let permit = self.account_permit(principal).await.map_err(|error| {
-            if error.is::<crate::accounts::AccountDenied>() {
-                HttpAuthError::Denied
-            } else {
-                HttpAuthError::Unavailable
-            }
-        })?;
+        let permit = self.verify_http_service_account(service, principal).await?;
         if !self
             .consume_http_auth(authorization, event.created_at)
             .await
@@ -180,6 +214,31 @@ impl Repository {
             body_hash: identifier(&auth::hash(body)).ok_or(HttpAuthError::Invalid)?,
             authorization,
             permit,
+        })
+    }
+    async fn verify_http_service_account(
+        &self,
+        service: &HttpService,
+        principal: Id,
+    ) -> Result<AccountPermit, HttpAuthError> {
+        let actual: Option<Vec<u8>> = self
+            .pool
+            .get()
+            .await
+            .map_err(|_| HttpAuthError::Unavailable)?
+            .query_opt("SELECT service_key FROM node_identity WHERE singleton", &[])
+            .await
+            .map_err(|_| HttpAuthError::Unavailable)?
+            .map(|row| row.get(0));
+        if actual.as_deref() != Some(service.key.as_slice()) {
+            return Err(HttpAuthError::Service);
+        }
+        self.account_permit(principal).await.map_err(|error| {
+            if error.is::<crate::accounts::AccountDenied>() {
+                HttpAuthError::Denied
+            } else {
+                HttpAuthError::Unavailable
+            }
         })
     }
 }

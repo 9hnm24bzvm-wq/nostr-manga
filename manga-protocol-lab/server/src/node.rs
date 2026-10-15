@@ -816,6 +816,104 @@ impl EmbeddedOperations {
     }
 }
 tokio::task_local! {static OWNED_OPERATIONS:Arc<EmbeddedOperations>;}
+/// Opaque export of the existing embedded node owner to its exact injected
+/// LibraryObjects. No public constructor, second tracker, store, or signing key.
+#[derive(Clone)]
+pub(crate) struct EmbeddedLibraryOperations {
+    operations: Arc<EmbeddedOperations>,
+    library: std::sync::Weak<crate::library_storage::LibraryObjects>,
+    projection_enabled: bool,
+    service: Id,
+}
+impl EmbeddedLibraryOperations {
+    fn attach(
+        library: &Arc<crate::library_storage::LibraryObjects>,
+        operations: &Arc<EmbeddedOperations>,
+        projection_enabled: bool,
+        service: Id,
+    ) -> Result<()> {
+        ensure!(operations.enabled, "embedded library owner is disabled");
+        let handle = Self {
+            operations: operations.clone(),
+            library: Arc::downgrade(library),
+            projection_enabled,
+            service,
+        };
+        ensure!(
+            library.embedded_operations.set(handle).is_ok(),
+            "library already has an embedded operation owner; restart requires a new runtime"
+        );
+        Ok(())
+    }
+    pub(crate) fn check_receipt(
+        &self,
+        library: &Arc<crate::library_storage::LibraryObjects>,
+        service: Id,
+    ) -> Result<()> {
+        ensure!(
+            self.service == service,
+            crate::http_auth::HttpAuthError::Service
+        );
+        ensure!(
+            self.projection_enabled
+                && self
+                    .library
+                    .upgrade()
+                    .is_some_and(|owner| Arc::ptr_eq(&owner, library)),
+            "original library publication owner unavailable"
+        );
+        ensure!(
+            !self
+                .operations
+                .state
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .closed,
+            "original library owner is closing"
+        );
+        Ok(())
+    }
+    /// A caller disconnect drops only the outer JoinHandle. The original owner
+    /// retains the whole accepted mutation and every inherited storage child
+    /// through terminal completion, with its unchanged close/drain policy.
+    pub(crate) async fn run<F, T>(
+        &self,
+        library: &Arc<crate::library_storage::LibraryObjects>,
+        future: F,
+    ) -> Result<T>
+    where
+        F: std::future::Future<Output = Result<T>> + Send + 'static,
+        T: Send + 'static,
+    {
+        ensure!(
+            self.projection_enabled,
+            "embedded original publication backend unavailable"
+        );
+        ensure!(
+            self.library
+                .upgrade()
+                .is_some_and(|owner| Arc::ptr_eq(&owner, library)),
+            "embedded library owner identity mismatch"
+        );
+        let lease = self
+            .operations
+            .acquire()
+            .map_err(|_| {
+                anyhow::anyhow!(crate::library_admission::Busy {
+                    stage: "embedded_operations"
+                })
+            })?
+            .context("embedded library owner is disabled")?;
+        let operations = self.operations.clone();
+        // Acquisition and spawn occur before the first suspension point.
+        tokio::spawn(async move {
+            let _lease = lease;
+            OWNED_OPERATIONS.scope(operations, future).await
+        })
+        .await
+        .context("embedded library mutation task terminated unexpectedly")?
+    }
+}
 /// Capture a bounded child lease synchronously before its executor fork. No
 /// task handles are retained by the owner, so detached caller handles cannot
 /// form ownership cycles. The child guard drops only with the actual future.
@@ -1379,6 +1477,16 @@ async fn serve_prepared_inner(
             })
             .transpose()?
     };
+    if worker_owner.cancel_on_drop
+        && let Some(library) = &library_objects
+    {
+        EmbeddedLibraryOperations::attach(
+            library,
+            &worker_owner.operations,
+            projection_enabled,
+            service,
+        )?;
+    }
     if config.sync_worker_enabled
         && let Some(sync) = peer_sync.clone()
     {

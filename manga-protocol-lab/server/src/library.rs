@@ -57,12 +57,58 @@ fn decide(
     }
     Ok(None)
 }
+/// New HTTP intent commits require strict CAS even when the signed event is
+/// already current. The original native commit's idempotent ordering is intact.
+fn strict_expected(old: Option<&Head>, expected: ExpectedHead) -> Result<()> {
+    let current = old.and_then(|head| head.current.as_deref());
+    let matches = match expected {
+        ExpectedHead::Any => false,
+        ExpectedHead::Absent => current.is_none(),
+        ExpectedHead::Exact(id) => current == Some(id.as_slice()),
+    };
+    if !matches {
+        return Err(HeadConflict.into());
+    }
+    Ok(())
+}
 impl LibraryObjects {
+    /// Internal final boundary for an already intent-validated HTTP mutation.
+    /// Only the original mutation module may select its intent/root; callers
+    /// cannot manufacture or clone the request capability. No HTTP route calls
+    /// this entry directly.
+    pub(crate) async fn commit_admitted_http(
+        self: &Arc<Self>,
+        capability: crate::http_auth::AdmittedHttpCapability,
+        event: Event,
+        expected: ExpectedHead,
+        targets: crate::library_http_mutation::MutationTargets,
+    ) -> Result<StageOutcome> {
+        ensure!(capability.method() == "POST", "library mutation method");
+        ensure!(
+            !matches!(expected, ExpectedHead::Any),
+            "explicit library head required"
+        );
+        let permit = capability.account_permit().clone();
+        self.commit_request(permit, event, expected, Some((capability, targets)))
+            .await
+    }
     pub async fn commit(
         self: &Arc<Self>,
         permit: AccountPermit,
         event: Event,
         expected: ExpectedHead,
+    ) -> Result<StageOutcome> {
+        self.commit_request(permit, event, expected, None).await
+    }
+    async fn commit_request(
+        self: &Arc<Self>,
+        permit: AccountPermit,
+        event: Event,
+        expected: ExpectedHead,
+        guard: Option<(
+            crate::http_auth::AdmittedHttpCapability,
+            crate::library_http_mutation::MutationTargets,
+        )>,
     ) -> Result<StageOutcome> {
         ensure!(
             event.content.len() <= 512
@@ -89,7 +135,8 @@ impl LibraryObjects {
         let this = self.clone();
         crate::node::spawn_owned_scope(async move {
             let _slot = slot;
-            this.commit_inner(permit, event, expected, root_hash).await
+            this.commit_inner(permit, event, expected, root_hash, guard)
+                .await
         })
         .await?
     }
@@ -99,13 +146,25 @@ impl LibraryObjects {
         event: Event,
         expected: ExpectedHead,
         root_hash: Id,
+        guard: Option<(
+            crate::http_auth::AdmittedHttpCapability,
+            crate::library_http_mutation::MutationTargets,
+        )>,
     ) -> Result<StageOutcome> {
         let mut trace = crate::perf::Trace::new("root");
         self.repo.verify_account_storage_permit(&permit).await?;
         let event_id = hex::decode(&event.id)?;
         let created = i64::try_from(event.created_at)?;
         let probe=self.repo.pool.get().await?.query_opt("SELECT winner_at,winner_id,event_id FROM account_heads WHERE publisher=$1 AND kind=11999", &[&permit.publisher.as_slice()]).await?.map(head);
+        if guard.is_some() {
+            strict_expected(probe.as_ref(), expected)?;
+        }
         if let Some(result) = decide(probe.as_ref(), created, &event_id, expected)? {
+            // A new adapter receipt cannot claim an immutable old/current or
+            // superseded event applied the requested delta. Native semantics stay.
+            if guard.is_some() {
+                return Err(HeadConflict.into());
+            }
             return Ok(result);
         }
         let previous_validation = self
@@ -128,8 +187,10 @@ impl LibraryObjects {
         } else {
             trace.count("root_decode_reused", 0);
             Arc::new(
-                crate::node::spawn_blocking_owned_scope(move || Root::decode(&bytes, &Limits::default()))
-                    .await??,
+                crate::node::spawn_blocking_owned_scope(move || {
+                    Root::decode(&bytes, &Limits::default())
+                })
+                .await??,
             )
         };
         let owner = self.storage.owner();
@@ -147,6 +208,11 @@ impl LibraryObjects {
         trace.mark("read_decode");
         let mut client = self.repo.pool.get().await?;
         let tx = client.transaction().await?;
+        if let Some((capability, _)) = &guard {
+            tx.batch_execute("SET LOCAL statement_timeout='2s'; SET LOCAL lock_timeout='500ms'")
+                .await?;
+            capability.recheck_service_transaction(&tx).await?;
+        }
         let _authority = tx
             .query_one(
                 &tx.prepare_cached(
@@ -157,8 +223,33 @@ impl LibraryObjects {
             )
             .await?;
         crate::accounts::check_account_authority_tx(&tx, &permit).await?;
+        if let Some((capability, _)) = &guard {
+            capability.recheck_transaction(&tx).await?;
+        }
         let old=tx.query_opt(&tx.prepare_cached("SELECT winner_at,winner_id,event_id FROM account_heads WHERE publisher=$1 AND kind=11999").await?, &[&permit.publisher.as_slice()]).await?.map(head);
+        if guard.is_some() {
+            strict_expected(old.as_ref(), expected)?;
+            // Raw CAS distinguishes a quarantined/hidden head from absence;
+            // the signed current-public policy must agree before any mutation.
+            let visible = self
+                .repo
+                .current_library_head_transaction(&tx, permit.publisher)
+                .await?;
+            let public_id = visible.as_ref().map(|head| head.event.id.as_str());
+            let expected_id = match expected {
+                ExpectedHead::Exact(id) => Some(hex::encode(id)),
+                ExpectedHead::Absent => None,
+                ExpectedHead::Any => unreachable!("guarded explicit head"),
+            };
+            if public_id != expected_id.as_deref() {
+                return Err(HeadConflict.into());
+            }
+            guard.as_ref().unwrap().1.check_transaction(&tx).await?;
+        }
         if let Some(result) = decide(old.as_ref(), created, &event_id, expected)? {
+            if guard.is_some() {
+                return Err(HeadConflict.into());
+            }
             return Ok(result);
         }
         crate::ordinary_deletion::admit_event_tx(&tx, &event).await?;

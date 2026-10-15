@@ -71,7 +71,11 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                     | "/list/{id}/feed"
                     | "/user/{id}"
             ))
-            || (operation.method == "POST" && operation.path == "/manga/{id}/read")
+            || (operation.method == "POST"
+                && matches!(
+                    operation.path.as_str(),
+                    "/manga/{id}/read" | "/manga/{id}/status"
+                ))
         {
             continue;
         }

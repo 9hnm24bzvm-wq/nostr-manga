@@ -21,6 +21,7 @@ pub fn router() -> axum::Router<crate::AppState> {
     routes::router()
         .merge(auth::router())
         .merge(library::router())
+        .merge(library_mutations::router())
         .merge(lists::router())
         .merge(profiles::router())
         .merge(reports::router())
@@ -42,3 +43,5 @@ pub mod reports;
 pub mod statistics;
 
 pub mod catalogue;
+
+mod library_mutations;

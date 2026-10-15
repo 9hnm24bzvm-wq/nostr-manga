@@ -67,6 +67,9 @@ impl LibraryConcurrency {
     }
 }
 pub struct LibraryObjects {
+    // Installed only by the exact original embedded listener before readiness.
+    // A Weak library identity in the opaque handle prevents cross-runtime use.
+    pub(crate) embedded_operations: std::sync::OnceLock<crate::node::EmbeddedLibraryOperations>,
     pub(crate) repo: Repository,
     pub(crate) validation: crate::library_references::ValidationCache,
     pub(crate) storage: Arc<UploadStore>,
@@ -94,6 +97,7 @@ impl LibraryObjects {
     }
     fn build(repo: Repository, storage: Arc<UploadStore>, limits: LibraryConcurrency) -> Arc<Self> {
         Arc::new(Self {
+            embedded_operations: Default::default(),
             validation: crate::library_references::ValidationCache::new(
                 limits.validation_cache_bytes,
                 limits.validation_cache_entries,

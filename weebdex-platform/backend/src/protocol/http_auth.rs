@@ -1,7 +1,22 @@
 //! Original verification; never platform account translation.
 use super::ProtocolFacade;
-use manga_node::http_auth::{AdmittedHttpCapability, HttpAuthError, HttpService};
+use manga_node::http_auth::{
+    AdmittedHttpCapability, HttpAuthError, HttpRequestPreflight, HttpService,
+};
 impl ProtocolFacade {
+    pub async fn preflight_http_request(
+        &self,
+        service: &HttpService,
+        authorization: &str,
+        external_uri: &str,
+        method: &str,
+    ) -> Result<HttpRequestPreflight, HttpAuthError> {
+        self.require_schema()
+            .map_err(|_| HttpAuthError::Unavailable)?;
+        self.repository
+            .preflight_admitted_http_request(service, authorization, external_uri, method)
+            .await
+    }
     pub async fn verify_http_request(
         &self,
         service: &HttpService,

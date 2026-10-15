@@ -25,13 +25,11 @@ use std::{
 };
 pub fn router() -> Router<AppState> {
     Router::new()
-        .route("/manga/{p0}/read", get(one).post(mutation_exception))
+        .route(
+            "/manga/{p0}/read",
+            get(one).post(super::library_mutations::read),
+        )
         .route("/manga/read", get(many))
-}
-async fn mutation_exception() -> PublicApiError {
-    let mut e = PublicApiError::unsupported();
-    e.detail="Public read/unread mutation requires the existing client-signed Nostr library commit; a plain MangaDex JSON body cannot authorize server signing".into();
-    e
 }
 fn query(raw: Option<&str>, many: bool) -> PublicApiResult<PublicQuery> {
     for (key, _) in url::form_urlencoded::parse(raw.unwrap_or("").as_bytes()) {

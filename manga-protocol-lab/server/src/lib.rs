@@ -149,3 +149,5 @@ pub mod http_auth;
 pub mod library_lists;
 
 pub mod library_intent_delta;
+
+pub mod library_http_mutation;
