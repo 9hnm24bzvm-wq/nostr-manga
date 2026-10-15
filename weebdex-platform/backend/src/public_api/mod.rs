@@ -12,3 +12,6 @@ pub mod statuses_core;
 pub use errors::{PublicApiError,PublicApiResult};
 pub use id::PublicUuid;
 pub use identity::{PublicIdResolver,PublicIdTarget,ResolvedPublicId,ResourceKind};
+
+pub mod postgres_identity;
+pub use postgres_identity::PostgresPublicIdResolver;
