@@ -10,6 +10,7 @@ import { spawnSync } from 'node:child_process';
 import { frontendRouteAdditions } from '../platform-integrations/frontend-route-additions.mjs';
 import { createFrontendOverlays } from '../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../platform-integrations/frontend-reader-overlays.mjs';
+import { createPublicApiOverlays } from '../platform-integrations/public-api/overlays.mjs';
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -98,7 +99,7 @@ for (const name of ['svelte-sonner', 'axios', 'http-status-codes']) {
   aliasesForCheck[name] = [path.join(dependencies, name, typeEntry)];
   packageTypeAliases.push({ name, production_entry: aliases.find(alias => alias.find === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
 }
-const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input)];
+const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input)];
 const manifest = [], rewrites = [], maps = new Map(), graph = [], reachable = new Set(), workerTypeBindings = [];
 const projectedSourceRoots = ['src', 'platform-integrations'].map(name => path.join(project, name) + path.sep);
 function isProjectedSource(file) {

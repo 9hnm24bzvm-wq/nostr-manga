@@ -1,0 +1,10 @@
+// RECONSTRUCTED implementation: original full validation source was unavailable.
+import type { PublicUuid, Resource, ResourceType } from './types';
+export const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export class PublicApiContractError extends Error { constructor(message:string,public readonly status=502){super(message);this.name='PublicApiContractError';} }
+export function publicUuid(value:unknown):PublicUuid { if(typeof value!=='string'||!uuidPattern.test(value))throw new PublicApiContractError('Expected a public resource UUID');return value.toLowerCase() as PublicUuid; }
+export function record(value:unknown,label='object'):Record<string,unknown>{if(!value||typeof value!=='object'||Array.isArray(value))throw new PublicApiContractError(`Invalid ${label}`);return value as Record<string,unknown>;}
+export function string(value:unknown,fallback=''):string{return typeof value==='string'?value:fallback;}
+export function nullable(value:unknown):string|null{return typeof value==='string'?value:null;}
+export function localized(value:unknown):string{const row=record(value,'localized string');return typeof row.en==='string'?row.en:Object.values(row).find((entry):entry is string=>typeof entry==='string')??'';}
+export function resource(value:unknown,type?:ResourceType):Resource {const row=record(value,'resource');publicUuid(row.id);if(typeof row.type!=='string'||type&&row.type!==type)throw new PublicApiContractError('Invalid resource type');record(row.attributes,'resource attributes');if(!Array.isArray(row.relationships))throw new PublicApiContractError('Invalid resource relationships');for(const value of row.relationships){const relationship=record(value,'relationship');publicUuid(relationship.id);if(typeof relationship.type!=='string')throw new PublicApiContractError('Invalid relationship type');if(relationship.attributes!==undefined)record(relationship.attributes,'included relationship attributes');}return row as unknown as Resource;}
