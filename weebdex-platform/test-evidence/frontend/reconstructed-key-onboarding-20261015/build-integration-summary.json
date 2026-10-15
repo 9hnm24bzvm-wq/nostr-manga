@@ -1,0 +1,80 @@
+{
+  "source_changed": false,
+  "command": "node scripts/build-frontend.mjs",
+  "environment": {
+    "PUBLIC_SITE_NAME": "WeebDex",
+    "PUBLIC_API_URL": "/api",
+    "PUBLIC_KRATOS_PUBLIC_API": "/auth",
+    "PUBLIC_COVER_URL": "/covers",
+    "PUBLIC_DATA_URL": "/data",
+    "PUBLIC_UPLOAD_URL": "/uploads",
+    "PUBLIC_PROXY_URL": "/proxy",
+    "PUBLIC_OPENGRAPH_URL": "/og-image"
+  },
+  "spa_fallback_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+  "script_overlay_module_sha256": "750aef420510f5934cd540fb529c611d9d5466315d599a5c674c446157b5755f",
+  "reader_overlay_module_sha256": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+  "local_library_overlay_module_sha256": "59bb08ca509ac552679ef3af2def23f722f8b0b1e0ba61beb115361234568ba4",
+  "integration_source_inventory_sha256": "89bf937520c6aec76da42a11e67abf70979825f715004e52f961ced34775efc4",
+  "external_component_extensions": [
+    {
+      "path": "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
+      "sha256": "325ba6a91c5e20ea7efc79e230d92ec3d0066135cdc961d9caa09eebbb995633",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "sha256": "e1bde9c6271fd7fb72f78c368156c1fe76bb28a19101ff9b70828d7c2eb41ffe",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/RecoveryBoundary.svelte",
+      "sha256": "8c5b636c64edc3416341fa41f3214630a1ebba812f9373ca785593516dbe885d",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
+      "sha256": "66671736d3a256ea460103f9f60cd6464c0ac6242f3dfe2335e50b9c81df4acb",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
+      "sha256": "2b2c621fffa228046157b0c146078a03b4432960a4da49212e3d95ef539a2b7f",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryProtected.svelte",
+      "sha256": "7e40c424393c26f39801a796c5a4ced5e0808a2d2e113985ef5fba09cbb93d6d",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryRuntime.svelte",
+      "sha256": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/MangaDiscussion.svelte",
+      "sha256": "d10df4f2632f11b4f08305a1694eb59e7fd4310329b9f2e43f51b344674b54a3",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryManagementTools.svelte",
+      "sha256": "abc7a8daa2d7d4349611982542d47ee42af48cbf7fbb6a7cabe45e4367dba6ec",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/PublicIdentitySettings.svelte",
+      "sha256": "c813d66dae44a64fe8bca82eb2c492c7e9b4ea62d784c62d0638068b26875012",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/local-library/IdentitySetup.svelte",
+      "sha256": "4771ad6f6b3decfe00232a7c588ba4a51477cef2d35a26c34725901675e3b610",
+      "intentional_rendered_extension": true
+    }
+  ],
+  "build_integration_sha256": "0b63cdd0fe72e63b27fd92eeab943fecaa90ab6c5707a07a8d92990f6e100d02",
+  "integration_source_manifest_sha256": "a01044ca8d9fa2a00e5ab7e0d90cad35d356048fab41d27dd580812ca013930b",
+  "script_repairs": 657,
+  "transformed_original_paths": 117
+}

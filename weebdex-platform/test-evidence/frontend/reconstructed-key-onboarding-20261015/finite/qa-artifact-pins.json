@@ -1,0 +1,22 @@
+{
+  "weebdex-platform": {
+    "path": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/qa-reconstructed-dae58683/weebdex-platform",
+    "sha256": "665af7fc518bac45f7aaf74af708837dc4539bdf2591d801856294a61c91be4f"
+  },
+  "browser_fixture_provisioner": {
+    "path": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/qa-reconstructed-dae58683/browser_fixture_provisioner",
+    "sha256": "df378e73c6d3900cf14fe69524ac26340a9cd3c564ededda0d27a791663d6d9c"
+  },
+  "frontend": {
+    "path": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/qa-reconstructed-dae58683/frontend",
+    "index_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+    "manifest_path": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/qa-reconstructed-dae58683/artifact-manifest.json",
+    "manifest_sha256": "61a6a3f8f2d6f2e506e8fb6bac7c9dfc81a5926a1f7a1b2974ef999c2a98d5dd",
+    "files": 427
+  },
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "source_tree": "9ba75800f2e8370b8d2b2428b39eadda0384b321",
+  "compile_time_manifest_dir": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/backend",
+  "source_reconstructed": true,
+  "fresh_browser_validation": "pending"
+}

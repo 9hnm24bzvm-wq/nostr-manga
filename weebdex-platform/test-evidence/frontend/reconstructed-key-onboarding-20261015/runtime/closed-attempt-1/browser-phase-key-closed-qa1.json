@@ -1,0 +1,14 @@
+{
+  "pid": 723,
+  "pgid": 723,
+  "session": 723,
+  "start_ticks": 268557,
+  "started_unix": 1792041310.9388416,
+  "forced": false,
+  "ever_forced": false,
+  "fixture_only": true,
+  "phase": "key-closed-qa1",
+  "returncode": 1,
+  "verified_stopped": true,
+  "completed_unix": 1792041329.0135868
+}

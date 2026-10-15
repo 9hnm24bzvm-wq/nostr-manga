@@ -1,0 +1,14 @@
+{
+  "pid": 894,
+  "pgid": 894,
+  "session": 894,
+  "start_ticks": 272309,
+  "started_unix": 1792041348.4617376,
+  "forced": false,
+  "ever_forced": false,
+  "fixture_only": true,
+  "phase": "reader-allread-qa1",
+  "returncode": 0,
+  "verified_stopped": true,
+  "completed_unix": 1792041360.5375545
+}

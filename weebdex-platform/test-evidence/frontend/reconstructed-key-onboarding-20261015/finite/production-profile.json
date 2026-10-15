@@ -1,0 +1,13 @@
+{
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "source_tree": "9ba75800f2e8370b8d2b2428b39eadda0384b321",
+  "canonical_frontend_files": 679,
+  "node_options": "--max-old-space-size=2048",
+  "terser_max_workers": 1,
+  "report_compressed_size": false,
+  "application_minifier": "terser",
+  "original_frontend_config_unchanged": true,
+  "build_stage": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/frontend-reconstructed-build",
+  "dependency_entries_linked_read_only_inputs": true,
+  "runtime_services_started": false
+}

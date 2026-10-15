@@ -1,0 +1,21 @@
+{
+  "ready": true,
+  "frontend_root": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/frontend-central",
+  "browser_dom_node_modules": "/workspace/shared/recovery-key-onboarding/repository/manga-protocol-lab/browser-client/node_modules",
+  "test_only_frontend_root": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/test-dependencies",
+  "typescript": "5.9.3",
+  "versions": {
+    "typescript": "5.9.3",
+    "svelte": "5.55.1",
+    "vite": "7.3.1",
+    "svelte-check": "4.4.6",
+    "bits-ui": "2.16.5"
+  },
+  "canonical_frontend_files_unchanged": 679,
+  "frozen_yarn_lock_sha256": "2169f69125e5d59bb8b143ed2c68a4c7be351ff3b3edd83b29260f2bb4f848ea",
+  "hooks_executed": false,
+  "owned_terminal": true,
+  "build_or_browser_run": false,
+  "source_commit": "9cc9718fa596b73f972177a788cdb0f9826c2332",
+  "fresh_key_seams": 47
+}

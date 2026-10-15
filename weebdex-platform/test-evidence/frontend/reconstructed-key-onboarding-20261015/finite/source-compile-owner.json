@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "scripts/compile-frontend-source.mjs"
+  ],
+  "cwd": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform",
+  "deadline_seconds": 90.0,
+  "elapsed_seconds": 2.03,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 4,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

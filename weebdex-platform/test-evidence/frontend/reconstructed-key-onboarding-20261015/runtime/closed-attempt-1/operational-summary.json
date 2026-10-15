@@ -1,0 +1,22 @@
+{
+  "fixture_only": true,
+  "origin": "http://127.0.0.1:41595",
+  "frontend": {
+    "source": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/qa-reconstructed-dae58683/frontend",
+    "index_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+    "artifact_manifest_sha256": "61a6a3f8f2d6f2e506e8fb6bac7c9dfc81a5926a1f7a1b2974ef999c2a98d5dd",
+    "exact_membership_verified": true,
+    "source_and_snapshot_byte_hashes_verified": true,
+    "snapshot_files_and_dirs": 438,
+    "snapshot_bytes": 7098686,
+    "immutable_private_snapshot": true,
+    "snapshot_read_only": true
+  },
+  "binary": {
+    "path": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/qa-reconstructed-dae58683/weebdex-platform",
+    "sha256": "665af7fc518bac45f7aaf74af708837dc4539bdf2591d801856294a61c91be4f"
+  },
+  "native_http_checks": 32,
+  "failed": 0,
+  "source": "supervisor OPERATIONAL_HTTP_CHECKS in retained wrapper log"
+}

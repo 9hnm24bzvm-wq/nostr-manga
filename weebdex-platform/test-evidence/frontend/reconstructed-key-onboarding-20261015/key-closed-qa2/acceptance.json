@@ -1,0 +1,181 @@
+{
+  "scope": "Fresh actual Chromium against disposable native platform and genuine Nostr service; reconstructed source",
+  "mode": "key-closed",
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "source_tree": "9ba75800f2e8370b8d2b2428b39eadda0384b321",
+  "frontend_index_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+  "frontend_manifest_sha256": "61a6a3f8f2d6f2e506e8fb6bac7c9dfc81a5926a1f7a1b2974ef999c2a98d5dd",
+  "started_utc": "2026-10-15T05:17:20.707Z",
+  "checks": [
+    {
+      "name": "guest browsing and login do not intercept with key setup",
+      "started_utc": "2026-10-15T05:17:21.230Z",
+      "observation": {
+        "routes": 2,
+        "no_signup_interception": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:23.965Z"
+    },
+    {
+      "name": "fresh native signup reaches focused native guide at 320px",
+      "started_utc": "2026-10-15T05:17:23.965Z",
+      "observation": {
+        "native_session": true,
+        "focused_heading": true,
+        "width": 320,
+        "min_primary_height": 44
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:26.252Z"
+    },
+    {
+      "name": "generation requires backup acknowledgement and clipboard refusal is recoverable",
+      "started_utc": "2026-10-15T05:17:26.252Z",
+      "observation": {
+        "backup_gate": true,
+        "clipboard_refusal_recoverable": true,
+        "secret_not_recorded": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:26.411Z"
+    },
+    {
+      "name": "review verifies real recipient and exposes truthful enrollment policy",
+      "started_utc": "2026-10-15T05:17:26.411Z",
+      "observation": {
+        "real_recipient_proof": true,
+        "enrollment": "operator-only",
+        "admission_posts_before_explicit_action": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:26.607Z"
+    },
+    {
+      "name": "closed instance explains approval and offers local session connection",
+      "started_utc": "2026-10-15T05:17:26.607Z",
+      "observation": {
+        "explicit_local_connect": true,
+        "approval_unconfirmed": true,
+        "enrollment_posts": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:26.718Z"
+    },
+    {
+      "name": "lock, invalid public-key import and saved-private-key restore use actual controls",
+      "started_utc": "2026-10-15T05:17:26.718Z",
+      "observation": {
+        "lock": true,
+        "npub_rejected": true,
+        "private_import_roundtrip": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:27.100Z"
+    },
+    {
+      "name": "closed saved key reconnects without enrollment or accepted-success claim",
+      "started_utc": "2026-10-15T05:17:27.100Z",
+      "observation": {
+        "same_key_restored": true,
+        "real_controls": true,
+        "closed_admission_posts": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:27.184Z"
+    },
+    {
+      "name": "unapproved locally connected key receives truthful real server denial",
+      "started_utc": "2026-10-15T05:17:27.184Z",
+      "observation": {
+        "real_service_http": 403,
+        "false_admission_success": false,
+        "implicit_enrollment": false
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:27.948Z"
+    },
+    {
+      "name": "reload forgets session key and does not replay signup or onboarding",
+      "started_utc": "2026-10-15T05:17:27.949Z",
+      "observation": {
+        "reload_locks_key": true,
+        "existing_account_bypass": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:30.586Z"
+    },
+    {
+      "name": "Finish later leaves native account usable with device library default",
+      "started_utc": "2026-10-15T05:17:30.745Z",
+      "observation": {
+        "native_account_retained": true,
+        "device_library_default": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:17:33.085Z"
+    }
+  ],
+  "page_errors": [],
+  "external_requests_blocked": [],
+  "proxy_requests_blocked": [
+    {
+      "method": "GET",
+      "url": "http://clients2.google.com/time/1/current"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "update.googleapis.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "android.clients.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "optimizationguide-pa.googleapis.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    }
+  ],
+  "screenshots": [
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/key-closed-qa2/native-chooser-320.png",
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/key-closed-qa2/public-review-320.png"
+  ],
+  "secret_transmissions": 0,
+  "secret_screenshots": 0,
+  "external_signer_calls": 0,
+  "limitations": [
+    "OS clipboard retention and guaranteed JavaScript memory erasure are not measured.",
+    "External browser signer acceptance is covered by finite seams only.",
+    "Synthetic session keys are never written into reports or screenshots."
+  ],
+  "browser": "system Chromium via reviewed Playwright 1.62.1",
+  "chromium_sandbox": true,
+  "proxy_lifecycle": {
+    "connect_denials": 7,
+    "expected_connect_resets": 0,
+    "observations_truncated": false,
+    "shutdown_started": true,
+    "closed": true,
+    "remaining_socket_count": 0
+  },
+  "status": "passed",
+  "completed_utc": "2026-10-15T05:17:33.147Z",
+  "passed": 10,
+  "failed": 0
+}

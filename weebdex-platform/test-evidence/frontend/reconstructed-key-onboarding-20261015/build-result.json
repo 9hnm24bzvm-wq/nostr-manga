@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "command_exit": 0,
+  "remaining_owned_members": [],
+  "changed_inputs": [],
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "source_tree": "9ba75800f2e8370b8d2b2428b39eadda0384b321",
+  "input_count": 818,
+  "owner": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "scripts/build-frontend.mjs"
+    ],
+    "cwd": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform",
+    "deadline_seconds": 240.0,
+    "elapsed_seconds": 50.421,
+    "process_exit_code": 0,
+    "deadline_exceeded": false,
+    "terminal_receipt": true,
+    "owned_process_group": 5,
+    "cleanup_signals": [],
+    "surviving_owned_process_ids": [],
+    "cleanup_verified": true,
+    "prior_or_unrelated_processes_touched": false
+  },
+  "historical_qa_receipts_lost": true,
+  "fresh_browser_qa": "pending"
+}

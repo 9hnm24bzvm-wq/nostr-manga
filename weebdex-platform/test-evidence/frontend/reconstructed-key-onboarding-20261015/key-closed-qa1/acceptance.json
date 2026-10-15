@@ -1,0 +1,157 @@
+{
+  "scope": "Fresh actual Chromium against disposable native platform and genuine Nostr service; reconstructed source",
+  "mode": "key-closed",
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "source_tree": "9ba75800f2e8370b8d2b2428b39eadda0384b321",
+  "frontend_index_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+  "frontend_manifest_sha256": "61a6a3f8f2d6f2e506e8fb6bac7c9dfc81a5926a1f7a1b2974ef999c2a98d5dd",
+  "started_utc": "2026-10-15T05:15:10.987Z",
+  "checks": [
+    {
+      "name": "guest browsing and login do not intercept with key setup",
+      "started_utc": "2026-10-15T05:15:11.544Z",
+      "observation": {
+        "routes": 2,
+        "no_signup_interception": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:15:14.347Z"
+    },
+    {
+      "name": "fresh native signup reaches focused native guide at 320px",
+      "started_utc": "2026-10-15T05:15:14.348Z",
+      "observation": {
+        "native_session": true,
+        "focused_heading": true,
+        "width": 320,
+        "min_primary_height": 44
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:15:16.640Z"
+    },
+    {
+      "name": "generation requires backup acknowledgement and clipboard refusal is recoverable",
+      "started_utc": "2026-10-15T05:15:16.640Z",
+      "observation": {
+        "backup_gate": true,
+        "clipboard_refusal_recoverable": true,
+        "secret_not_recorded": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:15:16.799Z"
+    },
+    {
+      "name": "review verifies real recipient and exposes truthful enrollment policy",
+      "started_utc": "2026-10-15T05:15:16.800Z",
+      "observation": {
+        "real_recipient_proof": true,
+        "enrollment": "operator-only",
+        "admission_posts_before_explicit_action": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:15:16.995Z"
+    },
+    {
+      "name": "closed instance explains approval and offers local session connection",
+      "started_utc": "2026-10-15T05:15:16.995Z",
+      "observation": {
+        "explicit_local_connect": true,
+        "approval_unconfirmed": true,
+        "enrollment_posts": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:15:17.103Z"
+    },
+    {
+      "name": "lock, invalid public-key import and saved-private-key restore use actual controls",
+      "started_utc": "2026-10-15T05:15:17.103Z",
+      "observation": {
+        "lock": true,
+        "npub_rejected": true,
+        "private_import_roundtrip": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:15:17.502Z"
+    },
+    {
+      "name": "closed saved key reconnects without enrollment or accepted-success claim",
+      "started_utc": "2026-10-15T05:15:17.503Z",
+      "observation": {
+        "same_key_restored": true,
+        "real_controls": true,
+        "closed_admission_posts": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:15:17.590Z"
+    },
+    {
+      "name": "unapproved locally connected key receives truthful real server denial",
+      "started_utc": "2026-10-15T05:15:17.591Z",
+      "status": "failed",
+      "error": "locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('dialog').getByLabel('Verified recipient', { exact: true })\n"
+    }
+  ],
+  "page_errors": [],
+  "external_requests_blocked": [],
+  "proxy_requests_blocked": [
+    {
+      "method": "GET",
+      "url": "http://clients2.google.com/time/1/current"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "update.googleapis.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "android.clients.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "optimizationguide-pa.googleapis.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    }
+  ],
+  "screenshots": [
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/key-closed-qa1/native-chooser-320.png",
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/key-closed-qa1/public-review-320.png"
+  ],
+  "secret_transmissions": 0,
+  "secret_screenshots": 0,
+  "external_signer_calls": 0,
+  "limitations": [
+    "OS clipboard retention and guaranteed JavaScript memory erasure are not measured.",
+    "External browser signer acceptance is covered by finite seams only.",
+    "Synthetic session keys are never written into reports or screenshots."
+  ],
+  "browser": "system Chromium via reviewed Playwright 1.62.1",
+  "chromium_sandbox": true,
+  "proxy_lifecycle": {
+    "connect_denials": 7,
+    "expected_connect_resets": 0,
+    "observations_truncated": false,
+    "shutdown_started": true,
+    "closed": true,
+    "remaining_socket_count": 0
+  },
+  "status": "failed",
+  "error": "locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('dialog').getByLabel('Verified recipient', { exact: true })\n",
+  "completed_utc": "2026-10-15T05:15:28.083Z",
+  "passed": 7,
+  "failed": 1
+}

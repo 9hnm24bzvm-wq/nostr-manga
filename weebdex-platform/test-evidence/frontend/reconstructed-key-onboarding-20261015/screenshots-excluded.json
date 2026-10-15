@@ -1,0 +1,61 @@
+{
+  "reason": "Compact source/evidence checkpoint omits all PNG images; retained locally for review only",
+  "images": [
+    {
+      "path": "key-closed-qa1/native-chooser-320.png",
+      "bytes": 42460,
+      "sha256": "2a40d3bd0ad6e2ba91ec24fc263928e145c67ba41c8cd18144614a949052de6c",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    },
+    {
+      "path": "key-closed-qa1/public-review-320.png",
+      "bytes": 57419,
+      "sha256": "324b72f87c7ffd4f67e1e6bfdb86a3300ee5e539cebacba7ede0336725a72def",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    },
+    {
+      "path": "key-closed-qa2/native-chooser-320.png",
+      "bytes": 42460,
+      "sha256": "2a40d3bd0ad6e2ba91ec24fc263928e145c67ba41c8cd18144614a949052de6c",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    },
+    {
+      "path": "key-closed-qa2/public-review-320.png",
+      "bytes": 57737,
+      "sha256": "1728ca064373fb488ad217b79a4645bbd4883c29e9edffa42703313586f74cdd",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    },
+    {
+      "path": "key-open-qa1/native-chooser-320.png",
+      "bytes": 42460,
+      "sha256": "2a40d3bd0ad6e2ba91ec24fc263928e145c67ba41c8cd18144614a949052de6c",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    },
+    {
+      "path": "key-open-qa1/public-review-320.png",
+      "bytes": 55277,
+      "sha256": "a2d9459552bdd4dbfc4fa6afb2c6f333afbf9beac794aa85357cd12ca0102ed1",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    },
+    {
+      "path": "reader-qa1/account-latest-completed.png",
+      "bytes": 80751,
+      "sha256": "9e4ccb51d60dac11962b7e095a1a873fd68e94bd70b7c09ce0d31993c41c439f",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    },
+    {
+      "path": "reader-qa1/device-latest-completed.png",
+      "bytes": 80751,
+      "sha256": "9e4ccb51d60dac11962b7e095a1a873fd68e94bd70b7c09ce0d31993c41c439f",
+      "included_in_source_checkpoint": false,
+      "visually_reviewed": "synthetic chooser, public-key approval review, or synthetic reader only; no private-key frame"
+    }
+  ]
+}

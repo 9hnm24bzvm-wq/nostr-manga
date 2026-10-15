@@ -1,0 +1,14 @@
+{
+  "pid": 221,
+  "pgid": 221,
+  "session": 221,
+  "start_ticks": 261186,
+  "started_unix": 1792041237.2361245,
+  "forced": false,
+  "ever_forced": false,
+  "fixture_only": true,
+  "phase": "key-open-qa1",
+  "returncode": 0,
+  "verified_stopped": true,
+  "completed_unix": 1792041253.3045769
+}

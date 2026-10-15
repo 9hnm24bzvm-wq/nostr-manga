@@ -1,0 +1,81 @@
+{
+  "scope": "Fresh actual user-control smoke, two completed English aggregate chapters, device and native account libraries",
+  "frontend_index_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+  "checks": [
+    {
+      "name": "device all-read Continue opens newest completed chapter instead of first",
+      "observation": {
+        "completed_chapters": 2,
+        "target": "SeedChapt2",
+        "reader_images_decoded": true,
+        "mode": "device"
+      },
+      "status": "passed"
+    },
+    {
+      "name": "real signup, email verification and explicit account-library selection",
+      "observation": {
+        "native_account": true,
+        "verified": true,
+        "explicit_source": "account"
+      },
+      "status": "passed"
+    },
+    {
+      "name": "account all-read Continue opens newest completed chapter instead of first",
+      "observation": {
+        "completed_chapters": 2,
+        "target": "SeedChapt2",
+        "reader_images_decoded": true,
+        "mode": "account"
+      },
+      "status": "passed"
+    }
+  ],
+  "page_errors": [],
+  "external_requests_blocked": [],
+  "proxy_requests_blocked": [
+    {
+      "method": "GET",
+      "url": "http://clients2.google.com/time/1/current"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "update.googleapis.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "android.clients.google.com:443"
+    }
+  ],
+  "screenshots": [
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/reader-qa1/device-latest-completed.png",
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/reader-qa1/account-latest-completed.png"
+  ],
+  "chromium_sandbox": true,
+  "credentials_recorded": false,
+  "browser": "system Chromium via reviewed Playwright 1.62.1",
+  "proxy_lifecycle": {
+    "connect_denials": 5,
+    "expected_connect_resets": 0,
+    "observations_truncated": false,
+    "shutdown_started": true,
+    "closed": true,
+    "remaining_socket_count": 0
+  },
+  "status": "passed",
+  "passed": 3,
+  "failed": 0
+}

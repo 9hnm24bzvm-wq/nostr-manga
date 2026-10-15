@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/tests/runtime/browser_fixture.py", line 15, in <module>
+    from PIL import Image, ImageDraw
+  File "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/hosted-python/PIL/Image.py", line 95, in <module>
+    from . import _imaging as core
+ImportError: cannot import name '_imaging' from 'PIL' (/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/.build/hosted-python/PIL/__init__.py)

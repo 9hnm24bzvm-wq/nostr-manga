@@ -1,0 +1,299 @@
+{
+  "fixture_only": true,
+  "status": "verified_stopped",
+  "processes": {
+    "browser-key-closed-qa2": {
+      "pid": 1288,
+      "pgid": 1288,
+      "session": 1288,
+      "start_ticks": 281529,
+      "started_unix": 1792041440.6577606,
+      "forced": false,
+      "ever_forced": false,
+      "fixture_only": true,
+      "phase": "key-closed-qa2",
+      "returncode": 0,
+      "verified_stopped": true,
+      "completed_unix": 1792041453.7221956,
+      "teardown_forced": false
+    },
+    "synchronous-1": {
+      "pid": 1116,
+      "pgid": 1116,
+      "session": 1116,
+      "start_ticks": 277702,
+      "started_unix": 1792041402.3902743,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "synchronous-2": {
+      "pid": 1130,
+      "pgid": 1130,
+      "session": 1130,
+      "start_ticks": 277745,
+      "started_unix": 1792041402.8245063,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 2,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "synchronous-3": {
+      "pid": 1140,
+      "pgid": 1140,
+      "session": 1140,
+      "start_ticks": 277763,
+      "started_unix": 1792041403.0038598,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "synchronous-4": {
+      "pid": 1142,
+      "pgid": 1142,
+      "session": 1142,
+      "start_ticks": 277772,
+      "started_unix": 1792041403.089356,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-setup-1": {
+      "pid": 1144,
+      "pgid": 1144,
+      "session": 1144,
+      "start_ticks": 277783,
+      "started_unix": 1792041403.200677,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "synchronous-5": {
+      "pid": 1155,
+      "pgid": 1155,
+      "session": 1155,
+      "start_ticks": 277825,
+      "started_unix": 1792041403.6201918,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "synchronous-6": {
+      "pid": 1166,
+      "pgid": 1166,
+      "session": 1166,
+      "start_ticks": 277868,
+      "started_unix": 1792041404.0559928,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-seed-2": {
+      "pid": 1168,
+      "pgid": 1168,
+      "session": 1168,
+      "start_ticks": 277886,
+      "started_unix": 1792041404.2340534,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-status-3": {
+      "pid": 1207,
+      "pgid": 1207,
+      "session": 1207,
+      "start_ticks": 277962,
+      "started_unix": 1792041404.993051,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-status-4": {
+      "pid": 1219,
+      "pgid": 1219,
+      "session": 1219,
+      "start_ticks": 278071,
+      "started_unix": 1792041406.079545,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-status-5": {
+      "pid": 1232,
+      "pgid": 1232,
+      "session": 1232,
+      "start_ticks": 278180,
+      "started_unix": 1792041407.1688497,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-status-6": {
+      "pid": 1244,
+      "pgid": 1244,
+      "session": 1244,
+      "start_ticks": 278289,
+      "started_unix": 1792041408.2581542,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-status-7": {
+      "pid": 1263,
+      "pgid": 1263,
+      "session": 1263,
+      "start_ticks": 278398,
+      "started_unix": 1792041409.3499496,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "provisioner-status-8": {
+      "pid": 1276,
+      "pgid": 1276,
+      "session": 1276,
+      "start_ticks": 278506,
+      "started_unix": 1792041410.4366152,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false
+    },
+    "platform": {
+      "pid": 1181,
+      "pgid": 1181,
+      "session": 1181,
+      "start_ticks": 277952,
+      "started_unix": 1792041404.8885667,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false,
+      "already_exited": false,
+      "remaining_group_members": []
+    },
+    "postgres": {
+      "pid": 1129,
+      "pgid": 1129,
+      "session": 1129,
+      "start_ticks": 277745,
+      "started_unix": 1792041402.8237596,
+      "forced": false,
+      "ever_forced": false,
+      "returncode": 0,
+      "verified_stopped": true,
+      "teardown_forced": false,
+      "already_exited": false,
+      "remaining_group_members": []
+    }
+  },
+  "mail_sink_stopped": true,
+  "mail_links_persisted": false,
+  "mail_accepted": 0,
+  "provisions": 0,
+  "synthetic_server_key_files_removed": [
+    "fixture-keys/operator.key",
+    "fixture-keys/service.key"
+  ],
+  "synthetic_server_keys_absent": true,
+  "browser_signer_secret_received": false,
+  "protocol_enabled": true,
+  "loopback_ports_closed": {
+    "platform": true,
+    "mail": true,
+    "postgres": true,
+    "original": true
+  },
+  "final_teardown_clean": true,
+  "lifecycle_clean": true,
+  "lifecycle_ever_forced": false,
+  "remaining_owned_processes": [],
+  "adopted_descendants_reaped": [
+    {
+      "pid": 1316,
+      "start_ticks": 281563,
+      "group": 1315,
+      "session": 1315,
+      "wait_status": 0
+    },
+    {
+      "pid": 1320,
+      "start_ticks": 281563,
+      "group": 1319,
+      "session": 1319,
+      "wait_status": 0
+    },
+    {
+      "pid": 1322,
+      "start_ticks": 281563,
+      "group": 1300,
+      "session": 1300,
+      "wait_status": 0
+    },
+    {
+      "pid": 1323,
+      "start_ticks": 281563,
+      "group": 1300,
+      "session": 1300,
+      "wait_status": 0
+    }
+  ],
+  "identity_safe_signals": [
+    {
+      "pid": 1181,
+      "start_ticks": 277952,
+      "group": 1181,
+      "session": 1181,
+      "signal": 15,
+      "pidfd": true
+    },
+    {
+      "pid": 1181,
+      "start_ticks": 277952,
+      "group": 1181,
+      "session": 1181,
+      "signal": 15,
+      "pidfd": true
+    },
+    {
+      "pid": 1129,
+      "start_ticks": 277745,
+      "group": 1129,
+      "session": 1129,
+      "signal": 2,
+      "pidfd": true
+    }
+  ],
+  "global_forced_cleanup": false,
+  "process_tracking_errors": [],
+  "pg_home_fault_terminal": null,
+  "error": null,
+  "finished_unix": 1792041489.8357682
+}

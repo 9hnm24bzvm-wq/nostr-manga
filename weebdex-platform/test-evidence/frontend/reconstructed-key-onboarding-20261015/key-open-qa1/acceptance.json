@@ -1,0 +1,189 @@
+{
+  "scope": "Fresh actual Chromium against disposable native platform and genuine Nostr service; reconstructed source",
+  "mode": "key-open",
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "source_tree": "9ba75800f2e8370b8d2b2428b39eadda0384b321",
+  "frontend_index_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+  "frontend_manifest_sha256": "61a6a3f8f2d6f2e506e8fb6bac7c9dfc81a5926a1f7a1b2974ef999c2a98d5dd",
+  "started_utc": "2026-10-15T05:13:57.304Z",
+  "checks": [
+    {
+      "name": "guest browsing and login do not intercept with key setup",
+      "started_utc": "2026-10-15T05:13:58.075Z",
+      "observation": {
+        "routes": 2,
+        "no_signup_interception": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:00.491Z"
+    },
+    {
+      "name": "fresh native signup reaches focused native guide at 320px",
+      "started_utc": "2026-10-15T05:14:00.492Z",
+      "observation": {
+        "native_session": true,
+        "focused_heading": true,
+        "width": 320,
+        "min_primary_height": 44
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:02.860Z"
+    },
+    {
+      "name": "generation requires backup acknowledgement and clipboard refusal is recoverable",
+      "started_utc": "2026-10-15T05:14:02.860Z",
+      "observation": {
+        "backup_gate": true,
+        "clipboard_refusal_recoverable": true,
+        "secret_not_recorded": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:03.021Z"
+    },
+    {
+      "name": "review verifies real recipient and exposes truthful enrollment policy",
+      "started_utc": "2026-10-15T05:14:03.021Z",
+      "observation": {
+        "real_recipient_proof": true,
+        "enrollment": "self-registration",
+        "admission_posts_before_explicit_action": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:03.232Z"
+    },
+    {
+      "name": "explicit Join completes real signed admission without publishing library",
+      "started_utc": "2026-10-15T05:14:03.232Z",
+      "observation": {
+        "real_signed_admission": true,
+        "admission_posts": 1,
+        "public_events": 0
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:03.457Z"
+    },
+    {
+      "name": "Continue preserves exact safe query and hash",
+      "started_utc": "2026-10-15T05:14:03.458Z",
+      "observation": {
+        "safe_query_and_hash_preserved": true,
+        "local_session_connected": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:03.516Z"
+    },
+    {
+      "name": "lock, invalid public-key import and saved-private-key restore use actual controls",
+      "started_utc": "2026-10-15T05:14:03.516Z",
+      "observation": {
+        "lock": true,
+        "npub_rejected": true,
+        "private_import_roundtrip": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:03.909Z"
+    },
+    {
+      "name": "same key admission is idempotent on explicit restore",
+      "started_utc": "2026-10-15T05:14:03.909Z",
+      "observation": {
+        "same_key_restored": true,
+        "real_controls": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:04.142Z"
+    },
+    {
+      "name": "reload forgets session key and does not replay signup or onboarding",
+      "started_utc": "2026-10-15T05:14:04.142Z",
+      "observation": {
+        "reload_locks_key": true,
+        "existing_account_bypass": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:06.759Z"
+    },
+    {
+      "name": "Finish later leaves native account usable with device library default",
+      "started_utc": "2026-10-15T05:14:06.894Z",
+      "observation": {
+        "native_account_retained": true,
+        "device_library_default": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:09.250Z"
+    },
+    {
+      "name": "verification link and explicit local email roundtrip preserve literal percent return",
+      "started_utc": "2026-10-15T05:14:09.391Z",
+      "observation": {
+        "one_time_real_mail": true,
+        "literal_percent_and_encoded_path_preserved": true
+      },
+      "status": "passed",
+      "completed_utc": "2026-10-15T05:14:12.151Z"
+    }
+  ],
+  "page_errors": [],
+  "external_requests_blocked": [],
+  "proxy_requests_blocked": [
+    {
+      "method": "GET",
+      "url": "http://clients2.google.com/time/1/current"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "update.googleapis.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "android.clients.google.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "optimizationguide-pa.googleapis.com:443"
+    },
+    {
+      "method": "CONNECT",
+      "destination": "accounts.google.com:443"
+    }
+  ],
+  "screenshots": [
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/key-open-qa1/native-chooser-320.png",
+    "test-evidence/frontend/reconstructed-key-onboarding-20261015/key-open-qa1/public-review-320.png"
+  ],
+  "secret_transmissions": 0,
+  "secret_screenshots": 0,
+  "external_signer_calls": 0,
+  "limitations": [
+    "OS clipboard retention and guaranteed JavaScript memory erasure are not measured.",
+    "External browser signer acceptance is covered by finite seams only.",
+    "Synthetic session keys are never written into reports or screenshots."
+  ],
+  "browser": "system Chromium via reviewed Playwright 1.62.1",
+  "chromium_sandbox": true,
+  "proxy_lifecycle": {
+    "connect_denials": 7,
+    "expected_connect_resets": 0,
+    "observations_truncated": false,
+    "shutdown_started": true,
+    "closed": true,
+    "remaining_socket_count": 0
+  },
+  "status": "passed",
+  "completed_utc": "2026-10-15T05:14:12.235Z",
+  "passed": 11,
+  "failed": 0
+}

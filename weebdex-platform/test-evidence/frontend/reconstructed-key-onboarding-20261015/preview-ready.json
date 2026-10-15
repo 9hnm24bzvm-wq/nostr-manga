@@ -1,0 +1,21 @@
+{
+  "status": "ready",
+  "origin": "http://127.0.0.1:43905",
+  "fixture": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform/test-runtime/browser-final-n9_kcnp3",
+  "deadline_unix": 1792043332.8690562,
+  "heartbeat_unix": 1792041701.9588065,
+  "five_minute_notice": false,
+  "cloud_browser_tab": "3",
+  "verified_url": "http://127.0.0.1:43905/",
+  "homepage_visibly_rendered": true,
+  "native_http_checks": {
+    "passed": 32,
+    "failed": 0
+  },
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "frontend_index_sha256": "dae58683b6a1bc542be3f4aa8a63854a2a96ac0e2960421333e19f115df0a944",
+  "frontend_manifest_sha256": "61a6a3f8f2d6f2e506e8fb6bac7c9dfc81a5926a1f7a1b2974ef999c2a98d5dd",
+  "credentials_cookies_or_runtime_database_included": false,
+  "active_fixture_not_yet_torn_down": true,
+  "monitor_owner": "parent after handoff"
+}

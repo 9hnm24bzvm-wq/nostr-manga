@@ -1,0 +1,21 @@
+{
+  "ready": true,
+  "strfry_binary": "/workspace/shared/recovery-key-onboarding/repository/manga-protocol-lab/vendor/strfry/strfry",
+  "strfry_sha256": "41fcb9fcf9bc6694dadb6184606984a89798a558a548274ebe9a59fe9d426436",
+  "exact_source_pins": {
+    "strfry": "4cd3cf64850caf47dda46c2a2abbbf3525a64d10",
+    "secp256k1": "0cdc758a56360bf58a851fe91085a327ec97685a",
+    "lmdb": "3a29a24777c82a0165de813ae696a5068b5add30",
+    "flatbuffers": "1c514626e83c20fffa8557e75641848e1e15cd5e"
+  },
+  "all_recursive_submodule_revisions_pinned": true,
+  "source_clean_after_build": true,
+  "owned_build_exit": 0,
+  "owned_cleanup_verified": true,
+  "owned_survivors": [],
+  "native_linking": "\tlinux-vdso.so.1 (0x00007f3e8db20000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f3e8d0eb000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007f3e8cfdd000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f3e8cfbd000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f3e8cef3000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f3e8cc8b000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f3e8cb9b000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f3e8cb6e000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3e8c97a000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f3e8db22000)\n",
+  "no_services_started": true,
+  "pg_bin": "/workspace/shared/recovery-key-onboarding/repository/manga-protocol-lab/vendor/pgsql/bin",
+  "postgres_sha256": "b9983c21ce35959b2583f967214b3c55a13608fc70aecc4659898f3a8c4bda56",
+  "prior_interrupted_and_failed_attempts_retained": true
+}

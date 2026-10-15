@@ -1,0 +1,65 @@
+{
+  "source_status": "Reconstructed from retained context, freshly tested; not a byte-identical recovery of lost commits",
+  "source_commit": "69bfdd071bd7c39a63a5d2d1ab29e89f50c107b7",
+  "source_tree": "9ba75800f2e8370b8d2b2428b39eadda0384b321",
+  "historical_pre_reset_browser_receipts": "lost; not reused as validation",
+  "finite_tests": {
+    "passed": 134,
+    "failed": 0,
+    "before_artifact_build": {
+      "passed": 133,
+      "failed": 1,
+      "reason": "Expected generated CSS artifact did not exist yet",
+      "failed_attempt_preserved": true
+    }
+  },
+  "strict_semantics": {
+    "errors": 0,
+    "retained_warnings": 15,
+    "canonical_frontend_files_unchanged": 679
+  },
+  "source_compiler": {
+    "components": 110,
+    "scripts": 67,
+    "retained_warnings": 8
+  },
+  "actual_browser": {
+    "open": {
+      "passed": 11,
+      "failed": 0
+    },
+    "closed_final": {
+      "passed": 10,
+      "failed": 0
+    },
+    "reader_all_read": {
+      "passed": 3,
+      "failed": 0
+    },
+    "closed_first_attempt": {
+      "passed": 7,
+      "failed": 1,
+      "reason": "Harness exact label matcher included native option text; corrected selector only, no product change",
+      "outer_lifecycle_clean": false
+    },
+    "final_fixture_teardown_clean": true,
+    "final_fixture_lifecycle_clean": true,
+    "private_key_transmissions": 0,
+    "private_key_screenshots": 0,
+    "page_errors": 0,
+    "chromium_sandbox": true
+  },
+  "evidence_scan": {
+    "nsec_payload_matches": 0,
+    "files_scanned": 50,
+    "screenshot_files_in_checkpoint": 0
+  },
+  "limitations": [
+    "No claim of OS clipboard erasure or retention safety.",
+    "No guarantee of immediate JavaScript heap zeroization.",
+    "External browser signer has finite seams, not new browser acceptance.",
+    "Native password account and Nostr personal admission stay separate; neither implies publisher/upload ownership.",
+    "MangaDex parity and mutable integration work are excluded."
+  ],
+  "screenshots_retained_locally_outside_source_checkpoint": 8
+}

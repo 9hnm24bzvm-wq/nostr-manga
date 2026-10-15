@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--experimental-vm-modules",
+    "--test",
+    "tests/ci/test_browser_identity_setup_security.mjs",
+    "tests/ci/test_browser_local_signing_key.mjs",
+    "tests/ci/test_browser_local_signing_integration.mjs",
+    "tests/ci/test_account_onboarding_seams.mjs",
+    "tests/ci/test_browser_account_recovery.mjs",
+    "tests/ci/test_native_settings_utility_sources.mjs",
+    "tests/ci/test_library_identity_route_ownership.mjs",
+    "tests/ci/test_continue_reading_last_completed.mjs",
+    "tests/ci/test_reader_accessible_controls.mjs",
+    "tests/ci/test_reader_navigation_edges.mjs",
+    "tests/ci/test_enrollment_policy.mjs"
+  ],
+  "cwd": "/workspace/shared/recovery-key-onboarding/repository/weebdex-platform",
+  "deadline_seconds": 120.0,
+  "elapsed_seconds": 2.488,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 5,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

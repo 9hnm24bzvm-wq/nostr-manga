@@ -1,0 +1,14 @@
+{
+  "frontend_session": 44891,
+  "strfry_session": 65935,
+  "first_poll_error": "automatic approval review was cancelled",
+  "one_authorized_exact_retry_each": "Unknown process id",
+  "terminal_receipts_absent": [
+    "frontend-owner.json",
+    "strfry-owner.json"
+  ],
+  "known_executor_handles_terminated": true,
+  "unknown_processes_signalled": false,
+  "file_and_log_progress_checked_before_continuation": true,
+  "status": "partial attempts retained; no completed restore claim"
+}
