@@ -42,6 +42,9 @@ pub struct AtHomeProvenance {
     pub originals_only: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page_dimensions: Option<Vec<[u32; 2]>>,
+    /// Actual persisted optimized pixel sizes, in dataSaver filename order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data_saver_dimensions: Option<Vec<[u32; 2]>>,
 }
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -82,6 +85,16 @@ pub async fn at_home(
         _ => (data.clone(), true),
     };
     let dimensions: Option<Vec<_>> = media.original.iter().map(|p| p.dimensions).collect();
+    let data_saver_dimensions = media
+        .optimized
+        .as_ref()
+        .filter(|pages| !pages.is_empty())
+        .and_then(|pages| {
+            pages
+                .iter()
+                .map(|p| p.dimensions)
+                .collect::<Option<Vec<_>>>()
+        });
     Ok(AtHomeResponse {
         result: "ok",
         base_url: authority.public_origin().trim_end_matches('/').to_owned(),
@@ -94,6 +107,7 @@ pub async fn at_home(
             delivery_token_type: "public_uuid",
             originals_only,
             page_dimensions: dimensions,
+            data_saver_dimensions,
         },
     })
 }

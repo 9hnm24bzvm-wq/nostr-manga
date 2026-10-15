@@ -559,6 +559,7 @@ async fn catalogue_actual_filters_paging_relationships_order_visibility_and_cont
     assert_eq!(at_home["chapter"]["dataSaver"], json!(["SavePage01.webp"]));
     assert_eq!(at_home["nostr"]["originalsOnly"], false);
     assert_eq!(at_home["nostr"]["pageDimensions"], json!([[32, 48]]));
+    assert_eq!(at_home["nostr"]["dataSaverDimensions"], json!([[16, 24]]));
     let original_path = format!("/data/{}/OrigPage01.webp", ids["c1"]);
     let optimized_path = format!("/data-saver/{}/SavePage01.webp", ids["c1"]);
     assert_eq!(
@@ -703,7 +704,7 @@ async fn catalogue_actual_filters_paging_relationships_order_visibility_and_cont
             .expect("Copied fixture binary requires exact source commit");
         let manifest = std::path::PathBuf::from(manifest);
         let stop = manifest.with_extension("stop");
-        std::fs::write(&manifest,serde_json::to_vec_pretty(&json!({"fixture_only":true,"origin":base,"source_commit":source_commit,"ids":{"manga":m,"chapter":ids["c1"],"cover":ids["cover"],"author":a,"group":g,"tag":t},"native_ids":{"manga":"CatManga01"},"title":"Alpha Fixture","no_forum_ids":{"manga":m2,"chapter":ids["c4"],"group":ids["g2"]}})).unwrap()).unwrap();
+        std::fs::write(&manifest,serde_json::to_vec_pretty(&json!({"fixture_only":true,"origin":base,"source_commit":source_commit,"ids":{"manga":m,"chapter":ids["c1"],"cover":ids["cover"],"author":a,"group":g,"tag":t},"native_ids":{"manga":"CatManga01"},"public_aliases":{"manga":[alias]},"title":"Alpha Fixture","no_forum_ids":{"manga":m2,"chapter":ids["c4"],"group":ids["g2"]}})).unwrap()).unwrap();
         println!("Owned public fixture ready: {}", manifest.display());
         let timeout = tokio::time::Instant::now() + std::time::Duration::from_secs(900);
         while !stop.exists() && tokio::time::Instant::now() < timeout {

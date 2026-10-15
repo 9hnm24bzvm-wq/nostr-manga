@@ -1,7 +1,7 @@
 //! Fresh actual-original runtime regression for cached withdrawal propagation.
 #[path = "support/nostr_library.rs"]
 mod fixture;
-use anyhow::{Result, ensure};
+use anyhow::{Context, Result, ensure};
 use fixture::*;
 use manga_node::{auth, mangadex_compat};
 use serde_json::{Value, json};
@@ -27,7 +27,14 @@ async fn exercise(f: &Fixture) -> Result<()> {
         let result = bridge::import_page(&f.state)
             .await
             .map_err(|e| anyhow::anyhow!("{e:?}"))?;
-        if result.completed_sweep {
+        ensure!(
+            result.rejected == 0,
+            "valid original source rejected: {}",
+            serde_json::to_string(&result)?
+        );
+        // Chapter IDs can precede their immutable parent in the source cursor.
+        // Complete a second sweep to revisit legitimate deferred dependencies.
+        if result.completed_sweep && result.deferred == 0 && result.scanned > 0 {
             break;
         }
     }
@@ -42,21 +49,24 @@ async fn exercise(f: &Fixture) -> Result<()> {
             "SELECT id FROM platform.catalog_manga WHERE protocol_series_id=$1",
             &[&series.id],
         )
-        .await?
+        .await
+        .context("projected original manga missing")?
         .get(0);
     let cid: String = db
         .query_one(
             "SELECT id FROM platform.catalog_chapters WHERE protocol_event_id=$1",
             &[&chapter.id],
         )
-        .await?
+        .await
+        .context("projected original chapter missing")?
         .get(0);
     let cover: String = db
         .query_one(
             "SELECT id FROM platform.catalog_covers WHERE protocol_event_id=$1",
             &[&series.id],
         )
-        .await?
+        .await
+        .context("projected original cover missing")?
         .get(0);
     db.batch_execute("INSERT INTO platform.users(id,username,email,password_hash) VALUES('VisibilityUser','visibility-fixture','visibility@fixture.invalid','synthetic-no-password'); INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES('VisibleG01','VisibilityUser','Fixture','Projected source group'),('WrongGrp01','VisibilityUser','Fixture','Unrelated projected group'),('NativeGp01','VisibilityUser','Fixture','Ordinary native group'); INSERT INTO platform.catalog_threads(id,entity_type,entity_id,author_id,author_name,subject) VALUES('VisibilityGroupThread','group','VisibleG01','VisibilityUser','Fixture','Actual discussion')").await?;
     for (group, target) in [
