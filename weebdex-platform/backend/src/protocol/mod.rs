@@ -124,3 +124,5 @@ pub mod covers;
 pub mod deletions;
 
 pub mod adapters;
+
+pub mod http_auth;
