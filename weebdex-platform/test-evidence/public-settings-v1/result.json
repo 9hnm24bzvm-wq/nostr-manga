@@ -1,0 +1,114 @@
+{
+  "format_version": 1,
+  "component": "MangaDex-shaped instance settings",
+  "recorded_utc": "2026-10-15T05:41:30Z",
+  "source_commit": "adf05a3154b860b0ef94bcf3acd5c9095708400f",
+  "base_commit": "07770e0",
+  "production_source_last_changed": "bce2c01",
+  "fixture_only_followups": [
+    "254640c",
+    "adf05a3"
+  ],
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/settings/template"
+    },
+    {
+      "method": "POST",
+      "path": "/settings/template"
+    },
+    {
+      "method": "GET",
+      "path": "/settings/template/{version}"
+    },
+    {
+      "method": "GET",
+      "path": "/settings"
+    },
+    {
+      "method": "POST",
+      "path": "/settings"
+    }
+  ],
+  "checks": {
+    "locked_library_units": {
+      "status": "passed",
+      "passed": 102,
+      "failed": 0,
+      "ignored": 1,
+      "note": "One existing ignored case; includes actual schema/resource-policy and shared native preference validation tests."
+    },
+    "signed_settings_http_postgresql": {
+      "status": "passed",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "transport": "Actual loopback TCP, genuine original service-bound Nostr proofs, explicit same-transaction native binding, owned disposable PostgreSQL 18.6",
+      "coverage": [
+        "all five settings operations",
+        "migration grants only existing sysops",
+        "sysop AND explicit permission",
+        "owner isolation and no caller-selected owner",
+        "native site/session preference projection",
+        "opaque JSON roundtrip and unknown-key preservation",
+        "template UUID history and immutable storage",
+        "state recreation persistence",
+        "shared authoritative native revisions",
+        "stale timestamp/revision rejection",
+        "public/public and public/native concurrent writes exactly one succeeds",
+        "native no-op behavior and unrelated account update tokens",
+        "monotonic microsecond timestamps",
+        "malformed/wrong-type/oversized requests",
+        "offline invalid/external/recursive schema rejection",
+        "replayed/wrong-service/body-tampered proofs",
+        "admission revocation",
+        "no cookie or bearer fallback",
+        "no GET alias registration"
+      ]
+    },
+    "native_library_http_postgresql": {
+      "status": "passed",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "note": "Existing complete account-library/preferences/profile/follows/history/import/export/private-list regression."
+    },
+    "locked_all_targets_old_base": {
+      "status": "failed_on_unrelated_existing_fixture",
+      "detail": "tests/public_visibility_original.rs:34 uses ApiError with anyhow ?, not convertible to std::error::Error. Foundation newer 64973e5 already repairs this owned fixture; integrated all-target verification remains required."
+    },
+    "independent_source_review": {
+      "reviewer": "foundation worker",
+      "status": "no current authority/concurrency blocker",
+      "resolved_finding": "Move an owned semaphore permit into spawn_blocking so canceled requests cannot release validation capacity early."
+    },
+    "postgres_cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0
+    }
+  },
+  "dependency": {
+    "name": "jsonschema",
+    "version": "0.33.0",
+    "source": "crates.io registry",
+    "default_features": false,
+    "license": "MIT",
+    "official_msrv": "1.71.1",
+    "toolchain": "Rust 1.90.0",
+    "archive_sha256": "d46662859bc5f60a145b75f4632fbadc84e829e45df6c5de74cfc8e05acb96b5",
+    "archive_matches_lock_checksum": true
+  },
+  "log_sha256": {
+    "library_units": "0e0690d6b59e035526e88ae2cf413f22a555dacd3cd3453d7739f850ea9ba2e4",
+    "signed_settings_http": "2670bebf3e5e70e1ed3e5b40f1c2defcedbcbc5a1b120eb6cbd17ef0dd4dbf3b",
+    "native_library_http": "1c9a86cc008836dc66bb23178e50742c979dc1f5b4df48975b627b7bf3a4a5e2",
+    "all_targets_old_base": "08adb4641c7e0d1889da4e756ca88de7e9af6c1bf66cff3e00851c38d82b7493"
+  },
+  "boundaries": [
+    "Instance-native preference fields retain native reference identifiers and constraints.",
+    "Exact canonical updatedAt token and native optimistic revision rules are documented instance policy.",
+    "No backend identity private keys, fake sessions, duplicate preference store, external schema I/O or runtime user changes.",
+    "No browser-level or full-API completion claim."
+  ]
+}
