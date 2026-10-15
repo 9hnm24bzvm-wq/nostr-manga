@@ -506,6 +506,21 @@ async fn catalogue_actual_filters_paging_relationships_order_visibility_and_cont
     assert_eq!(legacy["data"].as_array().unwrap().len(), 5, "{legacy}");
     assert_eq!(legacy["data"][0]["id"], m.as_str());
     assert_eq!(legacy["unresolved"].as_array().unwrap().len(), 2);
+    let alias_request = json!({"catalog_namespace":namespace,"resources":[{"kind":"manga","id":alias},{"kind":"manga","id":m},{"kind":"author","id":m},{"kind":"manga","id":ids["hidden"]},{"kind":"manga","id":"00000000-0000-4000-8000-000000000000"}]});
+    let resolved: Value = client
+        .post(format!("{base}/api/v1/legacy/resolve"))
+        .json(&alias_request)
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await
+        .unwrap();
+    assert_eq!(resolved["data"].as_array().unwrap().len(), 2, "{resolved}");
+    assert_eq!(resolved["data"][0]["legacy_id"], alias.as_str());
+    assert_eq!(resolved["data"][0]["id"], m.as_str());
+    assert_eq!(resolved["data"][1]["legacy_id"], m.as_str());
+    assert_eq!(resolved["unresolved"].as_array().unwrap().len(), 3);
     let mut wrong_namespace = legacy_payload.clone();
     wrong_namespace["catalog_namespace"] = json!("00000000-0000-4000-8000-000000000000");
     assert_eq!(

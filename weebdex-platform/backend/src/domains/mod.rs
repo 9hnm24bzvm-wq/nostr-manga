@@ -206,4 +206,5 @@ pub const MIGRATIONS: &[Migration] = &[
     Migration { version:90,name:"0090_public_manga_edge_ids",sql:include_str!("../../migrations/0090_public_manga_edge_ids.sql") },
     Migration { version: 91, name: "0091_protocol_public_list_aliases", sql: include_str!("../../migrations/0091_protocol_public_list_aliases.sql") },
     Migration {version:92,name:"0092_public_report_reasons",sql:include_str!("../../migrations/0092_public_report_reasons.sql")},
+    Migration {version:94,name:"0094_cached_parent_visibility",sql:include_str!("../../migrations/0094_cached_parent_visibility.sql")},
 ];
