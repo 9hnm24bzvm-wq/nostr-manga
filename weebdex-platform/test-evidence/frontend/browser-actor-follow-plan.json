@@ -93,7 +93,7 @@
   ],
   "source_sha256": {
     "scripts/browser-actor-follow-journeys.mjs": "09769fce22695bcad7da2b76b2c5fc23ff4c98b32e593267b60166eec1da93aa",
-    "scripts/browser-ui11-16-journeys.mjs": "00a8bba81bca17b9ad58e46302d43f6b8f69329390dcee39c5132f800457a81a",
+    "scripts/browser-ui11-16-journeys.mjs": "e626139a94836a1f42ab9e05d68b49a191b712e6c6027a227a11a2a547dffd16",
     "scripts/ci/run-hosted-browser.py": "275aaddfe32bf3b1fa5824d0285161a7d2ffd353037438433ee8796c1492c8a3",
     "scripts/ci/journey-diagnostics.py": "942c5789182d89d8b9ebf0915766d782afaf005c255439d940ed06fa81116b74",
     "scripts/ci/validate-ci-evidence.py": "9666617af32d7c3b7167d06845c9ea618f39769620702cc54e9a9a4fb2260067",
