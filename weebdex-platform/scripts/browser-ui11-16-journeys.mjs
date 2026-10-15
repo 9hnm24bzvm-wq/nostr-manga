@@ -55,6 +55,82 @@ export const ui11To16DiagnosticChecks = Object.freeze({
   ])
 });
 
+// Optional diagnostics are used only by the compact phase. The observer still
+// counts transport lifetime until requestfinished/requestfailed, including when
+// a response body has already parsed. Diagnostic output never contains targets,
+// raw queries, bodies, fixture identities, exception text or credentials.
+export function observeUi11To16Requests(page, matcher, { compactDiagnostics = false } = {}) {
+  const rows = [], active = new Set(), pending = new Set(); let maximum = 0, requests = 0;
+  const requestLimit = 32, eventLimit = 256, records = [], retained = new WeakMap();
+  let sequence = 0, eventCount = 0, requestsTruncated = false, eventsTruncated = false, requestEventUnavailable = false;
+  const numericPage = value => Number.isSafeInteger(value) && value > 0 ? value : null;
+  const numericStatus = value => Number.isInteger(value) && value >= 100 && value <= 599 ? value : null;
+  const requestPage = value => {
+    try { const raw = new URL(value.url()).searchParams.get("page"); return /^[1-9][0-9]*$/.test(raw ?? "") ? numericPage(Number(raw)) : null; }
+    catch { return null; }
+  };
+  const recordEvent = (value, event) => {
+    if (!compactDiagnostics) return;
+    sequence++;
+    let record = retained.get(value);
+    if (event === "request") {
+      if (records.length >= requestLimit) { requestsTruncated = true; return; }
+      record = { id: requests, page: requestPage(value), response_page: null, status: null, timing: { startTime: null, responseEnd: null }, events: [] };
+      records.push(record); retained.set(value, record);
+    }
+    if (!record) { if (requests <= requestLimit) requestEventUnavailable = true; return; }
+    // Playwright uses -1 for timing values not yet available. Only these two
+    // finite numeric timing fields are admitted, never arbitrary API data.
+    let timing;
+    try { timing = value.timing(); } catch {}
+    for (const key of ["startTime", "responseEnd"]) {
+      if (typeof timing?.[key] === "number" && Number.isFinite(timing[key]) && timing[key] >= 0) record.timing[key] = timing[key];
+    }
+    if (eventCount >= eventLimit) { eventsTruncated = true; return record; }
+    eventCount++; record.events.push({ sequence, event, startTime: record.timing.startTime, responseEnd: record.timing.responseEnd });
+    return record;
+  };
+  const request = value => { if (matcher(value)) { requests++; active.add(value); maximum = Math.max(maximum, active.size); recordEvent(value, "request"); } };
+  const finished = value => { active.delete(value); if (compactDiagnostics && matcher(value)) recordEvent(value, "requestfinished"); };
+  const failed = value => { active.delete(value); if (compactDiagnostics && matcher(value)) recordEvent(value, "requestfailed"); };
+  const response = value => {
+    const source = value.request();
+    if (!matcher(source)) return;
+    const record = recordEvent(source, "response");
+    if (record) record.status = numericStatus(value.status());
+    const promise = (async () => {
+      const body = /json/.test(value.headers()["content-type"] ?? "") ? await value.json() : undefined;
+      rows.push({ status: value.status(), method: value.request().method(), pathname: new URL(value.url()).pathname, query: new URL(value.url()).search, body });
+      if (compactDiagnostics) {
+        const retainedRecord = retained.get(source);
+        if (retainedRecord) retainedRecord.response_page = numericPage(body?.page);
+        if (body !== undefined) recordEvent(source, "body-parsed");
+      }
+    })().catch(() => rows.push({ status: value.status(), body_unavailable: true })).finally(() => pending.delete(promise)); pending.add(promise);
+  };
+  page.on("request", request); page.on("requestfinished", finished); page.on("requestfailed", failed); page.on("response", response);
+  return {
+    rows, get maximum() { return maximum; }, get requests() { return requests; },
+    observation: () => compactDiagnostics ? {
+      maximum, request_count: requests,
+      pages: rows.filter(row => row.status === 200).slice(0, requestLimit).map(row => numericPage(row.body?.page)),
+      statuses: rows.slice(0, requestLimit).map(row => numericStatus(row.status)),
+      request_limit: requestLimit, event_limit: eventLimit,
+      requests: records.map(record => ({ ...record, timing: { ...record.timing }, events: record.events.map(event => ({ ...event })) })),
+      truncated: { requests: requestsTruncated, events: eventsTruncated, rows: rows.length > requestLimit },
+      unavailable: {
+        request_event: requestEventUnavailable,
+        request_page: records.some(record => record.page === null),
+        response_page: records.some(record => record.response_page === null),
+        status: records.some(record => record.status === null),
+        timing: records.some(record => record.timing.startTime === null || record.timing.responseEnd === null)
+      }
+    } : undefined,
+    settle: async () => { await Promise.all([...pending]); },
+    close: async () => { page.off("request", request); page.off("requestfinished", finished); page.off("requestfailed", failed); page.off("response", response); await Promise.all([...pending]); }
+  };
+}
+
 export async function runUi11To16Journeys(h) {
   const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
   const check = (id, operation) => {
@@ -303,17 +379,7 @@ export async function runUi11To16Journeys(h) {
     await context.route(pattern, intercept);
     return { wait: () => until(() => captured || failure, Boolean, "Actual UI request was not captured").then(() => insist(!failure, failure)), release: async () => { resolve(); await until(() => done || !admitted, Boolean, "Held native request did not drain"); }, fail: async () => { abort = true; resolve(); await until(() => done || !admitted, Boolean, "Native failed delivery did not drain"); }, close: async () => { resolve(); if (admitted) await until(() => done, Boolean, "Held request cleanup did not finish"); await context.unroute(pattern, intercept); }, get disposition() { return disposition; }, get nativeStatus() { return status; }, get heldNativeStatus() { return heldStatus; } };
   };
-  const observe = matcher => {
-    const rows = [], active = new Set(), pending = new Set(); let maximum = 0, requests = 0;
-    const request = value => { if (matcher(value)) { requests++; active.add(value); maximum = Math.max(maximum, active.size); } };
-    const finished = value => active.delete(value);
-    const response = value => {
-      if (!matcher(value.request())) return;
-      const promise = (async () => { const body = /json/.test(value.headers()["content-type"] ?? "") ? await value.json() : undefined; rows.push({ status: value.status(), method: value.request().method(), pathname: new URL(value.url()).pathname, query: new URL(value.url()).search, body }); })().catch(() => rows.push({ status: value.status(), body_unavailable: true })).finally(() => pending.delete(promise)); pending.add(promise);
-    };
-    page.on("request", request); page.on("requestfinished", finished); page.on("requestfailed", finished); page.on("response", response);
-    return { rows, get maximum() { return maximum; }, get requests() { return requests; }, settle: async () => { await Promise.all([...pending]); }, close: async () => { page.off("request", request); page.off("requestfinished", finished); page.off("requestfailed", finished); page.off("response", response); await Promise.all([...pending]); } };
-  };
+  const observe = (matcher, options) => observeUi11To16Requests(page, matcher, options);
   const requestPath = (request, pathname, method = "GET") => new URL(request.url()).origin === origin && new URL(request.url()).pathname === pathname && request.method() === method;
   const countPosts = pathname => observe(request => requestPath(request, pathname, "POST"));
   const withCapacity = async (operation, probe = (_suffix, action) => action()) => {
@@ -518,7 +584,8 @@ export async function runUi11To16Journeys(h) {
       await check("compact-feed-fixture-total-within-known-scenarios", async () => { insist(probe.body.total <= data.total + (extras.bilingual?.manga_id ? 1 : 0), "The actual Spanish fixture feed contains chapters outside the recorded compact/bilingual scenarios"); });
       insist(probe.status === 200 && [data.total, data.total + (extras.bilingual?.manga_id ? 1 : 0)].includes(probe.body?.total), "Actual Spanish fixture has unrelated rows outside the recorded compact/bilingual scenarios"); return probe.body.total;
     });
-    const seen = observe(request => requestPath(request, "/api/chapter/feed"));
+    const seen = observe(request => requestPath(request, "/api/chapter/feed"), { compactDiagnostics: true });
+    const saveObservation = () => { report.compact_feed_observation = seen.observation(); h.save?.(); };
     try {
       await check("compact-feed-open-updates", async () => { await open("/updates"); });
       await check("compact-feed-third-page", async () => { await until(() => seen.rows, rows => rows.some(row => row.body?.page >= 3 && row.status === 200), "Compact updates never requested page3 while cards remained trimmed"); });
@@ -529,6 +596,7 @@ export async function runUi11To16Journeys(h) {
       await check("compact-feed-trimmed-cards", async () => { insist(await page.getByRole("button", { name: "Show Less", exact: true }).count() === 0, "Test expanded cards instead of exercising compact continuation"); });
       await check("compact-feed-manual-terminal-page", async () => { await more.click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === Math.ceil(nativeTotal / 100)), "Explicit real Load more did not reach the remaining compact page"); await seen.settle(); });
       const pages = seen.rows.filter(row => row.status === 200).map(row => row.body.page);
+      saveObservation();
       await check("compact-feed-unique-sequential-pages", async () => { insist(new Set(pages).size === pages.length && seen.maximum === 1, "Compact continuation issued duplicate or parallel native page reads"); });
       await check("compact-feed-scenario-membership", async () => { insist(seen.rows.every(row => row.status === 200 && row.body.total === nativeTotal && row.body.data.every(chapter => [data.manga_id, extras.bilingual?.manga_id].includes(chapter.relationships.manga.id))), "Feed was not the actual recorded compact/bilingual backend scenario"); });
       const compactIds = new Set(seen.rows.flatMap(row => row.body.data.filter(chapter => chapter.relationships.manga.id === data.manga_id).map(chapter => chapter.id)));
@@ -537,7 +605,7 @@ export async function runUi11To16Journeys(h) {
       await check("compact-feed-resize-retains-entries", async () => { await page.setViewportSize({ width: 1200, height: 800 }); insist(!await bodyHas("No results found"), "Acknowledged compact entries disappeared after resize"); });
       await check("compact-feed-back-restores-entries", async () => { await realm(); await search(); await page.goBack({ waitUntil: "domcontentloaded" }); await sameRealm(); insist(!await bodyHas("No results found"), "Back lost acknowledged public compact results"); });
       return { native_total: nativeTotal, recorded_compact_title_rows: compactIds.size, pages, maximum_parallel_reads: seen.maximum, cards_remained_trimmed: true, genuine_manual_resume: true, coherent_back_restore: true };
-    } finally { await seen.close(); }
+    } finally { try { await seen.close(); } finally { saveObservation(); } }
   });
 
   if (phase === "ui13-terminal-feed") {

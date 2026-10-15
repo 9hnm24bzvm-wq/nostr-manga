@@ -281,3 +281,22 @@ test('mocked safety: tasks belong to each page and closing clears only that page
   value.scope.page = original; value.events.length = 0; await value.prepare();
   assert.deepEqual(value.events, ['destinations-visible', 'destinations-unique', 'dialog-count', 'signer-visible-unique']);
 });
+
+test('mocked safety: optional known-key input uses its exact native owner despite nested label help', async () => {
+  const helper = between('  const knownServiceKey = async value => {', '\n  const selectSigner =');
+  const markup = fs.readFileSync(path.join(productRoot, 'platform-integrations/local-library/LibraryManagementTools.svelte'), 'utf8');
+  assert.match(markup, /<label for="sync-instance-key">Expected service public key\s*<Input id="sync-instance-key"[\s\S]*?<span[^>]*>Optional\./);
+  assert.match(helper, /locator\("input#sync-instance-key"\)/);
+  assert.doesNotMatch(helper, /\.first\(|\.last\(|getByLabel/);
+  for (const initiallyOpen of [false, true]) {
+    let shown = initiallyOpen; const calls = [];
+    const field = { async count() { return shown ? 1 : 0; }, async fill(value) { assert(shown); calls.push(['fill', value]); } };
+    const library = () => ({ locator(selector) { assert.equal(selector, 'input#sync-instance-key'); return field; }, getByRole(role, options) {
+      assert.equal(role, 'button'); assert.equal(options.name, 'Use a known service key'); assert.equal(options.exact, true);
+      return { async click() { assert.equal(shown, false); shown = true; calls.push(['reveal']); } };
+    } });
+    const scope = vm.createContext({ library }); vm.runInContext(helper, scope);
+    await vm.runInContext('knownServiceKey', scope)('0'.repeat(64));
+    assert.deepEqual(calls, [...(initiallyOpen ? [] : [['reveal']]), ['fill', '0'.repeat(64)]]);
+  }
+});

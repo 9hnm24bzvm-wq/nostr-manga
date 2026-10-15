@@ -348,7 +348,9 @@ export async function runSignedJourneys(h) {
     await library().getByRole("button", { name: "Connect external browser signer", exact: true }).waitFor({ state: "visible" });
   };
   const knownServiceKey = async value => {
-    const field = library().getByLabel("Expected service public key", { exact: true });
+    // The native label also contains optional help text. Bind the actual owned
+    // input ID rather than treating that combined accessible name as a short label.
+    const field = library().locator("input#sync-instance-key");
     if (await field.count() === 0) await library().getByRole("button", { name: "Use a known service key", exact: true }).click();
     await field.fill(value);
   };

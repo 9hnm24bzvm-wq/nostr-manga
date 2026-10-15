@@ -69,7 +69,7 @@ async function probe(options) {
   assert.equal(report.compact_feed_http_outcome, fetchError ? 'transportfailure' : jsonError ? 'invalidJSON' : compactFeedHttpStatus(status));
   assert(compactFeedHttpOutcomes.includes(report.compact_feed_http_outcome));
   assert.equal(report.compact_feed_database_failure, fetchError ? 'unavailable' : compactFeedDatabaseFailure(status, databaseFailureHeader));
-  assert.deepEqual(Object.keys(report), ['journey_checks', 'compact_feed_http_outcome', 'compact_feed_database_failure']);
+  assert.deepEqual(Object.keys(report), ['journey_checks', 'compact_feed_http_outcome', 'compact_feed_database_failure', ...(!failedCheck ? ['compact_feed_observation'] : [])]);
   assert(saved.some(row => row.compact_feed_http_outcome === report.compact_feed_http_outcome
     && row.compact_feed_database_failure === report.compact_feed_database_failure
     && row.journey_checks.some(check => check.check_id === prefix + 'response-received' && check.status === 'running')),
