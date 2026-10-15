@@ -174,7 +174,8 @@ class Fixture:
         return env
     def protocol_setup(self):
         setup=self.provision_protocol('setup',{'ui_origin':self.origin,'protocol_origin':self.protocol_origin,
-                        'backend_binary':str((ROOT.parent/'manga-protocol-lab/vendor/strfry/strfry').resolve())},timeout=90)
+                        'backend_binary':str((ROOT.parent/'manga-protocol-lab/vendor/strfry/strfry').resolve()),
+                        'self_enrollment':self.args.protocol_self_enrollment},timeout=90)
         config=json.loads((self.run/'platform.json').read_text())
         config['protocol_publication']=json.loads((self.run/'protocol-runtime.json').read_text())
         config['protocol_connect_origins']=[self.protocol_origin,self.protocol_origin.replace('http://','ws://',1)]
@@ -1094,6 +1095,7 @@ def main():
     parser.add_argument('--frontend-artifact-manifest',type=Path,default=ROOT/'test-evidence/frontend/artifact-manifest.json');parser.add_argument('--frontend-artifact-manifest-sha256')
     parser.add_argument('--protocol-provisioner',type=Path);parser.add_argument('--provisioner-sha256')
     parser.add_argument('--second-protocol-recipient',action='store_true',help='Own a second actual original node/database/store for bounded two-recipient browser journeys')
+    parser.add_argument('--protocol-self-enrollment',action='store_true',help='Enable bounded personal-key self enrollment only in this disposable protocol fixture; default closed')
     parser.add_argument('--ui-regression-controls',action='store_true',help='Enable private bounded named native pagination/reader regression controls; no bulk data is seeded automatically')
     parser.add_argument('--pg-home-fault-controls',action='store_true',help='Enable one named real fixed-cluster PG outage/restart for the reviewed homepage failure phase')
     parser.add_argument('--ubunchu-noncommercial',action='store_true',help='Use licensed originals only for a genuinely noncommercial local fixture; exclude artwork/screenshots from uploads')
@@ -1102,6 +1104,7 @@ def main():
     if not args.frontend_artifact_manifest_sha256 or not args.frontend_index_sha256:parser.error('fixture requires exact complete frontend manifest and index hashes')
     if args.ubunchu_noncommercial and not args.protocol_provisioner:parser.error('Ubunchu input requires combined real-protocol fixture')
     if args.second_protocol_recipient and not args.protocol_provisioner:parser.error('second recipient requires combined real-protocol fixture')
+    if args.protocol_self_enrollment and not args.protocol_provisioner:parser.error('self enrollment requires the reviewed disposable protocol provisioner')
     if args.ui_regression_controls and not args.protocol_provisioner:parser.error('native UI regression controls require the reviewed disposable fixture provisioner')
     if args.pg_home_fault_controls and not args.protocol_provisioner:parser.error('PG fault controls require the combined reviewed disposable fixture')
     if args.protocol_provisioner and (not args.expected_sha256 or not args.provisioner_sha256 or not args.frontend_index_sha256):parser.error('combined fixture requires exact platform/provisioner/frontend hashes')

@@ -73,3 +73,12 @@ focused step headings, live status/errors, and minimum44px action targets. No
 accordion or global styling was added. Source/compiler, strict semantic, finite
 seams, production build, attachment parity and actual-browser acceptance are
 separate evidence classes; only the recorded final checks establish each class.
+
+
+## Reconstructed closed-policy behavior (requires fresh validation)
+
+After backup acknowledgement, the public-key review reads and validates the instance enrollment policy. Closed instances explain that operator approval is needed and do not offer a Join button. A separate explicit “Use this key for this session” action selects a reviewed local key without requesting admission. It truthfully leaves approval unconfirmed; server-checked public actions still enforce instance permission. This permits reconnecting an already-approved imported key when new self-enrollment is closed. Lock/reload require importing the saved key again.
+
+An open Join refreshes policy before selecting or submitting a key. Policy closure must not submit admission. Site-password login, protocol personal-key admission and publisher/upload authorization remain separate. No automatic profile/library publication occurs.
+
+For disposable positive-path testing only, `browser_fixture.py --protocol-self-enrollment` enables a bounded 20-per-hour/40-total fixture policy and records its state in the setup receipt. Omitting it preserves the closed default; production defaults are not changed. No historical browser acceptance is claimed for the reconstructed files.

@@ -92,6 +92,8 @@ fn safe_failure(error: &anyhow::Error) -> (&'static str, &'static str) {
 struct Request {
     root: PathBuf,
     #[serde(default)]
+    self_enrollment: bool,
+    #[serde(default)]
     ui_origin: Option<String>,
     #[serde(default)]
     protocol_origin: Option<String>,
@@ -319,11 +321,15 @@ async fn setup(repo: &Repository, root: &Path, request: &Request) -> Result<Valu
     repo.set_publisher_admission(id(&operator)?, true).await?;
     let storage = json!({"path":root.join("original-storage"),"volume":SOURCE_VOLUME,"physical_bytes":512*1024*1024,"staging_bytes":128*1024*1024,"max_blob_bytes":8*1024*1024,"upload_slots":2,"reclamation_slots":2,"credit_lanes":4,"formats":["image/png","image/jpeg","image/webp"]});
     let parsed = url::Url::parse(&origin)?;
-    let native = json!({"bind":format!("127.0.0.1:{}",parsed.port().context("native port")?),"base_url":origin,"service_key_file":root.join("fixture-keys/service.key"),"admin_pubkey":operator,"database_connections":8,"database_wait_ms":500,"cache_bytes":4*1024*1024,"database_plaintext_local":true,"storage":storage,"group_keys_dir":root.join("original-group-keys"),"backend":{"binary":backend,"data_dir":root.join("original-backend"),"timeout_seconds":10,"map_bytes":64*1024*1024},"read_policy":"public","cors_origins":[ui],"auto_approve_publication_deletions":false,"library_reclamation":false,"publication_reclamation":false,"staging_reclamation":false,"storage_audit_interval_seconds":0,"sync_worker_enabled":false,"peer_discovery_enabled":false});
+    let mut native = json!({"bind":format!("127.0.0.1:{}",parsed.port().context("native port")?),"base_url":origin,"service_key_file":root.join("fixture-keys/service.key"),"admin_pubkey":operator,"database_connections":8,"database_wait_ms":500,"cache_bytes":4*1024*1024,"database_plaintext_local":true,"storage":storage,"group_keys_dir":root.join("original-group-keys"),"backend":{"binary":backend,"data_dir":root.join("original-backend"),"timeout_seconds":10,"map_bytes":64*1024*1024},"read_policy":"public","cors_origins":[ui],"auto_approve_publication_deletions":false,"library_reclamation":false,"publication_reclamation":false,"staging_reclamation":false,"storage_audit_interval_seconds":0,"sync_worker_enabled":false,"peer_discovery_enabled":false});
+    // Disposable fixture opt-in only. Production Policy::default remains closed.
+    if request.self_enrollment {
+        native["enrollment"] = json!({"enabled":true,"max_new_accounts_per_hour":20,"max_self_enrolled_accounts":40});
+    }
     let runtime = json!({"operator_key_file":root.join("fixture-keys/operator.key"),"expected_publisher":operator,"storage_owner":operator,"storage_holder":service,"storage":storage,"group_keys_dir":root.join("original-group-keys"),"backend":null,"native_node":native});
     let _: OperatorRuntimeConfig = serde_json::from_value(runtime.clone())?;
     write_json(&root.join("protocol-runtime.json"), &runtime)?;
-    let receipt = json!({"fixture_only":true,"original_migrations_verified":true,"operator_pubkey":operator,"service_key":service,"protocol_origin":origin,"relay_origin":origin.replacen("http://","ws://",1),"backend_binary_sha256":auth::hash(&std::fs::read(backend)?),"browser_account_admitted":false,"server_keys_private":true});
+    let receipt = json!({"fixture_only":true,"original_migrations_verified":true,"operator_pubkey":operator,"service_key":service,"protocol_origin":origin,"relay_origin":origin.replacen("http://","ws://",1),"backend_binary_sha256":auth::hash(&std::fs::read(backend)?),"browser_account_admitted":false,"self_enrollment_enabled":request.self_enrollment,"server_keys_private":true});
     write_json(&root.join("protocol-setup.json"), &receipt)?;
     Ok(receipt)
 }
