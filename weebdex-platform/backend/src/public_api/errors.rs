@@ -1,7 +1,7 @@
 //! RECONSTRUCTED, UNVERIFIED safe public errors. Reconcile existing internal ApiError bridge.
 use axum::{http::StatusCode,response::{IntoResponse,Response},Json};
 use serde::Serialize;
-use super::PublicUuid;
+
 
 pub type PublicApiResult<T> = Result<T,PublicApiError>;
 #[derive(Debug)] pub struct PublicApiError {
@@ -43,11 +43,11 @@ impl std::fmt::Display for PublicApiError {
 }
 impl std::error::Error for PublicApiError {}
 #[derive(Serialize)] struct ErrorEnvelope { result:&'static str, errors:Vec<ErrorObject> }
-#[derive(Serialize)] struct ErrorObject { id:PublicUuid,status:u16,title:&'static str,detail:String }
+#[derive(Serialize)] struct ErrorObject { id:String,status:u16,title:&'static str,detail:String }
 impl IntoResponse for PublicApiError {
     fn into_response(self)->Response {
         let mut response=(self.status,Json(ErrorEnvelope{result:"error",errors:vec![ErrorObject{
-            id:PublicUuid::random_v4(),status:self.status.as_u16(),title:self.title,detail:self.detail,
+            id:String::random_v4(),status:self.status.as_u16(),title:self.title,detail:self.detail,
         }]})).into_response();
         response.headers_mut().insert(axum::http::header::CACHE_CONTROL,axum::http::HeaderValue::from_static("no-store"));
         response
@@ -68,4 +68,12 @@ impl From<tokio_postgres::Error> for PublicApiError {
 }
 impl From<deadpool_postgres::PoolError> for PublicApiError {
     fn from(error:deadpool_postgres::PoolError)->Self {crate::error::ApiError::from(error).into()}
+}
+
+impl From<super::id::InvalidPublicUuid> for PublicApiError {
+    fn from(_:super::id::InvalidPublicUuid)->Self {Self::bad_request("Expected a public UUID")}
+}
+fn error_id()->String {
+    let mut b=rand::random::<[u8;16]>(); b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;
+    let s=hex::encode(b);format!("{}-{}-{}-{}-{}",&s[..8],&s[8..12],&s[12..16],&s[16..20],&s[20..])
 }
