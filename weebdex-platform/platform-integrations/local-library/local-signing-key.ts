@@ -2,9 +2,10 @@
 // This module deliberately has no storage, transport, clipboard or UI dependency.
 import { secp256k1, schnorr } from '@noble/curves/secp256k1.js';
 import { bech32 } from '@scure/base';
+import { get } from 'svelte/store';
 import { hash, hex, unhex, integer } from './protocol/codec.js';
 import { verifyEvent } from './protocol/nostr.js';
-import { installLocalSigner, type LocalSessionSigner } from './publication';
+import { installLocalSigner, signerIdentity, type LocalSessionSigner } from './publication';
 
 export type LocalKeyDraft = Readonly<{
   publicKey: string;
@@ -81,6 +82,7 @@ function eventToSign(template: unknown, owner: string) {
 function ownDraft(bytes: Uint8Array, assertDraftCurrent: () => void): LocalKeyDraft {
   let owned: Uint8Array | null = bytes;
   let activated = false;
+  const selectedGeneration = get(signerIdentity).generation;
   const publicKey = hex(schnorr.getPublicKey(bytes)), npub = encodePublicKey(publicKey);
   const requireDraft = () => {
     assertDraftCurrent();
@@ -96,6 +98,7 @@ function ownDraft(bytes: Uint8Array, assertDraftCurrent: () => void): LocalKeyDr
     },
     async activate(assertCurrent = () => {}) {
       const key = requireDraft(); assertCurrent();
+      if (get(signerIdentity).generation !== selectedGeneration) throw Error('The signing identity changed during setup. Review this key again before connecting.');
       let sessionKey: Uint8Array | null = key;
       const requireSession = () => {
         if (!sessionKey) throw Error('The local signing key is locked. Import it again to continue.');

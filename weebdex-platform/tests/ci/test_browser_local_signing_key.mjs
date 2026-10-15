@@ -135,6 +135,14 @@ test('pending draft has no signing authority and discard preserves an existing s
   assert.equal(f.publication.selectedSigner().owner, before.owner); assert.equal(f.calls.signatures, 0);
 });
 
+test('a newer selected identity cannot be overwritten by an older pending key draft', async () => {
+  const f = await fixture(), pending = f.keys.importLocalKeyDraft(one);
+  await f.publication.connectSigner(); const identity = get(f.publication.signerIdentity);
+  await assert.rejects(pending.activate(), /identity changed during setup/);
+  assert.equal(get(f.publication.signerIdentity), identity);
+  pending.discard(); assert.equal(f.calls.keys[0].every(value => value === 0), true);
+});
+
 test('activation installs only public identity in the common registry and transfers key ownership', async () => {
   const f = await fixture(), draft = f.keys.importLocalKeyDraft(one); await draft.activate();
   const identity = get(f.publication.signerIdentity);

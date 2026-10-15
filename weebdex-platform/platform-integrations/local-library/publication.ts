@@ -10,7 +10,7 @@ import { queueSnapshot, deliverJob, cancelJob, recoverPublic } from './protocol/
 import { backupBlob } from './protocol/backup.js';
 import type { NewJob } from './protocol/types.d.ts';
 export type Relay = { origin: string; serviceKey: string; selected: boolean };
-export type Capabilities = { catalog_namespace: string | null; available: boolean; schema_ready: boolean; origin: string | null; service_key: string | null; connect_origins: string[]; external_signer_required: false; account_admission_required: true };
+export type Capabilities = { catalog_namespace: string | null; available: boolean; schema_ready: boolean; origin: string | null; service_key: string | null; connect_origins: string[]; external_signer_required: boolean; account_admission_required: true };
 export type SourceMapping = { kind: 'manga' | 'chapter'; id: string; event_id: string; compatibility_id: string; publisher?: string; source_kind?: number };
 export type NIP07Signer = { getPublicKey(): Promise<string>; signEvent(event: unknown): Promise<unknown> };
 export type LocalSessionSigner = NIP07Signer & { clear(): void };
