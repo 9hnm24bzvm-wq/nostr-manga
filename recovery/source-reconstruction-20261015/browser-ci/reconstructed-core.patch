@@ -1,0 +1,261 @@
+diff --git a/weebdex-platform/platform-integrations/frontend-behavior/actor-follow-state.ts b/weebdex-platform/platform-integrations/frontend-behavior/actor-follow-state.ts
+index 96c52ac..25897ee 100644
+--- a/weebdex-platform/platform-integrations/frontend-behavior/actor-follow-state.ts
++++ b/weebdex-platform/platform-integrations/frontend-behavior/actor-follow-state.ts
+@@ -74,7 +74,13 @@ export function createActorFollowState(options: FollowOptions) {
+     reset();
+     // The initial target is selected by the component's pre-effect. Later
+     // Session completions reset synchronously, before controls can be used.
+-    if (selected !== undefined) void refresh();
++    // The authority-keyed parent disposes the old controller in Svelte's
++    // already queued flush. Reset unknown state synchronously, but admit only
++    // the still-current Session-triggered read after that actual flush.
++    const revision = generation;
++    if (selected !== undefined) void Promise.resolve().then(() => {
++      if (!disposed && generation === revision) void refresh();
++    });
+   });
+ 
+   const activate = () => {
+diff --git a/weebdex-platform/platform-integrations/frontend-overlays.mjs b/weebdex-platform/platform-integrations/frontend-overlays.mjs
+index 5c2fab8..f755442 100644
+--- a/weebdex-platform/platform-integrations/frontend-overlays.mjs
++++ b/weebdex-platform/platform-integrations/frontend-overlays.mjs
+@@ -3,6 +3,14 @@ import { createHash } from 'node:crypto';
+ import { readFileSync } from 'node:fs';
+ import { resolve } from 'node:path';
+ const patches = [
++  {
++    "path": "src/lib/components/draft/manga/MangaEdit.svelte",
++    "label": "native unknown publication year is empty in the title editor, never invalid numeric zero",
++    "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
++    "count": 1,
++    "before": "\t\t\tyear: snapshot.year ?? null!,",
++    "after": "\t\t\tyear: snapshot.year === 0 ? null! : snapshot.year ?? null!,"
++  },
+   {
+     "path": "src/routes/(app)/settings/library/+page.svelte",
+     "label": "weebdex import acknowledges persisted result",
+diff --git a/weebdex-platform/platform-integrations/local-library/LibraryManagementTools.svelte b/weebdex-platform/platform-integrations/local-library/LibraryManagementTools.svelte
+index c684adc..424d9bd 100644
+--- a/weebdex-platform/platform-integrations/local-library/LibraryManagementTools.svelte
++++ b/weebdex-platform/platform-integrations/local-library/LibraryManagementTools.svelte
+@@ -128,7 +128,7 @@
+         </form>
+         {#each relays as relay}
+           <div class="rounded border p-2">
+-            <label><input type="checkbox" checked={relay.selected} disabled={!!pending} onchange={event => run('select-relay', async () => { await selectRelays(relays.map(row => row.origin === relay.origin ? { ...row, selected: (event.target as HTMLInputElement).checked } : row), relayRevision); resetReviews(); })} /> Select {relay.origin}</label>
++            <label><input type="checkbox" checked={relay.selected} disabled={!!pending} onchange={event => run('select-relay', async () => { await selectRelays($state.snapshot(relays).map(row => row.origin === relay.origin ? { ...row, selected: (event.target as HTMLInputElement).checked } : row), relayRevision); resetReviews(); })} /> Select {relay.origin}</label>
+             <Button variant="ghost" size="sm" onclick={() => { inspectedRelay = inspectedRelay === relay.origin ? '' : relay.origin; }}>Check service identity</Button>{#if inspectedRelay === relay.origin}<p class="break-all text-xs">Verified service public key: {relay.serviceKey}</p>{/if}
+             <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => { if (confirm(`Request admission for public key ${$signerIdentity.owner} at ${relay.origin}? This does not publish the library.`)) void run('enroll', async () => { await admitAccount(relay, assertActive); notice = 'Public-key account admitted. Library remains local.'; }); }}>Request public-key account admission</Button>
+ 
+diff --git a/weebdex-platform/scripts/browser-editorial-controls.mjs b/weebdex-platform/scripts/browser-editorial-controls.mjs
+new file mode 100644
+index 0000000..987ab45
+--- /dev/null
++++ b/weebdex-platform/scripts/browser-editorial-controls.mjs
+@@ -0,0 +1,5 @@
++// Native labeled contributor fields only; no global Search-text fallback.
++export function contributorSearchTrigger(page, family) {
++  if (!['authors', 'artists'].includes(family)) throw Error('Unknown contributor field');
++  return page.locator(`label[for="${family}"]`).locator('..').getByText('Search...', { exact: true });
++}
+diff --git a/weebdex-platform/scripts/browser-journeys.mjs b/weebdex-platform/scripts/browser-journeys.mjs
+index 69d3dd3..efbbb07 100644
+--- a/weebdex-platform/scripts/browser-journeys.mjs
++++ b/weebdex-platform/scripts/browser-journeys.mjs
+@@ -1,3 +1,4 @@
++import { contributorSearchTrigger } from "./browser-editorial-controls.mjs";
+ // Real user-control journeys. Synthetic secrets stay only in harness memory.
+ import { actAndWaitForPageEvent } from "./browser-action-events.mjs";
+ import { randomBytes } from "node:crypto";
+@@ -404,12 +405,12 @@ export async function runJourneys(h) {
+ 		});
+ 	} else if (phase === 'editorial') {
+ 		let title;
+-		const chooseContributor = async (index, name) => { await page.getByText('Search...', { exact: true }).nth(index).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Search...', { exact: true }).fill(name); await dialog.getByRole('button', { name, exact: true }).click(); await page.keyboard.press('Escape'); };
++		const chooseContributor = async (family, name) => { await contributorSearchTrigger(page, family).click(); const dialog = page.getByRole('dialog'); await dialog.getByPlaceholder('Search...', { exact: true }).fill(name); await dialog.getByRole('button', { name, exact: true }).click(); await page.keyboard.press('Escape'); };
+ 		await step('staff creates real title draft with author artist and original cover controls', async () => {
+ 			const author = await editorialCheck('author-ready', async () => { insist(account, 'Staff registration prerequisite failed'); const author = await api(`/author/${ids.author ?? 'SeedAuthr1'}`); insist(author.status === 200 && author.body?.name, 'Real seeded author missing'); return author; });
+ 			await editorialCheck('create-controls', async () => { await open('/create/title'); await page.locator('#title').fill(`Browser Draft ${marker}`); await page.locator('#synopsis').fill(`Synthetic editorial draft ${marker}`); await page.getByRole('tab', { name: 'Metadata', exact: true }).click(); });
+-			await editorialCheck('author-control', () => chooseContributor(0, author.body.name));
+-			await editorialCheck('artist-control', () => chooseContributor(1, author.body.name));
++			await editorialCheck('author-control', () => chooseContributor("authors", author.body.name));
++			await editorialCheck('artist-control', () => chooseContributor("artists", author.body.name));
+ 			await editorialCheck('cover-input', async () => { await page.getByRole('tab', { name: 'Covers', exact: true }).click(); await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({ name: 'cover.png', mimeType: 'image/png', buffer: image }); });
+ 			const response = await editorialCheck('create-response', () => actAndWaitForPageEvent(page, 'response', () => page.getByRole('button', { name: 'Save', exact: true }).click(), response => new URL(response.url()).pathname === '/api/manga' && response.request().method() === 'POST'));
+ 			await editorialCheck('create-receipt', async () => { insist(response.status() === 201, 'Title creation did not persist'); title = await response.json(); });
+diff --git a/weebdex-platform/scripts/browser-signed-journeys.mjs b/weebdex-platform/scripts/browser-signed-journeys.mjs
+index 1793d04..b4b94ed 100644
+--- a/weebdex-platform/scripts/browser-signed-journeys.mjs
++++ b/weebdex-platform/scripts/browser-signed-journeys.mjs
+@@ -478,7 +478,7 @@ export async function runSignedJourneys(h) {
+         const state = await databases(); insist(state.device.instanceScope.catalogNamespace === seeded.catalog_namespace && state.device.instanceScope.serviceKey === fixture.service_key && state.protocol.jobs.length === 0 && mutationRequests.length === 0, "Anonymous local controls published or lost their namespace");
+         insist((await native("/api/auth/check")).status !== 200 && await page.evaluate(() => typeof window.nostr === "undefined"), "A password session or signer was silently created");
+       });
+-      await inspect('missing-signer-refused', async () => { await prepareSignerControls(); await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("A compatible NIP-07 browser signer is required", { exact: false }).waitFor({ state: "visible" }); });
++      await inspect('missing-signer-refused', async () => { await prepareSignerControls(); await library().getByRole("button", { name: "Connect external browser signer", exact: true }).click(); await idle(library()); await library().getByText("No compatible NIP-07 browser signer was found.", { exact: false }).waitFor({ state: "visible" }); });
+       return { anonymous_scope_preserved: true, actual_reader_bytes_decoded: true, original_list_id: deviceList.id, scoped_list_membership: true, no_auto_signer: true, original_mutation_requests: 0, outbox_jobs: 0 };
+     });
+     await step("external signer and actual service recipient require explicit independent selection", async () => {
+diff --git a/weebdex-platform/scripts/browser-ui11-16-journeys.mjs b/weebdex-platform/scripts/browser-ui11-16-journeys.mjs
+index 8afe476..e6a8ac6 100644
+--- a/weebdex-platform/scripts/browser-ui11-16-journeys.mjs
++++ b/weebdex-platform/scripts/browser-ui11-16-journeys.mjs
+@@ -131,6 +131,24 @@ export function observeUi11To16Requests(page, matcher, { compactDiagnostics = fa
+   };
+ }
+ 
++// Native timing uses Unix epoch milliseconds for startTime and milliseconds
++// relative to that start for responseEnd. Observer event delivery order is only
++// diagnostic. No positive overlap tolerance or missing-data fallback is used.
++export function compactNativeRequestsSequential(observation) {
++  if (!observation || !Array.isArray(observation.requests) || !Number.isSafeInteger(observation.request_count) || observation.request_count < 1 || observation.requests.length !== observation.request_count) return false;
++  if (!observation.truncated || ['requests', 'events', 'rows'].some(key => observation.truncated[key] !== false)) return false;
++  if (!observation.unavailable || ['request_event', 'request_page', 'response_page', 'status', 'timing'].some(key => observation.unavailable[key] !== false)) return false;
++  let previousEnd = -Infinity;
++  for (const row of observation.requests) {
++    const start = row?.timing?.startTime, duration = row?.timing?.responseEnd;
++    if (row.status !== 200 || !Number.isSafeInteger(row.response_page) || row.response_page < 1 || typeof start !== 'number' || !Number.isFinite(start) || start < 1e12 || typeof duration !== 'number' || !Number.isFinite(duration) || duration < 0) return false;
++    if (!Array.isArray(row.events) || !row.events.some(event => event.event === 'requestfinished') || row.events.some(event => event.event === 'requestfailed') || start < previousEnd) return false;
++    previousEnd = start + duration;
++    if (!Number.isFinite(previousEnd)) return false;
++  }
++  return true;
++}
++
+ export async function runUi11To16Journeys(h) {
+   const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
+   const check = (id, operation) => {
+@@ -604,7 +622,7 @@ export async function runUi11To16Journeys(h) {
+       await check("compact-feed-manual-terminal-page", async () => { await more.click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === Math.ceil(nativeTotal / 100)), "Explicit real Load more did not reach the remaining compact page"); await seen.settle(); });
+       const pages = seen.rows.filter(row => row.status === 200).map(row => row.body.page);
+       saveObservation();
+-      await check("compact-feed-unique-sequential-pages", async () => { insist(new Set(pages).size === pages.length && seen.maximum === 1, "Compact continuation issued duplicate or parallel native page reads"); });
++      await check("compact-feed-unique-sequential-pages", async () => { insist(new Set(pages).size === pages.length && compactNativeRequestsSequential(seen.observation()), "Compact continuation issued duplicate or parallel native page reads"); });
+       await check("compact-feed-scenario-membership", async () => { insist(seen.rows.every(row => row.status === 200 && row.body.total === nativeTotal && row.body.data.every(chapter => [data.manga_id, extras.bilingual?.manga_id].includes(chapter.relationships.manga.id))), "Feed was not the actual recorded compact/bilingual backend scenario"); });
+       const compactIds = new Set(seen.rows.flatMap(row => row.body.data.filter(chapter => chapter.relationships.manga.id === data.manga_id).map(chapter => chapter.id)));
+       await check("compact-feed-all-compact-chapters", async () => { insist(compactIds.size === data.total, "The505 genuine compact chapters did not all become reachable"); });
+diff --git a/weebdex-platform/scripts/ci/run-hosted-browser.py b/weebdex-platform/scripts/ci/run-hosted-browser.py
+index a5ed0f6..f556836 100644
+--- a/weebdex-platform/scripts/ci/run-hosted-browser.py
++++ b/weebdex-platform/scripts/ci/run-hosted-browser.py
+@@ -35,6 +35,7 @@ BATCHES = {
+ ALL_PHASES = ['startup', *dict.fromkeys(phase for phases in BATCHES.values() for phase in phases)]
+ assert len(ALL_PHASES) == 39
+ MAX_PHASE_RUNS = sum(1 + len(phases) for phases in BATCHES.values())
++NATIVE_ONLY_BATCHES = frozenset({'ordinary-a', 'ordinary-b'})
+ STOP = False
+ 
+ 
+@@ -100,16 +101,42 @@ def project_phase(phase, batch, acceptance, owned):
+     return value
+ 
+ 
+-def project_cleanup(value):
++def fixture_mode(name):
++    return 'native-only' if name in NATIVE_ONLY_BATCHES else 'combined'
++
++
++def fixture_arguments(name, plan):
++    args = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--ui-dir', str(ROOT / 'artifacts/frontend'), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--lifetime-seconds', '3600']
++    if fixture_mode(name) == 'native-only':
++        return args + ['--native-only']
++    return args + ['--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls']
++
++
++def ready_matches(state, fixture, plan, mode='combined'):
++    if mode not in {'combined', 'native-only'}:
++        raise ValueError('Unknown fixture mode')
++    if state.get('status') != 'ready' or state.get('run_directory') != str(fixture) or state.get('binary', {}).get('sha256') != plan['normal_sha256'] or state.get('frontend', {}).get('artifact_manifest_sha256') != plan['frontend_manifest_sha256']:
++        return False
++    if mode == 'combined':
++        return state.get('protocol_seed', {}).get('fully_ready') is True
++    forbidden = ['protocol_origin', 'relay_origin', 'protocol_recipients', 'protocol_provisioner', 'protocol_seed', 'service_key']
++    seed = state.get('seed', {})
++    return state.get('fixture_mode') == 'native-only' and seed.get('native_only') is True and seed.get('protocol_signed_publications') is False and all(key not in state for key in forbidden)
++
++
++def project_cleanup(value, mode='combined'):
+     ports = value.get('loopback_ports_closed', {})
+-    ports_closed = set(ports) == {'platform', 'mail', 'postgres', 'original', 'recipient'} and all(item is True for item in ports.values())
++    if mode not in {'combined', 'native-only'}:
++        raise ValueError('Unknown fixture mode')
++    expected = {'platform', 'mail', 'postgres'} if mode == 'native-only' else {'platform', 'mail', 'postgres', 'original', 'recipient'}
++    ports_closed = set(ports) == expected and all(item is True for item in ports.values())
+     stopped = value.get('fixture_only') is True and value.get('status') == 'verified_stopped' and value.get('synthetic_server_keys_absent') is True and ports_closed and value.get('remaining_owned_processes') == [] and value.get('process_tracking_errors') == [] and value.get('final_teardown_clean') is True
+     fault = value.get('pg_home_fault_terminal')
+     fault_clean = isinstance(fault, dict) and fault.get('terminal') is True and fault.get('status') == 'verified_stopped' and fault.get('returncode') == 0 and fault.get('watchdog_returncode') == 0 and fault.get('forced') is False and fault.get('remaining_owned_processes') == [] and fault.get('error') is None
+     return {'verified_stopped': stopped, 'ports_closed': ports_closed, 'keys_removed': value.get('synthetic_server_keys_absent') is True, 'remaining_owned_process_count': len(value.get('remaining_owned_processes', [])), 'final_teardown_clean': value.get('final_teardown_clean') is True, 'lifecycle_clean': value.get('lifecycle_clean') is True, 'pg_fault_activated': fault is not None, 'pg_fault_terminal_clean': fault_clean}
+ 
+ 
+-def finish_supervisor(owner, process, fixture, batch, seconds=600):
++def finish_supervisor(owner, process, fixture, batch, seconds=600, mode='combined'):
+     """Always attempt owned terminal cleanup, even if a stop/receipt step fails."""
+     terminal = False
+     remaining = []
+@@ -139,7 +166,7 @@ def finish_supervisor(owner, process, fixture, batch, seconds=600):
+         batch['supervisor_exit_zero'] = process.returncode == 0
+     try:
+         if fixture and (fixture / 'cleanup.json').is_file():
+-            batch['cleanup'] = project_cleanup(read(fixture / 'cleanup.json'))
++            batch['cleanup'] = project_cleanup(read(fixture / 'cleanup.json'), mode)
+     except Exception as error:
+         batch['cleanup_error_class'] = type(error).__name__
+     if batch['outer_cleanup']['forced'] or not batch['outer_cleanup']['verified_stopped'] or 'cleanup_error_class' in batch:
+@@ -159,7 +186,8 @@ def run_batch(name, phases, plan, journal, run_id):
+     process = None
+     batch = {'batch': name, 'readiness': False, 'cleanup': {'verified_stopped': False}}
+     log = STAGE / ('fixture-' + name + '.log')
+-    argv = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--ui-dir', str(ROOT / 'artifacts/frontend'), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls', '--lifetime-seconds', '3600']
++    mode = fixture_mode(name)
++    argv = fixture_arguments(name, plan)
+     # No Actions token or provider/account secrets reach the fixture process.
+     allowed = {'PATH', 'HOME', 'TMPDIR', 'TMP', 'TEMP', 'LANG', 'LC_ALL', 'LC_CTYPE', 'LD_LIBRARY_PATH', 'SSL_CERT_FILE', 'SSL_CERT_DIR'}
+     env = {key: value for key, value in os.environ.items() if key in allowed}
+@@ -183,7 +211,7 @@ def run_batch(name, phases, plan, journal, run_id):
+                     if path.is_file():
+                         state = read(path)
+                         if state.get('status') == 'ready':
+-                            if state.get('run_directory') != str(fixture) or state.get('protocol_seed', {}).get('fully_ready') is not True or state.get('binary', {}).get('sha256') != plan['normal_sha256'] or state.get('frontend', {}).get('artifact_manifest_sha256') != plan['frontend_manifest_sha256']:
++                            if not ready_matches(state, fixture, plan, mode):
+                                 raise RuntimeError('Newly ready fixture differs from the actual build plan')
+                             return state
+                 return None
+@@ -216,7 +244,7 @@ def run_batch(name, phases, plan, journal, run_id):
+             batch['error_class'] = type(error).__name__
+         finally:
+             if process:
+-                finish_supervisor(owner, process, fixture, batch)
++                finish_supervisor(owner, process, fixture, batch, mode=mode)
+     if any(row['batch'] == name and row['phase'] == 'ui14-home-failures' and row['status'] == 'passed' for row in journal['phases']) and not batch['cleanup'].get('pg_fault_terminal_clean'):
+         batch['cleanup']['verified_stopped'] = False
+     journal['batches'].append(batch)
+diff --git a/weebdex-platform/tests/runtime/browser_fixture.py b/weebdex-platform/tests/runtime/browser_fixture.py
+index aec4ec4..a48ba38 100755
+--- a/weebdex-platform/tests/runtime/browser_fixture.py
++++ b/weebdex-platform/tests/runtime/browser_fixture.py
+@@ -89,6 +89,7 @@ class Fixture:
+         self.started=time.time(); self.ready_at=None; self.warning_sent=False
+         self.browser=None; self.browser_deadline=None; self.browser_phase=None; self.browser_completed=set()
+         self.receipt={'fixture_only':True,'production':False,'credentials_generated_by_supervisor':False,
++                      'fixture_mode':'combined' if self.protocol_enabled else 'native-only',
+                       'database':'weebdex_browser_test','run_directory':str(self.run),'started_unix':self.started,
+                       'platform_origin':self.origin,'mail_origin':self.mail_origin,'ids':IDS,'children':{},'listener_lifecycle':[]}
+         write_json(self.run/'supervisor.json',self.receipt)
+@@ -1092,6 +1093,7 @@ def main():
+     parser=argparse.ArgumentParser();parser.add_argument('--binary',type=Path,required=True);parser.add_argument('--expected-sha256');parser.add_argument('--lifetime-seconds',type=int,default=2700)
+     parser.add_argument('--ui-dir',type=Path,default=ROOT/'artifacts/frontend');parser.add_argument('--frontend-index-sha256')
+     parser.add_argument('--frontend-artifact-manifest',type=Path,default=ROOT/'test-evidence/frontend/artifact-manifest.json');parser.add_argument('--frontend-artifact-manifest-sha256')
++    parser.add_argument('--native-only',action='store_true',help='Require instance-local native journeys with no protocol authority, key, node or provisioner; existing default selection is unchanged')
+     parser.add_argument('--protocol-provisioner',type=Path);parser.add_argument('--provisioner-sha256')
+     parser.add_argument('--second-protocol-recipient',action='store_true',help='Own a second actual original node/database/store for bounded two-recipient browser journeys')
+     parser.add_argument('--ui-regression-controls',action='store_true',help='Enable private bounded named native pagination/reader regression controls; no bulk data is seeded automatically')
+@@ -1100,6 +1102,7 @@ def main():
+     args=parser.parse_args()
+     if not 600<=args.lifetime_seconds<=3600:parser.error('fixture lifetime must be600..3600seconds')
+     if not args.frontend_artifact_manifest_sha256 or not args.frontend_index_sha256:parser.error('fixture requires exact complete frontend manifest and index hashes')
++    if args.native_only and (args.protocol_provisioner or args.provisioner_sha256 or getattr(args,'protocol_self_enrollment',False) or args.second_protocol_recipient or args.ui_regression_controls or args.pg_home_fault_controls or args.ubunchu_noncommercial):parser.error('native-only mode excludes protocol authorities, provisioner and combined controls')
+     if args.ubunchu_noncommercial and not args.protocol_provisioner:parser.error('Ubunchu input requires combined real-protocol fixture')
+     if args.second_protocol_recipient and not args.protocol_provisioner:parser.error('second recipient requires combined real-protocol fixture')
+     if args.ui_regression_controls and not args.protocol_provisioner:parser.error('native UI regression controls require the reviewed disposable fixture provisioner')
