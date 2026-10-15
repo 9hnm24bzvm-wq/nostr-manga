@@ -1,0 +1,54 @@
+{
+  "status": "RECONSTRUCTED-UNVERIFIED",
+  "reconstructed_at_utc": "2026-10-15T04:52:00Z",
+  "historical_commit_recovered": false,
+  "fresh_tests_run": false,
+  "old_success_logs_recreated": false,
+  "files": [
+    {
+      "path": "APPLY.md",
+      "bytes": 3506,
+      "sha256": "f44d4bc6cc53cc2a03de4ba181ff6fb9f78f60fad8dc4aa981e1e29ac411ad86"
+    },
+    {
+      "path": "RECOVERY_STATUS.md",
+      "bytes": 711,
+      "sha256": "2601a6ca35c88467e91fae8c60798b8f298ee15481b729079d1ea9add22ee9be"
+    },
+    {
+      "path": "apply_recovery.py",
+      "bytes": 4360,
+      "sha256": "85f8afbd90a0c3f1aef4e97bc369922a86037379981629b136e0afee1fe73c1f"
+    },
+    {
+      "path": "native-moderation.patch",
+      "bytes": 6988,
+      "sha256": "32811ccfe45b2c44d1d6ee1f09ec939824faca85eee10a91355d0f0cd1407e63"
+    },
+    {
+      "path": "weebdex-platform/backend/migrations/0092_public_report_reasons.sql",
+      "bytes": 4192,
+      "sha256": "e2702fa0bcf855fbac0d3a6983b45a804c02aeacccaa2fc3099f240dc66f0e9b"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/moderation/mod.rs",
+      "bytes": 13994,
+      "sha256": "9cb6493fbf6b99c6f886c1cda9846b320a317f3266949b501e6938b651849466"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/reports.rs",
+      "bytes": 13991,
+      "sha256": "e3c11dc892ae757304ad17915f337c8c017d1dbdba728603c8abdcdcab3f83e3"
+    },
+    {
+      "path": "weebdex-platform/backend/tests/public_reports.rs",
+      "bytes": 18690,
+      "sha256": "b6f33fbe3420058db8761faa84b0afd2628c7f1e04473707eb9749417c8b9233"
+    },
+    {
+      "path": "weebdex-platform/docs/public-report-contract.md",
+      "bytes": 4747,
+      "sha256": "36e2746e3d571da7c06e1d23e8543a30389caa125160aa543d985a3f37a0bdec"
+    }
+  ]
+}

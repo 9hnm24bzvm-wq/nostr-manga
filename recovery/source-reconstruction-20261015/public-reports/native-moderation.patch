@@ -1,0 +1,127 @@
+--- a/weebdex-platform/backend/src/domains/moderation/mod.rs
++++ b/weebdex-platform/backend/src/domains/moderation/mod.rs
+@@ -116,46 +116,7 @@
+     let details = v::string(&p, "details", 20000, false)?.unwrap_or_default();
+     let mut db = s.db.client().await?;
+     let tx = db.transaction().await?;
+-    // Serialize per-user limits and duplicate creation, without trusting a client-supplied identity.
+-    tx.query_one(
+-        "SELECT id FROM platform.users WHERE id=$1 FOR UPDATE",
+-        &[&a.user_id],
+-    )
+-    .await?;
+-    let count:i64=tx.query_one("SELECT count(*) FROM platform.reports WHERE submitter_id=$1 AND created_at>clock_timestamp()-interval '1 hour'",&[&a.user_id]).await?.get(0);
+-    if count >= 20 {
+-        return Err(ApiError::busy());
+-    }
+-    let reason_row=tx.query_opt("SELECT details_required FROM platform.report_reasons WHERE id=$1 AND category=$2 AND enabled FOR SHARE",&[&reason,&entity]).await?.ok_or_else(||ApiError::bad_request("Reason does not belong to this report category"))?;
+-    if reason_row.get::<_, bool>(0) && details.is_empty() {
+-        return Err(ApiError::bad_request(
+-            "Details are required for this report reason",
+-        ));
+-    }
+-    if !tx
+-        .query_one(
+-            "SELECT platform.report_entity_exists($1,$2)",
+-            &[&entity, &target],
+-        )
+-        .await?
+-        .get::<_, bool>(0)
+-    {
+-        return Err(ApiError::not_found("Report target not found"));
+-    }
+-    if tx.query_opt("SELECT id FROM platform.reports WHERE submitter_id=$1 AND entity_type=$2 AND entity_id=$3 AND reason_id=$4 AND status='waiting' AND deleted_at IS NULL",&[&a.user_id,&entity,&target,&reason]).await?.is_some(){return Err(ApiError::conflict("An identical report is already awaiting review"));}
+-    let target_version: Option<i32> = if reason == "scanlation_group_claim" {
+-        let group=tx.query_opt("SELECT version,locked FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR SHARE",&[&target]).await?.ok_or_else(||ApiError::not_found("Group not found"))?;
+-        if group.get::<_, bool>(1) {
+-            return Err(ApiError::forbidden("This group is locked"));
+-        }
+-        if tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_group_members WHERE group_id=$1 AND is_leader)",&[&target]).await?.get::<_,bool>(0){return Err(ApiError::conflict("This group has already been claimed"));}
+-        Some(group.get(0))
+-    } else {
+-        None
+-    };
+-    let id = v::new_id("report");
+-    tx.execute("INSERT INTO platform.reports(id,submitter_id,entity_type,entity_id,reason_id,body,target_version) VALUES($1,$2,$3,$4,$5,$6,$7)",&[&id,&a.user_id,&entity,&target,&reason,&details,&target_version]).await?;
+-    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,new_status,new_version) VALUES($1,$2,'create','waiting',1)",&[&id,&a.user_id]).await?;
++    create_report(&tx, &a, &entity, &target, &reason, &details).await?;
+     tx.commit().await?;
+     Ok(StatusCode::NO_CONTENT)
+ }
+@@ -263,3 +224,76 @@
+     tx.commit().await?;
+     Ok(StatusCode::NO_CONTENT)
+ }
++
++// Only genuine native sessions and private, transaction-rechecked public write
++// capabilities can invoke this shared local-instance mutation core.
++pub(crate) mod sealed {
++    pub trait Sealed {}
++}
++pub(crate) trait ReportMutationActor: sealed::Sealed {
++    fn user_id(&self) -> &str;
++    fn require_permission(&self, permission: &str) -> ApiResult<()>;
++}
++impl sealed::Sealed for SessionPrincipal {}
++impl ReportMutationActor for SessionPrincipal {
++    fn user_id(&self) -> &str { &self.user_id }
++    fn require_permission(&self, permission: &str) -> ApiResult<()> {
++        SessionPrincipal::require_permission(self, permission)
++    }
++}
++/// Transaction-owned creation. Authentication, account binding and commit belong
++/// to the caller. Reports/audit are private instance moderation, never events.
++pub(crate) async fn create_report(
++    tx: &tokio_postgres::Transaction<'_>,
++    a: &impl ReportMutationActor,
++    entity: &str,
++    target: &str,
++    reason: &str,
++    details: &str,
++) -> ApiResult<String> {
++    a.require_permission("report.create")?;
++    category(entity)?;
++    v::id(target)?;
++    v::id(reason)?;
++    // Serialize per-user limits and duplicate creation, without trusting a client-supplied identity.
++    tx.query_one(
++        "SELECT id FROM platform.users WHERE id=$1 FOR UPDATE",
++        &[&a.user_id()],
++    )
++    .await?;
++    let count:i64=tx.query_one("SELECT count(*) FROM platform.reports WHERE submitter_id=$1 AND created_at>clock_timestamp()-interval '1 hour'",&[&a.user_id()]).await?.get(0);
++    if count >= 20 {
++        return Err(ApiError::busy());
++    }
++    let reason_row=tx.query_opt("SELECT details_required FROM platform.report_reasons WHERE id=$1 AND category=$2 AND enabled FOR SHARE",&[&reason,&entity]).await?.ok_or_else(||ApiError::bad_request("Reason does not belong to this report category"))?;
++    if reason_row.get::<_, bool>(0) && details.is_empty() {
++        return Err(ApiError::bad_request(
++            "Details are required for this report reason",
++        ));
++    }
++    if !tx
++        .query_one(
++            "SELECT platform.report_entity_exists($1,$2)",
++            &[&entity, &target],
++        )
++        .await?
++        .get::<_, bool>(0)
++    {
++        return Err(ApiError::not_found("Report target not found"));
++    }
++    if tx.query_opt("SELECT id FROM platform.reports WHERE submitter_id=$1 AND entity_type=$2 AND entity_id=$3 AND reason_id=$4 AND status='waiting' AND deleted_at IS NULL",&[&a.user_id(),&entity,&target,&reason]).await?.is_some(){return Err(ApiError::conflict("An identical report is already awaiting review"));}
++    let target_version: Option<i32> = if reason == "scanlation_group_claim" {
++        let group=tx.query_opt("SELECT version,locked FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR SHARE",&[&target]).await?.ok_or_else(||ApiError::not_found("Group not found"))?;
++        if group.get::<_, bool>(1) {
++            return Err(ApiError::forbidden("This group is locked"));
++        }
++        if tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_group_members WHERE group_id=$1 AND is_leader)",&[&target]).await?.get::<_,bool>(0){return Err(ApiError::conflict("This group has already been claimed"));}
++        Some(group.get(0))
++    } else {
++        None
++    };
++    let id = v::new_id("report");
++    tx.execute("INSERT INTO platform.reports(id,submitter_id,entity_type,entity_id,reason_id,body,target_version) VALUES($1,$2,$3,$4,$5,$6,$7)",&[&id,&a.user_id(),&entity,&target,&reason,&details,&target_version]).await?;
++    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,new_status,new_version) VALUES($1,$2,'create','waiting',1)",&[&id,&a.user_id()]).await?;
++    Ok(id)
++}
