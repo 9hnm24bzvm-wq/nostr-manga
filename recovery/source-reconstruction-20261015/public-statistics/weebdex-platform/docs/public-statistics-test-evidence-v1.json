@@ -1,0 +1,31 @@
+{
+  "status": "RECONSTRUCTED-UNVERIFIED",
+  "reconstructed_on": "2026-10-15",
+  "fresh_tests_required": true,
+  "suite": "public_statistics",
+  "contract": "mangadex-5.13.1+nostr.1",
+  "intended_transport": "real ephemeral loopback HTTP listener",
+  "intended_database": "owned disposable PostgreSQL, private nonstandard loopback port",
+  "unit_result": null,
+  "integration_result": null,
+  "postgres_cleanup": null,
+  "planned_assertions": [
+    "All six single and bracket-array batch routes",
+    "Canonical durable UUID keys and legacy alias deduplication",
+    "Real follows and unavailable chapter counts, stale aggregate counters ignored",
+    "100 distinct manga in one bounded batch",
+    "Wrong-kind and unknown UUIDs",
+    "Draft, deleted, cached-withdrawn and live-source-hidden manga and chapters",
+    "Deleted and source-withdrawn groups",
+    "No alias creation on reads",
+    "No fabricated ratings, histograms, Bayesian prior or numeric forum IDs",
+    "Malformed UUID path and query, invalid percent/UTF-8 encoding, unsupported and over-budget queries",
+    "Public JSON 400, 404, 405 and 503 error envelopes, no-store, no internal error leakage"
+  ],
+  "unit_command": "cargo test --offline --manifest-path weebdex-platform/backend/Cargo.toml --lib public_api::statistics::tests",
+  "integration_command": "weebdex-platform/scripts/run-auth-tests.sh cargo test --offline --manifest-path weebdex-platform/backend/Cargo.toml --test public_statistics -- --ignored --test-threads=1",
+  "limitations": [
+    "Earlier lost-source test results do not verify this reconstruction",
+    "The six statistics operations remain partial pending authenticated per-rater data and an external numeric forum thread bridge"
+  ]
+}

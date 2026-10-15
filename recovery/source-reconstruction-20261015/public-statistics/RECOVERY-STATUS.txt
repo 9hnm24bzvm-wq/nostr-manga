@@ -1,0 +1,8 @@
+RECONSTRUCTED-UNVERIFIED
+Reconstructed on 2026-10-15 from retained source-writing tool context after replacement of the execution environment.
+This is reconstructed source, not a recovered Git object. No assertion of equality to earlier lost commit hashes is made.
+Complete implementation, dedicated real HTTP/PostgreSQL test, documentation, unverified evidence template, six coverage integration rows, and minimal wiring patch are present.
+Fresh compilation, unit tests, integration tests and integration review are required before any verification claim.
+No new migration, rating schema, auth change, protocol mutation, credentials, personal data or runtime database is included.
+Source behavior: six GET routes; real follows and unavailable chapter counts; null comments pending external forum bridge; unsupported rating omitted; authoritative visibility; same-kind canonical UUID aliases; bounded100 batches; safe JSON errors.
+See INTEGRATION.md and MANIFEST.json. The source patch contains complete added project files; integration.patch describes the minimal foundation wiring separately.

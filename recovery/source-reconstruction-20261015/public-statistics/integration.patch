@@ -1,0 +1,12 @@
+# RECONSTRUCTED-UNVERIFIED. Apply these minimal changes to the restored foundation.
+# Route merge location must preserve its other catalogue/auth/media route merges.
+# CoverageStatus::Partial must exist before merging the six coverage rows.
+--- a/weebdex-platform/backend/src/public_api/mod.rs
++++ b/weebdex-platform/backend/src/public_api/mod.rs
+@@ -1,0 +1,1 @@
++pub mod statistics;
+--- a/weebdex-platform/backend/src/public_api/routes.rs
++++ b/weebdex-platform/backend/src/public_api/routes.rs
+@@ -1,1 +1,1 @@
+-    Router::new().fallback(unimplemented_or_unknown)
++    Router::new().merge(super::statistics::router()).fallback(unimplemented_or_unknown)

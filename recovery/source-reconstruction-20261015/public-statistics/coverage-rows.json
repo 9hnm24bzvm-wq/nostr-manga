@@ -1,0 +1,88 @@
+[
+  {
+    "method": "GET",
+    "path": "/statistics/chapter/{uuid}",
+    "operation_id": "get-statistics-chapter-uuid",
+    "status": "partial",
+    "evidence": [
+      "backend/src/public_api/statistics.rs",
+      "backend/tests/public_statistics.rs",
+      "docs/public-statistics-v1.md"
+    ],
+    "pending_features": [
+      "MangaDex Forums numeric thread bridge and replies statistics"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/statistics/chapter",
+    "operation_id": "get-statistics-chapters",
+    "status": "partial",
+    "evidence": [
+      "backend/src/public_api/statistics.rs",
+      "backend/tests/public_statistics.rs",
+      "docs/public-statistics-v1.md"
+    ],
+    "pending_features": [
+      "MangaDex Forums numeric thread bridge and replies statistics"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/statistics/group/{uuid}",
+    "operation_id": "get-statistics-group-uuid",
+    "status": "partial",
+    "evidence": [
+      "backend/src/public_api/statistics.rs",
+      "backend/tests/public_statistics.rs",
+      "docs/public-statistics-v1.md"
+    ],
+    "pending_features": [
+      "MangaDex Forums numeric thread bridge and replies statistics"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/statistics/group",
+    "operation_id": "get-statistics-groups",
+    "status": "partial",
+    "evidence": [
+      "backend/src/public_api/statistics.rs",
+      "backend/tests/public_statistics.rs",
+      "docs/public-statistics-v1.md"
+    ],
+    "pending_features": [
+      "MangaDex Forums numeric thread bridge and replies statistics"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/statistics/manga/{uuid}",
+    "operation_id": "get-statistics-manga-uuid",
+    "status": "partial",
+    "evidence": [
+      "backend/src/public_api/statistics.rs",
+      "backend/tests/public_statistics.rs",
+      "docs/public-statistics-v1.md"
+    ],
+    "pending_features": [
+      "MangaDex Forums numeric thread bridge and replies statistics",
+      "Authenticated per-rater storage and derived average, Bayesian rating, and distribution"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/statistics/manga",
+    "operation_id": "get-statistics-manga",
+    "status": "partial",
+    "evidence": [
+      "backend/src/public_api/statistics.rs",
+      "backend/tests/public_statistics.rs",
+      "docs/public-statistics-v1.md"
+    ],
+    "pending_features": [
+      "MangaDex Forums numeric thread bridge and replies statistics",
+      "Authenticated per-rater storage and derived average, Bayesian rating, and distribution"
+    ]
+  }
+]

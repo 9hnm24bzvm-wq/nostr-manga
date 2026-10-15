@@ -12,3 +12,17 @@ The branch starts at the independently recovered public source commit `82290c732
 - No credentials, private keys, runtime databases, private logs or screenshots are included.
 
 The complete earlier 13-commit onboarding/build/evidence checkpoint was not published. Only the first 10 commits are reachable from the base above. More recent onboarding policy changes and MangaDex implementation are not represented as restored production code by these fragments.
+
+## Additional preserved source groups
+
+The namespaced recovery history also preserves independently frozen public UUID persistence, native catalogue mutation core, public reports, public statistics, Nostr auth/list/profile/read-marker adapters, bound-account helpers, frontend adapters and browser CI correction patches/tests. Per-component manifests and recovery limitations accompany each group. They are source reconstruction material, not a representation that all API operations are implemented or accepted.
+
+Normal code snapshots are also backed up on the repository branches:
+
+- `rebuild/mangadex-contract-foundation`
+- `rebuild/mangadex-frontend-source`
+- `rebuild/nostr-public-adapters`
+- `rebuild/onboarding-source-recovery-20261015`
+- `rebuild/browser-ci-source-recovery`
+
+Each source checkpoint records its local source origin and is separate from deployment or full browser acceptance. The diagnostic branch was not advanced by these recovery backups.

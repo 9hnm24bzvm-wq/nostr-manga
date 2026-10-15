@@ -1,0 +1,54 @@
+{
+  "status": "RECONSTRUCTED-UNVERIFIED",
+  "reconstructed_on": "2026-10-15",
+  "origin": "retained source-writing tool context after environment replacement",
+  "fresh_tests_required": true,
+  "old_git_object_recovered": false,
+  "files": [
+    {
+      "path": "INTEGRATION.md",
+      "bytes": 2733,
+      "sha256": "9cb7904099bb45d4119d27b60785a2b250fa4db8c1176f0f6b7d8cf10351b786"
+    },
+    {
+      "path": "RECOVERY-STATUS.txt",
+      "bytes": 1095,
+      "sha256": "f613cd624ecabcd3b774ef19f81e4f523353c9d888051a5afee3f1c80f7584e2"
+    },
+    {
+      "path": "coverage-rows.json",
+      "bytes": 2551,
+      "sha256": "74bcc77cfcdf3f6de936d429508d41988ba55bcf82d3dcd9a88c010f1ef6a1e6"
+    },
+    {
+      "path": "integration.patch",
+      "bytes": 655,
+      "sha256": "8afe63b36415fbda9ef076d3fb91263022a5e619541cc9dbdfc7cd1697a4ddb8"
+    },
+    {
+      "path": "statistics-source.patch",
+      "bytes": 31390,
+      "sha256": "0f2cd5b25dee7a0ed6a6be17d80859ef7316c595e6cc0f6b61c38622b0491ea0"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/statistics.rs",
+      "bytes": 9804,
+      "sha256": "b14f07f37c7ccdab38829a7400110f4fbb7e613bb0c29c37517ee2c205850c8e"
+    },
+    {
+      "path": "weebdex-platform/backend/tests/public_statistics.rs",
+      "bytes": 13487,
+      "sha256": "83b405f8d6ed6c2ebabb640a5244dd47b9586b6f1d0932c3d583330e1e635313"
+    },
+    {
+      "path": "weebdex-platform/docs/public-statistics-test-evidence-v1.json",
+      "bytes": 1732,
+      "sha256": "601cd08897344c2f07bd33afb2c7efa0a88a7ddc2b0387274a78d571625bf487"
+    },
+    {
+      "path": "weebdex-platform/docs/public-statistics-v1.md",
+      "bytes": 5463,
+      "sha256": "3bd5a46233742dc9bc8972b5a290f1c91b7d9b01b48ab5202c7405b30595f424"
+    }
+  ]
+}
