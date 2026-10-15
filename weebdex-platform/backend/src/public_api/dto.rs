@@ -21,6 +21,10 @@ pub enum ResourceType {
     Tag,
     #[serde(rename = "user")]
     User,
+    #[serde(rename = "leader")]
+    Leader,
+    #[serde(rename = "member")]
+    Member,
     #[serde(rename = "custom_list")]
     CustomList,
     #[serde(rename = "report")]

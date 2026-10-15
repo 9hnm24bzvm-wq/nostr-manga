@@ -5,7 +5,7 @@ use manga_node::{
     library_intent_delta::{DeltaPlan, Intent, MAX_AFFECTED_BUCKETS, MAX_INTENT_IDS},
     library_manifest::{Chunk, Descriptor, Family, FamilyRoot, Limits, Record, Root, bucket_for},
 };
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 fn id(n: u64) -> Id {
     let mut id = [0; 32];
     id[..8].copy_from_slice(&n.to_be_bytes());
@@ -353,5 +353,85 @@ fn affected_bucket_count_is_bounded_before_any_object_load() -> Result<()> {
     assert_eq!(ids.len(), MAX_AFFECTED_BUCKETS + 1);
     let intent = Intent::read_markers(&ids, &[])?;
     assert!(DeltaPlan::prepare(Some(&empty), &empty, &intent).is_err());
+    Ok(())
+}
+
+/// Descriptor planning bounds are checked before any loader can be invoked.
+/// The large-graph tests above separately construct actual canonical chunk bytes.
+#[test]
+fn byte_and_record_visit_budgets_fail_during_descriptor_planning() -> Result<()> {
+    for (buckets, records, size) in [(16usize, 1u64, 1_000_000u64), (64, 1024, 1000)] {
+        let mut keys = BTreeMap::new();
+        for n in 0..100_000u64 {
+            keys.entry(bucket_for(&id(n), buckets)?).or_insert(id(n));
+            if keys.len() == buckets {
+                break;
+            }
+        }
+        assert_eq!(keys.len(), buckets);
+        let old = Root {
+            families: Family::ALL
+                .into_iter()
+                .map(|family| FamilyRoot {
+                    family,
+                    chunks: if family == Family::Chapters {
+                        (0..buckets)
+                            .map(|i| Descriptor {
+                                hash: id(10_000 + i as u64),
+                                size,
+                                records,
+                            })
+                            .collect()
+                    } else {
+                        vec![Descriptor::empty()]
+                    },
+                })
+                .collect(),
+        };
+        let mut new = old.clone();
+        for (i, d) in new.families[0].chunks.iter_mut().enumerate() {
+            d.hash = id(20_000 + i as u64);
+        }
+        old.totals(&Limits::default())?;
+        new.totals(&Limits::default())?;
+        let intent = Intent::read_markers(&keys.into_values().collect::<Vec<_>>(), &[])?;
+        let error = match DeltaPlan::prepare(Some(&old), &new, &intent) {
+            Ok(_) => anyhow::bail!("scan budget unexpectedly accepted"),
+            Err(e) => e,
+        };
+        assert!(
+            error.to_string().contains("affected library scan budget"),
+            "{error}"
+        );
+    }
+    Ok(())
+}
+#[test]
+fn changed_object_cannot_masquerade_as_another_family() -> Result<()> {
+    let (old, objects) = graph(
+        vec![
+            chapter(1, false, None),
+            Record::List {
+                id: [1; 16],
+                name: "Public".into(),
+                updated_at: 1,
+            },
+        ],
+        [1; 4],
+    )?;
+    let mut new = old.clone();
+    let list = old.families[2].chunks[0].clone();
+    new.families[0].chunks[0] = list.clone();
+    let chunks = BTreeMap::from([(list.hash, objects[&list.hash].clone())]);
+    assert!(
+        validate(
+            Some(&old),
+            &new,
+            &Intent::read_markers(&[id(1)], &[])?,
+            &objects,
+            &chunks
+        )
+        .is_err()
+    );
     Ok(())
 }

@@ -116,7 +116,7 @@ impl AliasIndex {
                 let mut attributes = json!({"title":{language:value["title"]},"altTitles":alt_titles(&value["alt_titles"]),"description":localized(&value["description"]),
                     "isLocked":value["locked"].as_bool().unwrap_or(false),"originalLanguage":language,
                     "lastVolume":nullable(value,&["lastVolume","last_volume"]),"lastChapter":nullable(value,&["lastChapter","last_chapter"]),
-                    "publicationDemographic":nullable_nonempty(value,&["demographic"]),"status":value["status"],"year":if value["year"].as_i64().is_some_and(|y|y>0){value["year"].clone()}else{Value::Null},
+                    "publicationDemographic":demographic(value),"status":value["status"],"year":if value["year"].as_i64().is_some_and(|y|y>0){value["year"].clone()}else{Value::Null},
                     "contentRating":value["content_rating"],"state":value["state"],"availableTranslatedLanguages":value["relationships"]["available_languages"].as_array().cloned().unwrap_or_default(),
                     "tags":array(&value["relationships"]["tags"]).iter().map(|tag|self.resource(ResourceKind::Tag,tag,&BTreeSet::new())).collect::<PublicApiResult<Vec<_>>>()?});
                 common(value, &mut attributes);
@@ -249,7 +249,18 @@ impl AliasIndex {
                         id: self.id(ResourceKind::Manga, manga)?,
                         resource_type: ResourceType::Manga,
                         related: None,
-                        attributes: None,
+                        attributes: if includes.contains("manga") {
+                            value
+                                .get("_manga")
+                                .filter(|v| v.is_object())
+                                .map(|v| {
+                                    self.resource(ResourceKind::Manga, v, &BTreeSet::new())
+                                        .map(|r| r.attributes)
+                                })
+                                .transpose()?
+                        } else {
+                            None
+                        },
                     });
                 }
                 if let Some(r) = self.relationship(
@@ -263,7 +274,7 @@ impl AliasIndex {
                 a
             }
             ResourceKind::Author => {
-                let mut a = json!({"name":value["name"],"biography":localized(&value["biography"]),"imageUrl":nullable(value,&["imageUrl","image_url"])});
+                let mut a = json!({"name":value["name"],"biography":localized(value.get("biography").unwrap_or(&value["description"])),"imageUrl":nullable(value,&["imageUrl","image_url"])});
                 common(value, &mut a);
                 for (wire, native) in [
                     ("twitter", "twitter"),
@@ -283,6 +294,16 @@ impl AliasIndex {
                 ] {
                     a[wire] = nullable(value, &[wire, native]);
                 }
+                for related in array(&value["relationships"]["manga"]) {
+                    if let Some(r) = self.relationship(
+                        ResourceKind::Manga,
+                        ResourceType::Manga,
+                        &related,
+                        includes.contains("manga"),
+                    )? {
+                        relationships.push(r);
+                    }
+                }
                 a
             }
             ResourceKind::Group => {
@@ -296,7 +317,7 @@ impl AliasIndex {
                     ("contactEmail", "contact_email"),
                     ("description", "description"),
                     ("twitter", "twitter"),
-                    ("mangaUpdates", "mangaUpdates"),
+                    ("mangaUpdates", "mangaupdates"),
                     ("focusedLanguage", "focused_languages"),
                     ("publishDelay", "publishDelay"),
                 ] {
@@ -313,20 +334,31 @@ impl AliasIndex {
                     } else {
                         "member"
                     };
-                    if let Some(mut r) = self.relationship(
+                    if let Some(r) = self.relationship(
                         ResourceKind::User,
-                        ResourceType::User,
+                        if role == "leader" {
+                            ResourceType::Leader
+                        } else {
+                            ResourceType::Member
+                        },
                         &member,
                         includes.contains(role),
                     )? {
-                        r.related = Some(role.to_owned());
                         relationships.push(r);
                     }
                 }
                 a
             }
             ResourceKind::Tag => {
-                let mut a = json!({"name":localized_name(&value["name"]),"description":localized(&value["description"]),"group":value["group"]});
+                let mut a = json!({"name":localized_name(&value["name"]),"description":localized(&value["description"])});
+                if value["group"]
+                    .as_str()
+                    .is_some_and(|g| ["content", "format", "genre", "theme"].contains(&g))
+                {
+                    a["group"] = value["group"].clone();
+                } else if value["group"].is_string() {
+                    a["nostr"] = json!({"nativeTagGroup":value["group"]});
+                }
                 if let Some(version) = value.get("version") {
                     a["version"] = version.clone();
                 }
@@ -383,6 +415,7 @@ fn collect(
             ("uploader", ResourceKind::User),
         ],
         ResourceKind::Cover => &[("uploader", ResourceKind::User)],
+        ResourceKind::Author => &[("manga", ResourceKind::Manga)],
         ResourceKind::Group => &[("members", ResourceKind::User)],
         _ => &[],
     };
@@ -394,6 +427,9 @@ fn collect(
         } else {
             collect(*kind, &rel[*field], keys, depth + 1)?;
         }
+    }
+    if kind == ResourceKind::Cover && value["_manga"].is_object() {
+        collect(ResourceKind::Manga, &value["_manga"], keys, depth + 1)?;
     }
     if let Some(manga) = value["_manga_id"].as_str() {
         keys.entry(ResourceKind::Manga)
@@ -415,6 +451,14 @@ fn nullable(value: &Value, keys: &[&str]) -> Value {
         .find_map(|k| value.get(*k))
         .cloned()
         .unwrap_or(Value::Null)
+}
+fn demographic(value: &Value) -> Value {
+    let result = nullable_nonempty(value, &["demographic"]);
+    if result.as_str() == Some("none") {
+        Value::Null
+    } else {
+        result
+    }
 }
 fn nullable_nonempty(value: &Value, keys: &[&str]) -> Value {
     let v = nullable(value, keys);
@@ -478,6 +522,44 @@ fn common(native: &Value, attributes: &mut Value) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn native_nullable_demographic_biography_and_group_links_are_preserved() {
+        let mut rows = BTreeMap::new();
+        for (kind, native) in [
+            (ResourceKind::Author, "Author0001"),
+            (ResourceKind::Group, "Group00001"),
+        ] {
+            rows.insert(
+                (kind, native.into()),
+                ResolvedPublicId {
+                    native_id: native.into(),
+                    preferred_id: PublicUuid::parse("11111111-1111-8111-8111-111111111111")
+                        .unwrap(),
+                    target: PublicIdTarget::NativeResource,
+                },
+            );
+        }
+        let index = AliasIndex {
+            rows,
+            user_attributes: BTreeMap::new(),
+        };
+        let author = index
+            .resource(
+                ResourceKind::Author,
+                &json!({"id":"Author0001","name":"Actual","description":"Native biography"}),
+                &BTreeSet::new(),
+            )
+            .unwrap();
+        assert_eq!(author.attributes["biography"]["en"], "Native biography");
+        let group=index.resource(ResourceKind::Group,&json!({"id":"Group00001","name":"Actual","mangaupdates":"https://www.mangaupdates.com/group/actual"}),&BTreeSet::new()).unwrap();
+        assert_eq!(
+            group.attributes["mangaUpdates"],
+            "https://www.mangaupdates.com/group/actual"
+        );
+        assert!(demographic(&json!({"demographic":"none"})).is_null());
+        assert!(demographic(&json!({"demographic":null})).is_null());
+        assert_eq!(demographic(&json!({"demographic":"seinen"})), "seinen");
+    }
     #[test]
     fn nullable_numbering_and_native_cover_filename_are_preserved() {
         let mut rows = BTreeMap::new();

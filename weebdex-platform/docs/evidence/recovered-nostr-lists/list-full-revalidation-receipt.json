@@ -1,0 +1,28 @@
+{
+  "reconstructed_source": true,
+  "historical_acceptance_transferred": false,
+  "source_commit": "78957803fcb541a2f4dc131433b96cb983c19c37",
+  "actual_original_signed_graph": true,
+  "actual_postgres": "18.6",
+  "actual_strfry_source_pin": "4cd3cf64850caf47dda46c2a2abbbf3525a64d10",
+  "test_binary_sha256": "aea2b5f8765e9f80a913ef4a71c91542f8ebc6279d3172ab68f0178f9679db5c",
+  "results": {
+    "passed": 1,
+    "failed": 0,
+    "filtered_out": 1,
+    "seconds": 3.42
+  },
+  "scope": "Full public signed graph list collection/owner/detail/feed plus bounded alias importer",
+  "cleanup": "auth-1UcfRt verified_stopped exit0",
+  "prior_failure": "Initial full fixture panicked during router construction on cover wildcard mismatch; fixed by foundation9dbe81c, cherry-picked7895780. auth-Jec57B verified_stopped exit101. Honest earlier failure retained.",
+  "covered": [
+    "all previously recorded list-core cases",
+    "scoped chapter feed current visibility",
+    "feed language filters and includes",
+    "feed pagination",
+    "empty membership scope returns total0",
+    "malformed and undeclared query rejection",
+    "final signed head recheck"
+  ],
+  "not_claimed": "No client-signed mutation HTTP adapter, browser integration, or full MangaDex parity"
+}

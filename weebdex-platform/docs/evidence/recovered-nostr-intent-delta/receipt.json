@@ -1,0 +1,12 @@
+{
+  "source_commit": "5b71661b3b4d7ae87fcf078a7baf58a0d241b0cd",
+  "passed": 9,
+  "failed": 0,
+  "seconds": 6.75,
+  "actual_encoded_record_counts": [
+    30000,
+    500000
+  ],
+  "instrumented_old_chunk_loads_per_large_graph": 1,
+  "not_claimed": "Pure codec/intent validation only; no authority, database, HTTP mutation, or commit pipeline coverage"
+}
