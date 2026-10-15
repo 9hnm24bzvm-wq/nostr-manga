@@ -66,6 +66,8 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                 "/auth/check"
                     | "/manga/{id}/read"
                     | "/manga/read"
+                    | "/manga/status"
+                    | "/manga/{id}/status"
                     | "/user/list"
                     | "/user/{id}/list"
                     | "/list/{id}"

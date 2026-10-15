@@ -73,6 +73,21 @@ async fn exercise(f: &Fixture) -> Result<()> {
         ("VisibleG01", series.pubkey.clone()),
         ("WrongGrp01", public(3)),
     ] {
+        // The original alias repository only accepts indexed targets. These
+        // fixture-only managed identities have no signing key or membership grant.
+        f.repo
+            .pool
+            .get()
+            .await?
+            .execute(
+                "INSERT INTO managed_groups(group_key,key_ref) VALUES($1,$2)",
+                &[
+                    &id(&target).as_slice(),
+                    &format!("synthetic-no-signing-key:{target}"),
+                ],
+            )
+            .await?;
+        f.repo.compatibility_backfill().await?;
         let alias = mangadex_compat::uuid("group", &target);
         f.repo
             .register_compatibility_alias("group", &alias, &target, true)
