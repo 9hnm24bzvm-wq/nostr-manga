@@ -2,7 +2,7 @@ import { get, writable, derived } from 'svelte/store';
 import Session from '$lib/stores/Session';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { HTTPError } from '$lib/HTTP';
-import { DeviceStore, type DeviceRecord, type DeviceSnapshot, type Family, catalogueId, normalizeDevice, validateSnapshot, sameScope, type InstanceScope } from './device-store';
+import { DeviceStore, PUBLIC_DEVICE_FORMAT_FENCE, type DeviceRecord, type DeviceSnapshot, type Family, catalogueId, normalizeDevice, validateSnapshot, sameScope, type InstanceScope } from './device-store';
 import { request } from './protocol/indexeddb.js';
 import { LocalLibrary } from './protocol/store.js';
 import { captureNativeAuthority, sameNativeReadAuthority } from '$platform/mutation-authority';
@@ -113,7 +113,7 @@ export const message = (error: unknown) => error instanceof HTTPError ? error.er
 export async function refreshLibrary() {
   const generation = ++refreshGeneration;
   const snapshot = await device.snapshot();
-  if (generation === refreshGeneration) localLibraryState.update(state => ({ ...state, ready: true, revision: snapshot.revision, records: snapshot.records, error: undefined, ...(snapshot.migration_reason ? { scopeStatus: 'migration_required' as const, scopeReason: snapshot.migration_reason } : {}) }));
+  if (generation === refreshGeneration) localLibraryState.update(state => ({ ...state, ready: true, revision: snapshot.revision, records: snapshot.records, error: undefined, ...(snapshot.version === 2 || snapshot.migration_reason ? { scopeStatus: 'migration_required' as const, scopeReason: snapshot.migration_reason ?? PUBLIC_DEVICE_FORMAT_FENCE } : {}) }));
 }
 export async function stores() { await openLibrary(); return { device, protocol }; }
 export async function useMode(mode: Mode) {

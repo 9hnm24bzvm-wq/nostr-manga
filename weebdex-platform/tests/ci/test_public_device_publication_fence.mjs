@@ -1,0 +1,6 @@
+// Execute the actual publication module with its existing real codec/outbox
+// fixture. Synthetic service/signer boundaries remain unchanged; no network.
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {fixture} from './library-management-fixture.mjs';
+test('owner-marked UUID device snapshots cannot enter the legacy public graph publisher',async()=>{const f=await fixture();try{const tx=f.device.db.transaction('meta','readwrite'),done=new Promise((resolve,reject)=>{tx.oncomplete=resolve;tx.onabort=()=>reject(tx.error);}),ownerId=crypto.randomUUID(),scope={origin:'http://127.0.0.1:1',serviceKey:'a'.repeat(64),catalogNamespace:'11111111-1111-8111-8111-111111111111'};tx.objectStore('meta').put(scope,'instanceScope');tx.objectStore('meta').put(ownerId,'deviceOwnerId');tx.objectStore('meta').put({version:2,ownerId,scope},'publicIdOwner');await done;await assert.rejects(()=>f.publication.previewPublication(),/compatible library commands/);await assert.rejects(()=>f.publication.publishReviewed(f.review,true,f.assertCurrent),/compatible library commands/);assert.deepEqual(f.calls.kinds,[]);assert.equal(f.calls.posts,0);assert.equal(f.calls.worker,0);assert.equal((await f.protocol.jobs()).length,0);}finally{await f.dispose();}});
