@@ -34,7 +34,7 @@ function writable(initial) {
 }
 const get = store => { let value; store.subscribe(next => { value = next; })(); return value; };
 
-export async function fixture({ gateAt, changeDuringSign } = {}) {
+export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } = {}) {
   const gate = deferred(), entered = deferred();
   const calls = { kinds: [], posts: 0, worker: 0, finalRead: 0, publicKey: 0 };
   let alive = true, protocol, device, graph, codec, signerMode = gateAt;
@@ -77,6 +77,7 @@ export async function fixture({ gateAt, changeDuringSign } = {}) {
   synthetic('$env/static/public', { PUBLIC_API_URL: '/api' });
   synthetic('@noble/curves/secp256k1.js', curves);
   synthetic('@noble/hashes/sha2.js', hashes);
+  for (const [name, values] of Object.entries(moduleAdapters)) synthetic(name, values);
   synthetic('library-adapter', {
     stores: async () => ({ protocol, device }), currentDeviceSnapshot: () => device.snapshot(), apiRead: async () => policy,
     refreshLibrary: async () => {}, verifyCatalogueScope: async () => {}, message: cause => String(cause),

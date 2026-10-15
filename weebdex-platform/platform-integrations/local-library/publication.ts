@@ -10,27 +10,43 @@ import { queueSnapshot, deliverJob, cancelJob, recoverPublic } from './protocol/
 import { backupBlob } from './protocol/backup.js';
 import type { NewJob } from './protocol/types.d.ts';
 export type Relay = { origin: string; serviceKey: string; selected: boolean };
-export type Capabilities = { catalog_namespace: string | null; available: boolean; schema_ready: boolean; origin: string | null; service_key: string | null; connect_origins: string[]; external_signer_required: true; account_admission_required: true };
+export type Capabilities = { catalog_namespace: string | null; available: boolean; schema_ready: boolean; origin: string | null; service_key: string | null; connect_origins: string[]; external_signer_required: false; account_admission_required: true };
 export type SourceMapping = { kind: 'manga' | 'chapter'; id: string; event_id: string; compatibility_id: string; publisher?: string; source_kind?: number };
 export type NIP07Signer = { getPublicKey(): Promise<string>; signEvent(event: unknown): Promise<unknown> };
-export const signerIdentity = writable<{ owner: string | null; generation: number }>({ owner: null, generation: 0 });
-let signer: NIP07Signer | null = null;
+export type LocalSessionSigner = NIP07Signer & { clear(): void };
+export const signerIdentity = writable<{ owner: string | null; generation: number; source: 'local' | 'external' | null }>({ owner: null, generation: 0, source: null });
+let signer: NIP07Signer | LocalSessionSigner | null = null;
+let clearLocalSigner: (() => void) | null = null;
+function clearSelectedSigner() {
+  const clear = clearLocalSigner; signer = null; clearLocalSigner = null;
+  clear?.();
+}
+// The draft owns its key until the UI explicitly activates it after backup and
+// public-key review. Only this public identity enters the existing Svelte store.
+export function installLocalSigner(owner: string, candidate: LocalSessionSigner, assertCurrent: () => void) {
+  assertCurrent();
+  if (!/^[0-9a-f]{64}$/.test(owner)) throw Error('Invalid local signing public key');
+  clearSelectedSigner();
+  const generation = get(signerIdentity).generation + 1;
+  signer = candidate; clearLocalSigner = () => candidate.clear();
+  signerIdentity.set({ owner, generation, source: 'local' });
+}
 export async function connectSigner(assertCurrent = () => {}) {
   assertCurrent();
   const candidate = (window as Window & { nostr?: NIP07Signer }).nostr;
-  if (!candidate?.getPublicKey || !candidate.signEvent) throw Error('A compatible NIP-07 browser signer is required for publication. Device saving works without one.');
+  if (!candidate?.getPublicKey || !candidate.signEvent) throw Error('No compatible NIP-07 browser signer was found. Create or import a key in Public identity settings, or install a signing extension.');
   const generation = get(signerIdentity).generation + 1;
-  signerIdentity.set({ owner: null, generation }); signer = null;
+  clearSelectedSigner(); signerIdentity.set({ owner: null, generation, source: null });
   const owner = await signerRequest(() => { assertCurrent(); return candidate.getPublicKey(); });
   assertCurrent();
   if (!/^[0-9a-f]{64}$/.test(owner)) throw Error('Signer returned an invalid public key');
   if (get(signerIdentity).generation !== generation) throw Error('Signer selection changed');
-  signer = candidate; signerIdentity.set({ owner, generation });
+  signer = candidate; signerIdentity.set({ owner, generation, source: 'external' });
 }
-export function disconnectSigner() { signer = null; signerIdentity.update(state => ({ owner: null, generation: state.generation + 1 })); }
+export function disconnectSigner() { clearSelectedSigner(); signerIdentity.update(state => ({ owner: null, generation: state.generation + 1, source: null })); }
 export function selectedSigner() {
   const identity = get(signerIdentity), selected = signer;
-  if (!selected || !identity.owner) throw Error('Connect the intended NIP-07 signing identity first');
+  if (!selected || !identity.owner) throw Error('Create, import or connect the intended signing identity first');
   const check = () => {
     const current = get(signerIdentity);
     if (signer !== selected || current.owner !== identity.owner || current.generation !== identity.generation) throw Error('Signer identity changed. Review this action again.');
@@ -79,7 +95,7 @@ export async function admitAccount(relay: Relay, assertCurrent = () => {}) {
   const policy = await capabilities(); assertAllowedRelay(relay.origin, policy);
   const identity = selectedSigner(); await proveService(relay.origin, relay.serviceKey); identity.check();
   assertCurrent();
-  const result = await signedRequest(relay, activeSigner(identity.signer, assertCurrent), identity.owner, '/enrollment');
+  const result = await signedRequest(relay, activeSigner(identity.signer, assertCurrent), identity.owner, '/enrollment', 'POST', {}, 65536, async () => { identity.check(); assertCurrent(); });
   if (![200, 201].includes(result.status)) throw Error(`Instance refused public-key account admission: HTTP ${result.status}`);
   return result;
 }

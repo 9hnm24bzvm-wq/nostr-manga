@@ -36,3 +36,7 @@ for name in ['@noble/curves','@noble/hashes']:
  manifest['packages'].append({'name':name,'version':'2.0.1','url':url,'lock_integrity':row['integrity'],'archive_sha256':hashlib.sha256(data).hexdigest(),'archive_bytes':len(data),'expanded_bytes':total,'files':files})
  print(json.dumps({'package':name,'version':'2.0.1','official_get_status':200,'lock_integrity_verified':True,'files':len(files)}),flush=True)
 (ROOT/'test-evidence/frontend/noble-restore/package-provenance.json').write_text(json.dumps(manifest,indent=2)+'\n')
+# Preserve the original two-package signer provenance byte-for-byte. NIP-19
+# encoding has its own exact lock and independent provenance receipt.
+import runpy
+runpy.run_path(str(ROOT/'scripts/restore-local-signing-base.py'), run_name='__main__')

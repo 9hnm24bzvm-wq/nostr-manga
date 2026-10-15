@@ -17,7 +17,7 @@ export default async configEnv => {
   const original = await loadConfigFromFile(configEnv, path.join(frontend, "vite.config.ts"), frontend);
   if (!original) throw new Error("Original attachment Vite configuration could not be loaded");
   const merged = mergeConfig(original.config, {
-  resolve: { dedupe: ["svelte"], alias: { "$announcements": reconstruction, "$platform": path.join(root, "platform-integrations/frontend-behavior"), "$localLibrary": path.join(root, "platform-integrations/local-library"), "svelte-sonner": path.join(frontend, "node_modules/svelte-sonner/dist/index.js"), "axios": path.join(frontend, "node_modules/axios/index.js"), "http-status-codes": path.join(frontend, "node_modules/http-status-codes/build/es/index.js"), "@noble/curves": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/curves"), "@noble/hashes": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/hashes") } },
+  resolve: { dedupe: ["svelte"], alias: { "$announcements": reconstruction, "$platform": path.join(root, "platform-integrations/frontend-behavior"), "$localLibrary": path.join(root, "platform-integrations/local-library"), "svelte-sonner": path.join(frontend, "node_modules/svelte-sonner/dist/index.js"), "axios": path.join(frontend, "node_modules/axios/index.js"), "http-status-codes": path.join(frontend, "node_modules/http-status-codes/build/es/index.js"), "@noble/curves": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/curves"), "@noble/hashes": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/hashes"), "@scure/base": path.join(root, ".build/local-signing-base-2.0.0/node_modules/@scure/base") } },
   plugins: [{
     name: "attachment-exact-import-case-repair",
     enforce: "pre",

@@ -1180,6 +1180,8 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
     )
     .await;
     assert_eq!(capabilities["available"], true);
+    assert_eq!(capabilities["external_signer_required"], false);
+    assert_eq!(capabilities["supported_signer_modes"], json!(["local-session", "nip07"]));
     assert_eq!(capabilities["service_key"], publisher);
     assert_eq!(capabilities["origin"], origin);
     assert!(

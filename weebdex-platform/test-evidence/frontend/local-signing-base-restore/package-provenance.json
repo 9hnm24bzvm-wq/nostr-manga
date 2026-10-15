@@ -1,0 +1,59 @@
+{
+  "source_lock": "weebdex-platform/platform-integrations/local-library/signing-dependencies/package-lock.json",
+  "source_lock_sha256": "dc5d74f233da82060765b02d329cdb630b5327708b8d5b853512bbbf13cfaf3a",
+  "package_hooks_executed": false,
+  "original_node_modules_used": false,
+  "packages": [
+    {
+      "name": "@scure/base",
+      "version": "2.0.0",
+      "url": "https://registry.npmjs.org/@scure/base/-/base-2.0.0.tgz",
+      "lock_integrity": "sha512-3E1kpuZginKkek01ovG8krQ0Z44E3DHPjc5S2rjJw9lZn3KSQOs8S7wqikF/AH7iRanHypj85uGyxk0XAyC37w==",
+      "archive_sha256": "758d9a74d504922c21f12afbb832a8da13634657fa842c1aee1ec3eac82c8902",
+      "archive_bytes": 24866,
+      "expanded_bytes": 100787,
+      "files": [
+        {
+          "path": "LICENSE",
+          "bytes": 1110,
+          "sha256": "3239e134eb6e6d64538ca76498c7fcb08a395249dd9d4af9927bf6d0169ee429"
+        },
+        {
+          "path": "index.js",
+          "bytes": 24445,
+          "sha256": "7ade170fdb1b949d44cf9ed58ebb62539a2f0be4f16a3eb0da68f39fcc3179c7"
+        },
+        {
+          "path": "package.json",
+          "bytes": 1487,
+          "sha256": "93cb3a28e1f34a5399aed7c4ba8ba337acd28b01420c34e6daa9bc35a24f34af"
+        },
+        {
+          "path": "index.d.ts.map",
+          "bytes": 5424,
+          "sha256": "0c368b5b159f35f09894f2f177a5ed5d71a6883b3600c245ca8732755741360c"
+        },
+        {
+          "path": "index.js.map",
+          "bytes": 22455,
+          "sha256": "202220797c366a7fc58d9477c806f7616fdaf6d06f844056ded712481f17d526"
+        },
+        {
+          "path": "README.md",
+          "bytes": 8861,
+          "sha256": "f831db997e8f0ae4e1ee5897e22bd468006f593dace3c0b49ea79e9399f504b6"
+        },
+        {
+          "path": "index.d.ts",
+          "bytes": 9450,
+          "sha256": "d3915b6e4e5b292f3211ef01dcd5abb5c3da68712491ee94c8d2853bedafddbf"
+        },
+        {
+          "path": "index.ts",
+          "bytes": 27555,
+          "sha256": "538cfcaa883ba552e3946b7fe0e25642dca427bda6cef3b05d8257dc937c219a"
+        }
+      ]
+    }
+  ]
+}
