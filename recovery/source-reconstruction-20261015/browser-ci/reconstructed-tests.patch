@@ -1,0 +1,479 @@
+diff --git a/weebdex-platform/docs/browser-ci-recovery-20261015.md b/weebdex-platform/docs/browser-ci-recovery-20261015.md
+new file mode 100644
+index 0000000..44d8c37
+--- /dev/null
++++ b/weebdex-platform/docs/browser-ci-recovery-20261015.md
+@@ -0,0 +1,123 @@
++# Browser CI correction recovery record
++
++The execution environment was replaced at approximately 2026-10-15 04:35 UTC. This document reconstructs facts already observed before replacement. It is not a new test receipt, does not substitute for missing raw artifacts, and does not claim the full browser suite passed.
++
++## Source and commits
++
++The isolated branch was `fix/browser-ci-38671869087`, based on `81c3ed1d3360b4a6039baecfebcdc708fe3a8e4b` in `browser-ci-six-failures-worktree`. These local commits existed and their commit commands completed before replacement; availability in a remote repository is unverified:
++
++- `4073aef` Snapshot all relay rows at checkbox selection before IndexedDB handoff
++- `191adc7` Defer actor status read admission until authority-keyed Svelte flush
++- `d5e7010` Normalize unknown native publication year before editing a draft
++- `c56699a` Scope editorial contributor search to its labeled field
++- `d986baa` Measure compact request concurrency from complete native transport intervals
++- `680f1cec3137176a2e4c5ad7e8c15fb7c954bbb6` Run instance-local ordinary publication journeys in explicit native-only fixtures
++
++No independent GitHub push was made. The six commits and raw evidence are currently unavailable on the replacement filesystem.
++
++## Causes, corrections, and observed tests
++
++### Upload: fixture authority mismatch
++
++The ordinary upload journey asserted an instance-local receipt, but its combined fixture configured original-protocol publication. A newly registered native account had no operator-provisioned `platform.protocol_identity_bindings` row, so the actual native commit correctly returned403. No permission bypass was appropriate.
++
++The hosted runner now selects explicit native-only fixtures for `ordinary-a` and `ordinary-b`; all signed and other batches retain combined mode. Runtime `--native-only` rejects provisioner/key/hash/self-enrollment/second-recipient/UI-regression/PG-fault/Ubunchu combined flags. Native readiness rejects every protocol authority field and cleanup requires exactly platform/mail/postgres ports. Existing defaults stay unchanged.
++
++Observed real native-only upload browser run `upload-ci-native-0409`: all9 steps passed, including exact receipt, dirty metadata Revert, Edit/Replace, and current-document navigation. The product generation was f0ee87ef8015, whose product source matched81c3.
++
++28 hosted-runner Python tests passed, including seven actual invalid CLI combinations that exited2 before creating a fixture. The existing bridge positive is in `backend/tests/protocol_bridge_http.rs`, test `accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle`; it explicitly binds the owner then verifies actual signed1002 and1001. A new intentional pre-binding403 regression was written but not compiled/committed before the reset; see the final section.
++
++### Editorial: search selector and unknown-year form validation
++
++The author search selected the global AppHeader Search control. A new strict field-scoped helper chooses `label[for=authors]` or `label[for=artists]`, its parent, then exact `Search...`; unknown families and absent/duplicate controls fail.
++
++After this revealed the next genuine defect, actual DOM diagnostics showed hidden number input `#year`, min1900/max2100, held native unknown-year sentinel0. Browser constraint validation stopped Save; no PUT occurred. A single exact-hash/count1 overlay on `draft/manga/MangaEdit.svelte` changes only:
++
++    year: snapshot.year ?? null!,
++
++to:
++
++    year: snapshot.year === 0 ? null! : snapshot.year ?? null!,
++
++The original file hash was `e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782`. Undefined/null/zero become empty; valid positive years and original bounds remain unchanged. A composed actual save-builder regression proves a title-only unknown-year edit omits year rather than saving0, and an explicit positive year change persists.
++
++Fixed-generation actual browser `editorial-ci-fixed-0430`: all4 steps and23 granular checks passed, zero page errors. It covered author/artist/cover creation; submit/reject/revise/resubmit; local publication; repeated lock/unlock. Two unknown-year tests passed. Editorial controls/diagnostic/ordinary-contract tests passed; together with compact observer tests the group had64 passing tests. The ordinary-contract fingerprint retained all98 older assertions and explicitly accounted for a pre-existing81c3 welcome assertion, rather than dropping one.
++
++### Signed recipients: reactive Proxy crossed IndexedDB
++
++On the actual two-destination checkbox, unchanged rows from `relays.map(...)` remained Svelte proxies. IndexedDB failed with the actual visible alert: `Failed to execute 'put' on 'IDBObjectStore': #<Object> could not be cloned.` The second checkbox did not persist; a valid signed11999 job retained only one recipient.
++
++The exact checkbox callback now maps `$state.snapshot(relays)` instead of `relays`, retaining the same revision/CAS and review invalidation. No automatic recipient-list rebinding was added. A separate missing-signer assertion was aligned with the current truthful UI copy, `No compatible NIP-07 browser signer was found.`
++
++27 signed seams passed, including actual pinned Svelte compiler/runtime Proxy and actual original outbox/fake-IndexedDB structured-clone tests: original two-row callback fails; snapshot callback captures both reviewed identities before await; later reactive mutation does not rebind; stale revision rejects.
++
++Fixed-generation actual browser `signed-recipients-ci-fixed-0431`: all6 steps and38 checks passed, zero page errors. Both original two-snapshot accepted/job-retained checks passed; two genuine original recipients accepted one exact reviewed signed event. Exact-body retry retained its approved destination, selection changes discarded review, and mutual peer revocation never granted browser accounts federation authority.
++
++### Compact feed: observer delivery order was mistaken for transport overlap
++
++The real original observation retained pages1..6, all200, without duplicates, but event maximum2. Complete Playwright native timings proved one request ended before the next began; the next request event could arrive before the prior requestfinished event.
++
++The corrected gate retains the original exact duplicate predicate, full505 unique membership, bounded burst/resume, terminal, Back, and resize assertions. It uses complete native intervals for concurrency: `startTime` is Unix epoch milliseconds; `responseEnd` is milliseconds relative to that start. Every start must be at least the preceding start+responseEnd. No tolerance is used; even0.001ms real overlap fails. Missing, negative, nonfinite, relative/mixed-clock, failed, incomplete, truncated, or mismatched observations fail closed. Event maximum remains an unchanged diagnostic.
++
++Nine observer seams passed, including genuine overlap and delayed observer delivery. Existing compact fixture46 and classification511 tests passed. Actual corrected-driver browser `ui12-compact-feed-ci-fixed-0414` on unchanged product passed; fixed-generation `ui12-compact-feed-ci-fixed-0432` also passed its full505-row phase with zero page errors.
++
++### Actor follow: disposed controller admitted an unnecessary read
++
++Real stack/timing traces showed one Session.set synchronously notified an old Group/User controller. It started a GET; 5–8ms later the actual Comments.Provider authority-key flush disposed/remounted the child, and its replacement started another. The harness correctly held the first actual204; the second settled and exposed Unfollow early. It was a genuine redundant old-lifecycle admission, not a bad Follow expectation.
++
++The Session callback retains synchronous unknown/reset behavior, captures the generation after reset, and schedules only Session-triggered refresh admission in a Promise microtask. It refreshes only when not disposed and the exact generation is still current. Manual refresh actions and existing owner/authority guards remain intact.
++
++54 existing owner/readiness seams plus a real pinned Svelte5.55.1 compiled mount/key/effect-flush/Session lifecycle test passed. The lifecycle test executes the original follow controller, mutation owner and authority registry, with finite explicit read/auth stand-ins. It proves anonymous no-read, old disposal before admission, one replacement read, same-actor coalescing, A→B→A replacement admission, and late completion after unmount without DOM writes.
++
++Fixed-generation actual browser `ui14-actor-follow-ci-fixed-0430`: all15 steps and79 checks passed, zero page errors. Both Group and User finite observations were: current route; one header; Follow disabled; Unfollow/Retry/Block/Unblock absent; one GET; zero POST/DELETE/PUT; prerequisite actor; genuine native204; delivery pending.
++
++### Home private403: unresolved observer capture
++
++No product correction or weakened assertion was committed. On fixed-generation real browser `ui14-home-failures-ci-fixed-diag-0431`, the private401 step passed. The restricted recovery flow passed actual logout, real request form/mail, native303 redemption, recovery-only capability without identity/preferences/follows, direct private403, current widget403 and Retry feedback. The original single-read check still failed because its observer rows stayed empty.
++
++Finite actual fetch diagnostics proved exactly one matching personal-feed GET, genuine completed403, and correct rendered error/Retry. At failure the observer reported requests1, rows[]. Thus no product replay was observed. A second diagnostic driver added exact Playwright response-listener/body-parse event tracing and unchanged predicates, but the environment was replaced before its terminal result could be read. Root cause remains unproven.
++
++A prior full current-product home run also encountered a newer public429 saturation assertion failure (`Actual native request permits were not saturated`); no performance claim or relaxation was made. The actual real15-second PG outage/recovery portion and cookie401 passed in that earlier run. The PG performance gate was not rerun. The old signed-c infrastructure RuntimeError occurred before phase records with unretained raw evidence; no cause was invented.
++
++## Build and runtime boundaries
++
++The fixed product frontend was built once successfully with the same bounded `serial-terser` resource profile from reviewed commitc89d890: terser unchanged, maxWorkers1, reportCompressedSizefalse, Node heap2048MB. The full c89 commit was not cherry-picked because it depended on newer public-API plugin context; only its identical two profile/evidence hunks were transplanted privately and remained uncommitted. A first standard build had been killed by SIGKILL; neither failure was reported as a passing generation.
++
++The source-bound QA stage used sourcecommit680f1ce, unchanged f0ee backend binary and provisioner. Index SHA256:
++
++    461fc32e5899add0e759ed9a47e58a4d0bed299627c61957b45fd15f77a6c693
++
++Complete fixture manifest SHA256:
++
++    a85bafcdf4bb5a5841c3f80a043d361b4319769709ba25937a99cf361401b0e7
++
++Backend:
++
++    51a1c7d59f43c5e65eda8f14bb1b9f3f76457d811e57b341e0776d594928c51a
++
++Provisioner:
++
++    2cc4b3f843ef69138c7da53e9540a1007af520fdf31711464a50ad85abdbec59
++
++The first materialization scan found100 nested executable symlinks after copying external package-directory links. The shell still started the successful build; no shared dependency cache was written. All100 remaining links were subsequently materialized and the private tree then had zero symlinks. The distinction was reported contemporaneously.
++
++The relocated combined fixture correctly rejected the reused provisioner's compile-time root guard. That failed attempt cleaned every owned process/key/port successfully. The successful combined retry retained the original immutable provisioner's exact root, supplied the new hash-bound frontend snapshot and private reviewed source-bound drivers, and did not relax guards. All actual Chromium launches explicitly enabled its OS sandbox and kept exact HTTP/WS origin and deny-proxy isolation. No user preview interaction was performed.
++
++Before replacement, the earlier two reproduction fixtures had complete verified-stopped cleanup receipts (exact5 and3 ports, keys absent, zero remaining owned processes). Their aggregate lifecycle was false because intentionally reproduced browser failures were retained. At replacement, two newer fixtures had not yet reached final cleanup: native48745 and combined51383. Their post-reset lifecycle is interrupted/unverified; absence of the old environment is not a fabricated cleanup receipt.
++
++## Replacement verification
++
++At04:35 the shell workspace became empty placeholders and usage fell from roughly28GB to84MB. All old worktrees, source stages, temporary logs, helper files and `.git` data were absent. CUA state and variables reset; its previous Terminal37748739 and all old tabs were absent. Fresh inventory had Chromium27262979 with only newtab2. A new recovery-only Terminal35651587 visibly ran `ls /workspace/shared`, showing only `downloads`. No old independent cloud filesystem was found. No delete, recovery overwrite, unapproved rebuild or independent upload was attempted.
++
++## Uncommitted security regression to reconstruct and test
++
++Immediately after `configure_publication(cfg.clone())` in the existing real protocol-bridge test, before inserting `protocol_identity_bindings`, the draft changes rebuilt the actual Router and:
++
++1. Created a valid covered native draft, submitted its exact version, asserted actual Publish403/`forbidden`, and reloaded it to prove the version unchanged and no protocol_event_id.
++2. Began a real upload against the pre-existing public native title; uploaded a valid generated PNG; asserted actual Commit403/`forbidden` with the original payload.
++3. Reloaded the retained upload to prove its same ID, `is_committed:false`, and exactly one retained file.
++4. Queried the actual original event table, requiring zero kind1001/1002 events before any binding.
++5. Canceled that retained upload through native DELETE204.
++6. Left the existing explicit binding and all subsequent genuine signed1002/1001 positive assertions unchanged.
++
++This test edit was not compiled or committed before replacement. The available shared build guidance, which must be revalidated after recovery, was normal default test profile, no RUSTFLAGS or CARGO_PROFILE_TEST overrides, CARGO_INCREMENTAL0, locked/offline, jobs2, target `rust-tools/target-743619e`. No expensive benchmark was requested or started.
+diff --git a/weebdex-platform/tests/ci/test_actor_follow_readiness.mjs b/weebdex-platform/tests/ci/test_actor_follow_readiness.mjs
+index 186837f..8847821 100644
+--- a/weebdex-platform/tests/ci/test_actor_follow_readiness.mjs
++++ b/weebdex-platform/tests/ci/test_actor_follow_readiness.mjs
+@@ -73,7 +73,7 @@ async function component(kind, { blocked = false, target = 'target' } = {}) {
+     async login(id = 'A') { auth[0].resolve({ status: 200, body: account(id) }); await until(() => get(context.Session)?.identity.id === id); await settle(); },
+     setActor(id) { context.Session.set(id ? account(id) : undefined); },
+     setTarget(id, flush = true) { api.targetStore.set({ id, name: id, version: 1 }); page.url = new URL('/' + entity + '/' + id, page.url); window.location = new URL(page.url); if (flush) runEffects(); },
+-    async status(index, status = 204) { reads[index].gate.resolve({ status }); await settle(); },
++    async status(index, status = 204) { await settle(); reads[index].gate.resolve({ status }); await settle(); },
+     async readError(index, cause = Error('synthetic read failure')) { reads[index].gate.reject(cause); await settle(); },
+     async mutation(index, status = 204) { writes[index].gate.resolve({ status }); await settle(); },
+     async preferences(index) { const request = settingsWrites[index], body = { ...get(prefs), version: 2, ...Object.fromEntries(Object.entries(request.payload).filter(([key]) => key !== 'version').map(([key, ids]) => [key, ids.map(id => ({ id, name: id, version: 1 }))])) }; request.gate.resolve({ status: 200, body }); await settle(); },
+@@ -97,13 +97,13 @@ for (const kind of ['Group', 'User']) {
+   for (const [first, second] of [['A', 'B'], ['B', 'A']]) test(`${kind}: ${first} to ${second} resets, late old actor status is discarded`, async () => {
+     const value = await component(kind); await value.login(first);
+     value.setActor(second); assert.equal(value.api.snapshot().ready, false); assert.equal(value.api.snapshot().followed, false);
+-    assert.equal(value.reads.length, 2); await value.status(1, 404); await value.status(0, 204);
++    await settle(); assert.equal(value.reads.length, 2); await value.status(1, 404); await value.status(0, 204);
+     assert.equal(value.api.snapshot().followed, false); assert.equal(value.api.snapshot().ready, true);
+     const pending = value.api.activate(); assert.equal(value.writes[0].method, 'POST'); assert.equal(value.writes[0].actor, second);
+     await value.mutation(0); await pending; value.destroy();
+   });
+   test(`${kind}: A to B to A fences first A and same-account logout/relogin reads`, async () => {
+-    const value = await component(kind); await value.login(); value.setActor('B'); value.setActor('A');
++    const value = await component(kind); await value.login(); value.setActor('B'); await settle(); value.setActor('A'); await settle();
+     await value.status(2, 404); await value.status(0, 204); await value.status(1, 204);
+     assert.equal(value.api.snapshot().followed, false);
+     value.setActor(); assert.equal(value.api.snapshot().ready, false); assert.equal(value.api.snapshot().followed, false);
+@@ -147,7 +147,7 @@ for (const kind of ['Group', 'User']) {
+   });
+   test(`${kind}: same-actor Session revision cannot read ahead of acknowledged pending write`, async () => {
+     const value = await component(kind); await value.login(); await value.status(0, 404); const pending = value.api.activate();
+-    value.setActor('A'); assert.equal(value.reads.length, 1, 'matching pending write defers replacement GET');
++    value.setActor('A'); assert.equal(value.api.snapshot().ready, false, 'Session reset is synchronous'); await settle(); assert.equal(value.reads.length, 1, 'matching pending write defers replacement GET');
+     assert.equal(value.api.snapshot().ready, false); assert.equal(value.api.snapshot().loading, true);
+     await value.api.activate(); await value.api.block(); assert.equal(value.writes.length, 1); assert.equal(value.settingsWrites.length, 0);
+     await value.mutation(0); await pending; assert.equal(value.reads.length, 2, 'acknowledgment starts post-settlement reconciliation');
+@@ -163,7 +163,7 @@ for (const kind of ['Group', 'User']) {
+   });
+   for (const roundTrip of ['actor', 'target']) test(`${kind}: ${roundTrip} round trip waits for its original pending write before current reconciliation`, async () => {
+     const value = await component(kind); await value.login(); await value.status(0, 404); const pending = value.api.activate();
+-    if (roundTrip === 'actor') { value.setActor('B'); value.setActor('A'); }
++    if (roundTrip === 'actor') { value.setActor('B'); await settle(); value.setActor('A'); await settle(); }
+     else { value.setTarget('other'); value.setTarget('target'); }
+     assert.equal(value.reads.length, 2, 'different context can read, matching original context waits');
+     await value.status(1, 404); assert.equal(value.api.snapshot().ready, false);
+@@ -216,3 +216,13 @@ test('exact composed Follow control preserves permitted visibility, classes, ico
+     else assert.ok(source.includes('{#if $Session}'));
+   }
+ });
++
++// Reconstructed after external runtime replacement; actual controller remains
++// the code executed by component(), with finite explicit transport stand-ins.
++test('disposed Session subscriber cannot admit its queued old read', async () => {
++  const old = await component('Group'); old.setActor('A');
++  assert.equal(old.api.snapshot().ready, false); assert.equal(old.reads.length, 0);
++  old.destroy(); await settle(); assert.equal(old.reads.length, 0);
++  const current = await component('Group'); current.setActor('A'); await settle();
++  assert.equal(current.reads.length, 1); current.destroy();
++});
+diff --git a/weebdex-platform/tests/ci/test_actor_follow_svelte_lifecycle.mjs b/weebdex-platform/tests/ci/test_actor_follow_svelte_lifecycle.mjs
+new file mode 100644
+index 0000000..382ae27
+--- /dev/null
++++ b/weebdex-platform/tests/ci/test_actor_follow_svelte_lifecycle.mjs
+@@ -0,0 +1,59 @@
++#!/usr/bin/env node
++// Reconstructed real pinned Svelte mount/key/effect-flush regression. Original
++// controller/owner/authority execute; finite read/auth stand-ins are explicit.
++// This is a lifecycle seam, not browser/native acceptance.
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import path from 'node:path';
++import os from 'node:os';
++import {createRequire} from 'node:module';
++import {createHash} from 'node:crypto';
++import test from 'node:test';
++import {createFrontendOverlays} from '../../platform-integrations/frontend-overlays.mjs';
++const root=path.resolve(new URL('../../',import.meta.url).pathname),frontend=process.env.WEEBDEX_FRONTEND_ROOT,modules=process.env.WEEBDEX_BROWSER_DOM_NODE_MODULES;
++assert(frontend&&modules,'Use restored reviewed exact-lock Svelte and DOM dependencies');
++const require=createRequire(path.join(frontend,'package.json')),svelte=path.dirname(require.resolve('svelte/package.json'));
++assert.equal(JSON.parse(fs.readFileSync(path.join(svelte,'package.json'))).version,'5.55.1');
++const domRequire=createRequire(path.join(modules,'package.json'));
++assert.equal(JSON.parse(fs.readFileSync(path.join(modules,'jsdom/package.json'))).version,'27.0.1');
++assert.equal(createHash('sha256').update(fs.readFileSync(path.join(modules,'jsdom/lib/api.js'))).digest('hex'),'b4feb8ae099e1683da79137cf484a0952915e54d239140f124ecd7df5439b033');
++const {JSDOM}=domRequire('jsdom'),{compile}=require('svelte/compiler'),esbuild=require('esbuild');
++const provider=path.join(root,'frontend/src/lib/components/comments/comments-provider.svelte');
++const composed=createFrontendOverlays(path.join(root,'frontend')).transform.handler(fs.readFileSync(provider,'utf8'),provider).code;
++assert(composed.includes('{#key JSON.stringify([thread.id, $nativeAuthority.actor, $nativeAuthority.epoch])}'),'Model the actual authority-keyed boundary');
++const behavior=path.join(root,'platform-integrations/frontend-behavior');
++const files={
++ 'entry':`import Parent from 'fixture:Parent'; import Session from 'fixture:Session'; import {mount,unmount,tick} from 'svelte'; export {Parent,Session,mount,unmount,tick};`,
++ 'Session':`import {writable} from 'svelte/store'; import {bindNativeMutationAuthority} from ${JSON.stringify(path.join(behavior,'mutation-authority.ts'))}; const Session=writable(undefined); bindNativeMutationAuthority(Session); export default Session;`,
++ 'HTTP':`export class HTTPError extends Error {constructor(status,message){super(message);this.status=status;}} export default class HTTP {}`,
++ 'Env':`export const PUBLIC_API_URL='/api';`,
++ 'Errors':`export const Unknown=Error('Unknown'); export const TooManyRequests=Error('TooManyRequests'); export const UpdateConflict=Error('UpdateConflict');`,
++ 'Parent':`<script>import Child from 'fixture:Child';import {nativeAuthority} from ${JSON.stringify(path.join(behavior,'mutation-authority.ts'))};</script>{#key JSON.stringify(['owned-thread',$nativeAuthority.actor,$nativeAuthority.epoch])}<Child />{/key}`,
++ 'Child':`<script>import {onDestroy} from 'svelte'; import Session from 'fixture:Session'; import {createMutationOwner} from ${JSON.stringify(path.join(behavior,'authenticated-mutation.ts'))}; import {createActorFollowState} from ${JSON.stringify(path.join(behavior,'actor-follow-state.ts'))}; const h=globalThis.__actorLifecycle;h.mounts++;onDestroy(()=>h.destroys++);const owner=createMutationOwner(()=>'/group/target');const follow=createActorFollowState({owner,mutex:{isLocked:()=>false,exec:async operation=>operation()},target:()=> 'target',lifetime:()=> '/group/target',canMutate:()=>true,read:target=>h.read(target,$Session?.identity?.id),write:()=>{throw Error('No writes belong to this seam');},onError:error=>h.errors.push(error)});const off=follow.subscribe(state=>h.latest=state);onDestroy(off);$effect.pre(()=>follow.selectTarget());</script><button disabled={!$follow.ready} onclick={()=>follow.activate()}>{$follow.followed?'Unfollow':'Follow'}</button>`,
++};
++
++test('actual keyed Svelte flush destroys old Session subscriber before admitting exactly one current read',async()=>{
++ const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'actor-svelte-lifecycle-')),dom=new JSDOM('<div id="target"></div>',{url:'http://127.0.0.1:1/group/target'}),saved=new Map();
++ const names=['window','document','navigator','HTMLElement','Element','Text','Comment','Document','Node','Event','MutationObserver','getComputedStyle'];
++ for(const key of names){saved.set(key,Object.getOwnPropertyDescriptor(globalThis,key));Object.defineProperty(globalThis,key,{configurable:true,writable:true,value:key==='getComputedStyle'?dom.window.getComputedStyle.bind(dom.window):dom.window[key]});}
++ const reads=[],h={mounts:0,destroys:0,errors:[],read(target,actor){let resolve;const promise=new Promise(yes=>resolve=yes);reads.push({target,actor,resolve});return promise;}};globalThis.__actorLifecycle=h;
++ let mounted,runtime;
++ try{
++  const build=await esbuild.build({stdin:{contents:files.entry,resolveDir:frontend,sourcefile:'fixture-entry.js'},bundle:true,write:false,platform:'node',format:'cjs',conditions:['browser','svelte'],nodePaths:[path.join(frontend,'node_modules')],plugins:[{name:'real-svelte-owned-lifecycle',setup(build){
++   build.onResolve({filter:/^fixture:/},args=>({path:args.path.slice(8),namespace:'fixture'}));
++   build.onResolve({filter:/^\$lib\/stores\/Session$/},()=>({path:'Session',namespace:'fixture'}));build.onResolve({filter:/^\$lib\/HTTP$/},()=>({path:'HTTP',namespace:'fixture'}));build.onResolve({filter:/^\$env\/static\/public$/},()=>({path:'Env',namespace:'fixture'}));build.onResolve({filter:/^\$lib\/constants\/Error$/},()=>({path:'Errors',namespace:'fixture'}));
++   build.onResolve({filter:/^svelte$/},()=>({path:path.join(svelte,'src/index-client.js')}));build.onResolve({filter:/^svelte\/store$/},()=>({path:path.join(svelte,'src/store/index-client.js')}));
++   build.onLoad({filter:/.*/,namespace:'fixture'},args=>({contents:['Parent','Child'].includes(args.path)?compile(files[args.path],{filename:args.path+'.svelte',generate:'client',dev:false,runes:true}).js.code:files[args.path],loader:'js',resolveDir:frontend}));
++  }}]});
++  const bundle=path.join(temporary,'runtime.cjs');fs.writeFileSync(bundle,build.outputFiles[0].contents,{flag:'wx'});runtime=createRequire(import.meta.url)(bundle);
++  const target=dom.window.document.querySelector('#target');mounted=runtime.mount(runtime.Parent,{target});await runtime.tick();assert.equal(h.mounts,1);assert.equal(reads.length,0);
++  const account=id=>({identity:{id,is_verified:true},roles:[],permissions:[]});
++  runtime.Session.set(account('A'));assert.equal(target.querySelector('button').disabled,true);assert.equal(reads.length,0,'Session reset happens before queued admission');await runtime.tick();await Promise.resolve();
++  assert.equal(h.mounts,2);assert.equal(h.destroys,1);assert.equal(reads.length,1);assert.equal(reads[0].actor,'A');assert.equal(target.querySelector('button').textContent,'Follow');assert.equal(target.querySelector('button').disabled,true);
++  reads[0].resolve({status:204});await runtime.tick();await runtime.tick();assert.equal(target.querySelector('button').textContent,'Unfollow');assert.equal(target.querySelector('button').disabled,false);
++  runtime.Session.set(account('A'));runtime.Session.set(account('A'));assert.equal(h.latest.ready,false,'Session synchronously resets the live control state');await runtime.tick();await Promise.resolve();assert.equal(h.mounts,2);assert.equal(reads.length,2,'same-actor Session work coalesces without remount');
++  reads[1].resolve({status:404});await runtime.tick();await runtime.tick();
++  runtime.Session.set(account('B'));runtime.Session.set(account('A'));await runtime.tick();await Promise.resolve();assert.equal(h.mounts,3);assert.equal(h.destroys,2);assert.equal(reads.length,3);assert.equal(reads[2].actor,'A');
++  await runtime.unmount(mounted);mounted=undefined;const removed=target.innerHTML;assert.equal(target.querySelector('button'),null);reads[2].resolve({status:204});await runtime.tick();assert.equal(target.innerHTML,removed);assert.deepEqual(h.errors,[]);
++ }finally{if(mounted&&runtime)await runtime.unmount(mounted);delete globalThis.__actorLifecycle;for(const[key,descriptor]of saved){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}dom.window.close();fs.rmSync(temporary,{recursive:true,force:true});}
++});
+diff --git a/weebdex-platform/tests/ci/test_browser_compact_observer_diagnostics.mjs b/weebdex-platform/tests/ci/test_browser_compact_observer_diagnostics.mjs
+index d264e35..aca2fa7 100644
+--- a/weebdex-platform/tests/ci/test_browser_compact_observer_diagnostics.mjs
++++ b/weebdex-platform/tests/ci/test_browser_compact_observer_diagnostics.mjs
+@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
+ import { EventEmitter } from 'node:events';
+ import fs from 'node:fs';
+ import test from 'node:test';
+-import { observeUi11To16Requests, runUi11To16Journeys, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
++import { compactNativeRequestsSequential, observeUi11To16Requests, runUi11To16Journeys, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
+ import { createJourneyCheck } from '../../scripts/journey-checks.mjs';
+ 
+ const origin = 'http://127.0.0.1:1', secret = 'PRIVATE_credentials_query_body_error';
+@@ -102,7 +102,7 @@ for (const parallel of [false, true]) test('actual compact wiring saves before u
+   const save = () => snapshots.push(structuredClone(report)), record = createJourneyCheck(report, save);
+   let finalRequest, failure;
+   async function emit(number, finish = true) {
+-    const source = request(number); page.emit('request', source); page.emit('response', response(source));
++    const source = request(number, { startTime: 1792037000000 + number * 20, responseEnd: parallel && number === 5 ? 25 : 10 }); page.emit('request', source); page.emit('response', response(source));
+     await Promise.resolve(); await Promise.resolve(); if (finish) page.emit('requestfinished', source); return source;
+   }
+   page.getByRole = (_kind, options) => options.name === 'Load more updates' ? { async waitFor() {}, async click() { await emit(6); if (finalRequest) page.emit('requestfinished', finalRequest); } } : { async count() { return 0; } };
+@@ -128,6 +128,13 @@ for (const parallel of [false, true]) test('actual compact wiring saves before u
+ 
+ test('original unique/sequential assertion and fixed diagnostic identity remain exact', () => {
+   const source = fs.readFileSync(new URL('../../scripts/browser-ui11-16-journeys.mjs', import.meta.url), 'utf8');
+-  assert.equal(source.split('new Set(pages).size === pages.length && seen.maximum === 1').length - 1, 1);
++  assert.equal(source.split('new Set(pages).size === pages.length && compactNativeRequestsSequential(seen.observation())').length - 1, 1);
+   assert.equal(ui11To16DiagnosticChecks['ui12-compact-feed'].filter(id => id === 'compact-feed-unique-sequential-pages').length, 1);
+ });
++
++test('native interval gate accepts delayed events but fails every real overlap and incomplete clock', () => {
++  const origin = 1792037000000;
++  const make = () => ({ request_count:2, truncated:{requests:false,events:false,rows:false}, unavailable:{request_event:false,request_page:false,response_page:false,status:false,timing:false},requests:[0,1].map(index=>({status:200,response_page:index+1,timing:{startTime:origin+index*10,responseEnd:10},events:[{event:'request'},{event:'requestfinished'}]})) });
++  assert.equal(compactNativeRequestsSequential(make()),true);
++  for(const alter of [value=>value.requests[1].timing.startTime-=0.001,value=>value.requests[0].timing.responseEnd=-1,value=>value.requests[0].timing.startTime=1000,value=>value.requests[0].timing.responseEnd=NaN,value=>value.requests[0].timing.startTime=Infinity,value=>delete value.requests[0].timing.responseEnd,value=>value.requests[0].events=[{event:'request'}],value=>value.requests[0].events.push({event:'requestfailed'}),value=>value.truncated.events=true,value=>delete value.unavailable,value=>value.requests.pop()]){const value=make();alter(value);assert.equal(compactNativeRequestsSequential(value),false);}
++});
+diff --git a/weebdex-platform/tests/ci/test_browser_editorial_controls.mjs b/weebdex-platform/tests/ci/test_browser_editorial_controls.mjs
+new file mode 100644
+index 0000000..913bdf3
+--- /dev/null
++++ b/weebdex-platform/tests/ci/test_browser_editorial_controls.mjs
+@@ -0,0 +1,12 @@
++#!/usr/bin/env node
++// Reconstructed strict-locator seam. No browser, service or success response.
++import assert from 'node:assert/strict';
++import test from 'node:test';
++import { contributorSearchTrigger } from '../../scripts/browser-editorial-controls.mjs';
++function fixture(family, count=1) {
++  const events=[],scope={ getByText(name,options){assert.equal(name,'Search...');assert.deepEqual(options,{exact:true});return{async click(){assert.equal(count,1,'strict unique contributor field');events.push(family);}};} };
++  return {events,page:{getByText(){throw Error('Global header text must never be selected');},locator(selector){assert.equal(selector,`label[for="${family}"]`);return{locator(parent){assert.equal(parent,'..');return scope;}};}}};
++}
++test('author and artist searches stay in their labeled fields despite identical header text',async()=>{for(const family of ['authors','artists']){const value=fixture(family);await contributorSearchTrigger(value.page,family).click();assert.deepEqual(value.events,[family]);}});
++for(const family of ['authors','artists'])for(const count of [0,2])test(`${family} rejects absent or duplicate trigger:${count}`,async()=>{const value=fixture(family,count);await assert.rejects(contributorSearchTrigger(value.page,family).click());});
++test('unknown fields cannot expand selector scope',()=>{assert.throws(()=>contributorSearchTrigger({},'header'));});
+diff --git a/weebdex-platform/tests/ci/test_browser_editorial_diagnostics.mjs b/weebdex-platform/tests/ci/test_browser_editorial_diagnostics.mjs
+index 97191a5..837bdb1 100644
+--- a/weebdex-platform/tests/ci/test_browser_editorial_diagnostics.mjs
++++ b/weebdex-platform/tests/ci/test_browser_editorial_diagnostics.mjs
+@@ -29,7 +29,7 @@ async function probe({failAt,status=201,draftCover='Cover00001',covers=[{id:'Cov
+  page.getByPlaceholder=(name,{exact})=>{assert.equal(exact,true);return control('placeholder',name);};page.keyboard={async press(value){assert.equal(value,'Escape');calls.actions.push('close-contributor');}};
+  const api=async route=>{calls.routes.push(route);if(route==='/author/SeedAuthr1')return{status:200,body:{name:'Synthetic Author'}};if(route==='/manga/Draft00001/covers?draft=true')return{status:200,body:covers};assert(['/manga/draft/Draft00001','/manga/Draft00001'].includes(route),'Exact native draft/public route required');return{status:200,body:snapshot()};};
+  const confirm=async name=>{calls.actions.push('confirm:'+name);draft.version++;if(name==='Submit')draft.state='submitted';if(name==='Reject')draft.state='rejected';if(name==='Publish'){draft.state='published';page.emit('response',response(200,origin+'/api/manga/draft/Draft00001/publish',{...snapshot(),publication_scope:'instance-local',publication_status:'local'}));}if(name==='Lock')draft.locked=true;if(name==='Unlock')draft.locked=false;};
+- const env=vm.createContext({account:{},ids:{},marker:'Synthetic',image,page,origin,URL,api,confirm,actAndWaitForPageEvent,
++ const env=vm.createContext({contributorSearchTrigger:(_page,family)=>{assert.equal(_page,page);assert(["authors","artists"].includes(family));return control("contributor",family);},account:{},ids:{},marker:'Synthetic',image,page,origin,URL,api,confirm,actAndWaitForPageEvent,
+   insist(value,message){assert(value,message);},open:async route=>calls.actions.push('open:'+route),until:async(read,valid,message)=>{const value=await read();assert(valid(value),message);return value;},
+   editorialCheck:(id,operation)=>record('editorial-'+id,async()=>{if('editorial-'+id===failAt)throw failure;return operation();}),
+   step:async(name,operation)=>{try{const value=await operation();steps.push({name,passed:true,value});}catch(error){steps.push({name,passed:false,error});}}
+diff --git a/weebdex-platform/tests/ci/test_browser_ordinary_selector_contracts.mjs b/weebdex-platform/tests/ci/test_browser_ordinary_selector_contracts.mjs
+index d7a8ace..a7e0ad9 100644
+--- a/weebdex-platform/tests/ci/test_browser_ordinary_selector_contracts.mjs
++++ b/weebdex-platform/tests/ci/test_browser_ordinary_selector_contracts.mjs
+@@ -44,7 +44,7 @@ test('all98 pre-relocation behavioral assertions survive with exact title201 and
+   assert(process.env.WEEBDEX_FRONTEND_ROOT, 'Use the verified exact-lock dependency root');
+   const require = createRequire(path.join(process.env.WEEBDEX_FRONTEND_ROOT, 'package.json')), ts = require('typescript');
+   const ast = ts.createSourceFile('browser-journeys.mjs',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS), predicates=[];
+-  const additions = ['The fixed upload diagnostic recorder is required','Actual uploaded staging prerequisite failed; replacement was not attempted','Actual image upload/replacement prerequisites failed; publication was not attempted','The fixed editorial diagnostic recorder is required','Original PNG cover bytes and authoritative identity were not persisted', 'Manage library does not point to its native Settings tab', 'Library tool dialog must have exactly one owner'];
++  const additions = ['Account welcome appeared before account creation','The fixed upload diagnostic recorder is required','Actual uploaded staging prerequisite failed; replacement was not attempted','Actual image upload/replacement prerequisites failed; publication was not attempted','The fixed editorial diagnostic recorder is required','Original PNG cover bytes and authoritative identity were not persisted', 'Manage library does not point to its native Settings tab', 'Library tool dialog must have exactly one owner'];
+   // This historical fingerprint predates the separately tested relocation step.
+   // Its native-tab geometry/permission/dialog assertions have their own actual-
+   // callback negative drivers; do not mistake those additions for a removed gate.
+diff --git a/weebdex-platform/tests/ci/test_browser_signed_publication_clone.mjs b/weebdex-platform/tests/ci/test_browser_signed_publication_clone.mjs
+index 91c952b..71705c4 100644
+--- a/weebdex-platform/tests/ci/test_browser_signed_publication_clone.mjs
++++ b/weebdex-platform/tests/ci/test_browser_signed_publication_clone.mjs
+@@ -95,3 +95,23 @@ test('snapshot does not bypass the actual original revision and recipient-intent
+   for (const guard of ['review.owner !== identity.owner', 'review.generation !== identity.generation', 'current.revision !== review.deviceRevision', 'canonical.revision !== review.protocolRevision', 'preferences.revision !== review.relayRevision', 'fingerprint.mappingProof !== review.mappingProof', 'latest.revision !== review.deviceRevision']) assert(source.includes(guard), guard);
+   assert.match(panel, /const reviewed = \$state\.snapshot\(publication!\); publicConsent = false; publication = undefined; await publishReviewed\(reviewed, true, assertActive\)/);
+ });
++
++// Reconstructed relay-checkbox regression: actual pinned deep proxies and the
++// original outbox's real structured-clone transaction, without a network claim.
++const selection = panel.match(/run\('select-relay', (async \(\) => \{[^\n]+\})\)/)?.[1];
++assert(selection, 'Execute the exact destination checkbox handoff');
++const select = (relays, relay, relayRevision, selectRelays, resetReviews=()=>{}) => vm.runInNewContext('(' + stripTypeScriptTypes(selection) + ')()', {relays,relay,relayRevision,selectRelays,resetReviews,event:{target:{checked:true}},$state:{snapshot}});
++const destinations = () => [{origin:'http://127.0.0.1:4001',serviceKey:'a'.repeat(64),selected:true},{origin:'http://127.0.0.1:4002',serviceKey:'b'.repeat(64),selected:false}];
++
++test('old two-row shallow map fails actual outbox preference insertion and rolls back',async()=>{
++ await withOutbox(async outbox=>{const plain=destinations();await outbox.setRelays(plain,0);const relays=proxy(structuredClone(plain));const changed=relays.map(row=>row.origin===relays[1].origin?{...row,selected:true}:row);assert.throws(()=>structuredClone(changed),error=>error.name==='DataCloneError');await assert.rejects(outbox.setRelays(changed,1),error=>error.name==='DataCloneError');assert.deepEqual(await outbox.preferences(),{relays:plain,revision:1});});
++});
++
++test('compiled checkbox snapshots every row and exact handoff retains both identities across await',async()=>{
++ const {compile}=createRequire(import.meta.url)(path.join(svelte,'compiler/index.js'));const {js}=compile(panel,{filename:'LibraryManagementTools.svelte',generate:'client',dev:false,runes:true});assert.match(js.code,/selectRelays\(\$\.snapshot\(\$\.get\(relays\)\)\.map/);
++ await withOutbox(async outbox=>{const plain=destinations();await outbox.setRelays(plain,0);const relays=proxy(structuredClone(plain));let captured,release,entered,resets=0;const paused=new Promise(resolve=>release=resolve),started=new Promise(resolve=>entered=resolve);const pending=select(relays,relays[1],1,async(rows,revision)=>{captured=rows;assert.equal(revision,1);structuredClone(rows);entered();await paused;return outbox.setRelays(rows,revision);},()=>resets++);await started;const expected=plain.map(row=>({...row,selected:true}));assert.deepEqual(captured,expected);relays[0].origin='http://127.0.0.1:4999';relays[1].serviceKey='c'.repeat(64);assert.deepEqual(captured,expected);release();await pending;assert.equal(resets,1);assert.deepEqual(await outbox.preferences(),{relays:expected,revision:2});});
++});
++
++test('snapshot selection retains the original relay-revision CAS and does not change an approved job',async()=>{
++ await withOutbox(async outbox=>{const plain=destinations();await outbox.setRelays(plain,0);await outbox.setRelays(plain,1);let resets=0;await assert.rejects(select(proxy(structuredClone(plain)),plain[1],1,(rows,revision)=>outbox.setRelays(rows,revision),()=>resets++),/selection changed.*review/i);assert.equal(resets,0);assert.deepEqual(await outbox.preferences(),{relays:plain,revision:2});assert.deepEqual(await outbox.list(),[]);});
++});
+diff --git a/weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs b/weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs
+index 1d738c7..7485481 100644
+--- a/weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs
++++ b/weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs
+@@ -300,3 +300,10 @@ test('mocked safety: optional known-key input uses its exact native owner despit
+     assert.deepEqual(calls, [...(initiallyOpen ? [] : [['reveal']]), ['fill', '0'.repeat(64)]]);
+   }
+ });
++
++test('missing-signer browser expectation matches current actionable create/import/extension guidance',()=>{
++ const product=fs.readFileSync(path.join(productRoot,'platform-integrations/local-library/publication.ts'),'utf8');
++ assert(product.includes('No compatible NIP-07 browser signer was found.'));
++ assert(product.includes('Create or import a key in Public identity settings, or install a signing extension.'));
++ assert(source.includes('getByText("No compatible NIP-07 browser signer was found.", { exact: false })'));
++});
+diff --git a/weebdex-platform/tests/ci/test_editorial_unknown_year.mjs b/weebdex-platform/tests/ci/test_editorial_unknown_year.mjs
+new file mode 100644
+index 0000000..30270be
+--- /dev/null
++++ b/weebdex-platform/tests/ci/test_editorial_unknown_year.mjs
+@@ -0,0 +1,37 @@
++#!/usr/bin/env node
++// Reconstructed strict native DTO normalization and actual composed save
++// callback. Real jsdom constraint validation; native completion is a stand-in.
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import path from 'node:path';
++import vm from 'node:vm';
++import {createRequire,stripTypeScriptTypes} from 'node:module';
++import test from 'node:test';
++import {createFrontendOverlays,frontendOverlayManifest} from '../../platform-integrations/frontend-overlays.mjs';
++const root=new URL('../../',import.meta.url).pathname,frontend=path.join(root,'frontend');
++const relative='src/lib/components/draft/manga/MangaEdit.svelte',file=path.join(frontend,relative);
++const original=fs.readFileSync(file,'utf8'),plugin=createFrontendOverlays(frontend),composed=plugin.transform.handler(original,file).code;
++const expression=composed.match(/year: (snapshot\.year[^,]+),/)[1];
++const normalize=year=>vm.runInNewContext(stripTypeScriptTypes('('+expression+')'),{snapshot:{year}});
++const modules=process.env.WEEBDEX_BROWSER_DOM_NODE_MODULES;assert(modules,'Use reviewed exact-lock DOM stage');
++const {JSDOM}=createRequire(import.meta.url)(path.join(modules,'jsdom'));
++const dom=new JSDOM('<form><input id="year" type="number" min="1900" max="2100"><button>Save</button></form>');
++const input=dom.window.document.querySelector('input');
++test('one hash-bound overlay normalizes only absent/zero year without changing original year bounds',()=>{
++ const patches=frontendOverlayManifest.filter(row=>row.path===relative&&row.label==='native unknown publication year is empty in the title editor, never invalid numeric zero');assert.equal(patches.length,1);assert.equal(patches[0].count,1);assert.equal(original.split('year: snapshot.year ?? null!,').length-1,1);
++ assert(original.includes('let draft = $state<MangaDraft>(structuredClone($state.snapshot(initial)))'));
++ const metadata=fs.readFileSync(path.join(frontend,'src/lib/components/draft/manga/MetadataSection.svelte'),'utf8');assert.match(metadata,/id="year"[\s\S]*?min="1900"[\s\S]*?max="2100"/);
++ for(const year of [undefined,null,0]){assert.equal(normalize(year),null);input.value=normalize(year)??'';assert.equal(input.checkValidity(),true);}
++ for(const year of [1900,2026,2100]){assert.equal(normalize(year),year);input.value=String(normalize(year));assert.equal(input.checkValidity(),true);}
++ for(const year of [-1,1899,2101]){assert.equal(normalize(year),year);input.value=String(normalize(year));assert.equal(input.checkValidity(),false);}
++ input.value='0';assert.equal(input.checkValidity(),false,'old native0 genuinely blocks form submission');
++});
++test('actual save builder leaves unknown year unset on title-only edits and preserves explicit positive year',async()=>{
++ const start=composed.indexOf('\tconst updateManga = async () => {'),end=composed.indexOf('\n\tconst processCovers',start);assert(start>0&&end>start);
++ for(const [year,changed]of [[0,undefined],[null,undefined],[undefined,undefined],[1900,2026]]){
++  let sent;const initial={title:'before',year:normalize(year)},draft={...initial,title:'after'};if(changed!==undefined)draft.year=changed;
++  const context={manga:{id:'OwnedTitle',version:4,year},initial,draft,equal:(a,b)=>a===b,window:{location:{pathname:'/edit'}},pathname:'/edit',mutexState:0,STATE:{UpdatingEntry:1},StatusCodes:{OK:200},API:{Manga:{async Update(id,payload){assert.equal(id,'OwnedTitle');sent=structuredClone(payload);return{status:200,body:{id,version:5,...payload}};}}}};
++  await vm.runInNewContext(stripTypeScriptTypes(composed.slice(start,end))+'\nupdateManga();',context);assert.equal(sent.title,'after');assert.equal(sent.version,4);assert.equal(Object.hasOwn(sent,'year'),changed!==undefined);if(changed!==undefined)assert.equal(sent.year,changed);
++ }
++ dom.window.close();
++});
+diff --git a/weebdex-platform/tests/ci/test_hosted_browser.py b/weebdex-platform/tests/ci/test_hosted_browser.py
+index 69358b0..a620eb1 100644
+--- a/weebdex-platform/tests/ci/test_hosted_browser.py
++++ b/weebdex-platform/tests/ci/test_hosted_browser.py
+@@ -267,6 +267,52 @@ class HostedBrowserSeams(unittest.TestCase):
+         for field, value in [('loopback_ports_closed', {}), ('synthetic_server_keys_absent', False), ('remaining_owned_processes', [{}]), ('process_tracking_errors', [{}]), ('final_teardown_clean', False)]:
+             self.assertFalse(runner.project_cleanup(dict(good, **{field: value}))['verified_stopped'])
+ 
++    def test_native_publication_batches_have_explicit_isolated_mode(self):
++        plan = {key: key for key in ['normal_binary', 'normal_sha256', 'frontend_index_sha256', 'frontend_manifest', 'frontend_manifest_sha256', 'provisioner', 'provisioner_sha256']}
++        for name in runner.BATCHES:
++            args = runner.fixture_arguments(name, plan)
++            native = name in {'ordinary-a', 'ordinary-b'}
++            self.assertEqual('--native-only' in args, native)
++            self.assertEqual('--protocol-provisioner' in args, not native)
++            self.assertEqual('--second-protocol-recipient' in args, not native)
++            self.assertEqual('--ui-regression-controls' in args, not native)
++        self.assertEqual(runner.fixture_mode('startup'), 'combined')
++
++    def test_native_only_cli_rejects_combined_authority_before_constructing_fixture(self):
++        fixture = ROOT / 'tests/runtime/browser_fixture.py'
++        runtime = ROOT / 'test-runtime'
++        before = set(runtime.iterdir()) if runtime.exists() else set()
++        conflicts = [['--protocol-provisioner', '/not-an-owned-provisioner'], ['--provisioner-sha256', '0' * 64], ['--second-protocol-recipient'], ['--ui-regression-controls'], ['--pg-home-fault-controls'], ['--ubunchu-noncommercial']]
++        if '--protocol-self-enrollment' in fixture.read_text(): conflicts.append(['--protocol-self-enrollment'])
++        for conflict in conflicts:
++            with self.subTest(flag=conflict[0]):
++                result = subprocess.run([sys.executable, str(fixture), '--binary', '/not-an-owned-binary', '--frontend-index-sha256', '0' * 64, '--frontend-artifact-manifest-sha256', '0' * 64, '--native-only', *conflict], capture_output=True, text=True, timeout=10)
++                self.assertEqual(result.returncode, 2)
++                self.assertIn('native-only mode excludes protocol authorities, provisioner and combined controls', result.stderr)
++                self.assertNotIn('FIXTURE_ERROR', result.stdout)
++        self.assertEqual(set(runtime.iterdir()) if runtime.exists() else set(), before)
++
++    def test_native_only_readiness_binds_exact_mode_and_no_protocol_authority(self):
++        plan = {'normal_sha256': 'binary', 'frontend_manifest_sha256': 'frontend'}
++        good = {'status': 'ready', 'run_directory': '/owned', 'binary': {'sha256': 'binary'}, 'frontend': {'artifact_manifest_sha256': 'frontend'}, 'fixture_mode': 'native-only', 'seed': {'native_only': True, 'protocol_signed_publications': False}}
++        self.assertTrue(runner.ready_matches(good, Path('/owned'), plan, 'native-only'))
++        self.assertFalse(runner.ready_matches(good, Path('/owned'), plan))
++        for key in ['protocol_origin', 'relay_origin', 'protocol_recipients', 'protocol_provisioner', 'protocol_seed', 'service_key']:
++            self.assertFalse(runner.ready_matches(dict(good, **{key: {}}), Path('/owned'), plan, 'native-only'))
++        for key, value in [('fixture_mode', 'combined'), ('seed', {}), ('binary', {}), ('frontend', {}), ('status', 'starting'), ('run_directory', '/other')]:
++            self.assertFalse(runner.ready_matches(dict(good, **{key: value}), Path('/owned'), plan, 'native-only'))
++
++    def test_native_cleanup_requires_exact_owned_three_ports(self):
++        good = self.cleanup_input()
++        good['loopback_ports_closed'] = {name: True for name in ['platform', 'mail', 'postgres']}
++        self.assertTrue(runner.project_cleanup(good, 'native-only')['verified_stopped'])
++        self.assertFalse(runner.project_cleanup(good)['verified_stopped'])
++        self.assertFalse(runner.project_cleanup(self.cleanup_input(), 'native-only')['verified_stopped'])
++        for name in ['platform', 'mail', 'postgres']:
++            adverse = copy.deepcopy(good); adverse['loopback_ports_closed'][name] = False
++            self.assertFalse(runner.project_cleanup(adverse, 'native-only')['verified_stopped'])
++        with self.assertRaises(ValueError): runner.project_cleanup(good, 'unknown')
++
+     def test_summary_cannot_promote_partial_scope_to_full_suite(self):
+         journal = {'phases': [{'phase': 'startup', 'status': 'passed'}], 'batches': [{'passed': True, 'supervisor_terminal': True, 'supervisor_exit_zero': True, 'cleanup': {'verified_stopped': True, 'lifecycle_clean': True}}]}
+         summary = runner.summarize(journal, 'startup', ['startup'])

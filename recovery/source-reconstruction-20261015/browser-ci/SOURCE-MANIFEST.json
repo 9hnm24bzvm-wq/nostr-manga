@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "reconstruction": true,
+  "historical_raw_test_receipts_preserved": false,
+  "recovered_base_commit": "82290c732cc19b393b128fec0879885937f41054",
+  "reconstructed_head_commit": "141d342f8e2cced531ef7c0602d2f1223e7586e9",
+  "commits": [
+    "18f72eac501b894baaf9c4415d77885f55b8ff9b",
+    "cb31a9c7bf39dc7d87081082d9b6c1394b5f52a4",
+    "141d342f8e2cced531ef7c0602d2f1223e7586e9"
+  ],
+  "files": [
+    {
+      "path": "weebdex-platform/backend/tests/protocol_bridge_http.rs",
+      "bytes": 69167,
+      "sha256": "fd0137f19011740d8c912d1dcbe936f00fda55ef538ff778380275360a8c978d"
+    },
+    {
+      "path": "weebdex-platform/docs/browser-ci-recovery-20261015.md",
+      "bytes": 14562,
+      "sha256": "77b4ec7cb68b4891347dd70f1d8f01dcb974be8bd27d4c1a78d564e30093347d"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-behavior/actor-follow-state.ts",
+      "bytes": 6241,
+      "sha256": "781d93ef4746366705e1d3c25aecff8ebe4062f2d884eb874e7e1638ddd51050"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-overlays.mjs",
+      "bytes": 498910,
+      "sha256": "83afd07b65d5f2ca52d6e5ceb47a749d77b27d7e5d98bd24ba1138003936e2c3"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/LibraryManagementTools.svelte",
+      "bytes": 30970,
+      "sha256": "e9a53732c5d286481b3dea2fe797dfa4c3db35327e19b33f29642198ccc535af"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-editorial-controls.mjs",
+      "bytes": 327,
+      "sha256": "e2711c91639b80051634472956c4624806ef1a0101ae700652b02f7b47c615f9"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-journeys.mjs",
+      "bytes": 92713,
+      "sha256": "88b821dec765f639d5930d08e8d57612968442405e369e28aef38522455fb657"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-signed-journeys.mjs",
+      "bytes": 102134,
+      "sha256": "c1863443d3f26789b674ea5d9e8b09d639de69c1f1c2a0320e66e8498f48c1e3"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-ui11-16-journeys.mjs",
+      "bytes": 114495,
+      "sha256": "aed1901743eed89d731f330e630db78fa750d45f7689d45ee07ba4b5f278e341"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-hosted-browser.py",
+      "bytes": 21980,
+      "sha256": "8e0690b1bd2d3d41b1cdfdf9545c03e6c760a65b5c993996a927d05d839fd825"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_actor_follow_readiness.mjs",
+      "bytes": 21523,
+      "sha256": "d3a08b499a8106eafa9b6f690663de3b82eddba9e89dbbc1a4d0f7632accab58"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_actor_follow_svelte_lifecycle.mjs",
+      "bytes": 8415,
+      "sha256": "94beb9d6f1e9a237cbe9966080edba4f91cd0b2ebe82c72bef4a6a676400198d"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_compact_observer_diagnostics.mjs",
+      "bytes": 12348,
+      "sha256": "01853e60653e07e8ffe04d4ab244dbba1ac3702d93f765a125e55d75ad8e9976"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_editorial_controls.mjs",
+      "bytes": 1397,
+      "sha256": "bb40e741380e543d25be0ed41e2e02f55ac14ed679c4c8a37534ff07c42aa5fd"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_editorial_diagnostics.mjs",
+      "bytes": 10411,
+      "sha256": "1e90edcb941a28fc4a3a1c15392a42004bee36cca6630c4e56fed68abb66569d"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_ordinary_selector_contracts.mjs",
+      "bytes": 6323,
+      "sha256": "717e7a7ce0b6b86f3d7fed73ab5ba8a3d5c0310df7e5a885ad9d641fbf32fd1d"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_publication_clone.mjs",
+      "bytes": 11083,
+      "sha256": "289e96014d409b6911eb3e5bf968b7195d7b6d55f5357c2b4323e3460f1dadc8"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs",
+      "bytes": 25032,
+      "sha256": "26405c2044d5ed8d195d13e19bdce966891b4b81f62d49250c795d2eecf4f9e7"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_editorial_unknown_year.mjs",
+      "bytes": 3806,
+      "sha256": "2f120188c5a3cef6cdf439f823cffe0a4b5f9447442434f1001520e2273bcb59"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_hosted_browser.py",
+      "bytes": 38659,
+      "sha256": "b0ac23bc6b680dac53c5b2a7d2a23f837836726056c8b44d2b23d0c232f1f39d"
+    },
+    {
+      "path": "weebdex-platform/tests/runtime/browser_fixture.py",
+      "bytes": 101177,
+      "sha256": "5643bcdca6a67e67d83fee0d7763a43239a74b1dff9da19385f17268c4256ea2"
+    }
+  ],
+  "fresh_tests": [
+    {
+      "log": "fresh-pure-seams.log",
+      "sha256": "828de7afbd767f13eda41a756f2f19dc107594a10e2d9a300659abab7e9a7b90",
+      "result": "108 passed"
+    },
+    {
+      "log": "fresh-controls-signerguidance.log",
+      "sha256": "7f4bbcae6d5690820affcd35a246f273e9ea6f9bf48eb876791f5479ba0d036d",
+      "result": "23 passed"
+    },
+    {
+      "log": "fresh-mode-seams.log",
+      "sha256": "a64a3a5e6e25adab277dc284b0b4433b62d0f32af4e558e3c2f17c0cb54d756c",
+      "result": "28 passed"
+    }
+  ],
+  "dependency_bound_tests": {
+    "source_files": [
+      "tests/ci/test_actor_follow_svelte_lifecycle.mjs",
+      "tests/ci/test_browser_signed_publication_clone.mjs",
+      "tests/ci/test_editorial_unknown_year.mjs"
+    ],
+    "syntax_checked": true,
+    "executed_after_reset": false,
+    "required": "Reviewed exact-lock Svelte5.55.1, jsdom27.0.1, fake-indexeddb6.2.4 and frontend esbuild/TypeScript dependencies"
+  },
+  "unbound_bridge_test": {
+    "source_reconstructed": true,
+    "compiled_after_reset": false,
+    "executed_after_reset": false,
+    "bound_signed1002_1001_positives_preserved": true
+  },
+  "unresolved": [
+    "Home restricted-cookie403 observer has1 real GET and visible403 but empty response rows; second finite diagnostic interrupted",
+    "Original signed-c pre-phase RuntimeError raw evidence unavailable",
+    "Newer home public429 capacity saturation assertion failed separately"
+  ],
+  "full_browser_suite_passed": false,
+  "runtime_cleanup_after_external_reset": "interrupted/unverified; no manufactured cleanup receipt",
+  "not_included": [
+    "credentials",
+    "private keys",
+    "runtime databases",
+    "mail tokens",
+    "browser profiles"
+  ]
+}

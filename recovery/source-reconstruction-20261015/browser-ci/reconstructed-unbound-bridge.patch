@@ -1,0 +1,57 @@
+diff --git a/weebdex-platform/backend/tests/protocol_bridge_http.rs b/weebdex-platform/backend/tests/protocol_bridge_http.rs
+index 605f1b7..d9cd1e9 100644
+--- a/weebdex-platform/backend/tests/protocol_bridge_http.rs
++++ b/weebdex-platform/backend/tests/protocol_bridge_http.rs
+@@ -592,6 +592,52 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
+         .configure_publication(cfg.clone())
+         .await
+         .unwrap();
++    f.app = weebdex_platform::router::router(f.state.clone());
++    // Native-account signup does not grant the operator's original-protocol
++    // signer. Combined tests retain this explicit403 boundary while ordinary
++    // instance-local receipt journeys use their native-only fixture mode.
++    let unbound_draft = create_manga(&f, "Unbound signer denial", false).await;
++    let unbound_mid = unbound_draft["id"].as_str().unwrap();
++    add_cover(&f, unbound_mid, &png(), StatusCode::OK).await;
++    let unbound_submitted = api(
++        &f.app, Method::POST, &format!("/api/manga/draft/{unbound_mid}/commit"),
++        Some(&f.owner), Some(json!({"version":unbound_draft["version"]})), StatusCode::OK,
++    ).await;
++    let unbound_publish = api(
++        &f.app, Method::POST, &format!("/api/manga/draft/{unbound_mid}/publish"),
++        Some(&f.owner), Some(json!({"version":unbound_submitted["version"]})), StatusCode::FORBIDDEN,
++    ).await;
++    assert_eq!(unbound_publish["code"], "forbidden");
++    let still_submitted = api(
++        &f.app, Method::GET, &format!("/api/manga/draft/{unbound_mid}"),
++        Some(&f.owner), None, StatusCode::OK,
++    ).await;
++    assert_eq!(still_submitted["version"], unbound_submitted["version"]);
++    assert!(still_submitted.get("protocol_event_id").is_none_or(Value::is_null));
++    let unbound_session = begin(&f, &mid).await;
++    let unbound_image = png();
++    let unbound_files = file_array(upload(
++        &f, &unbound_session, &[image_part("unbound-page.png", "image/png", &unbound_image)],
++        Some(&f.owner), StatusCode::OK,
++    ).await, 1);
++    let unbound_commit = api(
++        &f.app, Method::POST, &format!("/api/upload/{unbound_session}/commit"),
++        Some(&f.owner), Some(commit_payload("Unbound signer denial", &unbound_files)), StatusCode::FORBIDDEN,
++    ).await;
++    assert_eq!(unbound_commit["code"], "forbidden");
++    let retained_upload = api(
++        &f.app, Method::GET, "/api/upload", Some(&f.owner), None, StatusCode::OK,
++    ).await;
++    assert_eq!(retained_upload["id"], unbound_session);
++    assert_eq!(retained_upload["is_committed"], false);
++    assert_eq!(retained_upload["relationships"]["files"].as_array().unwrap().len(), 1);
++    assert_eq!(repo.pool.get().await.unwrap().query_one(
++        "SELECT count(*) FROM events WHERE kind IN (1001,1002)", &[],
++    ).await.unwrap().get::<_,i64>(0), 0, "Unbound native publication must not sign or accept a source event");
++    api(
++        &f.app, Method::DELETE, &format!("/api/upload/{unbound_session}"),
++        Some(&f.owner), None, StatusCode::NO_CONTENT,
++    ).await;
+     f.state
+         .db
+         .client()
