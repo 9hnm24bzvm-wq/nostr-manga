@@ -15,3 +15,19 @@ Alias bindings cannot change. Newer timestamps win record collisions; canonical 
 The retained device store now reads complete v2 snapshots. Its legacy saving/import/hydration/publication paths reject owner-marked v2 data with a visible compatibility explanation. The original signed public graph publisher rejects v2 before source mapping, worker work or signing. Nostr principals, keys, original events, signatures and protocol storage are unchanged.
 
 Current executed recovery checks:21 newly written owned fake-IDB migration/store tests,19 typed client/composed API seams, and13 original-management/publication-fence tests pass. The source compiler passed with both catalogue gates. A real composed gate-on semantic check passed0errors/15warnings with679original files unchanged; the final post-fence semantic rerun also passed those same bounds. These are finite seams, not a product migration/browser activation claim.
+
+## Exact native and existing-UUID alias proof
+
+Every saved manga/chapter reference, including a syntactically valid UUID, is
+submitted to the namespace-scoped typed `/api/v1/legacy/resolve` contract. Its
+`legacy_id` is the exact requested input and `id` is the preferred public UUID.
+The client rejects omitted, duplicate, wrong-kind and unrequested responses.
+Only these proved preferred IDs reach the unchanged exact visibility and parent
+proof fences. A collection returning a preferred ID for an unproved alias is
+still rejected.
+
+Non-identity native/UUID bindings are retained in the same immutable kind-scoped
+alias ledger. Original rows remain archived; deletion fences retain both the
+original alias and the preferred identity. These changes do not rewrite signed
+Nostr roots or events. Missing proofs retain unresolved exportable source rows.
+The product migration switch remains independently disabled.
