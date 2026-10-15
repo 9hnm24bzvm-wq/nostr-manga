@@ -1,0 +1,31 @@
+{
+  "reconstructed_source": true,
+  "historical_acceptance_transferred": false,
+  "test_source_commit": "8ab0935",
+  "production_code_commit": "06f0ea3f07d6c75d633ef3b9e883361479f9a4db",
+  "test_binary_sha256": "0c9f6c50a1cdafbf7136d227a2660f1812874e1f9c68358cb5d3191e0dce1c1f",
+  "actual_original_signed_graph": true,
+  "actual_postgres": "18.6",
+  "actual_strfry_source_pin": "4cd3cf64850caf47dda46c2a2abbbf3525a64d10",
+  "results": {
+    "passed": 1,
+    "failed": 0,
+    "filtered_out": 1,
+    "seconds": 4.84
+  },
+  "scope": "public signed graph list collection/owner/detail and alias importer; explicit core-only fixture selection",
+  "cleanup": "verified_stopped exit0",
+  "covered": [
+    "owner collision and stable legacy/preferred aliases",
+    "no native private/public list fallback",
+    "no GET registry writes",
+    "5001 members fail400 without truncation",
+    "changing/unavailable owner advances cursor; healthy later owner progresses; later sweep retries",
+    "bounded pagination readiness and no rescan flap",
+    "current local and original visibility",
+    "mid-mapping head change409",
+    "removed list/deleted head stale aliases404",
+    "revoked self403; public graph availability distinct"
+  ],
+  "not_claimed": "list chapter feed remains501 pending shared catalogue helper; full-feed test is explicitly filtered"
+}

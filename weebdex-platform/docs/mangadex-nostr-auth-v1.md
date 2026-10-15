@@ -1,6 +1,6 @@
 # Reconstructed Nostr API authorization contract
 
-RECONSTRUCTED UNVERIFIED after environment replacement. These are intended invariants and must be tested again against integrated source.
+RECONSTRUCTED after environment replacement. Fresh proof/admission HTTP validation passes at06f0ea3 against actual PostgreSQL18.6 and both original-native and wrapper loopback HTTP servers. The original node uses its normal backend-unconfigured mode for this auth-only fixture; separate actual pinned-backend profile, signed read-marker and list-core fixtures now also pass. The list chapter-feed fixture remains pending its shared catalogue helper. See docs/evidence/recovered-nostr-auth for the exact receipt and honest earlier failures.
 
 Protected `/api/v1` requests use original Nostr account admission and replay protection, not MangaDex OAuth/password authentication. The exact external platform public origin is trusted deployment configuration. Host, Forwarded, X-Forwarded-Host and X-Forwarded-Proto never select the signed origin, instance or principal. Preserve the OriginalUri including `/api/v1` and query bytes; rewriting to a native upstream URL invalidates the signature and is not an authentication mechanism.
 

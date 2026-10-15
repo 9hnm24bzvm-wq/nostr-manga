@@ -1,6 +1,6 @@
 # Reconstructed public user presentation
 
-RECONSTRUCTED UNVERIFIED; source must be compiled, genuinely tested and reviewed again.
+Reconstructed after environment replacement. The fresh actual signed metadata/profile HTTP test passes 1/1 at production code 06f0ea3 (0.97s), with verified-stopped teardown. Evidence: docs/evidence/recovered-nostr-readers. Historical acceptance is not reused; independent reconstructed-source review remains separate.
 
 GET `/api/v1/user/{id}` resolves an existing typed User UUID, with no query parameters and no GET alias writes. It grants no admission, native-account binding, session or signing authority.
 

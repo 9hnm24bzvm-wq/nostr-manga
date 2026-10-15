@@ -1,6 +1,6 @@
 # Reconstructed current signed public-list contract
 
-RECONSTRUCTED UNVERIFIED; rerun actual HTTP/PostgreSQL tests after integration. During recovery, the list feed explicitly returns501 until the shared foundation catalogue helper is available; the following describes its intended retained contract, not current restored coverage.
+Reconstructed after environment replacement. Fresh actual signed-graph core list HTTP validation passes 1/1 (4.84s), with verified-stopped teardown; see docs/evidence/recovered-nostr-lists. During recovery, the list feed explicitly returns 501 until the shared foundation catalogue helper is available. Feed behavior below describes the retained intended contract and is not counted as restored coverage.
 
 GET `/user/list` is the exact admitted Nostr signer's public graph. GET `/user/{id}/list` uses a typed ProtocolPublisher display UUID. GET `/list/{id}` and `/list/{id}/feed` use typed ProtocolList(owner64hex,list32hex) targets. Public paths require no proof; self path requires the service-bound exact request proof. Native account/private/public local lists never select a Nostr graph. Admission revocation and public content availability are distinct; original deletion, health, holds and visibility remain authoritative.
 

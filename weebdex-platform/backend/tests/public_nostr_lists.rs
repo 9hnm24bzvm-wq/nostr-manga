@@ -48,11 +48,22 @@ async fn alias_count(f: &Fixture) -> Result<(i64, i64)> {
 async fn real_signed_public_lists_preserve_owner_scope_aliases_visibility_feeds_and_head_consistency()
 -> Result<()> {
     let f = Fixture::start().await?;
-    let result = exercise(&f).await;
+    let result = exercise(&f, true).await;
     f.shutdown().await?;
     result
 }
-async fn exercise(f: &Fixture) -> Result<()> {
+/// Core graph/list reads have independent evidence while the shared chapter
+/// feed adapter is restored. This test never claims feed compatibility.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+#[ignore = "Requires owned PostgreSQL runner and actual strfry"]
+async fn real_signed_public_list_core_reads_preserve_owner_scope_bounds_and_current_heads()
+-> Result<()> {
+    let f = Fixture::start().await?;
+    let result = exercise(&f, false).await;
+    f.shutdown().await?;
+    result
+}
+async fn exercise(f: &Fixture, exercise_feed: bool) -> Result<()> {
     let s1 = publish(
         &f.runtime,
         1002,
@@ -232,29 +243,31 @@ async fn exercise(f: &Fixture) -> Result<()> {
     )
     .await?;
     let feed = format!("{detail}/feed");
-    assert_eq!(get(&f.c, &feed, None, 200).await?["total"], 2);
-    let en = get(
-        &f.c,
-        &format!("{feed}?translatedLanguage[]=en&includes[]=manga&limit=1&offset=0"),
-        None,
-        200,
-    )
-    .await?;
-    assert_eq!(en["total"], 1);
-    assert_eq!(en["data"][0]["attributes"]["translatedLanguage"], "en");
-    let empty = all["data"][0]["id"].as_str().unwrap();
-    assert_eq!(
-        get(
+    if exercise_feed {
+        assert_eq!(get(&f.c, &feed, None, 200).await?["total"], 2);
+        let en = get(
             &f.c,
-            &format!("{}/api/v1/list/{empty}/feed", f.origin),
+            &format!("{feed}?translatedLanguage[]=en&includes[]=manga&limit=1&offset=0"),
             None,
-            200
+            200,
         )
-        .await?["total"],
-        0
-    );
-    get(&f.c, &format!("{feed}?privacy=private"), None, 400).await?;
-    get(&f.c, &format!("{feed}?limit=%ZZ"), None, 400).await?;
+        .await?;
+        assert_eq!(en["total"], 1);
+        assert_eq!(en["data"][0]["attributes"]["translatedLanguage"], "en");
+        let empty = all["data"][0]["id"].as_str().unwrap();
+        assert_eq!(
+            get(
+                &f.c,
+                &format!("{}/api/v1/list/{empty}/feed", f.origin),
+                None,
+                200
+            )
+            .await?["total"],
+            0
+        );
+        get(&f.c, &format!("{feed}?privacy=private"), None, 400).await?;
+        get(&f.c, &format!("{feed}?limit=%ZZ"), None, 400).await?;
+    }
     assert_eq!(
         alias_count(f).await?,
         before,
@@ -369,13 +382,15 @@ async fn exercise(f: &Fixture) -> Result<()> {
         400,
     )
     .await?;
-    get(
-        &f.c,
-        &format!("{}/api/v1/list/{alias}/feed", f.origin),
-        None,
-        400,
-    )
-    .await?;
+    if exercise_feed {
+        get(
+            &f.c,
+            &format!("{}/api/v1/list/{alias}/feed", f.origin),
+            None,
+            400,
+        )
+        .await?;
+    }
     get(&f.c, &mine, Some(4), 400).await?;
     f.state
         .db
@@ -394,7 +409,9 @@ async fn exercise(f: &Fixture) -> Result<()> {
             .len(),
         2
     );
-    assert_eq!(get(&f.c, &feed, None, 200).await?["total"], 1);
+    if exercise_feed {
+        assert_eq!(get(&f.c, &feed, None, 200).await?["total"], 1);
+    }
     f.state
         .db
         .client()
@@ -444,7 +461,9 @@ async fn exercise(f: &Fixture) -> Result<()> {
     let replacement = bundle(2, now + 2, vec![list(1, "Only remaining")])?;
     save(&f.c, &f.native_origin, 2, &replacement).await?;
     get(&f.c, &detail, None, 404).await?;
-    get(&f.c, &feed, None, 404).await?;
+    if exercise_feed {
+        get(&f.c, &feed, None, 404).await?;
+    }
     get(&f.c, &format!("{mine}?head={}", a.event().id), Some(2), 409).await?;
     get(&f.c, &mine, Some(2), 503).await?;
     project(f).await?;

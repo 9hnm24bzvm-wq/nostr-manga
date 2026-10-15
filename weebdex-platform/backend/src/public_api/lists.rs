@@ -335,12 +335,37 @@ fn feed_query(raw: Option<String>) -> PublicApiResult<(Option<String>, Option<St
     }
     Ok((head, (!remaining.is_empty()).then(|| remaining.join("&"))))
 }
-async fn feed() -> PublicApiError {
-    let mut error = PublicApiError::unsupported();
-    error.detail =
-        "Public-list chapter feed recovery is pending the shared catalogue filter/render adapter"
-            .into();
-    error
+async fn feed(
+    State(state): State<AppState>,
+    Path(value): Path<String>,
+    RawQuery(raw): RawQuery,
+) -> PublicApiResult<Json<Value>> {
+    let (head, query) = feed_query(raw)?;
+    let (owner, list) = target(&state, &value).await?;
+    let snapshot = snapshot(&state, owner, head.as_deref(), 0, 1, Some(list)).await?;
+    if snapshot.lists.is_empty() {
+        return Err(PublicApiError::not_found());
+    }
+    projected(&state, &snapshot).await?;
+    let scope = manga(&state, &snapshot)
+        .await?
+        .into_values()
+        .map(|(native, _)| native)
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect();
+    let Json(response) = super::catalogue::feed_for_manga_ids(state.clone(), query, scope).await?;
+    state
+        .protocol
+        .verify_public_list_snapshot(&snapshot, None)
+        .await
+        .map_err(error)?;
+    let mut response = serde_json::to_value(response).map_err(|_| unavailable())?;
+    response
+        .as_object_mut()
+        .ok_or_else(unavailable)?
+        .insert("nostr".into(), metadata(&snapshot));
+    Ok(Json(response))
 }
 
 #[cfg(test)]

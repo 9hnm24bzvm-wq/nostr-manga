@@ -26,7 +26,53 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
         serde_json::from_str(INVENTORY).expect("checked-in derived API inventory");
     let mut paths = BTreeMap::<String, MethodRouter<S>>::new();
     for operation in inventory.operations {
-        if (operation.method == "GET" && matches!(operation.path.as_str(), "/auth/check" | "/manga/{id}/read" | "/manga/read" | "/user/list" | "/user/{id}/list" | "/list/{id}" | "/list/{id}/feed" | "/user/{id}")) || (operation.method == "POST" && operation.path == "/manga/{id}/read") {
+        if operation.method == "GET"
+            && matches!(
+                operation.path.as_str(),
+                "/manga"
+                    | "/manga/{id}"
+                    | "/manga/random"
+                    | "/manga/tag"
+                    | "/manga/{id}/feed"
+                    | "/manga/{id}/aggregate"
+                    | "/chapter"
+                    | "/chapter/{id}"
+                    | "/author"
+                    | "/author/{id}"
+                    | "/group"
+                    | "/group/{id}"
+                    | "/cover"
+                    | "/cover/{id}"
+            )
+        {
+            continue;
+        }
+        if operation.method == "GET" && operation.path.starts_with("/statistics/") {
+            continue;
+        }
+        if (operation.method == "GET"
+            && matches!(
+                operation.path.as_str(),
+                "/report" | "/report/reasons/{category}"
+            ))
+            || (operation.method == "POST" && operation.path == "/report")
+        {
+            continue;
+        }
+        if (operation.method == "GET"
+            && matches!(
+                operation.path.as_str(),
+                "/auth/check"
+                    | "/manga/{id}/read"
+                    | "/manga/read"
+                    | "/user/list"
+                    | "/user/{id}/list"
+                    | "/list/{id}"
+                    | "/list/{id}/feed"
+                    | "/user/{id}"
+            ))
+            || (operation.method == "POST" && operation.path == "/manga/{id}/read")
+        {
             continue;
         }
         let route = paths.entry(axum_path(&operation.path)).or_default();
@@ -91,7 +137,7 @@ mod tests {
     async fn inventory_is_bounded_and_fallbacks_are_honest_json() {
         let app = Router::<()>::new().nest("/api/v1", router());
         for (method, path, status) in [
-            ("GET", "/api/v1/manga", 501),
+            ("GET", "/api/v1/user/history", 501),
             ("POST", "/api/v1/auth/login", 501),
             ("GET", "/api/v1/unknown", 404),
             ("PATCH", "/api/v1/manga", 405),

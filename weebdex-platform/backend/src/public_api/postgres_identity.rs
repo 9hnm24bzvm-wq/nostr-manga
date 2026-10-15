@@ -19,6 +19,37 @@ impl PostgresPublicIdResolver {
         Self { db }
     }
 
+    /// Resolve against the caller's protected transaction so binding, authority,
+    /// UUID inputs and mutation share one snapshot/lock lifetime. Read-only.
+    pub async fn resolve_many_in<C: tokio_postgres::GenericClient + Sync>(
+        client: &C,
+        kind: ResourceKind,
+        ids: &[PublicUuid],
+    ) -> ApiResult<BTreeMap<PublicUuid, ResolvedPublicId>> {
+        validate_batch(ids.len())?;
+        if ids.is_empty() {
+            return Ok(BTreeMap::new());
+        }
+        let ids = ids.iter().map(PublicUuid::as_str).collect::<Vec<_>>();
+        let rows=client.query("SELECT requested.id,a.native_id,p.public_id::text,a.principal_type FROM unnest($2::text[]) requested(id) JOIN platform.public_resource_ids a ON a.kind=$1 AND a.public_id=requested.id::uuid JOIN platform.public_resource_ids p ON p.kind=a.kind AND p.native_id=a.native_id AND p.preferred",&[&kind.as_str(),&ids]).await?;
+        rows.into_iter()
+            .map(|row| {
+                Ok((
+                    persisted_uuid(row.get::<_, &str>(0))?,
+                    ResolvedPublicId {
+                        native_id: row.get(1),
+                        preferred_id: persisted_uuid(row.get::<_, &str>(2))?,
+                        target: persisted_target(
+                            kind,
+                            row.get::<_, &str>(1),
+                            row.get::<_, &str>(3),
+                        )?,
+                    },
+                ))
+            })
+            .collect()
+    }
+
     /// Preferred IDs and typed targets for one bounded relationship batch.
     pub async fn describe_many(
         &self,

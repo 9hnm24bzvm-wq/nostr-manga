@@ -1,0 +1,29 @@
+{
+  "reconstructed_source": true,
+  "historical_acceptance_transferred": false,
+  "source_commit": "1c07bf923254690980161ec43a71681d135d071a",
+  "production_code_commit": "06f0ea3f07d6c75d633ef3b9e883361479f9a4db",
+  "actual_postgres": "18.6",
+  "postgres_sha256": "b9983c21ce35959b2583f967214b3c55a13608fc70aecc4659898f3a8c4bda56",
+  "strfry_source_pin": "4cd3cf64850caf47dda46c2a2abbbf3525a64d10",
+  "strfry_binary_sha256": "41fcb9fcf9bc6694dadb6184606984a89798a558a548274ebe9a59fe9d426436",
+  "fixtures": "real original SaveBundle/staging/commit/native catalogue publication, original shared runtime plus wrapper TCP",
+  "results": {
+    "profiles": {
+      "passed": 1,
+      "failed": 0,
+      "seconds": 0.97
+    },
+    "read_markers": {
+      "passed": 1,
+      "failed": 0,
+      "seconds": 1.76
+    }
+  },
+  "cleanup": "both verified_stopped exit0; no runtime databases or temporary synthetic key files copied",
+  "binary_sha256": {
+    "public-nostr-profiles-1c07bf9": "1d73ab27c6df416495535c0915ac2241042a9d359dcc9c05c843a63ddc63559d",
+    "public-nostr-read-markers-1c07bf9": "35b6eb6971341f29dfaf40fa4f2aa9f09673440694a45a678c17a40319173a5b"
+  },
+  "not_claimed": "full catalogue/list-feed compatibility; private library state; signed mutation implementation; product/browser parity"
+}
