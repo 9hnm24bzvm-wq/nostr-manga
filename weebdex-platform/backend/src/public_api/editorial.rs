@@ -664,7 +664,8 @@ mod tests {
             json!({"version":1,"focusedLanguages":["EN"]}),
             json!({"version":1,"members":["native-id"]}),
         ] {
-            assert!(normalize_group(value, value.get("version").is_some()).is_err());
+            let edit = value.get("version").is_some();
+            assert!(normalize_group(value, edit).is_err());
         }
     }
 }
