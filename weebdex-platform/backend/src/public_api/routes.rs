@@ -28,21 +28,22 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
     for operation in inventory.operations {
         if operation.method == "GET"
             && matches!(
-                operation.path.as_str(),
+                axum_path(&operation.path).as_str(),
                 "/manga"
-                    | "/manga/{id}"
+                    | "/manga/{p0}"
                     | "/manga/random"
                     | "/manga/tag"
-                    | "/manga/{id}/feed"
-                    | "/manga/{id}/aggregate"
+                    | "/manga/{p0}/feed"
+                    | "/manga/{p0}/aggregate"
                     | "/chapter"
-                    | "/chapter/{id}"
+                    | "/chapter/{p0}"
                     | "/author"
-                    | "/author/{id}"
+                    | "/author/{p0}"
                     | "/group"
-                    | "/group/{id}"
+                    | "/group/{p0}"
                     | "/cover"
-                    | "/cover/{id}"
+                    | "/cover/{p0}"
+                    | "/at-home/server/{p0}"
             )
         {
             continue;

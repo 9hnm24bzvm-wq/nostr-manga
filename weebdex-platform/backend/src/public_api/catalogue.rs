@@ -276,13 +276,13 @@ fn parts(
         ResourceKind::Cover => (
             "c",
             "platform.catalog_covers c JOIN platform.catalog_manga m ON m.id=c.manga_id",
-            "platform.catalog_cover_json(c.id) || jsonb_build_object('_manga_id',c.manga_id)",
+            "platform.catalog_cover_json(c.id) || jsonb_build_object('_manga_id',c.manga_id,'_manga',platform.catalog_manga_json(c.manga_id))",
             "c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)",
         ),
         ResourceKind::Author => (
             "a",
             "platform.catalog_authors a",
-            "platform.catalog_author_json(a.id)",
+            "platform.catalog_author_json(a.id) || jsonb_build_object('relationships',jsonb_build_object('manga',(SELECT COALESCE(jsonb_agg(platform.catalog_manga_json(am.id) ORDER BY am.id),'[]'::jsonb) FROM platform.catalog_manga am WHERE am.state='published' AND am.deleted_at IS NULL AND am.protocol_source_visible AND platform.protocol_source_is_visible(am.protocol_series_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga_creators ac WHERE ac.author_id=a.id AND ac.manga_id=am.id))))",
             "a.deleted_at IS NULL AND platform.protocol_source_is_visible(a.protocol_event_id)",
         ),
         ResourceKind::Group => (
@@ -375,7 +375,8 @@ fn date_filter(q: &PublicQuery, sql: &mut Sql, key: &str, column: &str) -> Publi
             ));
         }
         let p = sql.bind(value.to_owned() + "Z");
-        sql.conditions.push(format!("{column}>={p}::timestamptz"));
+        sql.conditions
+            .push(format!("{column}>={p}::text::timestamptz"));
     }
     Ok(())
 }
@@ -447,6 +448,12 @@ async fn filters(
                 &n.list("demographic"),
                 &["shounen", "shoujo", "josei", "seinen", "none"],
             )?;
+            if n.list("demographic").iter().any(|value| value == "none") {
+                let demographics = n.values.remove("demographic").unwrap_or_default();
+                let p = sql.bind(demographics);
+                sql.conditions
+                    .push(format!("(m.demographic IS NULL OR m.demographic=ANY({p}))"));
+            }
             if n.list("contentRating").is_empty() {
                 n.values.insert(
                     "contentRating".into(),
