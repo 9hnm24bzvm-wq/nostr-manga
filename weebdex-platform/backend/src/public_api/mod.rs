@@ -57,10 +57,10 @@ pub mod native_forum;
 
 pub mod legacy;
 
-pub mod statuses;
 pub mod drafts;
 pub mod editorial;
 pub mod settings;
 mod settings_schema;
+pub mod statuses;
 
 pub mod edges;

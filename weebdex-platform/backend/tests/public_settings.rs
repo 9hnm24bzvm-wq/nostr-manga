@@ -98,6 +98,10 @@ async fn signed_settings_roundtrip_native_site_state_without_authority_or_concur
     let pg: tokio_postgres::Config = dsn.parse().unwrap();
     assert_eq!(pg.get_dbname(), Some("weebdex_platform_test"));
     assert!(
+        !pg.get_hosts().is_empty(),
+        "Explicit owned loopback host required"
+    );
+    assert!(
         pg.get_hosts()
             .iter()
             .all(|h| matches!(h,tokio_postgres::config::Host::Tcp(h) if h=="127.0.0.1"))
@@ -107,6 +111,15 @@ async fn signed_settings_roundtrip_native_site_state_without_authority_or_concur
             .unwrap()
             .contains("/weebdex-platform/test-runtime/")
     );
+    let runtime = std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap();
+    assert!(runtime.contains("/weebdex-platform/test-runtime/auth-"));
+    let receipt: Value = serde_json::from_slice(
+        &std::fs::read(std::path::Path::new(&runtime).join("fixture.json"))
+            .expect("Owned fixture receipt"),
+    )
+    .unwrap();
+    assert_eq!(receipt["database"], "weebdex_platform_test");
+    assert_eq!(receipt["fixture_only"], true);
     let repository = Repository::connect(DbConfig {
         dsn: dsn.clone(),
         connections: 2,
