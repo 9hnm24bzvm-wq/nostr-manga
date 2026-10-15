@@ -1,0 +1,11 @@
+RECONSTRUCTED, UNVERIFIED integration seams:
+- original server/src/lib.rs: pub mod http_auth; pub mod library_lists;
+- wrapper protocol/mod.rs: pub mod http_auth; pub mod library; pub mod list_aliases; pub mod profiles;
+- wrapper public_api/mod.rs: pub mod auth; pub mod library; pub mod lists; pub mod profiles;
+- public_api/routes.rs merge auth::router(),library::router(),lists::router(),profiles::router(). Preserve all other recovered catalogue/stats/status routes.
+- domains/library/mod.rs reexport repository::public_user_profile.
+- original reader_http::profile should reuse repo.public_account_profile(publisher); retain original native facade alias registration semantics, while /api/v1 GET does NOT register aliases. Original facade uses profile.known, profile.display_name()/full pubkey fallback, event, metadata.
+- Existing catalogue importer background loop calls protocol::list_aliases::import_page once per normal bounded catalogue import turn when publication runtime configured. Errors deferred/retried; no new writer/store/task.
+- PublicIdTarget adds ProtocolList {owner:String,list_id:String}; ProtocolPublisher remains presentation only.
+- Postgres resolver persisted_target handles protocol_list only List kind, validates exact protocol-list:<64lowerhex>:<32lowerhex>, rejects native List keys with reserved protocol-list: prefix. max native key384.
+- Migration91 included as the next domains migration after90.
