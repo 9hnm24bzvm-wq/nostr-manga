@@ -3570,6 +3570,231 @@ const patches = [
   "count": 1,
   "before": "\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[aggregated.chapters.length - 1];",
   "after": "\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[0];"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronsLeft accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last page\" : \"First page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronLeft accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoNextPage() : reader.gotoPreviousPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoNextPage() : reader.gotoPreviousPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Next page\" : \"Previous page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronRight accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoPreviousPage() : reader.gotoNextPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoPreviousPage() : reader.gotoNextPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Previous page\" : \"Next page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronsRight accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First page\" : \"Last page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader page selector accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })}>",
+  "after": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })} aria-label=\"Select page\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronsLeft accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last chapter\" : \"First chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronLeft accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Next chapter\" : \"Previous chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronRight accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Previous chapter\" : \"Next chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronsRight accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First chapter\" : \"Last chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader chapter selector accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })}>",
+  "after": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })} aria-label=\"Select chapter\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader HomeIcon accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })} href=\"/\">",
+  "after": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })} href=\"/\" aria-label=\"Home\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader Undo2 accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })}\r\n\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t)}\"\r\n\t\t\t\t>",
+  "after": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })}\r\n\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t)}\"\r\n\t\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader SettingsIcon accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<Button class=\"border-none\" variant=\"outline\" size=\"icon-lg\" onclick={sidebar.toggle}>",
+  "after": "<Button class=\"border-none\" variant=\"outline\" size=\"icon-lg\" onclick={sidebar.toggle} aria-label=\"Reader settings\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader ChevronsLeft accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t>",
+  "after": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last page\" : \"First page\"}\r\n\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader ChevronsRight accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t>",
+  "after": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First page\" : \"Last page\"}\r\n\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader pagination chapter selector accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "\t\t\t\t<Combobox.Trigger\r\n",
+  "after": "\t\t\t\t<Combobox.Trigger\r\n\t\t\t\t\taria-label=\"Select chapter\"\r\n",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-panel.svelte",
+  "label": "reader HomeIcon accessible name",
+  "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+  "count": 1,
+  "before": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })} href=\"/\">",
+  "after": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })} href=\"/\" aria-label=\"Home\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-panel.svelte",
+  "label": "reader BookIcon accessible name",
+  "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\t\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t\t\t)}\"\r\n\t\t\t\t\t\t>",
+  "after": "<a\r\n\t\t\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\t\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t\t\t)}\"\r\n\t\t\t\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-panel.svelte",
+  "label": "reader XIcon accessible name",
+  "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+  "count": 1,
+  "before": "<Button class=\"border-none\" type=\"button\" variant=\"outline\" size=\"icon\" onclick={sidebar.toggle}>",
+  "after": "<Button class=\"border-none\" type=\"button\" variant=\"outline\" size=\"icon\" onclick={sidebar.toggle} aria-label=\"Close reader settings\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/comments/comments-votes.svelte",
+  "label": "reader discussion vote 1 accessible name",
+  "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+  "count": 1,
+  "before": "\t<Button\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === 1",
+  "after": "\t<Button\r\n\t\taria-label=\"Upvote chapter or discussion\"\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === 1",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/comments/comments-votes.svelte",
+  "label": "reader discussion vote -1 accessible name",
+  "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+  "count": 1,
+  "before": "\t<Button\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === -1",
+  "after": "\t<Button\r\n\t\taria-label=\"Downvote chapter or discussion\"\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === -1",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-image.svelte",
+  "label": "reader page image exposes its page number",
+  "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
+  "count": 1,
+  "before": "\t<img\r\n\t\tclass=\"object-contain\"",
+  "after": "\t<img\r\n\t\talt={`Page ${page.index + 1}`}\r\n\t\tclass=\"object-contain\"",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-settings.svelte",
+  "label": "reader narrow-phone direction LTR retains nonoverlapping controls",
+  "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+  "count": 1,
+  "before": "class={cn(\"w-0 flex-auto border-none\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.LTR\r\n\t\t\t})}",
+  "after": "class={cn(\"w-0 flex-auto border-none max-[360px]:gap-1 max-[360px]:px-1 max-[360px]:text-xs max-[360px]:[&>svg]:size-4\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.LTR\r\n\t\t\t})}",
+  "approved_reader_control_exception": "reader_narrow_direction_fit"
+},
+  {
+  "path": "src/lib/components/reader/reader-settings.svelte",
+  "label": "reader narrow-phone direction RTL retains nonoverlapping controls",
+  "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+  "count": 1,
+  "before": "class={cn(\"w-0 flex-auto border-none\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t})}",
+  "after": "class={cn(\"w-0 flex-auto border-none max-[360px]:gap-1 max-[360px]:px-1 max-[360px]:text-xs max-[360px]:[&>svg]:size-4\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t})}",
+  "approved_reader_control_exception": "reader_narrow_direction_fit"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-image.svelte",
+  "label": "reader Stretch Width expands its actual image wrapper",
+  "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
+  "count": 1,
+  "before": "<div class=\"group relative\" bind:this={$ref}>",
+  "after": "<div class=\"group relative\" class:w-full={$readerPrefs.scale === Constants.Reader.Scale.StretchWidth} bind:this={$ref}>",
+  "approved_reader_control_exception": "reader_stretch_width_fit"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -3624,3 +3849,4 @@ export const frontendApprovedCreateRecoveryExceptions = patches.filter(patch => 
 export const frontendApprovedFollowReadinessExceptions = patches.filter(patch => patch.approved_follow_readiness_exception).map(({ path, sha256, count, before, after, approved_follow_readiness_exception }) => ({ path, sha256, count, before, after, approved_follow_readiness_exception }));
 
 export const frontendApprovedRegistrationOnboardingExceptions = patches.filter(patch => patch.approved_registration_onboarding_exception).map(({ path, sha256, count, before, after, approved_registration_onboarding_exception }) => ({ path, sha256, count, before, after, approved_registration_onboarding_exception }));
+export const frontendApprovedReaderControlExceptions = patches.filter(patch => patch.approved_reader_control_exception).map(({ path, sha256, count, before, after, approved_reader_control_exception }) => ({ path, sha256, count, before, after, approved_reader_control_exception }));

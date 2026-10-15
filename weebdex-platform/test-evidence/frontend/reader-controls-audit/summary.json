@@ -1,0 +1,68 @@
+{
+  "scope": "Actual pre-fix synthetic reader browser geometry/accessibility audit and composed-source validation; post-fix browser still pending",
+  "fixture_only": true,
+  "source_unchanged": true,
+  "exact_markup_exception_count": 25,
+  "pre_fix_stretch_width": {
+    "surface": 1440,
+    "image": 600,
+    "image_natural": 600
+  },
+  "pre_fix_320_direction_bounds": [
+    {
+      "label": "Left-to-right",
+      "button": {
+        "left": 110,
+        "right": 210.5,
+        "width": 100.5
+      },
+      "content": [
+        {
+          "left": 107.375,
+          "right": 123.375,
+          "width": 16
+        },
+        {
+          "left": 131.375,
+          "right": 213.125,
+          "width": 81.75
+        }
+      ]
+    },
+    {
+      "label": "Right-to-left",
+      "button": {
+        "left": 211.5,
+        "right": 312,
+        "width": 100.5
+      },
+      "content": [
+        {
+          "left": 208.578125,
+          "right": 224.578125,
+          "width": 16
+        },
+        {
+          "left": 232.578125,
+          "right": 314.921875,
+          "width": 82.34375
+        }
+      ]
+    }
+  ],
+  "source_compiler": {
+    "status": "passed",
+    "components": 108,
+    "scripts": 64,
+    "warnings": 8
+  },
+  "strict_semantic": {
+    "status": "passed",
+    "errors": 0,
+    "warnings": 15,
+    "canonical_unchanged": true
+  },
+  "focused_tests_passed": 10,
+  "post_fix_browser_verified": false,
+  "original_masks_and_progress_fences_retained": true
+}
