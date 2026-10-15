@@ -256,7 +256,14 @@ export async function runUi11To16Journeys(h) {
       await panel().waitFor({ state: "visible" });
     }
   };
-  const noManagementPanel = async () => insist(await page.locator("[data-local-library-panel]").count() === 0, "Library management leaked outside the dedicated settings route");
+  const noManagementPanel = async () => {
+    const management = page.locator("[data-local-library-panel]");
+    // SPA history can update the URL before Svelte has disposed the outgoing
+    // route. Join actual DOM disposal before releasing any held old callback;
+    // a persistent management surface still fails this bounded wait.
+    await management.waitFor({ state: "detached", timeout: 5000 });
+    insist(await management.count() === 0, "Library management leaked outside the dedicated settings route");
+  };
   let managementVisit = 0;
   // Management is a real settings destination. Reach it through the Library
   // action (or the reader's settings action), then restore the exact route with
