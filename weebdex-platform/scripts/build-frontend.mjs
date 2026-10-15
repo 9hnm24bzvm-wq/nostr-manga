@@ -76,6 +76,7 @@ const evidence = {
   approved_search_callback_exceptions: integration.approved_search_callback_exceptions,
   approved_auth_flow_key_exceptions: integration.approved_auth_flow_key_exceptions,
   approved_registration_onboarding_exceptions: integration.approved_registration_onboarding_exceptions,
+  approved_reader_control_exceptions: integration.approved_reader_control_exceptions,
   anonymous_recovery_derivation: integration.anonymous_recovery_derivation,
   approved_upload_recovery_exceptions: integration.approved_upload_recovery_exceptions,
   approved_recovery_boundary_exceptions: integration.approved_recovery_boundary_exceptions,

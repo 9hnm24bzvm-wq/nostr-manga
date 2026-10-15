@@ -15,7 +15,8 @@ const expected = {
   'src/lib/components/reader/reader-panel.svelte': 3,
   'src/lib/components/comments/comments-votes.svelte': 2,
   'src/lib/components/reader/reader-page-image.svelte': 2,
-  'src/lib/components/reader/reader-settings.svelte': 2
+  'src/lib/components/reader/reader-settings.svelte': 2,
+  'src/lib/components/reader/reader-last-page.svelte': 2
 };
 const transformed = relative => {
   const file = path.join(frontend, relative), source = fs.readFileSync(file, 'utf8');
@@ -23,7 +24,7 @@ const transformed = relative => {
 };
 
 test('reader accessibility and narrow-phone changes have exact bounded markup scope', () => {
-  assert.equal(frontendApprovedReaderControlExceptions.length, 25);
+  assert.equal(frontendApprovedReaderControlExceptions.length, 27);
   for (const [relative, count] of Object.entries(expected)) {
     const patches = frontendApprovedReaderControlExceptions.filter(row => row.path === relative);
     assert.equal(patches.length, count, relative);
@@ -63,7 +64,7 @@ test('original source hash fences reject drift and earlier markup guards stay ex
   const file = path.join(frontend, 'src/lib/components/reader/reader-panel.svelte');
   assert.throws(() => plugin.transform.handler(fs.readFileSync(file, 'utf8') + '\n', file), /Overlay input differs/);
   const prepare = fs.readFileSync(path.join(root, 'scripts/prepare-frontend-integration.mjs'), 'utf8');
-  assert.match(prepare, /frontendApprovedReaderControlExceptions\.length !== 25/);
+  assert.match(prepare, /frontendApprovedReaderControlExceptions\.length !== 27/);
   assert.match(prepare, /frontendApprovedPanelExceptions\.length !== approvedPanels\.length/);
   assert.match(prepare, /retainedMarkup\(original\) !== retainedMarkup\(normalizedResult\)/);
   assert.match(prepare, /hash\(original\) !== exception\.sha256/);

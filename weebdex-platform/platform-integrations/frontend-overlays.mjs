@@ -3795,6 +3795,40 @@ const patches = [
   "before": "<div class=\"group relative\" bind:this={$ref}>",
   "after": "<div class=\"group relative\" class:w-full={$readerPrefs.scale === Constants.Reader.Scale.StretchWidth} bind:this={$ref}>",
   "approved_reader_control_exception": "reader_stretch_width_fit"
+},
+  {
+  "path": "src/lib/components/reader/reader-provider.svelte",
+  "label": "reader malformed raw page always resolves a finite bounded image index",
+  "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+  "count": 1,
+  "before": "\t\t\treader.currentPage =\r\n\t\t\t\treader.pages[\r\n\t\t\t\t\tMath.min(Math.max(Number((page.state as any).page ?? page.params.page ?? 1), 1), reader.pages.length) - 1\r\n\t\t\t\t];",
+  "after": "\t\t\tconst requestedPage = Number((page.state as any).page ?? page.params.page ?? 1);\r\n\t\t\tconst safePage = Number.isFinite(requestedPage) ? Math.trunc(requestedPage) : 1;\r\n\t\t\treader.currentPage = reader.pages[Math.min(Math.max(safePage, 1), reader.pages.length) - 1];"
+},
+  {
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader selecting current last page leaves end-of-chapter card",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\tidx === this.currentPage.index ||",
+  "after": "\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||"
+},
+  {
+  "path": "src/lib/components/reader/reader-last-page.svelte",
+  "label": "mobile long-strip Home accessible name",
+  "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>",
+  "after": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t\taria-label=\"Home\"\r\n\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-last-page.svelte",
+  "label": "mobile long-strip Back to title accessible name",
+  "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>",
+  "after": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
