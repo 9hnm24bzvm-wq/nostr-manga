@@ -3562,6 +3562,14 @@ const patches = [
   "count": 1,
   "before": "\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");",
   "after": "\t\tconst redirect = safeRegistrationReturnTo(page.url.searchParams.get(\"redirect\"));"
+},
+  {
+  "path": "src/routes/(app)/title/MangaActions.svelte",
+  "label": "all-read Continue Reading stays at newest completed aggregate chapter",
+  "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+  "count": 1,
+  "before": "\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[aggregated.chapters.length - 1];",
+  "after": "\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[0];"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');

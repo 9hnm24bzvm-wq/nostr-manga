@@ -1,0 +1,32 @@
+{
+  "scope": "Actual pre-fix synthetic device-library UI reproduction plus post-fix composed-source tests; not post-fix browser verification",
+  "user_report": "Continue Reading after all chapters are completed opens first chapter instead of latest chapter",
+  "browser": "system Chromium through pinned Playwright1.62.1; chromiumSandbox=true",
+  "source_product_base": "5b45e7069f8bd8660722593263b0c0eab8a98c32",
+  "fixture_only": true,
+  "expected_chapter": "SeedChapt2",
+  "actual_pre_fix_chapter": "SeedChapt1",
+  "actual_ui_observation": {
+    "marked": 2,
+    "read": 2,
+    "expected": "/chapter/SeedChapt2/1",
+    "actual": "/chapter/SeedChapt1/1",
+    "allReadBugReproduced": true
+  },
+  "tests_passed": 5,
+  "post_fix_browser_verified": false,
+  "authority_fences_preserved": true,
+  "aggregate_order_not_changed": true,
+  "screenshots": [
+    {
+      "name": "device-all-read-title.png",
+      "sha256": "20c4802320865aca557d02ec2ccea9ae38d9507137fcf965cdccc6279d9420f8",
+      "bytes": 83310
+    },
+    {
+      "name": "device-all-read-destination.png",
+      "sha256": "0547c16e9148c3cd95154f7ec0bad71a870ecaf20a273c8808815763e44fe979",
+      "bytes": 75715
+    }
+  ]
+}
