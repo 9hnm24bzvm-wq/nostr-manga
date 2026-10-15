@@ -465,30 +465,30 @@ impl Repository {
     /// false "no head" result. An immutable cache cannot establish this snapshot.
     pub async fn current_library_head(&self, publisher: Id) -> Result<Option<LibraryHead>> {
         let client = during(Phase::PoolCheckout, self.pool.get()).await?;
-        let statement = during(Phase::DbRoundtrip, client.prepare_cached(
-            "SELECT e.id,e.raw_event,NOT EXISTS(SELECT 1 FROM backend_outbox o WHERE o.event_id=e.id AND o.completed_at IS NULL) FROM account_heads h JOIN events e ON e.id=h.event_id AND e.publisher=h.publisher AND e.kind=h.kind WHERE h.publisher=$1 AND h.kind=11999 AND e.state='hosted' AND NOT EXISTS(SELECT 1 FROM publication_blobs p JOIN quarantined_blobs q ON q.hash=p.hash AND q.generation=p.generation WHERE p.event_id=e.id) AND NOT EXISTS(SELECT 1 FROM library_object_holds l JOIN quarantined_blobs q ON q.hash=l.hash AND q.generation=l.generation WHERE l.publisher=e.publisher AND l.state='current')"
-        )).await?;
-        let Some(row) = during(
+        let statement = during(
+            Phase::DbRoundtrip,
+            client.prepare_cached(CURRENT_LIBRARY_HEAD_SQL),
+        )
+        .await?;
+        during(
             Phase::DbRoundtrip,
             client.query_opt(&statement, &[&publisher.as_slice()]),
         )
         .await?
-        else {
-            return Ok(None);
-        };
-        let _decode = phase(Phase::DecodeResponse);
-        let event: Event = serde_json::from_value(row.get(1))?;
-        event.verify().map_err(|error| anyhow!(error))?;
-        ensure!(
-            identifier(&event.id)?.as_slice() == row.get::<_, Vec<u8>>(0)
-                && identifier(&event.pubkey)? == publisher
-                && event.kind == 11999,
-            "stored library head identity mismatch"
-        );
-        Ok(Some(LibraryHead {
-            event: Arc::new(event),
-            projected: row.get(2),
-        }))
+        .map(|row| decode_library_head(row, publisher))
+        .transpose()
+    }
+    /// The exact original head/health/signature policy, usable while an admitted
+    /// request holds its service and account fences. No second pool checkout.
+    pub(crate) async fn current_library_head_transaction(
+        &self,
+        tx: &tokio_postgres::Transaction<'_>,
+        publisher: Id,
+    ) -> Result<Option<LibraryHead>> {
+        tx.query_opt(CURRENT_LIBRARY_HEAD_SQL, &[&publisher.as_slice()])
+            .await?
+            .map(|row| decode_library_head(row, publisher))
+            .transpose()
     }
     /// A cached immutable body never bypasses current primary-database visibility.
     pub async fn visible_event(&self, id: Id) -> Result<Option<Arc<Event>>> {
@@ -545,4 +545,21 @@ pub(crate) async fn check_lease_tx(
         "job lease lost, expired or cancelled"
     );
     Ok(())
+}
+
+const CURRENT_LIBRARY_HEAD_SQL: &str = "SELECT e.id,e.raw_event,NOT EXISTS(SELECT 1 FROM backend_outbox o WHERE o.event_id=e.id AND o.completed_at IS NULL) FROM account_heads h JOIN events e ON e.id=h.event_id AND e.publisher=h.publisher AND e.kind=h.kind WHERE h.publisher=$1 AND h.kind=11999 AND e.state='hosted' AND NOT EXISTS(SELECT 1 FROM publication_blobs p JOIN quarantined_blobs q ON q.hash=p.hash AND q.generation=p.generation WHERE p.event_id=e.id) AND NOT EXISTS(SELECT 1 FROM library_object_holds l JOIN quarantined_blobs q ON q.hash=l.hash AND q.generation=l.generation WHERE l.publisher=e.publisher AND l.state='current')";
+fn decode_library_head(row: tokio_postgres::Row, publisher: Id) -> Result<LibraryHead> {
+    let _decode = phase(Phase::DecodeResponse);
+    let event: Event = serde_json::from_value(row.get(1))?;
+    event.verify().map_err(|error| anyhow!(error))?;
+    ensure!(
+        identifier(&event.id)?.as_slice() == row.get::<_, Vec<u8>>(0)
+            && identifier(&event.pubkey)? == publisher
+            && event.kind == 11999,
+        "stored library head identity mismatch"
+    );
+    Ok(LibraryHead {
+        event: Arc::new(event),
+        projected: row.get(2),
+    })
 }

@@ -85,3 +85,5 @@ async fn private_headers(request: Request, next: Next) -> Response {
     );
     response
 }
+
+pub use repository::public_user_profile;

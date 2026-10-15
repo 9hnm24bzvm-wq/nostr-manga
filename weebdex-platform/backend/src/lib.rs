@@ -9,6 +9,7 @@ pub mod domains;
 pub mod error;
 pub mod privacy;
 pub mod protocol;
+pub mod public_api;
 pub mod router;
 pub mod runtime;
 pub mod state;

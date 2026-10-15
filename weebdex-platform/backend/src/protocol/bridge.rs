@@ -136,6 +136,9 @@ pub fn spawn_importer(state: AppState) -> JoinHandle<()> {
         loop {
             match import_page(&state).await {
                 Ok(report) => {
+                    if state.protocol.publication_runtime().await.is_ok() {
+                        if let Err(error) = super::list_aliases::import_page(&state).await { tracing::warn!(code=error.code,"public-library alias projection remains pending"); }
+                    }
                     if let Err(error) = super::covers::materialize_page(&state).await {
                         tracing::warn!(
                             code = error.code,

@@ -33,8 +33,9 @@ mod tests {
                 .all(|pair| pair[0].version < pair[1].version)
         );
         assert_eq!(
-            migrations[migrations.len() - 4..]
+            migrations
                 .iter()
+                .filter(|m| (85..=88).contains(&m.version))
                 .map(|m| m.version)
                 .collect::<Vec<_>>(),
             [85, 86, 87, 88]
