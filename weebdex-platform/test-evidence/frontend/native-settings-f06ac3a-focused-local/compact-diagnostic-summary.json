@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "scope": "Diagnostic scope: startup and unchanged strict compact predicate with bounded transport timing; prior failure retained; not full suite",
+  "actual_browser": true,
+  "mocked_services": false,
+  "status": "complete",
+  "selected_scope_passed": true,
+  "full_suite_passed": false,
+  "prior_compact_failure_retained": true,
+  "known_compact_failure_not_retested": false,
+  "phases": [
+    {
+      "phase": "startup",
+      "status": "passed",
+      "actual_steps": 19,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "ui12-compact-feed",
+      "status": "passed",
+      "actual_steps": 1,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    }
+  ],
+  "cleanup": {
+    "cleanup": {
+      "verified_stopped": true,
+      "ports_closed": true,
+      "keys_removed": true,
+      "remaining_owned_process_count": 0,
+      "final_teardown_clean": true,
+      "lifecycle_clean": true,
+      "expected_port_roles": [
+        "platform",
+        "mail",
+        "postgres",
+        "original"
+      ]
+    },
+    "outer_cleanup": {
+      "forced": false,
+      "verified_stopped": true,
+      "remaining_owned_process_count": 0
+    },
+    "supervisor_terminal": true,
+    "supervisor_exit_zero": true
+  },
+  "raw_receipt_hash_role": {
+    "role": "owned-compact-diagnostic-result",
+    "sha256": "5f7a107ad11c1a71aeeaad01315b720d82e8b4e14193a6792c67a394ec112c27"
+  },
+  "raw_messages_exported": false
+}

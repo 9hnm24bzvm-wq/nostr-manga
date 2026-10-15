@@ -1,0 +1,10 @@
+# Focused local browser results, 2026-10-14
+
+Application source: `11706deb4dce8ae374e05e878e7f06f0ecb9bae4` (tree `ef3034fa06a80b8ff096c9a7e5df6ed40e00285d`). Reviewed test-only harness: `90db6e189f44ea1cd2243d00aa39128824208701`, with explicitly hash-bound import/root rebasing. The frozen application archive, 425 frontend artifacts, native binaries and guard were unchanged; this is not a rebuild of the full harness checkpoint. Chromium sandbox was enabled.
+
+- A fresh compact diagnostic scope passed startup 19/19 and compact 1/1. The original strict predicate saw six unique sequential HTTP 200 pages, maximum one transport lifetime, 24 finite events, no truncation, and nonoverlapping final native timing. The earlier compact failure remains unexplained and retained. One passing fixture does not establish freedom from intermittent failures.
+- A separate fresh scope passed startup 19/19, signed-social 9/9 and signed-context 9/9. UI11 navigation passed 4/7; steps 2, 3 and 6 failed the immediate outgoing management DOM count before releasing held stale callbacks. A URL/DOM-disposal race was a supported hypothesis at this checkpoint, not an established product diagnosis. Device-progress was not run.
+- The earlier separate attempt, before the strict known-service-key input correction, is preserved in `original-117-independent/summary.json`; startup passed and signed-social failed. Later phases were not run.
+- All three fixtures completed exact owned teardown: four ports closed, synthetic keys removed, no remaining processes and no forced cleanup. Failing scopes retain false lifecycle result and nonzero supervisor exit.
+
+Only closed-schema finite diagnostics, source/frontend/native/raw-receipt hashes, and sanitized verification are included. No runtime databases, credentials, private keys, URLs, response bodies, raw errors or logs are copied. No full browser suite, GitHub CI, deployment or pixel-wide claim is made here. The later DOM-detachment helper and fresh UI11 outcome are separate checkpoints.

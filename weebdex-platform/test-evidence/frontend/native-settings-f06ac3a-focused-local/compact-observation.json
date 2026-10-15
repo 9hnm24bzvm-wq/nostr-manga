@@ -1,0 +1,262 @@
+{
+  "schema": 1,
+  "actual_browser": true,
+  "strict_predicate_unchanged": true,
+  "prior_failure_cause_proven": false,
+  "observation": {
+    "maximum": 1,
+    "request_count": 6,
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "statuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "request_limit": 32,
+    "event_limit": 256,
+    "requests": [
+      {
+        "id": 1,
+        "page": null,
+        "response_page": 1,
+        "status": 200,
+        "timing": {
+          "startTime": 1792016447740.0862,
+          "responseEnd": 132.965
+        },
+        "events": [
+          {
+            "sequence": 1,
+            "event": "request",
+            "startTime": 0,
+            "responseEnd": null
+          },
+          {
+            "sequence": 2,
+            "event": "response",
+            "startTime": 1792016447740.0862,
+            "responseEnd": null
+          },
+          {
+            "sequence": 3,
+            "event": "requestfinished",
+            "startTime": 1792016447740.0862,
+            "responseEnd": 132.965
+          },
+          {
+            "sequence": 4,
+            "event": "body-parsed",
+            "startTime": 1792016447740.0862,
+            "responseEnd": 132.965
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "page": 2,
+        "response_page": 2,
+        "status": 200,
+        "timing": {
+          "startTime": 1792016448007.9282,
+          "responseEnd": 130.22
+        },
+        "events": [
+          {
+            "sequence": 5,
+            "event": "request",
+            "startTime": 0,
+            "responseEnd": null
+          },
+          {
+            "sequence": 6,
+            "event": "response",
+            "startTime": 1792016448007.9282,
+            "responseEnd": null
+          },
+          {
+            "sequence": 7,
+            "event": "requestfinished",
+            "startTime": 1792016448007.9282,
+            "responseEnd": 130.22
+          },
+          {
+            "sequence": 9,
+            "event": "body-parsed",
+            "startTime": 1792016448007.9282,
+            "responseEnd": 130.22
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "page": 3,
+        "response_page": 3,
+        "status": 200,
+        "timing": {
+          "startTime": 1792016448290.7952,
+          "responseEnd": 132.919
+        },
+        "events": [
+          {
+            "sequence": 8,
+            "event": "request",
+            "startTime": 0,
+            "responseEnd": null
+          },
+          {
+            "sequence": 10,
+            "event": "response",
+            "startTime": 1792016448290.7952,
+            "responseEnd": null
+          },
+          {
+            "sequence": 11,
+            "event": "requestfinished",
+            "startTime": 1792016448290.7952,
+            "responseEnd": 132.919
+          },
+          {
+            "sequence": 13,
+            "event": "body-parsed",
+            "startTime": 1792016448290.7952,
+            "responseEnd": 132.919
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "page": 4,
+        "response_page": 4,
+        "status": 200,
+        "timing": {
+          "startTime": 1792016448608.119,
+          "responseEnd": 159.849
+        },
+        "events": [
+          {
+            "sequence": 12,
+            "event": "request",
+            "startTime": 0,
+            "responseEnd": null
+          },
+          {
+            "sequence": 14,
+            "event": "response",
+            "startTime": 1792016448608.119,
+            "responseEnd": null
+          },
+          {
+            "sequence": 15,
+            "event": "requestfinished",
+            "startTime": 1792016448608.119,
+            "responseEnd": 159.849
+          },
+          {
+            "sequence": 17,
+            "event": "body-parsed",
+            "startTime": 1792016448608.119,
+            "responseEnd": 159.849
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "page": 5,
+        "response_page": 5,
+        "status": 200,
+        "timing": {
+          "startTime": 1792016448966.8079,
+          "responseEnd": 195.586
+        },
+        "events": [
+          {
+            "sequence": 16,
+            "event": "request",
+            "startTime": 0,
+            "responseEnd": null
+          },
+          {
+            "sequence": 18,
+            "event": "response",
+            "startTime": 1792016448966.8079,
+            "responseEnd": null
+          },
+          {
+            "sequence": 19,
+            "event": "requestfinished",
+            "startTime": 1792016448966.8079,
+            "responseEnd": 195.586
+          },
+          {
+            "sequence": 20,
+            "event": "body-parsed",
+            "startTime": 1792016448966.8079,
+            "responseEnd": 195.586
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "page": 6,
+        "response_page": 6,
+        "status": 200,
+        "timing": {
+          "startTime": 1792016449631.273,
+          "responseEnd": 65.799
+        },
+        "events": [
+          {
+            "sequence": 21,
+            "event": "request",
+            "startTime": 0,
+            "responseEnd": null
+          },
+          {
+            "sequence": 22,
+            "event": "response",
+            "startTime": 1792016449631.273,
+            "responseEnd": null
+          },
+          {
+            "sequence": 23,
+            "event": "requestfinished",
+            "startTime": 1792016449631.273,
+            "responseEnd": 65.799
+          },
+          {
+            "sequence": 24,
+            "event": "body-parsed",
+            "startTime": 1792016449631.273,
+            "responseEnd": 65.799
+          }
+        ]
+      }
+    ],
+    "truncated": {
+      "requests": false,
+      "events": false,
+      "rows": false
+    },
+    "unavailable": {
+      "request_event": false,
+      "request_page": true,
+      "response_page": false,
+      "status": false,
+      "timing": false
+    }
+  },
+  "raw_receipt_hash_role": {
+    "role": "compact-acceptance",
+    "sha256": "2da5605fa33f6604b569dacccffff76aa05d1ac202b19e05a381121d9487fe26"
+  }
+}

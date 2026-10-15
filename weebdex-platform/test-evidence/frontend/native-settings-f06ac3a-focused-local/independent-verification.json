@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "status": "independently-verified-scoped-runtime-results",
+  "application_source_commit": "11706deb4dce8ae374e05e878e7f06f0ecb9bae4",
+  "harness_source_commit": "90db6e189f44ea1cd2243d00aa39128824208701",
+  "private_delta_sha256": "a63d448134ae2c958656cb6c7323f91e8b354ebe8758b27ae465947ef743056a",
+  "app_frontend_native_pins": {
+    "index": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+    "manifest": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+    "normal": "276669a2c3dcb7827efce17cb627cb1b0e6cca74e6b662a2d2f43a88b8a18424",
+    "provisioner": "b0982ff2f08f325c60d502d206ef809340ae3d31450c9c180d7cc00cd439de12"
+  },
+  "results": {
+    "compact": {
+      "selected_scope_passed": true,
+      "phases": [
+        {
+          "phase": "startup",
+          "status": "passed",
+          "actual_steps": 19
+        },
+        {
+          "phase": "ui12-compact-feed",
+          "status": "passed",
+          "actual_steps": 1
+        }
+      ],
+      "strict_cleanup_verified": true,
+      "lifecycle_clean": true,
+      "raw_result_sha256": "5f7a107ad11c1a71aeeaad01315b720d82e8b4e14193a6792c67a394ec112c27"
+    },
+    "relocation": {
+      "selected_scope_passed": false,
+      "phases": [
+        {
+          "phase": "startup",
+          "status": "passed",
+          "actual_steps": 19
+        },
+        {
+          "phase": "signed-social",
+          "status": "passed",
+          "actual_steps": 9
+        },
+        {
+          "phase": "signed-context",
+          "status": "passed",
+          "actual_steps": 9
+        },
+        {
+          "phase": "ui11-device-navigation",
+          "status": "failed",
+          "actual_steps": 7
+        }
+      ],
+      "strict_cleanup_verified": true,
+      "lifecycle_clean": false,
+      "raw_result_sha256": "abd5519bacd806a044ca85aa9a9d698c815a6ab816a5e2723a146857fcb18281"
+    }
+  },
+  "compact_numeric_observation": {
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "maximum_transport_lifetimes": 1,
+    "request_count": 6,
+    "events": 24,
+    "final_native_timings_nonoverlapping": true,
+    "request_query_page_unavailable_for_default_first_page": true,
+    "truncated": false,
+    "prior_failure_cause_proven": false
+  },
+  "original_independent_attempt": {
+    "startup_passed": 19,
+    "signed_social_failed": true,
+    "source_proven_known_key_selector_corrected_only_later": true,
+    "strict_teardown_verified": true
+  },
+  "navigation_failure": {
+    "step_indices": [
+      2,
+      3,
+      6
+    ],
+    "old_callbacks_released": false,
+    "persistent_product_leak_proven": false,
+    "device_progress": "not-run"
+  },
+  "source_bound_raw_reprojection_and_nested_schemas_verified": true,
+  "sanitized_scope_scan_clean": true,
+  "full_suite_passed": false,
+  "limits": [
+    "Scoped compact pass is one fixture; earlier compact failure is retained and its cause remains unresolved.",
+    "Signed-social/context pass their actual9steps each under the explicitly rebased90db harness; no full archive rebuild is claimed.",
+    "UI11navigation failed immediate DOM-disposal checkpoints before held callback release; progress unrun.",
+    "All fixtures stopped cleanly; failing scopes retain lifecyclefalse and nonzero supervisor exit."
+  ],
+  "files": [
+    {
+      "path": "f06ac3a-followon/bindings.json",
+      "bytes": 1649,
+      "sha256": "1db24c7d3da4e51fbf07fcb73a9b7ce61dbd0c35c889f3284db1ea20eeb57934"
+    },
+    {
+      "path": "f06ac3a-followon/compact-diagnostic-summary.json",
+      "bytes": 1673,
+      "sha256": "be31f668b29096eaaf491d206b780ba3a4edd93e1b2d52aa89f202ca2f117c88"
+    },
+    {
+      "path": "f06ac3a-followon/compact-observation.json",
+      "bytes": 6148,
+      "sha256": "0acff282e64f30a33f50e31d9157d6268e9234a003fcf2653192e139a8d8fb46"
+    },
+    {
+      "path": "f06ac3a-followon/navigation-failure.json",
+      "bytes": 976,
+      "sha256": "26d826fb2f1716a4fe8a2b761fa4834415851ff4c80ffae9e60a5e2eba4ab963"
+    },
+    {
+      "path": "f06ac3a-followon/relocation-independent-summary.json",
+      "bytes": 2426,
+      "sha256": "674f8387dfec4b15802e40d4dcd24eb0854b6c50a9e6ae0ca7f491e7ecdec656"
+    },
+    {
+      "path": "relocation-independent/summary.json",
+      "bytes": 33043,
+      "sha256": "0e201658485ad03d27ece31f66727d6932b3ab101c1b2d4254add18dc22bcb85"
+    }
+  ]
+}
