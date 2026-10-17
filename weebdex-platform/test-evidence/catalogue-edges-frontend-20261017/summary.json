@@ -1,0 +1,32 @@
+{
+  "status": "focused-and-strict-passed",
+  "utc": "2026-10-17T17:35:35.252185+00:00",
+  "finite": {
+    "passed": 120,
+    "failed": 0,
+    "command": "node --experimental-vm-modules --test weebdex-platform/tests/ci/public-api-recovery.test.mjs weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs weebdex-platform/tests/ci/test_public_upload_provenance_recovery.mjs",
+    "scope": "51 public API bridge/DTO/edge regressions plus69 unchanged signed upload adapter/provenance regressions; finite transport stand-ins only"
+  },
+  "strict": {
+    "mode": "PUBLIC_MANGADEX_CATALOGUE=1",
+    "errors": 0,
+    "warnings": 15,
+    "reachable_integration_files": 85,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true
+  },
+  "sources": {
+    "platform-integrations/public-api/catalogue-edges.ts": "2a5f569bbc6c28773129061497d88a5510b05acb8cc3f56c61afdee542360ea5",
+    "platform-integrations/public-api/site-client.ts": "17c7ac54f9fd36d4852a731139bbe444b1e1aa42cf1097a935e694312064d89a",
+    "platform-integrations/public-api/types.ts": "87d076c8afda9a200a2b93ccae967fc229765eba40c82823bc5556953ffe0f1a",
+    "platform-integrations/public-api/anchors.json": "322eebb172a462e2e1c1323f6657fa9dbdcd6315c2e612ec9fa378bdaf397d7d",
+    "tests/ci/public-api-recovery.test.mjs": "6645192ad3c766b793f93e3098b6915f8ab6cbdbbea4085e642d7fd17ed35d20"
+  },
+  "limits": [
+    "Requires backend persisted edge endpoints integrated by API worker",
+    "No actual HTTP or native browser acceptance from this frontend-only run",
+    "Production gate remains explicit and defaults off",
+    "UUID-v2 saved-library mutation/publication fence remains unchanged"
+  ],
+  "explicit_includes_manga_accepted": true
+}

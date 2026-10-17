@@ -227,6 +227,18 @@ impl AliasIndex {
                 )? {
                     relationships.push(r);
                 }
+                // Tags remain fully projected in attributes.tags. Reference expansion
+                // also exposes their canonical IDs through the relationship seam.
+                for tag in array(&value["relationships"]["tags"]) {
+                    if let Some(r) = self.relationship(
+                        ResourceKind::Tag,
+                        ResourceType::Tag,
+                        &tag,
+                        includes.contains("tag"),
+                    )? {
+                        relationships.push(r);
+                    }
+                }
                 for related in array(&value["relationships"]["relations"]) {
                     if let Some(mut r) = self.relationship(
                         ResourceKind::Manga,

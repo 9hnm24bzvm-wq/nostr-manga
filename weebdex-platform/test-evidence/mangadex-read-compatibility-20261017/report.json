@@ -1,0 +1,69 @@
+{
+  "utc": "2026-10-17T17:35:11.971575+00:00",
+  "branch": "recovery/mangadex-api-compatibility-20261017",
+  "baseline": "8d963f3f",
+  "scope": "Core public MangaDex-compatible read APIs, UUID presentation, filter/schema parity, explicit operation snapshot. No remote push or production publication.",
+  "checks": [
+    {
+      "name": "platform_library_unit",
+      "result": "test result: ok. 114 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.12s",
+      "output_sha256": "140e3fc8a39fd1836f177b46bda222a480c008bc21d8387c468a630a175eddbb"
+    },
+    {
+      "name": "http_postgres_compatibility",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s",
+      "output_sha256": "04b7e7a59454522b33896657a96bd1bee5048fd911d1721cd302b02fdee6ce0a"
+    },
+    {
+      "name": "http_postgres_catalogue_regression",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.51s",
+      "output_sha256": "c5de4e7f9eb9a1b287644eb369de70bd90a691621b2407d8fa7d1d69d14be8e4"
+    }
+  ],
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "backend/src/public_api/catalogue.rs": "4dd9d59baf366ddddc55b27ebed1c5c7c653d075d31325ed79f6d2d99bc56757",
+    "backend/src/public_api/catalogue_dto.rs": "694eacd7a61b43994a5581eb56ca83be68eff381ed6741a06561753bf850d08e",
+    "backend/src/public_api/catalogue_edges.rs": "d5878771e7a1433f8873f5f8c9827661f3b282547da1ff2e76dc597d05011672",
+    "backend/src/public_api/mod.rs": "a113ef3a929edf390def7e9353cac552a0295969e6b19e67c41c530790e5c4bc",
+    "backend/src/public_api/routes.rs": "f78e097fd5357e5875fd85a9fd98a725ab1699b7a2404e0918fe7f5080546144",
+    "backend/tests/public_catalogue_compatibility.rs": "91b18b9a12334ad71795710880df127160fd6a651a5f1ff688cf59296218725c",
+    "backend/tests/public_catalogue_reads.rs": "b0b8a351332cfebcc9d8f47bda69f789bee71a58cc73dbf1dd4f101d5a8047fd",
+    "docs/mangadex-read-compatibility-audit.md": "e936ea05539e7250fb7dfbf2713b0405e2dae3e6f47c5097e98ff376f43621ab",
+    "docs/mangadex-operation-compatibility-snapshot.json": "bc4dfa4858a541014698b2e331daf373b5f58416c971bf5908f9f077293ae7ff"
+  },
+  "toolchain": {
+    "rust": "1.90.0",
+    "dependency_mode": "Cargo --locked --offline",
+    "build_jobs": 2,
+    "postgres": "17.11 disposable loopback-only PostgreSQL; runner disables fsync only for synthetic isolated fixtures"
+  },
+  "limits": [
+    "This is not all 113 operations or full frontend/browser acceptance.",
+    "Snapshot categories for separate modules are source classifications, not fresh runtime evidence.",
+    "Formatting component rustfmt is unavailable in the recovered Rust toolchain; git diff --check passes.",
+    "Existing compiler visibility/dead-code warnings remain; builds and executed tests passed.",
+    "No production performance, durability, production readiness or external MangaDex service equivalence claim."
+  ]
+}

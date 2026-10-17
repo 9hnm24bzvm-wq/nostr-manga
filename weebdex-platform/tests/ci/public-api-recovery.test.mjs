@@ -66,3 +66,76 @@ test('visibility never accepts a preferred UUID in place of an unproved requeste
 test('composed chapter/volume ordering matches numeric SQL keys with nonnumeric values always last',async()=>{const values=['special','2','1.5','','10',null],rows=values.map((value,index)=>({...chapter,id:`88888888-8888-8888-8888-${String(index).padStart(12,'0')}`,attributes:{...chapter.attributes,chapter:value,volume:value}}));for(const field of ['chapter','volume'])for(const direction of ['asc','desc']){const api=new client.PublicApiClient(async request=>new URL('http://fixture'+request.path).pathname==='/manga'?collection([authoredManga()]):collection(rows));const response=await authorFeed.authorChapterCollection(api,new URLSearchParams({authorOrArtist:authorId,sort:field,order:direction}));const ordered=response.body.data.map(row=>row.attributes[field]);assert.deepEqual(plain(ordered.slice(0,3)),direction==='asc'?['1.5','2','10']:['10','2','1.5']);assert.ok(ordered.slice(3).every(value=>value===null||value===''||value==='special'));}});
 test('native forum network or malformed-context failure leaves title content readable and cancellation still aborts',async()=>{for(const failure of [Error('companion network unavailable'),new validation.PublicApiContractError('malformed native context',502)]){const api=new client.PublicApiClient(async request=>{if(request.path==='/nostr/native-forum/contexts')throw failure;return request.path.includes('/feed?')?collection([chapter]):entity(manga);});const response=await new site.RetainedCatalogueClient(api).read('manga.get',{id});assert.equal(response.status,200);assert.equal(response.body.id,id);assert.equal(response.body.relationships.thread,null);assert.equal(response.body.public_api.native_forum.available,false);assert.equal(response.body.public_api.native_forum.status,failure instanceof validation.PublicApiContractError?502:503);}const controller=new AbortController(),api=new client.PublicApiClient(async request=>{if(request.path==='/nostr/native-forum/contexts'){controller.abort();throw Error('request canceled');}return request.path.includes('/feed?')?collection([chapter]):entity(manga);});await assert.rejects(()=>new site.RetainedCatalogueClient(api).read('manga.get',{id,signal:controller.signal}),/request canceled/);});
 test('original and optimized page pixel dimensions remain independent actual metadata',()=>{const home={result:'ok',baseUrl:'/',chapter:{hash:chapterId,data:['original.webp'],dataSaver:['optimized.webp']},nostr:{pageDimensions:[[32,48]],dataSaverDimensions:[[16,24]]}};const pages=normalize.atHomePages(home);assert.deepEqual(plain(pages.data[0].dimensions),[32,48]);assert.deepEqual(plain(pages.data_optimized[0].dimensions),[16,24]);const unknown=normalize.atHomePages({...home,nostr:{pageDimensions:[[32,48]]}});assert.deepEqual(plain(unknown.data_optimized[0].dimensions),[]);});
+
+// Actual persisted-edge wire contracts and retained Related/Recommendations bridge.
+const edgeId='aaaaaaaa-aaaa-8aaa-aaaa-aaaaaaaaaaaa',edgeId2='bbbbbbbb-bbbb-8bbb-bbbb-bbbbbbbbbbbb';
+const targetManga={...manga,id:secondMangaId,relationships:[{id:coverId,type:'cover_art',attributes:{fileName:'real-cover.png',dimensions:[100,200],locale:'en'}},{id:authorId,type:'author',attributes:{name:'Actual author'}}]};
+const recommendation=(target=secondMangaId,score=42,resourceId=edgeId)=>res('manga_recommendation',{score},[{id:target,type:'manga',attributes:targetManga.attributes}],resourceId);
+const relation=(target=secondMangaId,resourceId=edgeId)=>res('manga_relation',{relation:'sequel',version:7,nostr:{scope:'instance-local',versionScope:'owner_manga'}},[{id:target,type:'manga',attributes:targetManga.attributes}],resourceId);
+const edgeCollection=(data,kind='recommendation',total=data.length)=>({status:200,body:{result:'ok',response:'collection',data,limit:kind==='recommendation'?20:total,offset:0,total}});
+function edgesFixture(rows,{kind='recommendation',hydration=collection([targetManga]),total=rows.length}={}) {
+ const calls=[];
+ const api=new client.PublicApiClient(async request=>{const url=new URL('http://fixture'+request.path);calls.push({url,signal:request.signal});return url.pathname==='/manga'?hydration:edgeCollection(rows,kind,total);});
+ return {calls,bridge:new site.RetainedCatalogueClient(api)};
+}
+test('recommendations use persisted edge UUID/score and hydrated target covers/creators',async()=>{
+ const f=edgesFixture([recommendation()],{total:31}),signal=new AbortController().signal;
+ const response=await f.bridge.read('manga.recommendations',{id,signal});
+ assert.equal(response.body.total,31);assert.equal(response.body.limit,20);assert.equal(response.body.data[0].id,secondMangaId);
+ assert.equal(response.body.data[0].relationships.cover.file_name,'real-cover.png');assert.equal(response.body.data[0].relationships.authors[0].name,'Actual author');
+ assert.equal(response.body.data[0].public_api.edge.resource.id,edgeId);assert.equal(response.body.data[0].public_api.edge.resource.attributes.score,42);assert.equal(response.body.data[0].public_api.edge.owner,id);
+ assert.equal(f.calls[0].url.pathname,`/manga/${id}/recommendation`);assert.deepEqual(f.calls[0].url.searchParams.getAll('includes[]'),['manga']);
+ assert.equal(f.calls[0].url.searchParams.has('limit'),false);assert.equal(f.calls[0].url.searchParams.has('offset'),false);
+ assert.deepEqual(f.calls[1].url.searchParams.getAll('ids[]'),[secondMangaId]);assert.deepEqual(f.calls[1].url.searchParams.getAll('includes[]'),['cover_art','author','artist']);
+ assert.equal(f.calls.every(call=>call.signal===signal),true);
+});
+test('relations use singular endpoint and preserve actual label, owner version and edge identity',async()=>{
+ const f=edgesFixture([relation()],{kind:'relation'}),response=await f.bridge.read('manga.relations',{id});
+ assert.equal(Array.isArray(response.body),true);assert.equal(response.body[0].id,secondMangaId);assert.equal(response.body[0].type,'sequel');
+ assert.equal(response.body[0].public_api.edge.resource.id,edgeId);assert.equal(response.body[0].public_api.edge.resource.attributes.version,7);
+ assert.equal(f.calls[0].url.pathname,`/manga/${id}/relation`);
+});
+test('empty persisted edge collections stay actually empty without a hydration or native substitute',async()=>{
+ for(const kind of ['recommendation','relation']){const f=edgesFixture([],{kind}),response=await f.bridge.read(kind==='relation'?'manga.relations':'manga.recommendations',{id});assert.deepEqual(plain(kind==='relation'?response.body:response.body.data),[]);assert.equal(f.calls.length,1);}
+});
+test('recommendation documented filters are preserved while invented pagination is rejected before transport',async()=>{
+ const f=edgesFixture([]);await f.bridge.read('manga.recommendations',{id,query:new URLSearchParams([['includes[]','manga'],['contentRating[]','safe'],['order[score]','asc']])});
+ assert.equal(f.calls[0].url.searchParams.get('contentRating[]'),'safe');assert.equal(f.calls[0].url.searchParams.get('order[score]'),'asc');
+ for(const [operation,input]of [['manga.recommendations','limit=1'],['manga.recommendations','offset=0'],['manga.recommendations','contentRating[]=invalid'],['manga.recommendations','order[score]=asc&order[score]=desc'],['manga.relations','contentRating[]=safe']]){const value=edgesFixture([]);await assert.rejects(()=>value.bridge.read(operation,{id,query:new URLSearchParams(input)}),error=>error.status===422);assert.equal(value.calls.length,0);}
+});
+test('unavailable edge roots return exact error without any target hydration',async()=>{
+ const denied={status:404,body:{result:'error',errors:[]}},calls=[];
+ const bridge=new site.RetainedCatalogueClient(new client.PublicApiClient(async request=>{calls.push(request.path);return denied;}));
+ assert.equal(await bridge.read('manga.recommendations',{id}),denied);assert.equal(calls.length,1);
+});
+test('wrong-kind, duplicate-edge, duplicate-target and self edges fail before hydration',async()=>{
+ for(const rows of [[{...recommendation(),type:'manga'}],[recommendation(),recommendation(secondMangaId,9,edgeId2)],[recommendation(),recommendation(id,9,edgeId)],[recommendation(id)],[{...recommendation(),relationships:[]}]]){const f=edgesFixture(rows);await assert.rejects(()=>f.bridge.read('manga.recommendations',{id}));assert.equal(f.calls.length,1);}
+});
+test('recommendation scores are exact integers, never invented or rounded',async()=>{
+ for(const score of ['9',1.5,Number.MAX_SAFE_INTEGER+1,null]){const f=edgesFixture([recommendation(secondMangaId,score)]);await assert.rejects(()=>f.bridge.read('manga.recommendations',{id}));}
+ const missing=recommendation();delete missing.attributes.score;await assert.rejects(()=>edgesFixture([missing]).bridge.read('manga.recommendations',{id}));
+});
+test('edge hydration rejects missing, duplicate and out-of-scope title rows',async()=>{
+ for(const hydration of [collection([],1),collection([manga]),collection([targetManga,targetManga],1),{status:503,body:{result:'error',errors:[]}}]){const f=edgesFixture([recommendation()],{hydration});await assert.rejects(()=>f.bridge.read('manga.recommendations',{id}));assert.equal(f.calls.length,2);}
+});
+test('relation provenance must describe the real owner-manga version domain',async()=>{
+ for(const attrs of [{relation:'sequel'}, {...relation().attributes,version:0},{...relation().attributes,nostr:{scope:'global',versionScope:'edge'}}]){const row=relation();row.attributes=attrs;const f=edgesFixture([row],{kind:'relation'});await assert.rejects(()=>f.bridge.read('manga.relations',{id}));assert.equal(f.calls.length,1);}
+});
+test('public title script exposes the native Related tab and immutable markup is retained',async()=>{
+ const {createFrontendOverlays}=await import('../../platform-integrations/frontend-overlays.mjs');const{createLocalLibraryOverlays}=await import('../../platform-integrations/local-library/overlays.mjs');
+ const frontend=path.join(root,'frontend'),file=path.join(frontend,'src/routes/(app)/title/Manga.svelte'),original=fs.readFileSync(file,'utf8');let code=original;
+ for(const plugin of [createFrontendOverlays(frontend),createLocalLibraryOverlays(frontend),createPublicApiOverlays(frontend,{enabled:true})])code=plugin.transform.handler(code,file)?.code??code;
+ assert.match(code,/component: MangaRelatedSection,\s*hidden: !isPublished/);assert.equal(fs.readFileSync(file,'utf8'),original);
+});
+test('hydration order cannot reorder the persisted recommendation ranking',async()=>{
+ const thirdManga={...targetManga,id:secondChapterId},f=edgesFixture([recommendation(secondMangaId,50),recommendation(secondChapterId,10,edgeId2)],{hydration:collection([thirdManga,targetManga])});
+ const response=await f.bridge.read('manga.recommendations',{id});assert.deepEqual(plain(response.body.data.map(row=>row.id)),[secondMangaId,secondChapterId]);assert.deepEqual(plain(response.body.data.map(row=>row.public_api.edge.resource.attributes.score)),[50,10]);
+});
+test('truncated, shifted and over-cap edge collections are explicit errors',async()=>{
+ for(const body of [{...edgeCollection([recommendation()]).body,offset:1},{...edgeCollection([recommendation()]).body,limit:0},{...edgeCollection([relation()],'relation').body,total:2}]){const api=new client.PublicApiClient(async()=>({status:200,body}));const operation=body.data[0].type==='manga_relation'?'manga.relations':'manga.recommendations';await assert.rejects(()=>new site.RetainedCatalogueClient(api).read(operation,{id}));}
+});
+test('relation targets hydrate in exact 100-ID batches without duplicate source IDs',async()=>{
+ const makeId=index=>'cccccccc-cccc-8ccc-cccc-'+String(index).padStart(12,'0'),rows=Array.from({length:101},(_,index)=>relation(makeId(index+1),makeId(index+200))),calls=[];
+ const api=new client.PublicApiClient(async request=>{const url=new URL('http://fixture'+request.path);calls.push(url);if(url.pathname!== '/manga')return edgeCollection(rows,'relation');const ids=url.searchParams.getAll('ids[]');return collection(ids.map(id=>({...targetManga,id})));});
+ const response=await new site.RetainedCatalogueClient(api).read('manga.relations',{id});assert.equal(response.body.length,101);assert.equal(calls.length,3);assert.equal(calls[1].searchParams.getAll('ids[]').length,100);assert.equal(calls[2].searchParams.getAll('ids[]').length,1);
+});

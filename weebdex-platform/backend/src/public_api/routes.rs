@@ -30,12 +30,15 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
         if operation.method == "GET"
             && matches!(
                 axum_path(&operation.path).as_str(),
-                "/manga"
+                "/ping"
+                    | "/manga"
                     | "/manga/{p0}"
                     | "/manga/random"
                     | "/manga/tag"
                     | "/manga/{p0}/feed"
                     | "/manga/{p0}/aggregate"
+                    | "/manga/{p0}/relation"
+                    | "/manga/{p0}/recommendation"
                     | "/chapter"
                     | "/chapter/{p0}"
                     | "/author"
@@ -133,7 +136,7 @@ async fn unsupported() -> PublicApiError {
 async fn unknown() -> PublicApiError {
     PublicApiError::not_found_detail("Unknown public API endpoint")
 }
-async fn wrong_method(method: Method) -> impl IntoResponse {
+pub(super) async fn wrong_method(method: Method) -> impl IntoResponse {
     let _ = method;
     PublicApiError::new(
         StatusCode::METHOD_NOT_ALLOWED,

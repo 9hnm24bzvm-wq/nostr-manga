@@ -18,9 +18,9 @@ use axum::{
 };
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
-const MANGA_VISIBLE: &str = "m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)";
+pub(super) const MANGA_VISIBLE: &str = "m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)";
 const CHAPTER_VISIBLE: &str = "c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)";
-pub const MANGA_INCLUDES: &[&str] = &["author", "artist", "cover_art", "manga"];
+pub const MANGA_INCLUDES: &[&str] = &["author", "artist", "cover_art", "manga", "tag", "creator"];
 const CHAPTER_INCLUDES: &[&str] = &["manga", "scanlation_group", "user"];
 const MANGA_ORDER: &[&str] = &[
     "title",
@@ -96,6 +96,7 @@ const CHAPTER_ARRAY: &[&str] = &[
 ];
 pub fn router() -> Router<AppState> {
     Router::new()
+        .route("/ping", get(|| async { "pong" }))
         .route("/manga", get(manga_many))
         .route("/manga/random", get(random))
         .route("/manga/tag", get(tags))
@@ -214,7 +215,7 @@ handlers!(chapter_many, chapter_one, Chapter);
 handlers!(author_many, author_one, Author);
 handlers!(group_many, group_one, Group);
 handlers!(cover_many, cover_one, Cover);
-async fn resolve(state: &AppState, kind: ResourceKind, public: &str) -> PublicApiResult<String> {
+pub(super) async fn resolve(state: &AppState, kind: ResourceKind, public: &str) -> PublicApiResult<String> {
     let id = PublicUuid::parse(public)?;
     let target = PostgresPublicIdResolver::new(state.db.clone())
         .resolve(kind, &id)
@@ -707,7 +708,8 @@ pub(super) fn order_clause(
   (_,"createdAt")=>format!("{alias}.created_at"),(_,"updatedAt")=>format!("{alias}.updated_at"),(_,"name")=>format!("lower({alias}.name)"),
   (ResourceKind::Chapter,"publishAt"|"readableAt")=>"c.published_at".into(),
   (ResourceKind::Chapter,"volume"|"chapter")|(ResourceKind::Cover,"volume")=>format!("CASE WHEN {alias}.{field} ~ '^[0-9]+([.][0-9]+)?$' THEN {alias}.{field}::numeric END"),
-  (ResourceKind::Group,"followedCount"|"relevance")=>return Err(PublicApiError::unsupported()),
+  (ResourceKind::Group,"followedCount")=>"(SELECT count(*) FROM platform.library_group_follows gf JOIN platform.users gu ON gu.id=gf.user_id AND NOT gu.disabled WHERE gf.group_id=g.id)".into(),
+  (ResourceKind::Group,"relevance")=>{let p=sql.bind(q.first("name").unwrap_or("").to_owned());format!("CASE WHEN lower(g.name)=lower({p}) THEN 3 WHEN starts_with(lower(g.name),lower({p})) THEN 2 ELSE 1 END")},
   _=>return Err(PublicApiError::bad_request("Unsupported order field")),
  };
         order.push(format!("{column} {} NULLS LAST", direction.sql()));
@@ -920,7 +922,7 @@ async fn aggregate(
     sql.conditions.push(format!("c.manga_id={p}"));
     validate_languages(&q.list("translatedLanguage[]"))?;
     sql.array("c.language", q.list("translatedLanguage[]"), false);
-    if !q.boolean("includeUnavailable")?.unwrap_or(false) {
+    if q.bounded_usize("includeUnavailable", 0, 0, 1)? == 0 {
         sql.conditions.push("NOT c.is_unavailable".into());
     }
     if !q.list("groups[]").is_empty() {
@@ -932,7 +934,7 @@ async fn aggregate(
             sql.conditions.push(format!("EXISTS(SELECT 1 FROM platform.catalog_chapter_groups cg WHERE cg.chapter_id=c.id AND cg.group_id=ANY({p}))"));
         }
     }
-    let rows=state.db.client().await?.query(&format!("SELECT c.id,c.volume,c.chapter FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE {} ORDER BY c.volume NULLS LAST,c.chapter NULLS LAST,c.id LIMIT 10001",sql.predicate()),&sql.params()).await?;
+    let rows=state.db.client().await?.query(&format!("SELECT c.id,c.volume,c.chapter,c.is_unavailable FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE {} ORDER BY c.volume NULLS LAST,c.chapter NULLS LAST,c.is_unavailable,c.id LIMIT 10001",sql.predicate()),&sql.params()).await?;
     if rows.len() > 10000 {
         return Err(PublicApiError::unavailable());
     }
@@ -945,7 +947,7 @@ async fn aggregate(
     for ids in natives.chunks(super::postgres_identity::MAX_PUBLIC_ID_BATCH) {
         aliases.extend(resolver.preferred_many(ResourceKind::Chapter, ids).await?);
     }
-    let mut grouped = BTreeMap::<String, BTreeMap<String, Vec<PublicUuid>>>::new();
+    let mut grouped = BTreeMap::<String, BTreeMap<String, Vec<(PublicUuid, bool)>>>::new();
     for row in rows {
         let native: String = row.get(0);
         let volume: Option<String> = row.get(1);
@@ -955,12 +957,13 @@ async fn aggregate(
             .or_default()
             .entry(chapter.unwrap_or_else(|| "none".into()))
             .or_default()
-            .push(
+            .push((
                 aliases
                     .get(&native)
                     .cloned()
                     .ok_or_else(PublicApiError::unavailable)?,
-            );
+                row.get(3),
+            ));
     }
     let volumes = grouped
         .into_iter()
@@ -969,11 +972,12 @@ async fn aggregate(
             let chapters = chapters
                 .into_iter()
                 .map(|(chapter, mut ids)| {
-                    let id = ids.remove(0);
+                    let (id, unavailable) = ids.remove(0);
                     let count = ids.len() + 1;
+                    let others = ids.into_iter().map(|(id, _)| id).collect::<Vec<_>>();
                     (
                         chapter.clone(),
-                        json!({"chapter":chapter,"id":id,"others":ids,"count":count}),
+                        json!({"chapter":chapter,"id":id,"isUnavailable":unavailable,"others":others,"count":count}),
                     )
                 })
                 .collect::<BTreeMap<_, _>>();
@@ -988,6 +992,38 @@ async fn aggregate(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn read_schemas_cover_pinned_filters_sorts_and_reference_expansions() {
+        let inventory: Value = serde_json::from_str(include_str!("../../../contracts/mangadex-5.13.1-inventory.json")).unwrap();
+        for (path, kind) in [
+            ("/manga", ResourceKind::Manga),
+            ("/chapter", ResourceKind::Chapter),
+            ("/author", ResourceKind::Author),
+            ("/group", ResourceKind::Group),
+            ("/cover", ResourceKind::Cover),
+        ] {
+            let operation = inventory["operations"].as_array().unwrap().iter()
+                .find(|operation| operation["method"] == "GET" && operation["path"] == path).unwrap();
+            let s = schema(kind);
+            for parameter in operation["parameters"].as_array().unwrap() {
+                let name = parameter["name"].as_str().unwrap();
+                match name {
+                    "limit" | "offset" => {},
+                    "includes[]" | "includes" => {
+                        for include in parameter["schema"]["items"]["enum"].as_array().unwrap() {
+                            assert!(s.includes.contains(&include.as_str().unwrap()), "{path} missing include {include}");
+                        }
+                    },
+                    "order" => {
+                        for field in parameter["schema"]["properties"].as_array().unwrap() {
+                            assert!(s.order.contains(&field.as_str().unwrap()), "{path} missing sort {field}");
+                        }
+                    },
+                    _ => assert!(s.scalar.contains(&name) || s.arrays.contains(&name), "{path} missing filter {name}"),
+                }
+            }
+        }
+    }
     #[test]
     fn actual_utc_date_validation_rejects_invalid_calendar_and_offsets() {
         for good in ["2024-02-29T12:00:00", "2025-01-01T00:00:00"] {
