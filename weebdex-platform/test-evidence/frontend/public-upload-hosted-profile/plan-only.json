@@ -1,0 +1,84 @@
+{
+  "all": {
+    "unique_phase_count": 40,
+    "all_unique_phase_count": 40,
+    "batches": {
+      "ordinary-a": [
+        "account",
+        "account-recovery",
+        "upload",
+        "reader",
+        "announcements"
+      ],
+      "ordinary-b": [
+        "local-library",
+        "filters",
+        "editorial",
+        "community",
+        "pwa"
+      ],
+      "ui10": [
+        "ui10-api-client",
+        "ui10-auth-lifetimes",
+        "ui10-recovery-lifetimes",
+        "ui10-preferences",
+        "ui10-reader-transition"
+      ],
+      "signed-a": [
+        "signed-library",
+        "signed-profile"
+      ],
+      "signed-b": [
+        "signed-social",
+        "signed-context"
+      ],
+      "signed-c": [
+        "signed-source-controls",
+        "signed-namespace"
+      ],
+      "signed-d": [
+        "signed-recipients",
+        "signed-restart"
+      ],
+      "ui-feed": [
+        "ui11-device-navigation",
+        "ui11-device-progress",
+        "ui12-compact-feed",
+        "ui13-terminal-feed",
+        "ui13-feed-authority",
+        "ui14-entity-pagination"
+      ],
+      "ui-reader": [
+        "ui12-compact-feed",
+        "reader",
+        "ui15-chapter-filter",
+        "ui15-reader-geometry",
+        "ui15-reader-feedback",
+        "ui15-16-empty-tabs"
+      ],
+      "ui-home": [
+        "ui14-account-failures",
+        "ui14-home-failures",
+        "ui16-home-preferences",
+        "ui16-search-cap"
+      ],
+      "actor-follow": [
+        "ui14-actor-follow"
+      ],
+      "public-upload": [
+        "public-upload-recovery"
+      ]
+    },
+    "browser_or_fixture_started": false
+  },
+  "public_upload": {
+    "unique_phase_count": 1,
+    "all_unique_phase_count": 40,
+    "batches": {
+      "public-upload": [
+        "public-upload-recovery"
+      ]
+    },
+    "browser_or_fixture_started": false
+  }
+}

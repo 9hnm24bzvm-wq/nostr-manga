@@ -1,5 +1,17 @@
 # Signed upload to reader acceptance
 
+## Current qualification status
+
+An independent exact-source, exact-executable repeat on 2026-10-17 failed the
+completed-session resume check: `GET /api/upload` returned HTTP 200 instead of
+204 after the chapter became readable. The earlier isolated passes below remain
+historical results; they do not currently qualify this transition. Correction
+and a fresh independent repeat are required. Cleanup still verified normal
+shutdown, closed owned ports and zero survivors. See the sanitized
+[`independent repeat`](../test-evidence/final/publication-reader-20261017/independent-repeat-failed.json).
+
+## Historical isolated result
+
 The 2026-10-17 local gate verifies the actual PostgreSQL/strfry publication
 pipeline. A signed chapter is initially accepted with an owner-only pending
 receipt. Starting the original native listener and ordinary supervised catalogue
