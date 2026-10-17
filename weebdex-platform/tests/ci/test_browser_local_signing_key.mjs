@@ -60,7 +60,12 @@ async function fixture({ random, secureRandom = true } = {}) {
   synthetic('@scure/base', encoding);
   synthetic('library', Object.fromEntries(['stores', 'currentDeviceSnapshot', 'apiRead', 'refreshLibrary', 'verifyCatalogueScope', 'message'].map(name => [name, never(name)])));
   synthetic('catalog', { scopedCatalogCandidates: never('catalog') });
-  synthetic('device-store', { deviceWriteLock: never('device-write') });
+  // Publication imports the real UUID-format fence as well as the write lock.
+  // Key-only tests never call publication, but keep the module export contract exact.
+  const deviceSource = fs.readFileSync(path.join(source, 'device-store.ts'), 'utf8');
+  const fence = deviceSource.match(/^export const PUBLIC_DEVICE_FORMAT_FENCE = (.+);$/m);
+  assert.ok(fence, 'review the production publication fence export');
+  synthetic('device-store', { deviceWriteLock: never('device-write'), PUBLIC_DEVICE_FORMAT_FENCE: vm.runInNewContext(fence[1]) });
   synthetic('protocol/publishing.js', Object.fromEntries(['queueSnapshot', 'deliverJob', 'cancelJob', 'recoverPublic'].map(name => [name, never(name)])));
   synthetic('protocol/backup.js', { backupBlob: never('backup') });
   function moduleFor(file) {

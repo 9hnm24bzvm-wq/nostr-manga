@@ -1823,6 +1823,18 @@ async fn persisted_cover_upload_draft_privacy_list_update_variants_and_delete() 
 #[tokio::test]
 #[ignore = "Requires the explicitly isolated PostgreSQL runner after implementation freeze"]
 async fn signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_stable() {
+    signed_upload_projection_journey(false).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+#[ignore = "Requires isolated PostgreSQL and the real strfry projection binary"]
+async fn committed_signed_upload_becomes_readable_after_original_projection() {
+    signed_upload_projection_journey(true).await;
+}
+
+/// Exercise both an intentionally paused source and its real eventual delivery.
+/// No test writes source visibility, catalogue metadata, or outbox completion.
+async fn signed_upload_projection_journey(materialize: bool) {
     use manga_node::{
         auth,
         db::{DbConfig, Repository},
@@ -1831,7 +1843,7 @@ async fn signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_sta
     use weebdex_platform::protocol::publication::OperatorRuntimeConfig;
 
     let mut f = fixture().await;
-    let manga = create_manga(&f, "Up signed pending fixture", true).await;
+    let manga = create_manga(&f, &format!("Up signed pending fixture {}", f.owner_id), true).await;
     let mid = manga["id"].as_str().unwrap().to_owned();
     let original_repo = Repository::connect(DbConfig {
         dsn: std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").unwrap(),
@@ -1865,19 +1877,37 @@ async fn signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_sta
         std::fs::set_permissions(&signer, std::fs::Permissions::from_mode(0o600)).unwrap();
     }
     let runtime = OperatorRuntimeConfig {
-        operator_key_file: signer,
+        operator_key_file: signer.clone(),
         expected_publisher: publisher.clone(),
         storage_owner: publisher.clone(),
         storage_holder: publisher.clone(),
         storage: json!({
             "path":f._storage.path().join("protocol-originals"),
-            "volume":"UpPendingFixture", "physical_bytes":32*1024*1024,
+            "volume":format!("UpPendingFixture{}", f.owner_id), "physical_bytes":32*1024*1024,
             "staging_bytes":32*1024*1024, "max_blob_bytes":8*1024*1024,
             "upload_slots":2, "reclamation_slots":2, "credit_lanes":16
         }),
         group_keys_dir: None,
         backend: None,
-        native_node: None,
+        native_node: if materialize {
+            let reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+            let bind = reservation.local_addr().unwrap();
+            drop(reservation);
+            let binary = std::env::var_os("STRFRY_BIN")
+                .map(PathBuf::from)
+                .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                    .join("../../manga-protocol-lab/vendor/strfry/strfry"));
+            assert!(binary.is_absolute() && binary.is_file(), "Real original projection binary is required");
+            Some(json!({
+                "bind":bind.to_string(), "base_url":format!("http://{bind}"),
+                "service_key_file":signer, "admin_pubkey":publisher,
+                "database_plaintext_local":true, "read_policy":"public",
+                "cors_origins":[ORIGIN], "sync_worker_enabled":false,
+                "auto_approve_publication_deletions":false,
+                "backend":{"binary":binary,"data_dir":f._storage.path().join("real-projection"),
+                    "map_bytes":64*1024*1024,"timeout_seconds":5}
+            }))
+        } else { None },
     };
     let mut config = (*f.state.config).clone();
     config.protocol_publication = Some(runtime.clone());
@@ -1956,8 +1986,18 @@ async fn signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_sta
     .await;
 
     let session = begin(&f, &mid).await;
-    let png = png();
-    let jpg = jpeg();
+    // Source storage deliberately owns a hash globally in this database.
+    // Distinct fixture authorities need distinct originals when both journeys
+    // run together; repeated positions still use the same exact PNG below.
+    let unique_original = |bytes: Vec<u8>, format: ImageFormat| {
+        let mut image = image::load_from_memory(&bytes).unwrap().to_rgb8();
+        image.put_pixel(0, 0, Rgb(rand::random::<[u8; 3]>()));
+        let mut encoded = Cursor::new(Vec::new());
+        DynamicImage::ImageRgb8(image).write_to(&mut encoded, format).unwrap();
+        encoded.into_inner()
+    };
+    let png = unique_original(png(), ImageFormat::Png);
+    let jpg = unique_original(jpeg(), ImageFormat::Jpeg);
     let files = file_array(
         upload(
             &f,
@@ -2167,6 +2207,92 @@ async fn signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_sta
         count, 1,
         "Identical HTTP commit replay must not create another signed chapter"
     );
+    drop(client);
+    if !materialize {
+        return;
+    }
+
+    struct ProjectionGuard {
+        listener: Option<weebdex_platform::protocol::publication::NativeListener>,
+        importer: tokio::task::JoinHandle<()>,
+    }
+    impl Drop for ProjectionGuard {
+        fn drop(&mut self) {
+            self.importer.abort();
+            if let Some(listener) = &mut self.listener {
+                if let Some(stop) = listener.shutdown.take() { let _ = stop.send(()); }
+                listener.task.abort();
+            }
+        }
+    }
+    let runtime = f.state.protocol.publication_runtime().await.unwrap();
+    let mut projection = ProjectionGuard {
+        listener: runtime.start_native_listener().await.unwrap(),
+        importer: weebdex_platform::protocol::bridge::spawn_importer(f.state.clone()),
+    };
+    assert!(projection.listener.is_some());
+    // The real original worker drains its outbox and the normal supervised
+    // importer discovers the now-visible immutable source without commit replay.
+    let public = tokio::time::timeout(Duration::from_secs(30), async {
+        loop {
+            let response = f.app.clone().oneshot(Request::builder()
+                .uri(format!("/api/chapter/{cid}"))
+                .body(Body::empty()).unwrap()).await.unwrap();
+            let status = response.status();
+            let body = to_bytes(response.into_body(), 1024*1024).await.unwrap();
+            if status == StatusCode::OK { break serde_json::from_slice::<Value>(&body).unwrap(); }
+            assert_eq!(status, StatusCode::NOT_FOUND, "{}", String::from_utf8_lossy(&body));
+            tokio::time::sleep(Duration::from_millis(40)).await;
+        }
+    }).await.expect("Real signed publication did not become readable");
+    assert_eq!(public["id"], cid);
+    assert_eq!(public["protocol_event_id"], event_id);
+    assert_eq!(public["publication_status"], "locally_hosted");
+    assert_eq!(public["is_unavailable"], false);
+    assert_eq!(public["data"], receipt["data"]);
+    assert_eq!(public["data"][1]["name"], public["data"][2]["name"]);
+    for (index, bytes) in [&jpg, &png, &png].into_iter().enumerate() {
+        let name = public["data"][index]["name"].as_str().unwrap();
+        let media = format!("/data/{cid}/{name}");
+        let original = send(&f.app, Method::GET, &media, None, &[], vec![], StatusCode::OK).await;
+        assert_eq!(original.body, *bytes);
+        assert_eq!(original.header("etag"), format!("\"{name}\""));
+        assert_eq!(original.header("cache-control"), "no-store");
+        let range = send(&f.app, Method::GET, &media, None, &[("range","bytes=0-7")], vec![], StatusCode::PARTIAL_CONTENT).await;
+        assert_eq!(range.body, bytes[..8]);
+        let head = send(&f.app, Method::HEAD, &media, None, &[], vec![], StatusCode::OK).await;
+        assert!(head.body.is_empty());
+        assert_eq!(head.header("content-length"), bytes.len().to_string());
+    }
+    assert_eq!(public["data_optimized"].as_array().unwrap().len(), 3);
+    for page in public["data_optimized"].as_array().unwrap() {
+        let media = format!("/data-saver/{cid}/{}", page["name"].as_str().unwrap());
+        let optimized = send(&f.app, Method::GET, &media, None, &[], vec![], StatusCode::OK).await;
+        assert_eq!(optimized.header("content-type"), "image/jpeg");
+        assert_eq!(image::guess_format(&optimized.body).unwrap(), ImageFormat::Jpeg);
+        let decoded = image::load_from_memory(&optimized.body).unwrap();
+        assert_eq!(json!([decoded.width(),decoded.height()]), page["dimensions"]);
+    }
+    let recovered = api(&f.app, Method::POST, &path, Some(&f.owner), Some(payload.clone()), StatusCode::OK).await;
+    assert_eq!(recovered, public, "Owner commit replay must return current readable state");
+    api(&f.app, Method::GET, "/api/upload", Some(&f.owner), None, StatusCode::NO_CONTENT).await;
+    let chapters = api(&f.app, Method::GET, &format!("/api/manga/{mid}/chapters"), None, None, StatusCode::OK).await;
+    assert!(chapters["data"].as_array().unwrap().iter().any(|chapter| chapter["id"] == cid));
+    let client = original_repo.pool.get().await.unwrap();
+    assert_eq!(client.query_one("SELECT count(*) FROM backend_outbox WHERE event_id=$1 AND completed_at IS NULL", &[&event_bytes]).await.unwrap().get::<_,i64>(0), 0);
+    assert_eq!(client.query_one("SELECT count(*) FROM events WHERE kind=1001 AND publisher=$1", &[&publisher_bytes.as_slice()]).await.unwrap().get::<_,i64>(0), 1);
+    let session_version: i32 = client.query_one("SELECT version FROM platform.upload_sessions WHERE id=$1 AND committed_result->>'publication_status'='locally_hosted'", &[&session]).await.unwrap().get(0);
+    drop(client);
+    projection.importer.abort();
+    let _ = (&mut projection.importer).await;
+    for _ in 0..2 {
+        assert!(weebdex_platform::protocol::bridge::import_page(&f.state).await.unwrap().completed_sweep);
+    }
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT version FROM platform.upload_sessions WHERE id=$1", &[&session]).await.unwrap().get::<_,i32>(0), session_version, "Repeated source sweeps must not rewrite a completed receipt");
+    if let Some(mut listener) = projection.listener.take() {
+        let _ = listener.shutdown.take().unwrap().send(());
+        tokio::time::timeout(Duration::from_secs(20), listener.task).await.unwrap().unwrap().unwrap();
+    }
 }
 
 #[tokio::test]

@@ -418,6 +418,12 @@ impl CatalogRepository {
                         .get(0);
                     let value=value.unwrap_or_else(||json!({"id":id,"manga_id":manga,"node":media_origin,"data":data,"protocol_event_id":event.id,"publication_scope":"original-protocol","publication_status":"accepted_pending_projection","is_unavailable":true,"version":1}));
                     tx.execute("UPDATE platform.upload_sessions SET state='committed',committed_chapter_id=$2,commit_hash=$3,committed_result=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1 AND owner_id=$5 AND state='open' AND chapter_id IS NULL", &[&session,&id,&hash,&value,&command.get::<_,String>(4)]).await?;
+                    // A normal commit may have saved an honest pending receipt
+                    // before source projection. Advance that exact immutable
+                    // intent once it is publicly readable, otherwise the resume
+                    // selector would keep resurrecting a completed upload.
+                    // Do not refresh already-readable snapshots on every sweep.
+                    tx.execute("UPDATE platform.upload_sessions SET committed_result=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1 AND owner_id=$5 AND state='committed' AND committed_chapter_id=$2 AND commit_hash=$3 AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND $4::jsonb->>'publication_status'='locally_hosted'", &[&session,&id,&hash,&value,&command.get::<_,String>(4)]).await?;
                     Self::release_recovered_session_files(tx, &session).await?;
                 }
                 tx.execute("UPDATE platform.protocol_publication_commands SET state='materialized',updated_at=clock_timestamp() WHERE command_id=$1", &[&command.get::<_,String>(0)]).await?;
