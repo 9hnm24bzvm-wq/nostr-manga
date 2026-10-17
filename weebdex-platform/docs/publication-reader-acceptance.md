@@ -2,16 +2,13 @@
 
 ## Current qualification status
 
-The first repair failed an independent exact-source/executable repeat: completed
-`GET /api/upload` returned HTTP 200 instead of 204 after readable projection.
-The [sanitized failure](../test-evidence/final/publication-reader-20261017/independent-repeat-failed.json)
-remains preserved. The corrected page-end repair below passed its deterministic
-child-before-parent regression independently, with normal verified cleanup.
-
-The complete integrated HTTP, chapter and source-lifecycle suites are being
-rerun on commit `eca83392ae039487b2e3376c2fdee8f0961f2d8a`. Their final-source
-qualification is pending its fresh receipts. Native browser and production
-acceptance remain separate unverified scopes.
+An independent exact-source, exact-executable repeat on 2026-10-17 failed the
+completed-session resume check: `GET /api/upload` returned HTTP 200 instead of
+204 after the chapter became readable. The earlier isolated passes below remain
+historical results; they do not currently qualify this transition. Correction
+and a fresh independent repeat are required. Cleanup still verified normal
+shutdown, closed owned ports and zero survivors. See the sanitized
+[`independent repeat`](../test-evidence/final/publication-reader-20261017/independent-repeat-failed.json).
 
 ## Historical isolated result
 

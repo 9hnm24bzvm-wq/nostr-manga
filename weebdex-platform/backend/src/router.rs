@@ -364,6 +364,10 @@ fn body_budget(path: &str, method: &Method, state: &AppState) -> (usize, Duratio
     if *method == Method::POST && signed_upload_replacement_path(&parts) {
         return (40 * 1024 * 1024, Duration::from_secs(state.config.upload_body_timeout_seconds));
     }
+    if *method == Method::POST && parts.len() == 4 && parts[..3] == ["api", "v1", "cover"]
+        && crate::public_api::PublicUuid::parse(parts[3]).is_ok() {
+        return (40 * 1024 * 1024, Duration::from_secs(state.config.upload_body_timeout_seconds));
+    }
     if *method == Method::POST && parts.len() == 4
         && parts[..3] == ["api", "v1", "upload"]
         && crate::public_api::PublicUuid::parse(parts[3]).is_ok()
@@ -516,8 +520,11 @@ async fn request_boundary(
 async fn response_headers(State(state): State<AppState>, request: Request, next: Next) -> Response {
     let service_worker = request.uri().path() == "/service-worker.js";
     let signed_upload_private = {
-        let parts = request.uri().path().split('/').filter(|part| !part.is_empty()).collect::<Vec<_>>();
-        signed_upload_replacement_path(&parts) || matches!(parts.as_slice(), ["api", "v1", "nostr", "uploads", session, "files", file, "preview"]
+        let parts = original_path(&request).split('/').filter(|part| !part.is_empty()).collect::<Vec<_>>();
+        matches!(parts.as_slice(), ["api", "v1", "cover", _]) && matches!(*request.method(), Method::POST | Method::PUT | Method::DELETE)
+            || matches!(parts.as_slice(), ["api", "v1", "nostr", "manga", _, "covers"])
+            || matches!(parts.as_slice(), ["api", "v1", "nostr", "covers", _, "original"])
+            || signed_upload_replacement_path(&parts) || matches!(parts.as_slice(), ["api", "v1", "nostr", "uploads", session, "files", file, "preview"]
             if crate::public_api::PublicUuid::parse(session).is_ok()
                 && crate::public_api::PublicUuid::parse(file).is_ok())
     };
@@ -530,6 +537,9 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
             .headers_mut()
             .insert(header::CACHE_CONTROL, HeaderValue::from_static(
                 if signed_upload_private { "private, no-store" } else { "no-store" }));
+    }
+    if signed_upload_private {
+        response.headers_mut().append(header::VARY, HeaderValue::from_static("Authorization"));
     }
     if service_worker {
         response.headers_mut().insert(
@@ -571,7 +581,7 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
     if response.status() == StatusCode::SERVICE_UNAVAILABLE {
         response
             .headers_mut()
-            .insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
+            .insert(header::CACHE_CONTROL, HeaderValue::from_static(if signed_upload_private { "private, no-store" } else { "no-store" }));
     }
     response
 }

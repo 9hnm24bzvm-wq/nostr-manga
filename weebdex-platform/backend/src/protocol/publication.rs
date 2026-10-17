@@ -877,6 +877,9 @@ async fn native_series_input(
     let title: String = row.get(0);
     let mut titles = BTreeMap::new();
     titles.insert(lang.clone(), title);
+    if let Some(localized) = metadata["localized_titles"].as_object() {
+        titles = localized.iter().filter_map(|(lang,title)|title.as_str().map(|title|(lang.clone(),title.to_owned()))).collect();
+    }
     let mut alternatives = Vec::new();
     if let Some(localized) = metadata["alt_titles"].as_object() {
         for (lang, names) in localized {
@@ -895,10 +898,15 @@ async fn native_series_input(
   let file=NativeOriginal{hash:cover.get(0),mime:cover.get(1),bytes:cover.get::<_,i64>(2) as u64,width:cover.get::<_,i32>(3) as u32,height:cover.get::<_,i32>(4) as u32,storage_key:cover.get(5)};
   originals.insert(file.hash.clone(),read_native_original(state,&file).await?);Some(manga_node::manifest::Page{hash:file.hash,size:file.bytes,mime:file.mime,width:file.width,height:file.height})
  }else{None};
-    let description = metadata["description"]
+    if let Some(alts) = metadata["localized_alt_titles"].as_array() {
+        alternatives = alts.iter().filter_map(|alt|alt.as_object().map(|m|m.iter().filter_map(|(lang,title)|title.as_str().map(|title|(lang.clone(),title.to_owned()))).collect())).collect();
+    }
+    let description = metadata["localized_description"].as_object()
+        .map(|m|m.iter().filter_map(|(lang,text)|text.as_str().map(|text|(lang.clone(),text.to_owned()))).collect())
+        .or_else(|| metadata["description"]
         .as_str()
         .filter(|s| !s.is_empty())
-        .map(|s| BTreeMap::from([(lang.clone(), s.to_owned())]));
+        .map(|s| BTreeMap::from([(lang.clone(), s.to_owned())])));
     let source = manga_node::series_metadata::SeriesMetadata {
         titles,
         alt_titles: Some(alternatives),
