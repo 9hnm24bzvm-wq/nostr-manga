@@ -418,6 +418,12 @@ impl CatalogRepository {
                         .get(0);
                     let value=value.unwrap_or_else(||json!({"id":id,"manga_id":manga,"node":media_origin,"data":data,"protocol_event_id":event.id,"publication_scope":"original-protocol","publication_status":"accepted_pending_projection","is_unavailable":true,"version":1}));
                     tx.execute("UPDATE platform.upload_sessions SET state='committed',committed_chapter_id=$2,commit_hash=$3,committed_result=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1 AND owner_id=$5 AND state='open' AND chapter_id IS NULL", &[&session,&id,&hash,&value,&command.get::<_,String>(4)]).await?;
+                    // A normal commit may have saved an honest pending receipt
+                    // before source projection. Advance that exact immutable
+                    // intent once it is publicly readable, otherwise the resume
+                    // selector would keep resurrecting a completed upload.
+                    // Do not refresh already-readable snapshots on every sweep.
+                    tx.execute("UPDATE platform.upload_sessions SET committed_result=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1 AND owner_id=$5 AND state='committed' AND committed_chapter_id=$2 AND commit_hash=$3 AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND $4::jsonb->>'publication_status'='locally_hosted'", &[&session,&id,&hash,&value,&command.get::<_,String>(4)]).await?;
                     Self::release_recovered_session_files(tx, &session).await?;
                 }
                 tx.execute("UPDATE platform.protocol_publication_commands SET state='materialized',updated_at=clock_timestamp() WHERE command_id=$1", &[&command.get::<_,String>(0)]).await?;
@@ -430,25 +436,6 @@ impl CatalogRepository {
             Ok(changed > 0)
         }
     }
-    /// Reconcile after every source in the page, because a child may sort before
-    /// its parent or finish on an earlier page. Both projections must be visible
-    /// before replacing an owner-only pending receipt. Work and locks are bounded;
-    /// busy native sessions are retried by the next ordinary importer page.
-    pub(crate) async fn reconcile_protocol_upload_receipts(tx: &Transaction<'_>) -> ApiResult<usize> {
-        let rows = tx.query("SELECT s.id,s.owner_id,s.committed_chapter_id,s.commit_hash FROM platform.upload_sessions s JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.catalog_id=s.committed_chapter_id AND p.native_commit_hash=s.commit_hash JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id AND c.protocol_event_id=p.event_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE s.state='committed' AND s.committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND p.state='materialized' AND c.deleted_at IS NULL AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id) ORDER BY s.updated_at,s.id LIMIT 16 FOR UPDATE OF s SKIP LOCKED", &[]).await?;
-        let mut updated = 0;
-        for row in rows {
-            let session: String = row.get(0);
-            let owner: String = row.get(1);
-            let chapter: String = row.get(2);
-            let hash: String = row.get(3);
-            let value: Option<Value> = tx.query_one("SELECT platform.catalog_chapter_json($1)", &[&chapter]).await?.get(0);
-            let Some(value) = value.filter(|value| value["publication_status"] == "locally_hosted" && value["is_unavailable"] == false) else { continue; };
-            updated += tx.execute("UPDATE platform.upload_sessions SET committed_result=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1 AND owner_id=$5 AND state='committed' AND committed_chapter_id=$2 AND commit_hash=$3 AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection')", &[&session,&chapter,&hash,&value,&owner]).await? as usize;
-        }
-        Ok(updated)
-    }
-
     async fn recover_native_media(
         tx: &Transaction<'_>,
         chapter: &str,

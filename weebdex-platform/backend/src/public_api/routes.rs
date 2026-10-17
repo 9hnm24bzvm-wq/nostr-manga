@@ -90,15 +90,6 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                     | "/list/{id}"
                     | "/list/{id}/feed"
                     | "/user/{id}"
-                    | "/user"
-                    | "/user/me"
-                    | "/user/follows/manga"
-                    | "/user/follows/manga/{id}"
-                    | "/user/follows/manga/feed"
-                    | "/user/follows/group"
-                    | "/user/follows/group/{id}"
-                    | "/user/follows/user"
-                    | "/user/follows/user/{id}"
             ))
             || (operation.method == "POST" && operation.path == "/manga/{id}/read")
         {

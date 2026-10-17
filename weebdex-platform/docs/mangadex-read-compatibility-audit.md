@@ -3,9 +3,6 @@
 Audit date: 2026-10-17. Baseline: `8d963f3f`. This is a scoped audit of the
 18 public catalogue/infrastructure read operations below, not a claim that all
 113 upstream operations or every retained native API have been converted.
-The subsequent [request-authorized account-read batch](mangadex-private-account-reads.md)
-adds nine private directory/self/follow operations, with separate signed-HTTP
-acceptance and explicit native-account provenance.
 The accompanying [113-operation routing snapshot](mangadex-operation-compatibility-snapshot.json)
 records every upstream operation exactly once: audited core reads, existing
 separate modules, explicit protocol/auth exceptions, and remaining known-501

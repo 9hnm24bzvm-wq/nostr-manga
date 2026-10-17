@@ -112,7 +112,7 @@ pub fn router() -> Router<AppState> {
         .route("/cover", get(cover_many))
         .route("/cover/{p0}", get(cover_one))
 }
-pub(super) fn schema(kind: ResourceKind) -> QuerySchema<'static> {
+fn schema(kind: ResourceKind) -> QuerySchema<'static> {
     match kind {
         ResourceKind::Manga => QuerySchema {
             default_limit: 10,
@@ -258,7 +258,7 @@ async fn detail(
         &q.includes,
     )?)))
 }
-pub(super) fn parts(
+fn parts(
     kind: ResourceKind,
 ) -> PublicApiResult<(&'static str, &'static str, &'static str, &'static str)> {
     Ok(match kind {
@@ -292,11 +292,6 @@ pub(super) fn parts(
             "platform.catalog_group_json(g.id)",
             "g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id)",
         ),
-        ResourceKind::User => (
-            "u", "platform.users u",
-            "jsonb_build_object('id',u.id,'username',u.username,'roles',u.roles,'version',u.version)",
-            "NOT u.disabled",
-        ),
         ResourceKind::Tag => (
             "t",
             "platform.catalog_tags t",
@@ -308,7 +303,6 @@ pub(super) fn parts(
 }
 async fn mapped(
     state: &AppState,
-    tx: Option<&tokio_postgres::Transaction<'_>>,
     q: &PublicQuery,
     key: &str,
     kind: ResourceKind,
@@ -321,11 +315,9 @@ async fn mapped(
         .iter()
         .map(|v| PublicUuid::parse(v).map_err(Into::into))
         .collect::<PublicApiResult<Vec<_>>>()?;
-    let rows = if let Some(tx) = tx {
-        PostgresPublicIdResolver::resolve_many_in(tx, kind, &ids).await?
-    } else {
-        PostgresPublicIdResolver::new(state.db.clone()).resolve_many(kind, &ids).await?
-    };
+    let rows = PostgresPublicIdResolver::new(state.db.clone())
+        .resolve_many(kind, &ids)
+        .await?;
     let missing = ids.iter().filter(|id| !rows.contains_key(*id)).count();
     let native = rows
         .into_values()
@@ -337,7 +329,6 @@ async fn mapped(
 }
 async fn id_filter(
     state: &AppState,
-    tx: Option<&tokio_postgres::Transaction<'_>>,
     q: &PublicQuery,
     sql: &mut Sql,
     key: &str,
@@ -345,7 +336,7 @@ async fn id_filter(
     column: &str,
     exclude: bool,
 ) -> PublicApiResult<Vec<String>> {
-    let (ids, _) = mapped(state, tx, q, key, kind).await?;
+    let (ids, _) = mapped(state, q, key, kind).await?;
     if !q.list(key).is_empty() && ids.is_empty() && !exclude {
         sql.conditions.push("FALSE".into());
     }
@@ -421,18 +412,16 @@ fn valid_utc_datetime(value: &str) -> bool {
     };
     y > 0 && d > 0 && d <= days && num(11, 13) < 24 && num(14, 16) < 60 && num(17, 19) < 60
 }
-pub(super) async fn filters(
+async fn filters(
     state: &AppState,
-    tx: Option<&tokio_postgres::Transaction<'_>>,
     kind: ResourceKind,
     q: &PublicQuery,
     sql: &mut Sql,
     scope: Option<&[String]>,
-    account_scope: Option<&str>,
 ) -> PublicApiResult<()> {
     let (alias, _, _, visible) = parts(kind)?;
     sql.conditions.push(visible.into());
-    id_filter(state, tx, q, sql, "ids[]", kind, &format!("{alias}.id"), false).await?;
+    id_filter(state, q, sql, "ids[]", kind, &format!("{alias}.id"), false).await?;
     match kind {
         ResourceKind::Manga => {
             let mut n = native_query(q);
@@ -481,7 +470,7 @@ pub(super) async fn filters(
                 ("artists[]", "artist", ResourceKind::Author),
                 ("authorOrArtist", "authorOrArtist", ResourceKind::Author),
             ] {
-                let (ids, _) = mapped(state, tx, q, key, kind).await?;
+                let (ids, _) = mapped(state, q, key, kind).await?;
                 if !q.list(key).is_empty() && ids.is_empty() {
                     sql.conditions.push("FALSE".into());
                 }
@@ -493,7 +482,7 @@ pub(super) async fn filters(
                 ("includedTags[]", "tag", "includedTagsMode", false),
                 ("excludedTags[]", "tagx", "excludedTagsMode", true),
             ] {
-                let (ids, missing) = mapped(state, tx, q, key, ResourceKind::Tag).await?;
+                let (ids, missing) = mapped(state, q, key, ResourceKind::Tag).await?;
                 let mode = q.first(mode).unwrap_or(if exclude { "OR" } else { "AND" });
                 if !matches!(mode, "AND" | "OR") {
                     return Err(PublicApiError::bad_request("Invalid tag mode"));
@@ -533,7 +522,7 @@ pub(super) async fn filters(
                 }
             }
             if q.first("group").is_some() {
-                let (ids, _) = mapped(state, tx, q, "group", ResourceKind::Group).await?;
+                let (ids, _) = mapped(state, q, "group", ResourceKind::Group).await?;
                 if ids.is_empty() {
                     sql.conditions.push("FALSE".into());
                 } else {
@@ -556,7 +545,7 @@ pub(super) async fn filters(
                 ("excludedUploaders[]", "uploaderx", ResourceKind::User),
                 ("manga", "manga", ResourceKind::Manga),
             ] {
-                let (ids, _) = mapped(state, tx, q, key, kind).await?;
+                let (ids, _) = mapped(state, q, key, kind).await?;
                 if !q.list(key).is_empty() && ids.is_empty() && !key.starts_with("excluded") {
                     sql.conditions.push("FALSE".into());
                 }
@@ -565,10 +554,6 @@ pub(super) async fn filters(
                 }
             }
             chapter_filters(&n, sql, "c")?;
-            if let Some(owner) = account_scope {
-                let owner = sql.bind(owner.to_owned());
-                sql.conditions.push(format!("EXISTS(SELECT 1 FROM platform.library_manga_follows af WHERE af.user_id={owner} AND af.manga_id=c.manga_id)"));
-            }
             if let Some(scope) = scope {
                 if scope.is_empty() {
                     sql.conditions.push("FALSE".into());
@@ -634,7 +619,7 @@ pub(super) async fn filters(
             }
             for (key, exclude) in [("externalUrl", false), ("excludeExternalUrl", true)] {
                 if let Some(host) = q.first(key) {
-                    if scope.is_none() && account_scope.is_none() && q.first("manga").is_none() {
+                    if scope.is_none() && q.first("manga").is_none() {
                         return Err(PublicApiError::bad_request(
                             "External host filter requires manga scope",
                         ));
@@ -682,7 +667,6 @@ pub(super) async fn filters(
         ResourceKind::Cover => {
             id_filter(
                 state,
-                tx,
                 q,
                 sql,
                 "manga[]",
@@ -693,7 +677,6 @@ pub(super) async fn filters(
             .await?;
             id_filter(
                 state,
-                tx,
                 q,
                 sql,
                 "uploaders[]",
@@ -723,7 +706,6 @@ pub(super) fn order_clause(
   (ResourceKind::Manga,"followedCount")=>"COALESCE(stats.follows,0)".into(),(ResourceKind::Manga,"rating")=>"COALESCE(stats.rating,0)".into(),
   (ResourceKind::Manga,"relevance")=>{let p=sql.bind(q.first("title").unwrap_or("").to_owned());format!("CASE WHEN lower(m.title)=lower({p}) THEN 3 WHEN starts_with(lower(m.title),lower({p})) THEN 2 ELSE 1 END")},
   (_,"createdAt")=>format!("{alias}.created_at"),(_,"updatedAt")=>format!("{alias}.updated_at"),(_,"name")=>format!("lower({alias}.name)"),
-  (ResourceKind::User,"username")=>"lower(u.username)".into(),
   (ResourceKind::Chapter,"publishAt"|"readableAt")=>"c.published_at".into(),
   (ResourceKind::Chapter,"volume"|"chapter")|(ResourceKind::Cover,"volume")=>format!("CASE WHEN {alias}.{field} ~ '^[0-9]+([.][0-9]+)?$' THEN {alias}.{field}::numeric END"),
   (ResourceKind::Group,"followedCount")=>"(SELECT count(*) FROM platform.library_group_follows gf JOIN platform.users gu ON gu.id=gf.user_id AND NOT gu.disabled WHERE gf.group_id=g.id)".into(),
@@ -744,24 +726,8 @@ async fn collection(
     raw: Option<String>,
     scope: Option<Vec<String>>,
 ) -> PublicApiResult<Json<CollectionResponse<Resource>>> {
-    let operation = collection_schema(kind, scope.is_some());
-    let q = PublicQuery::parse(raw.as_deref(), &operation)?;
-    if scope.is_some() && q.limit == 0 {
-        return Err(PublicApiError::bad_request("Feed limit must be 1..500"));
-    }
-    let mut client = state.db.client().await?;
-    let tx = client.build_transaction()
-        .isolation_level(tokio_postgres::IsolationLevel::RepeatableRead)
-        .read_only(true).start().await?;
-    let mut sql = Sql::default();
-    filters(&state, Some(&tx), kind, &q, &mut sql, scope.as_deref(), None).await?;
-    let response = collection_in(&tx, kind, &q, &mut sql).await?;
-    tx.commit().await?;
-    Ok(Json(response))
-}
-pub(super) fn collection_schema(kind: ResourceKind, scoped: bool) -> QuerySchema<'static> {
     let mut operation = schema(kind);
-    if kind == ResourceKind::Chapter && scoped {
+    if kind == ResourceKind::Chapter && scope.is_some() {
         operation.default_limit = 100;
         operation.max_limit = 500;
         operation.scalar = &[
@@ -785,39 +751,42 @@ pub(super) fn collection_schema(kind: ResourceKind, scoped: bool) -> QuerySchema
             "excludedUploaders[]",
         ];
     }
-    operation
-}
-pub(super) async fn collection_in(
-    tx: &tokio_postgres::Transaction<'_>,
-    kind: ResourceKind,
-    q: &PublicQuery,
-    sql: &mut Sql,
-) -> PublicApiResult<CollectionResponse<Resource>> {
+    let q = PublicQuery::parse(raw.as_deref(), &operation)?;
+    if scope.is_some() && q.limit == 0 {
+        return Err(PublicApiError::bad_request("Feed limit must be 1..500"));
+    }
+    let mut sql = Sql::default();
+    filters(&state, kind, &q, &mut sql, scope.as_deref()).await?;
     let (alias, table, projection, _) = parts(kind)?;
-    let order = order_clause(kind, q, sql)?;
+    let order = order_clause(kind, &q, &mut sql)?;
     let limit = sql.bind(i64::from(q.limit));
     let offset = sql.bind(i64::from(q.offset));
     let predicate = sql.predicate();
     let projection_query = format!(
         "WITH matched AS MATERIALIZED(SELECT {alias}.id,row_number() OVER(ORDER BY {order}) position FROM {table} WHERE {predicate}),selected AS(SELECT * FROM matched ORDER BY position LIMIT {limit} OFFSET {offset}) SELECT (SELECT count(*) FROM matched),COALESCE((SELECT jsonb_agg((SELECT {projection} FROM {table} WHERE {alias}.id=selected.id) ORDER BY selected.position) FROM selected),'[]'::jsonb)"
     );
-    let row = tx.query_one(&projection_query, &sql.params())
+    let row = state
+        .db
+        .client()
+        .await?
+        .query_one(&projection_query, &sql.params())
         .await?;
     let total: i64 = row.get(0);
     let native: Vec<Value> =
         serde_json::from_value(row.get(1)).map_err(|_| PublicApiError::unavailable())?;
     let resources = native.into_iter().map(|v| (kind, v)).collect::<Vec<_>>();
-    let index = AliasIndex::load_in(tx, &resources).await?;
+    let resolver = PostgresPublicIdResolver::new(state.db.clone());
+    let index = AliasIndex::load(&state, &resolver, &resources).await?;
     let data = resources
         .iter()
         .map(|(kind, v)| index.resource(*kind, v, &q.includes))
         .collect::<PublicApiResult<Vec<_>>>()?;
-    Ok(CollectionResponse::new(
+    Ok(Json(CollectionResponse::new(
         data,
         q.limit,
         q.offset,
         total as u64,
-    ))
+    )))
 }
 async fn feed(
     State(state): State<AppState>,
@@ -903,7 +872,7 @@ async fn random(
     operation.order = &[];
     let q = PublicQuery::parse(raw.as_deref(), &operation)?;
     let mut sql = Sql::default();
-    filters(&state, None, ResourceKind::Manga, &q, &mut sql, None, None).await?;
+    filters(&state, ResourceKind::Manga, &q, &mut sql, None).await?;
     let value:Option<Value>=state.db.client().await?.query_opt(&format!("SELECT platform.catalog_manga_json(m.id) FROM platform.catalog_manga m WHERE {} ORDER BY random() LIMIT 1",sql.predicate()),&sql.params()).await?.and_then(|r|r.get(0));
     let value = value.ok_or_else(PublicApiError::not_found)?;
     let resolver = PostgresPublicIdResolver::new(state.db.clone());
@@ -957,7 +926,7 @@ async fn aggregate(
         sql.conditions.push("NOT c.is_unavailable".into());
     }
     if !q.list("groups[]").is_empty() {
-        let (ids, _) = mapped(&state, None, &q, "groups[]", ResourceKind::Group).await?;
+        let (ids, _) = mapped(&state, &q, "groups[]", ResourceKind::Group).await?;
         if ids.is_empty() {
             sql.conditions.push("FALSE".into());
         } else {

@@ -1,0 +1,9 @@
+# Verified UUID source mapping v2
+
+`POST /api/v1/nostr/resources` is a read-only public mapping seam, not a signing command. Request JSON contains `schemaVersion:2`, the exact catalogue namespace, and at most256 distinct typed `{kind:'manga'|'chapter',id:UUID}` references. The caller-selected alias remains `id`; `canonical_id` is its persisted preferred alias. Missing, hidden, local-only and source-withdrawn resources remain explicitly unresolved. No alias is created during a read.
+
+The response binds `origin` (original module), `service_key` and `catalog_namespace`. Every mapped row includes the actual original event ID, publisher, source kind, compatibility UUID and, for a chapter, its actual visible original series parent plus that series' preferred public UUID. Both catalogue and original visibility are checked in one read-only repeatable-read PostgreSQL transaction. The original module owns the source-visibility predicate and actual `events.series` evidence. UUIDs never become signing authority or fabricated event IDs.
+
+The shared frontend mapper verifies bounded response bytes, scope, exact typed coverage, kind and parent structure. It is intended for an explicit source discussion/publication action. Anonymous device UUID saves and reader progress must never call it or require an original event mapping. Native-only public resources can be saved locally and remain publication-unresolved.
+
+Validation: Rust116passed/2existingignored plus fixture1passed; real isolated PostgreSQL/TCP/NIP98/pinned-strfry lifecycle1passed, including anonymous alias-preserving mapping, unresolved local/unknown resources, namespace refusal, canonical visibility, unchanged alias cardinality and original chapter-parent provenance. Frontend mapper6finite tests passed. No external relay or real-key broadcast.
