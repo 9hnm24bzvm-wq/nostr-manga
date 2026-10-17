@@ -24,12 +24,16 @@ use serde_json::{Value, json};
 use std::{collections::BTreeSet, time::Duration};
 
 #[derive(Clone, Copy)]
-enum Operation { Directory, SelfProfile, FollowList(ResourceKind), FollowStatus(ResourceKind), FollowFeed }
+enum Operation { Directory, SelfProfile, History, Settings, SettingsTemplate, FollowList(ResourceKind), FollowStatus(ResourceKind), FollowFeed }
 
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/user", get(directory))
         .route("/user/me", get(me))
+        .route("/user/history", get(history))
+        .route("/settings", get(settings).post(super::settings_writes::write))
+        .route("/settings/template", get(template))
+        .route("/settings/template/{p0}", get(template_version))
         .route("/user/follows/manga", get(manga_list))
         .route("/user/follows/manga/feed", get(feed))
         .route("/user/follows/manga/{p0}", get(manga_status))
@@ -63,6 +67,12 @@ macro_rules! status_handler {
 }
 list_handler!(directory, Operation::Directory);
 list_handler!(me, Operation::SelfProfile);
+list_handler!(history, Operation::History);
+list_handler!(settings, Operation::Settings);
+list_handler!(template, Operation::SettingsTemplate);
+async fn template_version(State(state): State<AppState>, OriginalUri(uri): OriginalUri, Path(id): Path<String>, headers: HeaderMap, request: Request) -> PublicApiResult<Response> {
+    read(state, uri, headers, request, Some(id), Operation::SettingsTemplate).await
+}
 list_handler!(feed, Operation::FollowFeed);
 list_handler!(manga_list, Operation::FollowList(ResourceKind::Manga));
 list_handler!(group_list, Operation::FollowList(ResourceKind::Group));
@@ -78,7 +88,7 @@ fn query(raw: Option<&str>, operation: Operation) -> PublicApiResult<PublicQuery
         _ => &[],
     };
     let mut q = match operation {
-        Operation::SelfProfile | Operation::FollowStatus(_) => {
+        Operation::SelfProfile | Operation::History | Operation::Settings | Operation::SettingsTemplate | Operation::FollowStatus(_) => {
             let q = PublicQuery::parse_unchecked(raw)?;
             q.require_allowed(&[])?;
             q
@@ -132,6 +142,27 @@ async fn read(
     let tx = client.build_transaction().isolation_level(tokio_postgres::IsolationLevel::RepeatableRead).start().await?;
     let actor = bound_account_read(&tx, &cap).await?;
     let response = match operation {
+        Operation::Settings => Json(super::account_settings::read_in(&tx, actor.user_id()).await?).into_response(),
+        Operation::SettingsTemplate => {
+            if id.is_some_and(|id| id.as_str() != super::account_settings::TEMPLATE_ID) {
+                return Err(PublicApiError::not_found());
+            }
+            Json(super::account_settings::template()?).into_response()
+        }
+        Operation::History => {
+            // The original signed graph has no per-read date. Only real private
+            // native history records supply dates through this explicit scope.
+            let rows = tx.query("SELECT c.id,platform.catalog_timestamp(h.read_at),p.public_id::text FROM platform.library_chapter_history h JOIN platform.catalog_chapters c ON c.id=h.chapter_id AND c.manga_id=h.manga_id JOIN platform.catalog_manga m ON m.id=c.manga_id LEFT JOIN platform.public_resource_ids p ON p.kind='chapter' AND p.native_id=c.id AND p.preferred WHERE h.user_id=$1 AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id) ORDER BY h.read_at DESC,c.id ASC LIMIT 10001", &[&actor.user_id()]).await?;
+            if rows.len() > 10000 { return Err(PublicApiError::unavailable()); }
+            let records = rows.into_iter().map(|row| {
+                let id: Option<&str> = row.get(2);
+                let id = PublicUuid::parse(id.ok_or_else(PublicApiError::unavailable)?)
+                    .map_err(|_| PublicApiError::unavailable())?;
+                Ok(json!({"chapterId":id,"readDate":row.get::<_,String>(1)}))
+            }).collect::<PublicApiResult<Vec<_>>>()?;
+            // `ratings` is the history-array field in the official5.13.1 schema.
+            Json(json!({"result":"ok","ratings":records,"nostr":{"scope":"instance-account","source":"persisted-native-account-history","readDateSemantics":"stored-native-read-time"}})).into_response()
+        }
         Operation::SelfProfile => {
             let native: Value = tx.query_one("SELECT jsonb_build_object('id',id,'username',username,'roles',roles,'version',version) FROM platform.users WHERE id=$1 AND NOT disabled", &[&actor.user_id()]).await?.get(0);
             let index = AliasIndex::load_in(&tx, &[(ResourceKind::User, native.clone())]).await?;
@@ -145,10 +176,15 @@ async fn read(
                 .into_values().find(|target| target.target == PublicIdTarget::NativeResource)
                 .ok_or_else(PublicApiError::not_found)?;
             let (alias, table, _, visible) = catalogue::parts(kind)?;
-            let (follows, column) = follow_table(kind)?;
-            let exists: bool = tx.query_one(&format!("SELECT EXISTS(SELECT 1 FROM {table} WHERE {alias}.id=$2 AND {visible} AND EXISTS(SELECT 1 FROM {follows} f WHERE f.user_id=$1 AND f.{column}={alias}.id))"), &[&actor.user_id(), &target.native_id]).await?.get(0);
+            let exists: bool = tx.query_one(&format!("SELECT EXISTS(SELECT 1 FROM {table} WHERE {alias}.id=$1 AND {visible})"), &[&target.native_id]).await?.get(0);
             if !exists { return Err(PublicApiError::not_found()); }
-            Json(json!({"result":"ok"})).into_response()
+            let follow_target=match kind {ResourceKind::Manga=>crate::domains::library::follow_mutations::Target::Manga,ResourceKind::Group=>crate::domains::library::follow_mutations::Target::Group,_=>crate::domains::library::follow_mutations::Target::User};
+            let mut metadata=crate::domains::library::follow_mutations::state_in(&tx,actor.user_id(),follow_target,&target.native_id).await?;
+            if metadata["followed"]!=true {return Err(PublicApiError::not_found());}
+            metadata["accountId"]=json!(crate::domains::library::account_public_id_in(&tx,actor.user_id()).await?);
+            metadata["targetId"]=json!(target.preferred_id);metadata["kind"]=json!(kind.as_str());
+            metadata["scope"]=json!("instance-account");metadata["source"]=json!("persisted-native-account-follows");metadata["versionSemantics"]=json!("membership-change-revision");
+            Json(json!({"result":"ok","nostr":metadata})).into_response()
         }
         Operation::Directory | Operation::FollowList(_) | Operation::FollowFeed => {
             let kind = match operation { Operation::Directory => ResourceKind::User, Operation::FollowList(kind) => kind, _ => ResourceKind::Chapter };
@@ -172,7 +208,7 @@ async fn read(
                 sql.conditions.push(format!("EXISTS(SELECT 1 FROM {follows} f WHERE f.user_id={owner} AND f.{column}={alias}.id)"));
             }
             let mut response = catalogue::collection_in(&tx, kind, &q, &mut sql).await?;
-            response.extensions.insert("nostr".into(), json!({"scope":"instance-account","source":"persisted-native-account-library","requires":"request-bound-nostr-proof-and-explicit-native-account-binding"}));
+            response.extensions.insert("nostr".into(), json!({"scope":"instance-account","source":"persisted-native-account-library","accountId":crate::domains::library::account_public_id_in(&tx,actor.user_id()).await?,"requires":"request-bound-nostr-proof-and-explicit-native-account-binding"}));
             Json(response).into_response()
         }
     };
@@ -189,7 +225,7 @@ mod tests {
         assert!(query(Some("limit=0&username=user&order[username]=desc"), Operation::Directory).is_ok());
         assert!(query(Some("includes[]=creator&includes[]=tag"), Operation::FollowList(ResourceKind::Manga)).is_ok());
         assert!(query(Some("limit=500&translatedLanguage[]=en&excludedGroups[]=11111111-1111-8111-8111-111111111111"), Operation::FollowFeed).is_ok());
-        for operation in [Operation::SelfProfile, Operation::FollowStatus(ResourceKind::Manga)] {
+        for operation in [Operation::SelfProfile, Operation::History, Operation::FollowStatus(ResourceKind::Manga)] {
             assert!(query(Some("limit=0"), operation).is_err());
         }
         for raw in ["limit=0", "username=other", "ids[]=11111111-1111-8111-8111-111111111111", "order[username]=asc"] {

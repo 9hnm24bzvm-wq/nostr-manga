@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:uuid:513e0d48-ecc4-5301-b5eb-5bb369efaf22",
+  "title": "Native account preference projection version1",
+  "description": "Request-authorized instance-account preferences. Reference arrays use canonical public UUIDs; unavailable references are counted outside this read-only projection.",
+  "type": "object",
+  "required": [
+    "version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "items_per_page": {
+      "type": "string",
+      "pattern": "^(?:[1-9]|[1-9][0-9]|100)$"
+    },
+    "languages": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "en",
+          "ja",
+          "ko",
+          "zh",
+          "zh-hk",
+          "id",
+          "jv",
+          "vi",
+          "af",
+          "sq",
+          "ar",
+          "az",
+          "eu",
+          "be",
+          "bn",
+          "bg",
+          "my",
+          "ca",
+          "cv",
+          "hr",
+          "cs",
+          "da",
+          "nl",
+          "eo",
+          "et",
+          "tl",
+          "fi",
+          "fr",
+          "ka",
+          "de",
+          "el",
+          "he",
+          "hi",
+          "hu",
+          "ga",
+          "it",
+          "kk",
+          "la",
+          "lt",
+          "ms",
+          "mn",
+          "mx",
+          "ne",
+          "no",
+          "fa",
+          "pl",
+          "pt",
+          "pt-br",
+          "ro",
+          "ru",
+          "sr",
+          "sk",
+          "sl",
+          "es",
+          "es-la",
+          "sv",
+          "tam",
+          "te",
+          "th",
+          "tr",
+          "uk",
+          "ur",
+          "uz"
+        ]
+      }
+    },
+    "translated_languages": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "en",
+          "ja",
+          "ko",
+          "zh",
+          "zh-hk",
+          "id",
+          "jv",
+          "vi",
+          "af",
+          "sq",
+          "ar",
+          "az",
+          "eu",
+          "be",
+          "bn",
+          "bg",
+          "my",
+          "ca",
+          "cv",
+          "hr",
+          "cs",
+          "da",
+          "nl",
+          "eo",
+          "et",
+          "tl",
+          "fi",
+          "fr",
+          "ka",
+          "de",
+          "el",
+          "he",
+          "hi",
+          "hu",
+          "ga",
+          "it",
+          "kk",
+          "la",
+          "lt",
+          "ms",
+          "mn",
+          "mx",
+          "ne",
+          "no",
+          "fa",
+          "pl",
+          "pt",
+          "pt-br",
+          "ro",
+          "ru",
+          "sr",
+          "sk",
+          "sl",
+          "es",
+          "es-la",
+          "sv",
+          "tam",
+          "te",
+          "th",
+          "tr",
+          "uk",
+          "ur",
+          "uz"
+        ]
+      }
+    },
+    "show_safe": {
+      "type": "boolean"
+    },
+    "show_suggestive": {
+      "type": "boolean"
+    },
+    "show_erotic": {
+      "type": "boolean"
+    },
+    "show_hentai": {
+      "type": "boolean"
+    },
+    "data_saver": {
+      "type": "boolean"
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "uploaders": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  },
+  "x-weebdex-scope": "instance-account",
+  "x-weebdex-template-version": 1
+}

@@ -1,9 +1,5 @@
 # Public signed upload recovery
 
-The later [signed chapter interface](public-signed-chapter-writes.md) supersedes
-the metadata/claim/removal limitation below. Published image revision remains
-unavailable; this document retains the earlier upload recovery boundary.
-
 This is a new implementation on recovered source `e7588f7d`. It is not a byte
 restoration of the lost late upload adapter or a claim of MangaDex parity.
 The earlier blank-begin/autosave recovery is retained in commit `3e46ddcb`.

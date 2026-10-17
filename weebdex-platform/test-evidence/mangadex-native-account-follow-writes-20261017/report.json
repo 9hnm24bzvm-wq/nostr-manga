@@ -1,0 +1,136 @@
+{
+  "utc": "2026-10-17T18:55:28.070957+00:00",
+  "prior_commit": "cad7441bbd129799a188984c7585ba138c059154",
+  "scope": "Genuine private native-account manga/group follow and unfollow operations plus explicit native User follow extensions; durable membership CAS across public and native adapters.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 123 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.91s",
+      "output_sha256": "a635e9ee666b89f0b0878eda580d762a7e047b3f47ed04664ada8eae8812edfa"
+    },
+    {
+      "name": "public_account_reads-55dde832bbd6c52c",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.89s",
+      "output_sha256": "764365a4208ddc68fd1bd39dcfa399acfd4f359d46f66d123584f4070212f206"
+    },
+    {
+      "name": "library_http-6f88bf7c029e3196",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.92s",
+      "output_sha256": "bf3efeeec5431a43d3b71c16c82d34a276c61e1cedbfa130f2c5a13337e4a802"
+    },
+    {
+      "name": "public_list_follows-bd6bd095256e177a",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.47s",
+      "output_sha256": "ad3538e5be3d077c9ba14ceed8d923d5dfc076409d4610f5f1ce5ada7a60073a"
+    },
+    {
+      "name": "public_nostr_lists-000e8f3c9f6a3429",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.26s",
+      "output_sha256": "d9220271d5850e85781bcd1bcdb9d8ee55f4a9c6230a70402b714fd06992a467"
+    },
+    {
+      "name": "public_statistics-f01460db3aa7ffa9",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s",
+      "output_sha256": "860144e3d9aa825779e285fa59d9222cf4db0a1ed993d73b58cc71eec0c0db94"
+    },
+    {
+      "name": "public_catalogue_compatibility-7bc8ad9b6a8d2d77",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s",
+      "output_sha256": "f874f0c1a70f0afabbf3368d21ef9fcbb25cc75c90956913890c73298a2ef4e1"
+    }
+  ],
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/src/domains/library/mod.rs": "ba5f1c5b5a2cbe3bde2482d46df54155066b54829f4eb9e2a7685fcf6c05f248",
+    "weebdex-platform/backend/src/domains/mod.rs": "307e1587b6e280f053d797d2164cff9b9256472f65efc44eb74797a00636043e",
+    "weebdex-platform/backend/src/public_api/account_reads.rs": "0137ee7b6925715b873e1881db421e522886599601eb6d098372c54eb7c49ad8",
+    "weebdex-platform/backend/src/public_api/mod.rs": "d8f16a0e53172a20aa6185509029aabf1a7a6ac019ca649d58d447f5ba887c1c",
+    "weebdex-platform/backend/src/public_api/routes.rs": "c887c0e396e1583a6fd2dcf400505eb56cab158ff55eb225909e942034e500ca",
+    "weebdex-platform/backend/tests/public_account_reads.rs": "fcffd86a558e04dc1f1db1848c80c4c6c26d700a467f2c2806fdef6dc5b08106",
+    "weebdex-platform/backend/migrations/0100_native_follow_revisions.sql": "7d4d06493dbabda521e80d85d1296d738e639f4f659b2d5bb04b7999bc9a360c",
+    "weebdex-platform/backend/src/domains/library/follow_mutations.rs": "cc5a34af2d8889dbee1c8af5c31697ac7602be388dc75aa89bf9b50dd8d42efa",
+    "weebdex-platform/backend/src/public_api/follow_writes.rs": "17b163658fd325c9a2e204032019648e4a3beaa783701ba61d7c11f35214f7df",
+    "weebdex-platform/docs/mangadex-native-account-follow-writes.md": "00868919629bc11f70051eaccad03c50a8194103e2d693a0d95be7f51951cca5"
+  },
+  "test_binary_sha256": {
+    "public_account_reads-55dde832bbd6c52c": "1f2ef0ee5fee6c02a05743105d5bfde47ac31d4e37c7cfd03dc592d3ecb11461",
+    "library_http-6f88bf7c029e3196": "d0889fbcae24793f21ab7a2f25a3ea2209329fd61b2358152c0c6dce11c8105c",
+    "public_list_follows-bd6bd095256e177a": "111fdb6f1c51d0c39683f2c3fe3ccad26a923ade17865ce3d06333513dd72afb",
+    "public_nostr_lists-000e8f3c9f6a3429": "787070b416b4fa599575700b1ab5549b49a24e536c9fa6cb19e26a4d27a38b39",
+    "public_statistics-f01460db3aa7ffa9": "1da802d7ea2b5faf417689caed282be819b77ca9f3ea1b43ae3e554accb447b6",
+    "public_catalogue_compatibility-7bc8ad9b6a8d2d77": "45ad8e829469485d58fa8cf1f772a47a0995b64c285a91112fc090132c794d18"
+  },
+  "covered_seams": [
+    "Actual migration baseline retains stored follow timestamps; insert/delete trigger ledger observes native session writes and imports",
+    "Original request proof, replay/method mismatch, active verified binding, permissions, private owner isolation and signer-rebind expectedAccountId conflict",
+    "Typed native Manga/Group/User targets, canonical/imported Manga UUID alias, protocol-only publisher rejection, native self-follow rejection",
+    "Strict bounded optional nonnull JSON CAS preconditions; repeated commands preserve clocks/version; delete/re-follow retains tombstones",
+    "Visible status returns actual account/target/version/times; hidden source metadata stays hidden while own follow remains removable",
+    "Repeated Manga follow preserves reading status/privacy/notification; new follow uses private native defaults; actual counter deltas are transactional",
+    "Native cookie mutations invalidate public membership CAS; metadata-only native updates preserve membership revision; concurrent public CAS has one winner"
+  ],
+  "limits": [
+    "Current isolated source only; integration/backup hold untouched, no combined-source qualification.",
+    "Final standalone public_catalogue_reads HTTP suite was not rerun: bounded runner stopped before its fixture at the4GiB disk floor. Six listed suites passed; no seventh pass claimed.",
+    "No fixture database deletion or cleanup outside normal owned process shutdown; explicit user cleanup approval remains pending.",
+    "User-follow write paths are application extensions absent from the official5.13.1 schema.",
+    "Membership revisions do not claim historical edit counts or cover reading-status-only edits; existing memberships start at migration baseline1.",
+    "No browser/load/production-readiness claim; existing compiler warnings and unavailable rustfmt remain.",
+    "No external publication, credential changes, device-library default changes or original signed graph mutation."
+  ]
+}

@@ -181,13 +181,5 @@
     "after": "{#if reader.chapter.relationships.thread}<Comments.Comments />{:else}<p role=\"status\">Comments are unavailable for this resource.</p>{/if}",
     "composed_before": true,
     "approved_public_availability_exception": "missing_native_forum_context"
-  },
-  {
-    "path": "src/routes/(app)/title/Manga.svelte",
-    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-    "count": 1,
-    "before": "hidden: !manga.relationships.relations?.length",
-    "after": "hidden: !isPublished",
-    "label": "Public Related tab reads actual persisted edge endpoint and can show native empty state"
   }
 ]

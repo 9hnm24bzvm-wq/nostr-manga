@@ -1,10 +1,9 @@
 //! RECONSTRUCTED-UNVERIFIED after environment replacement on 2026-10-15.
 //! Read-only MangaDex statistics over authoritative native public visibility.
 //!
-//! MangaDex Forums IDs and per-rater records do not exist in the native model.
-//! Comments are therefore null and rating is absent, rather than inventing a
-//! forum ID, zero observations, a distribution, or a Bayesian rating. The pinned
-//! coverage matrix explicitly records these remaining integration gaps.
+//! MangaDex Forums IDs and their global Bayesian population do not exist here.
+//! Native rating averages/distributions now come from actual persisted account
+//! observations; comments stay null and no global Bayesian score is invented.
 use super::{
     PostgresPublicIdResolver, PublicApiError, PublicApiResult, PublicIdResolver, PublicUuid,
     ResourceKind,
@@ -59,6 +58,20 @@ struct MangaStatistics {
     comments: Option<()>,
     follows: i64,
     unavailable_chapter_count: i64,
+    rating: RatingStatistics,
+}
+#[derive(Serialize)]
+struct RatingStatistics {
+    average: Option<f64>,
+    distribution: BTreeMap<String,i64>,
+    nostr: RatingProvenance,
+}
+#[derive(Serialize)]
+#[serde(rename_all="camelCase")]
+struct RatingProvenance {
+    population: &'static str,
+    observed_count: i64,
+    bayesian: &'static str,
 }
 #[derive(Serialize)]
 struct CommentStatistics {
@@ -183,6 +196,11 @@ async fn statistics(
                     comments: None,
                     follows: row.get(1),
                     unavailable_chapter_count: row.get(2),
+                    rating: RatingStatistics {
+                        average: row.get(3),
+                        distribution: row.get::<_,Vec<i64>>(4).into_iter().enumerate().map(|(i,n)|((i+1).to_string(),n)).collect(),
+                        nostr: RatingProvenance {population:"persisted-instance-account-ratings",observed_count:row.get(5),bayesian:"not-calculated-no-global-model"},
+                    },
                 })
             } else {
                 Statistics::Comments(CommentStatistics { comments: None })
@@ -215,10 +233,17 @@ WITH visible AS MATERIALIZED (
     WHERE c.deleted_at IS NULL AND c.is_unavailable
       AND platform.protocol_source_is_visible(c.protocol_event_id)
     GROUP BY c.manga_id
+), ratings AS (
+    SELECT r.manga_id,avg(r.rating)::double precision AS average,count(*) AS total,
+      ARRAY[count(*) FILTER(WHERE r.rating=1),count(*) FILTER(WHERE r.rating=2),count(*) FILTER(WHERE r.rating=3),count(*) FILTER(WHERE r.rating=4),count(*) FILTER(WHERE r.rating=5),count(*) FILTER(WHERE r.rating=6),count(*) FILTER(WHERE r.rating=7),count(*) FILTER(WHERE r.rating=8),count(*) FILTER(WHERE r.rating=9),count(*) FILTER(WHERE r.rating=10)] AS distribution
+    FROM platform.library_manga_ratings r JOIN visible v ON v.id=r.manga_id
+    WHERE r.rating IS NOT NULL GROUP BY r.manga_id
 )
-SELECT v.id,COALESCE(f.total,0)::bigint,COALESCE(u.total,0)::bigint
+SELECT v.id,COALESCE(f.total,0)::bigint,COALESCE(u.total,0)::bigint,
+ r.average,COALESCE(r.distribution,ARRAY[0,0,0,0,0,0,0,0,0,0]::bigint[]),COALESCE(r.total,0)::bigint
 FROM visible v LEFT JOIN follows f ON f.manga_id=v.id
 LEFT JOIN unavailable u ON u.manga_id=v.id
+LEFT JOIN ratings r ON r.manga_id=v.id
 "#;
 const CHAPTER_STATISTICS_SQL: &str = r#"
 SELECT c.id FROM platform.catalog_chapters c

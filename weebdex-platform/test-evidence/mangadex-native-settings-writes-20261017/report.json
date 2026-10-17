@@ -1,0 +1,165 @@
+{
+  "utc": "2026-10-17T18:41:29.912332+00:00",
+  "prior_commit": "e6a5a749718cef4f1c63412af73c5197c3aad99f",
+  "scope": "Proof-bound native-account settings save with typed UUID references, preference CAS, account/timestamp preview guards and lossless private/unavailable source preservation; shared native transaction validation.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 122 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.04s",
+      "output_sha256": "d8aa6d32179808f4a00b33a1578d838d408c3707b708710000c170f9b541e7c9"
+    },
+    {
+      "name": "signed_settings_account_rating_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.71s",
+      "output_sha256": "bdfeb544a5b19fd9286deb3927c88a1c30d96a9514bfe8be8d96f1f0b6b2674e"
+    },
+    {
+      "name": "native_library_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s",
+      "output_sha256": "599c3974d3298dcc23e40e6e9b11f256a5da50aa30f07840554bf8380ce6a85c"
+    },
+    {
+      "name": "native_auth_preference_session_case",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 6.97s",
+      "output_sha256": "c5412210a4e8c422b405774c9d48be3d4e6e5733569bdac9f41b64d802796726"
+    },
+    {
+      "name": "public_list_follows-bd6bd095256e177a",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.43s",
+      "output_sha256": "813b922cf65f9d3f920b223092f15d9b729b5624464d85ddb729869414cf34a0"
+    },
+    {
+      "name": "public_statistics-f01460db3aa7ffa9",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s",
+      "output_sha256": "7bd52ac7d70e14c44cc5f4d030cb16e8629e5ec87052f3543b435d970b2936bb"
+    },
+    {
+      "name": "public_catalogue_compatibility-7bc8ad9b6a8d2d77",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s",
+      "output_sha256": "5685af1dd5652d43b4b9c357318c7d87d1962ebf0982872de5d65f2d29c37bb4"
+    },
+    {
+      "name": "public_catalogue_reads-99a3bf88daacfe81",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.61s",
+      "output_sha256": "c1083e15f52952533b2ed84a39c73ab60c9012c002752921104ccebb8e28532f"
+    }
+  ],
+  "native_auth_case_filter": "actual_browser_flows_sessions_csrf_expiry_preferences_and_client_revocation --exact; other two native auth cases not rerun by this batch",
+  "independent_json_schema_validation": {
+    "draft": "2020-12",
+    "schema_check": "passed",
+    "actual_http_request_settings": "passed with UUID format checker",
+    "actual_http_response_settings": "passed with UUID format checker"
+  },
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/src/domains/library/mod.rs": "e96ac3a0227c1689bc1ea396a2943c89b9335e7a7d5efd6c664989468383ae87",
+    "weebdex-platform/backend/src/domains/library/preferences.rs": "533d12d3fa973500e939ee64dd90ac507811bf7e9aa0a30eff09873cc912cdc2",
+    "weebdex-platform/backend/src/domains/library/preference_mutations.rs": "2b2200df7d4bd5f572ceeb19389816bc5a0c6805e27413f1103ec805f88dc5b5",
+    "weebdex-platform/backend/src/domains/library/repository.rs": "5e84b54c5788d3a7c00eebfecda64057b97a77048450f1ecf02cf998a737ddd8",
+    "weebdex-platform/backend/src/domains/library/ratings.rs": "5d984637254967df5dc92f46792fe5c7b917a84d2f9563af83497d7bac7dbda3",
+    "weebdex-platform/backend/src/public_api/settings_writes.rs": "5fecbfb26655b4105c64b8624bc3e0aac7760a7355ecd27d0fd44d91a415d0bb",
+    "weebdex-platform/backend/src/public_api/account_settings.rs": "30e986308ed40a6532b84b57245202413c05d3b774f87678fc169318f8c6eb55",
+    "weebdex-platform/backend/src/public_api/account_reads.rs": "678784332ce06c728bf504ba81662698c16debd92f3b4783a3b4f581cfe025c3",
+    "weebdex-platform/backend/src/public_api/ratings.rs": "f4a3a57171f5c521d1b9bcb7dbbdf3f111937a4ae31f13afbb5294fff38ae605",
+    "weebdex-platform/backend/src/public_api/list_follows.rs": "a607da76ef18fd05e47a3305bb331a64aab815aa8d4600ef9ded5157efb725f3",
+    "weebdex-platform/backend/src/public_api/catalogue.rs": "4fa418dc79e1157ec06a87e83e9d02b193f81d09ad45a7ff89e2c781d1c304f6",
+    "weebdex-platform/backend/src/public_api/mod.rs": "79d1db62b279f526d0f2f8bedde4bb576dfe7b1becd18f93ed2863a4a2ec847a",
+    "weebdex-platform/backend/src/public_api/routes.rs": "1448b79f8659638491c648066936ea6dfca12b1741277f220df9e3906cb4a451",
+    "weebdex-platform/backend/tests/public_account_reads.rs": "d8f8d40a0a699bed9e0c3b00fbb886bee2e382272d336f639f9152a8f2329318",
+    "weebdex-platform/docs/mangadex-private-settings-reads.md": "cc7fd916adaff3dd26851c609d455a905a644c6b7409aea80e162ab664888c49",
+    "weebdex-platform/docs/mangadex-native-settings-writes.md": "18af5c1aef9692598572f8614b5dade62b66a1546bdcad4e57e371cbc67b81d7"
+  },
+  "test_binary_sha256": {
+    "public_account_reads-55dde832bbd6c52c": "739b143bc579b45263061ac1a1b1878055560a706572aed13dea44d7ad42c011",
+    "library_http-6f88bf7c029e3196": "57c6523daadabf59743a431472c88cb2433358ae6a435132aee68b10dc983be8",
+    "auth_http-b7eb7a5a8de7fe89": "1c69e825dd9e4fa764f9ff8d8c057cd4bcdda29b40c937ca4828479ae9b86894",
+    "public_list_follows-bd6bd095256e177a": "207c4eb7581539fa0b21b2cafc0a753f4224e60fc3ec91d3f1a1dea53ac99c53",
+    "public_statistics-f01460db3aa7ffa9": "3ed49044ef67f51b468afd93d30c87cf76535b9d7022ec537cc2c84836c2192b",
+    "public_catalogue_compatibility-7bc8ad9b6a8d2d77": "65fa8f843b0b0e838dfbab2786f4beec94de8a5b9b1c4345bcace3a8f70f04fd",
+    "public_catalogue_reads-99a3bf88daacfe81": "4d7e6b61b825077744a4b6349355e6d350804ab1fad33818e7b0bfbb825771e3"
+  },
+  "covered_seams": [
+    "Exact original request proof, replay rejection and no cookie-only public authority",
+    "Current native policy/permission, canonical expectedAccountId and actual signer rebind conflict",
+    "Actual immutable application schema vocabulary, typed UUID references, nonnull/unique bounded arrays",
+    "Known visible filter replacement preserves deleted/disabled/unresolved native references and unknown private fields",
+    "Actual preferences.version CAS, optional real preview-clock guard, no-op clock/version preservation",
+    "Concurrent same-version writers yield one success and one conflict",
+    "Projection failure after candidate update rolls the entire transaction back",
+    "Native session PUT parity, read-only client denial and retained native unverified-account preference allowance",
+    "Native/public library, rating/list-follow, statistics and catalogue regressions"
+  ],
+  "limits": [
+    "Current isolated branch evidence only; integration/backup hold remains untouched and no combined-source validation is claimed.",
+    "Template administration remains separately unavailable; no central MangaDex template or account ownership is fabricated.",
+    "The settings response is still a known-field projection, not a replacement of the full private native record.",
+    "Native legacy explicit-reference replacement semantics are retained; public UUID saves preserve unavailable source values.",
+    "No browser-engine, load or production-readiness claim; existing compiler warnings remain and rustfmt is unavailable.",
+    "No schema migration, new dependency, remote push, publication or credential changes."
+  ]
+}

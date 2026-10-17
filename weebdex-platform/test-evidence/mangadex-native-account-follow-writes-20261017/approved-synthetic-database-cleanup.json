@@ -1,0 +1,827 @@
+{
+  "utc": "2026-10-17T19:57:56.195335+00:00",
+  "scope": "Only approved generated stopped PostgreSQL data directories from API worker fixtures completed before the original cleanup request; no source/cache/log/evidence deletion.",
+  "cutoff_utc": "2026-10-17T18:52:00Z",
+  "strict_allocated_byte_cap": 2500000000,
+  "planned_allocated_bytes": 2449272832,
+  "planned_database_count": 46,
+  "retained_newer_databases": 7,
+  "databases": [
+    {
+      "directory": "weebdex-platform/test-runtime/auth-z6c_q6ti/data",
+      "allocated_bytes": 51965952,
+      "logical_bytes": 51897101,
+      "retained_files_sha256": {
+        "initdb.log": "6cad33f223972c9e56ac25fe7d558abb7ed25613c2dbab7c6b1c85eeb388cfc7",
+        "cleanup.json": "d366a29a2a50526393c013f3e4c10c08a85554c1989629d2d18bb1ef11ae5caa",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "2af207a777664be2f22d473c4e4bd9f191d84cae13eed5880df3f72245ad35c2"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "d366a29a2a50526393c013f3e4c10c08a85554c1989629d2d18bb1ef11ae5caa",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-v0jfldnt/data",
+      "allocated_bytes": 51998720,
+      "logical_bytes": 51931642,
+      "retained_files_sha256": {
+        "initdb.log": "cf39e4ab1e8c1406417facf0c795e276795c1d11b2ee61fde96d1cfc47305f2b",
+        "cleanup.json": "84d1f7589f34c6927269096208fa15fd1ebb4fdc5114f4fb2ed90898e0cb2134",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "63f526226ff8841d23d893816d719b21ecc6155360cac6b5200ae1aa229c7fdf"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "84d1f7589f34c6927269096208fa15fd1ebb4fdc5114f4fb2ed90898e0cb2134",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-vx495vti/data",
+      "allocated_bytes": 52183040,
+      "logical_bytes": 52113639,
+      "retained_files_sha256": {
+        "initdb.log": "be0599270a3c6e7b5b2a71bc621200e54ed24c9c7e70c03af32b3996eadf095a",
+        "cleanup.json": "82e8d20bb20b09cb4f6d203edc625e724a57700e5255b368f854aa6dbfd39fd2",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "835ca81495deace2f6b1100bccb87cfcf463efa8d2e026a2ce9b186222a223cf",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "82e8d20bb20b09cb4f6d203edc625e724a57700e5255b368f854aa6dbfd39fd2",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-3yqbr7d_/data",
+      "allocated_bytes": 52183040,
+      "logical_bytes": 52113836,
+      "retained_files_sha256": {
+        "initdb.log": "a5ae186e8a8f13f5dd29102ec1067649ee01819f0d0361acb7868a805ce8ef1b",
+        "cleanup.json": "abe2d7b413003d2b740396c9aa3d2e857c5cd2da46217d41a4e3820847a7d298",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "173b6fe5b8f7756a537ed1d84ee9f2a7888275e06f9ad93e110f653332b24ef3",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "abe2d7b413003d2b740396c9aa3d2e857c5cd2da46217d41a4e3820847a7d298",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-sasa_c1d/data",
+      "allocated_bytes": 51998720,
+      "logical_bytes": 51931642,
+      "retained_files_sha256": {
+        "initdb.log": "166d2f82907120df70b0b5afbb7f165d30f82f1e13fd080b4b70183d81d71213",
+        "cleanup.json": "4f887c16cb460ad112bde74b628e432b15a5ad66074f72ce24053e2c9a7efd2f",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "1b62bbc71e23f1161d0e381762c92921977845627b69ea99518638fa3e08d353"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "4f887c16cb460ad112bde74b628e432b15a5ad66074f72ce24053e2c9a7efd2f",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-idrmnudf/data",
+      "allocated_bytes": 52183040,
+      "logical_bytes": 52113836,
+      "retained_files_sha256": {
+        "initdb.log": "a89e645f86041397e4098e94400e3a68da437636a71e0d1b457f78b9a2984e9d",
+        "cleanup.json": "48fdfb249b860bce4ada08de58e52e6e8f02869f674a349f28a98596336d2dc6",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "a7d64e8b71d21007c1c8f7b457f33be690a31a0a7ebb7d49cee09d1c0ab70a2b",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "48fdfb249b860bce4ada08de58e52e6e8f02869f674a349f28a98596336d2dc6",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-zvq17ea9/data",
+      "allocated_bytes": 51998720,
+      "logical_bytes": 51931642,
+      "retained_files_sha256": {
+        "initdb.log": "b78988a9952851763bf76b9adb087d0a320f6f915869149fc985866fab035e1c",
+        "cleanup.json": "489ba10d60c8eb8c31cecf419e90b4507100129a4cfefd675a715352a67f4f2b",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "6952f03f240ddb8f497b8615cae6e8e4bffa9be767de0e554f518f4abd81e6e0"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "489ba10d60c8eb8c31cecf419e90b4507100129a4cfefd675a715352a67f4f2b",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-dgmh39ri/data",
+      "allocated_bytes": 55050240,
+      "logical_bytes": 54980576,
+      "retained_files_sha256": {
+        "initdb.log": "fafbc972de4a4ae2037c7b5d7a9ababe8c737eca95fcba5bfc8609058750a5d8",
+        "cleanup.json": "14f83e565987b53b676773533757e13dbf96c74733be8b58cbb62c32f09b69be",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "28aa6d9300cc8de2ad85b7add38bb3ef48527dd96fb6332194f1c34702ae864d"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "14f83e565987b53b676773533757e13dbf96c74733be8b58cbb62c32f09b69be",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-q7lv7zfm/data",
+      "allocated_bytes": 52183040,
+      "logical_bytes": 52113836,
+      "retained_files_sha256": {
+        "initdb.log": "993b9e376210bf1584a71bd8e22aac462bd18da9c3514d4503716e48c9ef36d5",
+        "cleanup.json": "a3c262596db8c62473360e977e583c4eaaa3fe70a998a4d56e1bde9193f29d00",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "bb53b0fa387dff3833f767b3e4c71cf998317d6b0afb20b0da24cdd6903bc0e8",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "a3c262596db8c62473360e977e583c4eaaa3fe70a998a4d56e1bde9193f29d00",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-a80sy0pt/data",
+      "allocated_bytes": 55083008,
+      "logical_bytes": 55013935,
+      "retained_files_sha256": {
+        "initdb.log": "ad12687f281a82aef4e61a91583737ef0771ca46147bbbec8dc58206c4087691",
+        "cleanup.json": "c34183a40a7f860d22f7815900676c2183b00a61ba81ab4ebf9b620450c66843",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "961da4218b8572b52b88cd218d394b9053803b890c771c33ff054dcc6349bf05"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "c34183a40a7f860d22f7815900676c2183b00a61ba81ab4ebf9b620450c66843",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-ibwn1gef/data",
+      "allocated_bytes": 55099392,
+      "logical_bytes": 55030319,
+      "retained_files_sha256": {
+        "settings-projection.json": "12ee470c1cbb0a56f748facf31418b8a77b7dc0eace683855671b4ea08e2795a",
+        "initdb.log": "41610e1d8ba98123f8a1e879c6317c4cc5f07e3d0a46dc967d9db3bf87dca17f",
+        "cleanup.json": "ebb5e63bb0cfcd697999b8821f216f4a794c1c340a917fadc6193fb7a44655e2",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "7dbf3081d39b239d0e70353acc05fdf50bd61667feec78506c1c0a5685fb3cde"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "ebb5e63bb0cfcd697999b8821f216f4a794c1c340a917fadc6193fb7a44655e2",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-h6v8dr47/data",
+      "allocated_bytes": 51965952,
+      "logical_bytes": 51897298,
+      "retained_files_sha256": {
+        "initdb.log": "93089747a20b7831ccab754469144923edff0c31ffad8c5e1c3f50d3a2bfd6c9",
+        "cleanup.json": "b444f485c848106c8a171b2c44ad792c549a1d00b57f06600cc14b649799d94f",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "e7c5f5e6af065b67f039b5b682c104a86da397bcaa46af1386a7f5b53603ccad"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "b444f485c848106c8a171b2c44ad792c549a1d00b57f06600cc14b649799d94f",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-_6f7040s/data",
+      "allocated_bytes": 52019200,
+      "logical_bytes": 51949799,
+      "retained_files_sha256": {
+        "initdb.log": "52f7c60ff27e092273bb3e8c1cf5a3b27126c10f325f539226c1019e7f73609c",
+        "cleanup.json": "0c9de6e1169fd281d101895104133192a9ed436317af75b9260a9befaa1c09e9",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "8f30e6721eff3886e9feff0c43af5399cc04537efe6f0a1ffb5686b05b917729"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "0c9de6e1169fd281d101895104133192a9ed436317af75b9260a9befaa1c09e9",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-o4ckckod/data",
+      "allocated_bytes": 52183040,
+      "logical_bytes": 52113836,
+      "retained_files_sha256": {
+        "initdb.log": "3f73c0e4b6282cfc77f2ebcece759f7f91841b8199c0be93c043cd260374b373",
+        "cleanup.json": "6b157a72e56a345bbece9c3f3f24b7ca6bf02632a2ea33d9a5bee57378181ae2",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "b9aaabc8b4f6e37fe56227b30863f393e5be17249ae735c222b1f4afb34d0669",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "6b157a72e56a345bbece9c3f3f24b7ca6bf02632a2ea33d9a5bee57378181ae2",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-mhdd06hf/data",
+      "allocated_bytes": 55099392,
+      "logical_bytes": 55030319,
+      "retained_files_sha256": {
+        "settings-projection.json": "babcf23355ff6fb7482f225dba5243249c2b42b66ebb05c17f3bead0402e9441",
+        "initdb.log": "e5651702537241e0f702b15b09ac5793052e1c7beb03df82be472419a1736480",
+        "cleanup.json": "02428958d1f93797b73ffe57f54fc1668a8a89bf52aee0746677532ce9369b3d",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "e12469b9f0fafbbdfa9cbe4253d5635b1faaf8b94fb836a2f43763a91ce2b2a0"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "02428958d1f93797b73ffe57f54fc1668a8a89bf52aee0746677532ce9369b3d",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-nin89_qm/data",
+      "allocated_bytes": 55238656,
+      "logical_bytes": 55170962,
+      "retained_files_sha256": {
+        "settings-projection.json": "9f237cd767430c6b555c8c7b5b7904eb1102b1a7519d9c4ca2701b73277f7353",
+        "initdb.log": "5a6390e0f29698ca608e141f73c9d13b0910ac8ff7035ca118c65a6bc9e76a89",
+        "cleanup.json": "9da7d2f99c7c537a52f6193ca90ba424ec5af083d8fc4e24e605165270811cc1",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "fd7a21025a381f7921c7ef1a47e90c7e307969492fb7dd9c4993ab07cf0e142e"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "9da7d2f99c7c537a52f6193ca90ba424ec5af083d8fc4e24e605165270811cc1",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-qcatixug/data",
+      "allocated_bytes": 55238656,
+      "logical_bytes": 55170962,
+      "retained_files_sha256": {
+        "settings-projection.json": "3a2e1660d78d53055d3977f4d48ca72c80c8af732d9ede41a08a44f059eb9f57",
+        "initdb.log": "0a3b48870c5cfb7f2302f8c85af1f4e2613228c681570f1f930415c51c995e10",
+        "cleanup.json": "f07a5fc8a714eb0b9ed9e378f69b59e6657ec0e93e466be467cbcbfda490f2a4",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "498bb240c0dc1e3ff9660445f1ca4413b22ecf23635057b52daf96b2a5915ee7"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "f07a5fc8a714eb0b9ed9e378f69b59e6657ec0e93e466be467cbcbfda490f2a4",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-rby21qtk/data",
+      "allocated_bytes": 52113408,
+      "logical_bytes": 52045936,
+      "retained_files_sha256": {
+        "initdb.log": "63effe9146b5054c3cfa020f75eb12a74e5e9cd4d5c073f35f5fc29acc3c9529",
+        "cleanup.json": "1134a1b8bfde7396959cb9d2e7a47e54247400b7902de795f2098df898900668",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "28e56b916baac2973c6e3136b30bd4498f86f155c59c006dce19dff488b6531d"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "1134a1b8bfde7396959cb9d2e7a47e54247400b7902de795f2098df898900668",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-c_py5uoz/data",
+      "allocated_bytes": 52068352,
+      "logical_bytes": 51999739,
+      "retained_files_sha256": {
+        "initdb.log": "04e7c401def21e13811c2cd071dd008d5a8486155c444abff30036d5dc32edf0",
+        "cleanup.json": "f879c61e5c1429d4cc0d357092efd7b48e254e32a96e6ffce31e923ba1d84cfd",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "938a98e75d3e8515b51c3ee136aedbeb6712f3046cca0ba43f75645690893b0f"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "f879c61e5c1429d4cc0d357092efd7b48e254e32a96e6ffce31e923ba1d84cfd",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-t7pdpgcm/data",
+      "allocated_bytes": 52232192,
+      "logical_bytes": 52163382,
+      "retained_files_sha256": {
+        "initdb.log": "797cba2c82a1353470987f0594c48afb38aa493b7c1e6ced83967b020e3bd285",
+        "cleanup.json": "6429f5b196f8f594abddbae1d5f8c19059abb56efe037abf14629cfab9578713",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "01f08b79bf8e640373d288abbbb78f029fc61a68a92f5c7fdbb6ccd83f151342",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "6429f5b196f8f594abddbae1d5f8c19059abb56efe037abf14629cfab9578713",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-fu13q2ap/data",
+      "allocated_bytes": 55238656,
+      "logical_bytes": 55170962,
+      "retained_files_sha256": {
+        "settings-projection.json": "1f56f5efbcff2c08491d3d9be1060699bb3d1ac345d2da7a8a354b31f4eb635c",
+        "initdb.log": "ef273a90d1263572f05d513169f601fe97d027db4cf78f21714911de345c2e87",
+        "cleanup.json": "0fab10d35e925acd74275e151e59d796881898ed5c619a3767fce331dda92526",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "d562c35dc5d68560f05187b65746ae12025ebf0c001bf42f9107cebb01695dc0"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "0fab10d35e925acd74275e151e59d796881898ed5c619a3767fce331dda92526",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-b0266sg2/data",
+      "allocated_bytes": 52113408,
+      "logical_bytes": 52045936,
+      "retained_files_sha256": {
+        "initdb.log": "9c6939d8ea5bd93ea6606e4c9e50da7d225de783e0bb4133ad24bf25572f64db",
+        "cleanup.json": "cad391ae790a9a6e98b8e4d31cd50cb7400c95ecec83ae5e163762ea3a48e161",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "d76a53e1589a1ec9b840aae8f8f953d2fbdcbbeeef4f6bf944914c4bc7680287"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "cad391ae790a9a6e98b8e4d31cd50cb7400c95ecec83ae5e163762ea3a48e161",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-f17pj52k/data",
+      "allocated_bytes": 52068352,
+      "logical_bytes": 51999739,
+      "retained_files_sha256": {
+        "initdb.log": "0f0269db3ef118bded4a7909b7992fb7c47ec8d1b04c40dcfc54a061a4fe2edf",
+        "cleanup.json": "c92f91e6cad17e5a0aa88eb981c1b5de7dc2f9c89f74094850de4e78706bac0c",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "b5a4b416487aa629fa1493ecb62a326bf88a155d324be6295686b89b2d734c43"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "c92f91e6cad17e5a0aa88eb981c1b5de7dc2f9c89f74094850de4e78706bac0c",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-afib9o0i/data",
+      "allocated_bytes": 52232192,
+      "logical_bytes": 52163382,
+      "retained_files_sha256": {
+        "initdb.log": "ffb3333ac80af034ea0f0d0bb38a29dec70db2ba5c323459474db820778d68d7",
+        "cleanup.json": "129898739c240c451800b18c042ebd656e1ae4b66802ca13d3a8d4bf8c011f27",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "fb93b06687ab5662b55e674e6b5806170e1f2ab486dc37121d4c8afdf30df9b2",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "129898739c240c451800b18c042ebd656e1ae4b66802ca13d3a8d4bf8c011f27",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-5vb2kq7w/data",
+      "allocated_bytes": 55238656,
+      "logical_bytes": 55170962,
+      "retained_files_sha256": {
+        "settings-projection.json": "269a3d8d574a5bb9444ec334c4c8e71f7f810e781d50b197c3a055c50ea810ce",
+        "initdb.log": "d1d3cab9c0460dffdd7064230c12d4791ac8c571073cbfb71d69f4598092d3bb",
+        "cleanup.json": "489c6f1d64627799018cab5e6e531f05cb7431a7563ab10d3006c9cb6dbfb58d",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "bbc9255a365e1f2b218436b542f4d6e20ee6432d6d90ec0db83717092eaf2b1b"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "489c6f1d64627799018cab5e6e531f05cb7431a7563ab10d3006c9cb6dbfb58d",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-1xisaxug/data",
+      "allocated_bytes": 52113408,
+      "logical_bytes": 52045936,
+      "retained_files_sha256": {
+        "initdb.log": "0cd404c0214789fc0a61504ee2a7f418d3230132ba82e0ce24a52bd6a354898c",
+        "cleanup.json": "d1239603fa85eb1a0d759c8603cac407a3793ed38eb06ba4f706d9e1a1c70876",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "d716fb63d9612a43a869f28a379a32d9c026304da969a7ed82ed8fd1bb98378f"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "d1239603fa85eb1a0d759c8603cac407a3793ed38eb06ba4f706d9e1a1c70876",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-aft3buup/data",
+      "allocated_bytes": 52068352,
+      "logical_bytes": 51999739,
+      "retained_files_sha256": {
+        "initdb.log": "a0c7e5ea61820a11e81be15ca3b35eddc3ddac8fcabe37821b3b98fce3f705cb",
+        "cleanup.json": "200123f5e898b2aed94262b40a65daebfd932474ea6c957105e9adffd332827e",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "30ba179a5af412a42f32fa8f476050c28ca1373c65b82655fcf56267b89c0022"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "200123f5e898b2aed94262b40a65daebfd932474ea6c957105e9adffd332827e",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-8ib5rdof/data",
+      "allocated_bytes": 52232192,
+      "logical_bytes": 52163382,
+      "retained_files_sha256": {
+        "initdb.log": "f8ab3cd67eeba238e6063b38e42d0f08c73d82f8afe9cc79b52b4e0ae621ef3d",
+        "cleanup.json": "b5693098e9cefa3564a5cac908d39b014adbc6bb023e41bd4a7ea6fd913158d3",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "31ab69cc1d841f1efcbea8d5665f3bebd209d74702d07f6d5f05a30b05a102e6",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "b5693098e9cefa3564a5cac908d39b014adbc6bb023e41bd4a7ea6fd913158d3",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-q80fdrix/data",
+      "allocated_bytes": 55238656,
+      "logical_bytes": 55170962,
+      "retained_files_sha256": {
+        "settings-projection.json": "0f223ad84367f73aded7cdef9fbf5ded37e90d43b5a07d9d870d33d0b81cd970",
+        "initdb.log": "cefcea030f2d869eb436590ae78514b61786afc2642277047cdab9afb07cebfa",
+        "cleanup.json": "76920bd766d6f5e53619989c6fefeebd7cfd554111319d456c0574892c571862",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "8b33bfc70111c7580346fd81c1a6950a15cd4cf6761b8497063f87eab34559fe"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "76920bd766d6f5e53619989c6fefeebd7cfd554111319d456c0574892c571862",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-uc9nd4lj/data",
+      "allocated_bytes": 52113408,
+      "logical_bytes": 52045936,
+      "retained_files_sha256": {
+        "initdb.log": "55f50d05cd5011a048cb6f3adb61f74bf5197dc8f128c9ec9754145f68578d11",
+        "cleanup.json": "fb8d2ac1234d95a794bcda97749ab3ccf02e13ead4e01ad70b87242f96e1e43d",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "faebe5250b0f41c4d0ad98b72c93cfda50849098efe9ad062d7b510cdbea8b2a"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "fb8d2ac1234d95a794bcda97749ab3ccf02e13ead4e01ad70b87242f96e1e43d",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-ajku4rcr/data",
+      "allocated_bytes": 52068352,
+      "logical_bytes": 51999739,
+      "retained_files_sha256": {
+        "initdb.log": "3893902877217d67324087f575de98bb7f3338feb57f45b2c383f3b42ba3f67e",
+        "cleanup.json": "d8b577c8bf61e026769c12a51b19256d02f77725960af74956b165d2a155a8dd",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "e02811b4b700f4e8b8e2aad35f796d8d3ffa973aa65fd69bcd66afc30c6e6374"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "d8b577c8bf61e026769c12a51b19256d02f77725960af74956b165d2a155a8dd",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-nt7cppsr/data",
+      "allocated_bytes": 52232192,
+      "logical_bytes": 52163382,
+      "retained_files_sha256": {
+        "initdb.log": "e14b01c538e68b7e76e5c404f89011df0e894cfa0eb5e8009d20bc057188512f",
+        "cleanup.json": "2210c953ef02a29dae4f9e331cdd84b5e89ccce54305896f14e2d620fafa2d73",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "707393377dc0c3298025d1e327d4195df8d361e18b8f56c96b1b5a493d16bc27",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "2210c953ef02a29dae4f9e331cdd84b5e89ccce54305896f14e2d620fafa2d73",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-vb07k1oo/data",
+      "allocated_bytes": 55627776,
+      "logical_bytes": 55560714,
+      "retained_files_sha256": {
+        "initdb.log": "5f84c421becc32057193cc6cf662190ab6672d627e9cb25099357aa54ce4340a",
+        "cleanup.json": "47240b8f46db261682198980473b1f9fb52f03f8e4e9da269d911ec43a5052e7",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "20060573c5fa23dbb9a336e68fca0a7483400bed509792c2df10e92b1a993fe4"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "47240b8f46db261682198980473b1f9fb52f03f8e4e9da269d911ec43a5052e7",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-l6p1g_5_/data",
+      "allocated_bytes": 55635968,
+      "logical_bytes": 55568906,
+      "retained_files_sha256": {
+        "initdb.log": "343ee9e2da84ce4beaaaf90c511f871c93d7a3e2f1612154dee06f301b5bdd96",
+        "cleanup.json": "fd6c7117c6aeb46d9188fb384b8fcd74fd9e1cd0a5037e49e8d6180a19fe4e1a",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "a4fce58685e15861d949343cea1491a088de9305f4c533dc84a554d5389eabf4"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "fd6c7117c6aeb46d9188fb384b8fcd74fd9e1cd0a5037e49e8d6180a19fe4e1a",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-mtpyp_k6/data",
+      "allocated_bytes": 56168448,
+      "logical_bytes": 56099695,
+      "retained_files_sha256": {
+        "initdb.log": "cd26170bf4c4cd775d929c398ba50c5353929f4800c5da6dad414dd952b25973",
+        "cleanup.json": "728e1374a5ba69e2683b30b9a14b26fd6e78c57019eca0b7d23bed70f871ef64",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "3a087f7f2739ce64cdb5552f3140ab5c655a1a4426f82bf5609a247c448aa534"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "728e1374a5ba69e2683b30b9a14b26fd6e78c57019eca0b7d23bed70f871ef64",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-so_q74af/data",
+      "allocated_bytes": 55287808,
+      "logical_bytes": 55220508,
+      "retained_files_sha256": {
+        "settings-projection.json": "8e6f3ef2b0522bae11029eb1f97d78c087a9e61a4e0e5366e106ef292657a835",
+        "initdb.log": "9aff38c0e7a6ffd0f0905666cac45ff634a56d74ff14feae915a983ff9789f8e",
+        "cleanup.json": "79bb8cd04dd860258d428ac4ddc14a620161965801863785a7e2b91397e5bdb1",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "e1aa99e1bf5143d87609fc290c18645016566e03ef4e6dcd831cb156aaf0bd4c"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "79bb8cd04dd860258d428ac4ddc14a620161965801863785a7e2b91397e5bdb1",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-kfcsdls7/data",
+      "allocated_bytes": 52162560,
+      "logical_bytes": 52095482,
+      "retained_files_sha256": {
+        "initdb.log": "0a6e48b6fcd763206f8c6d3535d325577e33ba19940e141ed4125349849f4e7a",
+        "cleanup.json": "74a35baafc487aa1a6f814d7d84e29722f497cec7ea8760f492beb9475c7075c",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "815c963ec0f7376e65470a7a59dca6d78f8665a1d8cd6db6233b20dea3b89446"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "74a35baafc487aa1a6f814d7d84e29722f497cec7ea8760f492beb9475c7075c",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-l5f9h88_/data",
+      "allocated_bytes": 52117504,
+      "logical_bytes": 52049285,
+      "retained_files_sha256": {
+        "initdb.log": "d1327ae0ae1d91d5712ba2bcf0449bc1cfb2712d65a7d962568be25a43ef88d2",
+        "cleanup.json": "3215f6075b5a12514d5165b8e6fee13bee6555b9150f569c971aa019d899b7f2",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "c0191f9225d7d48a7558f4480261ec87ae9e334f6ad2e32ea4e1677521c6e107"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "3215f6075b5a12514d5165b8e6fee13bee6555b9150f569c971aa019d899b7f2",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-hoqeihds/data",
+      "allocated_bytes": 52281344,
+      "logical_bytes": 52212928,
+      "retained_files_sha256": {
+        "initdb.log": "7b53c9a6ee8a46aaa43b4ee78076f555e8edb529a6296d3e3a821376aa6f7f1e",
+        "cleanup.json": "edd0022ee0ca396e6dce43c2cb95004d9c63349ef45cb591e6f34ddb369f3aeb",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "219c9da53b81376e2d32257af65fb0413b1278f0f66f9fbc3952b883aaa844ce",
+        "media/objects/f8/f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3": "f8c354ffbf9064e487284cda5451ad00bd10ef630ac889b435da68f9eb42a8a3",
+        "media/objects/0f/0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b": "0f5ad772aa8e7a32cfe2a685b0b174d7a7c0a0eeb4a74a86eaffaaa80a1d530b",
+        "media/objects/e7/e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9": "e7981824d743bb29829aa6f917b97f4680fa96b0d6b9480901e37c1d30206fe9",
+        "media/objects/a6/a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0": "a60c72a3f98e7b6cec741cb0fa12d205402cff712b3dd693f87d45dfde043aa0",
+        "media/objects/e3/e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac": "e3e1d817c90e3f6526d56edc536469b7785db521ba2fc9bf9d92ac3356721dac",
+        "media/objects/2f/2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57": "2fac9f08132d2d532ff23bcc15568dbea7217f7b8225fcb3ec5e4f00aea67b57"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "edd0022ee0ca396e6dce43c2cb95004d9c63349ef45cb591e6f34ddb369f3aeb",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-2_u7rh9e/data",
+      "allocated_bytes": 55287808,
+      "logical_bytes": 55220508,
+      "retained_files_sha256": {
+        "settings-projection.json": "2324a82c6828a0ba5a6b6a50387a1f46455db789f39a14ab5ad5ab503550acd0",
+        "initdb.log": "3fca6ad7cd4f02d421f8c02cac1c47f8e04f9c37be3546bf3d76a2686def0286",
+        "cleanup.json": "009dc66f3bf95e6c1fce3258882e236363737b3b75acb0244917e87ef4c680e1",
+        "settings-write-request-projection.json": "822edbe9d723060e68e76d005dff5190fdf7b443447b0d4af6f1ddf4cd3938e0",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "settings-write-response-projection.json": "bedde0711064c16a947d3cf5feb3386ddb363d82ced2861c9ca0aff2b038fa76",
+        "postgres.log": "b48ef20d617c3a8dbc488acd5c7406a2d5026839fa381cd78b2e1984f5419a84"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "009dc66f3bf95e6c1fce3258882e236363737b3b75acb0244917e87ef4c680e1",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-o188drqq/data",
+      "allocated_bytes": 52297728,
+      "logical_bytes": 52230297,
+      "retained_files_sha256": {
+        "initdb.log": "5d0a87d09817f329f45954df19ba8f4bc3168bb3439855390c285ca6ade4cc3a",
+        "cleanup.json": "ec5b6ec2ca3e5f407242b60e7aa641275dd03790262c046cf4edce8a88ae320e",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "694ee60487e855199125627c395c228cee52930f81ef875bc3446725371b2e62"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "ec5b6ec2ca3e5f407242b60e7aa641275dd03790262c046cf4edce8a88ae320e",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-a8l522zr/data",
+      "allocated_bytes": 55287808,
+      "logical_bytes": 55220508,
+      "retained_files_sha256": {
+        "settings-projection.json": "9f804c9015ff30752a972d6b97910d1e337ab41868663d5ee05bd65f49f8a648",
+        "initdb.log": "5c4e376e9074aba0b4e8ba7fc31ecb90eafe56fb1c9b10d61de81c5ac16a9b3b",
+        "cleanup.json": "d713da444371b8d0edbfa2a006a554d64aabad455c6f0d1fe9d7dafc22ad34a7",
+        "settings-write-request-projection.json": "963945ccf232f3db2121275de8e77be53636c51b579cd18f1f7f2f0cc7dd52fb",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "settings-write-response-projection.json": "5b4ba5765c650acdc9be31986fe9b7076db9346ccdd6c1ea2d039d3738060857",
+        "postgres.log": "ed13f44f26372f440b7ac9185bc6a3ce6f11cbb2f91c3294c3003fdcf3c5b643"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "d713da444371b8d0edbfa2a006a554d64aabad455c6f0d1fe9d7dafc22ad34a7",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-vn_3e9k5/data",
+      "allocated_bytes": 52142080,
+      "logical_bytes": 52073073,
+      "retained_files_sha256": {
+        "initdb.log": "0911fcbd9e93526dc557e39f5181da1e0aa678963081286c222758ac134c04e1",
+        "cleanup.json": "ae29d34c9f30b8451ecf78f0280a4da548e3d9b6ef9dff398ec2b57918c5de5b",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "c0cc85bfe8a49255c2b8555cf26dadb84a629089a63554881083273e3fe25308"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "ae29d34c9f30b8451ecf78f0280a4da548e3d9b6ef9dff398ec2b57918c5de5b",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-glrtzvbz/data",
+      "allocated_bytes": 55652352,
+      "logical_bytes": 55585290,
+      "retained_files_sha256": {
+        "initdb.log": "43686d552a91a6d6a0a0835a12dbfdb785309dd2a2833482b540fec41ce4f1ea",
+        "cleanup.json": "bed715b21ef85d85237c5a770cc8acb11163f6bafe9ac1e8726567a2dcf2739b",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "903230a99f76541f69e29b1504b8043fecdff37ba08c5945564aeb6112fda722"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "bed715b21ef85d85237c5a770cc8acb11163f6bafe9ac1e8726567a2dcf2739b",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-grhyo84l/data",
+      "allocated_bytes": 52162560,
+      "logical_bytes": 52095482,
+      "retained_files_sha256": {
+        "initdb.log": "7caa15bf12d851f46bde5a85cb901c18204f1b65691989e904df8216337de985",
+        "cleanup.json": "950ccefb1757692113d7f9a050b22a2cdabc7d7b49f7b6781fbcd7f36d2d2f23",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "d216e0acd91274f3118b65a14a6e468492f36d225b06d99f00531467ec968811"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "950ccefb1757692113d7f9a050b22a2cdabc7d7b49f7b6781fbcd7f36d2d2f23",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    },
+    {
+      "directory": "weebdex-platform/test-runtime/auth-2am6yjmt/data",
+      "allocated_bytes": 52117504,
+      "logical_bytes": 52049285,
+      "retained_files_sha256": {
+        "initdb.log": "e8493c70c096e0070534fc6fe8fe1bcd905031c41f90f1635bfb368376cd6e67",
+        "cleanup.json": "59e04586a081d013a8b1d7e33c9924d0a32cac995b0789812c6b90e0bd7f55c9",
+        "fixture.json": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555",
+        "postgres.log": "bc73a4d1a0151a2ea4bdd30833318eb4dc11183c62dd4f9757b354fcca73762b"
+      },
+      "closed_port_reverified": true,
+      "postmaster_pid_absent": true,
+      "pg_ctl_status_exit": 3,
+      "cleanup_sha256": "59e04586a081d013a8b1d7e33c9924d0a32cac995b0789812c6b90e0bd7f55c9",
+      "fixture_sha256": "974f2d9ced298d313c065221bd450d154b9a73b68e9be16c6a4d5e40e0057555"
+    }
+  ],
+  "phase": "deleted_verified",
+  "deleted_utc": "2026-10-17T19:58:14.059705+00:00",
+  "free_bytes_before": 4029681664,
+  "free_bytes_after": 6484983808,
+  "retained_logs_and_evidence_verified": true,
+  "authorization": "Explicit user approval for permanent deletion of at most2.5GB of synthetic stopped API-worker databases; verified by parent before this exact cleanup."
+}

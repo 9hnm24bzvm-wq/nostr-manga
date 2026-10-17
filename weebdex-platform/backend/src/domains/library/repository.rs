@@ -6,6 +6,12 @@ use crate::{
 use serde_json::{Value, json};
 use tokio_postgres::Transaction;
 
+/// Presentation identity only; never grants account read/write authority.
+pub(crate) async fn account_public_id_in(tx: &Transaction<'_>, user: &str) -> ApiResult<String> {
+    tx.query_opt("SELECT public_id::text FROM platform.public_resource_ids WHERE kind='user' AND native_id=$1 AND preferred AND principal_type='native'", &[&user]).await?
+        .map(|row| row.get(0)).ok_or_else(ApiError::unavailable)
+}
+
 pub async fn session_projection(db: &PgStore, user: &str) -> ApiResult<Value> {
     let row=db.client().await?.query_opt("SELECT jsonb_build_object('follows',COALESCE((SELECT jsonb_object_agg(f.manga_id,jsonb_build_array(f.reading_status,CASE WHEN f.notification THEN 1 ELSE 0 END)) FROM platform.library_manga_follows f JOIN platform.catalog_manga m ON m.id=f.manga_id WHERE f.user_id=u.id AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)),'{}'::jsonb),'preferences',u.preferences || jsonb_build_object('uploaders',COALESCE((SELECT jsonb_agg(platform.library_user_json(x.id) ORDER BY x.username,x.id) FROM platform.users x WHERE NOT x.disabled AND x.id IN (SELECT jsonb_array_elements_text(u.preferences->'uploaders'))),'[]'::jsonb),'groups',COALESCE((SELECT jsonb_agg(platform.catalog_group_json(g.id) ORDER BY g.name,g.id) FROM platform.catalog_groups g WHERE g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id) AND g.id IN (SELECT jsonb_array_elements_text(u.preferences->'groups'))),'[]'::jsonb)),'groups',COALESCE((SELECT jsonb_agg(platform.catalog_group_json(g.id) ORDER BY g.name,g.id) FROM platform.catalog_group_members gm JOIN platform.catalog_groups g ON g.id=gm.group_id WHERE gm.user_id=u.id AND g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id)),'[]'::jsonb)) FROM platform.users u WHERE u.id=$1 AND NOT u.disabled",&[&user]).await?.ok_or_else(ApiError::unauthorized)?;
     Ok(row.get(0))

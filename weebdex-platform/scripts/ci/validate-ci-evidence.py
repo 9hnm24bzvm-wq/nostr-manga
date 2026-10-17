@@ -72,7 +72,7 @@ def preparation(value):
     fields(value, required, optional)
     insist(value['schema'] == 1 and type(value['schema']) is int)
     insist(value['status'] in ['prepared', 'preparation_failed'])
-    insist(value['stage'] in ['source-preservation', 'native-dependencies', 'native-build', 'signer-dependencies', 'frontend-dependencies', 'frontend-build', 'artifact-record', 'browser-runtime-record', 'public-upload-profile', 'complete'])
+    insist(value['stage'] in ['source-preservation', 'native-dependencies', 'native-build', 'signer-dependencies', 'frontend-dependencies', 'frontend-build', 'artifact-record', 'browser-runtime-record', 'complete'])
     insist(type(value['source_files_checked']) is int and value['source_files_checked'] in [0, 676])
     for key in ['browser_phases_started', 'frontend_preserved', 'artifacts_uploaded', 'fresh_build', 'historical_binaries_reused', 'ipc_success_established']:
         if key in value:
@@ -239,7 +239,7 @@ def phases(value):
         boolean(value['budget_exhausted'])
     insist(type(value['phases']) is list and len(value['phases']) <= runner.MAX_PHASE_RUNS and type(value['batches']) is list and len(value['batches']) <= len(runner.BATCHES))
     for row in value['phases']:
-        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics', 'public_upload_diagnostics'})
+        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics'})
         insist(row['batch'] in ['startup', *runner.BATCHES] and row['phase'] in runner.ALL_PHASES and row['status'] in ['passed', 'failed'] and row['evidence_scope'] == SCOPE)
         integer(row['actual_steps'])
         integer(row['page_error_count'])
@@ -259,15 +259,6 @@ def phases(value):
             insist(row['phase'] in journey_diagnostics.CHECKS)
             journey_checks(row['journey_diagnostics'], row)
         insist(row['phase'] not in journey_diagnostics.CHECKS or 'journey_diagnostics' in row)
-        if row['phase'] == runner.PUBLIC_UPLOAD_PHASE:
-            insist('public_upload_diagnostics' in row and row['batch'] == 'public-upload')
-            spec = importlib.util.spec_from_file_location('public_upload_diagnostic_contract', ROOT / 'scripts/ci/public-upload-diagnostics.py')
-            upload = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(upload)
-            upload.validate(row['public_upload_diagnostics'])
-            insist(row['status'] != 'passed' or upload.passed(row['public_upload_diagnostics']))
-        else:
-            insist('public_upload_diagnostics' not in row)
         if row['status'] == 'passed':
             insist(row['actual_steps'] > 0 and row['failed_steps'] == [] and row['page_error_count'] == 0 and row['harness_error_observed'] is False and all(row[key] is True for key in ['runner_report_present', 'owned_runner_terminal', 'runner_exit_zero']))
     for row in value['batches']:
@@ -331,7 +322,7 @@ def validate(directory, canonical=None):
         insist('phases.json' in values)
         item = values['summary.json']
         batches = {'startup': []} if item['selection'] == 'startup' else runner.BATCHES if item['selection'] == 'all' else {item['selection']: runner.BATCHES[item['selection']]}
-        requested = runner.requested_phases(batches)
+        requested = ['startup', *dict.fromkeys(phase for phases in batches.values() for phase in phases)]
         runner.STOP = item['interrupted']
         insist(runner.summarize(values['phases.json'], item['selection'], requested) == item)
     if values.get('preparation.json', {}).get('status') == 'prepared':
@@ -350,8 +341,6 @@ def validate(directory, canonical=None):
         expected = {'normal_binary_sha256': ROOT / '.build/hosted-native/debug/weebdex-platform', 'provisioner_sha256': ROOT / '.build/hosted-native/debug/examples/browser_fixture_provisioner', 'frontend_manifest_sha256': ROOT / 'test-evidence/frontend/artifact-manifest.json', 'frontend_index_sha256': ROOT / 'artifacts/frontend/index.html'}
         for key, path in expected.items():
             insist(not path.is_symlink() and path.is_file() and prep[key] == source.sha(path))
-        if any(row['phase'] == runner.PUBLIC_UPLOAD_PHASE for row in values.get('phases.json', {}).get('phases', [])):
-            runner.public_upload_profile(runner.read(ROOT / '.build/hosted-browser/plan.json'))
         runtime = runner.read(ROOT / '.build/hosted-browser/runtime.json')
         insist(prep['chromium_binary_sha256'] == source.sha(Path(runtime['executable'])))
     if canonical is not None:

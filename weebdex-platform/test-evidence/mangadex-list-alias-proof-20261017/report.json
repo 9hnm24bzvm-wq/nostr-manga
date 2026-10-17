@@ -1,0 +1,76 @@
+{
+  "utc": "2026-10-17T18:46:02.069370+00:00",
+  "prior_commit": "203b01d36c79401ae84d35a397628c8950125e30",
+  "scope": "Trusted requested-to-canonical typed protocol-list identity proof; no authority/visibility change.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 122 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.81s",
+      "output_sha256": "635b322492a205634bdba9828470b08f9d0bc88e411958b3a9b3ac765df51d9e"
+    },
+    {
+      "name": "public_nostr_lists-000e8f3c9f6a3429",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.85s",
+      "output_sha256": "a0a62eddec72b7757e31e2130e83d824fb2f0bf4d75472e01c0626c6470628f8"
+    },
+    {
+      "name": "public_list_follows-bd6bd095256e177a",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.97s",
+      "output_sha256": "d78c9e0f0ae268c2151e76c270ec977a5ea9fcfa71c9ffcaf6191eda12c951b4"
+    },
+    {
+      "name": "public_account_reads-55dde832bbd6c52c",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.25s",
+      "output_sha256": "cf458a2aca8f452003970c9cb08154c0e61c2453958bb39a80ecf480aff9eabd"
+    }
+  ],
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/src/public_api/lists.rs": "198a0e095a27e06c503b6962df2f769cf7d6c4dd52a462f5a01a5201b469ae64",
+    "weebdex-platform/backend/tests/public_nostr_lists.rs": "41727e4a306948e534db1ec2e6388f26e11db2ff02e77e79d0ac51a7867e886d",
+    "weebdex-platform/docs/mangadex-public-lists-v1.md": "5e88506c496c20f58a050c7480a6e8793567017faa4416b8896ee67bdb3fa0b2"
+  },
+  "test_binary_sha256": {
+    "public_nostr_lists-000e8f3c9f6a3429": "f86ce0944c6eebe0846e9a498c7c324b1fd9f4b952af8cb0797f12656e08b74a",
+    "public_list_follows-bd6bd095256e177a": "5d52ad15b66afb7805aefc2a7d59bca80bcf518013637f426adc77c2d9e9f470",
+    "public_account_reads-55dde832bbd6c52c": "87693de6a0ca77ce225a502729cc4451957f11be551e7dc8f783316a71174f11"
+  },
+  "covered_seams": [
+    "Canonical detail and normalized uppercase genuine persisted nonpreferred alias carry exact requested/canonical/kind/source proof in both envelope and entity",
+    "Actual original signed list visibility/deletion/head/feed regression",
+    "Native-account list follow and account/settings/rating regression"
+  ],
+  "limits": [
+    "Isolated branch only; integration/backup hold untouched, no combined-source qualification.",
+    "Client must validate all proof fields or keep exact requested-ID fence; proof is not ownership or follow authority.",
+    "No browser/load claim, new migration/dependency, publication, credential change or new alias resolver endpoint."
+  ]
+}

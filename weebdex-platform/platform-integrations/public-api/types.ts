@@ -15,7 +15,7 @@ export interface NativeForumEnvelope { result:'ok'; data:(NativeForumResource & 
 export interface AtHome { result: 'ok'; baseUrl: string; chapter: { hash: string; data: string[]; dataSaver: string[] }; nostr?: { originalsOnly?: boolean; pageDimensions?: number[][]; dataSaverDimensions?: number[][] }; }
 export interface Aggregate { result: 'ok'; volumes: Record<string, { volume: string | null; count: number; chapters: Record<string, { chapter: string | null; id: PublicUuid; others: PublicUuid[]; count: number }> }>; }
 export interface PublicPage { name: string; dimensions: number[]; public_url: string; }
-export interface ViewProvenance { resource: Resource; edge?: { owner: PublicUuid; resource: Resource }; chapter_count?: number; native_forum?: {status:number; available:boolean}; }
+export interface ViewProvenance { resource: Resource; chapter_count?: number; native_forum?: {status:number; available:boolean}; }
 export interface CoverView { id: PublicUuid; file_name: string; ext: string; dimensions: number[]; volume: string | null; description?: string; language: string; version: number; public_api: ViewProvenance; }
 export interface NamedView { id: PublicUuid; name: string; description?: string; version: number; public_api: ViewProvenance; [key: string]: unknown; }
 export interface TagView { id: PublicUuid; name: string; group: string; public_api: ViewProvenance; }

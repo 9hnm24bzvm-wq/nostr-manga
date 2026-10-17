@@ -1,7 +1,0 @@
-▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
-
-    tsconfig.json:2:12:
-      2 │   "extends": "./.svelte-kit/tsconfig.json",
-        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-{"status":"passed","errors":0,"warnings":15,"integration_files":85,"canonical_files":679,"canonical_unchanged":true,"evidence":".build/catalogue-edges-strict-explicit-includes/evidence"}

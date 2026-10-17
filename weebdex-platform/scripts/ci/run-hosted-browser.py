@@ -16,7 +16,6 @@ ROOT = Path(__file__).resolve().parents[2]
 STAGE = ROOT / '.build/hosted-browser'
 PUBLIC = ROOT / 'ci-evidence'
 SIGNED = {'signed-library', 'signed-profile', 'signed-social', 'signed-context', 'signed-source-controls', 'signed-namespace', 'signed-recipients', 'signed-restart'}
-PUBLIC_UPLOAD_PHASE = 'public-upload-recovery'
 BATCHES = {
     'ordinary-a': ['account', 'account-recovery', 'upload', 'reader', 'announcements'],
     'ordinary-b': ['local-library', 'filters', 'editorial', 'community', 'pwa'],
@@ -32,22 +31,11 @@ BATCHES = {
     'ui-home': ['ui14-account-failures', 'ui14-home-failures', 'ui16-home-preferences', 'ui16-search-cap'],
     # Supplemental Group/User controller coverage has its own fresh fixture.
     'actor-follow': ['ui14-actor-follow'],
-    # Gate-on UUID catalogue profile, with its own operationally ready fixture.
-    # Native Startup's SeedManga1 routes belong to the separate gate-off profile.
-    'public-upload': [PUBLIC_UPLOAD_PHASE],
 }
 ALL_PHASES = ['startup', *dict.fromkeys(phase for phases in BATCHES.values() for phase in phases)]
-assert len(ALL_PHASES) == 40
-MAX_PHASE_RUNS = sum(len(phases) + (name != 'public-upload') for name, phases in BATCHES.items())
+assert len(ALL_PHASES) == 39
+MAX_PHASE_RUNS = sum(1 + len(phases) for phases in BATCHES.values())
 STOP = False
-
-
-def batch_phases(name, phases):
-    return list(phases) if name == 'public-upload' else ['startup', *phases]
-
-
-def requested_phases(batches):
-    return list(dict.fromkeys(phase for name, phases in batches.items() for phase in batch_phases(name, phases)))
 
 
 def sha(path):
@@ -70,64 +58,7 @@ def write(path, value):
 
 
 def maximum(phase):
-    return 150 if phase == 'startup' else 600 if phase in SIGNED or phase == PUBLIC_UPLOAD_PHASE else 300
-
-
-def public_upload_profile(plan):
-    profile = plan.get('public_upload_recovery')
-    expected = {'enabled', 'ui_dir', 'frontend_manifest', 'frontend_manifest_sha256',
-                'frontend_index_sha256', 'build_receipt', 'build_receipt_sha256'}
-    if type(profile) is not dict or set(profile) != expected or profile['enabled'] is not True:
-        raise RuntimeError('A separate prepared gate-on public upload profile is required')
-    paths = {'ui_dir': STAGE / 'public-upload-frontend', 'frontend_manifest': STAGE / 'public-upload-manifest.json', 'build_receipt': STAGE / 'public-upload-build.json'}
-    if any(profile[key] != str(path) or path.is_symlink() for key, path in paths.items()):
-        raise RuntimeError('Unexpected public upload artifact layout')
-    for key in ['frontend_manifest', 'build_receipt']:
-        if sha(paths[key]) != profile[key + '_sha256']:
-            raise RuntimeError('Prepared public upload receipt changed')
-    build = read(paths['build_receipt'])
-    if build.get('public_api_catalogue_enabled') is not True or build.get('public_signed_upload_enabled') is not True or build.get('spa_fallback_sha256') != profile['frontend_index_sha256']:
-        raise RuntimeError('Public upload artifact is not the exact gate-on generation')
-    manifest = read(paths['frontend_manifest'])
-    rows = manifest.get('files')
-    if type(rows) is not list or not rows or len(rows) > 4096:
-        raise RuntimeError('Missing bounded public upload artifact membership')
-    expected_files = {}
-    for row in rows:
-        relative = row.get('path') if type(row) is dict else None
-        if type(relative) is not str or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts or str(Path(relative)) != relative or relative in expected_files:
-            raise RuntimeError('Unsafe or duplicate public upload artifact member')
-        expected_files[relative] = row
-    ui = paths['ui_dir']
-    if not ui.is_dir() or any(path.is_symlink() for path in ui.rglob('*')):
-        raise RuntimeError('Public upload artifact must contain regular files only')
-    actual = {str(path.relative_to(ui)): path for path in ui.rglob('*') if not path.is_dir()}
-    if set(actual) != set(expected_files) or any(not path.is_file() or path.stat().st_size != expected_files[name].get('bytes') or sha(path) != expected_files[name].get('sha256') for name, path in actual.items()) or sha(ui / 'index.html') != profile['frontend_index_sha256']:
-        raise RuntimeError('Public upload artifact content changed')
-    return dict(plan, **{key: profile[key] for key in ['ui_dir', 'frontend_manifest', 'frontend_manifest_sha256', 'frontend_index_sha256']})
-
-
-def verify_public_upload_ready(state, fixture, plan):
-    declaration = state.get('public_upload', {})
-    if declaration.get('enabled') is not True or declaration.get('fixture_only') is not True or declaration.get('scenario') != 'public-upload-v1':
-        raise RuntimeError('Public upload UUID fixture is not opted in')
-    reference = state.get('operational_http', {})
-    path = ROOT / 'test-evidence/security/live-native-http.json'
-    if set(reference) != {'path', 'sha256'} or reference.get('path') != str(path) or sha(path) != reference.get('sha256'):
-        raise RuntimeError('Current-fixture operational receipt is missing or changed')
-    receipt = read(path)
-    checks = receipt.get('checks')
-    if receipt.get('run_directory') != str(fixture) or receipt.get('fixture_only') is not True or receipt.get('production') is not False or receipt.get('binary', {}).get('sha256') != plan['normal_sha256'] or receipt.get('frontend_index_sha256') != plan['frontend_index_sha256'] or type(checks) is not list or not 1 <= len(checks) <= 64 or receipt.get('passed') != len(checks) or receipt.get('failed') != 0 or any(check.get('passed') is not True for check in checks):
-        raise RuntimeError('Operational readiness belongs to another or failed generation')
-    rows = [check for check in checks if check.get('name') == 'bounded oversized JSON']
-    if len(rows) != 1:
-        raise RuntimeError('Current early-response check is missing')
-    check = rows[0]
-    transport = check.get('transport', {})
-    sent = transport.get('completed_body_send_bytes')
-    error = transport.get('write_error_class')
-    if check.get('method') != 'POST' or check.get('path') != '/api/manga' or check.get('status') != 413 or check.get('expected_status') != 413 or check.get('request_body_bytes') != 1048577 or transport.get('kind') != 'same-connection-early-response' or transport.get('declared_body_bytes') != 1048577 or transport.get('observed_status') != 413 or type(sent) is not int or not 0 <= sent <= 1048577 or error not in [None, 'BrokenPipeError', 'ConnectionResetError'] or (error is None and sent != 1048577) or transport.get('response_body_complete') is not True or transport.get('deadline_expired') is not False or transport.get('deadline_thread_settled') is not True:
-        raise RuntimeError('Current HTTP413 transport readiness is incomplete')
+    return 150 if phase == 'startup' else 600 if phase in SIGNED else 300
 
 
 def wait_for(process, predicate, seconds, owner=None):
@@ -166,13 +97,6 @@ def project_phase(phase, batch, acceptance, owned):
     spec.loader.exec_module(diagnostics)
     if phase in diagnostics.CHECKS:
         value['journey_diagnostics'] = diagnostics.project(phase, acceptance)
-    if phase == PUBLIC_UPLOAD_PHASE:
-        spec = importlib.util.spec_from_file_location('public_upload_diagnostics', ROOT / 'scripts/ci/public-upload-diagnostics.py')
-        diagnostics = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(diagnostics)
-        value['public_upload_diagnostics'] = diagnostics.project(acceptance)
-        if not diagnostics.passed(value['public_upload_diagnostics']):
-            value['status'] = 'failed'
     return value
 
 
@@ -224,8 +148,6 @@ def finish_supervisor(owner, process, fixture, batch, seconds=600):
 
 
 def run_batch(name, phases, plan, journal, run_id):
-    if name == 'public-upload':
-        plan = public_upload_profile(plan)  # Fail before allocating an owner.
     spec = importlib.util.spec_from_file_location('outer_fixture_cleanup', ROOT / 'scripts/ci/owned-fixture-cleanup.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -237,9 +159,7 @@ def run_batch(name, phases, plan, journal, run_id):
     process = None
     batch = {'batch': name, 'readiness': False, 'cleanup': {'verified_stopped': False}}
     log = STAGE / ('fixture-' + name + '.log')
-    argv = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--ui-dir', plan.get('ui_dir', str(ROOT / 'artifacts/frontend')), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls', '--lifetime-seconds', '3600']
-    if name == 'public-upload':
-        argv.append('--public-upload-controls')
+    argv = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--ui-dir', str(ROOT / 'artifacts/frontend'), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls', '--lifetime-seconds', '3600']
     # No Actions token or provider/account secrets reach the fixture process.
     allowed = {'PATH', 'HOME', 'TMPDIR', 'TMP', 'TEMP', 'LANG', 'LC_ALL', 'LC_CTYPE', 'LD_LIBRARY_PATH', 'SSL_CERT_FILE', 'SSL_CERT_DIR'}
     env = {key: value for key, value in os.environ.items() if key in allowed}
@@ -268,11 +188,9 @@ def run_batch(name, phases, plan, journal, run_id):
                             return state
                 return None
 
-            state = wait_for(process, ready, 300, owner)
-            if name == 'public-upload':
-                verify_public_upload_ready(state, fixture, plan)
+            wait_for(process, ready, 300, owner)
             batch['readiness'] = True
-            for phase in batch_phases(name, phases):
+            for phase in ['startup', *phases]:
                 acceptance_path = ROOT / 'test-evidence/frontend/browser' / (phase + '-' + run_id + '-' + name) / 'acceptance.json'
                 if acceptance_path.parent.exists():
                     raise RuntimeError('Refusing prior phase evidence')
@@ -303,7 +221,7 @@ def run_batch(name, phases, plan, journal, run_id):
         batch['cleanup']['verified_stopped'] = False
     journal['batches'].append(batch)
     runs = [row for row in journal['phases'] if row['batch'] == name]
-    batch['passed'] = batch.get('readiness') is True and batch.get('supervisor_terminal') is True and batch.get('supervisor_exit_zero') is True and batch['cleanup'].get('verified_stopped') is True and batch['cleanup'].get('lifecycle_clean') is True and batch.get('outer_cleanup', {}).get('verified_stopped') is True and batch.get('outer_cleanup', {}).get('forced') is False and len(runs) == len(batch_phases(name, phases)) and all(row['status'] == 'passed' for row in runs) and 'error_class' not in batch and 'cleanup_error_class' not in batch
+    batch['passed'] = batch.get('readiness') is True and batch.get('supervisor_terminal') is True and batch.get('supervisor_exit_zero') is True and batch['cleanup'].get('verified_stopped') is True and batch['cleanup'].get('lifecycle_clean') is True and batch.get('outer_cleanup', {}).get('verified_stopped') is True and batch.get('outer_cleanup', {}).get('forced') is False and len(runs) == len(phases) + 1 and all(row['status'] == 'passed' for row in runs) and 'error_class' not in batch and 'cleanup_error_class' not in batch
     write(PUBLIC / 'phases.json', journal)
     return batch
 
@@ -327,7 +245,7 @@ def main():
     if not 3600 <= args.budget_seconds <= 14400:
         parser.error('budget must be 3600..14400 seconds')
     batches = {'startup': []} if args.batch == 'startup' else BATCHES if args.batch == 'all' else {args.batch: BATCHES[args.batch]}
-    requested = requested_phases(batches)
+    requested = ['startup', *dict.fromkeys(phase for phases in batches.values() for phase in phases)]
     if args.plan_only:
         print(json.dumps({'unique_phase_count': len(requested), 'all_unique_phase_count': len(ALL_PHASES), 'batches': batches, 'browser_or_fixture_started': False}, indent=2))
         return 0
@@ -362,7 +280,7 @@ def main():
         for name, phases in batches.items():
             # A complete worst-case phase allowance, startup, readiness and
             # terminal cleanup reserve must fit before starting a fresh fixture.
-            reserve = sum(maximum(phase) + 35 for phase in batch_phases(name, phases)) + 300 + 600
+            reserve = sum(maximum(phase) + 35 for phase in ['startup', *phases]) + 300 + 600
             if STOP or time.monotonic() + reserve > deadline:
                 journal['budget_exhausted'] = not STOP
                 break

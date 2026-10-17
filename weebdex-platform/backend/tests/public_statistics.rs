@@ -173,8 +173,11 @@ async fn statistics_real_http_counts_batches_aliases_visibility_and_errors() {
             PublicUuid::parse(key).unwrap();
         }
         assert_eq!(values[id]["comments"], Value::Null);
-        assert!(values[id].get("rating").is_none());
         if kind == "manga" {
+            assert!(values[id]["rating"]["average"].is_null());
+            assert_eq!(values[id]["rating"]["nostr"]["observedCount"],0);
+            assert!(values[id]["rating"].get("bayesian").is_none());
+            assert!(values[id]["rating"]["distribution"].as_object().unwrap().values().all(|v|v==0));
             assert_eq!(values[id]["follows"], 2);
             assert_eq!(values[id]["unavailableChapterCount"], 2);
         } else {

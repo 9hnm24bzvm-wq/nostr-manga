@@ -1,10 +1,13 @@
 //! WeebDex instance account library. Browser-local protocol libraries and opted-in
 //! signed Nostr library publication remain separate and unchanged.
 mod follows;
+pub(crate) mod follow_mutations;
 mod history;
 mod lists;
 mod preferences;
+pub(crate) mod preference_mutations;
 mod progress;
+pub(crate) mod ratings;
 mod query;
 mod repository;
 mod users;
@@ -19,6 +22,7 @@ use axum::{
     Router,
 };
 pub use repository::session_projection;
+pub(crate) use repository::account_public_id_in;
 pub const MIGRATIONS: &[Migration] = &[Migration {
     version: 30,
     name: "library",
@@ -26,6 +30,8 @@ pub const MIGRATIONS: &[Migration] = &[Migration {
 }];
 pub fn router() -> Router<AppState> {
     Router::new()
+        .route("/rating", get(ratings::get))
+        .route("/rating/{id}", post(ratings::set).delete(ratings::delete))
         .route("/settings", put(preferences::update))
         .route("/user", get(users::search))
         .route("/user/follows/manga", get(follows::search))

@@ -390,7 +390,7 @@ fn date_filter(q: &PublicQuery, sql: &mut Sql, key: &str, column: &str) -> Publi
     }
     Ok(())
 }
-fn valid_utc_datetime(value: &str) -> bool {
+pub(super) fn valid_utc_datetime(value: &str) -> bool {
     let b = value.as_bytes();
     if b.len() != 19
         || [4, 7].iter().any(|i| b[*i] != b'-')
@@ -718,7 +718,7 @@ pub(super) fn order_clause(
     let mut order = vec![];
     for (field, direction) in &q.order {
         let column=match(kind,field.as_str()){
-  (ResourceKind::Manga,"title")=>"lower(m.title)".to_owned(),(ResourceKind::Manga,"year")=>"NULLIF(m.year,0)".into(),
+  (ResourceKind::Manga,"title")=>"lower(m.title) COLLATE \"C\"".to_owned(),(ResourceKind::Manga,"year")=>"NULLIF(m.year,0)".into(),
   (ResourceKind::Manga,"latestUploadedChapter")=>"(SELECT max(l.published_at) FROM platform.catalog_chapters l WHERE l.manga_id=m.id AND l.deleted_at IS NULL AND platform.protocol_source_is_visible(l.protocol_event_id))".into(),
   (ResourceKind::Manga,"followedCount")=>"COALESCE(stats.follows,0)".into(),(ResourceKind::Manga,"rating")=>"COALESCE(stats.rating,0)".into(),
   (ResourceKind::Manga,"relevance")=>{let p=sql.bind(q.first("title").unwrap_or("").to_owned());format!("CASE WHEN lower(m.title)=lower({p}) THEN 3 WHEN starts_with(lower(m.title),lower({p})) THEN 2 ELSE 1 END")},
@@ -735,7 +735,12 @@ pub(super) fn order_clause(
     if order.is_empty() {
         order.push(match kind{ResourceKind::Manga=>"(SELECT max(l.published_at) FROM platform.catalog_chapters l WHERE l.manga_id=m.id AND l.deleted_at IS NULL AND platform.protocol_source_is_visible(l.protocol_event_id)) DESC NULLS LAST".into(),ResourceKind::Chapter=>"c.published_at DESC".into(),ResourceKind::Tag=>"t.name ASC".into(),_=>format!("{alias}.created_at DESC")});
     }
-    order.push(format!("{alias}.id ASC"));
+    if kind == ResourceKind::Manga {
+        // Stable across imports and hydration batches without disclosing native IDs.
+        order.push("(SELECT p.public_id FROM platform.public_resource_ids p WHERE p.kind='manga' AND p.native_id=m.id AND p.preferred) ASC".into());
+    } else {
+        order.push(format!("{alias}.id ASC"));
+    }
     Ok(order.join(","))
 }
 async fn collection(

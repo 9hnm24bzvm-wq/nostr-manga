@@ -1,0 +1,42 @@
+{
+  "utc": "2026-10-17T17:55:37.725213+00:00",
+  "prior_commit": "73a69606a6ef14e7a6597006e7160a9122da8166",
+  "scope": "Three read-only authenticated settings/template operations, actual versioned application-owned JSON Schema and preserved native preference storage.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 116 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.94s",
+      "output_sha256": "6ceb718f23b7260ab58959aa1c63e6a41fd872e7a7d9f5250553d1a64c0a92a9"
+    },
+    {
+      "name": "signed_settings_account_history_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.91s",
+      "output_sha256": "2e8172389189bd54ffe2d2bd5f5f133ecbc9acc8d647851c081cbb3fadfdd51d"
+    }
+  ],
+  "independent_json_schema_validation": {
+    "draft": "2020-12",
+    "schema_check": "passed",
+    "real_http_synthetic_projection": "passed",
+    "uuid_format_checks": "passed"
+  },
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "closed_port": true,
+    "forced": false,
+    "remaining_owned_processes": []
+  },
+  "source_sha256": {
+    "weebdex-platform/backend/src/public_api/account_settings.rs": "669ee47a91b7f6fc84c8f7279c402f08b1e042095d8377927ccab81d34dd95f8",
+    "weebdex-platform/backend/src/public_api/account_reads.rs": "057de62e2cda0358f9b07e194b579075f18a34adf648b07a4768e781486b66e7",
+    "weebdex-platform/contracts/native-settings-template-v1.json": "d17707cc8a529e7fea1feebc647d2cf0c4072f1faa77cc0664dd59052e202c35",
+    "weebdex-platform/backend/tests/public_account_reads.rs": "63d64e6b5f753a80ff6dc99bb5eef6a81d26e19d19f0d78ffef810546b53f51b"
+  },
+  "limits": [
+    "Template artifact is native application-owned, not a claimed MangaDex-hosted settings format or central account.",
+    "POST settings and template management writes stay501.",
+    "Hidden or unknown filter references are counted, not erased from native storage; read-only projection must not replace full source on a future write.",
+    "No browser, performance or production readiness claim; integration must rerun final source."
+  ]
+}

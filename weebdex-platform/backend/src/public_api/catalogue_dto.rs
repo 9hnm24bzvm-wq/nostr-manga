@@ -13,6 +13,8 @@ use std::collections::{BTreeMap, BTreeSet};
 pub struct AliasIndex {
     rows: BTreeMap<(ResourceKind, String), ResolvedPublicId>,
     user_attributes: BTreeMap<String, Value>,
+    // Trusted SQL comparison keys, deliberately separate from caller/native JSON.
+    manga_sort_keys: BTreeMap<String, Value>,
 }
 impl AliasIndex {
     pub async fn load(
@@ -57,9 +59,16 @@ impl AliasIndex {
                 }
             }
         }
+        let manga_sort_keys = if rows.keys().any(|(kind, _)| *kind == ResourceKind::Manga) {
+            let client = state.db.client().await?;
+            manga_sort_keys_in(&**client, &rows).await?
+        } else {
+            BTreeMap::new()
+        };
         Ok(Self {
             rows,
             user_attributes,
+            manga_sort_keys,
         })
     }
     /// Build protected/private or newly-created responses on the caller's exact
@@ -108,9 +117,11 @@ impl AliasIndex {
                 }
             }
         }
+        let manga_sort_keys = manga_sort_keys_in(tx, &rows).await?;
         Ok(Self {
             rows,
             user_attributes,
+            manga_sort_keys,
         })
     }
     pub fn id(&self, kind: ResourceKind, native: &str) -> PublicApiResult<PublicUuid> {
@@ -171,6 +182,14 @@ impl AliasIndex {
                     "contentRating":value["content_rating"],"state":value["state"],"availableTranslatedLanguages":value["relationships"]["available_languages"].as_array().cloned().unwrap_or_default(),
                     "tags":array(&value["relationships"]["tags"]).iter().map(|tag|self.resource(ResourceKind::Tag,tag,&BTreeSet::new())).collect::<PublicApiResult<Vec<_>>>()?});
                 common(value, &mut attributes);
+                if let Some(keys) = self.manga_sort_keys.get(native) {
+                    let mut keys = keys.clone();
+                    keys["tieBreak"] = json!(id);
+                    attributes["nostr"] = json!({
+                        "sortKeySemantics":"postgresql-exact-v1",
+                        "sortKeys":keys
+                    });
+                }
                 if let Some(links) = value["relationships"]["links"].as_object() {
                     attributes["links"] = json!(
                         links
@@ -584,6 +603,69 @@ fn alt_titles(value: &Value) -> Vec<Value> {
     }
     out
 }
+/// One bounded query per alias batch, using the same transaction as collection
+/// selection. These are the actual SQL ordering expressions, not guessed stats
+/// or metadata supplied by a publisher. Decimal text avoids JSON/JS rounding.
+async fn manga_sort_keys_in<C: tokio_postgres::GenericClient + Sync>(
+    client: &C,
+    aliases: &BTreeMap<(ResourceKind, String), ResolvedPublicId>,
+) -> PublicApiResult<BTreeMap<String, Value>> {
+    let ids = aliases.keys().filter_map(|(kind, id)|
+        (*kind == ResourceKind::Manga).then(|| id.clone())
+    ).collect::<Vec<_>>();
+    let mut keys = BTreeMap::new();
+    let query = format!(r#"
+        SELECT m.id,jsonb_build_object(
+            'title',encode(convert_to(lower(m.title),'UTF8'),'hex'),
+            'year',NULLIF(m.year,0)::text,
+            'createdAt',to_char(m.created_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"'),
+            'updatedAt',to_char(m.updated_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"'),
+            'latestUploadedChapter',to_char((SELECT max(l.published_at) FROM platform.catalog_chapters l WHERE l.manga_id=m.id AND l.deleted_at IS NULL AND platform.protocol_source_is_visible(l.protocol_event_id)) AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"'),
+            'followedCount',COALESCE(stats.follows,0)::text,
+            'rating',COALESCE(stats.rating,0)::text
+        ) FROM platform.catalog_manga m
+        LEFT JOIN platform.catalog_manga_counters stats ON stats.manga_id=m.id
+        WHERE m.id=ANY($1::text[]) AND {}
+    "#, super::catalogue::MANGA_VISIBLE);
+    for batch in ids.chunks(super::postgres_identity::MAX_PUBLIC_ID_BATCH) {
+        for row in client.query(&query, &[&batch]).await? {
+            let value: Value = row.get(1);
+            if !valid_sort_keys(&value) {
+                return Err(PublicApiError::unavailable());
+            }
+            keys.insert(row.get::<_, String>(0), value);
+        }
+    }
+    Ok(keys)
+}
+
+fn exact_decimal(value: &str) -> bool {
+    if value.is_empty() || value.len() > 256 { return false; }
+    let value = value.strip_prefix('-').unwrap_or(value);
+    let mut parts = value.split('.');
+    let whole = parts.next().unwrap_or("");
+    let digits = |s: &str| !s.is_empty() && s.bytes().all(|b| b.is_ascii_digit());
+    digits(whole) && parts.next().is_none_or(digits) && parts.next().is_none()
+}
+
+fn exact_timestamp(value: &str) -> bool {
+    value.len() == 27 && value.bytes().enumerate().all(|(i, b)| match i {
+        4 | 7 => b == b'-', 10 => b == b'T', 13 | 16 => b == b':',
+        19 => b == b'.', 26 => b == b'Z', _ => b.is_ascii_digit(),
+    })
+}
+
+fn valid_sort_keys(keys: &Value) -> bool {
+    let decimal = |field: &str| keys[field].as_str().is_some_and(exact_decimal);
+    let timestamp = |field: &str| keys[field].as_str().is_some_and(exact_timestamp);
+    decimal("rating") && decimal("followedCount")
+        && (keys["year"].is_null() || decimal("year"))
+        && timestamp("createdAt") && timestamp("updatedAt")
+        && (keys["latestUploadedChapter"].is_null() || timestamp("latestUploadedChapter"))
+        && keys["title"].as_str().is_some_and(|v| !v.is_empty() && v.len() <= 8000
+            && v.len() % 2 == 0 && v.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b)))
+}
+
 fn common(native: &Value, attributes: &mut Value) {
     for (wire, field) in [
         ("version", "version"),
@@ -598,6 +680,35 @@ fn common(native: &Value, attributes: &mut Value) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn exact_sort_key_scalars_are_bounded_and_do_not_lose_precision() {
+        for value in ["0", "-0.00", "9007199254740993", "7.50000000000000000000001", "-12.34"] {
+            assert!(exact_decimal(value));
+        }
+        for value in ["", "-", ".1", "1.", "1.2.3", "+1", "1e2", "NaN", "Infinity", " 1"] {
+            assert!(!exact_decimal(value), "{value}");
+        }
+        assert!(!exact_decimal(&"1".repeat(257)));
+        assert!(exact_timestamp("2026-10-17T12:34:56.000001Z"));
+        for value in ["2026-10-17T12:34:56Z", "2026-10-17T12:34:56.001Z", "2026-10-17T12:34:56.000001+00:00", "infinity"] {
+            assert!(!exact_timestamp(value));
+        }
+    }
+    #[test]
+    fn native_metadata_cannot_supply_trusted_sort_keys() {
+        let id = PublicUuid::parse("11111111-1111-8111-8111-111111111111").unwrap();
+        let index = AliasIndex {
+            rows: BTreeMap::from([((ResourceKind::Manga, "Manga00001".into()), ResolvedPublicId {
+                native_id: "Manga00001".into(), preferred_id: id.clone(), target: PublicIdTarget::NativeResource,
+            })]),
+            user_attributes: BTreeMap::new(), manga_sort_keys: BTreeMap::new(),
+        };
+        let value = index.resource(ResourceKind::Manga, &json!({
+            "id":"Manga00001", "title":"Real", "nostr":{"sortKeys":{"rating":"999"}},
+            "_sort_keys":{"rating":"999"}, "relationships":{}
+        }), &BTreeSet::new()).unwrap();
+        assert!(value.attributes.get("nostr").is_none());
+    }
     #[test]
     fn native_nullable_demographic_biography_and_group_links_are_preserved() {
         let mut rows = BTreeMap::new();
@@ -618,6 +729,7 @@ mod tests {
         let index = AliasIndex {
             rows,
             user_attributes: BTreeMap::new(),
+            manga_sort_keys: BTreeMap::new(),
         };
         let author = index
             .resource(
@@ -663,6 +775,7 @@ mod tests {
         let index = AliasIndex {
             rows,
             user_attributes: BTreeMap::new(),
+            manga_sort_keys: BTreeMap::new(),
         };
         let chapter = index
             .resource(

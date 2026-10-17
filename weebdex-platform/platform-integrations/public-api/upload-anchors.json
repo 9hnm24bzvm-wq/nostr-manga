@@ -29,7 +29,7 @@
       "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
       "source_sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
       "composed_sha256": "bc8765c437333eb3ccf613368efbfa39da4b3567bf797cc5fdaf0d7932a33f97",
-      "output_sha256": "8ebe992e4ca5f9978cc90b038da03bd6d44975d62a462929e43e4e4f70b5df8d"
+      "output_sha256": "3414a9f34e4a968441e64adee271751d8ceb46c02999c5bc4f88db4ce143b3b6"
     },
     {
       "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
@@ -256,10 +256,10 @@
     },
     {
       "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
-      "label": "signed chapter metadata claim and review-first removal editor",
+      "label": "unsupported recovered chapter editing is explicit and cannot fall back",
       "count": 1,
       "before": "<script lang=\"ts\">\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport { Constants, Utils } from \"$lib\";\r\n\timport API from \"$lib/API\";\r\n\timport ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\r\n\timport * as Empty from \"$lib/components/ui/empty\";\r\n\timport { Spinner } from \"$lib/components/ui/spinner\";\r\n\timport UploadChapterEdit from \"$lib/components/upload/UploadChapterEdit.svelte\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { onDestroy, onMount } from \"svelte\";\r\n\r\n\tconst { data } = $props();\r\n\tlet chapter = $derived(data.chapter);\r\n\tlet user = $state<User>();\r\n\tlet isMounted = $state(false);\r\n\tlet error = $state<Constants.Error.Error>();\r\n\r\n\tlet lookupGeneration = 0, lookupDisposed = false;\r\n\tonDestroy(() => { lookupDisposed = true; lookupGeneration++; user = undefined; });\r\n\t$effect(() => {\r\n\t\tconst target = data.chapter?.id, actor = $Session?.identity.id, generation = ++lookupGeneration;\r\n\t\tuser = undefined; error = undefined; isMounted = false;\r\n\t\tif (!target || !actor) return;\r\n\t\tvoid (async () => API.User.Get(actor))().then(res => {\r\n\t\t\tif (lookupDisposed || generation !== lookupGeneration || actor !== $Session?.identity.id || target !== data.chapter?.id) return;\r\n\t\t\tif (res?.status === StatusCodes.OK && res.body?.id === actor) { user = res.body; isMounted = true; }\r\n\t\t\telse throw res?.status === StatusCodes.TOO_MANY_REQUESTS ? Constants.Error.TooManyRequests : Constants.Error.Unknown;\r\n\t\t}).catch(cause => { if (!lookupDisposed && generation === lookupGeneration) error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; });\r\n\t});\r\n\r\n\r\n</script>\r\n\r\n<svelte:head>\r\n\t<title>Edit: {Utils.chapterHeadline(chapter)} - {PUBLIC_SITE_NAME}</title>\r\n</svelte:head>\r\n\r\n{#if error}\r\n\t<ErrorComponent {error} />\r\n{:else if isMounted && user}\r\n\t{#key data.chapter.id}\r\n\t\t<UploadChapterEdit bind:chapter manga={chapter.relationships.manga} {user} />\r\n\t{/key}\r\n{:else}\r\n\t<Empty.Root>\r\n\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}\r\n",
-      "after": "<script lang=\"ts\">\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport PublicChapterEditor from \"$publicApi/PublicChapterEditor.svelte\";\r\n\tconst { data } = $props();\r\n</script>\r\n<svelte:head><title>Edit chapter - {PUBLIC_SITE_NAME}</title></svelte:head>\r\n{#key data.chapter.id}<PublicChapterEditor initial={data.chapter} />{/key}\r\n"
+      "after": "<script lang=\"ts\">\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\tconst { data } = $props();\r\n</script>\r\n<svelte:head><title>Edit chapter - {PUBLIC_SITE_NAME}</title></svelte:head>\r\n<section class=\"mx-auto max-w-270 space-y-3 p-5\">\r\n\t<h2 class=\"text-xl font-medium\">Public signed chapter editing is unavailable</h2>\r\n\t<p>This recovered adapter supports new uploads and exact-session resume. Metadata edits, claims, chapter deletion and replacing an existing chapter are not enabled through this public signed interface.</p>\r\n\t<a class=\"underline\" href={data.chapter?.relationships?.manga?.id ? `/title/${data.chapter.relationships.manga.id}` : \"/\"}>Return to the title</a>\r\n</section>\r\n"
     },
     {
       "path": "src/lib/components/upload/UploadChapterPages.svelte",

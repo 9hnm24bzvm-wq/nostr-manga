@@ -83,7 +83,7 @@ async function registration({ route = registerRoute, signedIn = false, url = 'ht
     window: locationWindow, location, page, Session, Kratos, AxiosError, writable, get, derived,
     ErrorSessionAlreadyAvailable: 'session_already_available', Constants: { Error: { Error: PublicError, Unknown: unknown } },
     StatusCodes: { OK: 200, BAD_REQUEST: 400, GONE: 410, UNAUTHORIZED: 401, FORBIDDEN: 403 },
-    PUBLIC_SITE_NAME: 'WeebDex', PUBLIC_MANGADEX_CATALOGUE: '0', HTTPError: PublicError,
+    PUBLIC_SITE_NAME: 'WeebDex',
     $props: Object.assign(() => ({}), { id: () => 'synthetic-form-id' }),
     $state: Object.assign(value => value, { snapshot: clone }), $derived: Object.assign(value => value, { by: fn => fn() }),
     $effect: Object.assign(fn => effects.push(fn), { pre: fn => preEffects.push(fn) }),
@@ -99,10 +99,6 @@ async function registration({ route = registerRoute, signedIn = false, url = 'ht
   Object.defineProperty(context, '$Session', { get: () => get(Session) });
   // The actual public library store is observed across the auth transition.
   // Database/network methods remain tripwires and are never opened here.
-  // Execute the actual preview fence with this fixture's explicit native mode.
-  // Imports are removed only because this finite VM supplies the env/HTTP boundary.
-  const stagingSource = fs.readFileSync(path.join(root, 'platform-integrations/public-api/library-staging.ts'), 'utf8');
-  vm.runInContext(transform(withoutImports(stagingSource).replace(/^export /gm, '')), context);
   const librarySource = fs.readFileSync(path.join(root, 'platform-integrations/local-library/library.ts'), 'utf8');
   const library = vm.runInContext('(function(){' + transform(withoutImports(librarySource).replace(/^export /gm, '')) + '\nreturn { localLibraryState, libraryIdentity }; })()', context);
   // Import local, pure helpers used by this registration route. Unexpected

@@ -162,18 +162,18 @@ class HostedBrowserSeams(unittest.TestCase):
     def test_exact_original_38_phases(self):
         handoff = json.loads((ROOT / 'test-evidence/frontend/browser-startup-plan-build19.json').read_text())['phases']
         expected = {'startup'} | {phase for group in handoff.values() for phase in group.get('names', [])}
-        self.assertEqual(set(runner.ALL_PHASES) - {'ui14-actor-follow', runner.PUBLIC_UPLOAD_PHASE}, expected)
+        self.assertEqual(set(runner.ALL_PHASES) - {'ui14-actor-follow'}, expected)
         self.assertEqual(runner.BATCHES['actor-follow'], ['ui14-actor-follow'])
-        self.assertEqual(len(runner.ALL_PHASES), 40)
+        self.assertEqual(len(runner.ALL_PHASES), 39)
         self.assertEqual(len(expected), 38)
 
     def test_supplemental_actor_follow_scope_and_strict_counts_are_consistent(self):
         _, validator, _, _, _ = self.diagnostic_inputs()
         plan = json.loads((ROOT / 'test-evidence/frontend/browser-actor-follow-plan.json').read_text())
         self.assertEqual(plan['supplemental_phases'], runner.BATCHES['actor-follow'])
-        self.assertEqual(plan['total_required_unique_phases'], 39)  # Retained historical plan.
-        self.assertEqual(len(runner.BATCHES), 12)
-        self.assertEqual(runner.MAX_PHASE_RUNS, 52)
+        self.assertEqual(plan['total_required_unique_phases'], len(runner.ALL_PHASES))
+        self.assertEqual(len(runner.BATCHES), 11)
+        self.assertEqual(runner.MAX_PHASE_RUNS, 51)
         historical = [phase for phase in runner.ALL_PHASES if phase != 'ui14-actor-follow']
         journal = {'phases': [{'phase': phase, 'status': 'passed'} for phase in historical], 'batches': [{'passed': True, 'supervisor_terminal': True, 'supervisor_exit_zero': True, 'cleanup': {'verified_stopped': True, 'lifecycle_clean': True}}]}
         summary = runner.summarize(journal, 'all', runner.ALL_PHASES)
@@ -181,7 +181,7 @@ class HostedBrowserSeams(unittest.TestCase):
         self.assertFalse(summary['full_suite_passed'])
         self.assertEqual(summary['pending_unique_phases'], ['ui14-actor-follow'])
         validator.summary(summary)
-        for key, value in [('required_unique_phases', 38), ('actual_phase_runs', 53)]:
+        for key, value in [('required_unique_phases', 38), ('actual_phase_runs', 52)]:
             with self.assertRaises(ValueError):
                 validator.summary(dict(summary, **{key: value}))
 
@@ -207,8 +207,8 @@ class HostedBrowserSeams(unittest.TestCase):
                 target.write_bytes(original)
 
     def test_every_batch_fits_a_fresh_fixture(self):
-        for name, phases in runner.BATCHES.items():
-            phases = runner.batch_phases(name, phases)
+        for phases in runner.BATCHES.values():
+            phases = ['startup', *phases]
             self.assertEqual(len(phases), len(set(phases)))
             self.assertLess(sum(runner.maximum(phase) + 35 for phase in phases) + 300, 3600)
             for phase in phases:
@@ -272,7 +272,7 @@ class HostedBrowserSeams(unittest.TestCase):
         summary = runner.summarize(journal, 'startup', ['startup'])
         self.assertTrue(summary['selected_scope_passed'])
         self.assertFalse(summary['full_suite_passed'])
-        self.assertEqual(len(summary['pending_unique_phases']), 39)
+        self.assertEqual(len(summary['pending_unique_phases']), 38)
         self.assertFalse(runner.summarize(journal, 'all', runner.ALL_PHASES)['selected_scope_passed'])
 
     def test_failure_is_not_hidden_by_duplicate_success(self):

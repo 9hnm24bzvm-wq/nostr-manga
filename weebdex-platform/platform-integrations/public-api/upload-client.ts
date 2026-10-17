@@ -273,39 +273,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     const initialFence = readFence(account), initialReplacement = readReplacement(account);
     const owned: Owned = { account, assert, targetId: id, targetKind, groups: new Map(), request: transport(account, assert), sessionId: initialFence?.sessionId ?? initialReplacement?.sessionId, fence: initialFence, replacement: initialReplacement };
     const owner: PublicUploadOwner = { id, actor: account.actor, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, request: async <T>(route: string, method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', payload?: unknown): Promise<Response<T>> => {
-      assert();
-      if (route.startsWith('/chapter/')) {
-        assertMutable(owned);
-        if (targetKind !== 'chapter' || ![ `/chapter/${id}`, `/chapter/${id}/claim` ].includes(route) || !['PUT', 'POST', 'DELETE'].includes(method) || route.endsWith('/claim') !== (method === 'POST')) fail('Chapter command escaped its exact signed target', 422);
-        const grants = account.facts.permissions, staff = (user.roles ?? []).some(role => ['moderator', 'staff', 'sysop'].includes(role));
-        const permission = method === 'DELETE' ? 'remove' : 'update';
-        if (!grants.includes(`self.chapter.${permission}`) && !(method !== 'POST' && staff && grants.includes(`chapter.${permission}`))) fail('This bound account has no chapter mutation grant', 403);
-        let body: unknown;
-        if (method === 'PUT') {
-          const input = record(payload); if (Object.keys(input).some(key => !['version', 'title', 'volume', 'chapter', 'language', 'groups'].includes(key))) fail('Only chapter metadata can be edited', 422);
-          const output: Record<string, unknown> = { version: integer(input.version, 1) };
-          for (const key of ['title', 'volume', 'chapter', 'language']) if (input[key] !== undefined) { if (typeof input[key] !== 'string') fail('Invalid chapter metadata', 422); output[key === 'language' ? 'translatedLanguage' : key] = input[key]; }
-          if (input.groups !== undefined) output.groups = ids(input.groups, 10);
-          body = output;
-        } else if (payload !== undefined) fail('Chapter claim and removal accept no body', 422);
-        const response = await raw(owned, route, method, body);
-        if (method !== 'DELETE' && response.status === 200) {
-          const envelope = record(response.body), chapter = resource(envelope.data, 'chapter');
-          if (envelope.result !== 'ok' || envelope.response !== 'entity' || publicUuid(chapter.id) !== id) fail('Chapter mutation returned a different target');
-          integer(chapter.attributes.version, 1);
-        }
-        if (method === 'DELETE' && response.status === 202) {
-          const pending = record(response.body);
-          if (pending.result !== 'ok' || pending.status !== 'pending-moderation' || pending.instanceRemoval !== 'pending-moderation' || response.headers['x-weebdex-instance-removal'] !== 'pending-moderation') fail('Chapter removal was not durably queued');
-          publicUuid(pending.requestId);
-          const sourceStatus = pending.sourceDeletionStatus;
-          if (!['instance-local-only', 'moderator-review-requested', 'not-authorized', 'unconfirmed'].includes(String(sourceStatus)) || response.headers['x-weebdex-source-deletion-status'] !== sourceStatus || (sourceStatus === 'moderator-review-requested') !== (pending.sourceDeletionRequestId !== null)) fail('Invalid source deletion status');
-          if (pending.sourceDeletionRequestId !== null && (typeof pending.sourceDeletionRequestId !== 'string' || !/^[0-9a-f]{64}$/.test(pending.sourceDeletionRequestId))) fail('Invalid source deletion receipt');
-        }
-        if (method === 'DELETE' && response.status === 204 && (!staff || !grants.includes('chapter.remove') || response.headers['x-weebdex-instance-removal'] !== 'soft-hidden' || !['instance-local-only', 'independent-original-moderation'].includes(response.headers['x-weebdex-source-deletion-status'] ?? ''))) fail('Instance chapter removal was not confirmed');
-        return callerView<T>(response);
-      }
-      if (!route.startsWith('/upload') || /[?#\\]/.test(route)) fail('Unsupported signed upload route', 422);
+      assert(); if (!route.startsWith('/upload') || /[?#\\]/.test(route)) fail('Unsupported signed upload route', 422);
       if (route === '/upload' && method === 'GET') return callerView<T>(await discover(owned));
       assertMutable(owned);
       if (route === '/upload/check-approval-required' && method === 'POST') { const value = record(payload); const locale = text(value.language ?? value.locale, 'upload language'); const manga = owned.latest?.manga_id ?? id; const response = await raw(owned, route, method, { manga, locale }); if (response.status === 200 && (record(response.body).result !== 'ok' || typeof record(response.body).requiresApproval !== 'boolean')) fail('Invalid actual approval decision'); return callerView<T>(response); }
