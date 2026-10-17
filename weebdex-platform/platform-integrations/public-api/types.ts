@@ -1,6 +1,6 @@
 // Reconstructed from retained complete wire/view declarations; unverified.
 export type PublicUuid = string & { readonly __publicUuid: unique symbol };
-export type ResourceType = 'manga_relation' | 'manga_recommendation' | 'manga' | 'chapter' | 'cover_art' | 'author' | 'artist' | 'scanlation_group' | 'tag' | 'user' | 'custom_list';
+export type ResourceType = 'manga_relation' | 'manga_recommendation' | 'manga' | 'chapter' | 'cover_art' | 'author' | 'artist' | 'scanlation_group' | 'tag' | 'user' | 'creator' | 'custom_list';
 export interface Relationship { id: PublicUuid; type: ResourceType; related?: string; attributes?: Record<string, unknown>; }
 export interface Resource<A extends Record<string, unknown> = Record<string, unknown>> extends Relationship { attributes: A; relationships: Relationship[]; }
 export interface Entity<A extends Record<string, unknown> = Record<string, unknown>> { result: 'ok'; response: 'entity'; data: Resource<A>; }

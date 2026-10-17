@@ -1,0 +1,18 @@
+1792267190788 START "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform/.build/title-disposition-strict-on-01/project"
+1792267190834 WARNING "src/lib/components/ReportChapterCard.svelte" 7:38 "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190834 WARNING "src/lib/components/ReportChapterCard.svelte" 8:15 "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190834 WARNING "src/lib/components/ReportChapterCard.svelte" 9:5 "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190835 WARNING "src/lib/components/ui/toggle-group/toggle-group.svelte" 36:3 "This reference only captures the initial value of `variant`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190835 WARNING "src/lib/components/ui/toggle-group/toggle-group.svelte" 37:3 "This reference only captures the initial value of `size`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190835 WARNING "src/lib/components/ui/toggle-group/toggle-group.svelte" 38:3 "This reference only captures the initial value of `spacing`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190836 WARNING "src/lib/components/ChapterListFilter.svelte" 32:59 "This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190836 WARNING "src/lib/components/upload/UploadChapter.svelte" 34:44 "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190836 WARNING "src/lib/components/upload/UploadChapterEdit.svelte" 37:46 "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190837 ERROR "platform-integrations/public-api/PublicTitleDisposition.svelte" 10:72 "This comparison appears to be unintentional because the types 'ResourceType' and '\"creator\"' have no overlap."
+1792267190837 WARNING "src/routes/(app)/group/[id]/Group.svelte" 47:42 "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190837 WARNING "src/routes/(app)/title/MangaRelatedSection.svelte" 18:49 "This reference only captures the initial value of `manga`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190837 WARNING "src/routes/(app)/user/[id]/User.svelte" 45:30 "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally"
+1792267190837 COMPLETED 5451 FILES 1 ERRORS 12 WARNINGS 9 FILES_WITH_PROBLEMS
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme

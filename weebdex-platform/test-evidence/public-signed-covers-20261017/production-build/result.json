@@ -1,0 +1,62 @@
+{
+  "schema": "signed-cover-production-build-v1",
+  "source_commit": "a7a0186b7d7d2df1766574509ea7eec30f3e28a6",
+  "source_tree": "75415f216f67c56694bedd06897bcbe9b4cc30cc",
+  "source_manifest_sha256": "8fd364563c2c476ab526d5efcf0ee6f5b8904a4beee97a15cab85d21c56d65d8",
+  "dependency_manifest_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "verified_dependency_entries": 39226,
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-B",
+    "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform/scripts/run-bounded.py",
+    "--cwd",
+    "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform",
+    "--deadline",
+    "900",
+    "--receipt",
+    "/workspace/shared/nostr-manga-recovery-20261017/cover-production-build-evidence-20261017/owned.json",
+    "--log",
+    "/workspace/shared/nostr-manga-recovery-20261017/cover-production-build-evidence-20261017/build.log",
+    "--",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform/scripts/build-frontend.mjs"
+  ],
+  "limits": {
+    "node_heap_mb": 2048,
+    "terser_workers": 1,
+    "deadline_seconds": 900,
+    "minimum_free_bytes": 4294967296
+  },
+  "exit_code": 0,
+  "owned": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform/scripts/build-frontend.mjs"
+    ],
+    "cwd": "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform",
+    "deadline_seconds": 900.0,
+    "elapsed_seconds": 48.146,
+    "process_exit_code": 0,
+    "deadline_exceeded": false,
+    "terminal_receipt": true,
+    "owned_process_group": 9,
+    "cleanup_signals": [],
+    "surviving_owned_process_ids": [],
+    "cleanup_verified": true,
+    "prior_or_unrelated_processes_touched": false
+  },
+  "source_unchanged": true,
+  "dependencies_unchanged": true,
+  "remaining_bytes": 4692185088,
+  "build_log_sha256": "a10fbd55ccab8181a7fa15ba35e2008b46649745b3d08c94d68a9780840e3e2f",
+  "browser_executed": false,
+  "dependency_downloaded": false,
+  "pass": true,
+  "canonical_frontend_679_files_preserved": true,
+  "artifact": "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform/artifacts/frontend",
+  "artifact_files": 434,
+  "artifact_bytes": 7133179,
+  "artifact_manifest_sha256": "21609716a6b88463bb4e4eaa02a5dc0d1139c5db1ad8594782d8a9991e485942",
+  "index_sha256": "b178bb07b9dd3e84c893020969447e7c6f20a29d229053dd54459e17f5642929",
+  "integration_manifest_sha256": "7b9daa0a63eb3dcc757bb749c13b350f8830e088a9514798939d4bb9af80f18e"
+}

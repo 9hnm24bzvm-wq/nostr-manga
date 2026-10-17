@@ -51,7 +51,7 @@ pub(crate) fn project_series(metadata: &Value) -> ApiResult<SeriesProjection> {
         .get("en")
         .or_else(|| titles.values().next())
         .and_then(Value::as_str)
-        .filter(|s| !s.trim().is_empty() && s.len() <= 500)
+        .filter(|s| !s.trim().is_empty() && s.chars().count() <= 500)
         .ok_or_else(|| ApiError::bad_request("Protocol title exceeds the platform title contract"))?
         .to_owned();
     let mut defaults = Vec::<&str>::new();
@@ -120,7 +120,7 @@ pub(crate) fn project_series(metadata: &Value) -> ApiResult<SeriesProjection> {
         rating,
         demographic,
         year: year as i32,
-        metadata: json!({"alt_titles":alt,"description":description,"protocol_source_metadata":metadata,"protocol_projection_defaults":defaults}),
+        metadata: json!({"alt_titles":alt,"description":description,"localized_titles":metadata["titles"],"localized_description":metadata["description"].as_object().cloned().unwrap_or_default(),"localized_alt_titles":metadata["altTitles"].as_array().cloned().unwrap_or_default(),"protocol_source_metadata":metadata,"protocol_projection_defaults":defaults}),
     })
 }
 fn alias(source: &SourcePublication, kind: &str, target: &str) -> String {
@@ -243,7 +243,8 @@ impl CatalogRepository {
         let created = i64::try_from(event.created_at)
             .map_err(|_| ApiError::bad_request("Protocol timestamp cannot be represented"))?;
         if kind == "manga" {
-            let data = project_series(metadata)?;
+            let mut data = project_series(metadata)?;
+            data.metadata.as_object_mut().unwrap().extend(json!({"protocol_event_id":event.id,"protocol_publisher":event.pubkey,"publication_scope":"original-protocol","publication_status":"locally_hosted"}).as_object().unwrap().clone());
             let existing = tx.query_opt("SELECT protocol_series_id,state,version,deleted_at IS NULL FROM platform.catalog_manga WHERE id=$1 FOR UPDATE NOWAIT", &[&id]).await.map_err(recovery_error)?;
             let recovered = if let Some(existing) = existing {
                 let associated: Option<String> = existing.get(0);
@@ -302,6 +303,12 @@ impl CatalogRepository {
             } else {
                 tx.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,year,language,demographic,publication_status,content_rating,state,metadata,protocol_series_id,created_at,updated_at,published_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'published',$10,$11,to_timestamp($12::bigint::double precision),to_timestamp($12::bigint::double precision),to_timestamp($12::bigint::double precision)) ON CONFLICT(protocol_series_id) DO NOTHING",&[&id,&owner_id,&owner_name,&data.title,&data.year,&data.language,&data.demographic,&data.status,&data.rating,&data.metadata,&event.id,&created]).await?
             };
+            // A native title may already be associated while source projection
+            // was pending. Persist its now-visible original provenance/receipt
+            // without replacing any local metadata overlay or bumping versions.
+            if recovered {
+                tx.execute("UPDATE platform.catalog_manga SET metadata=metadata||$2 WHERE id=$1 AND (metadata->>'publication_status' IS DISTINCT FROM 'locally_hosted' OR metadata->'protocol_source_metadata' IS DISTINCT FROM $3::jsonb)", &[&id,&json!({"protocol_source_metadata":metadata,"protocol_publisher":event.pubkey,"publication_scope":"original-protocol","publication_status":"locally_hosted","protocol_event_id":event.id}),&metadata]).await?;
+            }
             // Source records are immutable. Subsequent sweeps preserve local overlays.
             if changed > 0 {
                 create_thread(tx, "manga", &id, &owner_id, &owner_name, &data.title).await?;
@@ -600,6 +607,13 @@ mod tests {
             projected.metadata["protocol_projection_defaults"],
             json!(["content_rating"])
         );
+    }
+    #[test]
+    fn source_title_uses_the_native_character_budget() {
+        let title="題".repeat(300);
+        let projected=project_series(&json!({"titles":{"ja":title},"originalLanguage":"ja"})).unwrap();
+        assert_eq!(projected.title,title);
+        assert!(project_series(&json!({"titles":{"ja":"題".repeat(501)}})).is_err());
     }
     #[test]
     fn unknown_language_is_never_changed_to_english() {

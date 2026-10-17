@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform/scripts/build-frontend.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform",
+  "deadline_seconds": 900.0,
+  "elapsed_seconds": 48.146,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 9,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

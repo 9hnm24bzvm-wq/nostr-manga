@@ -1,0 +1,196 @@
+{
+  "schema": "independent-signed-cover-review-v1",
+  "source": "a7a0186b7d7d2df1766574509ea7eec30f3e28a6",
+  "backendSource": "710a92395956dd519e3a946ddaaf07eb1c8a23ca",
+  "sourceManifestSha256": "a976fc074f8abf210415255877ac54db792c739a36c04717a7312816821824b6",
+  "sourceInputs": 420,
+  "sourceUnchanged": true,
+  "executableSha256": "958bfe72845f12ce4a87fe2627a1e0e4ea7d6d7e30bcc377203c797105af2ecc",
+  "command": [
+    "bash",
+    "weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/chapter-cargo-target/debug/deps/public_manga_writes-929f4e97d9307bf7",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 3.987,
+  "runtimeLogSha256": "daa67ae49c4e1d5ba928cef0c6684fb4c56094b8d0bbcb1ad26487d23a1dfed2",
+  "ownedGuard": "weebdex-platform/test-runtime/auth-uud0np8k",
+  "cleanupSha256": "527e0ad00361881466bd8f7559ba4fc694e247533148cd5916ab6a8889b2e48c",
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "error": null,
+    "test_timeout_seconds": 180,
+    "captured_births": [
+      {
+        "pid": 12,
+        "start_ticks": 5647640,
+        "group": 12,
+        "session": 12
+      },
+      {
+        "pid": 19,
+        "start_ticks": 5647650,
+        "group": 12,
+        "session": 12
+      },
+      {
+        "pid": 20,
+        "start_ticks": 5647650,
+        "group": 12,
+        "session": 12
+      },
+      {
+        "pid": 21,
+        "start_ticks": 5647661,
+        "group": 12,
+        "session": 12
+      },
+      {
+        "pid": 22,
+        "start_ticks": 5647661,
+        "group": 12,
+        "session": 12
+      },
+      {
+        "pid": 25,
+        "start_ticks": 5647753,
+        "group": 25,
+        "session": 25
+      },
+      {
+        "pid": 26,
+        "start_ticks": 5647755,
+        "group": 26,
+        "session": 26
+      },
+      {
+        "pid": 27,
+        "start_ticks": 5647755,
+        "group": 27,
+        "session": 27
+      },
+      {
+        "pid": 29,
+        "start_ticks": 5647755,
+        "group": 29,
+        "session": 29
+      },
+      {
+        "pid": 30,
+        "start_ticks": 5647755,
+        "group": 30,
+        "session": 30
+      },
+      {
+        "pid": 31,
+        "start_ticks": 5647755,
+        "group": 31,
+        "session": 31
+      },
+      {
+        "pid": 32,
+        "start_ticks": 5647759,
+        "group": 32,
+        "session": 32
+      },
+      {
+        "pid": 34,
+        "start_ticks": 5647761,
+        "group": 34,
+        "session": 34
+      },
+      {
+        "pid": 35,
+        "start_ticks": 5647762,
+        "group": 35,
+        "session": 35
+      },
+      {
+        "pid": 36,
+        "start_ticks": 5647765,
+        "group": 36,
+        "session": 36
+      },
+      {
+        "pid": 42,
+        "start_ticks": 5647766,
+        "group": 42,
+        "session": 42
+      },
+      {
+        "pid": 45,
+        "start_ticks": 5647831,
+        "group": 45,
+        "session": 45
+      },
+      {
+        "pid": 46,
+        "start_ticks": 5647832,
+        "group": 46,
+        "session": 46
+      },
+      {
+        "pid": 47,
+        "start_ticks": 5647832,
+        "group": 47,
+        "session": 47
+      },
+      {
+        "pid": 48,
+        "start_ticks": 5647832,
+        "group": 48,
+        "session": 48
+      },
+      {
+        "pid": 49,
+        "start_ticks": 5647832,
+        "group": 49,
+        "session": 49
+      },
+      {
+        "pid": 50,
+        "start_ticks": 5647832,
+        "group": 50,
+        "session": 50
+      },
+      {
+        "pid": 53,
+        "start_ticks": 5647966,
+        "group": 53,
+        "session": 36
+      },
+      {
+        "pid": 54,
+        "start_ticks": 5647966,
+        "group": 53,
+        "session": 36
+      },
+      {
+        "pid": 55,
+        "start_ticks": 5647966,
+        "group": 53,
+        "session": 36
+      }
+    ],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": [],
+    "test_returncode": 0,
+    "postgres_returncode": 0,
+    "startup_timeout_seconds": 10,
+    "cleanup_phase_seconds": [
+      15,
+      5,
+      5
+    ]
+  },
+  "browserExecuted": false,
+  "externalPublication": false
+}

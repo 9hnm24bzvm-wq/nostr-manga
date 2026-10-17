@@ -170,6 +170,13 @@ impl AliasIndex {
                     "publicationDemographic":demographic(value),"status":value["status"],"year":if value["year"].as_i64().is_some_and(|y|y>0){value["year"].clone()}else{Value::Null},
                     "contentRating":value["content_rating"],"state":value["state"],"availableTranslatedLanguages":value["relationships"]["available_languages"].as_array().cloned().unwrap_or_default(),
                     "tags":array(&value["relationships"]["tags"]).iter().map(|tag|self.resource(ResourceKind::Tag,tag,&BTreeSet::new())).collect::<PublicApiResult<Vec<_>>>()?});
+                for (native, wire) in [("localized_titles", "title"), ("localized_description", "description"), ("localized_alt_titles", "altTitles")] {
+                    if let Some(localized) = value.get(native) { attributes[wire] = localized.clone(); }
+                }
+                if value.get("protocol_event_id").is_some() || value.get("publication_scope").is_some() {
+                    attributes["nostr"] = json!({"eventId":value["protocol_event_id"],"publisher":value["protocol_publisher"],"publicationScope":value["publication_scope"],"publicationStatus":value["publication_status"]});
+                    if value.get("instance_overlay").is_some() { attributes["nostr"]["metadataScope"] = json!("instance-local"); }
+                }
                 common(value, &mut attributes);
                 if let Some(links) = value["relationships"]["links"].as_object() {
                     attributes["links"] = json!(

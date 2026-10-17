@@ -92,9 +92,29 @@ async fn assert_thread_visibility_parity(client: &tokio_postgres::Client) {
         "BtCp000002",
         "NoThread00",
     ] {
-        assert!(client.query_one("SELECT pg_temp.original_thread_visible($1) IS NOT DISTINCT FROM platform.community_thread_visible($1)", &[&id]).await.unwrap().get::<_,bool>(0), "Every current thread authority result must equal the unchanged canonical predicate");
+        let row=client.query_one("SELECT pg_temp.reference_thread_visible($1),platform.community_thread_visible($1)", &[&id]).await.unwrap();
+        assert_eq!(row.get::<_,Option<bool>>(0),row.get::<_,Option<bool>>(1),"Current cached/live thread authority must equal the independent pre-correlation reference for {id}");
     }
-    assert!(client.query_one("SELECT bool_and(pg_temp.original_thread_visible(id) IS NOT DISTINCT FROM platform.community_thread_visible(id)) FROM platform.catalog_threads WHERE entity_type='user' AND entity_id='BatchUser1'", &[]).await.unwrap().get::<_,bool>(0));
+    assert!(client.query_one("SELECT bool_and(pg_temp.reference_thread_visible(id) IS NOT DISTINCT FROM platform.community_thread_visible(id)) FROM platform.catalog_threads WHERE entity_type='user' AND entity_id='BatchUser1'", &[]).await.unwrap().get::<_,bool>(0));
+}
+
+fn current_thread_visibility_reference() -> String {
+    let historical=include_str!("../migrations/0081_community_visibility.sql").split("CREATE OR REPLACE FUNCTION platform.community_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n").nth(1).unwrap().split("\n$$;").next().unwrap();
+    // Keep the independent pre0088 join/EXISTS shape, but include0094's
+    // intentional cached-parent withdrawal guard. Comparing against bare0081
+    // would incorrectly require withdrawn cached parents to stay visible.
+    let original="m.state='published' AND platform.protocol_source_is_visible(m.protocol_series_id)";
+    assert_eq!(historical.matches(original).count(),2,"Both manga and chapter parent authorities must receive the current guard");
+    historical.replace(original,"m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)")
+}
+
+#[test]
+fn thread_reference_retains_live_authority_and_cached_parent_withdrawal() {
+    let reference=current_thread_visibility_reference();
+    assert_eq!(reference.matches("m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)").count(),2);
+    assert!(reference.contains("platform.protocol_source_is_visible(c.protocol_event_id)"));
+    assert!(reference.contains("JOIN platform.catalog_manga m ON m.id=c.manga_id"));
+    assert!(!reference.contains("LATERAL"));
 }
 
 fn chapter_without_sort(mut value: Value) -> Value {
@@ -117,7 +137,7 @@ async fn compact_feed_postgres_projection_parity_visibility_and_pagination() {
         assert!(std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap().contains("weebdex-platform/test-runtime/"));
         let state = AppState::connect(Config { public_origin: "https://feed.fixture.invalid".into(), database_plaintext_local: true, fixture_feed_diagnostics: true, ..Config::default() }, dsn).await.unwrap();
         // Reproduce the exact previous87 schema before applying the additive fix.
-        let previous = &domains::MIGRATIONS[..domains::MIGRATIONS.len()-1];
+        let previous = &domains::MIGRATIONS[..domains::MIGRATIONS.partition_point(|migration| migration.version <= 87)];
         assert_eq!(previous.last().unwrap().version, 87);
         state.db.migrate(previous).await.unwrap();
         let mut repo = manga_node::db::Repository::connect(manga_node::db::DbConfig {
@@ -129,8 +149,8 @@ async fn compact_feed_postgres_projection_parity_visibility_and_pagination() {
         state.protocol.verify_schema().await.unwrap();
         state.protocol.install_visibility_function().await.unwrap();
         let client = state.db.client().await.unwrap();
-        let original_thread = include_str!("../migrations/0081_community_visibility.sql").split("CREATE OR REPLACE FUNCTION platform.community_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n").nth(1).unwrap().split("\n$$;").next().unwrap();
-        client.batch_execute(&format!("CREATE FUNCTION pg_temp.original_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n{original_thread}\n$$;")).await.unwrap();
+        let reference_thread=current_thread_visibility_reference();
+        client.batch_execute(&format!("CREATE FUNCTION pg_temp.reference_thread_visible(value TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$\n{reference_thread}\n$$;")).await.unwrap();
         assert_eq!(client.query_one("SHOW statement_timeout", &[]).await.unwrap().get::<_,String>(0), "5s");
         assert_eq!(client.query_one("SHOW lock_timeout", &[]).await.unwrap().get::<_,String>(0), "1s");
         // Pin deliberately stale fixture statistics. Automatic ANALYZE can hide

@@ -189,5 +189,62 @@
     "before": "hidden: !manga.relationships.relations?.length",
     "after": "hidden: !isPublished",
     "label": "Public Related tab reads actual persisted edge endpoint and can show native empty state"
+  },
+  {
+    "path": "src/routes/(app)/create/+layout.svelte",
+    "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+    "count": 1,
+    "before": "import ProtectedVerified from \"$lib/components/ui/ProtectedVerified.svelte\";",
+    "after": "import ProtectedVerified from \"$publicApi/PublicCreateGate.svelte\";",
+    "label": "Public signed title alone bypasses native-cookie create wrapper; group creation stays native"
+  },
+  {
+    "path": "src/routes/(app)/create/title/+layout.svelte",
+    "sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
+    "count": 1,
+    "before": "import ProtectedVerified from \"$lib/components/ui/ProtectedVerified.svelte\";",
+    "after": "import ProtectedVerified from \"$publicApi/PublicTitleShell.svelte\";",
+    "label": "Public title create delegates actual signer/account authority to its dedicated component"
+  },
+  {
+    "path": "src/routes/(app)/create/title/+layout.svelte",
+    "sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
+    "count": 1,
+    "before": "import ProtectedCondition from \"$lib/components/ui/ProtectedCondition.svelte\";",
+    "after": "import ProtectedCondition from \"$publicApi/PublicTitleShell.svelte\";",
+    "label": "Public title create delegates actual signer/account authority to its dedicated component"
+  },
+  {
+    "path": "src/routes/(app)/create/title/+page.svelte",
+    "sha256": "cb557f50780fd4c5a146553ad154923b5e71594e89554d84750cca529f640f96",
+    "count": 1,
+    "before": "import MangaCreate from \"$lib/components/draft/manga/MangaCreate.svelte\";",
+    "after": "import MangaCreate from \"$publicApi/PublicTitleEditor.svelte\";",
+    "label": "Dedicated metadata-only signed title creation, no native cover/relation chain"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+    "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+    "count": 1,
+    "before": "import MangaEdit from \"$platform/MangaEditBoundary.svelte\";",
+    "after": "import MangaEdit from \"$publicApi/PublicTitleEditor.svelte\";",
+    "composed_before": true,
+    "label": "Public title editor replaces the shared native boundary with scoped signed metadata controls"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.ts",
+    "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
+    "count": 1,
+    "before": "import { API, Permission } from \"$lib\";",
+    "after": "import { publicTitleRead } from \"$publicApi/title-client\";\nimport { API, Permission } from \"$lib\";",
+    "label": "Signed title editor loader imports the exact bound-account reader"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.ts",
+    "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
+    "count": 1,
+    "before": "export const load = async ({ url, params }) => {",
+    "after": "export const load = async ({ url, params }) => {\n if (Boolean(true)) {\n  const response = await publicTitleRead(params.id);\n  if (response.status !== 200 || !response.body) error(response.status >= 400 ? response.status : 502);\n  return { id: params.id, manga: response.body as unknown as Manga };\n }\n",
+    "label": "Public editor requires genuine signed account read, without native cookie or invented manga placeholder"
   }
 ]

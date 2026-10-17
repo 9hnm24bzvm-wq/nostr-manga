@@ -32,7 +32,7 @@ pub fn router() -> Router<AppState> {
         .layer(middleware::map_response(private_response))
 }
 
-async fn private_response(mut response: Response) -> Response {
+pub(super) async fn private_response(mut response: Response) -> Response {
     response.headers_mut().insert(header::CACHE_CONTROL, HeaderValue::from_static("private, no-store"));
     response.headers_mut().append(header::VARY, HeaderValue::from_static("Authorization"));
     response
@@ -213,7 +213,7 @@ async fn next_replacement_field(multipart: &mut Multipart) -> PublicApiResult<Op
         .map_err(|_|PublicApiError::bad_request("Multipart upload timed out"))?
         .map_err(|_|PublicApiError::bad_request("Invalid multipart payload"))
 }
-async fn expected_version(mut field: Field<'_>) -> PublicApiResult<i32> {
+pub(super) async fn expected_version(mut field: Field<'_>) -> PublicApiResult<i32> {
     if field.name() != Some("expectedVersion") || field.file_name().is_some() || field.content_type().is_some() {
         return Err(PublicApiError::bad_request("expectedVersion must be the first plain multipart field"));
     }

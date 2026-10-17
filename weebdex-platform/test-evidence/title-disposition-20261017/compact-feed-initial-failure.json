@@ -1,0 +1,17 @@
+{
+  "schema": "owned-native-feed-regression-v1",
+  "utc": "2026-10-17T20:13:56.244355+00:00",
+  "command": [
+    "bash",
+    "weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/chapter-cargo-target/debug/deps/catalog_feed_projection-362baa3acc15dcd0",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "duration_seconds": 20.457,
+  "minimum_free_bytes": 4641894400,
+  "floor_bytes": 4294967296,
+  "abort": null
+}

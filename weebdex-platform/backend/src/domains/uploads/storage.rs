@@ -269,10 +269,21 @@ impl Drop for TempGuard {
     }
 }
 
-pub async fn receive(
+pub async fn receive(root: &Path, field: Field<'_>, covers: bool) -> ApiResult<(StoredImage, Vec<(String, StoredImage)>)> {
+    receive_with_derivatives(root, field, covers, true).await
+}
+/// Public cover intake preserves the exact original and all existing image
+/// validation, without invoking an encoder or creating derivative objects.
+pub(crate) async fn receive_cover_original(root: &Path, field: Field<'_>) -> ApiResult<StoredImage> {
+    let (original, derivatives) = receive_with_derivatives(root, field, true, false).await?;
+    debug_assert!(derivatives.is_empty());
+    Ok(original)
+}
+async fn receive_with_derivatives(
     root: &Path,
     mut field: Field<'_>,
     covers: bool,
+    derivatives: bool,
 ) -> ApiResult<(StoredImage, Vec<(String, StoredImage)>)> {
     let original_name = field.file_name().unwrap_or("").to_owned();
     let declared = field.content_type().map(str::to_owned);
@@ -343,7 +354,7 @@ pub async fn receive(
     }
     file.sync_all().await.map_err(io_error)?;
     drop(file);
-    let (width, height, format, variants) = inspect_path(tmp.0.clone(), covers).await?;
+    let (width, height, format, variants) = inspect_path_with_derivatives(tmp.0.clone(), covers, derivatives).await?;
     let (mime, ext) = match format {
         ImageFormat::Jpeg => ("image/jpeg", "jpg"),
         ImageFormat::Png => ("image/png", "png"),
@@ -436,12 +447,15 @@ pub(crate) async fn inspect_path(
     path: PathBuf,
     covers: bool,
 ) -> ApiResult<(u32, u32, ImageFormat, Variants)> {
+    inspect_path_with_derivatives(path, covers, true).await
+}
+async fn inspect_path_with_derivatives(path: PathBuf, covers: bool, derivatives: bool) -> ApiResult<(u32, u32, ImageFormat, Variants)> {
     let permit = decode_slots()
         .try_acquire_owned()
         .map_err(|_| ApiError::busy())?;
     tokio::task::spawn_blocking(move || {
         let _permit = permit;
-        validate_image(&path, covers)
+        validate_image(&path, covers, derivatives)
     })
     .await
     .map_err(|_| ApiError::unavailable())?
@@ -451,7 +465,7 @@ fn decode_slots() -> Arc<Semaphore> {
     SLOTS.get_or_init(|| Arc::new(Semaphore::new(2))).clone()
 }
 type Variants = Vec<(String, Vec<u8>, u32, u32)>;
-fn validate_image(path: &Path, covers: bool) -> ApiResult<(u32, u32, ImageFormat, Variants)> {
+fn validate_image(path: &Path, covers: bool, derivatives: bool) -> ApiResult<(u32, u32, ImageFormat, Variants)> {
     let reader = ImageReader::open(path)
         .map_err(io_error)?
         .with_guessed_format()
@@ -515,7 +529,7 @@ fn validate_image(path: &Path, covers: bool) -> ApiResult<(u32, u32, ImageFormat
         .decode()
         .map_err(|_| ApiError::bad_request("Image data is corrupt or exceeds the decode budget"))?;
     let mut variants = Vec::new();
-    if covers {
+    if covers && derivatives {
         for target in [256, 512] {
             let thumbnail =
                 image.thumbnail(target.min(image.width()), (target * 4).min(image.height()));
@@ -537,7 +551,7 @@ fn validate_image(path: &Path, covers: bool) -> ApiResult<(u32, u32, ImageFormat
             variants.push((target.to_string(), out, rgba.width(), rgba.height()));
         }
     }
-    if !covers {
+    if !covers && derivatives {
         if let Some(derivative) = super::derivatives::encode(&image, path)? {
             variants.push(derivative);
         }
@@ -600,11 +614,16 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("image");
         std::fs::write(&path, b"\x89PNG\r\n\x1a\n").unwrap();
-        assert!(validate_image(&path, false).is_err());
+        assert!(validate_image(&path, false, true).is_err());
         let image = image::RgbImage::from_pixel(4, 3, image::Rgb([42, 0, 42]));
         image.save_with_format(&path, ImageFormat::Png).unwrap();
-        let (w, h, fmt, variants) = validate_image(&path, true).unwrap();
+        let (w, h, fmt, variants) = validate_image(&path, true, true).unwrap();
         assert_eq!((w, h, fmt), (4, 3, ImageFormat::Png));
+        let original = std::fs::read(&path).unwrap();
+        let (ow, oh, ofmt, none) = validate_image(&path, true, false).unwrap();
+        assert_eq!((ow, oh, ofmt), (4, 3, ImageFormat::Png));
+        assert!(none.is_empty());
+        assert_eq!(std::fs::read(&path).unwrap(), original);
         assert_eq!(variants.len(), 2);
         for (_, bytes, _, _) in variants {
             assert_eq!(image::guess_format(&bytes).unwrap(), ImageFormat::WebP);
@@ -646,10 +665,10 @@ mod tests {
                 .unwrap();
         }
         drop(encoder);
-        let (width, height, format, variants) = validate_image(&path, false).unwrap();
+        let (width, height, format, variants) = validate_image(&path, false, true).unwrap();
         assert_eq!((width, height, format), (3, 4, ImageFormat::Gif));
         assert!(variants.is_empty());
-        assert!(validate_image(&path, true).is_err());
+        assert!(validate_image(&path, true, true).is_err());
     }
 
     #[tokio::test]
