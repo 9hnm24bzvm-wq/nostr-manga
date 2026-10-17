@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--experimental-vm-modules",
+    "--test",
+    "tests/ci/test_public_upload_provenance_recovery.mjs",
+    "tests/ci/test_public_upload_overlay_recovery.mjs",
+    "tests/ci/test_public_upload_replacement_preview_recovery.mjs"
+  ],
+  "exit_code": 0,
+  "source_unchanged": true,
+  "source_map_sha256": "fa0453f6dcdf7e5edae6e03b4eb5bef18da3b7a6d4ba2827b91088baa7d0f9dd",
+  "log_sha256": "2866ba78722467547fc4c6e566c72876823a339f32cbda48faf8585112563552",
+  "prior_failed_command_missing_vm_modules_flag_log": "4ece2e4be2c6ad3f2e344c3963130ccb86acd0d814130e6ff401e5bcc54df2b9",
+  "independent_source_56_case_proof": "591632d5ae0751e130b07ad827053b211243860977580e037e28aac14f1d8ed7"
+}

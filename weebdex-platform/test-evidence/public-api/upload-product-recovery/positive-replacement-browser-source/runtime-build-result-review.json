@@ -1,0 +1,65 @@
+{
+  "schema": "independent-replacement-runtime-build-and-staging-result-v1",
+  "reviewed_at_utc": "2026-10-17T06:54:05.221271+00:00",
+  "verdict": "Verified actual offline build PASS and exact genuine strfry copy-only staging.",
+  "build_owner_sha256": "28331f54dc50f08e989d86d4c6281ac78c6f5656d82698e2505236b16829f205",
+  "plan_review_sha256": "25c0547487a0a4333f72aadaf80cd330c51e2559ba734fde8e4f33960042540e",
+  "receipt_sha256": "e3c167752763f824510e8b7e225237561a26fda4f17e6290413ddb0e87f4cf9d",
+  "log_sha256": "543440fbf5311c0d8700147d0b397f4a55273b5eb7d331c9117e24bf0324bf16",
+  "actual_command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/rustup/toolchains/1.90.0-x86_64-unknown-linux-gnu/bin/cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/Cargo.toml",
+    "--bin",
+    "weebdex-platform",
+    "--example",
+    "browser_fixture_provisioner",
+    "-j2"
+  ],
+  "actual_exit_code": 0,
+  "child_reaped": true,
+  "timed_out": false,
+  "terminal_errors": [],
+  "cargo_elapsed_seconds": 17.72,
+  "compiler_warnings": 14,
+  "artifacts": {
+    "replacement-cargo-target-01/debug/weebdex-platform": {
+      "sha256": "15c10bd5e59977cf5ffb171ee3621fb2f3e20ddfac62a92fc8693a63d1a8677a",
+      "bytes": 82069672,
+      "mode": 493
+    },
+    "replacement-cargo-target-01/debug/examples/browser_fixture_provisioner": {
+      "sha256": "f3fbd799c585c76b56600a0ec019709eb1b06d11d0e3ea0de533625c4674e652",
+      "bytes": 59248376,
+      "mode": 493
+    }
+  },
+  "preexisting_main_retained": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/weebdex-platform",
+    "sha256": "15c10bd5e59977cf5ffb171ee3621fb2f3e20ddfac62a92fc8693a63d1a8677a",
+    "bytes": 82069672,
+    "mode": 493,
+    "provenance": "preexisting artifact; provenance not asserted by this pre-build observation",
+    "retained_path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-runtime-binaries-build-01/preexisting-main.bin"
+  },
+  "source_commit": "e45052ca987a18d3be1fa9792c210e6840a78713",
+  "verified_backend_sources": 308,
+  "verified_held_browser_pins": 1167,
+  "verified_original_frontend_files": 432,
+  "verified_replacement_frontend_files": 432,
+  "verified_test_executables": 2,
+  "strfry_copy_receipt_sha256": "2e46ae368fc13061ee8bfbd0f84b6bd75219cf084b2d9291bc8417fada680994",
+  "strfry_sha256": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+  "current_original_and_copy_bytes_size_mode_verified": true,
+  "reviewer_actions": "Independent read-only hash, exact file-membership/mode, Git and receipt/log verification; no runtime commands or services invoked.",
+  "limits": [
+    "Exact Cargo inputs and HEAD are associated; uncommitted non-Cargo future browser draft is excluded from any clean-tree claim.",
+    "Main ELF is byte-identical to its preserved preexisting copy; the successful Cargo command supplies the present source/build association without inventing earlier provenance.",
+    "No browser journey, public publication or service startup is qualified here.",
+    "Original browser03 escalation remains separately denied/pending.",
+    "HTTP01 application pass and outer failure remain unchanged."
+  ]
+}

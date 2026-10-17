@@ -1,0 +1,63 @@
+EXACT COPIED TOOL OUTPUT FOOTER/ERROR (not file-backed capture)
+Command: node --experimental-vm-modules --test tests/ci/test_public_upload_adapter_recovery.mjs
+Working directory: /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform
+Exit code: 1
+Tool output chunk: d58f29
+First candidate source SHA-256: f9f21723440593647d03d4d7e65c30fb083f43126e50617ab4855ddc71767de2
+First candidate test SHA-256: 79cdb32a1d4dbbe19d2c62ad8d1d0ed34056d6758aa010000e8d8b74070363ef
+Scope: exact first-run footer/error only, as requested. Original reviewer snapshots remain unchanged.
+BEGIN EXACT COPIED FOOTER/ERROR
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 212.03721
+
+✖ failing tests:
+
+test at tests/ci/test_public_upload_adapter_recovery.mjs:111:1
+✖ actual accepted pending response has no readable chapter and stays read-only (3.218525ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   attributes: {
+  +     chapter: '1',
+  +     externalUrl: null,
+  +     isUnavailable: true,
+  +     nostr: {
+  +       eventId: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+  +       publicationScope: 'original-protocol',
+  +       publicationStatus: 'accepted_pending_projection'
+  +     },
+  +     pages: 1,
+  +     title: null,
+  +     translatedLanguage: 'en',
+  +     version: 2,
+  +     volume: null
+  +   },
+  +   id: '55555555-5555-8555-8555-555555555555',
+  +   relationships: [
+  +     {
+  +       id: '11111111-1111-8111-8111-111111111111',
+  +       type: 'manga'
+  +     }
+  +   ],
+  +   type: 'chapter'
+  + }
+  - undefined
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs:111:630)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: '55555555-5555-8555-5555-555555555555', type: 'chapter', attributes: { version: 2, title: null, volume: null, chapter: '1', translatedLanguage: 'en', pages: 1, isUnavailable: true, externalUrl: null, nostr: [Object] }, relationships: [ [Object] ] },
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+END EXACT COPIED FOOTER/ERROR

@@ -1,0 +1,6 @@
+{
+  "scope": "Unexecuted first cross-session candidate held by independent review; 25 authored pure cases, no execution.",
+  "helper_sha256": "4cc6797c2dff87575cf53c247312fd586848ccd3dbd096e73f97633cf59996a3",
+  "test_sha256": "4ca930bd19ce006b2dae906938754590305c9f609e86db774be3c91a8788ae75",
+  "held_finding": "Final post-stop members() results were discarded, allowing a later observed known survivor to miss the cleanup verdict."
+}

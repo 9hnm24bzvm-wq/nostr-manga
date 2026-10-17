@@ -191,6 +191,26 @@ async fn serve(
     )
     .await
 }
+/// The caller has transaction-rechecked account and exact session/file ownership.
+/// Keep immutable object validation and bounded streaming shared with native media.
+pub(crate) async fn signed_upload_preview(
+    state: &AppState,
+    row: &Row,
+    headers: &HeaderMap,
+) -> ApiResult<Response> {
+    let digest: &str = row.get(1);
+    let mime: &str = row.get(2);
+    let bytes: i64 = row.get(3);
+    if digest.len() != 64
+        || !digest.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+        || !["image/jpeg", "image/png", "image/webp", "image/gif"].contains(&mime)
+        || bytes <= 0
+        || bytes as u64 > storage::MAX_FILE_BYTES
+    {
+        return Err(ApiError::unavailable());
+    }
+    serve(state, row, headers, &Method::GET, true, permits(state).await?).await
+}
 pub(crate) async fn file_response(
     mut file: File,
     digest: &str,

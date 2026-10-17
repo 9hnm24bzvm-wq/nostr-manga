@@ -1,0 +1,31 @@
+{
+  "schema": "independent-positive-replacement-journey-finite-result-v1",
+  "reviewed_at_utc": "2026-10-17T06:54:39.857481+00:00",
+  "source_review_sha256": "9d27d52e6e667efe6478cd8eefed82a4b8a5a3dfc5dc9b659242f66274c2eb72",
+  "source_sha256": {
+    "scripts/public-upload-recovery-browser.mjs": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79",
+    "scripts/public-upload-recovery-observer.mjs": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71",
+    "tests/ci/test_public_upload_recovery_journey.mjs": "d08419e00bf99ffb0d70bc61cab15f97c7eed90d1b205e3ef3610a9c4b44aa45",
+    "docs/verification/public-upload-positive-replacement-browser-plan.md": "803839b644bd640f2be2db1df418ea957e0c5c752ecbf614b6f9050dfb04bee3"
+  },
+  "command": [
+    "node",
+    "--test",
+    "tests/ci/test_public_upload_recovery_journey.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform",
+  "log_path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-positive-journey-pure-first-20261017.log",
+  "log_sha256": "ed824697f5599c188224b87e3e32b8af50440548f7a853e5438762ea1a74758d",
+  "observed_tests": 54,
+  "observed_pass": 54,
+  "observed_fail": 0,
+  "owner_reported_exit_code": 0,
+  "source_hashes_unchanged": true,
+  "verdict": "Verified the retained first-run 54-case source/fake test result and exact current source association.",
+  "reviewer_reran_tests": false,
+  "limits": [
+    "No actual browser, fixture, signature, HTTP or database qualification from these fake/source seams.",
+    "Positive replacement runtime remains pending a separately reviewed plan and execution authority.",
+    "The original denied browser03 invocation remains held."
+  ]
+}

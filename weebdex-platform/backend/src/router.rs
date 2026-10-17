@@ -351,11 +351,19 @@ fn request_origin(headers: &HeaderMap, expected: &str) -> Result<Option<HeaderVa
         Err(ApiError::forbidden("Cross-origin requests are not allowed"))
     }
 }
+fn signed_upload_replacement_path(parts: &[&str]) -> bool {
+    matches!(parts, ["api", "v1", "nostr", "uploads", session, "files", file, "replace"]
+        if crate::public_api::PublicUuid::parse(session).is_ok()
+            && crate::public_api::PublicUuid::parse(file).is_ok())
+}
 fn body_budget(path: &str, method: &Method, state: &AppState) -> (usize, Duration) {
     let parts = path
         .split('/')
         .filter(|part| !part.is_empty())
         .collect::<Vec<_>>();
+    if *method == Method::POST && signed_upload_replacement_path(&parts) {
+        return (40 * 1024 * 1024, Duration::from_secs(state.config.upload_body_timeout_seconds));
+    }
     if *method == Method::POST && parts.len() == 4
         && parts[..3] == ["api", "v1", "upload"]
         && crate::public_api::PublicUuid::parse(parts[3]).is_ok()
@@ -507,6 +515,12 @@ async fn request_boundary(
 
 async fn response_headers(State(state): State<AppState>, request: Request, next: Next) -> Response {
     let service_worker = request.uri().path() == "/service-worker.js";
+    let signed_upload_private = {
+        let parts = request.uri().path().split('/').filter(|part| !part.is_empty()).collect::<Vec<_>>();
+        signed_upload_replacement_path(&parts) || matches!(parts.as_slice(), ["api", "v1", "nostr", "uploads", session, "files", file, "preview"]
+            if crate::public_api::PublicUuid::parse(session).is_ok()
+                && crate::public_api::PublicUuid::parse(file).is_ok())
+    };
     let private_response = segment_prefix(request.uri().path(), "/api")
         || segment_prefix(request.uri().path(), "/auth")
         || matches!(request.uri().path(), "/healthz" | "/livez" | "/readyz");
@@ -514,7 +528,8 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
     if private_response {
         response
             .headers_mut()
-            .insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
+            .insert(header::CACHE_CONTROL, HeaderValue::from_static(
+                if signed_upload_private { "private, no-store" } else { "no-store" }));
     }
     if service_worker {
         response.headers_mut().insert(
@@ -564,6 +579,19 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn signed_replacement_body_budget_and_private_cache_select_exact_public_path() {
+        let session="11111111-1111-4111-8111-111111111111";
+        let file="22222222-2222-4222-8222-222222222222";
+        assert!(signed_upload_replacement_path(&["api","v1","nostr","uploads",session,"files",file,"replace"]));
+        for path in [
+            vec!["api","v1","nostr","uploads","native1234","files",file,"replace"],
+            vec!["api","v1","nostr","uploads",session,"files","native1234","replace"],
+            vec!["api","v1","nostr","uploads",session,"files",file,"preview"],
+            vec!["api","v1","nostr","uploads",session,"files",file,"replace","extra"],
+            vec!["api","upload",session,"files",file,"replace"],
+        ] { assert!(!signed_upload_replacement_path(&path)); }
+    }
     #[tokio::test]
     async fn unknown_api_is_a_real_error() {
         let response = api_not_found().await.into_response();

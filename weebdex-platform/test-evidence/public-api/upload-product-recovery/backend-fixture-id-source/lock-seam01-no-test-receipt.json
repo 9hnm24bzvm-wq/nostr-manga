@@ -1,0 +1,333 @@
+{
+  "schema": "owned-exact-account-lock-counterexample-v1",
+  "started_at_utc": "2026-10-17T04:56:32.179507+00:00",
+  "command": [
+    "/bin/bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/usr/bin/python3",
+    "-B",
+    "/workspace/shared/nostr-manga-recovery-20261017/run-exact-account-lock-seam.py"
+  ],
+  "source_pins": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+  },
+  "probe_sha256": "2c53167bbea8e84863fd1bfd955488966d6bef610c2fbb872d3b26f7e7f6a769",
+  "free_before": 26652209152,
+  "pass": false,
+  "observed_births": [
+    {
+      "pid": 5,
+      "ppid": 2,
+      "group": 5,
+      "session": 5,
+      "start_ticks": 640242,
+      "state": "S"
+    },
+    {
+      "pid": 8,
+      "ppid": 5,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640246,
+      "state": "D"
+    },
+    {
+      "pid": 9,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640246,
+      "state": "S"
+    },
+    {
+      "pid": 10,
+      "ppid": 9,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640246,
+      "state": "R"
+    },
+    {
+      "pid": 13,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640248,
+      "state": "S"
+    },
+    {
+      "pid": 14,
+      "ppid": 13,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640248,
+      "state": "R"
+    },
+    {
+      "pid": 16,
+      "ppid": 15,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640251,
+      "state": "R"
+    },
+    {
+      "pid": 15,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640251,
+      "state": "S"
+    },
+    {
+      "pid": 17,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640259,
+      "state": "S"
+    },
+    {
+      "pid": 18,
+      "ppid": 17,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640260,
+      "state": "R"
+    },
+    {
+      "pid": 19,
+      "ppid": 18,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 640271,
+      "state": "Z"
+    },
+    {
+      "pid": 21,
+      "ppid": 5,
+      "group": 21,
+      "session": 21,
+      "start_ticks": 640322,
+      "state": "S"
+    },
+    {
+      "pid": 22,
+      "ppid": 21,
+      "group": 22,
+      "session": 22,
+      "start_ticks": 640323,
+      "state": "S"
+    },
+    {
+      "pid": 23,
+      "ppid": 21,
+      "group": 23,
+      "session": 23,
+      "start_ticks": 640323,
+      "state": "S"
+    },
+    {
+      "pid": 24,
+      "ppid": 21,
+      "group": 24,
+      "session": 24,
+      "start_ticks": 640323,
+      "state": "R"
+    },
+    {
+      "pid": 25,
+      "ppid": 21,
+      "group": 25,
+      "session": 25,
+      "start_ticks": 640323,
+      "state": "S"
+    },
+    {
+      "pid": 26,
+      "ppid": 21,
+      "group": 26,
+      "session": 26,
+      "start_ticks": 640324,
+      "state": "S"
+    },
+    {
+      "pid": 27,
+      "ppid": 21,
+      "group": 27,
+      "session": 27,
+      "start_ticks": 640324,
+      "state": "S"
+    },
+    {
+      "pid": 28,
+      "ppid": 5,
+      "group": 28,
+      "session": 28,
+      "start_ticks": 640328,
+      "state": "R"
+    },
+    {
+      "pid": 30,
+      "ppid": 5,
+      "group": 30,
+      "session": 30,
+      "start_ticks": 640330,
+      "state": "Z"
+    }
+  ],
+  "direct_child_pid": 5,
+  "direct_child_birth_confirmed": true,
+  "direct_child_birth": {
+    "pid": 5,
+    "ppid": 2,
+    "group": 5,
+    "session": 5,
+    "start_ticks": 640242,
+    "state": "R"
+  },
+  "error": {
+    "class": "PermissionError",
+    "message": "[Errno 13] Permission denied: '/proc/30/fd'"
+  },
+  "terminal_errors": [
+    {
+      "observation": "owned_listener_refusal",
+      "class": "FileNotFoundError",
+      "message": "[Errno 2] No such file or directory: '/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-01/probe.json'"
+    },
+    {
+      "observation": "probe_receipt",
+      "class": "FileNotFoundError",
+      "message": "[Errno 2] No such file or directory: '/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-01/probe.json'"
+    },
+    {
+      "observation": "exact_test_summary",
+      "class": "AssertionError",
+      "message": ""
+    }
+  ],
+  "observed_listeners": [
+    {
+      "family": "tcp",
+      "address": "0100007F",
+      "port": 33891,
+      "inode": "208705",
+      "owner": {
+        "pid": 21,
+        "ppid": 5,
+        "group": 21,
+        "session": 21,
+        "start_ticks": 640322,
+        "state": "S"
+      }
+    }
+  ],
+  "all_observed_listener_ports_refused": null,
+  "remaining_saved_births": [],
+  "new_fixture_directories": [
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-si6oual4"
+  ],
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 143,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "error": "interrupted",
+    "test_timeout_seconds": 180,
+    "captured_births": [
+      {
+        "pid": 8,
+        "start_ticks": 640246,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 17,
+        "start_ticks": 640259,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 18,
+        "start_ticks": 640260,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 21,
+        "start_ticks": 640322,
+        "group": 21,
+        "session": 21
+      },
+      {
+        "pid": 22,
+        "start_ticks": 640323,
+        "group": 22,
+        "session": 22
+      },
+      {
+        "pid": 23,
+        "start_ticks": 640323,
+        "group": 23,
+        "session": 23
+      },
+      {
+        "pid": 25,
+        "start_ticks": 640323,
+        "group": 25,
+        "session": 25
+      },
+      {
+        "pid": 26,
+        "start_ticks": 640324,
+        "group": 26,
+        "session": 26
+      },
+      {
+        "pid": 27,
+        "start_ticks": 640324,
+        "group": 27,
+        "session": 27
+      },
+      {
+        "pid": 28,
+        "start_ticks": 640328,
+        "group": 28,
+        "session": 28
+      },
+      {
+        "pid": 30,
+        "start_ticks": 640330,
+        "group": 30,
+        "session": 30
+      }
+    ],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": [],
+    "test_returncode": null,
+    "postgres_returncode": 0,
+    "startup_timeout_seconds": 10,
+    "cleanup_phase_seconds": [
+      15,
+      5,
+      5
+    ]
+  },
+  "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-si6oual4/cleanup.json",
+  "cleanup_sha256": "c99c6dd1cb29c639a8e00b28b3ae183b6085da5a1d2f1a91a6ae354c9c347f8b",
+  "captured_births_absent": true,
+  "source_unchanged": true,
+  "compiled_source_receipt_sha256": "825acfe0a5bf5b1573850df773fc8398f6bbb22fc6296981d38a624195c8f165",
+  "test_summary": null,
+  "ended_at_utc": "2026-10-17T04:56:33.155115+00:00",
+  "free_after": 26603933696,
+  "log_sha256": "a3eabcead1e7d806ad5228ed078c37d4c471332557187a726c825d9c20c3e75a",
+  "expected_test_exit_code": 101,
+  "application_test_pass": false,
+  "receipt_persisted": true
+}

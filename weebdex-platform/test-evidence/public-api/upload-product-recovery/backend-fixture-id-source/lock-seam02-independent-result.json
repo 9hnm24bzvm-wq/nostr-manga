@@ -1,0 +1,68 @@
+{
+  "schema": "account-lock-seam02-independent-result-v1",
+  "verdict": "actual_old_lock_FK_conflict_reproduced_and_physical_teardown_verified",
+  "pins": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-02/receipt.json",
+      "sha256": "4707df764eba745747a290ba592128a3aa84f203fe09755de4e378ef6fc2d5d8"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-02/run.log",
+      "sha256": "1cd6cf76c62809505a1baeffa17baaed087fc1c5ea265ccc8cdfc1588a3b27b3"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-02/probe.json",
+      "sha256": "9191c5145c36cfbb372e87d50a6b771360b7142e12e821947df1cb78480bf521"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-7ry7xg5q/cleanup.json",
+      "sha256": "284d0d631dc1db9d4da80d3ee2f17a826872135f2092cfc6df6375bc044d922e"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam02-final-independent-plan-review-20261017.json",
+      "sha256": "33a0f1589ebd2f8f0cc30d2d121ed8b7e2c483edeca50d9d74bd956e6bb5e83f"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/pre-lock-auth.rs.retained",
+      "sha256": "b8a053ac097515df7dd014854318a31411060ea34f027211faf38e50a782d9a7"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/pre-lock-public_uploads.rs.retained",
+      "sha256": "653b11ee9f4f433cea5dc01909bed025e2cbde17c9eb72466685164fb03f50e9"
+    }
+  ],
+  "actual_test": {
+    "name": "account_write_lock_allows_publication_fk_and_excludes_authority_changes",
+    "exit_code": 101,
+    "passed": 0,
+    "failed": 1,
+    "sqlstate": "55P03",
+    "actual_error": "FK check SELECT on platform.users FOR KEY SHARE timed out while the exact production FOR UPDATE account query was held",
+    "application_test_pass": false
+  },
+  "source_order_inference": "Observed failure is the exact final FK expect after six successful lock-refusal assertions and explicit rollback of all probe/owner transactions. Final unchanged-account/binding/no-command assertions after that expect were not reached.",
+  "physical_teardown": {
+    "external_births": 23,
+    "captured_births": 15,
+    "captured_subset_observed": true,
+    "all_saved_and_captured_absent": true,
+    "pg_port": 57455,
+    "test_axum_ports": [
+      36477
+    ],
+    "exact_listener_ports_refused": true,
+    "forced": false,
+    "postgres_exit": 0,
+    "unknown_births": [],
+    "terminal_errors": []
+  },
+  "source_count": 308,
+  "owner_before_after_source_unchanged": true,
+  "review_time_source_state": "Source owner began the separate auth/uploads/test successor after terminal completion. Tested auth and test match retained exact snapshots; tested uploads matches current HEAD Git blob. No claim that these working files are still the tested bytes.",
+  "limits": [
+    "This proves the database lock compatibility blocker, not successful publication or HTTP acceptance",
+    "Original integration01 invalid-ID503 and seam01 observer failure remain separate retained outcomes",
+    "Reviewer used retained actual-host proof, not a new socket check in another namespace"
+  ],
+  "reviewer_observation_note": "Initial review script required current working source equality and stopped before writing when successor edits were detected; revised review uses retained tested source association."
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "independent-source-result-review-v1",
+  "review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-ui-card-identity-independent-source-review-20261017.json",
+    "sha256": "52aa8de09a3228fcb7b4c74e73d8e3cff41fa2d3308315fd5d3943713afc2511",
+    "bytes": 2074
+  },
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-anchors.json",
+      "sha256": "03c14c11efbbabbd6bdda98e6bf239c6c72c19e7b6d0bc7dece37d01a0e90c77",
+      "bytes": 40679
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/scripts/composed-upload-provenance.mjs",
+      "sha256": "1bd941913fd4f4d80784057ea7d531d73b9fb60e1a3abdce2e4b324971b09e00",
+      "bytes": 3478
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_overlay_recovery.mjs",
+      "sha256": "809b02a09756ff238b6c14cd02015b92fa5565f2ca16fbb894451bbd76c33ef6",
+      "bytes": 21335
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_provenance_recovery.mjs",
+      "sha256": "8a4905df4bb6aba5ee35dc85ed398f2155c9b04a18749eb06611b9330efcf98b",
+      "bytes": 6396
+    }
+  ],
+  "logs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-ui-card-identity-pure-first-20261017.log",
+      "sha256": "7660d675ca6aea52f2e6bf14362a9bae22b21d333d6cf007cf77181a18cc9e2f",
+      "bytes": 3905
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-provenance-card-identity-pure-first-20261017.log",
+      "sha256": "0ae4cc03a1b3ce2ad9ce70f027ecb7ccea9cd3bc8546fba577eafe92b56a6f93",
+      "bytes": 996
+    }
+  ],
+  "observed_summary": {
+    "ui": 35,
+    "provenance": 12,
+    "failed": 0
+  },
+  "scope": "Source-extracted fake UI and exact data-transform provenance; actual browser/build pending."
+}

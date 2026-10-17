@@ -1,0 +1,17 @@
+{
+  "schema": "compiled-fixture-id-pure-result-v1",
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/cargo-target/debug/deps/public_uploads-4987a247b7f72ece",
+    "--exact",
+    "catalog_fixture_identifiers_match_publication_schema",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "pass": true,
+  "compile_receipt_sha256": "825acfe0a5bf5b1573850df773fc8398f6bbb22fc6296981d38a624195c8f165",
+  "binary_sha256": "a24b5a691e7244ee813b2eecc6f56c030a62d2bb6557898eea58dfb1e0ad5a94",
+  "source_unchanged": true,
+  "log_sha256": "2d20d8b1298eb8117d52337e39204499a860495064b54f95c4ea23be5b0ed600",
+  "finished_at_utc": "2026-10-17T04:54:36.186025+00:00",
+  "database_started": false
+}

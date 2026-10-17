@@ -1,0 +1,39 @@
+{
+  "schema": "independent-source-result-review-v1",
+  "time_utc": "2026-10-17T04:21:09.312561+00:00",
+  "verdict": "source_and_owner_finite_result_clear",
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/platform-integrations/public-api/upload-client.ts",
+      "sha256": "81da46b690c1965493c6e3ac5c5fb9cd2fb1fb156566f924cb6c529419f210fc",
+      "bytes": 47248
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs",
+      "sha256": "ae94d64c2e0a871190cd5f17c9093057ed27629d37dbbdcc0c9b248e2de4acbe",
+      "bytes": 39142
+    }
+  ],
+  "evidence": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-adapter-finite-types.log",
+    "sha256": "5769ced2baa8f9e2c8d0a2abc439c450570af8b19093db9444319eb64602d899",
+    "bytes": 3679
+  },
+  "result": {
+    "tests": 34,
+    "pass": 34,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "owner_reported_exit_code": 0,
+    "log_origin": "verbatim copy of first tool output, no rerun"
+  },
+  "findings": [
+    "Declaration-style never-returning fail function restores strict narrowing without changing rejection behavior.",
+    "Account maps actual bound version; session maps actual native timestamps and processing/deletion flags, with no fabricated defaults.",
+    "Deletion flag must agree with exact state. Missing/malformed fields and contradictory deletion states rejected in finite cases.",
+    "Generic caller view remains existing typed caller compatibility only; route-specific validation and mutation/commit ownership fences remain required."
+  ],
+  "scope": "Fake-transport finite tests and read-only source association; no actual browser/server/database assertion.",
+  "test_execution_by_reviewer": false
+}

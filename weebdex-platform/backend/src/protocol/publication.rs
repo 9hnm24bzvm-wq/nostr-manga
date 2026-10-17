@@ -1421,10 +1421,21 @@ pub async fn pending_native_receipt_allowed(
     session: &str,
     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
 ) -> ApiResult<bool> {
+    pending_native_receipt_allowed_for_owner(state, tx, chapter, session, actor.user_id()).await
+}
+/// Read-only receipt policy. The caller authenticates and locks the account and
+/// exact session owner in this transaction; no catalogue mutation actor is needed.
+pub(crate) async fn pending_native_receipt_allowed_for_owner(
+    state: &crate::state::AppState,
+    tx: &tokio_postgres::Transaction<'_>,
+    chapter: &str,
+    session: &str,
+    owner: &str,
+) -> ApiResult<bool> {
     if !state.protocol.is_ready() || state.config.protocol_publication.is_none() {
         return Ok(false);
     }
-    let Some(row)=tx.query_opt("SELECT c.protocol_event_id,m.protocol_series_id,p.group_id,b.publisher FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.catalog_id=c.id AND p.event_id=c.protocol_event_id AND p.user_id=s.owner_id JOIN platform.protocol_identity_bindings b ON b.user_id=s.owner_id WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3 AND s.state='committed' AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND p.state IN('source_accepted','materialized')", &[&session,&actor.user_id(),&chapter]).await? else{return Ok(false)};
+    let Some(row)=tx.query_opt("SELECT c.protocol_event_id,m.protocol_series_id,p.group_id,b.publisher FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.catalog_id=c.id AND p.event_id=c.protocol_event_id AND p.user_id=s.owner_id JOIN platform.protocol_identity_bindings b ON b.user_id=s.owner_id WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3 AND s.state='committed' AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND p.state IN('source_accepted','materialized')", &[&session,&owner,&chapter]).await? else{return Ok(false)};
     let Some(source) = row.get::<_, Option<String>>(0) else {
         return Ok(false);
     };

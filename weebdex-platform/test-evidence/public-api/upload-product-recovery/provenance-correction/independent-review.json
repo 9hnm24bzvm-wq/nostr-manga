@@ -1,0 +1,23 @@
+{
+  "schema": "upload-provenance-correction-review-v1",
+  "utc": "2026-10-17T04:12:37.430710+00:00",
+  "verdict": "source_clear_and_12_pure_cases_verified",
+  "source_pins": {
+    "scripts/composed-upload-provenance.mjs": "8fb2e8ea2057f5fd32a5621532fe1f90dc659a83454369312cb5f628e9e19100",
+    "scripts/check-composed-frontend.mjs": "f8e9e589e224bb1f88f0fa2bd2f06295ce341fcda2cb848bad4e21fd5add7cbe",
+    "tests/ci/test_public_upload_provenance_recovery.mjs": "4f8e4d81eb6d722925a0d707f02f88e42c9f30829149e0341bd2d7a0dcc95033"
+  },
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-provenance-preflight-01.log",
+    "sha256": "43303d0259e08eb76c39e9af3b599a2b2a41abf262bd9065e8cba737c16154eb"
+  },
+  "scope": [
+    "One exact accfcd30 upload-replacement.fragment.ts and one UploadChapterPages target.",
+    "Exact prior native stage hash must equal public-upload composed input, exact final stage/output and fixed snapshot paths validated.",
+    "Recipe remains explicitly inactive in final public output and replacement unavailable; not runtime feature qualification.",
+    "Global final-source >0.5 ancestry threshold, all other fragment checks, source-map hashes and production overlay output pins remain unchanged.",
+    "12 source-only cases compose both profiles through actual five data transforms, every legacy fragment and all eight public output hashes; no compiler/browser/server execution."
+  ],
+  "prior_failure": "Original enabled strict stopped before checker on missing legacy recipe ancestry; retain that failure separately.",
+  "next_scope": "Sole owner may apply only these exact three files to isolated build checkout and run fresh guarded strict profiles. Actual strict/build result remains pending."
+}

@@ -5,6 +5,7 @@ use super::{
     ResourceKind,
     auth::{admitted_request, bound_account_read, bound_account_write},
     catalogue_dto::AliasIndex,
+    dto::{Relationship, ResourceType},
 };
 use crate::{
     AppState,
@@ -36,7 +37,7 @@ pub fn router() -> Router<AppState> {
         .route("/upload/{p0}/{p1}", delete(delete_file))
 }
 
-fn no_query(uri: &axum::http::Uri) -> PublicApiResult<()> {
+pub(super) fn no_query(uri: &axum::http::Uri) -> PublicApiResult<()> {
     if uri.query().is_some() {
         Err(PublicApiError::bad_request("Upload operations accept no query parameters"))
     } else { Ok(()) }
@@ -50,7 +51,7 @@ fn content_type(headers: &HeaderMap) -> PublicApiResult<()> {
     }
     Ok(())
 }
-async fn authorize(
+pub(super) async fn authorize(
     state: &AppState, uri: &axum::http::Uri, headers: &HeaderMap,
     request: Request, maximum: usize, empty: bool,
 ) -> PublicApiResult<(AdmittedHttpCapability, Vec<u8>)> {
@@ -66,16 +67,16 @@ async fn authorize(
     let cap = admitted_request(state, uri, headers, &method, &body).await?;
     Ok((cap, body.to_vec()))
 }
-fn parse<T: DeserializeOwned>(body: &[u8]) -> PublicApiResult<T> {
+pub(super) fn parse<T: DeserializeOwned>(body: &[u8]) -> PublicApiResult<T> {
     serde_json::from_slice(body).map_err(|_| PublicApiError::bad_request("Invalid upload request body"))
 }
-async fn resolve(tx: &Transaction<'_>, kind: ResourceKind, public: &PublicUuid) -> PublicApiResult<String> {
+pub(super) async fn resolve(tx: &Transaction<'_>, kind: ResourceKind, public: &PublicUuid) -> PublicApiResult<String> {
     let resolved = PostgresPublicIdResolver::resolve_many_in(tx, kind, std::slice::from_ref(public))
         .await?.remove(public).ok_or_else(PublicApiError::not_found)?;
     if resolved.target != PublicIdTarget::NativeResource { return Err(PublicApiError::not_found()); }
     Ok(resolved.native_id)
 }
-async fn preferred(tx: &Transaction<'_>, kind: ResourceKind, native: &str) -> PublicApiResult<PublicUuid> {
+pub(super) async fn preferred(tx: &Transaction<'_>, kind: ResourceKind, native: &str) -> PublicApiResult<PublicUuid> {
     let row = tx.query_opt("SELECT public_id::text FROM platform.public_resource_ids WHERE kind=$1 AND native_id=$2 AND preferred", &[&kind.as_str(), &native]).await?
         .ok_or_else(PublicApiError::unavailable)?;
     PublicUuid::parse(row.get::<_, &str>(0)).map_err(|_| PublicApiError::unavailable())
@@ -86,12 +87,55 @@ async fn session_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiResu
         "isCommitted":native["is_committed"],"isProcessed":native["is_processed"],"isDeleted":native["is_deleted"],
         "version":native["version"],"createdAt":native["created_at"],"updatedAt":native["updated_at"]}}))
 }
-async fn file_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiResult<Value> {
+pub(super) async fn file_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiResult<Value> {
     let id = native["id"].as_str().ok_or_else(PublicApiError::unavailable)?;
     let row=tx.query_one("SELECT f.original_name,o.digest,o.bytes,o.mime FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.id=$1", &[&id]).await?;
     Ok(json!({"id":preferred(tx,ResourceKind::UploadFile,id).await?,"type":"upload_session_file","attributes":{
         "originalFileName":row.get::<_,String>(0),"fileHash":row.get::<_,String>(1),"fileSize":row.get::<_,i64>(2),
         "mimeType":row.get::<_,String>(3),"source":"local","version":1}}))
+}
+pub(super) async fn chapter_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiResult<Value> {
+    optional_chapter_resource(tx,native).await?.ok_or_else(PublicApiError::unavailable)
+}
+// An authenticated pending receipt has no readable parent projection. Keep only
+// the real parent ID, using a transaction-held chapter binding and persisted
+// preferred alias. Saved receipt fields may confirm that binding, never replace it.
+fn pending_manga_relationship(native:&Value, target:Option<(&str,Option<&str>)>) -> Option<Relationship> {
+    let (manga,alias)=target?;
+    let id=PublicUuid::parse(alias?).ok()?;
+    if native.get("manga_id").is_some_and(|value|value.as_str()!=Some(manga)) { return None; }
+    if let Some(relationships)=native.get("relationships") {
+        let relationships=relationships.as_object()?;
+        if relationships.get("manga").is_some_and(|value|!value.is_null() && value["id"].as_str()!=Some(manga)) { return None; }
+    }
+    Some(Relationship{id,resource_type:ResourceType::Manga,related:None,attributes:None})
+}
+/// Only the pure presentation step can be unavailable here. SQL/authentication
+/// failures while loading aliases still propagate, including after publication.
+pub(super) async fn optional_chapter_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiResult<Option<Value>> {
+    let pending=matches!(native["publication_status"].as_str(),Some("accepted_pending_projection"|"pending_projection"));
+    let pending_manga=if pending {
+        let Some(chapter)=native["id"].as_str() else { return Ok(None); };
+        let row=tx.query_opt("SELECT c.manga_id,a.public_id::text FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id LEFT JOIN platform.public_resource_ids a ON a.kind='manga' AND a.native_id=c.manga_id AND a.preferred WHERE c.id=$1 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' FOR SHARE OF c,m",&[&chapter]).await?;
+        let target=row.as_ref().map(|row|(row.get::<_,&str>(0),row.get::<_,Option<&str>>(1)));
+        let Some(relationship)=pending_manga_relationship(native,target) else { return Ok(None); };
+        Some(relationship)
+    } else { None };
+    let aliases=AliasIndex::load_in(tx,&[(ResourceKind::Chapter,native.clone())]).await?;
+    let mut resource=match aliases.resource(ResourceKind::Chapter,native,&BTreeSet::new()) {
+        Ok(resource)=>resource,
+        Err(error) if error.status==StatusCode::SERVICE_UNAVAILABLE=>return Ok(None),
+        Err(error)=>return Err(error),
+    };
+    if let Some(manga)=pending_manga {
+        resource.relationships.retain(|relationship|relationship.resource_type!=ResourceType::Manga);
+        resource.relationships.push(manga);
+    }
+    if let Some(status)=native["publication_status"].as_str() {
+        resource.attributes["nostr"]=json!({"publicationScope":native["publication_scope"],"publicationStatus":status,"eventId":native["protocol_event_id"]});
+        if matches!(status,"accepted_pending_projection"|"pending_projection") { resource.attributes["isUnavailable"]=json!(true); }
+    }
+    serde_json::to_value(resource).map(Some).map_err(|_|PublicApiError::unavailable())
 }
 
 async fn get_current(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
@@ -188,7 +232,8 @@ fn draft(payload:ChapterDraft, terms:bool) -> PublicApiResult<core::Draft> {
 async fn commit(State(state): State<AppState>, Path(session): Path<String>,
     OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
     let session=PublicUuid::parse(&session)?;
-    let (cap,body)=authorize(&state,&uri,&headers,request,4*1024,false).await?;
+    // 500 public UUIDs alone need about 20 KiB, before the chapter draft.
+    let (cap,body)=authorize(&state,&uri,&headers,request,32*1024,false).await?;
     let payload:Commit=parse(&body)?;
     if payload.page_order.is_empty() || payload.page_order.len()>500 {
         return Err(PublicApiError::bad_request("pageOrder must contain one to 500 files"));
@@ -200,13 +245,7 @@ async fn commit(State(state): State<AppState>, Path(session): Path<String>,
     let mut page_order=Vec::new();
     for file in payload.page_order { page_order.push(resolve(&tx,ResourceKind::UploadFile,&file).await?); }
     let native=core::commit_in(&state,&tx,&actor,&session,&core::Commit{draft,page_order}).await?;
-    let aliases=AliasIndex::load_in(&tx,&[(ResourceKind::Chapter,native.clone())]).await?;
-    let mut resource=aliases.resource(ResourceKind::Chapter,&native,&BTreeSet::new())?;
-    if let Some(status)=native["publication_status"].as_str() {
-        resource.attributes["nostr"]=json!({"publicationScope":native["publication_scope"],"publicationStatus":status,"eventId":native["protocol_event_id"]});
-        if matches!(status,"accepted_pending_projection"|"pending_projection") { resource.attributes["isUnavailable"]=json!(true); }
-    }
-    let result=serde_json::to_value(resource).map_err(|_|PublicApiError::unavailable())?;
+    let result=chapter_resource(&tx,&native).await?;
     tx.commit().await?; core::cleanup(&state).await; Ok(Json(result))
 }
 async fn cancel(State(state): State<AppState>, Path(session): Path<String>,
@@ -315,6 +354,33 @@ fn random_error_id() -> String {
 mod tests {
     use super::*;
     #[test]
+    fn pending_receipt_target_is_actual_id_only_and_does_not_imply_readability() {
+        let native=json!({"id":"Chapter001","manga_id":"UploadMng1","is_unavailable":true,"publication_status":"accepted_pending_projection"});
+        let alias="11111111-1111-8111-8111-111111111111";
+        let relation=pending_manga_relationship(&native,Some(("UploadMng1",Some(alias)))).unwrap();
+        let relation=serde_json::to_value(relation).unwrap();
+        assert_eq!(relation,json!({"id":alias,"type":"manga"}));
+        assert_eq!(native["is_unavailable"],true);
+        assert_eq!(native["publication_status"],"accepted_pending_projection");
+        let existing=json!({"manga_id":"UploadMng1","relationships":{"manga":{"id":"UploadMng1","title":"not a public profile"}}});
+        assert!(pending_manga_relationship(&existing,Some(("UploadMng1",Some(alias)))).unwrap().attributes.is_none());
+    }
+    #[test]
+    fn pending_receipt_target_mismatches_and_missing_aliases_fail_closed() {
+        let alias="11111111-1111-8111-8111-111111111111";
+        for native in [
+            json!({"manga_id":"OtherMng01"}),
+            json!({"manga_id":null}),
+            json!({"manga_id":"UploadMng1","relationships":{"manga":{"id":"OtherMng01"}}}),
+            json!({"relationships":{"manga":"malformed"}}),
+            json!({"relationships":[]}),
+        ] { assert!(pending_manga_relationship(&native,Some(("UploadMng1",Some(alias)))).is_none()); }
+        let native=json!({"manga_id":"UploadMng1"});
+        assert!(pending_manga_relationship(&native,None).is_none());
+        assert!(pending_manga_relationship(&native,Some(("UploadMng1",None))).is_none());
+        assert!(pending_manga_relationship(&native,Some(("UploadMng1",Some("not-a-public-uuid")))).is_none());
+    }
+    #[test]
     fn exact_transport_names_and_unsupported_features_are_explicit() {
         assert!(parse::<Begin>(br#"{"manga":"11111111-1111-8111-8111-111111111111"}"#).is_err());
         assert!(parse::<Edit>(br#"{"version":1,"replace":true}"#).is_err());
@@ -324,5 +390,35 @@ mod tests {
             value[key]=json!(if key=="externalUrl"{"https://fixture.invalid/chapter"}else{"2030-01-01T00:00:00"});
             assert!(draft(serde_json::from_value(value).unwrap(),true).is_err());
         }
+    }
+    /// Mapper/error-propagation coverage, not an HTTP missing-alias result.
+    /// Normal alias identity triggers remain enabled throughout this fixture.
+    #[tokio::test]
+    #[ignore="Requires separately audited owned disposable PostgreSQL runner"]
+    async fn unavailable_chapter_presentation_does_not_hide_database_errors() {
+        let dsn=std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").expect("Use the disposable runner");
+        let pg:tokio_postgres::Config=dsn.parse().unwrap();
+        assert_eq!(pg.get_dbname(),Some("weebdex_platform_test"));
+        assert!(!pg.get_hosts().is_empty());
+        assert!(pg.get_hosts().iter().all(|h|matches!(h,tokio_postgres::config::Host::Tcp(h) if h=="127.0.0.1")));
+        let state=AppState::connect(crate::Config{
+            database_plaintext_local:true,database_connections:6,..crate::Config::default()
+        },dsn.clone()).await.unwrap();
+        let mut repository=manga_node::db::Repository::connect(manga_node::db::DbConfig{
+            dsn,connections:1,acquisition_timeout:Duration::from_secs(2),cache_weight:1048576,plaintext_local:true,
+        }).await.unwrap();
+        repository.pool=state.db.pool().clone();
+        repository.migrate().await.unwrap();
+        state.db.migrate(crate::domains::MIGRATIONS).await.unwrap();
+        let mut client=state.db.client().await.unwrap();
+        let tx=client.transaction().await.unwrap();
+        let synthetic=json!({"id":"MapperOnlyMissingChapterAlias","language":"en"});
+        assert!(optional_chapter_resource(&tx,&synthetic).await.unwrap().is_none());
+        assert_eq!(chapter_resource(&tx,&synthetic).await.unwrap_err().status,StatusCode::SERVICE_UNAVAILABLE);
+        // A genuine SQL failure aborts this transaction. The async alias load
+        // must propagate it rather than report a successful unavailable receipt.
+        assert!(tx.simple_query("SELECT 1/0").await.is_err());
+        assert_eq!(optional_chapter_resource(&tx,&synthetic).await.unwrap_err().status,StatusCode::SERVICE_UNAVAILABLE);
+        tx.rollback().await.unwrap();
     }
 }

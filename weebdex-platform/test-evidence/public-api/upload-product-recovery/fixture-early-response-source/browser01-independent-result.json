@@ -1,0 +1,60 @@
+{
+  "schema": "recovered-upload-browser01-startup-failure-review-v1",
+  "verdict": "failed_before_browser_command_with_nested_physical_cleanup",
+  "reviewed_at_utc": "2026-10-17T05:25:22.374467+00:00",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/recovered-upload-browser-01/receipt.json",
+      "sha256": "b003447052bcd4824b1e7c26248b6fe987f15d4a07f04a87d1dabc309590f48a"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/recovered-upload-browser-01/fixture.log",
+      "sha256": "1950666ad6913b4da3a68cc4aa97c7e0bbe9dd3b7278b4f341824dfbd5592701"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/browser-final-q0d__qog/cleanup.json",
+      "sha256": "6ff6b74ddbb9295e88433ce6d56a62f3d1b55f7199a7756be64151d8e2ed3d5c"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/browser-final-q0d__qog/supervisor.json",
+      "sha256": "bfd08c7e99cfc29440309e17be9969afadc71d168d0663b3e94accf0a66aadf1"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/recovered-upload-browser01-final-independent-plan-review-20261017.json",
+      "sha256": "4f85f193965314408089c896dcf422d833a400f1bdacb4a3f5c7e981de5e3ae4"
+    }
+  ],
+  "actual_scope": {
+    "browser_command_submitted": false,
+    "browser_acceptance_absent": true,
+    "browser_owned_phase_absent": true,
+    "protocol_seed_fully_ready": true,
+    "start_function_completed": true,
+    "operational_checks_completed": false,
+    "supervisor_returncode": 1,
+    "reported_error_class": "URLError",
+    "reported_error": "Broken pipe",
+    "failing_named_request_or_status": "not retained"
+  },
+  "stage_caveat": "local-mail-sink is the last startup stage label. FIXTURE_READY and exact source order show the later operational_checks call failed; the label does not identify its failing request.",
+  "physical": {
+    "outer_saved_births": 41,
+    "outer_saved_births_absent": true,
+    "outer_remaining_members": [],
+    "outer_tracking_errors": [],
+    "outer_forced": false,
+    "nested_final_teardown_clean": true,
+    "nested_lifecycle_clean": false,
+    "nested_four_ports_closed": true,
+    "synthetic_server_keys_absent": true,
+    "outer_independent_port_refusal": null,
+    "outer_terminal_error": "exact_port_refusal AssertionError because ready receipt was unavailable"
+  },
+  "all_current_input_pins_verified": 1149,
+  "limits": [
+    "No browser/UI/upload-account mutation result exists. Real protocol fixture seed work completed before the startup check failure.",
+    "Broken pipe is not an observed413 or other HTTP status. The oversized-body operational check is only a source-supported candidate cause.",
+    "Nested closed-port predicate and process absence are retained; missing outer exact refusal proof is not relabeled.",
+    "Raw fixture remains for source diagnosis; no cleanup approval or forensic release implied."
+  ]
+}

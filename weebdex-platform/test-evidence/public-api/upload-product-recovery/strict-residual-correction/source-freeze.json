@@ -1,0 +1,69 @@
+{
+  "schema": "recovered-upload-strict-residual-correction-v1",
+  "parent_commit": "4020d64cf7708cc7085937dcee41cc451b89c7dc",
+  "source_files": [
+    {
+      "path": "platform-integrations/public-api/nostr-upload-request.ts",
+      "bytes": 14646,
+      "sha256": "19c8d31f14f1b6e62d62c0d6fec36f55248a6cead73df3058eea591282e5d87e"
+    },
+    {
+      "path": "platform-integrations/public-api/upload-client.ts",
+      "bytes": 47263,
+      "sha256": "f99db300a031ef912db6097d9f84451130923019171008020cec51af83537af2"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-residual-correction/strict-enabled-03-diagnostics.json",
+      "bytes": 10625,
+      "sha256": "45bb0f394576de50ec6aceedf9366e32b71794c8e7301295203f963fd3a77d4d"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-residual-correction/strict-enabled-03.log",
+      "bytes": 4181,
+      "sha256": "3c9af80ee8dbd1fa7d08f0b36cfa4c57ec19e253f2b7d3a7a7d4da6713da4543"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-residual-correction/strict-enabled-03-receipt.json",
+      "bytes": 1440,
+      "sha256": "0a32493ccaecaee07fb220c5bf2186a6ba101c18c2ca6024b2133e9dfb4be229"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-residual-correction/transport-24.log",
+      "bytes": 2826,
+      "sha256": "dd0bf6cc7a66562d3ae378de1a1cd8e1717c1948bc2622c315e098cc1e67a218"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-residual-correction/adapter-34.log",
+      "bytes": 3683,
+      "sha256": "4067097c3c3941e85e0cbc209a5959af1813254ad5ed4953427b541d61569145"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-residual-correction/independent-review.json",
+      "bytes": 2491,
+      "sha256": "afedec81ed4d7bdb89c796d2ffca3c117c45c53e74f3873cc2dd1c5f38e5ab59"
+    }
+  ],
+  "scope": [
+    "Capture the already validated actual Headers before nested header reader.",
+    "Express the same three allowed session states as direct literal comparisons for strict narrowing."
+  ],
+  "finite": {
+    "transport": {
+      "pass": 24,
+      "fail": 0
+    },
+    "adapter": {
+      "pass": 34,
+      "fail": 0
+    },
+    "tests_changed": false
+  },
+  "historical_failure": {
+    "strict03_errors": 2,
+    "warnings": 15,
+    "verdict": "failed"
+  },
+  "strict04": "pending; no inferred success"
+}

@@ -33,6 +33,7 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(editorial::router())
         .merge(drafts::router())
         .merge(uploads::router())
+        .merge(upload_extensions::router())
 }
 
 pub mod auth;
@@ -61,4 +62,5 @@ pub mod drafts;
 pub mod editorial;
 
 pub mod uploads;
+pub mod upload_extensions;
 mod uploads_body;

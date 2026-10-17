@@ -1,0 +1,363 @@
+{
+  "schema": "recovered-public-upload-overlays-v1",
+  "files": [
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "source_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "composed_sha256": "ae8daf28579b883c7d0cdc9d6319e668f310b85b3a443ee62cbe3a21d7552377",
+      "output_sha256": "169213734981d1a2ec64cc97a63a07503729f100652d104e7034198e7b1f1836"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "source_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "composed_sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
+      "output_sha256": "50af1f8716cd5c9d7a3e35fa22e95a6874b963f5fa791d0fd902b0ed7d480645"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "source_sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "composed_sha256": "89332d03f7df53ee4d55f3ca99d056ba9a0ad8ed8a1f865e7f764aa73e186460",
+      "output_sha256": "7cea506e72c022607f7584dc1daaead7b90cfb349a7930892714a6df0a69d78c"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "source_sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "composed_sha256": "8a2861de12aa32d3e1f70a74b8e2ceacecba4a070aadeb383111f7d1bbaed1bb",
+      "output_sha256": "fd77dff9a0531b27e386e41cb310902e5eaf1fbc8c4b7bb31630ca00d056af8f"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "source_sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "composed_sha256": "bc8765c437333eb3ccf613368efbfa39da4b3567bf797cc5fdaf0d7932a33f97",
+      "output_sha256": "3414a9f34e4a968441e64adee271751d8ceb46c02999c5bc4f88db4ce143b3b6"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
+      "source_sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c",
+      "composed_sha256": "3b6a2330a628cde259b173823578926d83a9e1778bdbb89ca2536739c727650a",
+      "output_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+layout.svelte",
+      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "composed_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "output_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+      "source_sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
+      "composed_sha256": "5ce9490fda4b757072b8c30025291c4fbb847d982311822fbde299eaa1974280",
+      "output_sha256": "0500a0fb7a843503e137b44355ef51e683e3484fb54b8784c8b9c66e22857184"
+    }
+  ],
+  "patches": [
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "signed selected account owns upload target",
+      "count": 1,
+      "before": "import { targetOwner } from \"$platform/target-owner\";",
+      "after": "import { publicUploadOwner as targetOwner, isRemoteUploadFile, reconcileUploadReceipt } from \"$publicApi/upload-client\";\r\n\timport { revokeUploadPreviewUrl } from \"$publicApi/upload-preview\";"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "public adapter owns staging and batch context",
+      "count": 1,
+      "before": "\"$platform/upload-batch\"",
+      "after": "\"$publicApi/upload-client\""
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "public adapter owns resume transport",
+      "count": 1,
+      "before": "\"$platform/upload-resume\"",
+      "after": "\"$publicApi/upload-client\""
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "capture the validated account object",
+      "count": 1,
+      "before": "targetOwner(() => manga.id, user.id)",
+      "after": "targetOwner(() => manga.id, user)"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "remote public UUID acknowledgments gate commit",
+      "count": 1,
+      "before": "e.id.length === 10 && !e.file && !e.error",
+      "after": "isRemoteUploadFile(e)"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "remote public UUID acknowledgments gate autosave",
+      "count": 1,
+      "before": "file.file || file.error || file.id.length !== 10",
+      "after": "!isRemoteUploadFile(file)"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "begin retains actual public status",
+      "count": 1,
+      "before": "res?.status === StatusCodes.CREATED && res.body",
+      "after": "res?.status === StatusCodes.OK && res.body"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "begin preserves returned acknowledged files",
+      "count": 1,
+      "before": "(res.body.relationships ??= {}).files = [];",
+      "after": "(res.body.relationships ??= {}).files ??= [];"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "approval is read before publication acceptance",
+      "count": 1,
+      "before": "await persistCurrentUpload();\r\n\t\t\t\tconst payload",
+      "after": "await persistCurrentUpload();\r\n\t\t\t\tconst approvalRequired = await isPending();\r\n\t\t\t\tchapter = undefined;\r\n\t\t\t\tconst payload"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "commit requires the actual terms checkbox",
+      "count": 1,
+      "before": "\"POST\", payload);",
+      "after": "\"POST\", { ...payload, termsAccepted: isTemsAccepted });"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "accepted pending publication does not invent a chapter",
+      "count": 1,
+      "before": "if (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\tuploadSession.is_committed",
+      "after": "if (res?.status === StatusCodes.OK && res.accepted === true && !res.body) {\r\n\t\t\t\t\tshowSignedCommitFence();\r\n\t\t\t\t} else if (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\tuploadSession.is_committed"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "approval result is never requested after commit",
+      "count": 1,
+      "before": "else if (await isPending())",
+      "after": "else if (approvalRequired)"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "typed public approval response",
+      "count": 1,
+      "before": "owner.request(\"/upload/check-approval-required\"",
+      "after": "owner.request<{ requiresApproval: boolean }>(\"/upload/check-approval-required\""
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "approval uses the actual public boolean",
+      "count": 1,
+      "before": "if (res?.status === StatusCodes.OK) {\r\n\t\t\treturn true;\r\n\t\t} else if (res?.status === StatusCodes.NO_CONTENT) {\r\n\t\t\treturn false;",
+      "after": "if (res?.status === StatusCodes.OK && typeof res.body?.requiresApproval === \"boolean\") {\r\n\t\t\treturn res.body.requiresApproval;"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "owner fence is checked before any failure recovery read",
+      "count": 1,
+      "before": "const reconcileUploadFailure = async () => {\r\n\t\ttry {",
+      "after": "const reconcileUploadFailure = async () => {\r\n\t\tif (showSignedCommitFence()) return;\r\n\t\ttry {"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "restored unresolved publication stays read only",
+      "count": 1,
+      "before": "lastSavedUpload = signature(snapshot(draft, saved.relationships.files ?? []));\r\n\t\tif (saved.is_committed)",
+      "after": "lastSavedUpload = signature(snapshot(draft, saved.relationships.files ?? []));\r\n\t\tif (showSignedCommitFence()) return;\r\n\t\tif (saved.is_committed)"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "explicit exact-session receipt recovery controls",
+      "count": 1,
+      "before": "\tconst reconcileUploadFailure = async () => {",
+      "after": "\tlet signedReceiptPending = $state(false);\r\n\tconst showSignedCommitFence = () => {\r\n\t\tconst state = owner.commitState();\r\n\t\tif (!state) return false;\r\n\t\tif (uploadSession) { uploadSession.can_mutate = false; uploadSession.can_cancel = false; uploadSession.can_retry_commit = false; }\r\n\t\tchapter = undefined; isBeginAnotherUploadSession = false; signedReceiptPending = true;\r\n\t\tmessage = state === \"uncertain\"\r\n\t\t\t? { title: \"Publication outcome unresolved\", description: \"This exact staged upload is read-only. Check its saved receipt before taking another publication action. No commit was replayed.\" }\r\n\t\t\t: { title: \"Signed chapter accepted\", description: \"The saved publication is accepted, but its readable chapter presentation is unavailable. This exact upload remains read-only.\" };\r\n\t\tisShowMessage = true;\r\n\t\treturn true;\r\n\t};\r\n\tconst checkSignedUploadReceipt = () => mutex.wait(async () => {\r\n\t\tconst sessionId = owner.pendingCommitSession();\r\n\t\tif (!sessionId) return;\r\n\t\ttry {\r\n\t\t\tconst saved = await reconcileUploadReceipt(owner, sessionId); owner.assert();\r\n\t\t\tsignedReceiptPending = !!owner.commitState(); restoreUpload(saved);\r\n\t\t} catch (error) { showSignedCommitFence(); showResumeError(error); }\r\n\t});\r\n\r\n\tconst reconcileUploadFailure = async () => {"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "lease cleanup dispatch on confirmed cancel",
+      "count": 1,
+      "before": "URL.revokeObjectURL(file.thumbnail);",
+      "after": "{ if (!revokeUploadPreviewUrl(file.thumbnail)) URL.revokeObjectURL(file.thumbnail); }"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "read-only receipt state locks metadata inputs",
+      "count": 1,
+      "before": "disabled={($mutex && !!submitter) || !uploadSession}",
+      "after": "disabled={$mutex || !uploadSession || uploadSession.can_mutate === false}"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "terms intent is stable during dispatch and read-only recovery",
+      "count": 1,
+      "before": "<Checkbox id=\"terms\" bind:checked={isTemsAccepted} />",
+      "after": "<Checkbox id=\"terms\" bind:checked={isTemsAccepted} disabled={$mutex || uploadSession.can_mutate === false} />"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "explicit user receipt check in completion dialog",
+      "count": 1,
+      "before": "\t\t<Dialog.Footer>",
+      "after": "\t\t<Dialog.Footer>\r\n\t\t\t{#if signedReceiptPending}\r\n\t\t\t\t<Button variant=\"outline\" type=\"button\" disabled={$mutex} onclick={checkSignedUploadReceipt}>Check saved publication receipt</Button>\r\n\t\t\t{/if}"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "signed identity and bound account imports",
+      "count": 1,
+      "before": "import { Session } from \"$lib/stores\";",
+      "after": "import { signerIdentity } from \"$localLibrary/publication\";\r\n\timport { loadUploadAccount } from \"$publicApi/upload-client\";"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "bound account lookup has current signer and target fences",
+      "count": 1,
+      "before": "\tlet lookupGeneration = 0, lookupDisposed = false;\r\n\tonDestroy(() => { lookupDisposed = true; lookupGeneration++; user = undefined; });\r\n\t$effect(() => {\r\n\t\tconst target = data.manga?.id, actor = $Session?.identity.id, generation = ++lookupGeneration;\r\n\t\tuser = undefined; error = undefined; isMounted = false;\r\n\t\tif (!target || !actor) return;\r\n\t\tvoid (async () => API.User.Get(actor))().then(res => {\r\n\t\t\tif (lookupDisposed || generation !== lookupGeneration || actor !== $Session?.identity.id || target !== data.manga?.id) return;\r\n\t\t\tif (res?.status === StatusCodes.OK && res.body?.id === actor) { user = res.body; isMounted = true; }\r\n\t\t\telse throw res?.status === StatusCodes.TOO_MANY_REQUESTS ? Constants.Error.TooManyRequests : Constants.Error.Unknown;\r\n\t\t}).catch(cause => { if (!lookupDisposed && generation === lookupGeneration) error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; });\r\n\t});\r\n\r\n\r\n\r\n",
+      "after": "\tlet lookupGeneration = 0, lookupDisposed = false;\r\n\tonDestroy(() => { lookupDisposed = true; lookupGeneration++; user = undefined; });\r\n\t$effect(() => {\r\n\t\tconst target = data.manga?.id, actor = $signerIdentity.owner, signerGeneration = $signerIdentity.generation, generation = ++lookupGeneration;\r\n\t\tuser = undefined; error = undefined; isMounted = false;\r\n\t\tif (!target || !actor) return;\r\n\t\tconst assertLookup = () => {\r\n\t\t\tif (lookupDisposed || generation !== lookupGeneration || actor !== $signerIdentity.owner || signerGeneration !== $signerIdentity.generation || target !== data.manga?.id) throw Error(\"The selected upload identity or target changed\");\r\n\t\t};\r\n\t\tvoid loadUploadAccount(assertLookup).then(account => {\r\n\t\t\tassertLookup(); user = account; isMounted = true;\r\n\t\t}).catch(cause => { if (!lookupDisposed && generation === lookupGeneration) error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; });\r\n\t});\r\n"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+      "label": "missing signer is an explicit setup state",
+      "count": 1,
+      "before": "{#if error}",
+      "after": "{#if !$signerIdentity.owner}\r\n\t<section class=\"mx-auto max-w-270 space-y-3 p-5\"><h2 class=\"text-xl font-medium\">Connect a signing identity</h2><p>Open Public identity in Settings to create, import or connect the identity bound to your upload account. Admission and upload permissions are checked separately.</p><a class=\"underline\" href=\"/settings\">Open Settings</a></section>\r\n{:else if error}"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
+      "label": "public route does not promote a native cookie session",
+      "count": 1,
+      "before": "<script>\r\n\timport { API, Permission as RetainedPermission } from \"$lib\";\r\n\timport { page } from \"$app/state\";\r\n\timport { onMount } from \"svelte\";\r\n\timport ProtectedCondition from \"$lib/components/ui/ProtectedCondition.svelte\";\r\n\timport ProtectedVerified from \"$lib/components/ui/ProtectedVerified.svelte\";\r\n\timport { Session } from \"$lib/stores\";\r\n\r\n\tconst { children } = $props();\r\n\tlet hasOwnedStaging = $state(false);\r\n\tconst Permission = { Chapter: { canCreate: () => RetainedPermission.Chapter.canCreate() || hasOwnedStaging } };\r\n\tonMount(() => {\r\n\t\tlet disposed = false;\r\n\t\tvoid (async () => {\r\n\t\t\tif (!(await Session.isValid())) return;\r\n\t\t\tconst saved = await API.UploadSession.Get();\r\n\t\t\tif (!disposed) hasOwnedStaging = saved?.status === 200 && saved.body?.manga_id === page.params.id;\r\n\t\t})().catch(() => { /* Existing protected UI remains conservative. */ });\r\n\t\treturn () => { disposed = true; };\r\n\t});\r\n</script>\r\n\r\n<ProtectedVerified>\r\n\t<ProtectedCondition isAllowed={!!$Session && Permission.Chapter.canCreate()}>\r\n\t\t{@render children?.()}\r\n\t</ProtectedCondition>\r\n</ProtectedVerified>\r\n",
+      "after": "<script>\r\n\tconst { children } = $props();\r\n</script>\r\n\r\n{@render children?.()}\r\n"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+layout.svelte",
+      "label": "public route does not promote a native cookie session",
+      "count": 1,
+      "before": "<script>\r\n\timport ProtectedVerified from \"$lib/components/ui/ProtectedVerified.svelte\";\r\n\r\n\tconst { children } = $props();\r\n</script>\r\n\r\n<ProtectedVerified>\r\n\t{@render children?.()}\r\n</ProtectedVerified>\r\n",
+      "after": "<script>\r\n\tconst { children } = $props();\r\n</script>\r\n\r\n{@render children?.()}\r\n"
+    },
+    {
+      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "label": "unsupported recovered chapter editing is explicit and cannot fall back",
+      "count": 1,
+      "before": "<script lang=\"ts\">\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport { Constants, Utils } from \"$lib\";\r\n\timport API from \"$lib/API\";\r\n\timport ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\r\n\timport * as Empty from \"$lib/components/ui/empty\";\r\n\timport { Spinner } from \"$lib/components/ui/spinner\";\r\n\timport UploadChapterEdit from \"$lib/components/upload/UploadChapterEdit.svelte\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { onDestroy, onMount } from \"svelte\";\r\n\r\n\tconst { data } = $props();\r\n\tlet chapter = $derived(data.chapter);\r\n\tlet user = $state<User>();\r\n\tlet isMounted = $state(false);\r\n\tlet error = $state<Constants.Error.Error>();\r\n\r\n\tlet lookupGeneration = 0, lookupDisposed = false;\r\n\tonDestroy(() => { lookupDisposed = true; lookupGeneration++; user = undefined; });\r\n\t$effect(() => {\r\n\t\tconst target = data.chapter?.id, actor = $Session?.identity.id, generation = ++lookupGeneration;\r\n\t\tuser = undefined; error = undefined; isMounted = false;\r\n\t\tif (!target || !actor) return;\r\n\t\tvoid (async () => API.User.Get(actor))().then(res => {\r\n\t\t\tif (lookupDisposed || generation !== lookupGeneration || actor !== $Session?.identity.id || target !== data.chapter?.id) return;\r\n\t\t\tif (res?.status === StatusCodes.OK && res.body?.id === actor) { user = res.body; isMounted = true; }\r\n\t\t\telse throw res?.status === StatusCodes.TOO_MANY_REQUESTS ? Constants.Error.TooManyRequests : Constants.Error.Unknown;\r\n\t\t}).catch(cause => { if (!lookupDisposed && generation === lookupGeneration) error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; });\r\n\t});\r\n\r\n\r\n</script>\r\n\r\n<svelte:head>\r\n\t<title>Edit: {Utils.chapterHeadline(chapter)} - {PUBLIC_SITE_NAME}</title>\r\n</svelte:head>\r\n\r\n{#if error}\r\n\t<ErrorComponent {error} />\r\n{:else if isMounted && user}\r\n\t{#key data.chapter.id}\r\n\t\t<UploadChapterEdit bind:chapter manga={chapter.relationships.manga} {user} />\r\n\t{/key}\r\n{:else}\r\n\t<Empty.Root>\r\n\t\t<Spinner class=\"size-10\" />\r\n\t</Empty.Root>\r\n{/if}\r\n",
+      "after": "<script lang=\"ts\">\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\tconst { data } = $props();\r\n</script>\r\n<svelte:head><title>Edit chapter - {PUBLIC_SITE_NAME}</title></svelte:head>\r\n<section class=\"mx-auto max-w-270 space-y-3 p-5\">\r\n\t<h2 class=\"text-xl font-medium\">Public signed chapter editing is unavailable</h2>\r\n\t<p>This recovered adapter supports new uploads and exact-session resume. Metadata edits, claims, chapter deletion and replacing an existing chapter are not enabled through this public signed interface.</p>\r\n\t<a class=\"underline\" href={data.chapter?.relationships?.manga?.id ? `/title/${data.chapter.relationships.manga.id}` : \"/\"}>Return to the title</a>\r\n</section>\r\n"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "signed page batch helpers",
+      "count": 1,
+      "before": "\"$platform/upload-batch\"",
+      "after": "\"$publicApi/upload-client\""
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "private preview cleanup import",
+      "count": 1,
+      "before": "import { releaseDiscardedThumbnails } from \"$platform/blob-lifetime\";",
+      "after": "import { revokeUploadPreviewUrl } from \"$publicApi/upload-preview\";"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "no native replacement transport imports",
+      "count": 1,
+      "before": "import { API, Constants, HTTP } from \"$lib\";",
+      "after": "import { Constants } from \"$lib\";"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "remove unused native upload endpoint import",
+      "count": 1,
+      "before": "\timport { PUBLIC_API_URL } from \"$env/static/public\";\r\n",
+      "after": ""
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "release transferred thumbnails through their single owner",
+      "count": 1,
+      "before": "URL.revokeObjectURL(page.thumbnail);",
+      "after": "if (!revokeUploadPreviewUrl(page.thumbnail)) URL.revokeObjectURL(page.thumbnail);"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "real owner identity and per-selection callback guard",
+      "count": 1,
+      "before": "runUploadBatch(session, chunk, { ...owner, assert: () => assertFileSession(session), alive: () => owner.alive() && uploadSession === session && session.can_mutate !== false }, onProgress)",
+      "after": "runUploadBatch(session, chunk, owner, onProgress, () => assertFileSession(session))"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "replacement without a public command is refused before dispatch",
+      "count": 1,
+      "before": "\tconst replaceFile = async (file: File, session: UploadSession) => {\r\n\t\tassertFileSession(session);\r\n\t\tif (!targetFile) return;\r\n\t\tlet target = targetFile; const idx = pages.indexOf(target); if (idx < 0) return;\r\n\t\towner.assert();\r\n\t\tif (target.upload_recovery?.state === \"unknown\") { target = await resolveUploadPage(session, target, owner); assertFileSession(session); pages[idx] = target; }\r\n\t\tif (!imageMimeTypes.includes(file.type) || !file.size || file.size > maxFileSize) throw new Constants.Error.Error(file.name, \"Replacement must be a valid image within the 25 MiB page limit. Existing page is retained.\");\r\n\t\tconst header = new Uint8Array(await file.slice(0, 12).arrayBuffer()), extension = file.name.toLowerCase().match(/\\.(png|gif|jpe?g)$/)?.[1];\r\n\t\tassertFileSession(session);\r\n\t\tconst actual = header.length >= 8 && [137,80,78,71,13,10,26,10].every((byte,index) => header[index] === byte) ? \"png\" : header.length >= 6 && [\"GIF87a\",\"GIF89a\"].includes(String.fromCharCode(...header.subarray(0,6))) ? \"gif\" : header.length >= 3 && header[0] === 255 && header[1] === 216 && header[2] === 255 ? \"jpeg\" : undefined;\r\n\t\tif (!actual || actual !== (extension === \"jpg\" ? \"jpeg\" : extension) || (file.type.replace(\"image/jpg\", \"image/jpeg\") !== `image/${actual}`)) throw new Constants.Error.Error(file.name, \"Image filename, MIME and encoded format must agree. Existing page is retained.\");\r\n\t\tconst decoded = await decodeUploadImage(file); assertFileSession(session);\r\n\t\tif (decoded.width > maxImageWidth || decoded.height > maxImageHeight) throw new Constants.Error.Error(file.name, \"A replacement must fit one bounded page. Add this image normally to split it; existing page is retained.\");\r\n\t\tconst total = pages.reduce((sum, page) => sum + Number(page.file_size ?? page.file?.size ?? 0), 0), previousSize = Number(target.file_size ?? target.file?.size ?? 0);\r\n\t\tif (!Number.isFinite(total) || !Number.isFinite(previousSize) || pages.length > maxSessionFiles || total - previousSize + file.size > maxSessionSize) throw new Constants.Error.Error(file.name, \"Replacement exceeds the 500-page/500 MiB session budget. Existing page is retained.\");\r\n\t\t// A local rejected entry has no durable old file to replace.\r\n\t\tif (target.file || target.error) {\r\n\t\t\tconst candidate = createPage(file); pages[idx] = candidate;\r\n\t\t\ttry { await uploadChunk([candidate]); assertFileSession(session); revokeThumbnail(target); }\r\n\t\t\tcatch (error) { if (owner.alive() && uploadSession === session) { if (candidate.upload_recovery?.state !== \"unknown\") { pages[idx] = target; revokeThumbnail(candidate); } else revokeThumbnail(target); } throw error; }\r\n\t\t\treturn;\r\n\t\t}\r\n\t\tconst current = await owner.request<UploadSession>(\"/upload\", \"GET\"); assertFileSession(session);\r\n\t\tif (current?.status !== StatusCodes.OK || current.body?.id !== session.id || current.body.can_mutate === false) throw new Constants.Error.Error(\"Replacement unavailable\", \"Current owner staging authority was not confirmed. Existing page is retained.\");\r\n\t\tconst old = current.body.relationships.files?.find(row => row.id === target.id);\r\n\t\tif (!old || target.file_hash && old.file_hash !== target.file_hash) throw new Constants.Error.Error(\"Page changed\", \"This staged page changed in another tab. Reload before replacing it.\");\r\n\t\tconst sha = [...new Uint8Array(await crypto.subtle.digest(\"SHA-256\", await file.arrayBuffer()))].map(byte => byte.toString(16).padStart(2,\"0\")).join(\"\");\r\n\t\tassertFileSession(session);\r\n\t\tconst form = new FormData(); form.append(\"file\", file);\r\n\t\tconst http = new HTTP<UploadSessionFile & { version: number }>(`${PUBLIC_API_URL}/upload/${session.id}/files/${target.id}/replace`, form);\r\n\t\thttp.setWithCredentials(true); http.setRequestHeader(\"X-WeebDex-Upload-Version\", String(current.body.version)); http.setRequestHeader(\"X-WeebDex-Expected-Account\", owner.actor); owner.assert();\r\n\t\tlet replacement: UploadSessionFile | undefined, version = current.body.version;\r\n\t\ttry {\r\n\t\t\tconst result = await http.POST(); assertFileSession(session);\r\n\t\t\tif (result?.status !== StatusCodes.OK || result.body?.id !== target.id || result.body.error) throw new Constants.Error.Error(\"Page not replaced\", `The server rejected the atomic replacement (${result?.status ?? \"unknown\"}). Existing page is retained; refresh staging before trying again.`);\r\n\t\t\treplacement = result.body; version = result.body.version;\r\n\t\t} catch (error) {\r\n\t\t\t// Read-only reconciliation, never a replay of the ambiguous mutation.\r\n\t\t\tconst latest = await owner.request<UploadSession>(\"/upload\", \"GET\").catch(() => undefined); assertFileSession(session); const confirmed = latest?.body?.relationships.files?.find(row => row.id === target.id);\r\n\t\t\tif (latest?.status === StatusCodes.OK && latest.body?.id === session.id && confirmed?.file_hash === sha && confirmed.original_file_name === file.name) { replacement = confirmed; version = latest.body.version; toast.success(\"Replacement confirmed from current staging\"); }\r\n\t\t\telse throw error;\r\n\t\t}\r\n\t\tif (!replacement || !Number.isInteger(version) || version < 1) throw new Constants.Error.Error(\"Replacement not confirmed\", \"Refresh owner staging to reconcile the current page. No request was replayed.\");\r\n\t\treplacement.thumbnail = URL.createObjectURL(file); revokeThumbnail(target); pages[idx] = replacement; pages = pages; session.version = version;\r\n\t};\r\n",
+      "after": "\tconst replaceFile = async (_file: File, session: UploadSession) => {\r\n\t\tassertFileSession(session);\r\n\t\tthrow new Constants.Error.Error(\"Page replacement unavailable\", \"This public signed adapter has no replacement command. The existing page was kept; remove it explicitly, then attach a new image if desired.\");\r\n\t};\r\n"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "confirmed public deletions keep their actual status",
+      "count": 2,
+      "before": "StatusCodes.NO_CONTENT",
+      "after": "StatusCodes.OK"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "label": "dedup releases only discarded unshared previews",
+      "count": 1,
+      "before": "releaseDiscardedThumbnails(discarded, kept);",
+      "after": "const retainedUrls = new Set(kept.map(row => row.thumbnail));\r\n\t\t\tfor (const thumbnail of new Set(discarded.map(row => row.thumbnail))) if (thumbnail?.startsWith(\"blob:\") && !retainedUrls.has(thumbnail)) { if (!revokeUploadPreviewUrl(thumbnail)) URL.revokeObjectURL(thumbnail); }"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "private signed preview imports",
+      "count": 1,
+      "before": "import { getUploadOwner, resolveUploadPage } from \"$platform/upload-batch\";",
+      "after": "import { getUploadOwner, resolveUploadPage, isRemoteUploadFile, uploadPreview } from \"$publicApi/upload-client\";\r\n\timport { createUploadPreviewLease, revokeUploadPreviewUrl, type UploadPreviewContext } from \"$publicApi/upload-preview\";\r\n\timport { onDestroy, untrack } from \"svelte\";"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "component scoped signed preview and cleanup",
+      "count": 1,
+      "before": "\tconst replacePage = () => {",
+      "after": "\tlet previewError = $state<string>();\r\n\tlet previewContext: UploadPreviewContext | null = null;\r\n\tconst previewCurrent = (context: UploadPreviewContext) => {\r\n\t\towner.assert();\r\n\t\treturn !isDragging && previewContext === context && uploadSession?.id === context.sessionId && page.id === context.fileId && page.file_hash === context.fileHash && Number(page.file_size) === context.fileSize && isRemoteUploadFile(page);\r\n\t};\r\n\tconst previewLease = createUploadPreviewLease({\r\n\t\tload: context => uploadPreview(owner, context.sessionId, page),\r\n\t\tisCurrent: context => !!previewContext && previewContext.sessionId === context.sessionId && previewContext.fileId === context.fileId && previewContext.fileHash === context.fileHash && previewCurrent(previewContext),\r\n\t\tonChange: state => {\r\n\t\t\tif (!previewContext || !previewCurrent(previewContext)) return;\r\n\t\t\tif (state.url) page.thumbnail = state.url;\r\n\t\t\tpreviewError = state.error ? \"The signed private preview could not be verified. The staged image was kept.\" : undefined;\r\n\t\t}\r\n\t});\r\n\tonDestroy(() => { previewContext = null; previewLease.dispose(); });\r\n\t$effect(() => {\r\n\t\tconst sessionId = uploadSession?.id, remote = isRemoteUploadFile(page), dragging = isDragging;\r\n\t\tconst fileId = page.id, fileHash = page.file_hash, fileSize = Number(page.file_size);\r\n\t\tconst mimeType = (page as UploadSessionFile & { public_upload?: { mimeType?: string } }).public_upload?.mimeType;\r\n\t\tuntrack(() => {\r\n\t\t\tif (!sessionId || !remote || dragging || !mimeType) { previewContext = null; void previewLease.update(null); return; }\r\n\t\t\tpreviewContext = { sessionId, fileId, fileHash, fileSize, mimeType: mimeType as UploadPreviewContext[\"mimeType\"], owner };\r\n\t\t\tconst local = page.thumbnail?.startsWith(\"blob:\") && !previewLease.owns(page.thumbnail) ? { url: page.thumbnail, ownership: \"transferred\" as const } : undefined;\r\n\t\t\tvoid previewLease.update(previewContext, local).catch(() => { if (previewContext && previewCurrent(previewContext)) previewError = \"Private preview unavailable. The staged image was kept.\"; });\r\n\t\t});\r\n\t});\r\n\r\n\tconst replacePage = () => {"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "public deletion uses real success status",
+      "count": 1,
+      "before": "StatusCodes.NO_CONTENT",
+      "after": "StatusCodes.OK"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "confirmed removal releases lease-owned thumbnail once",
+      "count": 1,
+      "before": "URL.revokeObjectURL(page.thumbnail);",
+      "after": "if (!revokeUploadPreviewUrl(page.thumbnail)) URL.revokeObjectURL(page.thumbnail);"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "late signed URL loads in its own actual image component",
+      "count": 1,
+      "before": "\t\t<ImageLoader src={page.thumbnail!}>",
+      "after": "\t\t{#if page.thumbnail?.startsWith(\"blob:\")}\r\n\t\t{#key page.thumbnail}\r\n\t\t<ImageLoader src={page.thumbnail!}>"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "label": "private preview error is visible without claiming upload failure",
+      "count": 1,
+      "before": "\t\t</ImageLoader>\r\n\t{/if}",
+      "after": "\t\t</ImageLoader>\r\n\t\t{/key}\r\n\t\t{:else}<Empty.Root class=\"size-full\"><Spinner class=\"size-10\" /></Empty.Root>{/if}\r\n\t\t{#if previewError}<p class=\"absolute inset-x-0 bottom-0 bg-card p-2 text-xs\" role=\"status\">{previewError}</p>{/if}\r\n\t{/if}"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+      "label": "group affordances use only the actual signed bound account roles",
+      "count": 1,
+      "before": "\timport { Session } from \"$lib/stores\";\r\n",
+      "after": ""
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+      "label": "locked group affordance does not borrow a cookie identity",
+      "count": 2,
+      "before": "Session.hasRole(Constants.User.Role.Sysop, Constants.User.Role.Staff, Constants.User.Role.Moderator)",
+      "after": "[Constants.User.Role.Sysop, Constants.User.Role.Staff, Constants.User.Role.Moderator].some(role => user.roles?.includes(role))"
+    }
+  ]
+}

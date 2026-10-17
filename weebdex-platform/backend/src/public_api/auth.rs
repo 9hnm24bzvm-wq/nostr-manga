@@ -160,6 +160,12 @@ impl BoundAccountRead {
     pub fn username(&self) -> &str {
         &self.username
     }
+    pub fn roles(&self) -> &[String] {
+        &self.roles
+    }
+    pub fn permissions(&self) -> &[String] {
+        &self.permissions
+    }
     pub fn is_moderator(&self) -> bool {
         self.roles
             .iter()
@@ -238,6 +244,7 @@ pub(crate) async fn bound_account_write(
         bound_account(tx, capability, true).await?,
     ))
 }
+const BOUND_ACCOUNT_WRITE_SQL: &str = "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 FOR SHARE OF b FOR NO KEY UPDATE OF u";
 async fn bound_account(
     tx: &tokio_postgres::Transaction<'_>,
     capability: &AdmittedHttpCapability,
@@ -250,10 +257,12 @@ async fn bound_account(
         .await
         .map_err(map_error)?;
     let publisher = hex::encode(capability.principal());
-    // Write takes UPDATE immediately, never SHARE then upgrade. Native report
-    // creation uses the same user lock to serialize duplicate/rate checks.
+    // Serialize account writes and exclude revocation without blocking the
+    // independently committed publication command's foreign-key KEY SHARE.
+    // Take the write lock immediately, never SHARE then upgrade. Binding SHARE
+    // and the original capability recheck remain held in this same transaction.
     let sql = if write {
-        "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 FOR SHARE OF b FOR UPDATE OF u"
+        BOUND_ACCOUNT_WRITE_SQL
     } else {
         "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 FOR SHARE OF b,u"
     };

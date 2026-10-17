@@ -1,0 +1,912 @@
+[
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ReportChapterCard.svelte",
+    "line": 7,
+    "column": 38,
+    "message": "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/ReportChapterCard.svelte",
+      "line": 7,
+      "column": 37,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ReportChapterCard.svelte",
+    "line": 8,
+    "column": 15,
+    "message": "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/ReportChapterCard.svelte",
+      "line": 8,
+      "column": 14,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ReportChapterCard.svelte",
+    "line": 9,
+    "column": 5,
+    "message": "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/ReportChapterCard.svelte",
+      "line": 9,
+      "column": 4,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ui/toggle-group/toggle-group.svelte",
+    "line": 36,
+    "column": 3,
+    "message": "This reference only captures the initial value of `variant`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/ui/toggle-group/toggle-group.svelte",
+      "line": 36,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ui/toggle-group/toggle-group.svelte",
+    "line": 37,
+    "column": 3,
+    "message": "This reference only captures the initial value of `size`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/ui/toggle-group/toggle-group.svelte",
+      "line": 37,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ui/toggle-group/toggle-group.svelte",
+    "line": 38,
+    "column": 3,
+    "message": "This reference only captures the initial value of `spacing`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/ui/toggle-group/toggle-group.svelte",
+      "line": 38,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ChapterListFilter.svelte",
+    "line": 32,
+    "column": 59,
+    "message": "This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/ChapterListFilter.svelte",
+      "line": 32,
+      "column": 58,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/nostr-upload-request.ts",
+    "line": 208,
+    "column": 28,
+    "message": "'response' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/nostr-upload-request.ts",
+      "line": 208,
+      "column": 27,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/nostr-upload-request.ts",
+    "line": 210,
+    "column": 16,
+    "message": "'response' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/nostr-upload-request.ts",
+      "line": 210,
+      "column": 15,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 72,
+    "column": 164,
+    "message": "Type 'unknown' must have a '[Symbol.iterator]()' method that returns an iterator.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 72,
+      "column": 163,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 73,
+    "column": 159,
+    "message": "'value' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 73,
+      "column": 158,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 90,
+    "column": 89,
+    "message": "Argument of type 'string | null' is not assignable to parameter of type 'string'.\n  Type 'null' is not assignable to type 'string'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 90,
+      "column": 88,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 90,
+    "column": 105,
+    "message": "Type 'string | null' is not assignable to type 'string'.\n  Type 'null' is not assignable to type 'string'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 90,
+      "column": 104,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 111,
+    "column": 151,
+    "message": "'owner' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 111,
+      "column": 150,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 111,
+    "column": 185,
+    "message": "Argument of type 'PublicUploadOwner | undefined' is not assignable to parameter of type 'PublicUploadOwner'.\n  Type 'undefined' is not assignable to type 'PublicUploadOwner'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 111,
+      "column": 184,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 142,
+    "column": 111,
+    "message": "'row.files' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 142,
+      "column": 110,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 142,
+    "column": 125,
+    "message": "Parameter 'file' implicitly has an 'any' type.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 142,
+      "column": 124,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 143,
+    "column": 60,
+    "message": "Parameter 'file' implicitly has an 'any' type.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 143,
+      "column": 59,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 143,
+    "column": 134,
+    "message": "Parameter 'row' implicitly has an 'any' type.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 143,
+      "column": 133,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 149,
+    "column": 12,
+    "message": "Conversion of type '{ draft: ChapterDraft | null; page_order: string[]; can_mutate: boolean; can_cancel: boolean; can_retry_commit: boolean; is_expired: boolean; expires_at: string; state: string; ... 8 more ...; manga_id: PublicUuid; }' to type 'PublicSession' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Type '{ draft: ChapterDraft | null; page_order: string[]; can_mutate: boolean; can_cancel: boolean; can_retry_commit: boolean; is_expired: boolean; expires_at: string; state: string; ... 8 more ...; manga_id: PublicUuid; }' is missing the following properties from type 'UploadSession': created_at, updated_at, is_processed, is_deleted",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 149,
+      "column": 11,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 149,
+    "column": 520,
+    "message": "Parameter 'file' implicitly has an 'any' type.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 149,
+      "column": 519,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 197,
+    "column": 18,
+    "message": "Conversion of type '{ id: PublicUuid; name: string; roles: string[]; permissions: string[]; }' to type 'User' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Property 'version' is missing in type '{ id: PublicUuid; name: string; roles: string[]; permissions: string[]; }' but required in type 'User'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 197,
+      "column": 17,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 203,
+    "column": 87,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 203,
+      "column": 86,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 203,
+    "column": 175,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 203,
+      "column": 174,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 203,
+    "column": 201,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 203,
+      "column": 200,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 203,
+    "column": 271,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 203,
+      "column": 270,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 204,
+    "column": 36,
+    "message": "Argument of type 'Account | undefined' is not assignable to parameter of type 'Account'.\n  Type 'undefined' is not assignable to type 'Account'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 204,
+      "column": 35,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 205,
+    "column": 28,
+    "message": "Type 'Account | undefined' is not assignable to type 'Account'.\n  Type 'undefined' is not assignable to type 'Account'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 205,
+      "column": 27,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 205,
+    "column": 109,
+    "message": "Argument of type 'Account | undefined' is not assignable to parameter of type 'Account'.\n  Type 'undefined' is not assignable to type 'Account'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 205,
+      "column": 108,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 206,
+    "column": 51,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 206,
+      "column": 50,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 206,
+    "column": 229,
+    "message": "Argument of type 'Account | undefined' is not assignable to parameter of type 'Account'.\n  Type 'undefined' is not assignable to type 'Account'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 206,
+      "column": 228,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 206,
+    "column": 301,
+    "message": "Argument of type 'Account | undefined' is not assignable to parameter of type 'Account'.\n  Type 'undefined' is not assignable to type 'Account'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 206,
+      "column": 300,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 206,
+    "column": 430,
+    "message": "Function lacks ending return statement and return type does not include 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 206,
+      "column": 429,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 213,
+    "column": 73,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 213,
+      "column": 72,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 213,
+    "column": 100,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 213,
+      "column": 99,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 214,
+    "column": 220,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 214,
+      "column": 219,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 217,
+    "column": 63,
+    "message": "Conversion of type '{ body: PublicSession; status: number; bodyAvailable: true; headers: { \"retry-after\": string | null; \"content-type\": string | null; \"cache-control\": string | null; vary: string | null; \"x-content-type-options\": string | null; }; }' to type 'Response<T>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Types of property 'body' are incompatible.\n    Type 'PublicSession' is not comparable to type 'T | undefined'.\n      Type 'PublicSession' is not comparable to type 'T'.\n        'T' could be instantiated with an arbitrary type which could be unrelated to 'PublicSession'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 217,
+      "column": 62,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 220,
+    "column": 36,
+    "message": "'match' is possibly 'null'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 220,
+      "column": 35,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 220,
+    "column": 56,
+    "message": "'match' is possibly 'null'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 220,
+      "column": 55,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 238,
+    "column": 55,
+    "message": "Argument of type 'Account | undefined' is not assignable to parameter of type 'Account'.\n  Type 'undefined' is not assignable to type 'Account'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 238,
+      "column": 54,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 240,
+    "column": 163,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 240,
+      "column": 162,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 240,
+    "column": 469,
+    "message": "Conversion of type '{ body: PublicSession; status: number; bodyAvailable: true; headers: { \"retry-after\": string | null; \"content-type\": string | null; \"cache-control\": string | null; vary: string | null; \"x-content-type-options\": string | null; }; }' to type 'Response<T>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Types of property 'body' are incompatible.\n    Type 'PublicSession' is not comparable to type 'T | undefined'.\n      Type 'PublicSession' is not comparable to type 'T'.\n        'T' could be instantiated with an arbitrary type which could be unrelated to 'PublicSession'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 240,
+      "column": 468,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 242,
+    "column": 116,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 242,
+      "column": 115,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 280,
+    "column": 49,
+    "message": "Argument of type 'File | undefined' is not assignable to parameter of type 'UploadImageFile'.\n  Type 'undefined' is not assignable to type 'UploadImageFile'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 280,
+      "column": 48,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 280,
+    "column": 93,
+    "message": "'page.file' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 280,
+      "column": 92,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 285,
+    "column": 13,
+    "message": "'envelope.data' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 285,
+      "column": 12,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 285,
+    "column": 43,
+    "message": "'envelope.errors' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 285,
+      "column": 42,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 285,
+    "column": 100,
+    "message": "'envelope.errors' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 285,
+      "column": 99,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 286,
+    "column": 41,
+    "message": "'envelope.data' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 286,
+      "column": 40,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 286,
+    "column": 71,
+    "message": "'envelope.errors' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 286,
+      "column": 70,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 287,
+    "column": 39,
+    "message": "'envelope.data' is of type 'unknown'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 287,
+      "column": 38,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 302,
+    "column": 19,
+    "message": "'file' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 302,
+      "column": 18,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 302,
+    "column": 106,
+    "message": "'facts' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 302,
+      "column": 105,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 302,
+    "column": 185,
+    "message": "'facts' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 302,
+      "column": 184,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 305,
+    "column": 193,
+    "message": "'facts' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 305,
+      "column": 192,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 305,
+    "column": 220,
+    "message": "'facts' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 305,
+      "column": 219,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 305,
+    "column": 275,
+    "message": "'file' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 305,
+      "column": 274,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 306,
+    "column": 59,
+    "message": "No overload matches this call.\n  The last overload gave the following error.\n    Argument of type 'unknown' is not assignable to parameter of type 'ArrayBuffer | ArrayLike<number>'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 306,
+      "column": 58,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 306,
+    "column": 84,
+    "message": "'facts' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 306,
+      "column": 83,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 306,
+    "column": 187,
+    "message": "'facts' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 306,
+      "column": 186,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 306,
+    "column": 236,
+    "message": "'facts' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 306,
+      "column": 235,
+      "name": null
+    }
+  },
+  {
+    "severity": "error",
+    "projection_file": "platform-integrations/public-api/upload-client.ts",
+    "line": 308,
+    "column": 164,
+    "message": "'account' is possibly 'undefined'.",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/public-api/upload-client.ts",
+      "line": 308,
+      "column": 163,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/upload/UploadChapter.svelte",
+    "line": 34,
+    "column": 44,
+    "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/upload/UploadChapter.svelte",
+      "line": 34,
+      "column": 43,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/upload/UploadChapterEdit.svelte",
+    "line": 37,
+    "column": 46,
+    "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 37,
+      "column": 45,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/routes/(app)/group/[id]/Group.svelte",
+    "line": 47,
+    "column": 42,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/routes/(app)/group/[id]/Group.svelte",
+      "line": 47,
+      "column": 41,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/routes/(app)/title/MangaRelatedSection.svelte",
+    "line": 18,
+    "column": 49,
+    "message": "This reference only captures the initial value of `manga`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/routes/(app)/title/MangaRelatedSection.svelte",
+      "line": 18,
+      "column": 48,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+    "line": 12,
+    "column": 32,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "line": 12,
+      "column": 31,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+    "line": 13,
+    "column": 31,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "line": 13,
+      "column": 30,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+    "line": 15,
+    "column": 61,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "line": 15,
+      "column": 60,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/routes/(app)/user/[id]/User.svelte",
+    "line": 45,
+    "column": 30,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-02/production-composed/src/routes/(app)/user/[id]/User.svelte",
+      "line": 45,
+      "column": 29,
+      "name": null
+    }
+  }
+]

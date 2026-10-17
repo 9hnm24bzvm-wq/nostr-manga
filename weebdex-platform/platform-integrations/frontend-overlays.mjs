@@ -3829,6 +3829,38 @@ const patches = [
   "before": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>",
   "after": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t>",
   "approved_reader_control_exception": "reader_accessible_control_name"
+},
+{
+  "path": "src/lib/components/upload/UploadChapter.svelte",
+  "label": "recovered upload begin acknowledges only returned server staging baseline",
+  "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+  "count": 1,
+  "before": "\t\t\t\t\tuploadSession = res.body;",
+  "after": "\t\t\t\t\tuploadSession = res.body;\r\n\t\t\t\t\tlastSavedUpload = signature(snapshot(res.body.draft ?? {}, res.body.relationships.files ?? []));"
+},
+{
+  "path": "src/lib/components/upload/UploadChapter.svelte",
+  "label": "recovered upload autosave waits for a valid nonempty language",
+  "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+  "count": 1,
+  "before": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false) return;",
+  "after": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false || typeof draft.language !== \"string\" || !draft.language.trim()) return;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+  "label": "recovered upload begin acknowledges only returned server staging baseline",
+  "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+  "count": 1,
+  "before": "\t\t\t\t\tuploadSession = res.body;",
+  "after": "\t\t\t\t\tuploadSession = res.body;\r\n\t\t\t\t\tlastSavedUpload = signature(snapshot(res.body.draft ?? {}, res.body.relationships.files ?? []));"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+  "label": "recovered upload autosave waits for a valid nonempty language",
+  "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+  "count": 1,
+  "before": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false) return;",
+  "after": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false || typeof chapter.language !== \"string\" || !chapter.language.trim()) return;"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');

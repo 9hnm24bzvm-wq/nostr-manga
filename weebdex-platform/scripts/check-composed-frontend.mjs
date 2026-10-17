@@ -11,6 +11,8 @@ import { frontendRouteAdditions } from '../platform-integrations/frontend-route-
 import { createFrontendOverlays } from '../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../platform-integrations/frontend-reader-overlays.mjs';
 import { createPublicApiOverlays } from '../platform-integrations/public-api/overlays.mjs';
+import { createPublicUploadOverlays } from '../platform-integrations/public-api/upload-overlays.mjs';
+import { associateSupersededUploadRecipe } from './composed-upload-provenance.mjs';
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -99,7 +101,7 @@ for (const name of ['svelte-sonner', 'axios', 'http-status-codes']) {
   aliasesForCheck[name] = [path.join(dependencies, name, typeEntry)];
   packageTypeAliases.push({ name, production_entry: aliases.find(alias => alias.find === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
 }
-const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input)];
+const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input)];
 const manifest = [], rewrites = [], maps = new Map(), graph = [], reachable = new Set(), workerTypeBindings = [];
 const projectedSourceRoots = ['src', 'platform-integrations'].map(name => path.join(project, name) + path.sep);
 function isProjectedSource(file) {
@@ -233,7 +235,13 @@ const fragments = files(path.join(root, 'platform-integrations')).filter(file =>
     const matching = recipeLines.filter(line => finalLines.has(line)).length;
     return { projection: entry.projection, matching_recipe_lines: matching, distinctive_recipe_lines: recipeLines.length, exact_fraction: matching / recipeLines.length };
   }).filter(entry => entry.exact_fraction > 0.5).sort((a, b) => b.exact_fraction - a.exact_fraction);
-  if (!destinations.length && !derived.length) throw Error(`No composed production origin found for fragment recipe: ${relative(file)}`);
+  if (!destinations.length && !derived.length) {
+    const inactive = associateSupersededUploadRecipe({ fragmentPath: relative(file), fragmentBytes: fs.readFileSync(file),
+      entry: manifest.find(entry => entry.projection === 'src/lib/components/upload/UploadChapterPages.svelte'),
+      readSnapshot: snapshot => fs.readFileSync(path.join(work, snapshot), 'utf8') });
+    if (inactive) return { ...inactive, exact_inserted_into: [], embedded_recipe_derivations: [] };
+    throw Error(`No composed production origin found for fragment recipe: ${relative(file)}`);
+  }
   return { path: relative(file), sha256: hash(fs.readFileSync(file)), exact_inserted_into: destinations, embedded_recipe_derivations: derived, standalone_check_root: false, qualification: destinations.length ? 'Exact normalized recipe present in composed production source' : 'Reference fragment recipe has subsequent reviewed repairs already embedded in production overlay literals; exact production plugin output is checked, never the stale standalone recipe' };
 });
 const env = { ...process.env, PUBLIC_SITE_NAME: 'WeebDex', PUBLIC_API_URL: '/api', PUBLIC_KRATOS_PUBLIC_API: '/auth', PUBLIC_COVER_URL: '/covers', PUBLIC_DATA_URL: '/data', PUBLIC_UPLOAD_URL: '/uploads', PUBLIC_PROXY_URL: '/proxy', PUBLIC_OPENGRAPH_URL: '/og-image' };

@@ -1,0 +1,16 @@
+▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:12:
+      2 │   "extends": "./.svelte-kit/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/scripts/check-composed-frontend.mjs:237
+  if (!destinations.length && !derived.length) throw Error(`No composed production origin found for fragment recipe: ${relative(file)}`);
+                                                     ^
+
+Error: No composed production origin found for fragment recipe: platform-integrations/frontend-behavior/upload-replacement.fragment.ts
+    at file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/scripts/check-composed-frontend.mjs:237:54
+    at Array.map (<anonymous>)
+    at file:///workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/scripts/check-composed-frontend.mjs:227:113
+
+Node.js v24.19.0

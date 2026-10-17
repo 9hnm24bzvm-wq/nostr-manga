@@ -1,0 +1,36 @@
+{
+  "schema": "independent-keyed-preview-counterexample-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T06:29:59.595698+00:00",
+  "decision": "clear_one_exact_source_only_two_case_reproduction",
+  "test_path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-preview-recovery-repro/confirmed-preview-lease.test.mjs",
+  "test_sha256": "d95cee23e98c9263413177d49db99d3d65fa4633b2f691c867a70d5b45b97bef",
+  "source_sha256": {
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-anchors.json": "03c14c11efbbabbd6bdda98e6bf239c6c72c19e7b6d0bc7dece37d01a0e90c77",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-preview.ts": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/frontend-overlays.mjs": "abc0ba638dde61b4406a27f20c2701c829ebf9ee3582de504b589628bcc940af",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/frontend/src/lib/components/upload/UploadChapterPages.svelte": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66"
+  },
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-preview-recovery-repro/confirmed-preview-lease.test.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform",
+  "constraints": [
+    "Keep REPLACEMENT_SOURCE_ROOT unset or fixed to the reviewed replacement project.",
+    "Capture first output directly to a retained log; do not rerun for logging.",
+    "No product source changes while owner validation pins are held."
+  ],
+  "scope": [
+    "Actual pinned composed adoption function and actual import-free preview lease.",
+    "Explicit fake keyed-component lifetime, owner state, Blob contents and URL/transport inputs.",
+    "Expected old-source result is one missing-thumbnail recovery counterexample failure and one existing-URL preservation pass."
+  ],
+  "limits": [
+    "A source seam, not executed Svelte/browser/decoder evidence.",
+    "No backend or adapter receipt proof is substituted by the fake reconciliation.",
+    "No socket, child process, application fixture or external action from this test."
+  ]
+}

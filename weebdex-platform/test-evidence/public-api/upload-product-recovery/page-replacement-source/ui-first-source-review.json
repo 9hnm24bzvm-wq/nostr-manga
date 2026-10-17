@@ -1,0 +1,42 @@
+{
+  "schema": "signed-replacement-ui-independent-source-audit-v1",
+  "verdict": "source_clear_for_exact_pure_overlay_and_provenance_tests",
+  "reviewed_at_utc": "2026-10-17T05:53:17.327957+00:00",
+  "worktree": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-anchors.json",
+      "sha256": "3c33f293d8d6892c4a3a05628bcc580df839d5f88a2798d1a93edffdfb5c3b4f"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/scripts/composed-upload-provenance.mjs",
+      "sha256": "1bd941913fd4f4d80784057ea7d531d73b9fb60e1a3abdce2e4b324971b09e00"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_overlay_recovery.mjs",
+      "sha256": "e167de92e5ea61ddd45285c8cad8dc280bb905ff3ea6e8d1df367055234f1180"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_provenance_recovery.mjs",
+      "sha256": "8a4905df4bb6aba5ee35dc85ed398f2155c9b04a18749eb06611b9330efcf98b"
+    }
+  ],
+  "checks": [
+    "Only the signed UploadChapterPages replacement overlay and exact output hash change; original source remains unchanged. New imports route through the same public upload owner and no native HTTP/FormData fallback is introduced.",
+    "Remote row and owned preview remain intact until a confirmed helper result. Current session, selected card object and original index are checked across async file work; stale selection cannot adopt.",
+    "An uncertain persisted replacement disables mutation/cancel/commit affordances and exposes explicit read-only reconciliation. Recovery adopts only returned actual session/file state and does not replay replacement.",
+    "Same-hash/size confirmation retains the existing owned URL; changed bytes replace/revoke the old thumbnail. Local unsent/rejected placeholder behavior remains distinct from remote atomic replacement.",
+    "The legacy recipe remains explicitly inactive in final source; provenance retains exact source/input/output association and does not claim actual HTTP/browser coverage.",
+    "New UI tests execute only source-extracted functions with controlled fake owner/transport/URL/mutex inputs. Provenance tests compose reviewed data transforms in memory. No real transport, signer, Svelte, process, build or runtime imports."
+  ],
+  "allowed_commands": [
+    "node --test tests/ci/test_public_upload_overlay_recovery.mjs",
+    "node --test tests/ci/test_public_upload_provenance_recovery.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform",
+  "limits": [
+    "One first run of each audited pure command; direct local log capture is permitted.",
+    "Adapter and backend ownership/atomicity/fence contracts require their separate frozen-source audits. UI seam assertions do not qualify those contracts.",
+    "No compilation, runtime, browser or socket execution in this clearance."
+  ]
+}

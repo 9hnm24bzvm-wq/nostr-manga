@@ -1,0 +1,34 @@
+{
+  "schema": "pg-guard-before-exact-upload-test-v1",
+  "runtime_dir": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/test-runtime/auth-s20zfbj5",
+  "port": 40211,
+  "guard": {
+    "pid": 7,
+    "ppid": 5,
+    "group": 7,
+    "session": 7,
+    "start_ticks": 1176813
+  },
+  "postmaster": {
+    "pid": 23,
+    "ppid": 7,
+    "group": 23,
+    "session": 23,
+    "start_ticks": 1176904
+  },
+  "probe": {
+    "pid": 34,
+    "ppid": 7,
+    "group": 34,
+    "session": 34,
+    "start_ticks": 1176915
+  },
+  "namespaces": {
+    "pid": "pid:[4026532402]",
+    "mnt": "mnt:[4026532400]",
+    "net": "net:[4026532403]"
+  },
+  "owned_ipv4_loopback_listener": true,
+  "database": "weebdex_platform_test",
+  "application_sql_pending_at_probe": true
+}

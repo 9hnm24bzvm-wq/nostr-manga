@@ -1,0 +1,98 @@
+{
+  "schema": "recovered-public-upload-independent-frontend-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T03:55:53.925193+00:00",
+  "base": "3e46ddcb0fd6dae6745ac19db92956565741b897",
+  "verdict": "source_clear_for_local_checkpoint_pending_actual_frontend_build_and_runtime_validation",
+  "source_pins": {
+    "platform-integrations/public-api/nostr-upload-request.ts": "fc46780d76d196ce2b575e6bc6e5427d513f4c88e4804bf5abbe4aaae7842b08",
+    "platform-integrations/public-api/upload-multipart.ts": "836066dbc4759de39b8c7144fed9c348949f8bbcec7da7d7cf8e7e980943d84a",
+    "platform-integrations/public-api/upload-preview.ts": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8",
+    "platform-integrations/public-api/upload-client.ts": "8e1a26fb953c2a7f9485963052a14acef6d18053548d4b6edb4ce4dd26d15f6c",
+    "platform-integrations/public-api/upload-anchors.json": "d649784d58a3f99a411037ab5bab4f61899d76e945bc01405755e42920da1393",
+    "platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
+    "scripts/vite.platform.config.mjs": "7159a90ba070c2bc2fa3649ec502cdb2f5416117ae22add5152f4072d8e22355",
+    "scripts/prepare-frontend-integration.mjs": "8c78995dbc61898f6c29b3b9f9599ac12fc2914fcaa76e06ac2560e38fda5e51",
+    "scripts/check-composed-frontend.mjs": "27c2d1e7b973705d9c3b3cd6ea547eb086d05c15f3c42e7cb7e010083de8d2b3",
+    "scripts/compile-frontend-source.mjs": "f8046406692a69afdb897df18919aab44451f2f648b1073fa6c222ded4911b85",
+    "scripts/build-frontend.mjs": "4219e257dce3d1d3ce338eba38ff3f748d374bbc38142f63ca7a2cb747097689"
+  },
+  "test_pins": {
+    "tests/ci/test_public_upload_request_recovery.mjs": "11220a9eaef94061b42367ae2258a46c12f902323a66bf38e8b8c1cd0c63f0d8",
+    "tests/ci/test_public_upload_media_recovery.mjs": "3e4066bbf65de5e3212a24ba14cac06dd6df3287be29ab3c07b9bf974241bb8f",
+    "tests/ci/test_public_upload_adapter_recovery.mjs": "6a307ad3c50ca714b8e6c9950a96ea91404050c9e73ea3ceb3009db148b04a48",
+    "tests/ci/test_public_upload_overlay_recovery.mjs": "31728e9fb9f640e40de65d87ea125066f64150c656ea9ab95498d2f09fc4b2d8",
+    "tests/ci/test_public_upload_build_recovery.mjs": "f2605441c3a5ba851aa2cba4a02befa3fdd78787fcf1c56e2a40d72171439ee5"
+  },
+  "finite_evidence": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-request-finite-headers-final.log",
+      "sha256": "f3f13456054516f78a720f4f437a9fc24600ded438076f4637e2f0a065092d8b",
+      "tests": 24,
+      "passed": 24,
+      "failed": 0,
+      "capture": "owner file-backed first run"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-media-finite-final.log",
+      "sha256": "8279a8fbda4ee604ec733552ec6c6910a39d1ee29d612cf2f520d2af26ef94bb",
+      "tests": 28,
+      "passed": 28,
+      "failed": 0,
+      "capture": "owner file-backed first run"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-adapter-finite-final.log",
+      "sha256": "ba0f8907d838c85935f470a3a63b1d4eaeaced704790ac4e778f54200a752176",
+      "tests": 30,
+      "passed": 30,
+      "failed": 0,
+      "capture": "exact copied tool output, explicitly labelled"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-overlay-finite-26-final.log",
+      "sha256": "7954cb942092abdbcae20ba7b0ec8d87eb86da4bbc06ca926be4b436c9a27d12",
+      "tests": 26,
+      "passed": 26,
+      "failed": 0,
+      "capture": "owner file-backed first run"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-build-association-finite.log",
+      "sha256": "03746facbe6f6dcec1e76d808868ad70927041c6842a348970ffa3bb28533321",
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "capture": "owner file-backed first run"
+    }
+  ],
+  "finite_tests_total": 112,
+  "reviewer_reran_tests": false,
+  "source_review": [
+    "Exact-byte NIP-98 transport signs immutable actual request copies, exact public origin/method and mandatory service binding; selected signer/context fences surround async work. No native cookies or relay response-proof dependency.",
+    "Account grant eligibility is derived from actual bound UUID user permissions with current signer, protocol service proof, public origin and catalogue scope. Existing backend transaction admission/binding/grants remain authoritative.",
+    "Ordinary mutation and ambiguous current-session GET dispatch guards recheck persisted unresolved commit state after async waits. Exact known-session receipt reads remain allowed. Only the private current commit token and its persisted unique attempt can traverse its own fence; a second commit cannot borrow it.",
+    "Foreign same-account session discovery remains read-only for redirect; mutations bind the original editor target. Missing/ambiguous image receipts never cause a POST replay or prove rejection.",
+    "Known HTTP202 retains acceptance without a fabricated chapter. Pending200 result explicitly overwrites raw response body with the unavailable presentation value. Failed or unavailable exact receipts retain a persisted read-only recovery fence and no stale reader fields.",
+    "Signed preview binds session/file/hash/MIME/size, actual private/no-store/Vary Authorization/nosniff headers, streamed actual bytes and actual decoder dimensions. Lease handles stale results and transferred versus borrowed URL ownership; component unmount disposes the lease.",
+    "Public upload UI uses selected signer and bound account raw object identity, explicit terms, actual approval boolean, actual200 statuses, exact receipt recovery and disabled read-only controls. Locked group affordances use bound user roles. Unsupported chapter editing and replacement refuse without native fallback.",
+    "All8 supplied originals are unchanged. All47 exact anchors and composed/output hashes independently verified by data-only review. No reader/local/catalogue overlay also targets these8 paths. Default-off public flag selects one consistent production stage in Vite, strict checking, syntax compile and preparer; stage records full pins and intentional markup changes."
+  ],
+  "prior_failures_retained": [
+    "Transport first strip-only constructor setup failure, then corrected source and22-case predecessor.",
+    "Adapter first23-case run had22passes and one actual accepted-body spread failure; exact old source/test and copied error/footer retained.",
+    "Overlay first run failed before assertions on incorrect layout composition input; exact candidate/log retained, followed by21 and24-case predecessors."
+  ],
+  "limits": [
+    "112 tests are finite synthetic/source-extracted seams; they establish no real signer, HTTP, SQL, browser, publication or reader execution.",
+    "Backend cargo check is separately verified by fc788d909a47710df6700f4ddeefa606a4328298e7816d24734a8fff6b2620b9 and does not execute ignored fixtures.",
+    "Actual Svelte compilation, strict frontend types, built artifact association and genuine signed backend/browser flows remain pending.",
+    "This is new code against recovered e758 ancestry; no historical lost-blob byte equivalence is asserted.",
+    "Persistent fence uses sessionStorage and retains same-tab remount recovery; it is not a cross-tab distributed lock. Backend transactions remain the cross-client authority."
+  ],
+  "related_reviews": {
+    "helpers": "a057f20fef1383c98ff142dc5d281a2900ffcbbf1027c480bc4e22eec0d3bbd9",
+    "media": "ed2885832508193fbcb69ce563c36a07570fdec3b7aa6f8b29e18b59073f63e6",
+    "transport_headers": "232f81b969e3101fab08b4698fd091c7237653b035caf5229b025a858f5ab4c8",
+    "backend_source": "d425677971cab6a8705e5b8be3880e1157b05b9d275dbca14b26020e8c8d33c1"
+  }
+}

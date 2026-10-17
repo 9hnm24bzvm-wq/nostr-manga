@@ -50,9 +50,9 @@ pub struct Commit {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ResumePatch {
-    version: i32,
-    draft: Value,
-    page_order: Vec<String>,
+    pub(crate) version: i32,
+    pub(crate) draft: Value,
+    pub(crate) page_order: Vec<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -254,12 +254,21 @@ async fn current_committed_result(
     session: &str,
     actor: &impl CatalogMutationActor,
 ) -> ApiResult<Value> {
+    current_committed_result_for_owner(state, tx, chapter, session, actor.user_id()).await
+}
+async fn current_committed_result_for_owner(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    chapter: &str,
+    session: &str,
+    owner: &str,
+) -> ApiResult<Value> {
     if let Some(value) = tx.query_opt(
         "SELECT platform.catalog_chapter_json(c.id) FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id)",
         &[&chapter],
     ).await?.and_then(|r|r.get::<_,Option<Value>>(0)) { return Ok(value); }
-    if !crate::protocol::publication::pending_native_receipt_allowed(
-        state, tx, chapter, session, actor,
+    if !crate::protocol::publication::pending_native_receipt_allowed_for_owner(
+        state, tx, chapter, session, owner,
     )
     .await?
     {
@@ -269,7 +278,7 @@ async fn current_committed_result(
     }
     let row = tx.query_one(
         "SELECT s.committed_result,c.protocol_event_id FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3",
-        &[&session,&actor.user_id(),&chapter],
+        &[&session,&owner,&chapter],
     ).await?;
     let saved: Value = row
         .get::<_, Option<Value>>(0)
@@ -313,6 +322,72 @@ async fn current_committed_result(
     receipt.insert("is_unavailable".into(), json!(true));
     Ok(Value::Object(receipt))
 }
+/// Owner-only resumable view shared by native and signed-public reads. The
+/// caller rechecks authentication/binding in this transaction; this helper locks
+/// ownership and preserves current receipt visibility and capability downgrades.
+/// It never turns a read principal into a catalogue mutation capability.
+pub(crate) async fn owner_snapshot_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    id: &str,
+    owner: &str,
+    can_manage: bool,
+) -> ApiResult<Value> {
+    session_id(id)?;
+    tx.query_opt(
+        "SELECT id FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR SHARE",
+        &[&id, &owner],
+    ).await?.ok_or_else(|| ApiError::not_found("Upload session not found"))?;
+    let mut value = session_json(tx, id).await?;
+    value["target_manga"] = value["relationships"]["manga"]
+        .as_object()
+        .map(|m| json!({"id":m.get("id"),"title":m.get("title")}))
+        .unwrap_or(Value::Null);
+    value["target_status"] = json!(if value["target_manga"].is_null() {
+        "unavailable"
+    } else {
+        "available"
+    });
+    if value["is_committed"] == true {
+        let session_id = value["id"].as_str().ok_or_else(ApiError::unavailable)?;
+        let chapter_id = value["chapter_id"]
+            .as_str()
+            .ok_or_else(ApiError::unavailable)?;
+        match current_committed_result_for_owner(state, tx, chapter_id, session_id, owner).await {
+            Ok(receipt) => {
+                if value["target_manga"].is_null() && receipt["is_unavailable"] == true {
+                    if let Some(target)=tx.query_opt("SELECT id,title FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND state='published'", &[&value["manga_id"].as_str().ok_or_else(ApiError::unavailable)?]).await? {
+                        value["target_manga"] = json!({"id":target.get::<_,String>(0),"title":target.get::<_,String>(1),"scope":"instance-local","is_unavailable":true});
+                        value["target_status"] = json!("accepted_pending_projection");
+                    }
+                }
+                value["committed_result"] = receipt.clone();
+                value["receipt"] = receipt;
+            }
+            Err(error) if error.status == StatusCode::NOT_FOUND => {
+                value["committed_result"] = Value::Null;
+                value["receipt"] = Value::Null;
+                value["source_unavailable"] = json!(true);
+            }
+            Err(error) => return Err(error),
+        }
+    }
+    if value["target_status"] == "unavailable" {
+        value["can_retry_commit"] = json!(false);
+    }
+    if !can_manage {
+        value["can_mutate"] = json!(false);
+        value["can_cancel"] = json!(false);
+        value["can_retry_commit"] = json!(false);
+    }
+    if value["publication_status"] != "unprepared"
+        && state.config.protocol_publication.is_none()
+    {
+        value["can_retry_commit"] = json!(false);
+        value["publication_configuration_available"] = json!(false);
+    }
+    Ok(value)
+}
 pub async fn get(State(state): State<AppState>, headers: HeaderMap) -> ApiResult<Response> {
     let actor = auth::require_principal(&state, &headers).await?;
     if actor.is_api_client || actor.recovery_session {
@@ -325,54 +400,8 @@ pub async fn get(State(state): State<AppState>, headers: HeaderMap) -> ApiResult
     let row=tx.query_opt("SELECT id FROM platform.upload_sessions s WHERE owner_id=$1 AND ((state='open' AND (expires_at>clock_timestamp() OR EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.state IN ('prepared','source_accepted')))) OR (state='committed' AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND EXISTS(SELECT 1 FROM platform.catalog_chapters c WHERE c.id=s.committed_chapter_id AND c.deleted_at IS NULL))) ORDER BY (state='open') DESC,updated_at DESC,id LIMIT 1",&[&actor.user_id]).await?;
     let response = match row {
         Some(row) => {
-            let mut value = session_json(&tx, &row.get::<_, String>(0)).await?;
-            value["target_manga"] = value["relationships"]["manga"]
-                .as_object()
-                .map(|m| json!({"id":m.get("id"),"title":m.get("title")}))
-                .unwrap_or(Value::Null);
-            value["target_status"] = json!(if value["target_manga"].is_null() {
-                "unavailable"
-            } else {
-                "available"
-            });
-            if value["is_committed"] == true {
-                let session_id = value["id"].as_str().ok_or_else(ApiError::unavailable)?;
-                let chapter_id = value["chapter_id"]
-                    .as_str()
-                    .ok_or_else(ApiError::unavailable)?;
-                match current_committed_result(&state, &tx, chapter_id, session_id, &actor).await {
-                    Ok(receipt) => {
-                        if value["target_manga"].is_null() && receipt["is_unavailable"] == true {
-                            if let Some(target)=tx.query_opt("SELECT id,title FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND state='published'", &[&value["manga_id"].as_str().ok_or_else(ApiError::unavailable)?]).await? {
-                                value["target_manga"] = json!({"id":target.get::<_,String>(0),"title":target.get::<_,String>(1),"scope":"instance-local","is_unavailable":true});
-                                value["target_status"] = json!("accepted_pending_projection");
-                            }
-                        }
-                        value["committed_result"] = receipt.clone();
-                        value["receipt"] = receipt;
-                    }
-                    Err(error) if error.status == StatusCode::NOT_FOUND => {
-                        value["committed_result"] = Value::Null;
-                        value["receipt"] = Value::Null;
-                        value["source_unavailable"] = json!(true);
-                    }
-                    Err(error) => return Err(error),
-                }
-            }
-            if value["target_status"] == "unavailable" {
-                value["can_retry_commit"] = json!(false);
-            }
-            if !actor.verified || !actor.has_perm("self.chapter.update") {
-                value["can_mutate"] = json!(false);
-                value["can_cancel"] = json!(false);
-                value["can_retry_commit"] = json!(false);
-            }
-            if value["publication_status"] != "unprepared"
-                && state.config.protocol_publication.is_none()
-            {
-                value["can_retry_commit"] = json!(false);
-                value["publication_configuration_available"] = json!(false);
-            }
+            let value = owner_snapshot_in(&state, &tx, &row.get::<_, String>(0),
+                &actor.user_id, actor.verified && actor.has_perm("self.chapter.update")).await?;
             Json(value).into_response()
         }
         None => StatusCode::NO_CONTENT.into_response(),
@@ -388,6 +417,20 @@ pub async fn save_resume(
     Json(payload): Json<ResumePatch>,
 ) -> ApiResult<Json<Value>> {
     let actor = actor(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let result = save_resume_in(&tx, &actor, &id, &payload).await?;
+    tx.commit().await?;
+    Ok(Json(result))
+}
+/// Persist only private draft/order metadata under the same version, ownership,
+/// expiry and prepared-command fences for native and public transports.
+pub(crate) async fn save_resume_in(
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    id: &str,
+    payload: &ResumePatch,
+) -> ApiResult<Value> {
     actor.require_permission("self.chapter.update")?;
     let v = &payload.draft;
     if payload.version <= 0 {
@@ -405,10 +448,8 @@ pub async fn save_resume(
     if let Some(language) = v["language"].as_str().filter(|lang| !lang.is_empty()) {
         crate::domains::catalog::validation::language(language)?;
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    open_session(&tx, &id, &actor.user_id).await?;
-    require_mutable_session(&tx, &id).await?;
+    open_session(tx, id, actor.user_id()).await?;
+    require_mutable_session(tx, id).await?;
     let version: i32 = tx
         .query_one(
             "SELECT version FROM platform.upload_sessions WHERE id=$1",
@@ -421,7 +462,7 @@ pub async fn save_resume(
             "Upload session changed; reload its current files and version",
         ));
     }
-    let files = file_rows(&tx, &id)
+    let files = file_rows(tx, id)
         .await?
         .iter()
         .map(|r| r.get::<_, String>(0))
@@ -436,10 +477,9 @@ pub async fn save_resume(
         ));
     }
     tx.execute("UPDATE platform.upload_sessions SET resume_draft=$2,resume_page_order=$3,version=version+1,updated_at=clock_timestamp() WHERE id=$1", &[&id,&payload.draft,&payload.page_order]).await?;
-    let result = session_json(&tx, &id).await?;
-    tx.commit().await?;
-    Ok(Json(result))
+    session_json(tx, id).await
 }
+
 pub async fn begin(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -682,8 +722,53 @@ pub async fn replace_file(
     }
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    open_session(&tx, &id, &actor.user_id).await?;
-    require_mutable_session(&tx, &id).await?;
+    let replaced = replace_file_in(
+        &state, &tx, &actor, &id, &file, expected,
+        ReplacementVersionPolicy::NativeIdenticalRetry,
+        &original, &mut image, &mut variants,
+    ).await?;
+    tx.commit().await?;
+    if replaced.changed {
+        image.confirm_persisted().await;
+        for (_, derivative) in variants.iter_mut() {
+            derivative.confirm_persisted().await;
+        }
+    }
+    Ok(Json(replaced.file))
+}
+
+/// Native cookie uploads have always allowed an identical lost-response retry.
+/// Signed public replacement instead fences every request on its signed version.
+#[derive(Clone, Copy)]
+pub(crate) enum ReplacementVersionPolicy {
+    NativeIdenticalRetry,
+    Exact,
+}
+pub(crate) struct FileReplacement {
+    pub(crate) file: Value,
+    pub(crate) changed: bool,
+}
+/// Caller-owned mutation transaction, shared by native and signed public routes.
+/// The public caller must construct its write actor in this same transaction,
+/// after raw-body admission and image decoding. No preflight actor is promoted.
+pub(crate) async fn replace_file_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    id: &str,
+    file: &str,
+    expected: i32,
+    version_policy: ReplacementVersionPolicy,
+    original: &str,
+    image: &mut StoredImage,
+    variants: &mut Vec<(String, StoredImage)>,
+) -> ApiResult<FileReplacement> {
+    actor.require_permission("self.chapter.update")?;
+    if !storage::valid_id(file) || expected < 1 {
+        return Err(ApiError::bad_request("Invalid replacement file or version"));
+    }
+    open_session(tx, id, actor.user_id()).await?;
+    require_mutable_session(tx, id).await?;
     let old = tx.query_opt("SELECT o.digest,o.bytes,f.original_name FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.id=$1 AND f.session_id=$2 FOR UPDATE OF f", &[&file,&id]).await?
         .ok_or_else(||ApiError::not_found("Upload file not found in this session"))?;
     let version: i32 = tx
@@ -694,19 +779,15 @@ pub async fn replace_file(
         .await?
         .get(0);
     let identical = old.get::<_, String>(0) == image.digest && old.get::<_, String>(2) == original;
+    require_replacement_version(version_policy, version, expected, identical)?;
     if !identical {
-        if version != expected {
-            return Err(ApiError::conflict(
-                "Upload session version changed; reload before replacing the page",
-            ));
-        }
         let bytes: i64 = tx.query_one("SELECT COALESCE(sum(o.bytes),0)::BIGINT FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1", &[&id]).await?.get(0);
         if bytes - old.get::<_, i64>(1) + image.bytes > MAX_SESSION_BYTES {
             return Err(ApiError::bad_request(
                 "Upload session exceeds its byte budget",
             ));
         }
-        let object = insert_object(&tx, &image).await?;
+        let object = insert_object(tx, image).await?;
         tx.execute(
             "DELETE FROM platform.upload_file_derivatives WHERE file_id=$1",
             &[&file],
@@ -714,32 +795,40 @@ pub async fn replace_file(
         .await?;
         tx.execute("UPDATE platform.upload_files SET object_id=$3,original_name=$4 WHERE id=$1 AND session_id=$2", &[&file,&id,&object,&original]).await?;
         for (_, derivative) in variants.iter() {
-            let object = insert_object(&tx, derivative).await?;
+            let object = insert_object(tx, derivative).await?;
             let name = format!("{}.{}", storage::short_id(), derivative.ext);
             tx.execute("INSERT INTO platform.upload_file_derivatives(file_id,name,object_id) VALUES($1,$2,$3)", &[&file,&name,&object]).await?;
         }
         tx.execute("UPDATE platform.upload_sessions SET version=version+1,updated_at=clock_timestamp() WHERE id=$1", &[&id]).await?;
-        queue_unused(&tx).await?;
+        queue_unused(tx).await?;
         image.protect_commit(&state.config.uploads_dir).await?;
         for (_, derivative) in variants.iter_mut() {
             derivative.protect_commit(&state.config.uploads_dir).await?;
         }
     }
-    let mut result = file_rows(&tx, &id)
+    let mut result = file_rows(tx, id)
         .await?
         .iter()
         .find(|r| r.get::<_, String>(0) == file)
         .map(file_json)
         .ok_or_else(ApiError::unavailable)?;
-    result["version"] = json!(if identical { version } else { version + 1 });
-    tx.commit().await?;
-    if !identical {
-        image.confirm_persisted().await;
-        for (_, derivative) in variants.iter_mut() {
-            derivative.confirm_persisted().await;
-        }
+    // Report the persisted value while the session lock is still held, including
+    // unchanged requests. Never infer a client-visible version from its input.
+    result["version"] = json!(tx.query_one(
+        "SELECT version FROM platform.upload_sessions WHERE id=$1", &[&id],
+    ).await?.get::<_, i32>(0));
+    Ok(FileReplacement { file: result, changed: !identical })
+}
+fn require_replacement_version(
+    policy: ReplacementVersionPolicy, actual: i32, expected: i32, identical: bool,
+) -> ApiResult<()> {
+    if actual != expected && (matches!(policy, ReplacementVersionPolicy::Exact) || !identical) {
+        Err(ApiError::conflict(
+            "Upload session version changed; reload before replacing the page",
+        ))
+    } else {
+        Ok(())
     }
-    Ok(Json(result))
 }
 async fn attach(
     state: &AppState,
@@ -1490,6 +1579,16 @@ pub async fn claim_chapter(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn public_replacement_always_fences_version_and_native_identical_retry_is_preserved() {
+        for identical in [false, true] {
+            assert!(require_replacement_version(ReplacementVersionPolicy::Exact, 9, 9, identical).is_ok());
+            assert!(require_replacement_version(ReplacementVersionPolicy::Exact, 9, 8, identical).is_err());
+            assert!(require_replacement_version(ReplacementVersionPolicy::NativeIdenticalRetry, 9, 9, identical).is_ok());
+        }
+        assert!(require_replacement_version(ReplacementVersionPolicy::NativeIdenticalRetry, 9, 8, true).is_ok());
+        assert!(require_replacement_version(ReplacementVersionPolicy::NativeIdenticalRetry, 9, 8, false).is_err());
+    }
     #[test]
     fn commit_order_cannot_duplicate_omit_or_reference_another_session_file() {
         let files = vec!["Abcdef1234".into(), "Defghi5678".into()];

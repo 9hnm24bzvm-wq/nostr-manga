@@ -2,6 +2,7 @@
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { createPublicApiOverlays } from "../platform-integrations/public-api/overlays.mjs";
+import { createPublicUploadOverlays } from "../platform-integrations/public-api/upload-overlays.mjs";
 import { createIntegrationUtilitySources } from "../platform-integrations/integration-utility-sources.mjs";
 import { createReaderOverlays } from "../platform-integrations/frontend-reader-overlays.mjs";
 import { createFrontendOverlays } from "../platform-integrations/frontend-overlays.mjs";
@@ -37,7 +38,7 @@ export default async configEnv => {
   }],
   });
   // The immutable-source script repair must run before Svelte compilation.
-  merged.plugins.unshift(createIntegrationUtilitySources(frontend, path.join(root, "platform-integrations")), createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend), createLocalLibraryResolver(frontend, path.join(root, "platform-integrations/local-library")));
+  merged.plugins.unshift(createIntegrationUtilitySources(frontend, path.join(root, "platform-integrations")), createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend), createPublicUploadOverlays(frontend), createLocalLibraryResolver(frontend, path.join(root, "platform-integrations/local-library")));
   // Explicit bounded QA resource profile; default production options are unchanged.
   const qaProfile = process.env.WEEBDEX_QA_BUILD_RESOURCE_PROFILE;
   if (qaProfile !== undefined) {

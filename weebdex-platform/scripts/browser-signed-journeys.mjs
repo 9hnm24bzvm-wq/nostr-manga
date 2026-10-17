@@ -101,7 +101,7 @@ const eventDigest = event => digest(JSON.stringify(event));
 // These provenance bytes and official archives were previously restored with
 // lock-integrity checks and no package hooks. Revalidate every admitted file at
 // the eventual runtime boundary; do not use upstream or uncertain node_modules.
-async function verifiedSchnorr(insist) {
+export async function verifiedSchnorr(insist) {
   const manifestPath = path.join(root, "test-evidence/frontend/noble-restore/package-provenance.json");
   const bytes = fs.readFileSync(manifestPath);
   insist(digest(bytes) === "f7cd7c2d6d7b14b9eaec4d38b4405267cc9ba291f0808dc3687822e28a3d24f3", "Synthetic signer provenance changed; obtain fresh source audit clearance");

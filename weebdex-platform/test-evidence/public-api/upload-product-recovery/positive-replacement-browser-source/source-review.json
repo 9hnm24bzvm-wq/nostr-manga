@@ -1,0 +1,35 @@
+{
+  "schema": "independent-positive-replacement-journey-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T06:53:21.894091+00:00",
+  "source_sha256": {
+    "scripts/public-upload-recovery-browser.mjs": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79",
+    "scripts/public-upload-recovery-observer.mjs": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71",
+    "tests/ci/test_public_upload_recovery_journey.mjs": "d08419e00bf99ffb0d70bc61cab15f97c7eed90d1b205e3ef3610a9c4b44aa45",
+    "docs/verification/public-upload-positive-replacement-browser-plan.md": "803839b644bd640f2be2db1df418ea957e0c5c752ecbf614b6f9050dfb04bee3"
+  },
+  "verdict": "Source-cleared for one exact finite fake/source-seam invocation by the source owner.",
+  "command": [
+    "node",
+    "--test",
+    "tests/ci/test_public_upload_recovery_journey.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform",
+  "expected_authored_cases": 54,
+  "test_boundary": "Built-in Node assertions/tests/crypto/zlib and inert local helpers. Only explicit fake transport/signature/DOM/cleanup seams execute; actual journey, verifiedSchnorr loader, browser launch and fixture controls are not invoked.",
+  "reviewed_contract": [
+    "One exact observed signed POST to the current session/file replacement path, actual status 200 and native finished, event ID retained; no extra mutation.",
+    "Independent parsed before/after session equality except exact replacement fields, actual version plus one and valid nondecreasing update time. Stable ID/order/draft/group/authority and complete neighbour fields remain strict.",
+    "Fresh fixture original bytes/hash, native position and raw persisted order corroborate replacement.",
+    "Immediate decode explicitly permits acknowledged local-or-signed source. Signed-preview claim requires new document, real key reimport, unchanged durable state, decoded exact dimensions and actual exact current-file signed GET/native 200 completions. This is source-derived provenance, not a direct transport-Blob lineage oracle.",
+    "Natural sequence sums to exactly 21 writes; prior request/control/read caps unchanged.",
+    "No synthetic successful response, mutation replay, expected-byte substitution or native-abort acceptance."
+  ],
+  "finding_corrected": "First candidate counted a successful write without requiring its exact POST method/path. Current candidate adds assertReplacementMutation and seven positive/negative finite cases.",
+  "runtime_status": "Not invoked; actual browser plan, execution authorization, matching binaries and physical teardown remain separate prerequisites.",
+  "other_limits": [
+    "HTTP01 application pass and outer failure stay separate.",
+    "Lost-response reconciliation is covered by separate fake seams, not this positive journey.",
+    "Public chapter editing, readable publication and historical 40-case parity remain unqualified.",
+    "No original browser03 escalation approval is supplied here."
+  ]
+}

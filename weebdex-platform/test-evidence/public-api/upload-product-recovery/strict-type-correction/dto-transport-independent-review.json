@@ -1,0 +1,42 @@
+{
+  "schema": "upload-actual-dto-and-transport-type-correction-review-v1",
+  "utc": "2026-10-17T04:18:23.388397+00:00",
+  "verdict": "source_clear_for_narrow_backend_compile_and_frontend_strict",
+  "prior_backend_review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-independent-source-review-20261017.json",
+    "sha256": "d425677971cab6a8705e5b8be3880e1157b05b9d275dbca14b26020e8c8d33c1"
+  },
+  "pins": {
+    "backend/src/public_api/upload_extensions.rs": "6031a1495f76999a10dbd252bf51270e7e6e3881eda6faff30ccf53a0e14924f",
+    "backend/src/public_api/uploads.rs": "53484087f9861a02e9e4f7edf30faa49011228eb01fccc884ea505fe28709ddd",
+    "backend/src/public_api/auth.rs": "ce07ab1e3ff0e2bf08a79fc56e1bb8ce1cad0c92f5663932cbd02dbbda637487",
+    "backend/src/public_api/mod.rs": "ea1f770f38cf94682d124b804195fe6beefdd187db5c101c4862a7d5ff8ed407",
+    "backend/src/domains/uploads/media.rs": "ecc85770bc17830d8b60e31d9d871781d71237a0aedc65377ccdb6630ec98762",
+    "backend/src/domains/uploads/sessions.rs": "46e18b24e89514e0d2d7ceba99395355d2ed2bf83fc9dd546c421cd8e5b8a8d6",
+    "backend/src/protocol/publication.rs": "a97b9b63d0666d2e62b4a68cc6725a53b01896492938a24fbd507ccfc73e7320",
+    "backend/src/router.rs": "117c7e5a089d3b5eb7b1467dd4ef20bb270547f29c0b16950f538f70811d49a7",
+    "backend/tests/public_uploads.rs": "b42d3dfafc50675953b0d6c4f4e9fea046ce95be6b325f8c9b00b0a9636f36ed",
+    "platform-integrations/public-api/nostr-upload-request.ts": "e5b9220baba045e79ba4a98e659e21e9c38ec843238878f48b46229818723174",
+    "tests/ci/test_public_upload_request_recovery.mjs": "11220a9eaef94061b42367ae2258a46c12f902323a66bf38e8b8c1cd0c63f0d8"
+  },
+  "verified_delta": [
+    "Transport uses a guarded const actual Response instead of possibly-undefined closure access; no non-null assertion or changed outcome policy.",
+    "Account version queried from platform.users for the exact already authorized SHARE-locked actor in the same transaction; no default.",
+    "Signed snapshot forwards native session_json created_at/updated_at/is_processed/is_deleted.",
+    "Backend fixture assertions set the actual own user version7 and compare session timestamps with authorized database rows.",
+    "Seven other reviewed backend source files remain unchanged."
+  ],
+  "transport_result": {
+    "cases": 24,
+    "pass": 24,
+    "fail": 0,
+    "log": "/workspace/shared/nostr-manga-recovery-20261017/upload-request-finite-types.log",
+    "sha256": "2f783f7427d91c811355be389042d061886f87e7199eac71881ce756d9462b4a"
+  },
+  "limitations": [
+    "New backend compile result pending.",
+    "New DB assertions authored but unexecuted.",
+    "Adapter correction and full frontend strict result are separately reviewed."
+  ],
+  "execution_by_reviewer": false
+}

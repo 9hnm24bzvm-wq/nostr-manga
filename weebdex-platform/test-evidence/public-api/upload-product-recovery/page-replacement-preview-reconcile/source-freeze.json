@@ -1,0 +1,174 @@
+{
+  "schema": "reconstructed-replacement-preview-reconcile-source-v1",
+  "base_commit": "a9886def384bbd08bd25cfeaaa336c24a72bb78e",
+  "base_tree": "c676742b090fbe04a107aae02781d3c288049706",
+  "source_basis": "Additive lifetime correction on reconstructed source; no lost-source equivalence claim",
+  "source": [
+    {
+      "path": "platform-integrations/public-api/upload-anchors.json",
+      "bytes": 40855,
+      "sha256": "72ae63f73c7cb2940e8e4048b385de7720de3fe5bb9bab26a0810c9f46577455",
+      "executable": false
+    },
+    {
+      "path": "tests/ci/test_public_upload_overlay_recovery.mjs",
+      "bytes": 23880,
+      "sha256": "ee707d85187bb5b6871ca8a4af1b3c2ca530ca1e8bb672293a9815cbc1f98c5a",
+      "executable": false
+    },
+    {
+      "path": "tests/ci/test_public_upload_replacement_preview_recovery.mjs",
+      "bytes": 6038,
+      "sha256": "7f29de29ebfd1df7ed10851045b72a5033b53ca21e0f11a8c24d716eab9843e6",
+      "executable": false
+    },
+    {
+      "path": "docs/verification/public-upload-replacement-preview-reconcile.md",
+      "bytes": 2824,
+      "sha256": "e6955e16463a497558bd4d99f6b08fede3c260e233f4f7d095661e4684394812",
+      "executable": false
+    }
+  ],
+  "evidence": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-http-cleanup.json",
+      "bytes": 1930,
+      "sha256": "53e950e4e8c908b0f2eb4b6e8c8df155c4a0b11cde685e8e1501415cbf6adfc1",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-http-probe.json",
+      "bytes": 785,
+      "sha256": "a3ac9d341ff1ab9bc5288878949590e7b8e50935071068317579efbd74cc48f5",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-http-receipt.json",
+      "bytes": 8745,
+      "sha256": "24793fbc06e23743f658d791fe845b15db8a8480a373f74ddfcc63c5018fd2ff",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-http-result-review.json",
+      "bytes": 2667,
+      "sha256": "e758b470faee9a41097f560ed5b91cd760f7cdb634602d1a8b0f82412f6cfa58",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-http.log",
+      "bytes": 211,
+      "sha256": "195dfad15980125e62e43be16b1628bf0515c3d54f71c50123bb09950c670f63",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-strict-default-receipt.json",
+      "bytes": 25916,
+      "sha256": "d2dd0d57bcc7ef9bc6093c74377c878fdc39e0a6a8cb7b32e9b04f68674b9cfa",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-strict-default.log",
+      "bytes": 390,
+      "sha256": "072c326fa55dbda631886c668226e71ff6199d91314fc0453ee72261c1067f80",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-strict-enabled-receipt.json",
+      "bytes": 27499,
+      "sha256": "eeb5f420e44941a23fe3eca80dda783f9fc799ad5bec3d2002129db6fc13c1e3",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-strict-enabled.log",
+      "bytes": 390,
+      "sha256": "c1a6515e44cae87245fb2b52b4882c16db186ea12955168c78feffb91c17ea4e",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/a988-strict-result-review.json",
+      "bytes": 1508,
+      "sha256": "960dbc376ce76904f8edb0f670f6a43ad50f405bc7d734eca9af41b048233dac",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/counterexample-first.log",
+      "bytes": 1460,
+      "sha256": "dfb99451fc489d6a39eb25c796367fd12b07314b2e789c41647ac02826603f3d",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/counterexample-result-review.json",
+      "bytes": 922,
+      "sha256": "b012e4e231573b02fc3ebcf778bc67f066b4f1957e6d479ae741659aaf60e5dd",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/counterexample-source-review.json",
+      "bytes": 2710,
+      "sha256": "386d6c0e20586aa19ba7d7d17debd5571836438a92de1aa8202ffda43abeb357",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/counterexample.test.mjs.retained",
+      "bytes": 6103,
+      "sha256": "d95cee23e98c9263413177d49db99d3d65fa4633b2f691c867a70d5b45b97bef",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/successor-first.log",
+      "bytes": 6063,
+      "sha256": "c1bde7299172d043a422d1312175c5aa05df3dc3ff2d7ba55a7412661a35556a",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/successor-result-review.json",
+      "bytes": 1699,
+      "sha256": "750424b29e0547230f68fe543021e42e5462cdf8a644275b7306e1daabe64c0a",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/successor-source-review.json",
+      "bytes": 3010,
+      "sha256": "cdacfa0412975aa8b2e73593744b7538c22533ce4dc1596009be14bc3149650a",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-preview-reconcile/unchanged-source-association.json",
+      "bytes": 42701,
+      "sha256": "7fcb299d46bd3a4f4782fe1a898563751e292b27e9c8a21edf681959d0b81342",
+      "executable": false
+    }
+  ],
+  "qualification": {
+    "command": [
+      "node",
+      "--experimental-vm-modules",
+      "--test",
+      "tests/ci/test_public_upload_overlay_recovery.mjs",
+      "tests/ci/test_public_upload_replacement_preview_recovery.mjs",
+      "tests/ci/test_public_upload_provenance_recovery.mjs",
+      "tests/ci/test_public_upload_build_recovery.mjs"
+    ],
+    "source_fake_cases": 56,
+    "passed": 56,
+    "failed": 0,
+    "exit_code": 0,
+    "original_counterexample_cases": 2,
+    "original_counterexample_passed": 1,
+    "original_counterexample_failed": 1,
+    "independent_result_sha256": "750424b29e0547230f68fe543021e42e5462cdf8a644275b7306e1daabe64c0a",
+    "all_backend_308_pins_unchanged": true,
+    "all_original_frontend_8_unchanged": true,
+    "backend_http_application": "1/1 actual pass on a988 source; outer owner failed; physical cleanup verified",
+    "frontend_strict_predecessor": "a988 default-off and enabled 0 errors/15 warnings",
+    "successor_strict_syntax_vite": "pending",
+    "actual_positive_replacement_browser": "pending"
+  },
+  "closed_changed_path_count": 23,
+  "limits": [
+    "No backend/helper/browser03 source changed.",
+    "Original counterexample and HTTP outer failure remain unchanged.",
+    "Source/fake lease remount is not a browser or signed-preview observation.",
+    "Actual signed preview proof in a future browser journey requires hard reload and signer reimport."
+  ]
+}

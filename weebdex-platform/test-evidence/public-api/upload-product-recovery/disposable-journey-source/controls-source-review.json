@@ -1,0 +1,33 @@
+{
+  "schema": "independent-source-review-v1",
+  "time_utc": "2026-10-17T04:21:09.312248+00:00",
+  "verdict": "source_clear_for_exact_pure_test_only",
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/public-upload-recovery-controls.mjs",
+      "sha256": "357a4663ec1e0a65e6dcde50b42baf640009bad82ab1de14b28b721cae63b71d",
+      "bytes": 15158
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs",
+      "sha256": "d93d868d2d83ba5649f4583688569eef74b64211ca622acefc3cae735f4d9ca2",
+      "bytes": 22048
+    }
+  ],
+  "command": "node --test weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree",
+  "findings": [
+    "Exact unique upload panel and direct grid/card locators; no global filename or first-match fallback.",
+    "Source-backed Empty/Spinner placeholder and bounded DnD markers may postpone only within the original absolute deadline; final count, unique names, exact order and matching decoded image remain strict.",
+    "Exact origin/path plus absent query/fragment checked around awaited operations, health calls and final return.",
+    "Attempted pointer down always receives attempted up, including rejection, deadline, route or health failure; primary error identity retained and later operations fenced.",
+    "Tests use built-in modules, inert helper and explicit DOM/locator/pointer stand-ins; read original frontend and anchor bytes only."
+  ],
+  "limits": [
+    "No actual browser, DOM-library, fixture, network, SQL, build or process execution is qualified by these pure seams.",
+    "Caller owns context closure for unresolved driver promises or unconfirmed release.",
+    "Cleanup Error values must be sanitized by the journey before persistence.",
+    "Image DOM readiness alone does not establish signed Blob identity or content hash."
+  ],
+  "test_execution_by_reviewer": false
+}

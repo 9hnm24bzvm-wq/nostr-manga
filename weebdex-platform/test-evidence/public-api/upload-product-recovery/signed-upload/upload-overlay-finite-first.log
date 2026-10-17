@@ -1,0 +1,27 @@
+file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/platform-integrations/public-api/upload-overlays.mjs:12
+  if (hash(input) !== file.composed_sha256) throw Error(`Public upload composed source changed: ${relative}`);
+                                                  ^
+
+Error: Public upload composed source changed: src/routes/(app)/title/[id]/upload/+layout.svelte
+    at applyPublicUploadOverlay (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/platform-integrations/public-api/upload-overlays.mjs:12:51)
+    at file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_overlay_recovery.mjs:26:53
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ tests/ci/test_public_upload_overlay_recovery.mjs (97.823417ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.408425
+
+✖ failing tests:
+
+test at tests/ci/test_public_upload_overlay_recovery.mjs:1:1
+✖ tests/ci/test_public_upload_overlay_recovery.mjs (97.823417ms)
+  'test failed'

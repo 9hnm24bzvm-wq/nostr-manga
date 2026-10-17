@@ -1,0 +1,45 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ public upload uses the existing explicit selected-instance default-off flag (1.496209ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapter.svelte (2.813241ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapterPages.svelte (3.964472ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapterPagesEntry.svelte (0.66479ms)
+✔ exact original/composed/output bytes: src/routes/(app)/title/[id]/upload/+page.svelte (0.435004ms)
+✔ exact original/composed/output bytes: src/routes/(app)/chapter/[id]/edit/+page.svelte (0.376706ms)
+✔ exact original/composed/output bytes: src/routes/(app)/title/[id]/upload/+layout.svelte (0.480523ms)
+✔ exact original/composed/output bytes: src/routes/(app)/chapter/[id]/edit/+layout.svelte (0.273351ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapterGroups.svelte (0.493061ms)
+✔ query virtual modules and unrelated paths are never transformed (0.335525ms)
+✔ Vite composes signed upload only after original source and catalogue overlays (0.361564ms)
+✔ public route uses current selected signer and actual bound account instead of native account lookup (0.288483ms)
+✔ normal begin and file deletion retain actual public200 statuses (0.19275ms)
+✔ single real owner is preserved while selection guards cross asynchronous file work (0.361804ms)
+✔ chapter editing remains unavailable while page replacement uses only the signed public helper (0.210186ms)
+✔ approval decision precedes commit and uses the actual response boolean (0.204177ms)
+✔ signed preview is exact file/context scoped, independently byte checked by adapter, and cleaned on unmount (0.204467ms)
+✔ exact current owner uncertain clears stale presentation and fences all local mutation affordances (0.347913ms)
+✔ exact current owner accepted-unavailable clears stale presentation and fences all local mutation affordances (0.282034ms)
+✔ no unresolved owner state does not fake an accepted state (0.094141ms)
+✔ receipt recovery is explicit exact-session read with no implicit replay (0.176024ms)
+✔ manifest closes the exact integration files and original source remains untouched (0.400312ms)
+✔ read-only session flags disable metadata and terms while dispatch is in flight (0.18ms)
+✔ locked-group affordances use actual bound roles and never cookie identity (0.1465ms)
+✔ explicit accepted empty-body200 or202 is handled without inventing a chapter or refusal toast (0.278449ms)
+✔ mount receipt-read failure exposes the persisted exact-session recovery control (0.183977ms)
+✔ remote replacement keeps its original row and owned preview until the exact helper confirmation (47.299442ms)
+✔ definitive replacement rejection retains the original row and preview without creating a local URL (2.226618ms)
+✔ unknown replacement outcome preserves displayed bytes while disabling every session mutation affordance (1.806106ms)
+✔ late replacement result cannot adopt into a different card selection (3.891773ms)
+✔ a reordered or removed card invalidates the original replacement callback before adoption (2.954993ms)
+✔ invalid or oversized replacement and decode failure perform no helper request (5.535303ms)
+✔ explicit replacement receipt recovery is read-only and restores actual saved authority only after confirmation (1.904684ms)
+✔ a same-hash confirmed replacement retains the existing owned preview without a second URL (1.473355ms)
+✔ replacement uncertainty recovery control is explicit and cannot be used as a fresh mutation (0.27208ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 199.924838

@@ -1,0 +1,63 @@
+{
+  "schema": "corrected-account-lock-seam-independent-result-v1",
+  "verdict": "exact_database_concurrency_case_pass_and_physical_teardown_verified",
+  "reviewed_at_utc": "2026-10-17T05:12:15.298757+00:00",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-03/receipt.json",
+      "sha256": "f461431059310517a9a83f00bef07471f7da4be1d33458f7cc4b1443e0d406ce"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-03/run.log",
+      "sha256": "ffaaff8f5979019e71f1ba23a83d6784f3326d123bd1451e060a4b0854c60e5e"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-03/probe.json",
+      "sha256": "8c2ae9c946310f65dbc9a0078a3d14a6be3d0f00d0d1eeb47596a8d2d9a05b81"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-a44l487f/cleanup.json",
+      "sha256": "396edb1648ffda052481e9cd1e2df8455a2a3d158c73c983dba9eddb45a1f8b0"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam03-independent-plan-review-20261017.json",
+      "sha256": "60a286bba1df47a9538b92ff127678c5d6da4ad48803833c5e1660cbeeab613f"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-05/receipt.json",
+      "sha256": "2b2594f77bd2e64f8f10313f60115cb81491b29446b5a79a6ee6fcda870118b1"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam02-independent-result-20261017.json",
+      "sha256": "5c9cb9e28fc00a875262c87fd7c26fbadba9e7da0c0b7e2cc459516768cbec57"
+    }
+  ],
+  "actual_test": {
+    "name": "account_write_lock_allows_publication_fk_and_excludes_authority_changes",
+    "passed": 1,
+    "failed": 0,
+    "exit_code": 0,
+    "scope": "Exact production private SQL plus actual schema: independent publication FK insertion succeeds; disabled/permissions/roles/binding-reassign/binding-delete/second-write probes each reject with lock-unavailable, all transactions roll back, and final original account/binding/no-command assertions complete."
+  },
+  "source_pins_verified": 308,
+  "physical": {
+    "observed_births": 22,
+    "guard_captured_births": 15,
+    "captured_subset_observed": true,
+    "all_saved_births_absent_at_owner_terminal": true,
+    "postgres_port": 34863,
+    "axum_ports": [
+      38625
+    ],
+    "all_observed_ports_refused_at_owner_terminal": true,
+    "forced": false,
+    "postgres_returncode": 0,
+    "terminal_errors": []
+  },
+  "receipt_field_note": "The existing owner uses probe_sha256 for the emitted probe.json at terminal; source probe identity remains separately pinned by the reviewed wrapper and plan. This is not source drift.",
+  "limits": [
+    "One database concurrency seam, not the full signed HTTP upload contract or browser journey.",
+    "Retained old-lock case remains an actual failed application test and valid counterexample.",
+    "Physical outcome verified from same-runtime owner observations and nested receipts; no new reviewer runtime started."
+  ]
+}

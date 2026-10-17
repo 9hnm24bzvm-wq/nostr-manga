@@ -13,6 +13,7 @@ import { runJourneys } from "./browser-journeys.mjs";
 import { runSignedJourneys, signedJourneyPhases } from "./browser-signed-journeys.mjs";
 import { runUi10Journeys, ui10JourneyPhases } from "./browser-ui10-journeys.mjs";
 import { runUi11To16Journeys, ui11To16JourneyPhases } from "./browser-ui11-16-journeys.mjs";
+import { runPublicUploadRecovery, publicUploadRecoveryPhase } from "./public-upload-recovery-browser.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // The supervisor strips NODE_PATH. The portable seam permits only the exact
 // reviewed local package or the isolated lock-integrity-installed CI generation.
@@ -74,17 +75,20 @@ async function step(name, action) {
 	entry.completed_utc = new Date().toISOString(); save();
 	process.stdout.write(JSON.stringify({ phase, step: name, status: entry.status }) + "\n");
 }
-let browser;
+let browser, context;
+report.cleanup = { context_created: false, context_closed: false, browser_created: false, browser_closed: false, proxy_closed: false, failures: [] };
 const { proxy, close: closeDenyProxy } = createBrowserDenyProxy(report, safeUrl, save);
-await new Promise(resolve => proxy.listen(0, "127.0.0.1", resolve));
-const proxyAddress = proxy.address();
 try {
+	await new Promise((resolve, reject) => { proxy.once('error', reject); proxy.listen(0, "127.0.0.1", () => { proxy.off('error', reject); resolve(); }); });
+	const proxyAddress = proxy.address();
 	runnerStage("launching-browser");
 	browser = await chromium.launch({ executablePath, headless: true,
 		proxy: { server: `http://127.0.0.1:${proxyAddress.port}`, bypass: "127.0.0.1,localhost" },
 		args: ["--disable-background-networking", "--disable-component-update", "--disable-sync", "--no-first-run", "--disable-default-apps", "--disable-features=MediaRouter"] });
+	report.cleanup.browser_created = true;
 	runnerStage("creating-context");
-	const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1, serviceWorkers: phase === "pwa" ? "allow" : "block" });
+	context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1, serviceWorkers: phase === "pwa" ? "allow" : "block" });
+	report.cleanup.context_created = true;
 	await context.route("**/*", async route => {
 		const request = route.request(); const target = new URL(request.url());
 		if (["data:", "blob:"].includes(target.protocol) || allowedHttpOrigins.has(target.origin)) return route.continue();
@@ -148,19 +152,26 @@ try {
 			}
 			return results;
 		});
-	} else await (signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions });
+	} else await (phase === publicUploadRecoveryPhase ? runPublicUploadRecovery : signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions });
 	insist(report.page_errors.length === 0, "Application JavaScript page errors were observed during the journey");
-	runnerStage("closing-context");
-	await context.close();
 } catch (error) { report.harness_error = safeError(error); }
 finally {
-	runnerStage("closing-browser");
-	if (browser) await browser.close();
-	runnerStage("closing-proxy");
-	await closeDenyProxy();
-	runnerStage("finalizing-report");
-	report.completed_utc = new Date().toISOString(); report.passed = !report.harness_error && report.steps.length > 0 && report.steps.every(entry => entry.status === "passed"); save();
+	const cleanupFailure = (stage, error) => { let detail; try { detail = safeError(error); } catch { detail = 'Owned cleanup error unavailable'; } report.cleanup.failures.push({ stage, error: detail }); };
+	const cleanupStage = stage => { try { runnerStage(stage); } catch (error) { cleanupFailure('evidence-' + stage, error); } };
+	cleanupStage("closing-context");
+	if (context) try { await context.close(); report.cleanup.context_closed = true; }
+	catch (error) { cleanupFailure('context', error); }
+	if (report.public_upload) report.public_upload.actual_context_closed = report.cleanup.context_closed;
+	cleanupStage("closing-browser");
+	if (browser) try { await browser.close(); report.cleanup.browser_closed = true; }
+	catch (error) { cleanupFailure('browser', error); }
+	cleanupStage("closing-proxy");
+	try { await closeDenyProxy(); report.cleanup.proxy_closed = true; }
+	catch (error) { cleanupFailure('proxy', error); }
+	cleanupStage("finalizing-report");
+	cleanupStage("complete");
+	report.completed_utc = new Date().toISOString(); report.passed = !report.harness_error && !report.cleanup.failures.length && report.cleanup.context_closed && report.cleanup.browser_closed && report.cleanup.proxy_closed && report.steps.length > 0 && report.steps.every(entry => entry.status === "passed");
+	try { save(); } catch { report.passed = false; report.harness_error ??= 'Final evidence persistence failed'; process.exitCode = 1; }
 	process.stdout.write(JSON.stringify({ phase, passed: report.passed, steps: report.steps.length, failed_steps: report.steps.filter(entry => entry.status === "failed").map(entry => entry.name), page_errors: report.page_errors.length, network_guard: "Exact validated fixture-origin HTTP/WS routing plus owned external-deny proxy", evidence: path.relative(root, output) }) + "\n");
 }
 process.exitCode = report.passed ? 0 : 1;
-runnerStage("complete");

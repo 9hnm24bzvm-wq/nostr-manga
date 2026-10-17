@@ -1,0 +1,28 @@
+{
+  "schema": "independent-browser-pg-root-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T04:36:00.898733+00:00",
+  "verdict": "source_clear_and_7_ast_cases_reported_passed",
+  "source_sha256": {
+    "tests/runtime/browser_fixture.py": "4d04a5769b3651f31d58e4b0f0126262e0555664ef2931b3929c3a190ec15b1f",
+    "tests/ci/test_browser_fixture_pg_root_recovery.py": "37ef788a7de85777a23cc6e931016ea3cc2368648de78735848a6d40b6658c22"
+  },
+  "checks": [
+    "Explicit environment override only; absent value returns the identical original default.",
+    "Invalid empty/relative/NUL/non-string override fails closed without fallback.",
+    "PG execution remains argv-based with unchanged private listener and authentication flags.",
+    "Only resolver AST is compiled by finite tests; no supervisor/PIL import or child launch."
+  ],
+  "reported_result": {
+    "tests": 7,
+    "pass": 7,
+    "exit": 0,
+    "tool_chunk": "b7fb6f",
+    "output_provenance": "Worker supplied exact first tool output; it was not captured directly to a file.",
+    "stdout": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nOK\n"
+  },
+  "limits": [
+    "This proves resolver/source seams, not an actual browser fixture or PostgreSQL run.",
+    "The sole runtime owner must pin the actual official binaries selected by the override."
+  ],
+  "execution_by_reviewer": false
+}

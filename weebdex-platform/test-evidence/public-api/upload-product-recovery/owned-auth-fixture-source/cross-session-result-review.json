@@ -1,0 +1,24 @@
+{
+  "schema": "independent-auth-guard-finite-result-v1",
+  "reviewed_at_utc": "2026-10-17T04:34:29.486589+00:00",
+  "verdict": "27_pure_cases_passed",
+  "source_review_sha256": "3331ca9259efa814fedd33f7e49e4321d7763d27d961d5aaf78b0105197a7c50",
+  "source_sha256": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+  },
+  "log_path": "/workspace/shared/nostr-manga-recovery-20261017/auth-fixture-guard-cross-session-first-run.tool-output.log",
+  "log_sha256": "3b1f073641a9da3ba340c838e7911e6573f65e0f750065b47bc6cfda4106675f",
+  "log_provenance": "Captured directly from first approved execution; no logging-only rerun.",
+  "tests": 27,
+  "passed": 27,
+  "failed": 0,
+  "source_current_exact": true,
+  "execution_by_reviewer": false,
+  "limits": [
+    "All process, clock, signal and socket orchestration is mocked.",
+    "No corrected-source real PG cleanup or application database assertion is qualified yet.",
+    "Original 18-case and normal-stop evidence remain associated with their preserved predecessor source."
+  ]
+}

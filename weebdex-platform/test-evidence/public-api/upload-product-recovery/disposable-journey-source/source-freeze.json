@@ -1,0 +1,172 @@
+{
+  "schema": "recovered-upload-disposable-journey-source-v1",
+  "parent_commit": "31f94d68b083c1a725273369297452be0c19e205",
+  "source_files": [
+    {
+      "path": "backend/examples/browser_fixture_provisioner.rs",
+      "bytes": 59089,
+      "sha256": "d5b20f6616b7efc5711f899a9e523ccc18a16238dc4b12bb225195129dded5a4"
+    },
+    {
+      "path": "tests/runtime/browser_fixture.py",
+      "bytes": 106028,
+      "sha256": "1037badea635fe2e3005900d1daa9279425e4b457af13ac968acee8215fb42e0"
+    },
+    {
+      "path": "scripts/browser-acceptance.mjs",
+      "bytes": 16849,
+      "sha256": "33ae625d030bf222adc1678bf3cd9446f808c46faf03844191ead925455115d9"
+    },
+    {
+      "path": "scripts/browser-signed-journeys.mjs",
+      "bytes": 102141,
+      "sha256": "4b33772942130ba50428ca2013e0db8b4843050caae55a564720529bbd7fe838"
+    },
+    {
+      "path": "scripts/public-upload-recovery-browser.mjs",
+      "bytes": 23298,
+      "sha256": "e8e2080b194efa052ccb198b659b6f93c9590397b2ce76b2174a2aaefaabd913"
+    },
+    {
+      "path": "scripts/public-upload-recovery-controls.mjs",
+      "bytes": 15158,
+      "sha256": "357a4663ec1e0a65e6dcde50b42baf640009bad82ab1de14b28b721cae63b71d"
+    },
+    {
+      "path": "scripts/public-upload-recovery-observer.mjs",
+      "bytes": 7955,
+      "sha256": "c59f4464457d610088c01719645f63b1d379fddeb576f8793a53811c4600e79f"
+    },
+    {
+      "path": "tests/ci/test_public_upload_recovery_controls.mjs",
+      "bytes": 22057,
+      "sha256": "d38117926a071bf0e79aebd85439609527fd6bd97fe26f5aff5d855d167ed059"
+    },
+    {
+      "path": "tests/ci/test_public_upload_recovery_journey.mjs",
+      "bytes": 11989,
+      "sha256": "dba8d61a02f731d8eeaa597429fe85a7ac755399fd2957995d7dc3e4b0ec2803"
+    },
+    {
+      "path": "docs/verification/public-upload-disposable-recovery-journey.md",
+      "bytes": 5077,
+      "sha256": "4078c00ecffb52b1bd19fca55980750417b3f196c9593c94bcf1631d5b3346c6"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/fixture-source-review.json",
+      "bytes": 2841,
+      "sha256": "e18a972262267d4c6ff7fda856738bc038318e2bb7408420054008ac441e8a39"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/fixture-pure-result-review.json",
+      "bytes": 968,
+      "sha256": "f7a1d0f74c47b2188013485f143413ccdb6951a4a5d99d332a117526c5780cf6"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/fixture-rust-receipt.json",
+      "bytes": 78678,
+      "sha256": "11403fb1bc5bddefdb2d5dd6c8765ad2ac67f9dca0c47d2dd592f3f678507981"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/fixture-rust.log",
+      "bytes": 19872,
+      "sha256": "fe4cd1574803f3bca4836bd29324f29d1e6b2988843f7474ad235081a880ddab"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/fixture-python-cases.py",
+      "bytes": 1264,
+      "sha256": "de8a69649f7f49e5e8fa3c9cbedf957c6a28814579aaac6ef144fb2ec141603d"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/fixture-python-receipt.json",
+      "bytes": 428,
+      "sha256": "6057709736eb810d98e9c19850598637caeb65d2fefd433431b53764e21b5b02"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/fixture-python.log",
+      "bytes": 59,
+      "sha256": "6871b1c13098d9fb42af4d7e07f4e9a7df1dba8620a65816d59b50a2999f2e3f"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/controls-source-review.json",
+      "bytes": 2102,
+      "sha256": "77c86c76f69bfd5387c99956a6abf9563dfa4eb79220d4f16fc95e6b33cd4c69"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/controls-result-review.json",
+      "bytes": 2321,
+      "sha256": "c4a6a802a3b10b9daa3b12186acdf5690c7cb02c7e9ea1e23de529a8542488e6"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/controls-first.test.mjs",
+      "bytes": 22048,
+      "sha256": "d93d868d2d83ba5649f4583688569eef74b64211ca622acefc3cae735f4d9ca2"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/controls-first-tool-output-copy.log",
+      "bytes": 6579,
+      "sha256": "54bea3f16316935cecb05a99142bef2f8e6beb59d28243794c76ecfc43a8ec15"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/controls-final-tool-output-copy.log",
+      "bytes": 5092,
+      "sha256": "1412d5d4d187c8ce67bf63932a5ecdf206932b2ef045528368608cbb412b2e6d"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/journey-source-review.json",
+      "bytes": 3684,
+      "sha256": "a4a5459125a01b696b9c85b4d5dfe259f787d0363a66dfa7342786b8920f8f00"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/journey-result-review.json",
+      "bytes": 996,
+      "sha256": "f36a8d98e4018a9286c6b6eaf3c644929b7cc8e0a49d30191b2c94ff4d4028ea"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/disposable-journey-source/journey-28.log",
+      "bytes": 2248,
+      "sha256": "3c9be1ca6050d3e7eef5d045f2741956916c176c3b9a16e3b263323a3c14072e"
+    }
+  ],
+  "scope": "new minimal local synthetic signed public HTTP/UI journey with independent durable original-byte observations; no lost harness equivalence",
+  "finite": {
+    "fixture_rust_selected": 3,
+    "fixture_python_ast": 10,
+    "controls": {
+      "first": {
+        "pass": 48,
+        "fail": 1
+      },
+      "final": {
+        "pass": 49,
+        "fail": 0
+      },
+      "correction": "test-only one-label source lookup"
+    },
+    "journey": {
+      "pass": 28,
+      "fail": 0,
+      "fake_signature_verification": true
+    }
+  },
+  "resource_bounds": {
+    "sessions": 2,
+    "current_files": 3,
+    "generated_uploads": 4,
+    "each_original_bytes": 512,
+    "browser_signed_requests": 128,
+    "browser_mutations": 32,
+    "independent_signed_gets": 96,
+    "fixture_controls": 28,
+    "browser_seconds": 600
+  },
+  "unqualified": [
+    "Actual browser journey and DB/HTTP execution pending.",
+    "Auth guard is excluded while its cross-session correction is in progress.",
+    "Replacement success and public chapter edit unsupported.",
+    "No full40 coverage or publication/readability inference."
+  ],
+  "sanitization": "synthetic public IDs/hashes only; no runtime config, keys, DB or private fixture directories retained"
+}

@@ -1,0 +1,66 @@
+# TOOL-OUTPUT COPY, created after execution; this was not an original file-backed capture.
+# Original tool result chunk: 6ed692. Command exit: 0.
+# Command: node --test weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs
+# CWD: /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree
+# Controls SHA256: 357a4663ec1e0a65e6dcde50b42baf640009bad82ab1de14b28b721cae63b71d
+# Test SHA256: d38117926a071bf0e79aebd85439609527fd6bd97fe26f5aff5d855d167ed059
+# Independent reviewer cleared exact one-label test correction and one rerun before execution.
+# Outcome association: 49/49 passed. First 48/49 output is preserved separately. Pure stand-ins only; no actual browser qualification.
+# Exact original command output follows.
+✔ scopes and exact preview-loading topology are present in pinned preserved source and signed overlay (3.322394ms)
+✔ the exact loader branch has no filename heading and the signed placeholder uses the same Empty/Spinner (0.725911ms)
+✔ locators remain exact and direct, excluding global filename and first-match fallback (0.836007ms)
+✔ strict settled filenames and decoded images are returned without mutation (2.743303ms)
+✔ permanent missing page is a failure, never pending (1.29808ms)
+✔ permanent duplicate page is a failure, never pending (0.555635ms)
+✔ permanent unknown page is a failure, never pending (0.57928ms)
+✔ permanent wrong order is a failure, never pending (0.493181ms)
+✔ permanent missing heading is a failure, never pending (0.700944ms)
+✔ permanent conflicting image is a failure, never pending (3.824768ms)
+✔ permanent undecoded image is a failure, never pending (0.578339ms)
+✔ permanent extra page is a failure, never pending (1.308927ms)
+✔ permanent unknown child is a failure, never pending (0.31927ms)
+✔ permanent duplicate panel is a failure, never pending (0.185268ms)
+✔ permanent missing panel is a failure, never pending (0.393472ms)
+✔ permanent duplicate grid is a failure, never pending (0.507132ms)
+✔ real pointer last-to-first waits for known clone/shadow cleanup then strictly verifies order (1.701977ms)
+✔ known marker cleanup can settle on a standalone read (0.458619ms)
+✔ source-backed preview placeholder after drag is separate bounded pending until exact decoded names (1.459463ms)
+✔ permanent clone lifecycle reaches the same absolute deadline (1.746374ms)
+✔ permanent shadow lifecycle reaches the same absolute deadline (0.416776ms)
+✔ permanent preview lifecycle reaches the same absolute deadline (0.477297ms)
+✔ known spinner or DnD marker never excuses unknown filename (0.338018ms)
+✔ known spinner or DnD marker never excuses extra card (0.165308ms)
+✔ known spinner or DnD marker never excuses duplicate filename (0.902115ms)
+✔ a genuine snapshot locator rejection is preserved without pending retry (0.257658ms)
+✔ late resolved await cannot succeed after the original absolute deadline (0.282344ms)
+✔ origin/route is rechecked after awaited panel-count and release remains mandatory after down (0.303547ms)
+✔ origin/route is rechecked after awaited snapshot and release remains mandatory after down (0.153271ms)
+✔ origin/route is rechecked after awaited move-2 and release remains mandatory after down (0.443656ms)
+✔ origin/route is rechecked after awaited up and release remains mandatory after down (0.437298ms)
+✔ external health is rechecked after awaited pointer movement and fences later action (0.521754ms)
+✔ rejected pointer down still attempts up and preserves primary error, release rejection=false (0.533833ms)
+✔ rejected pointer down still attempts up and preserves primary error, release rejection=true (0.475524ms)
+✔ release-only rejection is the primary failure and prevents final settlement reads (0.691169ms)
+✔ deadline after down still releases and separately retains a release rejection (0.496507ms)
+✔ route and health failures discovered after a rejected down never replace that primary error (0.505529ms)
+✔ exact escaped button label has no regex-alternative fallback (0.64479ms)
+✔ unexpected DnD marker topology fails without waiting: multiple clones (0.221773ms)
+✔ unexpected DnD marker topology fails without waiting: multiple shadows (0.161713ms)
+✔ unexpected DnD marker topology fails without waiting: foreign shadow (0.149204ms)
+✔ deadline expiring during release is checked after await before any final read (0.849046ms)
+✔ exact upload URL rejects ?other=1 introduced during snapshot (0.274182ms)
+✔ exact upload URL rejects ?other=1 introduced during health (0.243035ms)
+✔ exact upload URL rejects ?other=1 introduced during move-2 (0.421113ms)
+✔ exact upload URL rejects #other introduced during snapshot (0.177076ms)
+✔ exact upload URL rejects #other introduced during health (0.075764ms)
+✔ exact upload URL rejects #other introduced during move-2 (0.873793ms)
+✔ global clone marker cannot turn a genuinely broken non-shadow card into pending (0.338298ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 49
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 142.186994

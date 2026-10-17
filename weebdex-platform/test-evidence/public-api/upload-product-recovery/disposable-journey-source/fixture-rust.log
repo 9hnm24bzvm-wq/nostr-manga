@@ -1,0 +1,492 @@
+   Compiling cfg-if v1.0.5
+   Compiling libc v0.2.190
+   Compiling pin-project-lite v0.2.17
+   Compiling bytes v1.12.1
+   Compiling smallvec v1.16.3
+   Compiling typenum v1.20.1
+   Compiling itoa v1.0.18
+   Compiling scopeguard v1.2.0
+   Compiling futures-core v0.3.34
+   Compiling parking_lot_core v0.9.12
+   Compiling lock_api v0.4.14
+   Compiling parking_lot v0.12.5
+   Compiling errno v0.3.14
+   Compiling once_cell v1.21.4
+   Compiling signal-hook-registry v1.4.8
+   Compiling mio v1.2.4
+   Compiling socket2 v0.6.5
+   Compiling zerofrom v0.1.8
+   Compiling tokio v1.53.2
+   Compiling log v0.4.34
+   Compiling futures-sink v0.3.34
+   Compiling stable_deref_trait v1.2.1
+   Compiling yoke v0.8.3
+   Compiling subtle v2.6.1
+   Compiling serde_core v1.0.229
+   Compiling getrandom v0.2.17
+   Compiling slab v0.4.12
+   Compiling futures-task v0.3.34
+   Compiling futures-util v0.3.34
+   Compiling zerovec v0.11.8
+   Compiling zerocopy v0.8.62
+   Compiling tracing-core v0.1.36
+   Compiling http v1.5.0
+   Compiling hybrid-array v0.4.15
+   Compiling rand_core v0.10.1
+   Compiling percent-encoding v2.3.2
+   Compiling generic-array v0.14.7
+   Compiling cmov v0.5.4
+   Compiling memchr v2.8.3
+   Compiling ctutils v0.4.3
+   Compiling tracing v0.1.44
+   Compiling getrandom v0.4.3
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling tinystr v0.8.4
+   Compiling zeroize v1.9.1
+   Compiling litemap v0.8.3
+   Compiling const-oid v0.10.2
+   Compiling writeable v0.6.4
+   Compiling icu_locale_core v2.3.0
+   Compiling digest v0.11.3
+   Compiling rustls-pki-types v1.15.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling zmij v1.0.23
+   Compiling httparse v1.10.1
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling zerotrie v0.2.5
+   Compiling http-body v1.1.0
+   Compiling potential_utf v0.1.6
+   Compiling utf8_iter v1.0.4
+   Compiling cpufeatures v0.3.1
+   Compiling icu_collections v2.3.0
+   Compiling icu_provider v2.3.1
+   Compiling digest v0.10.7
+   Compiling serde_json v1.0.154
+   Compiling futures-channel v0.3.34
+   Compiling untrusted v0.9.0
+   Compiling tower-service v0.3.3
+   Compiling tinyvec v1.13.3
+   Compiling base64 v0.22.1
+   Compiling unicode-normalization v0.1.25
+   Compiling ring v0.17.14
+   Compiling serde v1.0.229
+   Compiling icu_properties_data v2.3.0
+   Compiling chacha20 v0.10.2
+   Compiling getrandom v0.3.4
+   Compiling icu_normalizer_data v2.3.0
+   Compiling unicode-properties v0.1.4
+   Compiling mime v0.3.17
+   Compiling simd-adler32 v0.3.10
+   Compiling try-lock v0.2.5
+   Compiling httpdate v1.0.3
+   Compiling cpufeatures v0.2.17
+   Compiling unicode-bidi v0.3.18
+   Compiling bitflags v2.13.2
+   Compiling want v0.3.2
+   Compiling stringprep v0.1.5
+   Compiling rustls-webpki v0.103.15
+   Compiling icu_normalizer v2.3.0
+   Compiling rand_core v0.9.5
+   Compiling rand v0.10.3
+   Compiling icu_properties v2.3.0
+   Compiling sha2 v0.11.1
+   Compiling md-5 v0.11.0
+   Compiling hmac v0.13.0
+   Compiling form_urlencoded v1.2.2
+   Compiling tokio-util v0.7.20
+   Compiling rand_core v0.6.4
+   Compiling sync_wrapper v1.0.2
+   Compiling tower-layer v0.3.3
+   Compiling fallible-iterator v0.2.0
+   Compiling siphasher v1.0.4
+   Compiling byteorder v1.5.0
+   Compiling atomic-waker v1.1.2
+   Compiling adler2 v2.0.1
+   Compiling postgres-protocol v0.6.12
+   Compiling hyper v1.12.0
+   Compiling phf_shared v0.13.1
+   Compiling idna_adapter v1.2.2
+   Compiling rand_chacha v0.9.0
+   Compiling rustls v0.23.45
+   Compiling http-body-util v0.1.5
+   Compiling parking v2.2.1
+   Compiling base64 v0.23.1
+   Compiling flagset v0.4.7
+   Compiling ipnet v2.12.2
+   Compiling const-oid v0.9.6
+   Compiling der v0.7.10
+   Compiling hyper-util v0.1.21
+   Compiling tokio-rustls v0.26.6
+   Compiling event-listener v5.4.2
+   Compiling thiserror v2.0.21
+   Compiling rand v0.9.5
+   Compiling idna v1.1.0
+   Compiling crossbeam-utils v0.8.23
+   Compiling phf v0.13.1
+   Compiling crc32fast v1.5.2
+   Compiling postgres-types v0.2.14
+   Compiling miniz_oxide v0.9.1
+   Compiling tower v0.5.3
+   Compiling sha1 v0.10.7
+   Compiling whoami v2.1.3
+   Compiling regex-syntax v0.8.11
+   Compiling data-encoding v2.11.1
+   Compiling core_detect v1.0.0
+   Compiling ryu v1.0.23
+   Compiling simdutf8 v0.1.5
+   Compiling encoding_rs v0.8.42
+   Compiling regex-automata v0.4.18
+   Compiling serde_urlencoded v0.7.1
+   Compiling tungstenite v0.29.0
+   Compiling tokio-postgres v0.7.18
+   Compiling flate2 v1.1.10
+   Compiling num-traits v0.2.19
+   Compiling mime_guess v2.0.5
+   Compiling url v2.5.8
+   Compiling event-listener-strategy v0.5.4
+   Compiling spki v0.7.3
+   Compiling miniz_oxide v0.8.9
+   Compiling rand_chacha v0.3.1
+   Compiling fdeflate v0.3.7
+   Compiling webpki-roots v1.0.9
+   Compiling half v2.7.1
+   Compiling deadpool-runtime v0.3.1
+   Compiling lazy_static v1.5.1
+   Compiling weezl v0.1.12
+   Compiling pxfm v0.1.30
+   Compiling color_quant v1.1.0
+   Compiling quick-error v2.0.1
+   Compiling ciborium-io v0.2.2
+   Compiling openssl-probe v0.2.1
+   Compiling byteorder-lite v0.1.0
+   Compiling http-range-header v0.4.2
+   Compiling zune-core v0.5.3
+   Compiling spin v0.9.9
+   Compiling multer v3.1.0
+   Compiling zune-jpeg v0.5.15
+   Compiling tower-http v0.6.11
+   Compiling moxcms v0.8.1
+   Compiling image-webp v0.2.4
+   Compiling rustls-native-certs v0.8.4
+   Compiling ciborium-ll v0.2.2
+   Compiling gif v0.14.2
+   Compiling sharded-slab v0.1.7
+   Compiling deadpool v0.13.1
+   Compiling png v0.18.1
+   Compiling hyper-rustls v0.27.10
+   Compiling rand v0.8.8
+   Compiling x509-cert v0.2.5
+   Compiling async-lock v3.4.2
+   Compiling secp256k1-sys v0.10.1
+   Compiling portable-atomic v1.15.0
+   Compiling crossbeam-epoch v0.9.21
+   Compiling matchers v0.2.0
+   Compiling tokio-tungstenite v0.29.0
+   Compiling crossbeam-channel v0.5.17
+   Compiling axum-core v0.5.6
+   Compiling tracing-serde v0.2.0
+   Compiling uuid v1.28.0
+   Compiling tracing-log v0.2.0
+   Compiling serde_path_to_error v0.1.20
+   Compiling thread_local v1.1.10
+   Compiling matchit v0.8.4
+   Compiling tagptr v0.2.0
+   Compiling base64ct v1.8.3
+   Compiling nu-ansi-term v0.50.3
+   Compiling equivalent v1.0.2
+   Compiling bytemuck v1.25.2
+   Compiling tracing-subscriber v0.3.23
+   Compiling image v0.25.10
+   Compiling moka v0.12.16
+   Compiling password-hash v0.5.0
+   Compiling axum v0.8.9
+   Compiling secp256k1 v0.29.1
+   Compiling tokio-postgres-rustls v0.14.0
+   Compiling reqwest v0.12.28
+   Compiling deadpool-postgres v0.14.2
+   Compiling anyhow v1.0.104
+   Compiling ciborium v0.2.2
+   Compiling sha2 v0.10.9
+   Compiling blake2 v0.10.6
+   Compiling negentropy v0.5.1
+   Compiling hex v0.4.3
+   Compiling language-tags v0.3.2
+   Compiling linux-raw-sys v0.12.1
+   Compiling rustix v1.1.5
+   Compiling manga-node v0.1.0 (/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/manga-protocol-lab/server)
+   Compiling argon2 v0.5.3
+   Compiling fastrand v2.5.0
+   Compiling tempfile v3.27.0
+warning: field `service` is never read
+   --> /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/manga-protocol-lab/server/src/http_auth.rs:111:5
+    |
+110 | pub struct HttpRequestPreflight {
+    |            -------------------- field in this struct
+111 |     service: Id,
+    |     ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: method `service` is never used
+   --> /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/manga-protocol-lab/server/src/http_auth.rs:114:19
+    |
+113 | impl HttpRequestPreflight {
+    | ------------------------- method in this implementation
+114 |     pub(crate) fn service(&self) -> Id {
+    |                   ^^^^^^^
+
+   Compiling weebdex-platform v0.1.0 (/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend)
+warning: `manga-node` (lib) generated 2 warnings
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::ensure_upload_target`
+  --> src/domains/catalog/repository.rs:67:5
+   |
+67 | /     pub async fn ensure_upload_target(
+68 | |         tx: &Transaction<'_>,
+69 | |         manga_id: &str,
+70 | |         actor: &impl CatalogMutationActor,
+71 | |         groups: &[String],
+72 | |     ) -> ApiResult<()> {
+   | |______________________^ associated function `CatalogRepository::ensure_upload_target` is reachable at visibility `pub`
+   |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+  --> src/domains/catalog/entity_mutations.rs:12:1
+   |
+12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: `#[warn(private_bounds)]` on by default
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::authorize_chapter_edit`
+  --> src/domains/catalog/repository.rs:79:5
+   |
+79 | /     pub async fn authorize_chapter_edit(
+80 | |         tx: &Transaction<'_>,
+81 | |         id: &str,
+82 | |         actor: &impl CatalogMutationActor,
+83 | |         version: i32,
+84 | |     ) -> ApiResult<Value> {
+   | |_________________________^ associated function `CatalogRepository::authorize_chapter_edit` is reachable at visibility `pub`
+   |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+  --> src/domains/catalog/entity_mutations.rs:12:1
+   |
+12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::replace_chapter_pages`
+   --> src/domains/catalog/repository.rs:100:5
+    |
+100 | /     pub async fn replace_chapter_pages(
+101 | |         tx: &Transaction<'_>,
+102 | |         id: &str,
+103 | |         actor: &impl CatalogMutationActor,
+...   |
+107 | |         pages: &[CatalogPage],
+108 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::replace_chapter_pages` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::update_chapter`
+   --> src/domains/catalog/repository.rs:248:5
+    |
+248 | /     pub async fn update_chapter(
+249 | |         tx: &Transaction<'_>,
+250 | |         id: &str,
+251 | |         actor: &impl CatalogMutationActor,
+252 | |         patch: &Value,
+253 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::update_chapter` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::delete_chapter`
+   --> src/domains/catalog/repository.rs:326:5
+    |
+326 | /     pub async fn delete_chapter(
+327 | |         tx: &Transaction<'_>,
+328 | |         id: &str,
+329 | |         actor: &impl CatalogMutationActor,
+330 | |     ) -> ApiResult<()> {
+    | |______________________^ associated function `CatalogRepository::delete_chapter` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::claim_chapter`
+   --> src/domains/catalog/repository.rs:347:5
+    |
+347 | /     pub async fn claim_chapter(
+348 | |         tx: &Transaction<'_>,
+349 | |         id: &str,
+350 | |         actor: &impl CatalogMutationActor,
+351 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::claim_chapter` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::update_cover`
+   --> src/domains/catalog/repository.rs:420:5
+    |
+420 | /     pub async fn update_cover(
+421 | |         tx: &Transaction<'_>,
+422 | |         id: &str,
+423 | |         actor: &impl CatalogMutationActor,
+424 | |         patch: &Value,
+425 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::update_cover` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::delete_cover`
+   --> src/domains/catalog/repository.rs:476:5
+    |
+476 | /     pub async fn delete_cover(
+477 | |         tx: &Transaction<'_>,
+478 | |         id: &str,
+479 | |         actor: &impl CatalogMutationActor,
+480 | |     ) -> ApiResult<()> {
+    | |______________________^ associated function `CatalogRepository::delete_cover` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `require_manga_edit`
+   --> src/domains/catalog/repository.rs:507:1
+    |
+507 | / pub async fn require_manga_edit(
+508 | |     tx: &Transaction<'_>,
+509 | |     id: &str,
+510 | |     actor: &impl CatalogMutationActor,
+511 | |     permission: &str,
+512 | | ) -> ApiResult<()> {
+    | |__________________^ function `require_manga_edit` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `publish_native_manga`
+   --> src/protocol/publication.rs:928:1
+    |
+928 | / pub async fn publish_native_manga(
+929 | |     state: &crate::state::AppState,
+930 | |     tx: &tokio_postgres::Transaction<'_>,
+931 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+932 | |     manga: &str,
+933 | |     submitted_version: i32,
+934 | | ) -> ApiResult<Option<PublicationReceipt>> {
+    | |__________________________________________^ function `publish_native_manga` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `publish_native_upload`
+    --> src/protocol/publication.rs:1026:1
+     |
+1026 | / pub async fn publish_native_upload(
+1027 | |     state: &crate::state::AppState,
+1028 | |     tx: &tokio_postgres::Transaction<'_>,
+1029 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+...    |
+1034 | |     native_commit_payload: &serde_json::Value,
+1035 | | ) -> ApiResult<Option<PublicationReceipt>> {
+     | |__________________________________________^ function `publish_native_upload` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `native_manga_publication_retry_allowed`
+    --> src/protocol/publication.rs:1363:1
+     |
+1363 | / pub async fn native_manga_publication_retry_allowed(
+1364 | |     state: &crate::state::AppState,
+1365 | |     tx: &tokio_postgres::Transaction<'_>,
+1366 | |     manga: &str,
+1367 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1368 | | ) -> ApiResult<bool> {
+     | |____________________^ function `native_manga_publication_retry_allowed` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `pending_native_manga_receipt_allowed`
+    --> src/protocol/publication.rs:1390:1
+     |
+1390 | / pub async fn pending_native_manga_receipt_allowed(
+1391 | |     state: &crate::state::AppState,
+1392 | |     tx: &tokio_postgres::Transaction<'_>,
+1393 | |     manga: &str,
+1394 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1395 | | ) -> ApiResult<bool> {
+     | |____________________^ function `pending_native_manga_receipt_allowed` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `pending_native_receipt_allowed`
+    --> src/protocol/publication.rs:1417:1
+     |
+1417 | / pub async fn pending_native_receipt_allowed(
+1418 | |     state: &crate::state::AppState,
+1419 | |     tx: &tokio_postgres::Transaction<'_>,
+1420 | |     chapter: &str,
+1421 | |     session: &str,
+1422 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1423 | | ) -> ApiResult<bool> {
+     | |____________________^ function `pending_native_receipt_allowed` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `weebdex-platform` (lib) generated 14 warnings
+    Finished `test` profile [unoptimized] target(s) in 1m 25s
+     Running unittests examples/browser_fixture_provisioner.rs (/workspace/shared/nostr-manga-recovery-20261017/cargo-target/debug/examples/browser_fixture_provisioner-61b21ad2ac6bd3ab)
+
+running 3 tests
+test tests::synthetic_volumes_match_original_upload_store_grammar ... ok
+test tests::upload_controls_require_explicit_fixture_opt_in ... ok
+test tests::upload_observation_hashes_fresh_bounded_original_bytes ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+

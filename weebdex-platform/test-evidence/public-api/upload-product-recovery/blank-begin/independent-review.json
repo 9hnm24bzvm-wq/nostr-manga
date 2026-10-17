@@ -1,0 +1,38 @@
+{
+  "behavior": [
+    "Begin baseline comes from returned server draft/files, without overwriting local metadata.",
+    "Nonempty valid-language condition prevents blank staging autosave; retained language and real edits remain dirty.",
+    "Existing capture-before-save and acknowledge-after-success logic preserves newer edits/order and propagates failed saves.",
+    "Retired context or different session cannot consume a late save acknowledgement."
+  ],
+  "evidence": {
+    "independent_cases_scope": "Held save acknowledges original order while newer actual file order remains dirty, in both forms.",
+    "independent_newer_order_cases_passed": 2,
+    "owner_source_extracted_cases_passed": 16,
+    "same_tests_against_recovered_base": {
+      "failed": 6,
+      "passed": 10,
+      "scope": "Explicit controlled before/after source seams, no backend request."
+    }
+  },
+  "historical_lost_source_byte_equivalence_claimed": false,
+  "limits": [
+    "No browser, runtime, backend, full typecheck or build executed.",
+    "Cancel/add-another tests represent retained-language state; they do not execute the actual UI handlers.",
+    "This is new reconstruction on e758, not restored lost2c7/fd096fe source.",
+    "Accepted202 fence remains a separate architecture-dependent task."
+  ],
+  "recovered_baseline": "e7588f7d6032ad11a08131b3ea6da8c2b5457cfc",
+  "reviewed_at_utc": "2026-10-17T03:27:16.324396+00:00",
+  "reviewed_delta": "Exactly four appended script overlay records affecting the two existing upload forms; all previous records and supplied frontend bytes remain unchanged.",
+  "schema": "recovered-upload-begin-autosave-independent-source-review-v1",
+  "source_pins": {
+    "/workspace/shared/nostr-manga-recovery-20261017/review-begin-autosave-order.log": "be52eef541a1d9d84d99cb2d7d0428e757b4cede0da5c6cc1cba7cd3828959a0",
+    "/workspace/shared/nostr-manga-recovery-20261017/review-begin-autosave-order.mjs": "c269f7a4b716fdc1ae67eeb3848590f7e9eb62e585f9adb0a9367280a5fdc2df",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/platform-integrations/frontend-overlays.mjs": "abc0ba638dde61b4406a27f20c2701c829ebf9ee3582de504b589628bcc940af",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/blank-begin/finite-first-attempt.log": "676bbbd4db6783021951647c296fe2e10518736a6e9ada1aa6c75e9bc660f9bc",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/blank-begin/recovered-base-counterexamples.log": "04fafd1bca066791f6790a35c1cc8f23f3982646498317b13a763a55846c4ec4",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs": "51913a1025a6f961fb909791a236bb95d351602dfd3a59af58363b8a8d95edbf"
+  },
+  "verdict": "narrow-source-seam-clear"
+}

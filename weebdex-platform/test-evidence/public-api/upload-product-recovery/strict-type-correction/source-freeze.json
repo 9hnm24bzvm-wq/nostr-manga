@@ -1,0 +1,105 @@
+{
+  "schema": "recovered-upload-strict-type-correction-v1",
+  "parent_commit": "08be58faedea9fd6d376ac5b8cbf68f49ee84651",
+  "source_files": [
+    {
+      "path": "platform-integrations/public-api/nostr-upload-request.ts",
+      "bytes": 14608,
+      "sha256": "e5b9220baba045e79ba4a98e659e21e9c38ec843238878f48b46229818723174"
+    },
+    {
+      "path": "platform-integrations/public-api/upload-client.ts",
+      "bytes": 47248,
+      "sha256": "81da46b690c1965493c6e3ac5c5fb9cd2fb1fb156566f924cb6c529419f210fc"
+    },
+    {
+      "path": "tests/ci/test_public_upload_adapter_recovery.mjs",
+      "bytes": 39142,
+      "sha256": "ae94d64c2e0a871190cd5f17c9093057ed27629d37dbbdcc0c9b248e2de4acbe"
+    },
+    {
+      "path": "backend/src/public_api/upload_extensions.rs",
+      "bytes": 11863,
+      "sha256": "6031a1495f76999a10dbd252bf51270e7e6e3881eda6faff30ccf53a0e14924f"
+    },
+    {
+      "path": "backend/tests/public_uploads.rs",
+      "bytes": 31722,
+      "sha256": "b42d3dfafc50675953b0d6c4f4e9fea046ce95be6b325f8c9b00b0a9636f36ed"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/strict-enabled-02-diagnostics.json",
+      "bytes": 41322,
+      "sha256": "c9dcf9c2949fd107b45cd1dfd856516ef91f6ca4603cc2bffb3bed2abfbb7460"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/strict-enabled-02.log",
+      "bytes": 14073,
+      "sha256": "20fb1e04f57b2c7f287a9697fe35c90c23835d7682a5cbb30c061f5cb138b825"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/strict-enabled-02-receipt.json",
+      "bytes": 1440,
+      "sha256": "de8999ccd49a18122282aeb92a6f2d0398ac2cec64459f84b6828d643a814897"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/transport-24.log",
+      "bytes": 2820,
+      "sha256": "2f783f7427d91c811355be389042d061886f87e7199eac71881ce756d9462b4a"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/adapter-34.log",
+      "bytes": 3679,
+      "sha256": "5769ced2baa8f9e2c8d0a2abc439c450570af8b19093db9444319eb64602d899"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/dto-transport-independent-review.json",
+      "bytes": 2777,
+      "sha256": "b9bbbd6fad2a28800b7f5594ddc4b4b6321cd7432c2650f91bde779dc78581cf"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/adapter-independent-review.json",
+      "bytes": 1874,
+      "sha256": "690185404a26a33005fd3fdf3551688db6a6e61c3ea201cbf274393036b9949c"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/backend-no-run-compile-receipt.json",
+      "bytes": 78636,
+      "sha256": "b625e57072798ebf9aea6bc27743809702448f24ba5eb0dd4e733453f5faf843"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/strict-type-correction/backend-no-run-compile.log",
+      "bytes": 13279,
+      "sha256": "e2d9541d16f7054916b021634823eaf158af87290d90f9f153bb4607b4599d9f"
+    }
+  ],
+  "scope": [
+    "Declared never-returning failure function restores strict control-flow narrowing.",
+    "Map and validate actual bound user version and native session timestamps/flags without defaults.",
+    "Explicit current Response guard; no transport outcome relaxation.",
+    "Legacy generic caller body projection centralized after exact runtime validation."
+  ],
+  "preserved_failure": {
+    "enabled_strict_attempt02_errors": 55,
+    "component_errors": 0,
+    "warnings": 15
+  },
+  "finite": [
+    {
+      "command": "node --experimental-vm-modules --test tests/ci/test_public_upload_request_recovery.mjs",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "command": "node --experimental-vm-modules --test tests/ci/test_public_upload_adapter_recovery.mjs",
+      "pass": 34,
+      "fail": 0,
+      "log_retention": "verbatim original tool output, no rerun"
+    }
+  ],
+  "backend_compile": "new no-run compile passed with exact source/locks; tests not executed",
+  "frontend_strict": "retry pending; 55-error result remains failed",
+  "runtime": "not qualified"
+}

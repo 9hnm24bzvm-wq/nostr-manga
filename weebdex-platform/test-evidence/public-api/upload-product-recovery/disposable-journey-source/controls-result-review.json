@@ -1,0 +1,51 @@
+{
+  "schema": "independent-finite-result-v1",
+  "verdict": "pass_owner_pure_result",
+  "source_review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-browser-controls-independent-source-review-20261017.json",
+    "sha256": "77c86c76f69bfd5387c99956a6abf9563dfa4eb79220d4f16fc95e6b33cd4c69",
+    "bytes": 2102
+  },
+  "controls": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/public-upload-recovery-controls.mjs",
+    "sha256": "357a4663ec1e0a65e6dcde50b42baf640009bad82ab1de14b28b721cae63b71d",
+    "bytes": 15158
+  },
+  "final_test": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs",
+    "sha256": "d38117926a071bf0e79aebd85439609527fd6bd97fe26f5aff5d855d167ed059",
+    "bytes": 22057
+  },
+  "first_test": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-browser-controls-first-d93d868d.test.mjs",
+    "sha256": "d93d868d2d83ba5649f4583688569eef74b64211ca622acefc3cae735f4d9ca2",
+    "bytes": 22048
+  },
+  "first_log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-browser-controls-first-tool-output-copy-20261017.log",
+    "sha256": "54bea3f16316935cecb05a99142bef2f8e6beb59d28243794c76ecfc43a8ec15",
+    "bytes": 6579
+  },
+  "final_log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-browser-controls-final-tool-output-copy-20261017.log",
+    "sha256": "1412d5d4d187c8ce67bf63932a5ecdf206932b2ef045528368608cbb412b2e6d",
+    "bytes": 5092
+  },
+  "first_result": {
+    "pass": 48,
+    "fail": 1,
+    "reason": "Test selected opening ImageLoader anchor instead of the exact following Empty/Spinner fallback anchor."
+  },
+  "correction": "One test label literal only; first test reconstructed from that inverse substitution and verified against original recorded hash before preservation.",
+  "final_result": {
+    "tests": 49,
+    "pass": 49,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "owner_reported_exit_code": 0
+  },
+  "log_origin": "Exact original tool-output copies; no logging-only rerun.",
+  "scope": "Source/DOM/pointer stand-ins only; no actual browser or gesture qualification.",
+  "time_utc": "2026-10-17T04:23:39.693229+00:00"
+}

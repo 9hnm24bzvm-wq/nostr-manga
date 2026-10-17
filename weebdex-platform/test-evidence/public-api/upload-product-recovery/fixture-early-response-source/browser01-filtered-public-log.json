@@ -1,0 +1,39 @@
+{
+  "schema": "filtered-public-fixture-log-v1",
+  "derivation": "Only exact FIXTURE_READY and FIXTURE_ERROR JSON lines from the retained original log; not a full-log restoration.",
+  "original_sha256": "1950666ad6913b4da3a68cc4aa97c7e0bbe9dd3b7278b4f341824dfbd5592701",
+  "entries": [
+    {
+      "line_number": 1,
+      "prefix": "FIXTURE_READY",
+      "value": {
+        "run_directory": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/browser-final-q0d__qog",
+        "platform_origin": "http://127.0.0.1:32919",
+        "mail_origin": "http://127.0.0.1:58959",
+        "protocol_origin": "http://127.0.0.1:36123",
+        "deadline_unix": 1792216387.003235,
+        "ids": {
+          "manga": "SeedManga1",
+          "second_manga": "SeedManga2",
+          "group": "SeedGroup1",
+          "author": "SeedAuthr1",
+          "chapter": "SeedChapt1",
+          "next_chapter": "SeedChapt2",
+          "alternative_language_chapter": "SeedChapt3",
+          "cover": "SeedCover1",
+          "announcement": "SeedNews01",
+          "thread": "SeedThred1",
+          "seeder": "SeedStaff1"
+        }
+      }
+    },
+    {
+      "line_number": 2,
+      "prefix": "FIXTURE_ERROR",
+      "value": {
+        "type": "URLError",
+        "message": "<urlopen error [Errno 32] Broken pipe>"
+      }
+    }
+  ]
+}

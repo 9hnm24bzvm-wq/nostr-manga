@@ -1,0 +1,29 @@
+{
+  "schema": "recovered-frontend-owned-phase-v1",
+  "label": "strict-enabled-03",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/scripts/check-composed-frontend.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform",
+  "source_commit": "8c0f21607b919bfb8ea60b3443d84c49a3a4a0b3",
+  "source_map_sha256": "32c2e71a9e36f1446f719a7d53091309cce6433ad07b2f910234e758d5dc1d1a",
+  "started_at_utc": "2026-10-17T04:23:25.314007+00:00",
+  "free_before": 27390128128,
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=2048",
+    "WEEBDEX_SEMANTIC_NODE_MODULES": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules",
+    "WEEBDEX_QA_BUILD_RESOURCE_PROFILE": "serial-terser",
+    "PUBLIC_MANGADEX_CATALOGUE": "1",
+    "WEEBDEX_SEMANTIC_OUTPUT": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/strict-enabled-03"
+  },
+  "exit_code": 1,
+  "timed_out": false,
+  "pass": false,
+  "pid": 117,
+  "source_unchanged": true,
+  "staged_package_lock_matches": true,
+  "ended_at_utc": "2026-10-17T04:23:42.047768+00:00",
+  "free_after": 27345494016,
+  "log_sha256": "7711baa781f2d4372e89eccd6f3f3bc34dd05f9a1117d7ca36cd9661a44560c9"
+}

@@ -1,0 +1,386 @@
+{
+  "schema": "owned-exact-upload-backend-integration-v2",
+  "started_at_utc": "2026-10-17T05:17:26.716752+00:00",
+  "command": [
+    "/bin/bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/usr/bin/python3",
+    "-B",
+    "/workspace/shared/nostr-manga-recovery-20261017/run-exact-upload-integration-03.py"
+  ],
+  "source_pins": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+  },
+  "probe_sha256": "b6818488f1b1e1cfaae849c7f267988e8679b9ff23ac9d5b5b1dd3f48500f217",
+  "free_before": 26409689088,
+  "pass": true,
+  "observed_births": [
+    {
+      "pid": 6,
+      "ppid": 5,
+      "group": 6,
+      "session": 6,
+      "start_ticks": 765696,
+      "state": "S"
+    },
+    {
+      "pid": 9,
+      "ppid": 6,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765703,
+      "state": "D"
+    },
+    {
+      "pid": 12,
+      "ppid": 9,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765704,
+      "state": "S"
+    },
+    {
+      "pid": 13,
+      "ppid": 12,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765704,
+      "state": "R"
+    },
+    {
+      "pid": 15,
+      "ppid": 14,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765706,
+      "state": "R"
+    },
+    {
+      "pid": 14,
+      "ppid": 9,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765706,
+      "state": "S"
+    },
+    {
+      "pid": 16,
+      "ppid": 9,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765709,
+      "state": "S"
+    },
+    {
+      "pid": 17,
+      "ppid": 16,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765709,
+      "state": "R"
+    },
+    {
+      "pid": 18,
+      "ppid": 9,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765717,
+      "state": "S"
+    },
+    {
+      "pid": 19,
+      "ppid": 18,
+      "group": 9,
+      "session": 9,
+      "start_ticks": 765717,
+      "state": "R"
+    },
+    {
+      "pid": 22,
+      "ppid": 6,
+      "group": 22,
+      "session": 22,
+      "start_ticks": 765785,
+      "state": "Z"
+    },
+    {
+      "pid": 23,
+      "ppid": 22,
+      "group": 23,
+      "session": 23,
+      "start_ticks": 765788,
+      "state": "S"
+    },
+    {
+      "pid": 24,
+      "ppid": 22,
+      "group": 24,
+      "session": 24,
+      "start_ticks": 765788,
+      "state": "S"
+    },
+    {
+      "pid": 26,
+      "ppid": 22,
+      "group": 26,
+      "session": 26,
+      "start_ticks": 765788,
+      "state": "S"
+    },
+    {
+      "pid": 27,
+      "ppid": 22,
+      "group": 27,
+      "session": 27,
+      "start_ticks": 765788,
+      "state": "S"
+    },
+    {
+      "pid": 28,
+      "ppid": 22,
+      "group": 28,
+      "session": 28,
+      "start_ticks": 765788,
+      "state": "S"
+    },
+    {
+      "pid": 29,
+      "ppid": 6,
+      "group": 29,
+      "session": 29,
+      "start_ticks": 765790,
+      "state": "Z"
+    },
+    {
+      "pid": 32,
+      "ppid": 22,
+      "group": 32,
+      "session": 32,
+      "start_ticks": 765793,
+      "state": "R"
+    },
+    {
+      "pid": 31,
+      "ppid": 6,
+      "group": 31,
+      "session": 31,
+      "start_ticks": 765792,
+      "state": "S"
+    },
+    {
+      "pid": 33,
+      "ppid": 6,
+      "group": 33,
+      "session": 33,
+      "start_ticks": 765796,
+      "state": "Z"
+    },
+    {
+      "pid": 39,
+      "ppid": 22,
+      "group": 39,
+      "session": 39,
+      "start_ticks": 765804,
+      "state": "S"
+    },
+    {
+      "pid": 42,
+      "ppid": 22,
+      "group": 42,
+      "session": 42,
+      "start_ticks": 765852,
+      "state": "S"
+    },
+    {
+      "pid": 44,
+      "ppid": 22,
+      "group": 44,
+      "session": 44,
+      "start_ticks": 765982,
+      "state": "S"
+    }
+  ],
+  "direct_child_pid": 6,
+  "direct_child_birth_confirmed": true,
+  "direct_child_birth": {
+    "pid": 6,
+    "ppid": 5,
+    "group": 6,
+    "session": 6,
+    "start_ticks": 765696,
+    "state": "R"
+  },
+  "exit_code": 0,
+  "terminal_errors": [],
+  "observed_listeners": [
+    {
+      "family": "tcp",
+      "address": "0100007F",
+      "port": 53701,
+      "inode": "238978",
+      "owner": {
+        "pid": 22,
+        "ppid": 6,
+        "group": 22,
+        "session": 22,
+        "start_ticks": 765785,
+        "state": "S"
+      }
+    },
+    {
+      "family": "tcp",
+      "address": "0100007F",
+      "port": 33753,
+      "inode": "240781",
+      "owner": {
+        "pid": 33,
+        "ppid": 6,
+        "group": 33,
+        "session": 33,
+        "start_ticks": 765796,
+        "state": "S"
+      }
+    }
+  ],
+  "terminal_fd_observations": [],
+  "guard_terminal_returncode": 0,
+  "all_observed_listener_ports_refused": true,
+  "remaining_saved_births": [],
+  "new_fixture_directories": [
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-1rhg8uo3"
+  ],
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "error": null,
+    "test_timeout_seconds": 180,
+    "captured_births": [
+      {
+        "pid": 9,
+        "start_ticks": 765703,
+        "group": 9,
+        "session": 9
+      },
+      {
+        "pid": 18,
+        "start_ticks": 765717,
+        "group": 9,
+        "session": 9
+      },
+      {
+        "pid": 19,
+        "start_ticks": 765717,
+        "group": 9,
+        "session": 9
+      },
+      {
+        "pid": 22,
+        "start_ticks": 765785,
+        "group": 22,
+        "session": 22
+      },
+      {
+        "pid": 23,
+        "start_ticks": 765788,
+        "group": 23,
+        "session": 23
+      },
+      {
+        "pid": 24,
+        "start_ticks": 765788,
+        "group": 24,
+        "session": 24
+      },
+      {
+        "pid": 26,
+        "start_ticks": 765788,
+        "group": 26,
+        "session": 26
+      },
+      {
+        "pid": 27,
+        "start_ticks": 765788,
+        "group": 27,
+        "session": 27
+      },
+      {
+        "pid": 28,
+        "start_ticks": 765788,
+        "group": 28,
+        "session": 28
+      },
+      {
+        "pid": 29,
+        "start_ticks": 765790,
+        "group": 29,
+        "session": 29
+      },
+      {
+        "pid": 31,
+        "start_ticks": 765792,
+        "group": 31,
+        "session": 31
+      },
+      {
+        "pid": 33,
+        "start_ticks": 765796,
+        "group": 33,
+        "session": 33
+      },
+      {
+        "pid": 39,
+        "start_ticks": 765804,
+        "group": 39,
+        "session": 39
+      },
+      {
+        "pid": 42,
+        "start_ticks": 765852,
+        "group": 42,
+        "session": 42
+      },
+      {
+        "pid": 44,
+        "start_ticks": 765982,
+        "group": 44,
+        "session": 44
+      }
+    ],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": [],
+    "test_returncode": 0,
+    "postgres_returncode": 0,
+    "startup_timeout_seconds": 10,
+    "cleanup_phase_seconds": [
+      15,
+      5,
+      5
+    ]
+  },
+  "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-1rhg8uo3/cleanup.json",
+  "cleanup_sha256": "605858b8081cc013af75bf96d4241784da6930964474c1fcd0f255a3a3c694c3",
+  "captured_births_absent": true,
+  "saved_probe_births_absent": true,
+  "port_refused": true,
+  "source_unchanged": true,
+  "compiled_source_receipt_sha256": "2b2594f77bd2e64f8f10313f60115cb81491b29446b5a79a6ee6fcda870118b1",
+  "test_summary": {
+    "exact_cases": 1,
+    "passed": 1,
+    "failed": 0,
+    "application_test_pass": true,
+    "scope": "Genuine exact NIP98 HTTP upload/ownership/validation and original commit/recovery contracts."
+  },
+  "ended_at_utc": "2026-10-17T05:17:29.917907+00:00",
+  "free_after": 26358067200,
+  "log_sha256": "db76d9ed1a59ea3f2ed7bef9ac61a43f041e001976af2dede917acf16586123b",
+  "expected_test_exit_code": 0,
+  "application_test_pass": true,
+  "receipt_persisted": true
+}

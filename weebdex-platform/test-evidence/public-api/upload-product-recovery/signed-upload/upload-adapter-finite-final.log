@@ -1,0 +1,50 @@
+EXACT COPIED TOOL OUTPUT (not file-backed capture)
+Command: node --experimental-vm-modules --test tests/ci/test_public_upload_adapter_recovery.mjs
+Working directory: /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform
+Exit code: 0
+Tool output chunk: ee6733
+Source SHA-256: 8e1a26fb953c2a7f9485963052a14acef6d18053548d4b6edb4ce4dd26d15f6c
+Test SHA-256: 6a307ad3c50ca714b8e6c9950a96ea91404050c9e73ea3ceb3009db148b04a48
+BEGIN EXACT COPIED STDOUT/STDERR
+(node:11) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ account binds actual UUID/grants and proves distinct protocol/public origins (4.08392ms)
+✔ admission, empty roles and absent native grants never become upload eligibility (1.45614ms)
+✔ mismatched actor/service/catalogue and fabricated grant flags are refused (1.868921ms)
+✔ identity generation, view disposal and configured scope fence later mutations (5.291447ms)
+✔ only exact owned UUID upload routes are accepted; structural owner copies fail (0.883138ms)
+✔ normal fake begin/one-image attachments/staging/reorder/preview/commit preserve real 200 (14.534575ms)
+✔ explicit terms and acknowledged complete draft/order are required before dispatch (6.770812ms)
+✔ private staging rejects stale draft/order and unknown file sets without PATCH (3.624611ms)
+✔ cancel and exact file/batch deletion preserve actual 200 semantics (4.114157ms)
+✔ unknown attachment is recovered only from one exact new matching original receipt (3.91004ms)
+✔ absence after unknown attachment is never refusal and cannot cause POST replay (2.316374ms)
+✔ definitive per-image rejection stays rejected and later images stay unsent (1.745084ms)
+✔ an explicitly unsent attachment stays unsent and the batch guard blocks late dispatch (2.647661ms)
+✔ unknown commit survives a new owner and only explicit exact receipt reconciliation unlocks (3.114303ms)
+✔ known 202 is accepted-unavailable without inventing a readable chapter or receipt (3.45226ms)
+✔ actual accepted pending response has no readable chapter and stays read-only (2.211986ms)
+✔ failed or stale presentation cannot revive prior chapter fields after accepted 200 (11.337419ms)
+✔ explicit operator/group commit 403 is separate from admission and not accepted (2.371626ms)
+✔ approval result maps actual false and never promotes HTTP200 to moderation state (0.483587ms)
+✔ signed preview validates exact MIME, original digest, size and decoded dimensions (4.451844ms)
+✔ malformed UUID/order/preview/state snapshots fail closed with no invented view (1.592635ms)
+✔ local placeholder snapshots remain representable but can never pass remote validation (0.131478ms)
+✔ resume hydrates exact actual group names through bounded scoped public reads (0.530227ms)
+✔ ordinary PATCH and DELETE are fenced again after asynchronous capability refresh (0.886483ms)
+✔ known 202 body-unavailable transport error retains accepted-unavailable state (4.622331ms)
+✔ same-account discovery for a foreign target stays readable only for redirect (0.979252ms)
+✔ owner A queued DELETE cannot dispatch after owner B has an unresolved commit (2.526589ms)
+✔ simultaneous commit attempts dispatch exactly one natural commit (2.536945ms)
+✔ queued ambiguous current discovery never dispatches after another owner commit fence (2.120349ms)
+✔ preview requires actual private no-store Authorization-vary and nosniff response headers (9.822851ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 282.359398
+END EXACT COPIED STDOUT/STDERR

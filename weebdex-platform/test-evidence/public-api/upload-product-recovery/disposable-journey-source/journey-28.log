@@ -1,0 +1,36 @@
+✔ fake event seam preserves actual body hash without claiming genuine Schnorr (3.040953ms)
+✔ unavailable multipart observation stays unavailable and never becomes expected bytes (0.604158ms)
+✔ HTTP event refuses wrong body (1.340126ms)
+✔ HTTP event refuses wrong signature (0.457578ms)
+✔ HTTP event refuses wrong owner (0.363086ms)
+✔ HTTP event refuses wrong service (0.364097ms)
+✔ HTTP event refuses wrong method (0.373421ms)
+✔ HTTP event refuses foreign origin (0.440553ms)
+✔ HTTP event refuses query (5.61201ms)
+✔ HTTP event refuses empty fragment (1.173265ms)
+✔ HTTP event refuses stale time (4.10658ms)
+✔ duplicate authorization tags cannot borrow a valid fake verification result (0.487302ms)
+✔ observer owns exact native failure and never changes ERR_ABORTED into success (0.945702ms)
+✔ real PNG encoder creates bounded distinct originals with exact dimensions and complete scanlines (3.755037ms)
+✔ durable seam checks genuinely stored order separately from normalized order (2.710286ms)
+✔ durable state refuses changed original storage hash (0.541985ms)
+✔ durable state refuses changed fresh original read (0.334924ms)
+✔ durable state refuses changed foreign actor (0.284798ms)
+✔ durable state refuses changed file membership (0.309616ms)
+✔ independent reader retains actual refusal and uses one fresh exact credential-free GET (5.036043ms)
+✔ independent reader refuses over-cap response without retry and releases owner (0.740333ms)
+✔ journey never fabricates application transport success or native replacement support (0.296046ms)
+✔ source-extracted cleanup still closes every owner after stage persistence and context errors (1.094546ms)
+✔ final evidence write failure preserves nonzero verdict after actual close attempts (0.371869ms)
+✔ complete-stage persistence failure is included before final verdict and save (0.23963ms)
+✔ source-extracted success stage rejects native-finished HTTP 403 (0.415646ms)
+✔ source-extracted success stage rejects native-finished HTTP 503 (0.25249ms)
+✔ source-extracted success stage rejects native-finished HTTP 202 (0.255414ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 154.688248

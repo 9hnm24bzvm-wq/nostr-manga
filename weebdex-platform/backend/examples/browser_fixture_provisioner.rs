@@ -1,6 +1,7 @@
 //! Guarded disposable browser-fixture provisioning, never a deployment tool.
 //! Secrets remain private fixture files; stdout contains only public receipts.
 use anyhow::{Context, Result, ensure};
+use base64::{Engine, engine::general_purpose::STANDARD};
 use manga_node::{
     auth,
     db::{DbConfig, Id, Repository},
@@ -26,6 +27,9 @@ mod ui_regressions;
 // These must satisfy the original UploadStore volume grammar (alnum or '-').
 const SOURCE_VOLUME: &str = "browser-fixture";
 const RECIPIENT_VOLUME: &str = "browser-recipient-fixture";
+const UPLOAD_SCENARIO: &str = "public-upload-v1";
+const UPLOAD_USER: &str = "UpUser0001";
+const UPLOAD_GROUP: &str = "UpGroup001";
 
 #[derive(Debug)]
 enum SeedStage {
@@ -109,6 +113,8 @@ struct Request {
     recipient_origin: Option<String>,
     #[serde(default)]
     scenario: Option<String>,
+    #[serde(default)]
+    session_id: Option<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -918,11 +924,222 @@ async fn status(repo: &Repository, root: &Path) -> Result<Value> {
         json!({"fixture_only":true,"catalog_namespace":namespace,"series":series,"chapters":resources,"fully_ready":all}),
     )
 }
+
+fn upload_fixture_enabled(root: &Path) -> Result<()> {
+    ensure!(
+        bounded_json(&root.join("fixture-owned.json"))?["public_upload_controls"] == true,
+        "explicit public upload fixture opt-in required"
+    );
+    Ok(())
+}
+
+/// These are existing original operator/group APIs, not another storage owner.
+/// The operator secret and its fresh proof never leave this fixture process.
+async fn upload_operator_post(root: &Path, path: &str, payload: Value) -> Result<Value> {
+    let setup = bounded_json(&root.join("protocol-setup.json"))?;
+    let origin = loopback_origin(setup["protocol_origin"].as_str())?;
+    let operator = setup["operator_pubkey"].as_str().context("fixture operator")?;
+    let secret = operator_secret(root, operator)?;
+    let url = format!("{origin}{path}");
+    let body = serde_json::to_vec(&payload)?;
+    let proof = auth::sign(&secret, 27235, vec![
+        vec!["u".into(), url.clone()], vec!["method".into(), "POST".into()],
+        vec!["payload".into(), auth::hash(&body)],
+        vec!["nonce".into(), hex::encode(rand::random::<[u8; 16]>())],
+    ], String::new()).map_err(anyhow::Error::msg)?;
+    let authorization = Zeroizing::new(format!("Nostr {}", STANDARD.encode(serde_json::to_vec(&proof)?)));
+    let client = reqwest::Client::builder().no_proxy()
+        .redirect(reqwest::redirect::Policy::none())
+        .connect_timeout(Duration::from_secs(2)).timeout(Duration::from_secs(5)).build()?;
+    let mut response = client.post(url).header("Authorization", authorization.as_str())
+        .header("Content-Type", "application/json").body(body).send().await?;
+    ensure!(response.status() == reqwest::StatusCode::OK, "original group provision rejected");
+    let mut bytes = Vec::new();
+    while let Some(chunk) = response.chunk().await? {
+        ensure!(bytes.len() + chunk.len() <= 4096, "original group receipt bounds");
+        bytes.extend_from_slice(&chunk);
+    }
+    Ok(serde_json::from_slice(&bytes)?)
+}
+
+async fn upload_account(repo: &Repository, root: &Path, request: &Request) -> Result<Value> {
+    upload_fixture_enabled(root)?;
+    repo.verify_schema().await?;
+    let public = request.pubkey.as_deref().context("synthetic browser public key required")?;
+    id(public)?;
+    let setup = bounded_json(&root.join("protocol-setup.json"))?;
+    ensure!(Some(public) != setup["operator_pubkey"].as_str()
+        && Some(public) != setup["service_key"].as_str(), "browser must use its own synthetic identity");
+    let descriptor_path = root.join("public-upload.json");
+    if descriptor_path.exists() {
+        let receipt = bounded_json(&descriptor_path)?;
+        ensure!(receipt["scenario"] == UPLOAD_SCENARIO && receipt["pubkey"] == public,
+            "recorded upload actor cannot be rebound");
+        let group = id(receipt["group"]["pubkey"].as_str().context("recorded upload group")?)?;
+        let client = repo.pool.get().await?;
+        let valid: bool = client.query_one("SELECT EXISTS(SELECT 1 FROM platform.users u JOIN platform.protocol_identity_bindings b ON b.user_id=u.id JOIN platform.catalog_group_members m ON m.user_id=u.id JOIN platform.protocol_identity_bindings g ON g.group_id=m.group_id WHERE u.id=$1 AND b.publisher=$2 AND u.verified AND NOT u.disabled AND u.profile->>'fixture_scenario'=$3 AND u.permissions='[\"chapter.create\",\"self.chapter.update\"]'::jsonb AND m.group_id=$4 AND g.publisher=$5)", &[&UPLOAD_USER,&public,&UPLOAD_SCENARIO,&UPLOAD_GROUP,&hex::encode(group)]).await?.get(0);
+        ensure!(valid, "recorded upload native authority changed");
+        let valid: bool = client.query_one("SELECT EXISTS(SELECT 1 FROM managed_groups g JOIN group_members m ON m.group_key=g.group_key WHERE g.group_key=$1 AND g.enabled AND m.member=$2 AND m.role='publisher')", &[&group.as_slice(),&id(public)?.as_slice()]).await?.get(0);
+        ensure!(valid, "recorded original upload authority changed");
+        repo.account_permit(id(public)?).await?;
+        return Ok(receipt);
+    }
+    {
+        let client = repo.pool.get().await?;
+        let conflicts: bool = client.query_one("SELECT EXISTS(SELECT 1 FROM platform.users WHERE id=$1) OR EXISTS(SELECT 1 FROM platform.catalog_groups WHERE id=$2) OR EXISTS(SELECT 1 FROM platform.protocol_identity_bindings WHERE publisher=$3 OR user_id=$1 OR group_id=$2)", &[&UPLOAD_USER,&UPLOAD_GROUP,&public]).await?.get(0);
+        ensure!(!conflicts, "fresh fixed upload fixture identities required");
+    }
+    // Persist only the public group identity so an interrupted provision does
+    // not create another group on a same-fixture retry. Never read its key file.
+    let group_path = root.join("public-upload-group.json");
+    let group = if group_path.exists() {
+        let value = bounded_json(&group_path)?;
+        ensure!(value["scenario"] == UPLOAD_SCENARIO && value["member"] == public,
+            "recorded upload group and browser actor cannot be rebound");
+        value["pubkey"].as_str().context("recorded upload group")?.to_owned()
+    } else {
+        let value = upload_operator_post(root, "/admin/groups", json!({"administrator":setup["operator_pubkey"]})).await?;
+        let group = value["group"].as_str().context("original managed group receipt")?.to_owned();
+        id(&group)?;
+        ensure!(value["private_key_returned"] == false && value["custody"] == "instance",
+            "original managed group custody required");
+        write_json(&group_path, &json!({"fixture_only":true,"scenario":UPLOAD_SCENARIO,"pubkey":group,"member":public}))?;
+        group
+    };
+    id(&group)?;
+    let member = upload_operator_post(root, &format!("/groups/{group}/members"),
+        json!({"member":public,"role":"publisher"})).await?;
+    ensure!(member["updated"] == true && member["group"] == group, "original group member receipt required");
+    // Admission alone never confers native grants or original publisher status.
+    repo.set_account_admission(id(public)?, true).await?;
+    let mut client = repo.pool.get().await?;
+    let tx = client.transaction().await?;
+    let seeded = bounded_json(&root.join("protocol-seed.json"))?;
+    let event = seeded["series"]["event_id"].as_str().context("recorded canonical series")?;
+    let manga: String = tx.query_one("SELECT id FROM platform.catalog_manga WHERE protocol_series_id=$1 AND state='published' AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)", &[&event]).await?.get(0);
+    tx.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,roles,permissions,profile) VALUES($1,'SyntheticUploadPublisher','synthetic-upload@example.invalid','not-a-login-password-hash',TRUE,'[\"user\"]','[\"chapter.create\",\"self.chapter.update\"]',jsonb_build_object('fixture_scenario',$2::text))", &[&UPLOAD_USER,&UPLOAD_SCENARIO]).await?;
+    tx.execute("INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name,metadata) VALUES($1,'SeedStaff1','FixtureSeeder','Synthetic signed upload group',jsonb_build_object('fixture_scenario',$2::text))", &[&UPLOAD_GROUP,&UPLOAD_SCENARIO]).await?;
+    tx.execute("INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES($1,$2,'SyntheticUploadPublisher',FALSE,FALSE)", &[&UPLOAD_GROUP,&UPLOAD_USER]).await?;
+    tx.execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)", &[&public,&UPLOAD_USER]).await?;
+    tx.execute("INSERT INTO platform.protocol_identity_bindings(publisher,group_id) VALUES($1,$2)", &[&group,&UPLOAD_GROUP]).await?;
+    let mut aliases = BTreeMap::new();
+    for (kind, native) in [("user", UPLOAD_USER), ("group", UPLOAD_GROUP), ("manga", manga.as_str())] {
+        let alias: String = tx.query_one("SELECT public_id::text FROM platform.public_resource_ids WHERE kind=$1 AND native_id=$2 AND preferred AND principal_type='native'", &[&kind,&native]).await?.get(0);
+        aliases.insert(kind, alias);
+    }
+    let namespace: String = tx.query_one("SELECT namespace::text FROM platform.catalogue_namespace WHERE singleton", &[]).await?.get(0);
+    tx.commit().await?;
+    let receipt = json!({"fixture_only":true,"scenario":UPLOAD_SCENARIO,"pubkey":public,
+        "user":{"native_id":UPLOAD_USER,"id":aliases["user"]},
+        "group":{"native_id":UPLOAD_GROUP,"id":aliases["group"],"pubkey":group},
+        "manga":{"native_id":manga,"id":aliases["manga"],"event_id":event},
+        "catalog_namespace":namespace,"service_key":setup["service_key"],
+        "allowed":true,"original_group_role":"publisher","native_permissions":["chapter.create","self.chapter.update"],
+        "browser_private_key_received":false,"browser_operator_binding":false,"browser_publisher_admission_granted":false});
+    write_json(&descriptor_path, &receipt)?;
+    Ok(receipt)
+}
+
+fn upload_original_observation(root: &Path, key: &str, expected_bytes: i64) -> Result<Value> {
+    use std::io::Read;
+    ensure!(auth::valid_hash(key) && (1..=512).contains(&expected_bytes), "small synthetic PNG observation only");
+    let path = root.join("uploads/objects").join(&key[..2]).join(key);
+    ensure!(path.canonicalize()? == path, "upload original cannot traverse a link");
+    let metadata = std::fs::symlink_metadata(&path)?;
+    ensure!(metadata.is_file() && !metadata.file_type().is_symlink()
+        && metadata.len() == expected_bytes as u64, "synthetic original length changed");
+    let mut bytes = Vec::new();
+    std::fs::File::open(path)?.take(513).read_to_end(&mut bytes)?;
+    ensure!(bytes.len() == expected_bytes as usize && bytes.starts_with(b"\x89PNG\r\n\x1a\n"),
+        "bounded actual synthetic PNG required");
+    Ok(json!({"storage_sha256":auth::hash(&bytes),"storage_bytes":bytes.len(),"fresh_original_read":true}))
+}
+
+async fn upload_snapshot(repo: &Repository, root: &Path, request: &Request) -> Result<Value> {
+    upload_fixture_enabled(root)?;
+    let fixture = bounded_json(&root.join("public-upload.json"))?;
+    ensure!(fixture["scenario"] == UPLOAD_SCENARIO, "recorded upload fixture required");
+    let session = weebdex_platform::public_api::PublicUuid::parse(request.session_id.as_deref().context("exact public session UUID required")?)?;
+    let mut client = repo.pool.get().await?;
+    let tx = client.transaction().await?;
+    let count: i64 = tx.query_one("SELECT count(*) FROM platform.upload_sessions WHERE owner_id=$1", &[&UPLOAD_USER]).await?.get(0);
+    ensure!(count <= 2, "two-session synthetic upload observation budget");
+    let row = tx.query_one("SELECT s.id,s.state,s.version,s.resume_draft,s.resume_page_order,s.committed_chapter_id,s.commit_hash,s.committed_result FROM platform.upload_sessions s JOIN platform.public_resource_ids a ON a.kind='upload_session' AND a.native_id=s.id AND a.principal_type='native' WHERE a.public_id::text=$1 AND s.owner_id=$2 AND s.manga_id=$3 AND s.groups=$4 FOR SHARE OF s", &[&session.as_str(),&UPLOAD_USER,&fixture["manga"]["native_id"].as_str().context("fixture manga")?,&vec![UPLOAD_GROUP.to_owned()]]).await?;
+    let native: String = row.get(0);
+    let stored: Vec<String> = row.get(4);
+    let current = tx.query("SELECT a.public_id::text,f.id,f.position,f.original_name,o.digest,o.bytes,o.storage_key,o.mime FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id JOIN platform.public_resource_ids a ON a.kind='upload_file' AND a.native_id=f.id AND a.preferred AND a.principal_type='native' WHERE f.session_id=$1 ORDER BY f.position,f.id LIMIT 4 FOR SHARE OF f,o", &[&native]).await?;
+    ensure!(current.len() <= 3, "three-file synthetic upload observation budget");
+    let mut files = Vec::new();
+    for file in &current {
+        ensure!(file.get::<_,String>(7) == "image/png", "synthetic PNG observation only");
+        let observation = upload_original_observation(root, &file.get::<_,String>(6), file.get(5))?;
+        files.push(json!({"id":file.get::<_,String>(0),"position":file.get::<_,i32>(2),
+            "original_file_name":file.get::<_,String>(3),"file_hash":file.get::<_,String>(4),"file_size":file.get::<_,i64>(5),
+            "storage_sha256":observation["storage_sha256"],"storage_bytes":observation["storage_bytes"],"fresh_original_read":true}));
+    }
+    let mut native_order = stored.clone();
+    if row.get::<_,String>(1) == "open" {
+        native_order.retain(|id| current.iter().any(|file|file.get::<_,String>(1) == *id));
+        for file in &current { let id: String = file.get(1); if !native_order.contains(&id) { native_order.push(id); } }
+    }
+    ensure!(native_order.len() <= 3 && stored.len() <= 3, "bounded stored page order required");
+    let mut page_order = Vec::new();
+    for file in &native_order {
+        page_order.push(tx.query_one("SELECT public_id::text FROM platform.public_resource_ids WHERE kind='upload_file' AND native_id=$1 AND preferred AND principal_type='native'", &[&file]).await?.get::<_,String>(0));
+    }
+    // Preserve the actual autosave evidence independently of the API-like
+    // effective order. Normalization must never hide a stale/missing save.
+    let mut stored_page_order = Vec::new();
+    for file in &stored {
+        stored_page_order.push(tx.query_one("SELECT public_id::text FROM platform.public_resource_ids WHERE kind='upload_file' AND native_id=$1 AND preferred AND principal_type='native'", &[&file]).await?.get::<_,String>(0));
+    }
+    let mut chapter = Value::Null;
+    let chapter_native: Option<String> = row.get(5);
+    if let Some(chapter_id) = &chapter_native {
+        let c = tx.query_one("SELECT a.public_id::text,c.title,c.protocol_event_id,c.is_unavailable FROM platform.catalog_chapters c JOIN platform.public_resource_ids a ON a.kind='chapter' AND a.native_id=c.id AND a.preferred AND a.principal_type='native' WHERE c.id=$1 AND c.uploader_id=$2 AND c.manga_id=$3", &[&chapter_id,&UPLOAD_USER,&fixture["manga"]["native_id"].as_str().context("fixture manga")?]).await?;
+        let pages = tx.query("SELECT p.position,o.digest,o.bytes,o.storage_key,o.mime FROM platform.chapter_pages p JOIN platform.media_objects o ON o.id=p.object_id WHERE p.chapter_id=$1 ORDER BY p.position LIMIT 4 FOR SHARE OF p,o", &[&chapter_id]).await?;
+        ensure!(pages.len() <= 3, "three-page synthetic chapter observation budget");
+        let mut observed = Vec::new();
+        for page in pages {
+            ensure!(page.get::<_,String>(4) == "image/png", "synthetic chapter PNG required");
+            let observation = upload_original_observation(root, &page.get::<_,String>(3), page.get(2))?;
+            observed.push(json!({"position":page.get::<_,i32>(0),"file_hash":page.get::<_,String>(1),
+                "storage_sha256":observation["storage_sha256"],"storage_bytes":observation["storage_bytes"],"fresh_original_read":true}));
+        }
+        chapter = json!({"id":c.get::<_,String>(0),"title":c.get::<_,Option<String>>(1),"event_id":c.get::<_,Option<String>>(2),"is_unavailable":c.get::<_,bool>(3),"pages":observed});
+    }
+    let commands = tx.query("SELECT state,event_id FROM platform.protocol_publication_commands WHERE upload_session_id=$1 AND user_id=$2 AND group_id=$3 AND resource_kind='chapter' LIMIT 2", &[&native,&UPLOAD_USER,&UPLOAD_GROUP]).await?;
+    ensure!(commands.len() <= 1, "exact upload command required");
+    let mut publication = Value::Null;
+    if let Some(command) = commands.first() {
+        let event_id: Option<String> = command.get(1);
+        let mut original = Value::Null;
+        if let Some(event_id) = &event_id {
+            if let Some(event) = tx.query_opt("SELECT raw_event,state FROM events WHERE id=$1", &[&id(event_id)?.as_slice()]).await? {
+                let signed: auth::Event = serde_json::from_value(event.get(0))?;
+                signed.verify().map_err(anyhow::Error::msg)?;
+                ensure!(signed.id == *event_id && signed.kind == 1001 && Some(signed.pubkey.as_str()) == fixture["group"]["pubkey"].as_str(), "exact genuine group chapter event required");
+                original = json!({"id":signed.id,"kind":signed.kind,"pubkey":signed.pubkey,"verified":true,"state":event.get::<_,String>(1)});
+            }
+        }
+        publication = json!({"state":command.get::<_,String>(0),"event_id":event_id,"original_event":original});
+    }
+    let committed: Option<Value> = row.get(7);
+    let result = json!({"fixture_only":true,"scenario":UPLOAD_SCENARIO,"pubkey":fixture["pubkey"],
+        "user":fixture["user"],"group":fixture["group"],"manga":fixture["manga"],
+        "session":{"id":session,"state":row.get::<_,String>(1),"version":row.get::<_,i32>(2),
+            "draft":row.get::<_,Option<Value>>(3),"page_order":page_order,
+            "page_order_source":"effective_stored_plus_current_files","stored_page_order":stored_page_order,"files":files,
+            "committed_chapter_id":chapter.get("id"),"commit_hash":row.get::<_,Option<String>>(6),
+            "publication_status":committed.as_ref().and_then(|value|value.get("publication_status"))},"publication":publication,"chapter":chapter});
+    tx.commit().await?;
+    Ok(result)
+}
 async fn run() -> Result<Value> {
     let arguments: Vec<_> = std::env::args().collect();
     ensure!(
         arguments.len() == 3,
-        "usage: browser_fixture_provisioner setup|seed|account|status REQUEST.json"
+        "usage: browser_fixture_provisioner ACTION REQUEST.json"
     );
     let request: Request = serde_json::from_value(bounded_json(Path::new(&arguments[2]))?)?;
     let root = fixture_root(&request.root)?;
@@ -950,6 +1167,8 @@ async fn run() -> Result<Value> {
             )
         }
         "status" => status(&repo, &root).await,
+        "upload-account" => upload_account(&repo, &root, &request).await,
+        "upload-snapshot" => upload_snapshot(&repo, &root, &request).await,
         "source-revoke" => source_revoke(&repo, &root, &request).await,
         "source-restore" => source_restore(&repo, &root, &request).await,
         "source-status" => source_status(&repo, &root, &request).await,
@@ -1033,5 +1252,34 @@ mod tests {
             safe_failure(&io),
             ("seed-runtime-open", "filesystem-permission-denied")
         );
+    }
+
+    #[test]
+    fn upload_controls_require_explicit_fixture_opt_in() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::write(root.path().join("fixture-owned.json"), b"{\"fixture_only\":true}").unwrap();
+        assert!(upload_fixture_enabled(root.path()).is_err());
+        std::fs::write(root.path().join("fixture-owned.json"), b"{\"public_upload_controls\":true}").unwrap();
+        assert!(upload_fixture_enabled(root.path()).is_ok());
+    }
+
+    #[test]
+    fn upload_observation_hashes_fresh_bounded_original_bytes() {
+        let root = tempfile::tempdir().unwrap();
+        let key = "11".repeat(32);
+        let path = root.path().join("uploads/objects/11").join(&key);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        let first = b"\x89PNG\r\n\x1a\nsynthetic-one";
+        let second = b"\x89PNG\r\n\x1a\nsynthetic-two";
+        std::fs::write(&path, first).unwrap();
+        let a = upload_original_observation(root.path(), &key, first.len() as i64).unwrap();
+        assert_eq!(a["storage_sha256"], auth::hash(first));
+        std::fs::write(&path, second).unwrap();
+        let b = upload_original_observation(root.path(), &key, second.len() as i64).unwrap();
+        assert_eq!(b["storage_sha256"], auth::hash(second));
+        assert_ne!(a["storage_sha256"], b["storage_sha256"]);
+        assert!(upload_original_observation(root.path(), &key, 513).is_err());
+        assert!(upload_original_observation(root.path(), "../invalid", first.len() as i64).is_err());
+        assert!(upload_original_observation(root.path(), &key, 1).is_err());
     }
 }

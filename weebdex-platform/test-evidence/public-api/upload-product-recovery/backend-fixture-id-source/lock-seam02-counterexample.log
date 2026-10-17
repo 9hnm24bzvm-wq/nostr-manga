@@ -1,0 +1,18 @@
+
+running 1 test
+test account_write_lock_allows_publication_fk_and_excludes_authority_changes ... FAILED
+
+failures:
+
+---- account_write_lock_allows_publication_fk_and_excludes_authority_changes stdout ----
+
+thread 'account_write_lock_allows_publication_fk_and_excludes_authority_changes' panicked at tests/public_uploads.rs:360:19:
+independent publication FK must coexist with the account write fence: Error { kind: Db, cause: Some(DbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E55P03), message: "canceling statement due to lock timeout", detail: None, hint: None, position: None, where_: Some("while locking tuple (0,1) in relation \"users\"\nSQL statement \"SELECT 1 FROM ONLY \"platform\".\"users\" x WHERE \"id\" OPERATOR(pg_catalog.=) $1 FOR KEY SHARE OF x\""), schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("postgres.c"), line: Some(3399), routine: Some("ProcessInterrupts") }) }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    account_write_lock_allows_publication_fk_and_excludes_authority_changes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 1.90s
+

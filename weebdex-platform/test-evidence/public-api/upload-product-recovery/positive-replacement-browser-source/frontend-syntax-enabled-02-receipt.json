@@ -1,0 +1,37 @@
+{
+  "schema": "replacement-frontend-build-owned-v1",
+  "label": "syntax-enabled-02",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/scripts/compile-frontend-source.mjs"
+  ],
+  "source_commit": "e45052ca987a18d3be1fa9792c210e6840a78713",
+  "source_map_sha256": "fa0453f6dcdf7e5edae6e03b4eb5bef18da3b7a6d4ba2827b91088baa7d0f9dd",
+  "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "strict_receipt_pins": {
+    "strict-default-02": "5d28095f455d8131993630184dc845190d8c3dce3f96653d4b3c0217f3b6df5f",
+    "strict-enabled-02": "46d475e361c7644c3a672735a3118a360a7665523c64bbe5b717ede2b91691bf"
+  },
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=2048",
+    "WEEBDEX_SEMANTIC_NODE_MODULES": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules",
+    "WEEBDEX_QA_BUILD_RESOURCE_PROFILE": "serial-terser",
+    "PUBLIC_MANGADEX_CATALOGUE": "1",
+    "WEEBDEX_FRONTEND_ROOT": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-enabled-02"
+  },
+  "started_at_utc": "2026-10-17T06:41:51.027489+00:00",
+  "pass": true,
+  "exit_code": 0,
+  "timed_out": false,
+  "terminal_errors": [],
+  "receipt_persisted": true,
+  "pid": 33,
+  "child_reaped": true,
+  "source_dependencies_and_browser03_unchanged": true,
+  "pipeline_evidence_sha256": "d96413d5708abba5a0178b97731803ae53d6cadf74f7b00337a304635a1ba1f3",
+  "pipeline_pass": true,
+  "artifact_retained": null,
+  "free_after": 24900648960,
+  "log_sha256": "c6387f5c5a63d9f1fd62acdc73896e410e346cc88f91e5f74ec8376ff512971f",
+  "ended_at_utc": "2026-10-17T06:41:55.449672+00:00"
+}

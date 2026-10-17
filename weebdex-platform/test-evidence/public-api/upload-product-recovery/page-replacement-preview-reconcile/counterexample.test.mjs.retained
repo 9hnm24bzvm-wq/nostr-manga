@@ -1,0 +1,67 @@
+// Source-only keyed-card/lease counterexample. The genuine composed adoption
+// function and preview lease execute with explicit fake DOM lifecycle, transport,
+// URL and account inputs. This is not Svelte/browser/HTTP/decoder evidence.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { pathToFileURL } from 'node:url';
+import { createHash } from 'node:crypto';
+import { stripTypeScriptTypes } from 'node:module';
+const root=path.resolve(process.env.REPLACEMENT_SOURCE_ROOT ?? '/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform');
+const hash=value=>createHash('sha256').update(value).digest('hex');
+const spec=JSON.parse(fs.readFileSync(path.join(root,'platform-integrations/public-api/upload-anchors.json'),'utf8'));
+const nativeText=fs.readFileSync(path.join(root,'platform-integrations/frontend-overlays.mjs'),'utf8');
+const native=JSON.parse(nativeText.slice(nativeText.indexOf('const patches = [')+'const patches = '.length,nativeText.indexOf('\n];\nconst hash')+2));
+const relative='src/lib/components/upload/UploadChapterPages.svelte';
+let code=fs.readFileSync(path.join(root,'frontend',relative),'utf8');
+const expected=spec.files.find(row=>row.path===relative);assert.equal(hash(code),expected.source_sha256);
+for(const patch of native.filter(row=>row.path===relative)){assert.equal(code.split(patch.before).length-1,patch.count);code=code.split(patch.before).join(patch.after);}
+assert.equal(hash(code),expected.composed_sha256);
+const {applyPublicUploadOverlay}=await import(pathToFileURL(path.join(root,'platform-integrations/public-api/upload-overlays.mjs')).href);
+code=applyPublicUploadOverlay(code,relative);assert.equal(hash(code),expected.output_sha256);assert.match(code,/\{#each pages as page, i \(page\)\}/);
+const from=code.indexOf('const adoptReplacement ='),to=code.indexOf('const checkSignedReplacement =',from);assert.ok(from>=0&&to>from);
+const adoption=stripTypeScriptTypes(code.slice(from,to),{mode:'transform'});
+const previewPath=path.join(root,'platform-integrations/public-api/upload-preview.ts');
+const context=vm.createContext({Blob,URL,Promise,Set,Map,Symbol,Object,Error,Number,JSON});
+const preview=new vm.SourceTextModule(stripTypeScriptTypes(fs.readFileSync(previewPath,'utf8'),{mode:'transform'}),{context});
+await preview.link(()=>{throw Error('Unexpected preview dependency');});await preview.evaluate();
+const {createUploadPreviewLease,revokeUploadPreviewUrl}=preview.namespace;
+function scenario({existingUrl=false}={}){
+  const bytes=Uint8Array.from([137,80,78,71,13,10,26,10,1,2,3,4]);
+  const file={id:'stable-file',file_hash:hash(bytes),file_size:String(bytes.length),original_file_name:'confirmed.png'};
+  const session={id:'exact-session',can_mutate:existingUrl,can_cancel:existingUrl,can_retry_commit:existingUrl};
+  const calls={loads:0,created:[],revoked:[]};let pending=!existingUrl,mounted=file,lease;
+  const owner={assert(){},pendingReplacement:()=>pending?{sessionId:session.id,fileId:file.id}:undefined};
+  const env={owner,uploadSession:session,pages:[file],Constants:{Error:{Error:class extends Error{}}},URL:{createObjectURL(){throw Error('Unexpected local File thumbnail');}},
+    acknowledge:(current,saved)=>Object.assign(current,{can_mutate:saved.can_mutate,can_cancel:saved.can_cancel,can_retry_commit:saved.can_retry_commit}),
+    revokeThumbnail:page=>{if(page.thumbnail&&!revokeUploadPreviewUrl(page.thumbnail))throw Error('Unowned preview release');}};
+  const adopt=new Function('env',`with(env){${adoption};return adoptReplacement;}`)(env);
+  const details=()=>({sessionId:session.id,fileId:env.pages[0].id,fileHash:env.pages[0].file_hash,fileSize:bytes.length,mimeType:'image/png',owner});
+  const create=()=>createUploadPreviewLease({
+    load:async()=>{calls.loads++;if(pending)throw Error('Explicit fake unresolved replacement fence');return new Blob([bytes],{type:'image/png'});},
+    isCurrent:()=>true,onChange:state=>{if(state.url)env.pages[0].thumbnail=state.url;},
+    url:{createObjectURL:()=>{const url='blob:finite-signed-preview-'+(calls.created.length+1);calls.created.push(url);return url;},revokeObjectURL:url=>calls.revoked.push(url)},
+  });
+  lease=create();
+  return {file,session,env,calls,async first(){await lease.update(details());},getState:()=>lease.getState(),
+    async reconcile(){
+      // Model only a successful explicit read-only receipt result. Backend and
+      // adapter receipt/fence validation have separate tests; no POST is invoked.
+      pending=false;adopt(session,{id:session.id,can_mutate:true,can_cancel:true,can_retry_commit:true},{...file,thumbnail:undefined},file);
+      if(env.pages[0]!==mounted){lease.dispose();mounted=env.pages[0];lease=create();}
+      // Even an explicit same-key update cannot retry an existing error lease.
+      await lease.update(details());
+    },close(){lease.dispose();bytes.fill(0);}};
+}
+test('confirmed same-hash card without a thumbnail starts a fresh keyed preview lease after explicit reconciliation',async()=>{
+  const s=scenario();try{assert.equal(s.session.can_mutate,false);await s.first();assert.equal(s.getState().status,'error');assert.equal(s.env.pages[0].thumbnail,undefined);assert.equal(s.calls.loads,1);
+    await s.reconcile();assert.equal(s.session.can_mutate,true);assert.equal(s.calls.loads,2,'A confirmed no-thumbnail card needs a fresh lease instead of retaining its failed same-key lease');assert.equal(s.getState().status,'ready');assert.equal(s.calls.created.length,1);
+  }finally{s.close();}
+});
+test('confirmed same-hash card with its valid preview preserves the keyed card and owned URL',async()=>{
+  const s=scenario({existingUrl:true});try{await s.first();const url=s.env.pages[0].thumbnail;assert.equal(s.getState().status,'ready');assert.equal(s.calls.loads,1);
+    await s.reconcile();assert.equal(s.env.pages[0],s.file);assert.equal(s.env.pages[0].thumbnail,url);assert.equal(s.calls.loads,1);assert.deepEqual(s.calls.revoked,[]);
+  }finally{s.close();}
+});

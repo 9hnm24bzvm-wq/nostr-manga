@@ -1,0 +1,39 @@
+{
+  "schema": "independent-replacement-strict-result-review-v1",
+  "reviewed_at_utc": "2026-10-17T06:41:29.385526+00:00",
+  "decision": "both_corrected_source_strict_profiles_passed",
+  "source_commit": "e45052ca987a18d3be1fa9792c210e6840a78713",
+  "profiles": {
+    "strict-default-02": {
+      "receipt_sha256": "5d28095f455d8131993630184dc845190d8c3dce3f96653d4b3c0217f3b6df5f",
+      "summary_sha256": "aefd8da97e453c76f1769620da621fcfa64f9397d4d1719fc6e97b636ae00d4a",
+      "log_sha256": "1824623eacea02d778e36a1dc2e6a8f57010605135f43118e231fafce59f70e0",
+      "errors": 0,
+      "warnings": 15,
+      "checker_and_worker_exit": 0,
+      "owner_exit": 0,
+      "child_reaped": true
+    },
+    "strict-enabled-02": {
+      "receipt_sha256": "46d475e361c7644c3a672735a3118a360a7665523c64bbe5b717ede2b91691bf",
+      "summary_sha256": "a5d89a55fd629342cfe6934bd014e70244424e4dc29dd5b8fc584f05e781f7f8",
+      "log_sha256": "3590a8a8cda3ad3c03149f8b138d4771bd4f87ed0dd10db5c17e11203597bf7d",
+      "errors": 0,
+      "warnings": 15,
+      "checker_and_worker_exit": 0,
+      "owner_exit": 0,
+      "child_reaped": true
+    }
+  },
+  "current_input_recheck": {
+    "source_files": 858,
+    "dependency_entries": 39226,
+    "held_browser_pins": 1167,
+    "held_frontend_members": 432,
+    "all_exact": true
+  },
+  "limits": [
+    "Strict checks only; syntax/Vite and actual browser separate.",
+    "Reviewer did not execute compiler/runtime."
+  ]
+}

@@ -1,0 +1,1002 @@
+▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:12:
+      2 │   "extends": "./.svelte-kit/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:12:
+      2 │   "extends": "./.svelte-kit/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+vite v7.3.1 building ssr environment for platform...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+2:42:52 AM [vite-plugin-svelte] src/routes/(app)/group/[id]/Group.svelte:47:41 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+45: 
+46:   const mutex = new Mutex();
+47:   const group = writable<ScanlationGroup>(data);
+                                                  ^
+48:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));
+49:   const comments = useComments();
+2:42:52 AM [vite-plugin-svelte] src/routes/(app)/user/[id]/User.svelte:45:29 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+43: 
+44:   const mutex = new Mutex();
+45:   const user = writable<User>(data);
+                                      ^
+46:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));
+47:   const comments = useComments();
+2:42:52 AM [vite-plugin-svelte] /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/frontend-behavior/MangaEditBoundary.svelte:12:31 This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+10:   type Receipt = Manga & { publication_scope?: string; publication_status?: string; protocol_event_id?: string; is_unavailable?: boolean; can_mutate?: boolean; can_cancel?: boolean; can_retry_publication?: boolean; publication_retry_version?: number };
+11:   const { data }: { data: { manga: Receipt; covers: Cover[] } } = $props();
+12:   let current = $state<Receipt>(data.manga);
+                                        ^
+13:   let covers = $state<Cover[]>(data.covers);
+14:   let available = $state(true), busy = $state(false), uncertain = $state(false), failure = $state<Constants.Error.Error>();
+2:42:52 AM [vite-plugin-svelte] /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/frontend-behavior/MangaEditBoundary.svelte:13:30 This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+11:   const { data }: { data: { manga: Receipt; covers: Cover[] } } = $props();
+12:   let current = $state<Receipt>(data.manga);
+13:   let covers = $state<Cover[]>(data.covers);
+                                       ^
+14:   let available = $state(true), busy = $state(false), uncertain = $state(false), failure = $state<Constants.Error.Error>();
+15:   let targetGeneration = 0, disposed = false, activeTarget = data.manga.id;
+2:42:52 AM [vite-plugin-svelte] /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/frontend-behavior/MangaEditBoundary.svelte:15:60 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+13:   let covers = $state<Cover[]>(data.covers);
+14:   let available = $state(true), busy = $state(false), uncertain = $state(false), failure = $state<Constants.Error.Error>();
+15:   let targetGeneration = 0, disposed = false, activeTarget = data.manga.id;
+                                                                     ^
+16:   $effect(() => { const incoming = data.manga; if (incoming.id !== activeTarget) { activeTarget = incoming.id; targetGeneration++; busy = false; } current = incoming; covers = data.covers; available = true; uncertain = false; failure = undefined; });
+17:   onDestroy(() => { disposed = true; targetGeneration++; });
+2:42:52 AM [vite-plugin-svelte] src/lib/components/upload/UploadChapter.svelte:34:43 This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+32:   } = $props();
+33:   const mutex = new Mutex();
+34:   const owner = targetOwner(() => manga.id, user);
+                                                    ^
+35:   setUploadOwner(owner);
+36: 
+
+/fonts/geist-v4-latin-100.eot referenced in /fonts/geist-v4-latin-100.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.eot?#iefix referenced in /fonts/geist-v4-latin-100.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.eot referenced in /fonts/geist-v4-latin-200.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.eot?#iefix referenced in /fonts/geist-v4-latin-200.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.eot referenced in /fonts/geist-v4-latin-300.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.eot?#iefix referenced in /fonts/geist-v4-latin-300.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.eot referenced in /fonts/geist-v4-latin-regular.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.eot?#iefix referenced in /fonts/geist-v4-latin-regular.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.eot referenced in /fonts/geist-v4-latin-500.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.eot?#iefix referenced in /fonts/geist-v4-latin-500.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.eot referenced in /fonts/geist-v4-latin-600.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.eot?#iefix referenced in /fonts/geist-v4-latin-600.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.eot referenced in /fonts/geist-v4-latin-700.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.eot?#iefix referenced in /fonts/geist-v4-latin-700.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.eot referenced in /fonts/geist-v4-latin-800.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.eot?#iefix referenced in /fonts/geist-v4-latin-800.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.eot referenced in /fonts/geist-v4-latin-900.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.eot?#iefix referenced in /fonts/geist-v4-latin-900.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.woff referenced in /fonts/geist-v4-latin-100.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.woff referenced in /fonts/geist-v4-latin-200.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.woff referenced in /fonts/geist-v4-latin-300.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.woff referenced in /fonts/geist-v4-latin-regular.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.woff referenced in /fonts/geist-v4-latin-500.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.woff referenced in /fonts/geist-v4-latin-600.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.woff referenced in /fonts/geist-v4-latin-700.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.woff referenced in /fonts/geist-v4-latin-800.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.woff referenced in /fonts/geist-v4-latin-900.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.ttf referenced in /fonts/geist-v4-latin-100.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.ttf referenced in /fonts/geist-v4-latin-200.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.ttf referenced in /fonts/geist-v4-latin-300.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.ttf referenced in /fonts/geist-v4-latin-regular.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.ttf referenced in /fonts/geist-v4-latin-500.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.ttf referenced in /fonts/geist-v4-latin-600.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.ttf referenced in /fonts/geist-v4-latin-700.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.ttf referenced in /fonts/geist-v4-latin-800.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.ttf referenced in /fonts/geist-v4-latin-900.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.svg#Geist referenced in /fonts/geist-v4-latin-100.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.svg#Geist referenced in /fonts/geist-v4-latin-200.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.svg#Geist referenced in /fonts/geist-v4-latin-300.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.svg#Geist referenced in /fonts/geist-v4-latin-regular.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.svg#Geist referenced in /fonts/geist-v4-latin-500.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.svg#Geist referenced in /fonts/geist-v4-latin-600.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.svg#Geist referenced in /fonts/geist-v4-latin-700.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.svg#Geist referenced in /fonts/geist-v4-latin-800.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.svg#Geist referenced in /fonts/geist-v4-latin-900.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+2:42:53 AM [vite-plugin-svelte] src/lib/components/ReportChapterCard.svelte:7:37 This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 5: 
+ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+ 7:   const title = Utils.chapterHeadline(chapter);
+                                                 ^
+ 8:   const role = chapter.relationships?.uploader?.roles
+ 9:     ? chapter.relationships.uploader.roles
+2:42:53 AM [vite-plugin-svelte] src/lib/components/ReportChapterCard.svelte:8:14 This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+ 7:   const title = Utils.chapterHeadline(chapter);
+ 8:   const role = chapter.relationships?.uploader?.roles
+                          ^
+ 9:     ? chapter.relationships.uploader.roles
+10:         .slice()
+2:42:53 AM [vite-plugin-svelte] src/lib/components/ReportChapterCard.svelte:9:4 This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 7:   const title = Utils.chapterHeadline(chapter);
+ 8:   const role = chapter.relationships?.uploader?.roles
+ 9:     ? chapter.relationships.uploader.roles
+                 ^
+10:         .slice()
+11:         .sort((a, b) => Constants.User.RoleOrder.indexOf(a) - Constants.User.RoleOrder.indexOf(b))[0]
+2:42:53 AM [vite-plugin-svelte] src/routes/(app)/title/MangaRelatedSection.svelte:18:48 This reference only captures the initial value of `manga`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+16: 
+17:   const manga = $derived(getManga()());
+18:   let relations = $state<Relation[] | undefined>(manga.relationships.relations);
+                                                          ^
+19:   const filteredRelations = $derived(
+20:     relations?.filter(
+2:42:58 AM [vite-plugin-svelte] src/lib/components/ChapterListFilter.svelte:32:58 This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+30:   });
+31:   let initialSearch = $state.raw<ListChaptersRequest>(readAppliedSearch());
+32:   let search = $state<ListChaptersRequest>(structuredClone(initialSearch));
+                                                                            ^
+33:   // Actual navigation changes the applied baseline. Editing the draft alone
+34:   // never resets it; Apply compares against the current URL, not mount time.
+"default" is imported from external module "headroom.js" but never used in "src/lib/components/reader/reader-pagination.svelte".
+✓ 5161 modules transformed.
+rendering chunks...
+[plugin vite:reporter] 
+(!) /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/indexeddb.js is dynamically imported by /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/library.ts but also statically imported by /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/device-store.ts, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/library.ts, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol-identity.ts, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/backup.js, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/outbox.js, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/store.js, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/public-api/device-id-migration.ts, dynamic import will not move module into another chunk.
+
+vite v7.3.1 building client environment for platform...
+transforming...
+2:43:11 AM [vite-plugin-svelte] src/routes/(app)/group/[id]/Group.svelte:47:41 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+45: 
+46:   const mutex = new Mutex();
+47:   const group = writable<ScanlationGroup>(data);
+                                                  ^
+48:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));
+49:   const comments = useComments();
+2:43:11 AM [vite-plugin-svelte] src/routes/(app)/user/[id]/User.svelte:45:29 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+43: 
+44:   const mutex = new Mutex();
+45:   const user = writable<User>(data);
+                                      ^
+46:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));
+47:   const comments = useComments();
+2:43:11 AM [vite-plugin-svelte] /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/frontend-behavior/MangaEditBoundary.svelte:12:31 This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+10:   type Receipt = Manga & { publication_scope?: string; publication_status?: string; protocol_event_id?: string; is_unavailable?: boolean; can_mutate?: boolean; can_cancel?: boolean; can_retry_publication?: boolean; publication_retry_version?: number };
+11:   const { data }: { data: { manga: Receipt; covers: Cover[] } } = $props();
+12:   let current = $state<Receipt>(data.manga);
+                                        ^
+13:   let covers = $state<Cover[]>(data.covers);
+14:   let available = $state(true), busy = $state(false), uncertain = $state(false), failure = $state<Constants.Error.Error>();
+2:43:11 AM [vite-plugin-svelte] /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/frontend-behavior/MangaEditBoundary.svelte:13:30 This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+11:   const { data }: { data: { manga: Receipt; covers: Cover[] } } = $props();
+12:   let current = $state<Receipt>(data.manga);
+13:   let covers = $state<Cover[]>(data.covers);
+                                       ^
+14:   let available = $state(true), busy = $state(false), uncertain = $state(false), failure = $state<Constants.Error.Error>();
+15:   let targetGeneration = 0, disposed = false, activeTarget = data.manga.id;
+2:43:11 AM [vite-plugin-svelte] /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/frontend-behavior/MangaEditBoundary.svelte:15:60 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+13:   let covers = $state<Cover[]>(data.covers);
+14:   let available = $state(true), busy = $state(false), uncertain = $state(false), failure = $state<Constants.Error.Error>();
+15:   let targetGeneration = 0, disposed = false, activeTarget = data.manga.id;
+                                                                     ^
+16:   $effect(() => { const incoming = data.manga; if (incoming.id !== activeTarget) { activeTarget = incoming.id; targetGeneration++; busy = false; } current = incoming; covers = data.covers; available = true; uncertain = false; failure = undefined; });
+17:   onDestroy(() => { disposed = true; targetGeneration++; });
+2:43:11 AM [vite-plugin-svelte] src/lib/components/upload/UploadChapter.svelte:34:43 This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+32:   } = $props();
+33:   const mutex = new Mutex();
+34:   const owner = targetOwner(() => manga.id, user);
+                                                    ^
+35:   setUploadOwner(owner);
+36: 
+
+/fonts/geist-v4-latin-100.eot referenced in /fonts/geist-v4-latin-100.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.eot?#iefix referenced in /fonts/geist-v4-latin-100.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.eot referenced in /fonts/geist-v4-latin-200.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.eot?#iefix referenced in /fonts/geist-v4-latin-200.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.eot referenced in /fonts/geist-v4-latin-300.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.eot?#iefix referenced in /fonts/geist-v4-latin-300.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.eot referenced in /fonts/geist-v4-latin-regular.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.eot?#iefix referenced in /fonts/geist-v4-latin-regular.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.eot referenced in /fonts/geist-v4-latin-500.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.eot?#iefix referenced in /fonts/geist-v4-latin-500.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.eot referenced in /fonts/geist-v4-latin-600.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.eot?#iefix referenced in /fonts/geist-v4-latin-600.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.eot referenced in /fonts/geist-v4-latin-700.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.eot?#iefix referenced in /fonts/geist-v4-latin-700.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.eot referenced in /fonts/geist-v4-latin-800.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.eot?#iefix referenced in /fonts/geist-v4-latin-800.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.eot referenced in /fonts/geist-v4-latin-900.eot didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.eot?#iefix referenced in /fonts/geist-v4-latin-900.eot? didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.woff referenced in /fonts/geist-v4-latin-100.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.woff referenced in /fonts/geist-v4-latin-200.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.woff referenced in /fonts/geist-v4-latin-300.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.woff referenced in /fonts/geist-v4-latin-regular.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.woff referenced in /fonts/geist-v4-latin-500.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.woff referenced in /fonts/geist-v4-latin-600.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.woff referenced in /fonts/geist-v4-latin-700.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.woff referenced in /fonts/geist-v4-latin-800.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.woff referenced in /fonts/geist-v4-latin-900.woff didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.ttf referenced in /fonts/geist-v4-latin-100.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.ttf referenced in /fonts/geist-v4-latin-200.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.ttf referenced in /fonts/geist-v4-latin-300.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.ttf referenced in /fonts/geist-v4-latin-regular.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.ttf referenced in /fonts/geist-v4-latin-500.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.ttf referenced in /fonts/geist-v4-latin-600.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.ttf referenced in /fonts/geist-v4-latin-700.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.ttf referenced in /fonts/geist-v4-latin-800.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.ttf referenced in /fonts/geist-v4-latin-900.ttf didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-100.svg#Geist referenced in /fonts/geist-v4-latin-100.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-200.svg#Geist referenced in /fonts/geist-v4-latin-200.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-300.svg#Geist referenced in /fonts/geist-v4-latin-300.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-regular.svg#Geist referenced in /fonts/geist-v4-latin-regular.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-500.svg#Geist referenced in /fonts/geist-v4-latin-500.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-600.svg#Geist referenced in /fonts/geist-v4-latin-600.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-700.svg#Geist referenced in /fonts/geist-v4-latin-700.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-800.svg#Geist referenced in /fonts/geist-v4-latin-800.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+/fonts/geist-v4-latin-900.svg#Geist referenced in /fonts/geist-v4-latin-900.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+2:43:12 AM [vite-plugin-svelte] src/lib/components/ReportChapterCard.svelte:7:37 This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 5: 
+ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+ 7:   const title = Utils.chapterHeadline(chapter);
+                                                 ^
+ 8:   const role = chapter.relationships?.uploader?.roles
+ 9:     ? chapter.relationships.uploader.roles
+2:43:12 AM [vite-plugin-svelte] src/lib/components/ReportChapterCard.svelte:8:14 This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+ 7:   const title = Utils.chapterHeadline(chapter);
+ 8:   const role = chapter.relationships?.uploader?.roles
+                          ^
+ 9:     ? chapter.relationships.uploader.roles
+10:         .slice()
+2:43:12 AM [vite-plugin-svelte] src/lib/components/ReportChapterCard.svelte:9:4 This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 7:   const title = Utils.chapterHeadline(chapter);
+ 8:   const role = chapter.relationships?.uploader?.roles
+ 9:     ? chapter.relationships.uploader.roles
+                 ^
+10:         .slice()
+11:         .sort((a, b) => Constants.User.RoleOrder.indexOf(a) - Constants.User.RoleOrder.indexOf(b))[0]
+2:43:12 AM [vite-plugin-svelte] src/routes/(app)/title/MangaRelatedSection.svelte:18:48 This reference only captures the initial value of `manga`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+16: 
+17:   const manga = $derived(getManga()());
+18:   let relations = $state<Relation[] | undefined>(manga.relationships.relations);
+                                                          ^
+19:   const filteredRelations = $derived(
+20:     relations?.filter(
+2:43:17 AM [vite-plugin-svelte] src/lib/components/ChapterListFilter.svelte:32:58 This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+30:   });
+31:   let initialSearch = $state.raw<ListChaptersRequest>(readAppliedSearch());
+32:   let search = $state<ListChaptersRequest>(structuredClone(initialSearch));
+                                                                            ^
+33:   // Actual navigation changes the applied baseline. Editing the draft alone
+34:   // never resets it; Apply compares against the current URL, not mount time.
+✓ 5606 modules transformed.
+rendering chunks...
+[plugin vite:reporter] 
+(!) /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/indexeddb.js is dynamically imported by /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/library.ts but also statically imported by /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/device-store.ts, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/library.ts, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol-identity.ts, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/backup.js, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/outbox.js, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/local-library/protocol/store.js, /workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/platform-integrations/public-api/device-id-migration.ts, dynamic import will not move module into another chunk.
+
+.svelte-kit/output/client/_app/version.json                                          0.03 kB
+.svelte-kit/output/client/manifest.webmanifest                                       0.65 kB
+.svelte-kit/output/client/_app/immutable/workers/worker-DsJw6kqX.js                 19.05 kB
+.svelte-kit/output/client/_app/immutable/workers/projection-worker-BEkOPD-A.js      20.78 kB
+.svelte-kit/output/client/.vite/manifest.json                                      131.62 kB
+.svelte-kit/output/client/_app/immutable/assets/26.CgHh8YIy.css                      0.05 kB
+.svelte-kit/output/client/_app/immutable/assets/ChapterFeed.Dp774upy.css             0.10 kB
+.svelte-kit/output/client/_app/immutable/assets/reader.PJBrTZR9.css                  0.11 kB
+.svelte-kit/output/client/_app/immutable/assets/lightbox.Cy1qJB3O.css                0.16 kB
+.svelte-kit/output/client/_app/immutable/assets/TagsSection.0KEhcAJr.css             0.21 kB
+.svelte-kit/output/client/_app/immutable/assets/select.CV-KWLNP.css                  0.29 kB
+.svelte-kit/output/client/_app/immutable/assets/scroll-area.bHHIbcsu.css             0.35 kB
+.svelte-kit/output/client/_app/immutable/assets/Manga.BVSk0eab.css                   0.35 kB
+.svelte-kit/output/client/_app/immutable/assets/72.CHc5Bq1Q.css                      0.43 kB
+.svelte-kit/output/client/_app/immutable/assets/MangaSearchEntryCard.DbLEN4SY.css    0.65 kB
+.svelte-kit/output/client/_app/immutable/assets/0.DFkFvi2o.css                     155.93 kB
+.svelte-kit/output/client/_app/immutable/chunks/sDYslN56.js                          0.04 kB
+.svelte-kit/output/client/_app/immutable/chunks/CxMLkNhH.js                          0.06 kB
+.svelte-kit/output/client/_app/immutable/chunks/zImHEY6i.js                          0.06 kB
+.svelte-kit/output/client/_app/immutable/chunks/CHDFxf9f.js                          0.06 kB
+.svelte-kit/output/client/_app/immutable/chunks/1vXN4_O6.js                          0.08 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cm9PB-7n.js                          0.08 kB
+.svelte-kit/output/client/_app/immutable/chunks/DWV9S5NP.js                          0.08 kB
+.svelte-kit/output/client/_app/immutable/entry/start.Co4Rpi2c.js                     0.08 kB
+.svelte-kit/output/client/_app/immutable/nodes/74.CLNNiiLs.js                        0.10 kB
+.svelte-kit/output/client/_app/immutable/chunks/BeNVQcQc.js                          0.14 kB
+.svelte-kit/output/client/_app/immutable/chunks/D97YsICq.js                          0.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/DBzm1pZF.js                          0.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dl2qjzx6.js                          0.19 kB
+.svelte-kit/output/client/_app/immutable/chunks/CYiIDbFO.js                          0.21 kB
+.svelte-kit/output/client/_app/immutable/nodes/6.BYFDNDnv.js                         0.22 kB
+.svelte-kit/output/client/_app/immutable/nodes/20.BYFDNDnv.js                        0.22 kB
+.svelte-kit/output/client/_app/immutable/nodes/22.BYFDNDnv.js                        0.22 kB
+.svelte-kit/output/client/_app/immutable/chunks/BHR_E30J.js                          0.24 kB
+.svelte-kit/output/client/_app/immutable/chunks/CT29LYeM.js                          0.24 kB
+.svelte-kit/output/client/_app/immutable/chunks/BUtVAZvR.js                          0.24 kB
+.svelte-kit/output/client/_app/immutable/chunks/CbJcaZVS.js                          0.26 kB
+.svelte-kit/output/client/_app/immutable/chunks/tNG5auSD.js                          0.27 kB
+.svelte-kit/output/client/_app/immutable/chunks/DgNLfY_u.js                          0.29 kB
+.svelte-kit/output/client/_app/immutable/chunks/DIDLbtbi.js                          0.30 kB
+.svelte-kit/output/client/_app/immutable/nodes/7.CdcrwSKs.js                         0.31 kB
+.svelte-kit/output/client/_app/immutable/nodes/10.CdcrwSKs.js                        0.31 kB
+.svelte-kit/output/client/_app/immutable/nodes/14.isbyGq2E.js                        0.31 kB
+.svelte-kit/output/client/_app/immutable/nodes/16.CM38aYUu.js                        0.31 kB
+.svelte-kit/output/client/_app/immutable/nodes/19.CdcrwSKs.js                        0.31 kB
+.svelte-kit/output/client/_app/immutable/nodes/21.CdcrwSKs.js                        0.31 kB
+.svelte-kit/output/client/_app/immutable/nodes/25.CdcrwSKs.js                        0.31 kB
+.svelte-kit/output/client/_app/immutable/chunks/fXBKo2pu.js                          0.32 kB
+.svelte-kit/output/client/_app/immutable/chunks/BDhEHMNf.js                          0.36 kB
+.svelte-kit/output/client/_app/immutable/chunks/DpacI0oB.js                          0.36 kB
+.svelte-kit/output/client/_app/immutable/chunks/BKAPf3Yv.js                          0.36 kB
+.svelte-kit/output/client/_app/immutable/chunks/BlnhIPMx.js                          0.38 kB
+.svelte-kit/output/client/_app/immutable/nodes/61.Dp_FITB0.js                        0.40 kB
+.svelte-kit/output/client/_app/immutable/nodes/62.Dp_FITB0.js                        0.40 kB
+.svelte-kit/output/client/_app/immutable/chunks/CeuLjZEG.js                          0.40 kB
+.svelte-kit/output/client/_app/immutable/chunks/CUg0e6VS.js                          0.43 kB
+.svelte-kit/output/client/_app/immutable/chunks/CsjU3ZYQ.js                          0.44 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dr41_lR2.js                          0.47 kB
+.svelte-kit/output/client/_app/immutable/chunks/nDX9mQjU.js                          0.47 kB
+.svelte-kit/output/client/_app/immutable/chunks/BmUcL7Dn.js                          0.47 kB
+.svelte-kit/output/client/_app/immutable/chunks/C_NKba9B.js                          0.47 kB
+.svelte-kit/output/client/_app/immutable/chunks/BPvzi0n1.js                          0.48 kB
+.svelte-kit/output/client/_app/immutable/chunks/D2uPk9s4.js                          0.48 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dx0R9s-C.js                          0.48 kB
+.svelte-kit/output/client/_app/immutable/chunks/CPCkqZ4K.js                          0.48 kB
+.svelte-kit/output/client/_app/immutable/chunks/BugzRhX3.js                          0.48 kB
+.svelte-kit/output/client/_app/immutable/chunks/BqnSV1mu.js                          0.50 kB
+.svelte-kit/output/client/_app/immutable/chunks/Ce1Rlk7u.js                          0.50 kB
+.svelte-kit/output/client/_app/immutable/chunks/CGGOZnfe.js                          0.50 kB
+.svelte-kit/output/client/_app/immutable/nodes/49.CKTm-EJm.js                        0.51 kB
+.svelte-kit/output/client/_app/immutable/nodes/77.DXPudA-a.js                        0.51 kB
+.svelte-kit/output/client/_app/immutable/chunks/De2O6N2x.js                          0.51 kB
+.svelte-kit/output/client/_app/immutable/chunks/CkwMX60B.js                          0.52 kB
+.svelte-kit/output/client/_app/immutable/chunks/D5Doe0hz.js                          0.53 kB
+.svelte-kit/output/client/_app/immutable/chunks/BQvh8WwO.js                          0.53 kB
+.svelte-kit/output/client/_app/immutable/chunks/CyQWVmlC.js                          0.54 kB
+.svelte-kit/output/client/_app/immutable/chunks/CCMwKsjs.js                          0.54 kB
+.svelte-kit/output/client/_app/immutable/chunks/C6d6zjqJ.js                          0.55 kB
+.svelte-kit/output/client/_app/immutable/chunks/BiWiVYAW.js                          0.56 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dkdzs8cV.js                          0.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/CbjJ-5EC.js                          0.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/WREA7cs7.js                          0.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/ul7L6F1t.js                          0.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/D1fUYxQm.js                          0.59 kB
+.svelte-kit/output/client/_app/immutable/chunks/BOfdsm9P.js                          0.59 kB
+.svelte-kit/output/client/_app/immutable/chunks/CWGnryeA.js                          0.59 kB
+.svelte-kit/output/client/_app/immutable/chunks/C2d210AK.js                          0.59 kB
+.svelte-kit/output/client/_app/immutable/chunks/2UPx5YYX.js                          0.59 kB
+.svelte-kit/output/client/_app/immutable/chunks/B3duKH7F.js                          0.59 kB
+.svelte-kit/output/client/_app/immutable/chunks/DEQYLri8.js                          0.59 kB
+.svelte-kit/output/client/_app/immutable/nodes/3.CYx7P3kW.js                         0.60 kB
+.svelte-kit/output/client/_app/immutable/chunks/CX3-AFmY.js                          0.60 kB
+.svelte-kit/output/client/_app/immutable/chunks/Bl7z0uVp.js                          0.60 kB
+.svelte-kit/output/client/_app/immutable/chunks/86d5QAhh.js                          0.60 kB
+.svelte-kit/output/client/_app/immutable/chunks/CmswFptb.js                          0.61 kB
+.svelte-kit/output/client/_app/immutable/chunks/BIFpNdaL.js                          0.61 kB
+.svelte-kit/output/client/_app/immutable/chunks/DmturkUF.js                          0.61 kB
+.svelte-kit/output/client/_app/immutable/chunks/TS2kFLXX.js                          0.62 kB
+.svelte-kit/output/client/_app/immutable/chunks/BQpIYGeX.js                          0.63 kB
+.svelte-kit/output/client/_app/immutable/chunks/BPe7WgKM.js                          0.64 kB
+.svelte-kit/output/client/_app/immutable/nodes/53._qfrg2rn.js                        0.64 kB
+.svelte-kit/output/client/_app/immutable/nodes/15.BLzKfZMD.js                        0.64 kB
+.svelte-kit/output/client/_app/immutable/chunks/DWlS2sJk.js                          0.64 kB
+.svelte-kit/output/client/_app/immutable/chunks/CT25_22z.js                          0.65 kB
+.svelte-kit/output/client/_app/immutable/chunks/meQNcQNe.js                          0.65 kB
+.svelte-kit/output/client/_app/immutable/chunks/BlXdgmmJ.js                          0.67 kB
+.svelte-kit/output/client/_app/immutable/chunks/BoZLAPqq.js                          0.67 kB
+.svelte-kit/output/client/_app/immutable/nodes/18.B-dQbrOP.js                        0.67 kB
+.svelte-kit/output/client/_app/immutable/chunks/BKTUIuwu.js                          0.68 kB
+.svelte-kit/output/client/_app/immutable/chunks/CnL0jExq.js                          0.68 kB
+.svelte-kit/output/client/_app/immutable/chunks/CQjwmosI.js                          0.70 kB
+.svelte-kit/output/client/_app/immutable/chunks/N4FgcWZM.js                          0.70 kB
+.svelte-kit/output/client/_app/immutable/chunks/bs4qh9Sw.js                          0.71 kB
+.svelte-kit/output/client/_app/immutable/nodes/8.D-naShe1.js                         0.71 kB
+.svelte-kit/output/client/_app/immutable/nodes/9.CdWzGUUt.js                         0.71 kB
+.svelte-kit/output/client/_app/immutable/nodes/11.CdWzGUUt.js                        0.71 kB
+.svelte-kit/output/client/_app/immutable/chunks/BkTyjCGB.js                          0.72 kB
+.svelte-kit/output/client/_app/immutable/chunks/Mi1Qqnww.js                          0.73 kB
+.svelte-kit/output/client/_app/immutable/chunks/CJ8Bexo6.js                          0.74 kB
+.svelte-kit/output/client/_app/immutable/chunks/euRtEyNT.js                          0.74 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cg88bn4c.js                          0.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/H96HEUVP.js                          0.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/DtiyFBF2.js                          0.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/DFYZZZCJ.js                          0.77 kB
+.svelte-kit/output/client/_app/immutable/chunks/CbdV-rcn.js                          0.77 kB
+.svelte-kit/output/client/_app/immutable/nodes/24.C64PmUez.js                        0.77 kB
+.svelte-kit/output/client/_app/immutable/nodes/13.DZHu_Y4e.js                        0.77 kB
+.svelte-kit/output/client/_app/immutable/nodes/5.C7WbQhgS.js                         0.78 kB
+.svelte-kit/output/client/_app/immutable/chunks/DPSQPI9c.js                          0.79 kB
+.svelte-kit/output/client/_app/immutable/nodes/47.BUsd-2tp.js                        0.79 kB
+.svelte-kit/output/client/_app/immutable/chunks/C35En7zc.js                          0.81 kB
+.svelte-kit/output/client/_app/immutable/chunks/SnkH-tVk.js                          0.82 kB
+.svelte-kit/output/client/_app/immutable/chunks/DjbR0yjQ.js                          0.82 kB
+.svelte-kit/output/client/_app/immutable/chunks/3eDESjeI.js                          0.84 kB
+.svelte-kit/output/client/_app/immutable/chunks/3VbI_N7n.js                          0.87 kB
+.svelte-kit/output/client/_app/immutable/chunks/BcfK-c4M.js                          0.88 kB
+.svelte-kit/output/client/_app/immutable/chunks/ViwPlzN1.js                          0.89 kB
+.svelte-kit/output/client/_app/immutable/chunks/DpZBrUTG.js                          0.89 kB
+.svelte-kit/output/client/_app/immutable/chunks/DyQl2-q3.js                          0.89 kB
+.svelte-kit/output/client/_app/immutable/chunks/BPkAJh3J.js                          0.91 kB
+.svelte-kit/output/client/_app/immutable/nodes/58.oMfS_Fwk.js                        0.93 kB
+.svelte-kit/output/client/_app/immutable/chunks/0OTMlw9A.js                          0.95 kB
+.svelte-kit/output/client/_app/immutable/chunks/CazYQAGe.js                          0.95 kB
+.svelte-kit/output/client/_app/immutable/nodes/75.Da8kWBie.js                        0.96 kB
+.svelte-kit/output/client/_app/immutable/chunks/DFiRzBdt.js                          0.99 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cxk0wu3h.js                          0.99 kB
+.svelte-kit/output/client/_app/immutable/chunks/CDR3LwRk.js                          1.00 kB
+.svelte-kit/output/client/_app/immutable/chunks/11_4uU4D.js                          1.00 kB
+.svelte-kit/output/client/_app/immutable/chunks/DcqY0kb7.js                          1.00 kB
+.svelte-kit/output/client/_app/immutable/chunks/C6Gxcli1.js                          1.01 kB
+.svelte-kit/output/client/_app/immutable/chunks/DNMALHG5.js                          1.01 kB
+.svelte-kit/output/client/_app/immutable/chunks/fTXsorMA.js                          1.03 kB
+.svelte-kit/output/client/_app/immutable/chunks/BNoVFjNX.js                          1.03 kB
+.svelte-kit/output/client/_app/immutable/nodes/54.DEaKxqCb.js                        1.07 kB
+.svelte-kit/output/client/_app/immutable/chunks/Bx-k-hLE.js                          1.08 kB
+.svelte-kit/output/client/_app/immutable/nodes/56.BvjrzbQx.js                        1.08 kB
+.svelte-kit/output/client/_app/immutable/chunks/Bk_3XGw8.js                          1.09 kB
+.svelte-kit/output/client/_app/immutable/nodes/73.C11vfYm3.js                        1.10 kB
+.svelte-kit/output/client/_app/immutable/chunks/4lm2_wsk.js                          1.10 kB
+.svelte-kit/output/client/_app/immutable/chunks/J9o-So12.js                          1.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/0QzuuHq3.js                          1.19 kB
+.svelte-kit/output/client/_app/immutable/chunks/aD2SDDNZ.js                          1.20 kB
+.svelte-kit/output/client/_app/immutable/chunks/DqKfy6K3.js                          1.22 kB
+.svelte-kit/output/client/_app/immutable/chunks/BDcg6ug9.js                          1.22 kB
+.svelte-kit/output/client/_app/immutable/chunks/CgvsJPj0.js                          1.23 kB
+.svelte-kit/output/client/_app/immutable/chunks/CWPwPku0.js                          1.24 kB
+.svelte-kit/output/client/_app/immutable/nodes/59.BYcfRqFH.js                        1.24 kB
+.svelte-kit/output/client/_app/immutable/chunks/DcV8T-rq.js                          1.32 kB
+.svelte-kit/output/client/_app/immutable/chunks/BrT3hXdV.js                          1.36 kB
+.svelte-kit/output/client/_app/immutable/chunks/BMPP95pd.js                          1.37 kB
+.svelte-kit/output/client/_app/immutable/chunks/BcEsjgaz.js                          1.37 kB
+.svelte-kit/output/client/_app/immutable/chunks/8VDVD0D-.js                          1.39 kB
+.svelte-kit/output/client/_app/immutable/chunks/C1_kQPp5.js                          1.40 kB
+.svelte-kit/output/client/_app/immutable/chunks/ywp3MJT6.js                          1.49 kB
+.svelte-kit/output/client/_app/immutable/nodes/42.Bjkz9Wf1.js                        1.49 kB
+.svelte-kit/output/client/_app/immutable/chunks/DidZtmRi.js                          1.49 kB
+.svelte-kit/output/client/_app/immutable/nodes/27.B62qPaEC.js                        1.51 kB
+.svelte-kit/output/client/_app/immutable/chunks/DbOrkFjc.js                          1.55 kB
+.svelte-kit/output/client/_app/immutable/nodes/68.BJF2UFRW.js                        1.56 kB
+.svelte-kit/output/client/_app/immutable/chunks/ul3_EBEQ.js                          1.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/UUs9Pn2v.js                          1.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/BI7Wu2AH.js                          1.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/DO0TR-bF.js                          1.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/DR7IzmXD.js                          1.62 kB
+.svelte-kit/output/client/_app/immutable/chunks/BIdRAaR3.js                          1.62 kB
+.svelte-kit/output/client/_app/immutable/chunks/B4Sfl6TS.js                          1.62 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cw6gcTLE.js                          1.64 kB
+.svelte-kit/output/client/_app/immutable/nodes/29.87inAchr.js                        1.70 kB
+.svelte-kit/output/client/_app/immutable/chunks/CbLtRPNE.js                          1.72 kB
+.svelte-kit/output/client/_app/immutable/chunks/C1MtcSgr.js                          1.72 kB
+.svelte-kit/output/client/_app/immutable/chunks/BNR085nB.js                          1.75 kB
+.svelte-kit/output/client/_app/immutable/nodes/69.BFZsN-hL.js                        1.75 kB
+.svelte-kit/output/client/_app/immutable/nodes/70.BFZsN-hL.js                        1.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/LpjJrbp2.js                          1.78 kB
+.svelte-kit/output/client/_app/immutable/chunks/C9uaURno.js                          1.82 kB
+.svelte-kit/output/client/_app/immutable/chunks/DySPSKJy.js                          1.84 kB
+.svelte-kit/output/client/_app/immutable/chunks/CKqzqggZ.js                          1.86 kB
+.svelte-kit/output/client/_app/immutable/chunks/7m3A7r7X.js                          1.86 kB
+.svelte-kit/output/client/_app/immutable/nodes/40.i9A35VYE.js                        1.87 kB
+.svelte-kit/output/client/_app/immutable/nodes/41.i9A35VYE.js                        1.87 kB
+.svelte-kit/output/client/_app/immutable/chunks/DNqAu53g.js                          1.88 kB
+.svelte-kit/output/client/_app/immutable/chunks/D5cTy-RC.js                          1.91 kB
+.svelte-kit/output/client/_app/immutable/chunks/BnG_MYs2.js                          1.94 kB
+.svelte-kit/output/client/_app/immutable/chunks/B34Z59bf.js                          1.95 kB
+.svelte-kit/output/client/_app/immutable/chunks/DmEmt5ZL.js                          2.02 kB
+.svelte-kit/output/client/_app/immutable/nodes/60.DXW1Bx69.js                        2.11 kB
+.svelte-kit/output/client/_app/immutable/chunks/wWANUjuE.js                          2.11 kB
+.svelte-kit/output/client/_app/immutable/nodes/55.Btms6H1I.js                        2.16 kB
+.svelte-kit/output/client/_app/immutable/chunks/CYI5XGQj.js                          2.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/CrBSFbUt.js                          2.24 kB
+.svelte-kit/output/client/_app/immutable/nodes/1.Dskdyl5X.js                         2.29 kB
+.svelte-kit/output/client/_app/immutable/chunks/DclelfyS.js                          2.31 kB
+.svelte-kit/output/client/_app/immutable/chunks/EXRtX8lI.js                          2.35 kB
+.svelte-kit/output/client/_app/immutable/nodes/33.BYp5g66H.js                        2.41 kB
+.svelte-kit/output/client/_app/immutable/chunks/CqmlwtEe.js                          2.46 kB
+.svelte-kit/output/client/_app/immutable/chunks/BrXe80fW.js                          2.53 kB
+.svelte-kit/output/client/_app/immutable/nodes/31.CTj3rp7g.js                        2.56 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dbqxd6Re.js                          2.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/DhNbQ0oG.js                          2.60 kB
+.svelte-kit/output/client/_app/immutable/chunks/BPYB7Cam.js                          2.69 kB
+.svelte-kit/output/client/_app/immutable/chunks/CuFBdgoP.js                          2.76 kB
+.svelte-kit/output/client/_app/immutable/nodes/28.4Bc3-rJ8.js                        2.77 kB
+.svelte-kit/output/client/_app/immutable/chunks/CDExCkvD.js                          2.81 kB
+.svelte-kit/output/client/_app/immutable/chunks/C67JBYib.js                          2.84 kB
+.svelte-kit/output/client/_app/immutable/chunks/DJuFF-p6.js                          2.94 kB
+.svelte-kit/output/client/_app/immutable/nodes/51.ouI80i_X.js                        3.21 kB
+.svelte-kit/output/client/_app/immutable/nodes/39.C3yFZ4NS.js                        3.23 kB
+.svelte-kit/output/client/_app/immutable/nodes/80.CorG8FBD.js                        3.41 kB
+.svelte-kit/output/client/_app/immutable/nodes/52.00T-amp7.js                        3.44 kB
+.svelte-kit/output/client/_app/immutable/chunks/DKlN9fc-.js                          3.48 kB
+.svelte-kit/output/client/_app/immutable/nodes/79.BWjFJ-5a.js                        3.49 kB
+.svelte-kit/output/client/_app/immutable/chunks/BJmuM1ji.js                          3.58 kB
+.svelte-kit/output/client/_app/immutable/nodes/17.D78mnqdu.js                        3.62 kB
+.svelte-kit/output/client/_app/immutable/chunks/BKh5VZgI.js                          3.62 kB
+.svelte-kit/output/client/_app/immutable/chunks/DsjJfLh9.js                          3.71 kB
+.svelte-kit/output/client/_app/immutable/nodes/76.BY-TSPGd.js                        3.83 kB
+.svelte-kit/output/client/_app/immutable/chunks/aE0Ap4qS.js                          3.84 kB
+.svelte-kit/output/client/_app/immutable/chunks/CsT1j05I.js                          4.15 kB
+.svelte-kit/output/client/_app/immutable/nodes/78.CWOQsPVl.js                        4.67 kB
+.svelte-kit/output/client/_app/immutable/nodes/4.DijqIm_6.js                         4.70 kB
+.svelte-kit/output/client/_app/immutable/nodes/37.CvSYj4PP.js                        4.76 kB
+.svelte-kit/output/client/_app/immutable/nodes/43.Ds1KR15L.js                        4.88 kB
+.svelte-kit/output/client/_app/immutable/chunks/hn5zH84t.js                          5.10 kB
+.svelte-kit/output/client/_app/immutable/chunks/Bm_rzyut.js                          5.28 kB
+.svelte-kit/output/client/_app/immutable/chunks/BqXTEN-1.js                          5.38 kB
+.svelte-kit/output/client/_app/immutable/chunks/DKdSwJ96.js                          5.42 kB
+.svelte-kit/output/client/_app/immutable/chunks/sWAXxayr.js                          5.65 kB
+.svelte-kit/output/client/_app/immutable/chunks/CLYUWRvB.js                          5.67 kB
+.svelte-kit/output/client/_app/immutable/nodes/65.DxwFaN49.js                        5.67 kB
+.svelte-kit/output/client/_app/immutable/chunks/DPrmNbul.js                          5.94 kB
+.svelte-kit/output/client/_app/immutable/chunks/6l_dcKYd.js                          6.09 kB
+.svelte-kit/output/client/_app/immutable/chunks/CyDKrGWH.js                          6.29 kB
+.svelte-kit/output/client/_app/immutable/chunks/OaqAMd7P.js                          6.39 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cn2easOq.js                          6.70 kB
+.svelte-kit/output/client/_app/immutable/chunks/BWFhlI5o.js                          6.76 kB
+.svelte-kit/output/client/_app/immutable/nodes/48.BVlAbrm0.js                        7.00 kB
+.svelte-kit/output/client/_app/immutable/chunks/DyJc_Mvb.js                          7.07 kB
+.svelte-kit/output/client/_app/immutable/chunks/BUiMT3Yo.js                          7.28 kB
+.svelte-kit/output/client/_app/immutable/nodes/36.D0nd69Sq.js                        7.29 kB
+.svelte-kit/output/client/_app/immutable/nodes/38.B0fYJHP9.js                        7.51 kB
+.svelte-kit/output/client/_app/immutable/chunks/C4wrj7fU.js                          7.54 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cpp05FXJ.js                          7.90 kB
+.svelte-kit/output/client/_app/immutable/chunks/csTS0T_D.js                          8.03 kB
+.svelte-kit/output/client/_app/immutable/chunks/BD2xMz3Q.js                          8.06 kB
+.svelte-kit/output/client/_app/immutable/nodes/23.Bu00RlxH.js                        8.87 kB
+.svelte-kit/output/client/_app/immutable/chunks/D8EGUiSa.js                          8.90 kB
+.svelte-kit/output/client/_app/immutable/nodes/30.CNQ-og-6.js                        9.01 kB
+.svelte-kit/output/client/_app/immutable/chunks/BNBRNcwV.js                          9.03 kB
+.svelte-kit/output/client/_app/immutable/nodes/32.Bm6X6wFp.js                        9.25 kB
+.svelte-kit/output/client/_app/immutable/chunks/BUT_lqb9.js                         10.84 kB
+.svelte-kit/output/client/_app/immutable/nodes/64.B3Rs44vW.js                       11.38 kB
+.svelte-kit/output/client/_app/immutable/chunks/C3dzCLks.js                         11.46 kB
+.svelte-kit/output/client/_app/immutable/chunks/DeZiexR7.js                         12.15 kB
+.svelte-kit/output/client/_app/immutable/nodes/46.DGryllun.js                       12.52 kB
+.svelte-kit/output/client/_app/immutable/chunks/B8pBhTot.js                         12.91 kB
+.svelte-kit/output/client/_app/immutable/nodes/34.CEyrCPml.js                       13.33 kB
+.svelte-kit/output/client/_app/immutable/nodes/63.CM9hSD9x.js                       13.72 kB
+.svelte-kit/output/client/_app/immutable/nodes/44.D4X4iUlj.js                       14.54 kB
+.svelte-kit/output/client/_app/immutable/nodes/45.BmCP2xGN.js                       15.31 kB
+.svelte-kit/output/client/_app/immutable/nodes/35.Bn5ady3q.js                       15.84 kB
+.svelte-kit/output/client/_app/immutable/nodes/50.BmJdmT1_.js                       15.95 kB
+.svelte-kit/output/client/_app/immutable/nodes/67.g8FMhRWj.js                       17.26 kB
+.svelte-kit/output/client/_app/immutable/nodes/12.Cwx6uAM3.js                       18.07 kB
+.svelte-kit/output/client/_app/immutable/chunks/2ZkJo56D.js                         18.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/VjKxqcdJ.js                         19.05 kB
+.svelte-kit/output/client/_app/immutable/chunks/S81SvWrt.js                         19.29 kB
+.svelte-kit/output/client/_app/immutable/chunks/CohoXZwJ.js                         19.32 kB
+.svelte-kit/output/client/_app/immutable/chunks/DvCB6oXI.js                         20.25 kB
+.svelte-kit/output/client/_app/immutable/chunks/DYHQ3DBZ.js                         21.31 kB
+.svelte-kit/output/client/_app/immutable/chunks/CRXx5M2W.js                         22.20 kB
+.svelte-kit/output/client/_app/immutable/chunks/CEPDHboY.js                         26.63 kB
+.svelte-kit/output/client/_app/immutable/chunks/CPvnT_vZ.js                         28.18 kB
+.svelte-kit/output/client/_app/immutable/nodes/57.D9NdnFq9.js                       29.06 kB
+.svelte-kit/output/client/_app/immutable/chunks/DpzY5vY-.js                         29.33 kB
+.svelte-kit/output/client/_app/immutable/chunks/ZUE9inrm.js                         29.37 kB
+.svelte-kit/output/client/_app/immutable/chunks/ChSK0byQ.js                         30.02 kB
+.svelte-kit/output/client/_app/immutable/chunks/YCtcVFln.js                         30.16 kB
+.svelte-kit/output/client/_app/immutable/chunks/DCczLj9B.js                         31.24 kB
+.svelte-kit/output/client/_app/immutable/nodes/2.ieKnZm72.js                        31.81 kB
+.svelte-kit/output/client/_app/immutable/chunks/C7QU66qz.js                         33.22 kB
+.svelte-kit/output/client/_app/immutable/nodes/71.3v6lc1WQ.js                       33.26 kB
+.svelte-kit/output/client/_app/immutable/chunks/DJuDoMh1.js                         33.44 kB
+.svelte-kit/output/client/_app/immutable/entry/app.U8pkG5Ds.js                      36.01 kB
+.svelte-kit/output/client/_app/immutable/chunks/D7rjCA9K.js                         39.87 kB
+.svelte-kit/output/client/_app/immutable/nodes/0.BA9YSqLu.js                        46.52 kB
+.svelte-kit/output/client/_app/immutable/chunks/BGJ_L5ho.js                         47.76 kB
+.svelte-kit/output/client/_app/immutable/chunks/rpsiDpYT.js                         64.09 kB
+.svelte-kit/output/client/_app/immutable/chunks/CX9p8dJ7.js                         65.26 kB
+.svelte-kit/output/client/_app/immutable/nodes/66.6eeQU9am.js                       66.14 kB
+.svelte-kit/output/client/_app/immutable/nodes/26.BmyWudVj.js                       96.68 kB
+.svelte-kit/output/client/_app/immutable/chunks/DM374w65.js                        103.82 kB
+.svelte-kit/output/client/_app/immutable/chunks/qxyFgA1L.js                        105.52 kB
+.svelte-kit/output/client/_app/immutable/chunks/DR_a9Cx8.js                        105.53 kB
+.svelte-kit/output/client/_app/immutable/nodes/72.1lGotzq3.js                      225.87 kB
+✓ built in 26.22s
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 67 modules transformed.
+rendering chunks...
+computing gzip size...
+.svelte-kit/output/client/service-worker.mjs  17.24 kB │ gzip: 5.73 kB
+✓ built in 317ms
+.svelte-kit/output/server/.vite/manifest.json                                                87.86 kB
+.svelte-kit/output/server/_app/immutable/assets/_page.CgHh8YIy.css                            0.05 kB
+.svelte-kit/output/server/_app/immutable/assets/reader.PJBrTZR9.css                           0.11 kB
+.svelte-kit/output/server/_app/immutable/assets/lightbox.Cy1qJB3O.css                         0.16 kB
+.svelte-kit/output/server/_app/immutable/assets/CoverGroupInput.0KEhcAJr.css                  0.21 kB
+.svelte-kit/output/server/_app/immutable/assets/select.CV-KWLNP.css                           0.29 kB
+.svelte-kit/output/server/_app/immutable/assets/scroll-area.bHHIbcsu.css                      0.35 kB
+.svelte-kit/output/server/_app/immutable/assets/Manga.BVSk0eab.css                            0.35 kB
+.svelte-kit/output/server/_app/immutable/assets/MangaSearchEntryCard.DbLEN4SY.css             0.65 kB
+.svelte-kit/output/server/_app/immutable/assets/_layout.xEL8Ye8i.css                        151.71 kB
+.svelte-kit/output/server/chunks/false.js                                                     0.03 kB
+.svelte-kit/output/server/entries/pages/(app)/forums/threads/_id_/_postId_/_page.svelte.js    0.05 kB
+.svelte-kit/output/server/entries/pages/(app)/trending/_page.svelte.js                        0.05 kB
+.svelte-kit/output/server/chunks/is.js                                                        0.06 kB
+.svelte-kit/output/server/chunks/environment.js                                               0.07 kB
+.svelte-kit/output/server/chunks/navigation-authority.js                                      0.08 kB
+.svelte-kit/output/server/chunks/client.js                                                    0.08 kB
+.svelte-kit/output/server/chunks/html.js                                                      0.08 kB
+.svelte-kit/output/server/entries/pages/(app)/chapter/_id_/edit/_layout.svelte.js             0.10 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/library/_layout.svelte.js              0.10 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/upload/_layout.svelte.js             0.10 kB
+.svelte-kit/output/server/chunks/render-context.js                                            0.11 kB
+.svelte-kit/output/server/chunks/public.js                                                    0.14 kB
+.svelte-kit/output/server/chunks/media.js                                                     0.14 kB
+.svelte-kit/output/server/entries/pages/(app)/my/_layout.svelte.js                            0.18 kB
+.svelte-kit/output/server/entries/pages/(app)/history/_layout.svelte.js                       0.18 kB
+.svelte-kit/output/server/entries/pages/(app)/create/_layout.svelte.js                        0.18 kB
+.svelte-kit/output/server/entries/pages/(app)/drafts/_layout.svelte.js                        0.18 kB
+.svelte-kit/output/server/entries/pages/(app)/users/_layout.svelte.js                         0.18 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/client/_layout.svelte.js               0.19 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/edit/_layout.svelte.js               0.19 kB
+.svelte-kit/output/server/chunks/author2.js                                                   0.19 kB
+.svelte-kit/output/server/chunks/previous.svelte.js                                           0.20 kB
+.svelte-kit/output/server/chunks/Context2.js                                                  0.20 kB
+.svelte-kit/output/server/chunks/state.svelte.js                                              0.21 kB
+.svelte-kit/output/server/chunks/server.js                                                    0.22 kB
+.svelte-kit/output/server/chunks/index-server.js                                              0.22 kB
+.svelte-kit/output/server/chunks/Tag.js                                                       0.24 kB
+.svelte-kit/output/server/chunks/user3.js                                                     0.25 kB
+.svelte-kit/output/server/chunks/index5.js                                                    0.25 kB
+.svelte-kit/output/server/chunks/skeleton.js                                                  0.29 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/_page.svelte.js                        0.29 kB
+.svelte-kit/output/server/chunks/check.js                                                     0.29 kB
+.svelte-kit/output/server/entries/pages/(app)/forums/threads/_id_/_page.ts.js                 0.29 kB
+.svelte-kit/output/server/chunks/chevron-up.js                                                0.30 kB
+.svelte-kit/output/server/chunks/chevron-right.js                                             0.30 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/_key_/_page.svelte.js                  0.30 kB
+.svelte-kit/output/server/chunks/plus.js                                                      0.31 kB
+.svelte-kit/output/server/chunks/noop.js                                                      0.32 kB
+.svelte-kit/output/server/chunks/arrow-right.js                                               0.32 kB
+.svelte-kit/output/server/entries/pages/(app)/auth/_layout.svelte.js                          0.32 kB
+.svelte-kit/output/server/chunks/search.js                                                    0.33 kB
+.svelte-kit/output/server/chunks/info.js                                                      0.35 kB
+.svelte-kit/output/server/chunks/empty-title.js                                               0.35 kB
+.svelte-kit/output/server/internal.js                                                         0.37 kB
+.svelte-kit/output/server/chunks/mail.js                                                      0.37 kB
+.svelte-kit/output/server/chunks/dialog-footer.js                                             0.37 kB
+.svelte-kit/output/server/chunks/ImageLoader.js                                               0.38 kB
+.svelte-kit/output/server/chunks/circle-question-mark.js                                      0.39 kB
+.svelte-kit/output/server/chunks/empty-content.js                                             0.39 kB
+.svelte-kit/output/server/chunks/index2.js                                                    0.41 kB
+.svelte-kit/output/server/chunks/triangle-alert.js                                            0.41 kB
+.svelte-kit/output/server/entries/pages/(app)/group/_id_/_layout.ts.js                        0.42 kB
+.svelte-kit/output/server/chunks/group2.js                                                    0.42 kB
+.svelte-kit/output/server/entries/pages/(app)/author/_id_/_layout.ts.js                       0.42 kB
+.svelte-kit/output/server/chunks/flag.js                                                      0.42 kB
+.svelte-kit/output/server/chunks/empty.js                                                     0.43 kB
+.svelte-kit/output/server/entries/pages/(app)/chapter/_id_/_page.ts.js                        0.44 kB
+.svelte-kit/output/server/entries/pages/(app)/chapter/_id_/_page_/_page.ts.js                 0.44 kB
+.svelte-kit/output/server/chunks/dialog-close.js                                              0.44 kB
+.svelte-kit/output/server/chunks/announcement.svelte.js                                       0.46 kB
+.svelte-kit/output/server/entries/pages/(app)/library/_layout.svelte.js                       0.47 kB
+.svelte-kit/output/server/chunks/expand.js                                                    0.47 kB
+.svelte-kit/output/server/chunks/get-directional-keys.js                                      0.48 kB
+.svelte-kit/output/server/entries/pages/(app)/title/random/_page.ts.js                        0.48 kB
+.svelte-kit/output/server/chunks/client2.js                                                   0.48 kB
+.svelte-kit/output/server/chunks/Author.js                                                    0.49 kB
+.svelte-kit/output/server/chunks/chapter2.js                                                  0.49 kB
+.svelte-kit/output/server/chunks/files.js                                                     0.50 kB
+.svelte-kit/output/server/chunks/spinner.js                                                   0.51 kB
+.svelte-kit/output/server/chunks/manga2.js                                                    0.52 kB
+.svelte-kit/output/server/chunks/crown.js                                                     0.52 kB
+.svelte-kit/output/server/chunks/messages-square.js                                           0.52 kB
+.svelte-kit/output/server/chunks/comments-provider.js                                         0.52 kB
+.svelte-kit/output/server/chunks/chess-rook.js                                                0.53 kB
+.svelte-kit/output/server/chunks/context.js                                                   0.54 kB
+.svelte-kit/output/server/chunks/Protected.js                                                 0.54 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/account/_layout.svelte.js              0.54 kB
+.svelte-kit/output/server/chunks/ProtectedCondition.js                                        0.55 kB
+.svelte-kit/output/server/entries/pages/(app)/chapter/_id_/edit/_page.ts.js                   0.56 kB
+.svelte-kit/output/server/entries/pages/(app)/user/_id_/settings/_page.svelte.js              0.56 kB
+.svelte-kit/output/server/chunks/NotFound.js                                                  0.56 kB
+.svelte-kit/output/server/chunks/ProtectedVerified.js                                         0.56 kB
+.svelte-kit/output/server/entries/pages/(app)/user/_id_/_layout.ts.js                         0.57 kB
+.svelte-kit/output/server/chunks/LibraryProtected.js                                          0.59 kB
+.svelte-kit/output/server/chunks/utils.js                                                     0.63 kB
+.svelte-kit/output/server/chunks/User2.js                                                     0.63 kB
+.svelte-kit/output/server/entries/pages/(app)/forums/threads/_id_/_postId_/_page.ts.js        0.64 kB
+.svelte-kit/output/server/entries/pages/(app)/create/group/_layout.svelte.js                  0.64 kB
+.svelte-kit/output/server/entries/pages/(app)/create/title/_layout.svelte.js                  0.64 kB
+.svelte-kit/output/server/entries/pages/(app)/drafts/title/_layout.svelte.js                  0.64 kB
+.svelte-kit/output/server/chunks/star.js                                                      0.64 kB
+.svelte-kit/output/server/chunks/settings.js                                                  0.64 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/_page.ts.js                          0.65 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/_slug_/_page.ts.js                   0.66 kB
+.svelte-kit/output/server/chunks/auth-form-owner.js                                           0.69 kB
+.svelte-kit/output/server/chunks/index3.js                                                    0.70 kB
+.svelte-kit/output/server/chunks/empty-description.js                                         0.70 kB
+.svelte-kit/output/server/chunks/action-owner.js                                              0.71 kB
+.svelte-kit/output/server/chunks/tooltip-provider.js                                          0.71 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/edit/_page.ts.js                     0.72 kB
+.svelte-kit/output/server/chunks/empty-media.js                                               0.73 kB
+.svelte-kit/output/server/entries/pages/(app)/user/_id_/settings/_layout.svelte.js            0.74 kB
+.svelte-kit/output/server/entries/pages/(app)/group/_id_/settings/_layout.svelte.js           0.74 kB
+.svelte-kit/output/server/entries/pages/(app)/author/_id_/settings/_layout.svelte.js          0.75 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/upload/_page.ts.js                   0.75 kB
+.svelte-kit/output/server/chunks/clone.js                                                     0.77 kB
+.svelte-kit/output/server/entries/pages/(app)/group/_id_/comments/_page.svelte.js             0.78 kB
+.svelte-kit/output/server/entries/pages/(app)/user/_id_/comments/_page.svelte.js              0.78 kB
+.svelte-kit/output/server/chunks/context.svelte.js                                            0.78 kB
+.svelte-kit/output/server/entries/pages/(app)/chapter/_id_/edit/_page.svelte.js               0.78 kB
+.svelte-kit/output/server/entries/pages/(app)/announcements/_id_/_page.svelte.js              0.78 kB
+.svelte-kit/output/server/chunks/textarea.js                                                  0.78 kB
+.svelte-kit/output/server/chunks/Comments.js                                                  0.79 kB
+.svelte-kit/output/server/entries/pages/(app)/author/_id_/settings/_page.svelte.js            0.80 kB
+.svelte-kit/output/server/chunks/User.js                                                      0.81 kB
+.svelte-kit/output/server/chunks/Icon.js                                                      0.81 kB
+.svelte-kit/output/server/entries/pages/(app)/title/random/_page.svelte.js                    0.81 kB
+.svelte-kit/output/server/chunks/field.js                                                     0.84 kB
+.svelte-kit/output/server/entries/pages/(app)/group/_id_/settings/_page.svelte.js             0.85 kB
+.svelte-kit/output/server/entries/pages/(app)/popular/_page.svelte.js                         0.86 kB
+.svelte-kit/output/server/chunks/Manga.js                                                     0.86 kB
+.svelte-kit/output/server/entries/pages/(app)/auth/logout/_page.svelte.js                     0.86 kB
+.svelte-kit/output/server/entries/pages/(app)/auth/recovery/_page.svelte.js                   0.87 kB
+.svelte-kit/output/server/chunks/layout-list.js                                               0.87 kB
+.svelte-kit/output/server/entries/pages/(app)/updates/_page.svelte.js                         0.87 kB
+.svelte-kit/output/server/entries/pages/(app)/history/_page.svelte.js                         0.88 kB
+.svelte-kit/output/server/entries/pages/(app)/library/updates/_page.svelte.js                 0.90 kB
+.svelte-kit/output/server/chunks/Group.js                                                     0.90 kB
+.svelte-kit/output/server/entries/pages/(app)/auth/error/_page.svelte.js                      0.92 kB
+.svelte-kit/output/server/chunks/dialog-trigger.js                                            0.96 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/client/_page.svelte.js                 0.98 kB
+.svelte-kit/output/server/chunks/index.js                                                     0.98 kB
+.svelte-kit/output/server/chunks/context.svelte2.js                                           1.00 kB
+.svelte-kit/output/server/chunks/announcement-client.js                                       1.01 kB
+.svelte-kit/output/server/entries/pages/(app)/auth/login/_page.svelte.js                      1.03 kB
+.svelte-kit/output/server/chunks/latest-search.js                                             1.03 kB
+.svelte-kit/output/server/chunks/select-item.js                                               1.04 kB
+.svelte-kit/output/server/chunks/button-group.js                                              1.07 kB
+.svelte-kit/output/server/entries/pages/(app)/announcements/manage/_page.svelte.js            1.09 kB
+.svelte-kit/output/server/entries/pages/(app)/auth/verification/_page.svelte.js               1.09 kB
+.svelte-kit/output/server/chunks/ChapterHistory.js                                            1.10 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/preferences/_page.svelte.js            1.10 kB
+.svelte-kit/output/server/chunks/ChapterFeed.js                                               1.12 kB
+.svelte-kit/output/server/entries/pages/(app)/privacy/_page.svelte.js                         1.15 kB
+.svelte-kit/output/server/chunks/events.js                                                    1.17 kB
+.svelte-kit/output/server/chunks/private-feed.js                                              1.17 kB
+.svelte-kit/output/server/entries/pages/(app)/auth/register/_page.svelte.js                   1.18 kB
+.svelte-kit/output/server/chunks/routing.js                                                   1.23 kB
+.svelte-kit/output/server/chunks/thread-read.js                                               1.24 kB
+.svelte-kit/output/server/chunks/dialog-header.js                                             1.30 kB
+.svelte-kit/output/server/chunks/badge.js                                                     1.33 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/account/_page.svelte.js                1.33 kB
+.svelte-kit/output/server/chunks/MangaSearchEntrySkeleton.js                                  1.33 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/_page.svelte.js                      1.34 kB
+.svelte-kit/output/server/chunks/aspect-ratio.js                                              1.38 kB
+.svelte-kit/output/server/chunks/GroupLink.js                                                 1.39 kB
+.svelte-kit/output/server/chunks/catalog.js                                                   1.39 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/_slug_/_page.svelte.js               1.39 kB
+.svelte-kit/output/server/entries/pages/(app)/about/_page.svelte.js                           1.42 kB
+.svelte-kit/output/server/entries/pages/(app)/terms/_page.svelte.js                           1.46 kB
+.svelte-kit/output/server/chunks/reader-navigation.js                                         1.48 kB
+.svelte-kit/output/server/chunks/Thread.js                                                    1.48 kB
+.svelte-kit/output/server/chunks/input.js                                                     1.52 kB
+.svelte-kit/output/server/chunks/Locale.js                                                    1.57 kB
+.svelte-kit/output/server/chunks/dom-context.svelte.js                                        1.57 kB
+.svelte-kit/output/server/chunks/label.js                                                     1.58 kB
+.svelte-kit/output/server/chunks/Chapter.js                                                   1.60 kB
+.svelte-kit/output/server/entries/pages/(app)/chapter/_id_/_page@.svelte.js                   1.62 kB
+.svelte-kit/output/server/chunks/errors.js                                                    1.64 kB
+.svelte-kit/output/server/entries/pages/(app)/chapter/_id_/_page_/_page@.svelte.js            1.66 kB
+.svelte-kit/output/server/chunks/input-group-input.js                                         1.67 kB
+.svelte-kit/output/server/chunks/separator.js                                                 1.69 kB
+.svelte-kit/output/server/chunks/breadcrumb-list.js                                           1.75 kB
+.svelte-kit/output/server/chunks/authenticated-mutation.js                                    1.78 kB
+.svelte-kit/output/server/chunks/GenericSearchFilter.js                                       1.79 kB
+.svelte-kit/output/server/chunks/input-group-button.js                                        1.97 kB
+.svelte-kit/output/server/entries/pages/_error.svelte.js                                      1.99 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/edit/_page.svelte.js                 2.03 kB
+.svelte-kit/output/server/chunks/GenericPagination.js                                         2.05 kB
+.svelte-kit/output/server/entries/pages/(app)/search/_page.svelte.js                          2.07 kB
+.svelte-kit/output/server/chunks/Utils3.js                                                    2.07 kB
+.svelte-kit/output/server/entries/pages/(app)/library/_page.svelte.js                         2.08 kB
+.svelte-kit/output/server/chunks/button.js                                                    2.12 kB
+.svelte-kit/output/server/entries/pages/(app)/announcements/_page.svelte.js                   2.41 kB
+.svelte-kit/output/server/chunks/sheet-content.js                                             2.46 kB
+.svelte-kit/output/server/chunks/safe-read-owner.js                                           2.47 kB
+.svelte-kit/output/server/entries/pages/(app)/users/_page.svelte.js                           2.48 kB
+.svelte-kit/output/server/entries/pages/(app)/groups/_page.svelte.js                          2.51 kB
+.svelte-kit/output/server/chunks/exports.js                                                   2.54 kB
+.svelte-kit/output/server/chunks/CoverGroupInput.svelte_svelte_type_style_lang.js             2.62 kB
+.svelte-kit/output/server/chunks/MangaFollow.js                                               2.85 kB
+.svelte-kit/output/server/chunks/ExternalLink.js                                              2.93 kB
+.svelte-kit/output/server/chunks/internal.js                                                  3.01 kB
+.svelte-kit/output/server/chunks/toast-state.svelte.js                                        3.02 kB
+.svelte-kit/output/server/entries/pages/(app)/author/_id_/_page.svelte.js                     3.17 kB
+.svelte-kit/output/server/entries/pages/(app)/guidelines/_page.svelte.js                      3.22 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/_layout.svelte.js                      3.27 kB
+.svelte-kit/output/server/chunks/combobox-item.js                                             3.39 kB
+.svelte-kit/output/server/entries/pages/(app)/group/_id_/uploads/_page.svelte.js              3.49 kB
+.svelte-kit/output/server/entries/pages/(app)/author/_id_/uploads/_page.svelte.js             3.50 kB
+.svelte-kit/output/server/chunks/AnnouncementEntry.js                                         3.52 kB
+.svelte-kit/output/server/entries/pages/(app)/author/_id_/_layout.svelte.js                   3.64 kB
+.svelte-kit/output/server/entries/pages/(app)/user/_id_/_page.svelte.js                       3.84 kB
+.svelte-kit/output/server/entries/pages/(app)/user/_id_/uploads/_page.svelte.js               3.85 kB
+.svelte-kit/output/server/chunks/safe-polygon.svelte.js                                       3.87 kB
+.svelte-kit/output/server/chunks/actor-follow-state.js                                        4.26 kB
+.svelte-kit/output/server/entries/pages/(app)/create/group/_page.svelte.js                    4.69 kB
+.svelte-kit/output/server/entries/pages/_layout.ts.js                                         4.75 kB
+.svelte-kit/output/server/entries/pages/(app)/group/_id_/_page.svelte.js                      5.12 kB
+.svelte-kit/output/server/chunks/select-content.js                                            5.35 kB
+.svelte-kit/output/server/chunks/manga-search-query.js                                        5.48 kB
+.svelte-kit/output/server/chunks/tooltip-content.js                                           6.73 kB
+.svelte-kit/output/server/chunks/MangaSearchEntryCard.js                                      7.04 kB
+.svelte-kit/output/server/chunks/pagination-link.js                                           7.12 kB
+.svelte-kit/output/server/chunks/use-id.js                                                    7.18 kB
+.svelte-kit/output/server/chunks/local-signing-key.js                                         7.85 kB
+.svelte-kit/output/server/entries/pages/(app)/drafts/title/_page.svelte.js                    8.47 kB
+.svelte-kit/output/server/entries/pages/(app)/user/_id_/_layout.svelte.js                     8.65 kB
+.svelte-kit/output/server/chunks/root.js                                                      8.95 kB
+.svelte-kit/output/server/entries/pages/(app)/group/_id_/_layout.svelte.js                   10.53 kB
+.svelte-kit/output/server/chunks/tabs-trigger.js                                             10.74 kB
+.svelte-kit/output/server/remote-entry.js                                                    10.93 kB
+.svelte-kit/output/server/chunks/tooltip.svelte.js                                           10.93 kB
+.svelte-kit/output/server/entries/pages/(app)/my/reports/_page.svelte.js                     11.17 kB
+.svelte-kit/output/server/chunks/dialog-content.js                                           11.50 kB
+.svelte-kit/output/server/chunks/RichTextarea.js                                             11.85 kB
+.svelte-kit/output/server/chunks/ReportDialog.js                                             11.90 kB
+.svelte-kit/output/server/chunks/popover-trigger.js                                          12.02 kB
+.svelte-kit/output/server/chunks/renderer.js                                                 12.24 kB
+.svelte-kit/output/server/chunks/TagComboBox.js                                              13.42 kB
+.svelte-kit/output/server/chunks/publication.js                                              13.67 kB
+.svelte-kit/output/server/entries/pages/(app)/_layout.svelte.js                              14.06 kB
+.svelte-kit/output/server/chunks/scroll-lock.js                                              14.21 kB
+.svelte-kit/output/server/chunks/shared.js                                                   14.61 kB
+.svelte-kit/output/server/entries/pages/(app)/forums/threads/_id_/_page.svelte.js            15.24 kB
+.svelte-kit/output/server/chunks/popper-layer-force-mount.js                                 15.46 kB
+.svelte-kit/output/server/entries/pages/(app)/_page.svelte.js                                15.90 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/identity/_page.svelte.js              16.68 kB
+.svelte-kit/output/server/chunks/utils2.js                                                   17.57 kB
+.svelte-kit/output/server/chunks/Session.js                                                  20.53 kB
+.svelte-kit/output/server/chunks/combobox-content.js                                         24.57 kB
+.svelte-kit/output/server/chunks/scroll-area.js                                              25.33 kB
+.svelte-kit/output/server/entries/pages/(app)/title/_id_/upload/_page.svelte.js              26.16 kB
+.svelte-kit/output/server/chunks/comments2.js                                                26.37 kB
+.svelte-kit/output/server/entries/pages/_layout.svelte.js                                    26.61 kB
+.svelte-kit/output/server/chunks/select.js                                                   28.34 kB
+.svelte-kit/output/server/chunks/ProtocolIdentityPanel.js                                    31.44 kB
+.svelte-kit/output/server/chunks/MangaSearchFilter.js                                        32.02 kB
+.svelte-kit/output/server/chunks/global.js                                                   32.97 kB
+.svelte-kit/output/server/chunks/nostr.js                                                    33.22 kB
+.svelte-kit/output/server/chunks/reader.js                                                   34.41 kB
+.svelte-kit/output/server/entries/pages/(app)/settings/library/_page.svelte.js               36.01 kB
+.svelte-kit/output/server/chunks/Manga3.js                                                   45.51 kB
+.svelte-kit/output/server/chunks/index4.js                                                   51.70 kB
+.svelte-kit/output/server/entries/pages/(app)/create/title/_page.svelte.js                   54.86 kB
+.svelte-kit/output/server/index.js                                                           54.87 kB
+.svelte-kit/output/server/chunks/library.js                                                  58.47 kB
+✓ built in 46.01s
+
+PWA v1.2.0
+mode      generateSW
+precache  389 entries (6195.17 KiB)
+files generated
+  .svelte-kit/output/server/service-worker.js
+  .svelte-kit/output/server/workbox-05ccb34d.js
+warnings
+  One of the glob patterns doesn't match any files. Please remove or fix the following: {
+  "globDirectory": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-enabled-02/.svelte-kit/output",
+  "globPattern": "prerendered/**/*.{html,json}",
+  "globIgnores": [
+    "server/**",
+    "server/service-worker.ts",
+    "server/workbox-*.js"
+  ]
+}
+
+
+Run npm run preview to preview your production build locally.
+
+> Using @sveltejs/adapter-static
+  Wrote site to "build"
+  ✔ done
+Built preserved frontend with a Rust-compatible SPA fallback.

@@ -1,0 +1,65 @@
+{
+  "schema": "independent-source-review-v1",
+  "decision": "Source-clear for one exact bounded fake-transport test invocation",
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-client.ts",
+      "sha256": "3f4705526fe542f5631d35b57a5998c7376c8e924b8c7ccd5d69e9e7df24a7aa",
+      "bytes": 65285
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-multipart.ts",
+      "sha256": "460b130db0e71ff98b85662129060e4a85c8ee9e502f161b9cd33873ffd6c7c0",
+      "bytes": 5322
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs",
+      "sha256": "afb62f7c026b4f672b00e6faf174b931f7086c4a6160b1d1169b7202df6236ac",
+      "bytes": 65879
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/validation.ts",
+      "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+      "bytes": 2001
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/frontend/src/lib/constants/Error.ts",
+      "sha256": "a1a45c45acec60f4f432844183decee07589f0779ad31785b6484fa001904a61",
+      "bytes": 584
+    }
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform",
+  "command": "node --experimental-vm-modules --test tests/ci/test_public_upload_adapter_recovery.mjs",
+  "authored_tests": 57,
+  "resolved_findings": [
+    "The former broad catch could clear an already dispatched replacement fence when a later exact GET failed affirmatively unsent. Current nested classification belongs solely to the initial POST invocation; later read/proof/caller failures retain the fence.",
+    "The proven returned snapshot and concurrently replaced latest snapshot each restore only their privately saved actual authority flags.",
+    "Per-account exclusive Web Lock check/install/delete is synchronous and uses ifAvailable=true. Busy or unavailable admission fails closed, and a changed persisted attempt cannot be deleted by an older owner.",
+    "Lock diagnostic wording no longer implies an earlier POST was unsent. Cross-realm test comparisons normalize actual observations without relaxing compared fields."
+  ],
+  "reviewed_boundaries": [
+    "Exact source-derived multipart body is serialized and read once; its actual file slice supplies the digest.",
+    "Current signer generation, origin, service, target, session identity, version, ordered complete file facts and caller lifetime are rechecked around awaits and immediately before dispatch.",
+    "Persistent uncertainty stores bounded public selectors and metadata only. It blocks mutations and ambiguous discovery across reloaded owners.",
+    "Explicit reconciliation uses exact-session GET and compares stable target identity, version, original digest/size/name/MIME, complete neighbours/order/groups and draft hash. No mutation retry is performed.",
+    "An unchanged no-op cannot resolve a lost original response; it requires the actual original success response.",
+    "Fake suite replaces every service/signer/request/catalogue/decoder/storage/Web Lock primitive. Only the audited adapter, local validation, serializer, Error definitions and Node built-ins execute. Race tests have finite explicit gates and selected 2-second timeouts."
+  ],
+  "limits": [
+    "No real browser Web Lock, NIP-98 verification, network, image decoding, database or publication qualification.",
+    "An actual browser/strict build remains necessary before claiming UI operation.",
+    "The unchanged commit sessionStorage design is outside this replacement-lock claim; no universal cross-tab single-dispatch claim is made."
+  ],
+  "historical_candidate": [
+    {
+      "path": "/tmp/replacement-adapter-prelock-20261017/upload-client.ts",
+      "sha256": "6ed43e42c18aca7e6697af9bb31f511a0721acdbdd75ad1ec5b78b3e8dfeef3f",
+      "bytes": 63837
+    },
+    {
+      "path": "/tmp/replacement-adapter-prelock-20261017/test_public_upload_adapter_recovery.mjs",
+      "sha256": "1a6cb32d0b5a875669ad1799200407ba7f4ee90f710dbe177a420c4a7034d4c8",
+      "bytes": 61036
+    }
+  ]
+}

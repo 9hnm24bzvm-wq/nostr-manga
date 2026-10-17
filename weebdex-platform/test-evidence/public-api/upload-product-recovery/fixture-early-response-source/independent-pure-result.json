@@ -1,0 +1,26 @@
+{
+  "schema": "fixture-early-response-independent-pure-result-v1",
+  "reviewed_at_utc": "2026-10-17T05:33:35.836554+00:00",
+  "verdict": "passed_25_ast_only_fake_io_cases",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/fixture-early-response-independent-source-review-20261017.json",
+      "sha256": "02c2965c801775811d2662e25480a40600757c26343b0cb826aaf0e4f9c741e6"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/fixture-early-response-pure-first-20261017.log",
+      "sha256": "5015f28ed2b7d7d0ad93397c1dac3f00979320c47148878bb68574becfffa4f3"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/runtime/browser_fixture.py",
+      "sha256": "00268d6e868cb85d770930f2e718d3453b0fd05605bffaf4c37b147919768b66"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_browser_fixture_early_response_recovery.py",
+      "sha256": "dc3bb08abcdd1a045114c14aef82f5de51e5e32b3649686920dec5ef4740d4e4"
+    }
+  ],
+  "scope": "Source and test pins match the exact pre-execution audit; direct first-run log records 25 tests OK. No reviewer rerun, real socket, thread, fixture import, DB or browser qualification.",
+  "original_failure": "Browser01 remains a failed operational-check startup with unknown exact request/status.",
+  "next_boundary": "A separately reviewed genuine fixture startup must retain actual named response and timer settlement before any browser journey."
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "independent-upload-journey-ui-successor-review-v1",
+  "reviewed_at_utc": "2026-10-17T04:36:00.898733+00:00",
+  "verdict": "source_clear_and_36_pure_cases_passed",
+  "source_sha256": {
+    "scripts/public-upload-recovery-browser.mjs": "8e503077cd0eda3c2bd7c41f274cae8f670391fdc7e69d05d8ef055a3d9e9541",
+    "tests/ci/test_public_upload_recovery_journey.mjs": "e5dcbaf44668f53d6f6e986be4561ea1e703b8dc06d7263f56809fb413e152ed"
+  },
+  "parent_commit": "ac673626ccb256a7a683e61c2427cf97291ccd24",
+  "log_sha256": "9bdaddf042a6887f62f0127cae77a6c994cbe734d1eee2367cb3cdc8c1157396",
+  "log_path": "/workspace/shared/nostr-manga-recovery-20261017/upload-recovery-journey-ui-finite-01.log",
+  "checks": [
+    "Exact restored title, chapter number and English controls are observed.",
+    "Exact full upload URL is rechecked after durable reads, preview decode, restored drain and final drain.",
+    "Unique visible actual completion dialog title must be in the closed source branch set.",
+    "Unavailable or pending receipt presentation requires the accepted-only title."
+  ],
+  "limits": [
+    "The other closed visible titles do not independently prove moderation approval.",
+    "Pure seams use synthetic inputs and source-extracted callbacks; no browser qualification occurred.",
+    "Actual commit, durable originals and native terminal requirements are unchanged."
+  ],
+  "review_observation": "First file-only review script expected TAP footer markers; actual retained log uses the spec reporter. It stopped before writing a receipt. The exact spec footer was then verified; no tests were rerun.",
+  "execution_by_reviewer": false
+}

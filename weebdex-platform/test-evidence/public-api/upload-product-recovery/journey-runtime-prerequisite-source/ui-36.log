@@ -1,0 +1,44 @@
+✔ fake event seam preserves actual body hash without claiming genuine Schnorr (3.528286ms)
+✔ unavailable multipart observation stays unavailable and never becomes expected bytes (0.639552ms)
+✔ HTTP event refuses wrong body (1.201777ms)
+✔ HTTP event refuses wrong signature (0.614604ms)
+✔ HTTP event refuses wrong owner (0.306632ms)
+✔ HTTP event refuses wrong service (0.367493ms)
+✔ HTTP event refuses wrong method (0.526361ms)
+✔ HTTP event refuses foreign origin (0.43892ms)
+✔ HTTP event refuses query (4.382442ms)
+✔ HTTP event refuses empty fragment (0.636868ms)
+✔ HTTP event refuses stale time (1.084321ms)
+✔ duplicate authorization tags cannot borrow a valid fake verification result (1.336249ms)
+✔ observer owns exact native failure and never changes ERR_ABORTED into success (0.722206ms)
+✔ real PNG encoder creates bounded distinct originals with exact dimensions and complete scanlines (1.864544ms)
+✔ durable seam checks genuinely stored order separately from normalized order (1.943853ms)
+✔ durable state refuses changed original storage hash (0.407222ms)
+✔ durable state refuses changed fresh original read (0.283366ms)
+✔ durable state refuses changed foreign actor (0.253872ms)
+✔ durable state refuses changed file membership (0.310557ms)
+✔ independent reader retains actual refusal and uses one fresh exact credential-free GET (4.976344ms)
+✔ independent reader refuses over-cap response without retry and releases owner (0.739071ms)
+✔ journey never fabricates application transport success or native replacement support (0.416406ms)
+✔ source-extracted cleanup still closes every owner after stage persistence and context errors (1.406976ms)
+✔ final evidence write failure preserves nonzero verdict after actual close attempts (0.376216ms)
+✔ complete-stage persistence failure is included before final verdict and save (0.240131ms)
+✔ source-extracted success stage rejects native-finished HTTP 403 (0.363466ms)
+✔ source-extracted success stage rejects native-finished HTTP 503 (0.315254ms)
+✔ source-extracted success stage rejects native-finished HTTP 202 (0.151388ms)
+✔ final route guard requires the exact full current URL (0.368664ms)
+✔ completion titles are closed to the actual three source branches (0.320382ms)
+✔ actual unavailable presentation requires the accepted-only visible branch {"receiptStatus":"unavailable"} (0.369125ms)
+✔ actual unavailable presentation requires the accepted-only visible branch {"receiptStatus":"available","publicationStatus":"accepted_pending_projection"} (0.268363ms)
+✔ actual unavailable presentation requires the accepted-only visible branch {"receiptStatus":"available","receipt":{"attributes":{"isUnavailable":true}}} (0.143025ms)
+✔ missing committed receipt status cannot borrow a completion title (0.116455ms)
+✔ source-extracted restored metadata observes actual field values, changed=false (0.529736ms)
+✔ source-extracted restored metadata observes actual field values, changed=true (0.335074ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.151902

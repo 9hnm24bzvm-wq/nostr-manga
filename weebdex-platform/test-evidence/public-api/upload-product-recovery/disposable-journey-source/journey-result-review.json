@@ -1,0 +1,25 @@
+{
+  "schema": "independent-finite-result-v1",
+  "time_utc": "2026-10-17T04:26:24.631456+00:00",
+  "verdict": "pass_owner_pure_result",
+  "source_review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-recovery-journey-independent-source-review-20261017.json",
+    "sha256": "a4a5459125a01b696b9c85b4d5dfe259f787d0363a66dfa7342786b8920f8f00",
+    "bytes": 3684
+  },
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-recovery-journey-finite-01.log",
+    "sha256": "3c9be1ca6050d3e7eef5d045f2741956916c176c3b9a16e3b263323a3c14072e",
+    "bytes": 2248
+  },
+  "source_pins_current_exact": true,
+  "result": {
+    "tests": 28,
+    "pass": 28,
+    "fail": 0,
+    "owner_reported_exit_code": 0
+  },
+  "scope": "Fake signature/transport and source-extracted lifecycle/status/durable seams only; no browser, fixture, PostgreSQL or actual signature verification performed by this suite.",
+  "actual_runtime_pending": true,
+  "reviewer_execution": false
+}

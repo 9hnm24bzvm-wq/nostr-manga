@@ -1,0 +1,46 @@
+PARTIAL COPIED TOOL OUTPUT AND SUMMARY. The exact full first-run output is unavailable.
+The original tool response was truncated: it reported 7,847 original output tokens and 472 total lines. Missing output has not been reconstructed or invented.
+This file retains only an explicitly partial verbatim excerpt and a factual summary from that response. No test was rerun to create it.
+
+Command: node --experimental-vm-modules tests/ci/test_public_upload_request_recovery.mjs
+Working directory: /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform
+Tool chunk ID: d2ab8e
+Exit code: 1
+Original helper SHA-256: 8125a5339865289ad322cb2d5f5ccb6b1b2f4a70c6fd6336786b4740bbec1d46
+Original test SHA-256: 1950759de4fe5d16cb8f14711cecf1e74bcec56cea7701a439b2d127139fd055
+
+Summary: all 20 registered tests failed during fixture setup because Node stripTypeScriptTypes in strip-only mode rejected the production error constructor's TypeScript parameter properties. The transport module did not reach evaluation, so this is setup-failure evidence, not 20 failed transport-behavior assertions. The later correction used explicit class fields and assignments.
+
+Partial verbatim excerpt from the original tool output:
+
+ℹ tests 20
+ℹ suites 0
+ℹ pass 0
+ℹ fail 20
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 97.190654
+
+✖ failing tests:
+
+test at tests/ci/test_public_upload_request_recovery.mjs:99:1
+✖ exact original JSON bytes, URL, service, nonce and owner reach one credential-free dispatch without relay response proof (50.899557ms)
+  :43
+    readonly bodyAvailable = false;
+    constructor(message: string, readonly outcome: PublicUploadOutcome, readonly status?: number) {
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      super(message);
+  
+  SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode
+      at parseTypeScript (node:internal/modules/typescript:68:40)
+      at processTypeScriptCode (node:internal/modules/typescript:146:42)
+      at stripTypeScriptTypes (node:internal/modules/typescript:123:10)
+      at fixture (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_request_recovery.mjs:62:42)
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_request_recovery.mjs:100:19)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    code: 'ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX'
+  }

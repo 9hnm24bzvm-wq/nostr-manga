@@ -1,0 +1,42 @@
+{
+  "schema": "upload-fixture-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T04:07:40.853115+00:00",
+  "base_commit": "8c0f21607b919bfb8ea60b3443d84c49a3a4a0b3",
+  "source_pins": {
+    "backend/examples/browser_fixture_provisioner.rs": "d5b20f6616b7efc5711f899a9e523ccc18a16238dc4b12bb225195129dded5a4",
+    "tests/runtime/browser_fixture.py": "1037badea635fe2e3005900d1daa9279425e4b457af13ac968acee8215fb42e0"
+  },
+  "verdict": "source_clear_for_bounded_compile_and_pure_tests",
+  "findings_fixed": [
+    "DB snapshot now preserves exact stored_page_order independently from normalized effective page_order.",
+    "Snapshot nullable chapter title and publication status are explicit; raw committed_result is not emitted."
+  ],
+  "reviewed_boundaries": [
+    "Existing private owned fixture root and exact disposable database guards remain in force.",
+    "New controls require explicit opt-in and synthetic input; exact fixed user/group and browser public key only; no browser private key enters provisioner.",
+    "Managed group creation/member grant use original operator-signed original HTTP APIs with exact body digest, redirect refusal and bounded timeout/response.",
+    "Native grants are exactly chapter.create and self.chapter.update, separate from account admission and genuine group publisher authority.",
+    "Group importer uses the explicit publisher-to-native-group binding.",
+    "Same-key repeated provisioning verifies existing native/original authority; alternate actor and conflicting fixed identities fail closed.",
+    "Snapshot requires exact owned session, manga and group, at most two sessions and three current files; each fresh PNG original read is capped at512 bytes and independently hashed.",
+    "Publication event is actually loaded and signature-verified with exact event ID/kind/group publisher; pending/missing original remains explicit.",
+    "Supervisor action budget32 and fixture/active-browser30-second reserves; existing process ownership and teardown retained."
+  ],
+  "approved_finite_scope": {
+    "rust": "cargo test --locked --offline --manifest-path weebdex-platform/backend/Cargo.toml --example browser_fixture_provisioner",
+    "tests": 4,
+    "behavior": "Two existing static tests plus two added temporary-file/hash tests; no DB/network/fixture initialization.",
+    "python": "Syntax parse and AST-only extraction of public_upload_payload; exact test source must be inspected before execution."
+  },
+  "not_run_by_reviewer": [
+    "Rust compile/tests",
+    "Python helper tests",
+    "PG",
+    "HTTP",
+    "browser"
+  ],
+  "limitations": [
+    "Actual SQL/group/HTTP behavior remains unverified.",
+    "Final browser must compare publication.event_id and chapter.event_id and assert stored_page_order for persistence; normalized effective order is not independent save proof."
+  ]
+}

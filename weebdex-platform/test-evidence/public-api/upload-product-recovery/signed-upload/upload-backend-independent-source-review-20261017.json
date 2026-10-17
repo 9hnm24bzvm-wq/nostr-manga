@@ -1,0 +1,42 @@
+{
+  "schema": "recovered-public-upload-backend-independent-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T03:43:10.439920+00:00",
+  "base": "3e46ddcb0fd6dae6745ac19db92956565741b897",
+  "verdict": "source_clear_for_narrow_compile_check",
+  "pins": {
+    "backend/src/public_api/upload_extensions.rs": "9409e0a2fc29eba3952f9743a6a57529f253d0e8209ea5b13bcdb68f1e53cb66",
+    "backend/src/public_api/uploads.rs": "53484087f9861a02e9e4f7edf30faa49011228eb01fccc884ea505fe28709ddd",
+    "backend/src/public_api/auth.rs": "ce07ab1e3ff0e2bf08a79fc56e1bb8ce1cad0c92f5663932cbd02dbbda637487",
+    "backend/src/public_api/mod.rs": "ea1f770f38cf94682d124b804195fe6beefdd187db5c101c4862a7d5ff8ed407",
+    "backend/src/domains/uploads/media.rs": "ecc85770bc17830d8b60e31d9d871781d71237a0aedc65377ccdb6630ec98762",
+    "backend/src/domains/uploads/sessions.rs": "46e18b24e89514e0d2d7ceba99395355d2ed2bf83fc9dd546c421cd8e5b8a8d6",
+    "backend/src/protocol/publication.rs": "a97b9b63d0666d2e62b4a68cc6725a53b01896492938a24fbd507ccfc73e7320",
+    "backend/src/router.rs": "117c7e5a089d3b5eb7b1467dd4ef20bb270547f29c0b16950f538f70811d49a7",
+    "backend/tests/public_uploads.rs": "28bfb457fdf10430b8519852bdec825d5f217d07e7e3d2c803cdcb0b77e83d35"
+  },
+  "verified_scope": [
+    "Original request capability still binds configured public origin, OriginalUri, method, all actual raw bytes, selected service and replay; no Host or native-cookie authority substitution.",
+    "New account/snapshot/staging/preview routes authenticate through unchanged admission and bound_account read/write within the same transaction.",
+    "Signed account context exposes actual bound public UUID, grants and instance namespace; admission is separate from operator/group publication authority.",
+    "Exact session owner locking and native save_resume extraction preserve version, complete file membership/order, expiry, prepared/source-accepted immutability and grant downgrade rules.",
+    "Preview resolves both typed public IDs, checks same owner/session/file and holds share locks until validated immutable storage is opened; shared bounded media serving and private no-store/Vary Authorization retained.",
+    "Owned committed session recovery preserves immutable fields with explicit none/available/unavailable receipt state; async alias/DB failures propagate, only pure presentation unavailability is downgraded.",
+    "Native caller behavior preserved by wrappers around read-only owner receipt extraction; no fake mutation principal.",
+    "Test additions are explicit disposable fixture cases; missing-alias mapper case does not disable identity triggers and is not presented as an HTTP test."
+  ],
+  "checks": {
+    "git_diff_check": "passed",
+    "repository_build_rs": "No build.rs found under selected backend or manga-protocol-lab depth3",
+    "executed_tests": false,
+    "executed_build": false,
+    "executed_runtime": false
+  },
+  "limitations": [
+    "Runtime semantics, Rust compilation and SQL execution remain unverified until approved owner execution.",
+    "DB-dependent tests remain ignored and require a separately audited disposable runner.",
+    "Current recovered public commit returns HTTP200 with explicit publication status; no actual HTTP202 behavior is claimed.",
+    "Outer request admission and inner stream permits may return busy under tiny concurrency limits; no permits bypass was added.",
+    "Frontend adapter and UI integration are reviewed separately.",
+    "This is new code on recovered e758 ancestry, not historical lost-byte equivalence."
+  ]
+}

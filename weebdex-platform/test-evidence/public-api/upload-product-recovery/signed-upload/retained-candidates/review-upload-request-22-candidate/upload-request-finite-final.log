@@ -1,0 +1,43 @@
+Exact copied tool output, retained from the already completed tool call.
+This is not a newly captured file-backed run. No test was rerun to create this log.
+Command: sha256sum platform-integrations/public-api/nostr-upload-request.ts tests/ci/test_public_upload_request_recovery.mjs; node --experimental-vm-modules tests/ci/test_public_upload_request_recovery.mjs
+Working directory: /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform
+Tool chunk ID: dced4c
+Exit code: 0
+Captured output follows verbatim:
+
+67b7aa937304b9fa9b92077c81c2f5dc00394b12490e65a2001a3526e28e6aa2  platform-integrations/public-api/nostr-upload-request.ts
+96086472d35680f429f6920d85c9d19bdbcc087ecb103a04957fffa290d8f4bb  tests/ci/test_public_upload_request_recovery.mjs
+✔ exact original JSON bytes, URL, service, nonce and owner reach one credential-free dispatch without relay response proof (46.122261ms)
+✔ multipart is already serialized, explicitly bounded and identical to its signed digest (6.167555ms)
+✔ empty mutations bind SHA-256 of empty bytes; empty GET omits payload and body; PATCH is supported (12.876416ms)
+✔ unsafe, noncanonical or foreign URLs and unsupported encodings/methods never ask the signer or dispatch (6.790413ms)
+✔ JSON, multipart and caller-lowered request budgets cannot be raised (4.201098ms)
+✔ pre-abort and obsolete signer or view prevent signing (7.329553ms)
+✔ closing before a deferred signer callback prevents the external prompt itself (3.808628ms)
+✔ identity change during a signer prompt and scope change during final refresh prevent dispatch (5.382655ms)
+✔ captured identity fields cannot be swapped while a prompt is pending (7.944879ms)
+✔ signer deadline settles locally; late approval is ignored and never replayed (3.41848ms)
+✔ one absolute deadline spans signer, final refresh, dispatch and a stalled response reader (3.896179ms)
+✔ external abort during signing leaves no dispatch, timer or external listener (2.932711ms)
+✔ network failure is uncertain after exactly one mutation dispatch and is never retried (2.863476ms)
+(node:2) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ a late response after deadline is discarded and its stream is cancelled (6.400427ms)
+✔ actual HTTP errors are returned with their body and retry header (4.478616ms)
+✔ known status survives malformed JSON, invalid UTF-8, unexpected types and failed body reads (14.528611ms)
+✔ scope invalidation upon fetch resolution preserves observed mutation status (3.656889ms)
+✔ accepted HTTP 202 with malformed JSON remains a known 202 and is never replayed (4.277128ms)
+✔ HTTP 200 with an unavailable body remains a known 200 without fabricating success data (3.757661ms)
+✔ decoded JSON and images have hard default response caps and lower caller caps (12.707441ms)
+✔ binary preview bytes remain exact; unsafe image content and JSON errors preserve real status (13.680644ms)
+✔ a genuine empty 204 keeps its status and has no invented success body (3.023137ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 186.559224

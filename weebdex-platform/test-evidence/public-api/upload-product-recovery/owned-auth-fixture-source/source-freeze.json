@@ -1,0 +1,130 @@
+{
+  "schema": "recovered-owned-auth-fixture-source-v1",
+  "parent_commit": "ac673626ccb256a7a683e61c2427cf97291ccd24",
+  "source_files": [
+    {
+      "path": "scripts/run-auth-tests.sh",
+      "bytes": 230,
+      "sha256": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5"
+    },
+    {
+      "path": "tests/runtime/auth_fixture_guard.py",
+      "bytes": 14105,
+      "sha256": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    {
+      "path": "tests/ci/test_auth_fixture_guard_recovery.py",
+      "bytes": 19319,
+      "sha256": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/initial-source-review.json",
+      "bytes": 2154,
+      "sha256": "6dfd147de0bdeae16f9ea02ad38c1f184b0938af80bee65a8b2e620e84528427"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/initial-finite-review.json",
+      "bytes": 1108,
+      "sha256": "c7b4f4c19c42dfafed3ce8d7621fc30954cc43f8e46b73688aac3b29accfe802"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/initial-18-tool-output-copy.log",
+      "bytes": 2987,
+      "sha256": "096673593ab1b836d8ba491528c48da9e1eaf16e3732c6833258f54c95a59704"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/initial-18-receipt.json",
+      "bytes": 1346,
+      "sha256": "d115d0c4f72ac56a0cd02b31c70ca80898700f3e3d3742ac2ecdbeef7d30a8e9"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/normal-stop-01-receipt.json",
+      "bytes": 5237,
+      "sha256": "5043d598f870de58e1f3fdf0e6dd89df9bf30472c3652e443bffd6d7c662be1f"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/normal-stop-01-result-review.json",
+      "bytes": 2081,
+      "sha256": "e3aef88bdcc6ae20a2431a6e8e8f40691a99c415c397ca047724e08498100617"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/cross-session-source-review.json",
+      "bytes": 2596,
+      "sha256": "3331ca9259efa814fedd33f7e49e4321d7763d27d961d5aaf78b0105197a7c50"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/cross-session-result-review.json",
+      "bytes": 1309,
+      "sha256": "2f0d4440607730e05ade78113495dd701cbd45ec431fc41deaec058baab57c16"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/cross-session-27.log",
+      "bytes": 4492,
+      "sha256": "3b1f073641a9da3ba340c838e7911e6573f65e0f750065b47bc6cfda4106675f"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/cross-session-27-receipt.json",
+      "bytes": 1937,
+      "sha256": "e69551b518b64f7020a63e3155c5edee0d7a9eb18dde1aea881e89fc07606d00"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/original-normal-stop-auth_fixture_guard.py",
+      "bytes": 12433,
+      "sha256": "4f58eb17e042d95b7ac885facda0a32c30abf5b181744ab348f3d04e6ef408bb"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/original-normal-stop-test_auth_fixture_guard_recovery.py",
+      "bytes": 13524,
+      "sha256": "c4c350b012abe3d6b77bf912d2fc5f3cb5e854df307710521514ec2007c59dc5"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/original-normal-stop-scope.json",
+      "bytes": 1133,
+      "sha256": "b568bb4f2f473068319e9c8c47d39fda36e99d797f85e0b5516bd228441dfd02"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/held-final-scan-auth_fixture_guard.py",
+      "bytes": 13925,
+      "sha256": "4cc6797c2dff87575cf53c247312fd586848ccd3dbd096e73f97633cf59996a3"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/held-final-scan-test_auth_fixture_guard_recovery.py",
+      "bytes": 18239,
+      "sha256": "4ca930bd19ce006b2dae906938754590305c9f609e86db774be3c91a8788ae75"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/owned-auth-fixture-source/held-final-scan-scope.json",
+      "bytes": 437,
+      "sha256": "d473fa2b9019de71ecd5bc312f85f83d8cb9d958a73368ad6ae02bcee1e2be77"
+    }
+  ],
+  "scope": "auth-test-only PostgreSQL owner with fixed startup/test/cleanup bounds, exact births and observed descendant ancestry",
+  "finite": {
+    "original": {
+      "pass": 18,
+      "fail": 0,
+      "log_origin": "retained original tool output copy"
+    },
+    "corrected": {
+      "pass": 27,
+      "fail": 0,
+      "log_origin": "direct first-run file capture"
+    }
+  },
+  "historical_normal_stop": "Actual original-source normal-stop PASS; observed PG children in separate sessions exposed the escalation ownership gap. It does not qualify corrected-source runtime.",
+  "retained_held_candidate": "Unexecuted cross-session candidate discarded final scan survivors; retained source and scope copied unchanged.",
+  "runtime_corrected": "Pending sole-owner separately reviewed genuine normal-stop/escalation qualification before DB tests.",
+  "resource_bounds": {
+    "test_seconds": 180,
+    "aggregate_cleanup_seconds": 25,
+    "outer_owner_seconds": 300,
+    "initdb_seconds": 30,
+    "postmaster_readiness_seconds": 10,
+    "readiness_probe_seconds": 1.2,
+    "readiness_probe_within_postmaster_deadline": true,
+    "createdb_seconds": 10
+  },
+  "sanitization": "source, synthetic process/port receipts and test logs only; excludes runtime databases, keys and private config"
+}

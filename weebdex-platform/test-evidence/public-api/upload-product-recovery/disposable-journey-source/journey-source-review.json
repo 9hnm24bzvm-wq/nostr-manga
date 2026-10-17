@@ -1,0 +1,53 @@
+{
+  "schema": "independent-source-review-v1",
+  "time_utc": "2026-10-17T04:25:30.857190+00:00",
+  "verdict": "source_clear_for_exact_pure_journey_suite",
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "sha256": "e8e2080b194efa052ccb198b659b6f93c9590397b2ce76b2174a2aaefaabd913",
+      "bytes": 23298
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/public-upload-recovery-observer.mjs",
+      "sha256": "c59f4464457d610088c01719645f63b1d379fddeb576f8793a53811c4600e79f",
+      "bytes": 7955
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/browser-acceptance.mjs",
+      "sha256": "33ae625d030bf222adc1678bf3cd9446f808c46faf03844191ead925455115d9",
+      "bytes": 16849
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/browser-signed-journeys.mjs",
+      "sha256": "4b33772942130ba50428ca2013e0db8b4843050caae55a564720529bbd7fe838",
+      "bytes": 102141
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_recovery_journey.mjs",
+      "sha256": "dba8d61a02f731d8eeaa597429fe85a7ac755399fd2957995d7dc3e4b0ec2803",
+      "bytes": 11989
+    }
+  ],
+  "command": "node --test tests/ci/test_public_upload_recovery_journey.mjs",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform",
+  "source_findings": [
+    "Passive browser observer verifies exact signed event envelope, event hash/signature, owner/service/method/URL and actual body hash only when bytes are observed. Null GET/multipart body remains explicitly unavailable.",
+    "Missing native terminal or actual response status cannot settle; any observed signed native failure remains fatal. Natural-success mutation stages require actual HTTP200, exact new mutation count and independent durable state.",
+    "Independent reads use fresh signed GETs with no cookie authority and bounded response reads; visible UI alone performs application mutations.",
+    "Durable assertions distinguish raw stored order from normalized order and compare fresh original storage hashes/lengths to synthetic originals. Commit ties actual stored event identity/signature, chapter identity and ordered original hashes.",
+    "Actual settings/key import, cancellation confirmation/dismissal, three images, manual reorder, removal, replacement refusal and hard-reload resume are defined as test-only prospective journey.",
+    "Context/browser/proxy cleanup attempts continue after close or evidence-stage failures; complete-stage observation occurs before final verdict/save. Cleanup projection excludes raw Error objects."
+  ],
+  "finite_scope": [
+    "Built-in modules, inert source imports, fake signature verifier and fake fetch/DOM-independent seams.",
+    "Real local PNG encoding, durable order/hash rejection and source-extracted cleanup/status predicates only."
+  ],
+  "limits": [
+    "No actual browser/HTTP/DB success is established by this source or finite run.",
+    "DOM preview decode/dimensions alone are UI readiness, not independent Blob byte lineage.",
+    "Application PG execution remains held for the separately discovered cross-session descendant guard correction.",
+    "Fresh frontend strict/build and complete source/runtime envelope are still required before actual browser execution."
+  ],
+  "execution_by_reviewer": false
+}

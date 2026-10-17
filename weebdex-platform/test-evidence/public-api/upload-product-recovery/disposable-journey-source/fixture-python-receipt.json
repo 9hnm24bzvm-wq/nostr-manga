@@ -1,0 +1,11 @@
+{
+  "schema": "upload-fixture-python-pure-v1",
+  "utc": "2026-10-17T04:10:23.607487+00:00",
+  "exit_code": 0,
+  "cases": 10,
+  "source_sha256": "1037badea635fe2e3005900d1daa9279425e4b457af13ac968acee8215fb42e0",
+  "source_unchanged": true,
+  "script_sha256": "de8a69649f7f49e5e8fa3c9cbedf957c6a28814579aaac6ef144fb2ec141603d",
+  "log_sha256": "6871b1c13098d9fb42af4d7e07f4e9a7df1dba8620a65816d59b50a2999f2e3f",
+  "pass": true
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "independent-runtime-result-review-v1",
+  "time_utc": "2026-10-17T04:25:55.966366+00:00",
+  "verdict": "pass_normal_stop_only_with_followup_blocker",
+  "owner_receipt": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/pg-guard-qualification-01/receipt.json",
+    "sha256": "5043d598f870de58e1f3fdf0e6dd89df9bf30472c3652e443bffd6d7c662be1f",
+    "bytes": 5237
+  },
+  "probe": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/pg-guard-qualification-01/probe.json",
+    "sha256": "6a55ef50a9de69daf3aee4851289039b17be24f095258bea3400e8ec71d6ed8a",
+    "bytes": 761
+  },
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/pg-guard-qualification-01/run.log",
+    "sha256": "94409d04dbc47b0814e92577cde77b300a6a28e0cfb98c7516260c23891301d7",
+    "bytes": 28
+  },
+  "cleanup": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-e87w1xao/cleanup.json",
+    "sha256": "94e7576d49affeba83c7b7def05ea7ad2d6b116b8ed8ec6c874b677a0201981a",
+    "bytes": 379
+  },
+  "review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/pg-guard-qualification-independent-plan-review-20261017.json",
+    "sha256": "38207c4db61bf8486606decc973783acac3f6d6db1d0ae7f8d6160dd94c1cad9",
+    "bytes": 2274
+  },
+  "observed_births": 22,
+  "normal_stop": true,
+  "forced": false,
+  "saved_births_absent_in_owner_namespace": true,
+  "port_refused": 43051,
+  "independent_live_process_probe_by_reviewer": false,
+  "qualification": "Real isolated PostgreSQL initdb/createdb and harmless probe plus normal shutdown. No application SQL/HTTP/browser assertion.",
+  "concrete_followup_blocker": "Observed PostgreSQL children have separate sessions/groups. Existing guard.members filters to root session and therefore cannot qualify cross-session forced cleanup or postmaster-loss recovery. Source owner is correcting exact-birth descendant tracking; application PG expansion remains held.",
+  "retention": "Successful normal-stop receipt and raw fixture remain unchanged."
+}

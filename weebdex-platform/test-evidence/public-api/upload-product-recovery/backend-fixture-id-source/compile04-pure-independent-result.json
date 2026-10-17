@@ -1,0 +1,43 @@
+{
+  "schema": "upload-fixture-id-compile04-independent-result-v1",
+  "verdict": "compile_and_exact_pure_case_pass_associated",
+  "receipts": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-04/receipt.json",
+      "sha256": "825acfe0a5bf5b1573850df773fc8398f6bbb22fc6296981d38a624195c8f165"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-fixture-id-pure-01/receipt.json",
+      "sha256": "3d8ad2d148d615b208358e16e5aa31c8e56e190d58af3c7e16db8c92f49a5a46"
+    }
+  ],
+  "logs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-04/cargo-test-no-run.log",
+      "sha256": "043051efe95625952f1a7b6d6c18451175015f08dffb55ea6fe89c358b24f7b9"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-fixture-id-pure-01/run.log",
+      "sha256": "2d20d8b1298eb8117d52337e39204499a860495064b54f95c4ea23be5b0ed600"
+    }
+  ],
+  "artifact": {
+    "cargo-target/debug/deps/public_uploads-4987a247b7f72ece": {
+      "sha256": "a24b5a691e7244ee813b2eecc6f56c030a62d2bb6557898eea58dfb1e0ad5a94",
+      "bytes": 54086472,
+      "mode": 493
+    }
+  },
+  "source_count": 308,
+  "checks": [
+    "Current308 source hashes equal compile before/after inventory",
+    "Fresh test binary bytes/size/mode rechecked",
+    "Actual one exact identifier pure test passed; zero failures",
+    "Compile exited0, no timeout/terminal errors, child reaped"
+  ],
+  "limitations": [
+    "No database seam executed by these results",
+    "No publication or HTTP success claim",
+    "Compile03 failed syntax and original integration01 failed503 remain retained"
+  ]
+}

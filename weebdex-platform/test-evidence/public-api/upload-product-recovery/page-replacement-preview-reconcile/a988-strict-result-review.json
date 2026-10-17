@@ -1,0 +1,41 @@
+{
+  "schema": "independent-replacement-strict-result-review-v1",
+  "reviewed_at_utc": "2026-10-17T06:31:17.086313+00:00",
+  "decision": "both_strict_profiles_passed",
+  "source_commit": "a9886def384bbd08bd25cfeaaa336c24a72bb78e",
+  "profiles": {
+    "strict-default-01": {
+      "receipt_sha256": "d2dd0d57bcc7ef9bc6093c74377c878fdc39e0a6a8cb7b32e9b04f68674b9cfa",
+      "summary_sha256": "f99a35fc7b3ba0df6e15103bc0dc8c3c47335741f1c9459074206bd9718eb92a",
+      "log_sha256": "072c326fa55dbda631886c668226e71ff6199d91314fc0453ee72261c1067f80",
+      "errors": 0,
+      "warnings": 15,
+      "svelte_check_exit": 0,
+      "worker_check_exit": 0,
+      "owner_exit": 0,
+      "child_reaped": true
+    },
+    "strict-enabled-01": {
+      "receipt_sha256": "eeb5f420e44941a23fe3eca80dda783f9fc799ad5bec3d2002129db6fc13c1e3",
+      "summary_sha256": "6364ff3695ccf2c7807b9510f17b63b6b68d5f41ed41d12b26a8fb9163bb2f22",
+      "log_sha256": "c1a6515e44cae87245fb2b52b4882c16db186ea12955168c78feffb91c17ea4e",
+      "errors": 0,
+      "warnings": 15,
+      "svelte_check_exit": 0,
+      "worker_check_exit": 0,
+      "owner_exit": 0,
+      "child_reaped": true
+    }
+  },
+  "current_input_recheck": {
+    "source_files": 857,
+    "dependency_entries": 39226,
+    "held_browser_pins": 1167,
+    "held_frontend_members": 432,
+    "all_exact": true
+  },
+  "limits": [
+    "Strict source checks only; actual syntax/Vite/browser results are separate.",
+    "No repository compiler or runtime executed by reviewer."
+  ]
+}

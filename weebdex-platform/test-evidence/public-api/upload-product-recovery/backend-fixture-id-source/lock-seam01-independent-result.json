@@ -1,0 +1,52 @@
+{
+  "schema": "account-lock-seam01-independent-failed-result-v1",
+  "verdict": "observer_setup_failure_before_probe_or_test",
+  "pins": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-01/receipt.json",
+      "sha256": "010749ee3d5662523274fd98ba5644b4244f7a65ed49267851806d759a2aea21"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam-01/run.log",
+      "sha256": "a3eabcead1e7d806ad5228ed078c37d4c471332557187a726c825d9c20c3e75a"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-si6oual4/cleanup.json",
+      "sha256": "c99c6dd1cb29c639a8e00b28b3ae183b6085da5a1d2f1a91a6ae354c9c347f8b"
+    }
+  ],
+  "observed_failure": {
+    "class": "PermissionError",
+    "message": "[Errno 13] Permission denied: '/proc/30/fd'"
+  },
+  "saved_pid30": {
+    "pid": 30,
+    "ppid": 5,
+    "group": 30,
+    "session": 30,
+    "start_ticks": 640330,
+    "state": "Z"
+  },
+  "actual_scope": {
+    "test_summary": null,
+    "probe_absent": true,
+    "guard_cleanup_exit": 143,
+    "test_returncode": null,
+    "postgres_returncode": 0,
+    "source_unchanged": true
+  },
+  "cleanup": {
+    "all_saved_births_absent": true,
+    "all_guard_captured_births_absent": true,
+    "guard_verified_stopped": true,
+    "guard_closed_port": true,
+    "forced": false,
+    "outer_listener_refusal_complete": false
+  },
+  "limits": [
+    "No actual FK/concurrency conclusion",
+    "No application pass",
+    "Outer exact listener/probe checks were unavailable because no probe ran; retained guard teardown is separately verified",
+    "Raw stopped fixture remains retained"
+  ]
+}

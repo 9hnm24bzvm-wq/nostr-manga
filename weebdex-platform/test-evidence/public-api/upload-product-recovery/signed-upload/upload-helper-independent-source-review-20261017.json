@@ -1,0 +1,49 @@
+{
+  "schema": "recovered-upload-helper-independent-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T03:40:31.395208+00:00",
+  "base": "3e46ddcb0fd6dae6745ac19db92956565741b897",
+  "verdict": "source_clear_for_exact_finite_seams_pending_adapter_backend_integration",
+  "pins": {
+    "platform-integrations/public-api/nostr-upload-request.ts": "67b7aa937304b9fa9b92077c81c2f5dc00394b12490e65a2001a3526e28e6aa2",
+    "tests/ci/test_public_upload_request_recovery.mjs": "96086472d35680f429f6920d85c9d19bdbcc087ecb103a04957fffa290d8f4bb",
+    "platform-integrations/public-api/upload-multipart.ts": "836066dbc4759de39b8c7144fed9c348949f8bbcec7da7d7cf8e7e980943d84a",
+    "platform-integrations/public-api/upload-preview.ts": "fbe8c10c8fc2e4514872aad3c7ce97fb295af5e26c87d563faf3c869d5db0c8a",
+    "tests/ci/test_public_upload_media_recovery.mjs": "c7339659bc1acf58e4cbec47ea2588b0fc9a4ef3d770bf0a6607e827fff7580e"
+  },
+  "verified_by_reviewer": [
+    "Exact public origin URL, method, mandatory service and raw body hash; immutable body copy before async signing; credential omission and redirect refusal.",
+    "Selected signer/context/deadline checked around async boundaries; known status preserved when response body is unavailable; no automatic retry or relay response-proof requirement.",
+    "Literal fragments refused; fully consumed successful response is not aborted; first source retained.",
+    "Multipart source validates name/MIME/byte bounds, rejects header injection and boundary collisions, and serializes exactly once.",
+    "Preview helper explicitly distinguishes borrowed/transferred cleanup ownership; stale owner/document/file results do not install a URL; loader retains actual authentication/hash/decode obligation."
+  ],
+  "execution_scope": {
+    "reviewer_ran_tests": false,
+    "transport_owner_reported": {
+      "command": "node --experimental-vm-modules tests/ci/test_public_upload_request_recovery.mjs",
+      "tests": 22,
+      "passed": 22,
+      "exit_code": 0,
+      "independent_signature_or_network_claim": false
+    },
+    "media_owner_reported": {
+      "command": "node --test tests/ci/test_public_upload_media_recovery.mjs",
+      "tests": 26,
+      "passed": 26,
+      "exit_code": 0,
+      "real_browser_or_decoder_claim": false
+    },
+    "raw_logs": "Requested durable retention from source owner; terminal counts above are owner reports, not independently read logs."
+  },
+  "prior_failure": {
+    "scope": "transport TS strip setup before assertions",
+    "source_directory": "/workspace/shared/nostr-manga-recovery-20261017/review-upload-request-first-candidate",
+    "resolution": "Explicit error fields replace unsupported constructor parameter properties; first source/test preserved."
+  },
+  "limits": [
+    "No build, socket, browser, backend fixture or publication executed by this review.",
+    "No restored historical byte-equivalence claim.",
+    "Actual cryptographic signExact remains an existing imported primitive; new finite transport test injects a labeled mock signer.",
+    "Helper source clearance does not qualify higher-level route, account/grant, publication receipt or UI integration."
+  ]
+}

@@ -57,6 +57,10 @@ const publicEnv = Object.fromEntries([
 const evidence = {
   source_changed: false,
   public_api_catalogue_enabled: integration.public_api_catalogue_enabled,
+  public_signed_upload_enabled: integration.public_signed_upload_enabled,
+  public_signed_upload_overlay_sha256: integration.public_signed_upload_overlay_sha256,
+  public_signed_upload_anchors_sha256: integration.public_signed_upload_anchors_sha256,
+  approved_public_signed_upload_extensions: integration.approved_public_signed_upload_extensions,
   public_api_overlay_module_sha256: integration.public_api_overlay_sha256,
   public_api_reconstructed_unverified: true,
   qa_build_resource_profile: process.env.WEEBDEX_QA_BUILD_RESOURCE_PROFILE ?? null,
