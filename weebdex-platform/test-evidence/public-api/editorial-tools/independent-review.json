@@ -1,0 +1,66 @@
+{
+  "schema": "independent-title-editorial-account-intent-review-v1",
+  "source": "e47b33aeb371dc08f4486ca86217e52cde7e1227",
+  "sourceManifestSha256": "8642eadef89dbdc6848fc41e7a0890ae44843a514f6e4a154607174ffb57ab81",
+  "sourceInputs": 717,
+  "sourceUnchanged": true,
+  "browserExecuted": false,
+  "externalPublication": false,
+  "raw_receipt_sha256": "07a2b2f9c6ad3453d02f3e5d2d1a07a322d67bdfab71159944584658ae9d2760",
+  "runs": [
+    {
+      "executable": "public_editorial_drafts-3bdf5cf5f44ac995",
+      "executableSha256": "647b9a69d50fd837596af8b615bfcbcca577accf085325c73c2f8718ddb5f405",
+      "exitCode": 0,
+      "elapsedSeconds": 2.626,
+      "logSha256": "618dcf43a239a23e080312d962ab587a4f055f9c185e9f9ccff18b8a38b58f50",
+      "cleanupSha256": "cdd5a0511e6daab4d7b5048399599b4e8d71ded6c45a29fdea73301e9355ac47",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      }
+    },
+    {
+      "executable": "public_group_claims-3385f3eaa5f3e160",
+      "executableSha256": "e9385a1f3374e19e5bd6bc97f0bb6c973ef149b2df24f34151fe3aa5530a4203",
+      "exitCode": 0,
+      "elapsedSeconds": 1.483,
+      "logSha256": "56d06a0152af4d4f6b30f85a6d09d5d78bd420945fdd484001232ddc427a8828",
+      "cleanupSha256": "18811778fc632794367150939dff3162cb969555eff7e61aa734964da474d85a",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      }
+    },
+    {
+      "executable": "public_manga_writes-c6e3b3f471541a44",
+      "executableSha256": "7ad898a94b86a7d52ceecc3409183d59e553ff94ffdedf5b9ee092f68dfb373b",
+      "exitCode": 0,
+      "elapsedSeconds": 2.188,
+      "logSha256": "c59d9f609ad83b3e016946cf2d17d819aba099756f0e909293c8563e42da6493",
+      "cleanupSha256": "6870d26728645f816a54ec2da0d5d38e054a994e683dfb01633d52549b954c84",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      }
+    }
+  ]
+}

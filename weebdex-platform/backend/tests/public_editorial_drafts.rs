@@ -142,6 +142,7 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
         "scanlation_group.delete",
         "self.scanlation_group.update",
         "manga.create",
+        "manga.update",
         "manga.state.update"
     ]);
     let sql = state.db.client().await.unwrap();
@@ -240,7 +241,16 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
         .timeout(Duration::from_secs(10))
         .build()
         .unwrap();
-    let payload = json!({"name":"Author","biography":{"en":"A biography","ja":"漫画家"},"twitter":"https://twitter.com/author","fanBox":null});
+    // Capture exact bytes for account2, then rebind the signer to account4.
+    // Both accounts have colliding create/update grants: only the signed actor
+    // intent, checked inside the mutation transaction, prevents silent retarget.
+    let intended=json!({"name":"Captured author intent","expectedAccountId":owner.as_str()});
+    let bytes=serde_json::to_vec(&intended).unwrap();let target=format!("{origin}/api/v1/author");let token=proof(2,&target,"POST",&bytes);
+    let db=state.db.client().await.unwrap();db.execute("UPDATE platform.protocol_identity_bindings SET user_id='EditorialUser4' WHERE publisher=$1",&[&public(2)]).await.unwrap();
+    let response=client.post(&target).header("content-type","application/json").header("authorization",token).body(bytes).send().await.unwrap();assert_eq!(response.status().as_u16(),409);
+    let count:i64=db.query_one("SELECT count(*) FROM platform.catalog_authors WHERE name='Captured author intent'",&[]).await.unwrap().get(0);assert_eq!(count,0);
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='EditorialUser2' WHERE publisher=$1",&[&public(2)]).await.unwrap();drop(db);
+    let mut payload = json!({"name":"Author","biography":{"en":"A biography","ja":"漫画家"},"twitter":"https://twitter.com/author","fanBox":null});
     call(
         &client,
         &origin,
@@ -263,6 +273,7 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
         )
         .await;
     }
+    payload["expectedAccountId"]=json!(owner.as_str());
     let url = format!("{origin}/api/v1/author");
     let raw = serde_json::to_vec(&payload).unwrap();
     for authorization in [
@@ -362,6 +373,56 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     let mut statuses = [a.unwrap().status().as_u16(), b.unwrap().status().as_u16()];
     statuses.sort();
     assert_eq!(statuses, [200, 409]);
+    // Deterministic delete/reference race: the deletion request is proven to
+    // be blocked on the actual author row. A reference committed by its current
+    // lock holder must be observed before any author soft-delete succeeds.
+    let race = call(&client,&origin,"POST","/api/v1/author",Some(json!({"name":"Concurrent referenced author"})),Some(2),200).await;
+    let race_id = PublicUuid::parse(race["data"]["id"].as_str().unwrap()).unwrap();
+    let native_race = resolver.resolve(ResourceKind::Author,&race_id).await.unwrap().unwrap().native_id;
+    let mut locked = state.db.client().await.unwrap();
+    let guard = locked.transaction().await.unwrap();
+    guard.query_one("SELECT id FROM platform.catalog_authors WHERE id=$1 FOR UPDATE",&[&native_race]).await.unwrap();
+    let delete_url = format!("{origin}/api/v1/author/{race_id}");
+    let deletion = client.delete(&delete_url).header("authorization",proof(5,&delete_url,"DELETE",&[]));
+    let deletion = tokio::spawn(async move {deletion.send().await.unwrap()});
+    let observer = state.db.client().await.unwrap();
+    tokio::time::timeout(Duration::from_secs(3),async {
+        loop {
+            let waiting:bool = observer.query_one("SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE '%platform.catalog_authors%' AND pid<>pg_backend_pid())",&[]).await.unwrap().get(0);
+            if waiting {break;} tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+    }).await.expect("Actual HTTP deletion never reached its author-row lock");
+    guard.execute("INSERT INTO platform.catalog_manga_creators(manga_id,author_id,role) VALUES('EditorialDraft1',$1,'author')",&[&native_race]).await.unwrap();
+    guard.commit().await.unwrap();
+    let deleted = deletion.await.unwrap();let status=deleted.status().as_u16();let receipt:Value=deleted.json().await.unwrap();
+    assert_eq!(status,409,"Concurrent reference must prevent author deletion: {receipt}");
+    let visible:bool=observer.query_one("SELECT deleted_at IS NULL FROM platform.catalog_authors WHERE id=$1",&[&native_race]).await.unwrap().get(0);assert!(visible);
+    observer.execute("DELETE FROM platform.catalog_manga_creators WHERE author_id=$1",&[&native_race]).await.unwrap();
+    drop(observer);drop(locked);
+    // Reverse ordering: an author DELETE already holds its row lock while a
+    // real signed title edit attempts to add that author. After deletion commits
+    // the edit must reject the now-hidden author instead of relying on a stale
+    // validation snapshot followed by an FK check that only proves existence.
+    let raced = call(&client,&origin,"POST","/api/v1/author",Some(json!({"name":"Author deleted during title assignment"})),Some(2),200).await;
+    let raced_id=PublicUuid::parse(raced["data"]["id"].as_str().unwrap()).unwrap();
+    let raced_native=resolver.resolve(ResourceKind::Author,&raced_id).await.unwrap().unwrap().native_id;
+    let mut barrier=state.db.client().await.unwrap();let barrier_tx=barrier.transaction().await.unwrap();
+    barrier_tx.query_one("SELECT pg_advisory_xact_lock(16261017)",&[]).await.unwrap();
+    let observer=state.db.client().await.unwrap();
+    observer.batch_execute("CREATE FUNCTION platform.pause_editorial_author_delete() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.name='Author deleted during title assignment' AND NEW.deleted_at IS NOT NULL THEN PERFORM pg_advisory_xact_lock(16261017); END IF; RETURN NEW; END $$; CREATE TRIGGER pause_editorial_author_delete BEFORE UPDATE ON platform.catalog_authors FOR EACH ROW EXECUTE FUNCTION platform.pause_editorial_author_delete()").await.unwrap();
+    let delete_url=format!("{origin}/api/v1/author/{raced_id}");
+    let deletion=client.delete(&delete_url).header("authorization",proof(5,&delete_url,"DELETE",&[]));
+    let deletion=tokio::spawn(async move{deletion.send().await.unwrap()});
+    tokio::time::timeout(Duration::from_secs(3),async{loop{let waiting:bool=observer.query_one("SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event='advisory' AND query LIKE '%platform.catalog_authors%')",&[]).await.unwrap().get(0);if waiting{break;}tokio::time::sleep(Duration::from_millis(5)).await;}}).await.expect("Actual author DELETE did not reach its controlled row-lock barrier");
+    let title_url=format!("{origin}/api/v1/manga/{draft}");let edit=json!({"version":1,"authors":[raced_id.as_str()]});let raw=serde_json::to_vec(&edit).unwrap();
+    let assignment=client.put(&title_url).header("content-type","application/json").header("authorization",proof(2,&title_url,"PUT",&raw)).body(raw);
+    let assignment=tokio::spawn(async move{assignment.send().await.unwrap()});
+    tokio::time::timeout(Duration::from_secs(3),async{loop{let waiting:bool=observer.query_one("SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND wait_event<>'advisory' AND (query LIKE '%platform.catalog_authors%' OR query LIKE '%platform.catalog_manga_creators%'))",&[]).await.unwrap().get(0);if waiting{break;}tokio::time::sleep(Duration::from_millis(5)).await;}}).await.expect("Actual signed title assignment did not reach its author lock");
+    barrier_tx.commit().await.unwrap();
+    assert_eq!(deletion.await.unwrap().status().as_u16(),200);
+    let assigned=assignment.await.unwrap();let status=assigned.status().as_u16();let receipt:Value=assigned.json().await.unwrap();assert_eq!(status,400,"A deleted author cannot be assigned by a waiting title edit: {receipt}");
+    let count:i64=observer.query_one("SELECT count(*) FROM platform.catalog_manga_creators WHERE author_id=$1",&[&raced_native]).await.unwrap().get(0);assert_eq!(count,0);
+    observer.batch_execute("DROP TRIGGER pause_editorial_author_delete ON platform.catalog_authors; DROP FUNCTION platform.pause_editorial_author_delete()").await.unwrap();drop(observer);drop(barrier);
     // A failed audit insert must roll back the actual catalogue mutation and
     // generated UUID, not merely return an error after committing the entity.
     let sql = state.db.client().await.unwrap();
@@ -642,13 +703,15 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     )
     .await;
     call(&client, &origin, "DELETE", &apath, None, Some(4), 403).await;
-    call(&client, &origin, "DELETE", &apath, None, Some(5), 200).await;
+    call(&client,&origin,"DELETE",&format!("{apath}?expectedAccountId={owner}"),None,Some(5),409).await;
+    let staff=resolver.preferred(ResourceKind::User,"EditorialUser5").await.unwrap().unwrap();
+    call(&client,&origin,"DELETE",&format!("{apath}?expectedAccountId={staff}"),None,Some(5),200).await;
     call(&client, &origin, "DELETE", &apath, None, Some(5), 404).await;
     call(&client, &origin, "DELETE", &gpath, None, Some(4), 403).await;
     call(&client, &origin, "DELETE", &gpath, None, Some(5), 200).await;
     let sql = state.db.client().await.unwrap();
     let audits=sql.query("SELECT actor_id,operation,old_version,new_version FROM platform.catalog_audit ORDER BY id",&[]).await.unwrap();
-    assert_eq!(audits.len(), 8);
+    assert_eq!(audits.len(), 11);
     for row in audits {
         assert!(row.get::<_, String>(0).starts_with("EditorialUser"));
         if row.get::<_, String>(1) == "update" {

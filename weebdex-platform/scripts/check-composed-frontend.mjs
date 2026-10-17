@@ -214,7 +214,7 @@ while (pending.length) {
   else manifest.push({ canonical: relative(path.join(root, path.relative(project, file))), original_sha256: hash(code), production_composed_sha256: hash(code), projection: path.relative(project, file), projection_sha256: hash(output), production_snapshot: path.relative(work, snapshot), stages: [], source_map: path.relative(work, mapPath), source_map_sha256: hash(fs.readFileSync(mapPath)) });
 }
 const unresolvedGraphEdges = graph.filter(edge => edge.resolver.startsWith('unresolved'));
-if (unresolvedGraphEdges.length) throw Error(`Projection graph has ${unresolvedGraphEdges.length} unresolved source edges`);
+if (unresolvedGraphEdges.length) throw Error(`Projection graph has ${unresolvedGraphEdges.length} unresolved source edges: ${JSON.stringify(unresolvedGraphEdges)}`);
 const mapValidation = manifest.filter(entry => entry.source_map).map(entry => {
   const mapPath = path.join(work, entry.source_map), map = JSON.parse(fs.readFileSync(mapPath));
   if (map.sources.length !== 1) throw Error(`Unexpected multi-source projection map: ${entry.source_map}`);

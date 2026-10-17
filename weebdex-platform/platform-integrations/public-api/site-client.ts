@@ -4,7 +4,7 @@ import { scopedMangaChapterCollection } from './author-chapter-feed';
 import { randomManga } from './random-manga';
 import { catalogueEdges } from './catalogue-edges';
 import { PublicApiClient } from './client';
-import { atHomePages,normalizeChapter,normalizeCover,normalizeFeed,normalizeManga,normalizeNamed,normalizeTag } from './normalize';
+import { atHomePages,normalizeChapter,normalizeCover,normalizeFeed,normalizeGroup,normalizeManga,normalizeNamed,normalizeTag } from './normalize';
 import { publicQuery,canUseMangaFeed,chapterParentControls } from './query';
 import { publicUuid,PublicApiContractError,record,uuidPattern } from './validation';
 import type { ChapterView,Collection,MangaView,NativeForumKind,Resource,Response,ViewFeed } from './types';
@@ -22,7 +22,24 @@ export class RetainedCatalogueClient{
  async read(operation:string,{id,query=new URLSearchParams(),signal}:ReadOptions={}):Promise<Response<unknown>>{
   if(operation.startsWith('analytics.'))return {status:501,body:{result:'error',errors:[{status:501,title:'Catalogue analytics unavailable',detail:'This build has no verified UUID analytics command adapter. No native mutation was sent.'}]}};
   if(id!==undefined){const family=operation.startsWith('statistics.')?operation.split('.')[1]:['chapter.list','chapter.aggregate','cover.list'].includes(operation)?'manga':operation.split('.')[0];if(!['manga','chapter','cover','author','group'].includes(family))throw new CatalogueUnavailableError('Unsupported resource family',422);id=await this.routeId(family as'manga'|'chapter'|'cover'|'author'|'group',id,signal);}
-  if(operation.startsWith('statistics.')){const kind=operation.split('.')[1]as'manga'|'chapter'|'group';if(!['manga','chapter','group'].includes(kind))throw new CatalogueUnavailableError('Unsupported catalogue statistics family',422);const response=await this.api.statistics(kind,publicUuid(id),signal);if(failed(response)||!response.body)return response;const entries=Object.entries(response.body.statistics);if(entries.length!==1)throw new PublicApiContractError('Detail statistics must identify exactly one visible resource');const[canonicalId,statistics]=entries[0];return {...response,body:{...(kind==='manga'?{follows:statistics.follows}:{}),public_api:{id:publicUuid(canonicalId),statistics}}};}
+  if(operation.startsWith('statistics.')) {
+   const kind=operation.split('.')[1] as 'manga'|'chapter'|'group';
+   if(!['manga','chapter','group'].includes(kind))throw new CatalogueUnavailableError('Unsupported catalogue statistics family',422);
+   const requested=publicUuid(id),response=await this.api.statistics(kind,requested,signal);
+   if(failed(response)||!response.body)return response;
+   const entries=Object.entries(response.body.statistics);
+   if(entries.length!==1)throw new PublicApiContractError('Detail statistics must identify exactly one visible resource');
+   const[canonicalId,statistics]=entries[0],canonical=publicUuid(canonicalId);
+   // Statistics may canonicalize a genuine UUID alias. A different map key alone
+   // is not proof that these counters belong to the requested detail resource.
+   if(canonical!==requested) {
+    this.namespace??=this.namespaceProvider().catch(error=>{this.namespace=undefined;throw error;});
+    const proof=await this.api.resolveLegacy([{kind,id:requested}],await this.namespace,signal);
+    if(failed(proof)||!proof.body||!proof.body.data.some(row=>row.kind===kind&&row.legacy_id===requested&&publicUuid(row.id)===canonical))
+     throw new PublicApiContractError('Statistics response belongs to a different resource without matching canonical alias proof');
+   }
+   return {...response,body:{...(kind==='manga'?{follows:statistics.follows}:{}),public_api:{id:canonical,statistics}}};
+  }
   const detailIncludes=(types:string[])=>new URLSearchParams(types.map(type=>['includes[]',type]));
   if(operation==='manga.search'||operation==='manga.trending'){if(operation==='manga.trending')throw new CatalogueUnavailableError('The retained time-window popularity feed needs a separate module adapter. No substitute ranking was returned.');const response=await this.api.collection('/manga','manga',publicQuery('manga',query,includes.manga),signal);return failed(response)||!response.body?response:{...response,body:normalizeFeed(response.body,normalizeManga)};}
   if(operation==='manga.relations'||operation==='manga.recommendations') {
@@ -45,7 +62,7 @@ export class RetainedCatalogueClient{
    const groups:unknown[]=[],languages:string[]=[],rows=new Map<string,{volume:string|null;chapter:string|null;entries:Record<string,unknown>}>(),groupIds:string[]=[];for(const chapter of chapters){if(!languages.includes(chapter.language))languages.push(chapter.language);const groupIndexes=chapter.relationships.groups.map(group=>{let index=groupIds.indexOf(group.id);if(index<0){index=groups.length;groups.push(group);groupIds.push(group.id);}return index;}),key=JSON.stringify([chapter.volume,chapter.chapter]);let row=rows.get(key);if(!row){row={volume:chapter.volume,chapter:chapter.chapter,entries:{}};rows.set(key,row);}row.entries[chapter.id]={published_at:chapter.published_at,language:languages.indexOf(chapter.language),groups:groupIndexes};}return {status,body:{chapters:[...rows.values()],groups,languages}};}
   if(operation==='cover.list'){const data:unknown[]=[];let offset=0,total=1;while(offset<total){const response=await this.api.collection('/cover','cover_art',new URLSearchParams({'manga[]':publicUuid(id),limit:'100',offset:String(offset)}),signal);if(failed(response)||!response.body)return response;total=response.body.total;if(total>10000)throw new CatalogueUnavailableError('Cover collection exceeds the bounded reader budget.',422);data.push(...response.body.data.map(normalizeCover));if(!response.body.data.length&&offset<total)throw new PublicApiContractError('Cover collection stopped before its total');offset+=response.body.data.length;}return {status:200,body:data};}
   if(operation==='cover.get'){const response=await this.api.cover(publicUuid(id),signal);return failed(response)||!response.body?response:{...response,body:normalizeCover(response.body.data)};}
-  if(operation==='author.get'||operation==='group.get'){const response=operation==='author.get'?await this.api.author(publicUuid(id),signal):await this.api.group(publicUuid(id),signal);if(failed(response)||!response.body)return response;const view=normalizeNamed(response.body.data);view.relationships={};if(operation==='group.get')await this.attachNativeForum('group',[view as typeof view&{relationships:Record<string,unknown>}],signal);return {...response,body:view};}
+  if(operation==='author.get'||operation==='group.get'){const response=operation==='author.get'?await this.api.author(publicUuid(id),signal):await this.api.group(publicUuid(id),signal);if(failed(response)||!response.body)return response;const view=operation==='group.get'?normalizeGroup(response.body.data):{...normalizeNamed(response.body.data),relationships:{}};if(operation==='group.get')await this.attachNativeForum('group',[view as typeof view&{relationships:Record<string,unknown>}],signal);return {...response,body:view};}
   if(['author.search','group.search','tag.search'].includes(operation)){const family=operation.split('.')[0]as'author'|'group'|'tag',response=await this.api.collection(family==='tag'?'/manga/tag':`/${family}`,family==='group'?'scanlation_group':family,publicQuery(family,query),signal);return failed(response)||!response.body?response:{...response,body:normalizeFeed(response.body,row=>family==='tag'?normalizeTag(row):normalizeNamed(row))};}
   throw new CatalogueUnavailableError(`${operation} has no verified public adapter. Native catalogue fallback is disabled.`);
  }

@@ -3,7 +3,7 @@ pub(crate) mod entity_mutations;
 mod feed_diagnostics;
 mod feed_projection;
 pub mod languages;
-mod mutations;
+pub(crate) mod mutations;
 mod protocol_bridge;
 pub mod query;
 mod read;

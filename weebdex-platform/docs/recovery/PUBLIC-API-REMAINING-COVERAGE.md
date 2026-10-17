@@ -1,5 +1,11 @@
 # Frontend coverage still open
 
+Historical recovery assessment. Its recommendation and library-fence statements
+are superseded by later, separately qualified work. For the independent source
+freeze and concrete visible-control gaps, see
+[`visible-controls-audit-20261017.md`](../verification/visible-controls-audit-20261017.md).
+Do not use the historical call counts below as current feature acceptance.
+
 This recovered branch defaults the public catalogue gate off. The normal site still uses the original short-ID catalogue; no fully UUID-based product claim is justified. Even with the staging gate on, catalogue conversion is partial.
 
 The new textual original-source audit (`node scripts/audit-public-api-frontend.mjs`) identifies143 `API.Family.Method(...)` call sites across17families:
