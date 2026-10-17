@@ -1,0 +1,124 @@
+{
+  "schema": "integrated-publication-reader-chapter-qualification-v1",
+  "completed_at_utc": "2026-10-17T17:55:59.647090+00:00",
+  "production_source_commit": "eca83392ae039487b2e3376c2fdee8f0961f2d8a",
+  "qualified_source_commit": "af83aeb7472c9ed60a8d99b616e51ae3564b8238",
+  "qualified_source_tree": "de38cb6c8c3a8d0dbd1d20b9f4a40581c1e4e37c",
+  "test_only_commits": [
+    "2a79d3c2d76a186f5a71268aae0bee21d2696ee7",
+    "af83aeb7472c9ed60a8d99b616e51ae3564b8238"
+  ],
+  "production_sources_unchanged_from_integrated_base": true,
+  "source_manifest": {
+    "path": "source-manifest.json",
+    "sha256": "616d74c20db31cdb810d9ac576ba6a669662cdd5992f8d4b823c3cef0710ec43",
+    "files": 439,
+    "before_after_match": true
+  },
+  "passed": 9,
+  "failed": 0,
+  "runs": {
+    "upload-regression-final": {
+      "source_commit": "af83aeb7472c9ed60a8d99b616e51ae3564b8238",
+      "tests": {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 8.45
+      },
+      "cases": [
+        "atomic_page_replacement_expiry_reclamation_and_media_admission",
+        "committed_signed_upload_becomes_readable_after_original_projection",
+        "persisted_cover_upload_draft_privacy_list_update_variants_and_delete",
+        "persisted_upload_commit_reader_originals_derivatives_and_retries",
+        "persisted_upload_validation_file_removal_cancel_and_body_bounds",
+        "restart_reconciliation_respects_journal_leases_references_and_proxy_streams",
+        "signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_stable"
+      ],
+      "test_executable_sha256": "f6de1854b7bff7e8a72a4acf116259b1746cd1bce7385d7c7b38104330d7aeda",
+      "runtime_log_sha256": "4ddc4692ddbe38f56637ca44c6b46fd4c0f532ae1f0feb5265769d5bace28be4",
+      "owned_runner_receipt_sha256": "dc4323b87c90512d34be90429525601a55799ca011608b8e03c670b16dad20e3",
+      "cleanup_receipt_sha256": "a33034828626d59bdb4dca88ca5c51d7ddfbb004a9af6f9fc5b2f6153194b139",
+      "normal_shutdown_verified": true,
+      "closed_loopback_port": true,
+      "remaining_owned_processes": 0,
+      "unconfirmed_births": 0,
+      "cleanup_errors": 0
+    },
+    "source-lifecycle-final": {
+      "source_commit": "af83aeb7472c9ed60a8d99b616e51ae3564b8238",
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 0,
+        "seconds": 7.88
+      },
+      "cases": [
+        "accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle"
+      ],
+      "test_executable_sha256": "5649e66621d175237bcfc0c11f9a80ea88b25784648f12fe173f2be26aa621e3",
+      "runtime_log_sha256": "bf999ea10c0c814f3693db47db08f7f07e908927ad31b16d45e9b14e5f4387a7",
+      "owned_runner_receipt_sha256": "13ea029670e69a38913070cfe30be378fdc20489182c78502fce26137ecd5a98",
+      "cleanup_receipt_sha256": "dc2b0194d841ca0089dca7faa411a986f77be884c1e8e5f47b3414b62800ca84",
+      "normal_shutdown_verified": true,
+      "closed_loopback_port": true,
+      "remaining_owned_processes": 0,
+      "unconfirmed_births": 0,
+      "cleanup_errors": 0
+    },
+    "signed-chapter-writes-final": {
+      "source_commit": "af83aeb7472c9ed60a8d99b616e51ae3564b8238",
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 1.25
+      },
+      "cases": [
+        "signed_chapter_metadata_claim_and_review_first_removal_preserve_authority"
+      ],
+      "test_executable_sha256": "37834280b1ebb2b6ce75b00e562c57c7fcc042c162b179ec8bfd5eadf4ed591d",
+      "runtime_log_sha256": "4e521652dd64cdc291e8d091156603a2d19a65300b5428d4f73827c382f22402",
+      "owned_runner_receipt_sha256": "c6daaca19f23587d72cece23f02693a51777f2c5abdf27db6adee91b101576d8",
+      "cleanup_receipt_sha256": "972a40c6534b77d16874ce91252ace95055544fecf5648fe6f99dd05fa3ab5c5",
+      "normal_shutdown_verified": true,
+      "closed_loopback_port": true,
+      "remaining_owned_processes": 0,
+      "unconfirmed_births": 0,
+      "cleanup_errors": 0
+    }
+  },
+  "original_projection_binary_sha256": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+  "ordering_invariants": [
+    "A pass requires an actual signed child-before-parent event hash order.",
+    "Every run executes at least two complete original listener lifecycles against the same owned service/projector identity.",
+    "The test checks persisted committed_result locally_hosted before resume dismissal; no added convergence wait masks stale state.",
+    "Later source sweeps do not change a reconciled session version."
+  ],
+  "prior_combined_failure": {
+    "source_commit": "eca83392ae039487b2e3376c2fdee8f0961f2d8a",
+    "passed": 6,
+    "failed": 1,
+    "stage": "Ordering fixture later original listener startup before importer/reader assertions",
+    "cause": "Original database correctly rejected a different persistent backend projection target on a later fixture attempt.",
+    "correction": "Retain one owned projection directory and service signer across attempts; require at least two lifecycles.",
+    "runtime_log_sha256": "24c05c59ebf6d0d65657a7a48d48a1f465863af315d47e2efe355eeffe1bf09d",
+    "cleanup_receipt_sha256": "a82e715bd5862ccbb6ade368da31976b278554a60c2b813f1496058b9195f03e",
+    "normal_shutdown_verified": true
+  },
+  "excluded": [
+    {
+      "case": "licensed_ubunchu_originals_upload_cover_reader_hashes_and_attribution",
+      "reason": "Verified local image cache absent; final upload run explicitly filters this case. No external image download."
+    }
+  ],
+  "limitations": [
+    "No rendered-browser execution, high-load/production acceptance, external publication or deployment claimed.",
+    "Existing compiler private-bound and unused GIF fixture warnings remain.",
+    "Evidence-only/docs commits do not change the tested production source; later runtime source changes require fresh qualification."
+  ],
+  "pass": true
+}
