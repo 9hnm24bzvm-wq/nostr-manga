@@ -1,0 +1,57 @@
+✔ malformed and non-finite page URLs show a real first page (0.820764ms)
+✔ valid page, clamp bounds, decimal coercion and history-state priority remain coherent (0.15285ms)
+✔ Last page control leaves end card even when selected raw index is unchanged (0.220001ms)
+✖ ordinary same-page no-op and invalid index guards are retained (5.449535ms)
+✖ a deleted or filtered-out current chapter has no accidental adjacent chapter index (0.443747ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 110.149929
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:43:1
+✖ ordinary same-page no-op and invalid index guards are retained (5.449535ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(this.pages.includes(page))
+  
+      at Object.scrollIntoView (file:///workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:38:187)
+      at eval (eval at <anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:37:20), <anonymous>:17:15)
+      at Object.exec (file:///workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:38:143)
+      at Object.eval (eval at <anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:37:20), <anonymous>:4:21)
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:45:111)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:51:1
+✖ a deleted or filtered-out current chapter has no accidental adjacent chapter index (0.443747ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  -1 !== undefined
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/tests/ci/test_reader_navigation_edges.mjs:53:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: -1,
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -3861,6 +3861,38 @@ const patches = [
   "count": 1,
   "before": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false) return;",
   "after": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false || typeof chapter.language !== \"string\" || !chapter.language.trim()) return;"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader missing current chapter has no accidental minus-one navigation index",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\treadonly chapterIndex = $derived.by(() => this.aggregated?.chapters.findIndex(e => this.chapter.id in e.entries));",
+  "after": "\treadonly chapterIndex = $derived.by(() => {\r\n\t\tconst index = this.aggregated?.chapters.findIndex(e => this.chapter.id in e.entries);\r\n\t\treturn index !== undefined && index >= 0 ? index : undefined;\r\n\t});"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader chapter selection rejects noninteger indices before aggregate access",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\tif (!this.aggregated?.chapters || idx < 0 || idx >= this.aggregated.chapters.length) {",
+  "after": "\t\tif (!Number.isSafeInteger(idx) || !this.aggregated?.chapters || idx < 0 || idx >= this.aggregated.chapters.length) {"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader empty aggregate entries do not crash chapter navigation",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\tconst entries = Object.entries(aggregate.entries);\r\n\t\tif (entries.length > 1) {",
+  "after": "\t\tconst entries = Object.entries(aggregate.entries);\r\n\t\tif (!entries.length) return;\r\n\t\tif (entries.length > 1) {"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader page selection rejects noninteger indices before changing current page",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\t!this.currentPage ||\r\n\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||",
+  "after": "\t\t\t\t!this.currentPage ||\r\n\t\t\t\t!Number.isSafeInteger(idx) ||\r\n\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');

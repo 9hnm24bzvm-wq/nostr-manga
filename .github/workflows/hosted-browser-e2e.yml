@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       batch:
-        description: Bounded batch, or all 39 phases with fresh fixtures
+        description: Bounded batch, or all 40 phases with separate native and public profiles
         required: true
         default: all
         type: choice
-        options: [all, startup, ordinary-a, ordinary-b, ui10, signed-a, signed-b, signed-c, signed-d, ui-feed, ui-reader, ui-home, actor-follow]
+        options: [all, startup, ordinary-a, ordinary-b, ui10, signed-a, signed-b, signed-c, signed-d, ui-feed, ui-reader, ui-home, actor-follow, public-upload]
 
 permissions:
   contents: read
@@ -40,6 +40,8 @@ jobs:
           node-version: 24.19.0
       - name: Prepare pinned dependencies and frozen-source builds
         timeout-minutes: 90
+        env:
+          SELECTED_BATCH: ${{ inputs.batch || 'all' }}
         run: |
           mkdir -p weebdex-platform/.build/hosted-browser
           if ! bash weebdex-platform/scripts/ci/prepare-hosted-browser.sh >weebdex-platform/.build/hosted-browser/preparation.log 2>&1; then

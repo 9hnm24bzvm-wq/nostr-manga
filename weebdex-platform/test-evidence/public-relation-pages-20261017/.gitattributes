@@ -1,0 +1,2 @@
+# Raw tool output is hash-pinned evidence, including its original whitespace.
+*.log -whitespace

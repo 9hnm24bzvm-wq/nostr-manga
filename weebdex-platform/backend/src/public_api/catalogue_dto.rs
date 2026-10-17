@@ -16,6 +16,12 @@ pub struct AliasIndex {
     // Trusted SQL comparison keys, deliberately separate from caller/native JSON.
     manga_sort_keys: BTreeMap<String, Value>,
 }
+fn alias_budget(kind: ResourceKind, count: usize) -> PublicApiResult<()> {
+    // A full4096-relation graph needs its owner Manga UUID as well. This is
+    // exactly one base-identity allowance, not an unbounded nested alias load.
+    let limit = 4096 + usize::from(kind == ResourceKind::Manga);
+    if count > limit { Err(PublicApiError::unavailable()) } else { Ok(()) }
+}
 impl AliasIndex {
     pub async fn load(
         state: &AppState,
@@ -29,9 +35,7 @@ impl AliasIndex {
         let mut rows = BTreeMap::new();
         for (kind, ids) in keys {
             let ids = ids.into_iter().collect::<Vec<_>>();
-            if ids.len() > 4096 {
-                return Err(PublicApiError::unavailable());
-            }
+            alias_budget(kind, ids.len())?;
             for batch in ids.chunks(super::postgres_identity::MAX_PUBLIC_ID_BATCH) {
                 for (native, row) in resolver.describe_many(kind, batch).await? {
                     rows.insert((kind, native), row);
@@ -84,9 +88,7 @@ impl AliasIndex {
         }
         let mut rows = BTreeMap::new();
         for (kind, ids) in keys {
-            if ids.len() > 4096 {
-                return Err(PublicApiError::unavailable());
-            }
+            alias_budget(kind, ids.len())?;
             let ids = ids.into_iter().collect::<Vec<_>>();
             for batch in ids.chunks(super::postgres_identity::MAX_PUBLIC_ID_BATCH) {
                 for row in tx.query("SELECT native_id,public_id::text,principal_type FROM platform.public_resource_ids WHERE kind=$1 AND native_id=ANY($2::text[]) AND preferred", &[&kind.as_str(), &batch]).await? {
@@ -680,6 +682,14 @@ fn common(native: &Value, attributes: &mut Value) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn manga_alias_budget_includes_one_owner_and_still_rejects_overflow() {
+        assert!(alias_budget(ResourceKind::Manga,4097).is_ok());
+        assert!(alias_budget(ResourceKind::Manga,4098).is_err());
+        for kind in [ResourceKind::Chapter,ResourceKind::Cover,ResourceKind::Author,ResourceKind::Group,ResourceKind::Tag,ResourceKind::User] {
+            assert!(alias_budget(kind,4096).is_ok());assert!(alias_budget(kind,4097).is_err());
+        }
+    }
     #[test]
     fn exact_sort_key_scalars_are_bounded_and_do_not_lose_precision() {
         for value in ["0", "-0.00", "9007199254740993", "7.50000000000000000000001", "-12.34"] {

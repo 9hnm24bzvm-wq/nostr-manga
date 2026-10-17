@@ -1,0 +1,53 @@
+{
+  "schema": "integrated-recovery-source-verification-v1",
+  "recorded_utc": "2026-10-17T17:45:58.520601+00:00",
+  "code_stage_commit": "992993be25bbd948038e78786d96ae35d197c30e",
+  "frontend_checks_executed_at_commit": "808feae3113944384dfad8ebeab185777efff024",
+  "frontend_script_test_inputs_identical_through_code_stage": true,
+  "functional_node": {
+    "passed": 636,
+    "failed": 0,
+    "skipped": 0,
+    "scope": "Public upload transport/adapter/UI/observer; public catalogue edge/client; account enrollment/local key; continue-reading/reader navigation and diagnostics; historical selector fingerprint. Finite VM/source/protocol-boundary checks; no browser."
+  },
+  "signed_envelope": {
+    "passed": 5,
+    "failed": 0,
+    "scope": "Real pinned signature library and strict signed-envelope equality; verified non-symlink dependency root, no download or weakened provenance guard."
+  },
+  "python_ci": {
+    "passed": 128,
+    "failed": 0,
+    "scope": "Controller, profile, diagnostics, fixture/owned cleanup unit seams; synthetic subprocess failures are expected negative controls."
+  },
+  "composed_strict": {
+    "default": {
+      "errors": 0,
+      "retained_warnings": 15,
+      "reachable_integration_files": 69
+    },
+    "public_enabled": {
+      "errors": 0,
+      "retained_warnings": 15,
+      "reachable_integration_files": 86
+    },
+    "canonical_files": 679,
+    "canonical_unchanged": true
+  },
+  "boundaries": [
+    "Combined backend library/HTTP acceptance at this code stage is pending separate fresh receipts.",
+    "Publication-reader independent exact-source repeat failed200-versus204; pipeline acceptance remains inconclusive pending correction and independent repeat.",
+    "A full broad Node pass is not claimed; optional DOM, exact dependency setup and production build artifacts remain separate prerequisites.",
+    "Current-source production Vite builds, native browser journeys and mixed-load qualification are not established by these source/strict checks.",
+    "No merge, deployment or production-readiness claim."
+  ],
+  "evidence_sha256": {
+    "functional-node-636.log": "041bb63e0bcd5c4cbc2cf9f103c541b07dd3af51a8a886e1ef098249e9014642",
+    "python-ci-128.log": "c3318f66f5662eebc16d2050a66e2c53a5b63227e24e0184e5fa17f36050a1a9",
+    "signed-envelope-5.log": "fbe96914c6a228a4610447ab23e6560be77be5f36e9097f8bb9980a4fde77864",
+    "strict-default.json": "60643895b6db67f269449d9f20425e4fbf4f009b58942867c1488090dc64eed4",
+    "strict-default.log": "e8bac309894a32232139f3276e82efb52edd74528ebc053c2bff54463788a357",
+    "strict-enabled.json": "2e0d02f216bf5e531f7fdbb72baff574ec3959eaeb87cac6a8c4c29bca5d6a85",
+    "strict-enabled.log": "ac570def701d943dece3c19179353f7ef8b275ce43f20355ec8221825d6a2b8a"
+  }
+}

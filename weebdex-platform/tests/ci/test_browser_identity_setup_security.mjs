@@ -18,12 +18,12 @@ const syntheticPrivate = '0'.repeat(63) + '1';
 const get = store => { let value; store.subscribe(next => { value = next; })(); return value; };
 const deferred = () => { let resolve; const promise = new Promise(yes => { resolve = yes; }); return { promise, resolve }; };
 
-async function wizard({ clipboardFails = false, capabilityFails = false, proofFails = false, admissionFails = false, gateAt } = {}) {
+async function wizard({ clipboardFails = false, capabilityFails = false, proofFails = false, admissionFails = false, enrollmentOpen = true, policySequence, gateAt } = {}) {
   const f = await fixture({ moduleAdapters: { '@scure/base': encoding } });
   f.publication.disconnectSigner();
   const keys = await f.load('local-signing-key.ts');
   const gate = deferred(), entered = deferred(), destroyers = [];
-  const calls = { capabilities: 0, proofs: 0, admissions: 0, signedProofs: 0, clipboard: 0, privateClipboard: 0, finished: 0, focuses: 0 };
+  const calls = { enrollmentChecks: 0, capabilities: 0, proofs: 0, admissions: 0, signedProofs: 0, clipboard: 0, privateClipboard: 0, finished: 0, focuses: 0 };
   let active = true;
   const current = () => { if (!active) throw Error('Parent setup closed'); };
   const input = { value: '', dispatchEvent() {} };
@@ -37,6 +37,11 @@ async function wizard({ clipboardFails = false, capabilityFails = false, proofFa
     connectSigner: f.publication.connectSigner, assertAllowedRelay: f.publication.assertAllowedRelay,
     async capabilities() { calls.capabilities++; await waitAt('capabilities'); if (capabilityFails) throw Error('Synthetic capability failure'); return f.publication.capabilities(); },
     async proveService(origin, key) { calls.proofs++; await waitAt('proof'); if (proofFails) throw Error('Synthetic service proof failure'); assert.equal(origin, f.review.recipients[0].origin); assert.equal(key, f.review.recipients[0].serviceKey); return { origin, serviceKey: key }; },
+    async enrollmentPolicy(relay, assertCurrent) {
+      calls.enrollmentChecks++; assertCurrent(); await waitAt('enrollment-policy'); assertCurrent();
+      assert.equal(relay.origin, f.review.recipients[0].origin);
+      return { enabled: policySequence ? policySequence[Math.min(calls.enrollmentChecks - 1, policySequence.length - 1)] : enrollmentOpen };
+    },
     async admitAccount(relay, assertCurrent) {
       calls.admissions++; assertCurrent(); await waitAt('admission'); assertCurrent();
       if (admissionFails) throw Error('Synthetic admission failure');
@@ -49,7 +54,7 @@ async function wizard({ clipboardFails = false, capabilityFails = false, proofFa
     navigator: { clipboard: { async writeText(value) { calls.clipboard++; if (value.startsWith('nsec1')) calls.privateClipboard++; await waitAt('clipboard'); if (clipboardFails) throw Error('Synthetic clipboard refusal'); } } },
   });
   const script = source.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)[1].replace(/^\s*import[^;]+;\s*$/gm, '');
-  const api = vm.runInContext('(function(){' + stripTypeScriptTypes(script, { mode: 'transform' }) + '\nreturn { createKey, openImport, importKey, useExtension, reveal, copyPrivate, copyPublic, reviewInstance, join, finishLater, startAgain, bindInput(value){importInput=value}, bindHeading(value){heading=value}, acknowledge(){backupAcknowledged=true}, state(){return {stage,hasDraft:!!draft,hasSecret:!!revealedSecret,hasIdentity:!!identity,hasRelay:!!relay,pending,backupAcknowledged,error,notice,installed}}, draftHandle(){return draft}, publicIdentity(){return identity} }; })()', context);
+  const api = vm.runInContext('(function(){' + stripTypeScriptTypes(script, { mode: 'transform' }) + '\nreturn { createKey, openImport, importKey, useExtension, reveal, copyPrivate, copyPublic, reviewInstance, join, connectSession, finishLater, startAgain, bindInput(value){importInput=value}, bindHeading(value){heading=value}, acknowledge(){backupAcknowledged=true}, state(){return {stage,hasDraft:!!draft,hasSecret:!!revealedSecret,hasIdentity:!!identity,hasRelay:!!relay,pending,backupAcknowledged,error,notice,installed,enrollmentOpen}}, draftHandle(){return draft}, publicIdentity(){return identity} }; })()', context);
   api.bindInput(input); api.bindHeading({ focus() { calls.focuses++; } });
   return { f, api, input, calls, entered: entered.promise, release: gate.resolve,
     identity: () => get(f.publication.signerIdentity),
@@ -195,4 +200,47 @@ test('closing during an explicit clipboard request suppresses stale notices and 
   try { w.api.reveal(); const pending = w.api.copyPrivate(); await w.entered; w.destroy(); w.release(); await pending;
     assert.equal(w.calls.privateClipboard, 1); assert.equal(w.api.state().hasSecret, false); assert.equal(w.api.state().notice, ''); assert.equal(w.calls.admissions, 0);
   } finally { w.release(); await w.dispose(); }
+});
+
+// Reconstructed after environment reset. Fresh results, not lost historical proof.
+test('closed enrollment review remains local and never offers implicit admission', async () => {
+  const w = await imported({ enrollmentOpen: false });
+  try {
+    w.api.acknowledge(); await w.api.reviewInstance();
+    assert.equal(w.api.state().stage, 'review'); assert.equal(w.api.state().enrollmentOpen, false);
+    await w.api.join(); assert.equal(w.calls.admissions, 0); assert.equal(w.identity().owner, null);
+    assert.match(source, /This instance needs operator approval/);
+    assert.match(source, /already-approved key can still connect/);
+  } finally { await w.dispose(); }
+});
+test('fresh policy closing after review suppresses key activation and enrollment', async () => {
+  const w = await imported({ policySequence: [true, false] });
+  try {
+    w.api.acknowledge(); await w.api.reviewInstance(); await w.api.join();
+    assert.equal(w.calls.enrollmentChecks, 2); assert.equal(w.api.state().enrollmentOpen, false);
+    assert.equal(w.calls.admissions, 0); assert.equal(w.identity().owner, null); assert.equal(w.api.state().installed, false);
+  } finally { await w.dispose(); }
+});
+test('closed instance explicitly connects a reviewed key for this session without asserting admission', async () => {
+  const w = await imported({ enrollmentOpen: false });
+  try {
+    await w.api.connectSession(); assert.equal(w.identity().owner, null);
+    w.api.acknowledge(); await w.api.reviewInstance(); await w.api.connectSession();
+    assert.equal(w.api.state().stage, 'connected'); assert.equal(w.identity().source, 'local');
+    assert.equal(w.identity().owner, w.api.publicIdentity().publicKey);
+    assert.equal(w.calls.admissions, 0); assert.equal(w.calls.signedProofs, 0); assert.equal(w.f.calls.posts, 0);
+    assert.match(source, /Instance approval has not been confirmed/);
+    const old = w.f.publication.selectedSigner(); w.f.publication.disconnectSigner(); assert.throws(old.check, /identity changed/);
+    w.api.startAgain(); w.api.openImport(); w.input.value = syntheticPrivate; w.api.importKey();
+    w.api.acknowledge(); await w.api.reviewInstance(); await w.api.connectSession(); assert.equal(w.api.state().stage, 'connected');
+    assert.equal(w.calls.admissions, 0);
+  } finally { await w.dispose(); }
+});
+test('local reconnect cannot overwrite an identity selected after review', async () => {
+  const w = await imported({ enrollmentOpen: false });
+  try {
+    w.api.acknowledge(); await w.api.reviewInstance(); await w.f.publication.connectSigner(); const selected = w.identity();
+    await w.api.connectSession(); assert.equal(w.identity(), selected); assert.notEqual(w.api.state().stage, 'connected');
+    assert.equal(w.calls.admissions, 0);
+  } finally { await w.dispose(); }
 });

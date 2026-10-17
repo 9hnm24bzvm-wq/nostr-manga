@@ -44,7 +44,15 @@ test('all98 pre-relocation behavioral assertions survive with exact title201 and
   assert(process.env.WEEBDEX_FRONTEND_ROOT, 'Use the verified exact-lock dependency root');
   const require = createRequire(path.join(process.env.WEEBDEX_FRONTEND_ROOT, 'package.json')), ts = require('typescript');
   const ast = ts.createSourceFile('browser-journeys.mjs',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS), predicates=[];
-  const additions = ['The fixed upload diagnostic recorder is required','Actual uploaded staging prerequisite failed; replacement was not attempted','Actual image upload/replacement prerequisites failed; publication was not attempted','The fixed editorial diagnostic recorder is required','Original PNG cover bytes and authoritative identity were not persisted', 'Manage library does not point to its native Settings tab', 'Library tool dialog must have exactly one owner'];
+  const welcome = 'Account welcome appeared before account creation';
+  const additions = ['The fixed upload diagnostic recorder is required','Actual uploaded staging prerequisite failed; replacement was not attempted','Actual image upload/replacement prerequisites failed; publication was not attempted','The fixed editorial diagnostic recorder is required','Original PNG cover bytes and authoritative identity were not persisted', 'Manage library does not point to its native Settings tab', 'Library tool dialog must have exactly one owner', welcome];
+  // The later signup-only welcome adds this exact guard (c0c71ca). Preserve the historical
+  // 98-assertion fingerprint and bind the added guard independently, rather than
+  // blessing a changed fingerprint or increasing its expected assertion count.
+  const welcomeAssertions = [];
+  function findWelcome(node) { if (ts.isCallExpression(node) && node.expression.getText(ast) === 'insist' && node.arguments[1]?.text === welcome) welcomeAssertions.push(node.arguments[0].getText(ast)); ts.forEachChild(node, findWelcome); }
+  findWelcome(ast);
+  assert.deepEqual(welcomeAssertions, ['await page.getByRole("heading", { name: "Your account is ready", exact: true }).count() === 0']);
   // This historical fingerprint predates the separately tested relocation step.
   // Its native-tab geometry/permission/dialog assertions have their own actual-
   // callback negative drivers; do not mistake those additions for a removed gate.

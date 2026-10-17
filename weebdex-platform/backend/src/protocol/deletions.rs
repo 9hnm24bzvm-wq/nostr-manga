@@ -1,7 +1,7 @@
 //! Native explicit delete -> actual original signed request -> moderator review.
 //! A native soft hide does not approve source deletion or remove peer copies.
 use crate::{
-    domains::{auth::SessionPrincipal, catalog::CatalogRepository},
+    domains::catalog::{CatalogRepository, entity_mutations::CatalogMutationActor},
     error::{ApiError, ApiResult},
     state::AppState,
 };
@@ -24,9 +24,9 @@ fn id(text: &str) -> ApiResult<[u8; 32]> {
 }
 /// Runs before the native write transaction. Native deletion rechecks authority
 /// under its normal row lock after this independently durable source request.
-pub async fn request_native_chapter_deletion(
+pub(crate) async fn request_native_chapter_deletion(
     state: &AppState,
-    actor: &SessionPrincipal,
+    actor: &impl CatalogMutationActor,
     chapter: &str,
 ) -> ApiResult<Option<NativeDeletionReceipt>> {
     let source = {
@@ -44,7 +44,7 @@ pub async fn request_native_chapter_deletion(
     let source_tx = source_client.transaction().await?;
     // Serialize this whole durable native action through original submission,
     // including the uncertain group-signing response window, not just insertion.
-    let locked:bool=source_tx.query_one("SELECT pg_try_advisory_xact_lock(hashtextextended('platform-delete:'||$1::text||':'||$2::text,0))", &[&chapter,&actor.user_id]).await?.get(0);
+    let locked:bool=source_tx.query_one("SELECT pg_try_advisory_xact_lock(hashtextextended('platform-delete:'||$1::text||':'||$2::text,0))", &[&chapter,&actor.user_id()]).await?.get(0);
     if !locked {
         return Err(ApiError::busy());
     }
@@ -62,16 +62,16 @@ pub async fn request_native_chapter_deletion(
         .await?
         .query_opt(
             "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1",
-            &[&actor.user_id],
+            &[&actor.user_id()],
         )
         .await?
         .map(|r| r.get::<_, String>(0))
         .ok_or_else(|| {
-            ApiError::forbidden("This account has no configured source deletion identity")
+            ApiError::new(axum::http::StatusCode::FORBIDDEN,"source_deletion_not_authorized","This account has no configured source deletion identity")
         })?;
     let group=state.db.client().await?.query_opt("SELECT group_id FROM platform.protocol_identity_bindings WHERE publisher=$1 AND group_id IS NOT NULL", &[&publisher]).await?.map(|r|r.get::<_,String>(0));
     if group.is_none() && (member != publisher || runtime.publisher_identity() != publisher) {
-        return Err(ApiError::forbidden(
+        return Err(ApiError::new(axum::http::StatusCode::FORBIDDEN,"source_deletion_not_authorized",
             "This account cannot sign deletion requests for the original publisher",
         ));
     }
@@ -81,12 +81,12 @@ pub async fn request_native_chapter_deletion(
             id(&member)?,
         )
         .await
-        .map_err(|_| ApiError::forbidden("Current original deletion authority is unavailable"))?;
+        .map_err(|_| ApiError::new(axum::http::StatusCode::FORBIDDEN,"source_deletion_not_authorized","Current original deletion authority is unavailable"))?;
     let (intent_uuid, mut prepared) = {
         let mut client = state.db.client().await?;
         let tx = client.transaction().await?;
-        tx.execute("INSERT INTO platform.protocol_deletion_intents(chapter_id,actor_user_id,source_event_id,source_generation,authority_publisher,member_publisher) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING", &[&chapter,&actor.user_id,&target,&generation,&publisher,&member]).await?;
-        let row=tx.query_one("SELECT source_event_id,authority_publisher,member_publisher,intent_uuid::text,request_event FROM platform.protocol_deletion_intents WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3 FOR UPDATE", &[&chapter,&actor.user_id,&generation]).await?;
+        tx.execute("INSERT INTO platform.protocol_deletion_intents(chapter_id,actor_user_id,source_event_id,source_generation,authority_publisher,member_publisher) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING", &[&chapter,&actor.user_id(),&target,&generation,&publisher,&member]).await?;
+        let row=tx.query_one("SELECT source_event_id,authority_publisher,member_publisher,intent_uuid::text,request_event FROM platform.protocol_deletion_intents WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3 FOR UPDATE", &[&chapter,&actor.user_id(),&generation]).await?;
         if row.get::<_, String>(0) != target
             || row.get::<_, String>(1) != publisher
             || row.get::<_, String>(2) != member
@@ -115,8 +115,8 @@ pub async fn request_native_chapter_deletion(
         let raw = serde_json::to_value(&event).map_err(|_| ApiError::unavailable())?;
         // Commit the exact operator body before submission, independent of the
         // eventual native soft-hide transaction and its uncertain response.
-        state.db.client().await?.execute("UPDATE platform.protocol_deletion_intents SET request_event=COALESCE(request_event,$4) WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3", &[&chapter,&actor.user_id,&generation,&raw]).await?;
-        prepared=state.db.client().await?.query_one("SELECT request_event FROM platform.protocol_deletion_intents WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3", &[&chapter,&actor.user_id,&generation]).await?.get::<_,Option<serde_json::Value>>(0)
+        state.db.client().await?.execute("UPDATE platform.protocol_deletion_intents SET request_event=COALESCE(request_event,$4) WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3", &[&chapter,&actor.user_id(),&generation,&raw]).await?;
+        prepared=state.db.client().await?.query_one("SELECT request_event FROM platform.protocol_deletion_intents WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3", &[&chapter,&actor.user_id(),&generation]).await?.get::<_,Option<serde_json::Value>>(0)
             .map(serde_json::from_value).transpose().map_err(|_|ApiError::unavailable())?;
     }
     let event = if group.is_some() {
@@ -145,7 +145,7 @@ pub async fn request_native_chapter_deletion(
     };
     validate_intent_event(&event, &publisher, &target, &reason)?;
     let raw = serde_json::to_value(&event).map_err(|_| ApiError::unavailable())?;
-    state.db.client().await?.execute("UPDATE platform.protocol_deletion_intents SET request_event=$4,state='requested',updated_at=clock_timestamp() WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3", &[&chapter,&actor.user_id,&generation,&raw]).await?;
+    state.db.client().await?.execute("UPDATE platform.protocol_deletion_intents SET request_event=$4,state='requested',updated_at=clock_timestamp() WHERE chapter_id=$1 AND actor_user_id=$2 AND source_generation=$3", &[&chapter,&actor.user_id(),&generation,&raw]).await?;
     source_tx.commit().await?;
     Ok(Some(NativeDeletionReceipt {
         source_event_id: target,

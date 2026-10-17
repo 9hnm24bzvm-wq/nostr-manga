@@ -1,18 +1,18 @@
 {
   "audit_date_utc": "2026-10-17",
   "source_baseline": "8d963f3f",
-  "snapshot_scope": "Isolated MangaDex read worker branch: baseline8d963f3f plus public-read commit fefd7fa and private-account-read batch. Reconcile concurrent chapter/account/publication commits on the combined branch before any completion claim.",
+  "snapshot_scope": "Exact integrated source992993be with chapter writes, frontend relation/recommendation/read navigation fixes and nine private account reads. Later history, pipeline-ordering and library-write work is outside this acceptance snapshot.",
   "public_base": "/api/v1",
   "inventory_source_sha256": "004031ccdfc4b66727dd1f85d09b5300cf60235bbab2de6f6ea4816094bd6d33",
   "operation_count": 113,
   "counts": {
     "audited_core_read": 18,
     "audited_private_account_read": 9,
-    "explicit_501_protocol_auth_exception": 5,
-    "known_501_unimplemented_in_this_snapshot": 45,
-    "separate_module_not_revalidated_by_this_audit": 36
+    "explicit_501_protocol_auth_exception": 12,
+    "known_501_unimplemented_in_this_snapshot": 36,
+    "separate_module_not_revalidated_by_this_audit": 38
   },
-  "verification_scope": "18 core public reads and9 request-authorized private account reads. Separate modules and known-501 entries are source-routing classifications, not a fresh end-to-end result.",
+  "verification_scope": "Fresh integrated platform lib + public_catalogue_compatibility, public_catalogue_reads and public_account_reads HTTP/PostgreSQL. Chapter write classification uses its integrated source and owner test artifact; this reader did not rerun that write target.",
   "operations": [
     {
       "method": "GET",
@@ -127,50 +127,50 @@
       "method": "GET",
       "path": "/client",
       "operation_id": "get-list-apiclients",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets."
     },
     {
       "method": "POST",
       "path": "/client",
       "operation_id": "post-create-apiclient",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets."
     },
     {
       "method": "GET",
       "path": "/client/{id}",
       "operation_id": "get-apiclient",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets."
     },
     {
       "method": "POST",
       "path": "/client/{id}",
       "operation_id": "post-edit-apiclient",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets."
     },
     {
       "method": "DELETE",
       "path": "/client/{id}",
       "operation_id": "delete-apiclient",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets."
     },
     {
       "method": "GET",
       "path": "/client/{id}/secret",
       "operation_id": "get-apiclient-secret",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets."
     },
     {
       "method": "POST",
       "path": "/client/{id}/secret",
       "operation_id": "post-regenerate-apiclient-secret",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets."
     },
     {
       "method": "GET",
@@ -361,15 +361,23 @@
       "method": "PUT",
       "path": "/chapter/{id}",
       "operation_id": "put-chapter-id",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "separate_module_not_revalidated_by_this_audit",
+      "module": "chapter_writes",
+      "evidence": [
+        "backend/tests/public_chapter_writes.rs"
+      ],
+      "semantics": "Signed current-bound native chapter edits and instance review-first removal. Source ownership/deletion moderation stay original-module scoped."
     },
     {
       "method": "DELETE",
       "path": "/chapter/{id}",
       "operation_id": "delete-chapter-id",
-      "status": "known_501_unimplemented_in_this_snapshot",
-      "reason": "No active operation handler beyond the pinned inventory fallback in the isolated worker snapshot. This is unfinished coverage, not a completed feature."
+      "status": "separate_module_not_revalidated_by_this_audit",
+      "module": "chapter_writes",
+      "evidence": [
+        "backend/tests/public_chapter_writes.rs"
+      ],
+      "semantics": "Signed current-bound native chapter edits and instance review-first removal. Source ownership/deletion moderation stay original-module scoped."
     },
     {
       "method": "GET",
@@ -931,5 +939,6 @@
       "status": "explicit_501_protocol_auth_exception",
       "reason": "Native forum identities and commands use their explicitly namespaced contract; no MangaDex Forums identity is fabricated."
     }
-  ]
+  ],
+  "integrated_source_commit": "992993be25bbd948038e78786d96ae35d197c30e"
 }

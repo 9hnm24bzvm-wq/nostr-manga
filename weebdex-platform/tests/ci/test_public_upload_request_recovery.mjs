@@ -129,7 +129,7 @@ test('multipart is already serialized, explicitly bounded and identical to its s
 });
 
 test('empty mutations bind SHA-256 of empty bytes; empty GET omits payload and body; PATCH is supported', { timeout: 3000 }, async () => {
-  for (const method of ['DELETE', 'GET', 'PATCH']) {
+  for (const method of ['DELETE', 'GET', 'PATCH', 'PUT']) {
     const f = await fixture(); await f.request({ method, body: new Uint8Array(), contentType: undefined });
     assert.equal(tags(f).method, method);
     if (method === 'GET') { assert.equal(tags(f).payload, undefined); assert.equal(f.requests[0].init.body, undefined); }
@@ -143,7 +143,7 @@ test('unsafe, noncanonical or foreign URLs and unsupported encodings/methods nev
     'https://fixture.invalid/api#fragment', 'https://fixture.invalid/api#', 'https://fixture.invalid/a/../b', 'https://fixture.invalid/api\n', '//fixture.invalid/api']) {
     await assert.rejects(f.request({ url }), errorIs('unsent'));
   }
-  for (const overrides of [{ method: 'PUT' }, { body: new FormData() }, { contentType: 'text/plain' },
+  for (const overrides of [{ method: 'OPTIONS' }, { body: new FormData() }, { contentType: 'text/plain' },
     { method: 'GET', body: text.encode('x'), contentType: undefined }, { body: text.encode('x'), contentType: undefined },
     { contentType: 'multipart/form-data; boundary=unsafe; extra=x' }, { responseType: 'html' }]) {
     await assert.rejects(f.request(overrides), errorIs('unsent'));
@@ -316,14 +316,14 @@ test('a genuine empty 204 keeps its status and has no invented success body', { 
   const response = await f.request(); assert.equal(response.status, 204); assert.equal(response.body, undefined);
 });
 
-test('only the five allowlisted actual response headers are exposed, with absent privacy fields left null', { timeout: 3000 }, async () => {
+test('only the bounded allowlisted actual response headers are exposed, with absent privacy fields left null', { timeout: 3000 }, async () => {
   const f = await fixture({ fetch: async () => new Response('{}', { status: 200, headers: {
     'content-type': 'application/json', 'retry-after': '17', 'cache-control': 'private, no-store',
     vary: 'Authorization, Origin', 'x-content-type-options': 'nosniff',
     authorization: 'Bearer SECRET', 'x-manga-response-proof': 'Nostr SECRET', 'set-cookie': 'SECRET=value',
   } }) });
   const response = await f.request();
-  assert.deepEqual(Object.keys(response.headers).sort(), ['cache-control', 'content-type', 'retry-after', 'vary', 'x-content-type-options']);
+  assert.deepEqual(Object.keys(response.headers).sort(), ['cache-control', 'content-type', 'retry-after', 'vary', 'x-content-type-options', 'x-weebdex-instance-removal', 'x-weebdex-source-deletion-request', 'x-weebdex-source-deletion-status']);
   assert.equal(response.headers['content-type'], 'application/json'); assert.equal(response.headers['retry-after'], '17');
   assert.equal(response.headers['cache-control'], 'private, no-store'); assert.equal(response.headers.vary, 'Authorization, Origin');
   assert.equal(response.headers['x-content-type-options'], 'nosniff');

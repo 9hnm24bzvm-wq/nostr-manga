@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-17T22:37:29Z",
+  "manifest_sha256": "f07c55d36a3ac4eb3907d74b31bcb6dc7b7eb8e6dad59d334b78d17f7fc10a29",
+  "approved_scope": "Exactly16 stopped synthetic PostgreSQL data directories and25 optional owned incremental-cache children from the frozen manifest",
+  "phase": "completed",
+  "free_bytes_before": 4423544832,
+  "candidate_allocated_bytes": 3781533696,
+  "protected_target_files": 2311,
+  "free_bytes_after": 8104681472,
+  "deleted_database_count": 16,
+  "deleted_incremental_children": 25,
+  "retained_fixture_files": 94,
+  "retained_hashes_unchanged": true,
+  "no_further_cleanup_authorized": true
+}
