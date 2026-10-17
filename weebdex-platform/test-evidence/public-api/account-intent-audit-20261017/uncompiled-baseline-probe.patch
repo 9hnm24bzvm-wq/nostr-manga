@@ -1,0 +1,64 @@
+diff --git a/weebdex-platform/backend/tests/public_chapter_writes.rs b/weebdex-platform/backend/tests/public_chapter_writes.rs
+index 9947591..a3d0492 100644
+--- a/weebdex-platform/backend/tests/public_chapter_writes.rs
++++ b/weebdex-platform/backend/tests/public_chapter_writes.rs
+@@ -196,6 +196,59 @@ async fn signed_chapter_metadata_claim_and_review_first_removal_preserve_authori
+ 
+ #[path="../../../manga-protocol-lab/server/tests/support/mod.rs"]
+ mod original_fixture;
++
++// Pre-fix diagnostic only: the actual legacy first-party request shapes carry
++// no captured native-account precondition. Both accounts are independently
++// eligible through different real group-leader memberships.
++#[tokio::test(flavor="multi_thread",worker_threads=4)]
++#[ignore="Owned disposable PostgreSQL; retained as a before-fix diagnostic"]
++async fn account_intent_legacy_rebind_diagnostic() {
++    let mut f=fixture().await;let db=f.state.db.client().await.unwrap();
++    db.batch_execute(r#"UPDATE platform.users SET permissions='["chapter.create","self.chapter.update","self.chapter.remove","report.create"]' WHERE id IN('PublicUploadUser1','PublicUploadUser2');
++      INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES('IntentGp01','PublicUploadUser1','Fixture','Intent group A'),('IntentGp02','PublicUploadUser2','Fixture','Intent group B');
++      INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader) VALUES('IntentGp01','PublicUploadUser1','A',TRUE),('IntentGp02','PublicUploadUser2','B',TRUE);
++      INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,language,title) SELECT x,'UploadMng1','PublicUploadUser4','Other uploader','en','Before' FROM unnest(ARRAY['IntentUp01','IntentCl01','IntentDl01','IntentEd01']) x;
++      INSERT INTO platform.catalog_chapter_groups(chapter_id,group_id) SELECT c,g FROM unnest(ARRAY['IntentUp01','IntentCl01','IntentDl01','IntentEd01']) c CROSS JOIN unnest(ARRAY['IntentGp01','IntentGp02']) g;"#).await.unwrap();
++    let manga=alias(&f,ResourceKind::Manga,FIXTURE_MANGA_ID).await;
++    for group in ["IntentGp01","IntentGp02"] {alias(&f,ResourceKind::Group,group).await;}
++    for user in ["PublicUploadUser2","PublicUploadUser4"] {alias(&f,ResourceKind::User,user).await;}
++    let intended=alias(&f,ResourceKind::User,"PublicUploadUser1").await;
++    let chapter=alias(&f,ResourceKind::Chapter,"IntentUp01").await;
++    let claim=alias(&f,ResourceKind::Chapter,"IntentCl01").await;
++    let remove=alias(&f,ResourceKind::Chapter,"IntentDl01").await;
++    let edit=alias(&f,ResourceKind::Chapter,"IntentEd01").await;
++    let reason=alias(&f,ResourceKind::ReportReason,"manga_spam").await;
++    let mut observations=Vec::new();
++    for (method,path,payload,expected,observation_sql) in [
++      ("PUT",format!("/api/v1/chapter/{chapter}"),Some(json!({"version":1,"title":"Captured account A intent"})),200,"SELECT actor_id FROM platform.catalog_audit WHERE entity_id='IntentUp01' ORDER BY id DESC LIMIT 1"),
++      ("POST",format!("/api/v1/chapter/{claim}/claim"),None,200,"SELECT uploader_id FROM platform.catalog_chapters WHERE id='IntentCl01'"),
++      ("DELETE",format!("/api/v1/chapter/{remove}"),None,202,"SELECT submitter_id FROM platform.reports WHERE entity_id='IntentDl01'"),
++      ("POST","/api/v1/upload/begin".into(),Some(json!({"manga":manga,"groups":[]})),200,"SELECT owner_id FROM platform.upload_sessions WHERE state='open'"),
++      ("POST",format!("/api/v1/upload/begin/{edit}"),Some(json!({"version":1})),200,"SELECT owner_id FROM platform.upload_sessions WHERE state='open'"),
++      ("POST","/api/v1/report".into(),Some(json!({"category":"manga","reason":reason,"objectId":manga,"details":"Captured account A report"})),201,"SELECT submitter_id FROM platform.reports WHERE entity_id='UploadMng1' AND reason_id='manga_spam'"),
++    ] {
++      let context=f.call(Some(1),"GET","/api/v1/nostr/account-context",None,200).await;assert_eq!(context["user"]["id"],intended);
++      let body=payload.map_or_else(Vec::new,|v|serde_json::to_vec(&v).unwrap());
++      let token=proof(1,11,&format!("{}{path}",f.origin),method,&body);
++      db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser2' WHERE publisher=$1",&[&public(1)]).await.unwrap();
++      let result=f.raw(method,&path,body,"application/json",Some(token),expected).await;
++      let actor:String=db.query_one(observation_sql,&[]).await.unwrap().get(0);assert_eq!(actor,"PublicUploadUser2");
++      observations.push(json!({"method":method,"path":path,"status":expected,"capturedAccount":"PublicUploadUser1","actualActor":actor}));
++      db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser1' WHERE publisher=$1",&[&public(1)]).await.unwrap();
++      if path.starts_with("/api/v1/upload/begin") {let session=result["id"].as_str().unwrap();f.call(Some(2),"DELETE",&format!("/api/v1/upload/{session}"),None,200).await;}
++    }
++    // A fresh discovery can adopt B's session while a stale client still labels
++    // its captured account A. Owner checks alone then authorize cancellation B.
++    let opened=f.call(Some(2),"POST","/api/v1/upload/begin",Some(json!({"manga":manga,"groups":[]})),200).await;let session=opened["id"].as_str().unwrap();
++    let context=f.call(Some(1),"GET","/api/v1/nostr/account-context",None,200).await;assert_eq!(context["user"]["id"],intended);
++    let url=format!("{}/api/v1/upload",f.origin);let token=proof(1,11,&url,"GET",b"");
++    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser2' WHERE publisher=$1",&[&public(1)]).await.unwrap();
++    let found=f.raw("GET","/api/v1/upload",vec![],"application/json",Some(token),200).await;assert_eq!(found["id"],session);
++    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,200).await;
++    observations.push(json!({"method":"GET then DELETE","path":"/api/v1/upload discovery/cancel","status":200,"capturedAccount":"PublicUploadUser1","actualActor":"PublicUploadUser2"}));
++    println!("ACCOUNT_INTENT_LEGACY_REPRO={}",json!(observations));drop(db);
++    let mut native=f.native.take().unwrap();if let Some(shutdown)=native.shutdown.take(){let _=shutdown.send(());}tokio::time::timeout(Duration::from_secs(30),native.task).await.unwrap().unwrap().unwrap();
++}
+ async fn signed_original_deletion_request_remains_review_only(f:&Fixture) {
+     use std::collections::BTreeMap;
+     use weebdex_platform::protocol::{bridge,publication::PublicationInput};

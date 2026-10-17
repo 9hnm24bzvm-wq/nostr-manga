@@ -1,0 +1,9 @@
+{
+  "receipt": "preceding-owned-staging-cleanup.json",
+  "receiptSha256": "f07c8f5edaac705c88248880839c9a356b9b522e5e047361eea0110c0a8b993f",
+  "actionCompletedBeforeParentHold": true,
+  "basis": "Delegated bounded local-testing/resource-cleanup scope; six ignored reproducible strict staging directories belonged to this worker.",
+  "separateExplicitUserCleanupApprovalObtained": false,
+  "limitation": "The parent hold arrived after the action; no further cleanup or heavy execution will proceed while the resource/approval hold remains.",
+  "preserved": "Tracked sources, committed raw evidence/current production artifacts/shared original dependencies and other workers outputs."
+}

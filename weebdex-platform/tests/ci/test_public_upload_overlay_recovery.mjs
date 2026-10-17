@@ -240,7 +240,10 @@ test('signed chapter editor keeps local annotations, exact owner and distinct mo
   assert.match(source, /approvesHide = \$derived\([\s\S]*?\['moderator', 'staff', 'sysop'\][\s\S]*?includes\('chapter.remove'\)/);
   assert.match(source, /Approve hiding this chapter on this instance immediately/);
   assert.match(source, /chapter remains visible until approval/);
-  assert.match(source, /approvesHide \? 'Approve and hide on this instance' : 'Submit removal request'/);
+  assert.match(source, /removalChoice = approvesHide \? 'approve-hide' : 'request-review'/);
+  assert.match(source, /removalChoice === 'approve-hide' \? 'Approve and hide on this instance' : 'Submit removal request'/);
+  assert.match(source, /command\('remove', removalChoice\)/);
+  assert.match(source, /action === 'remove' \? \{ removalMode \} : undefined/);
   assert.match(source, /Signed source metadata and published image pages are immutable/);
   assert.doesNotMatch(source, /API\.|UploadChapterEdit|replaceUploadPage|setInterval/);
   assert.match(source, /pending = true/);

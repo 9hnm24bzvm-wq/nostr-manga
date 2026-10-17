@@ -1,0 +1,27 @@
+[
+  {
+    "path": "preceding-owned-staging-authorization-basis.json",
+    "bytes": 686,
+    "sha256": "aeb2165a316e5843cc5da6d6a4d6360e684fbaaf594a59ddc8f98a4416a3da40"
+  },
+  {
+    "path": "preceding-owned-staging-cleanup.json",
+    "bytes": 1028,
+    "sha256": "f07c8f5edaac705c88248880839c9a356b9b522e5e047361eea0110c0a8b993f"
+  },
+  {
+    "path": "source-pins.json",
+    "bytes": 1630,
+    "sha256": "afa5c212df02af225df56e3a923b2e8e48621b7b723a82811a77e7943b05938d"
+  },
+  {
+    "path": "status.json",
+    "bytes": 736,
+    "sha256": "d7f50136990ecbbe1fa24158566b9d8800895a29b892c834929d16c0cf97925f"
+  },
+  {
+    "path": "uncompiled-baseline-probe.patch",
+    "bytes": 6527,
+    "sha256": "272d7586bc58b23d0fec9a12d85b3f17fc7355cb5751d09cff2ff0524aadc07e"
+  }
+]

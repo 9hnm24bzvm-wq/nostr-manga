@@ -1,0 +1,52 @@
+[
+  {
+    "path": "assert-captured-account.py",
+    "bytes": 658,
+    "sha256": "1d01826386f3736edbefe6c0957c25914e7f26bcbc1c4dc6c9e4cbc1eedd27dc"
+  },
+  {
+    "path": "baseline-compile.json",
+    "bytes": 688,
+    "sha256": "64be884131f41c15fe4163603c89f6a4eedccc3b3a7bfdc2ce00abd7a4bee0cc"
+  },
+  {
+    "path": "baseline-compile.log.gz",
+    "bytes": 1782,
+    "sha256": "da7a194b7b5ffebfc88370d8a0c8f2e1e72be1eca13faa6d116699980e2a25eb"
+  },
+  {
+    "path": "baseline-executable.json",
+    "bytes": 237,
+    "sha256": "b78fed28c25d87388ee4234bfa13805b8829430b9dcb63e069d06e772cae2ad5"
+  },
+  {
+    "path": "baseline-http-result.json",
+    "bytes": 5386,
+    "sha256": "081c50b49a9f694f2518b1f0ee75d95d18d61169e77d51f8664a8c51a4cb6978"
+  },
+  {
+    "path": "baseline-http.log.gz",
+    "bytes": 453,
+    "sha256": "dc8d6524695bbd5321de88713a1c0218eb26ee51f552e6a4951f9fb0b35b6348"
+  },
+  {
+    "path": "baseline-invariant.log.gz",
+    "bytes": 317,
+    "sha256": "f6a0ce45c4f8bddd237d51a134c276b0b3de36ab6bdf0ceec2ed566634011c49"
+  },
+  {
+    "path": "baseline-probe-source.rs.gz",
+    "bytes": 8786,
+    "sha256": "e2ba809a57324111d152cdbf69e67e0cf4e91918725f0997aa3864e1244a62a4"
+  },
+  {
+    "path": "baseline-source-before.json",
+    "bytes": 53598,
+    "sha256": "9bf9169ea541e9e49afba6d88d5c1442e03c36876dfdfd6e27de988796a1fdac"
+  },
+  {
+    "path": "run-compile-owned.py",
+    "bytes": 2506,
+    "sha256": "f384f3416a18470b2e95b355f87303d1a3385115e599709f5df56a75a733a8cc"
+  }
+]

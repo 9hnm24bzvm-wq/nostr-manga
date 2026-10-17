@@ -1,0 +1,47 @@
+[
+  {
+    "path": "weebdex-platform/backend/src/public_api/auth.rs",
+    "bytes": 12445,
+    "sha256": "af140bc5bc0038af8c2436a82e4d3be9a85ca9f4cb3e3e8c32889a3e70facdf9"
+  },
+  {
+    "path": "weebdex-platform/backend/src/public_api/editorial.rs",
+    "bytes": 28216,
+    "sha256": "6ab7f84ae07b695fcb7964d838ef2f126c2be265618e5657903757f4405c95cd"
+  },
+  {
+    "path": "weebdex-platform/backend/src/public_api/chapter_writes.rs",
+    "bytes": 12061,
+    "sha256": "b1ab2860f3b85d4a4967e4b1517ec86bc6b0d6c491f6399bdfdd0a15aacd11e4"
+  },
+  {
+    "path": "weebdex-platform/backend/src/public_api/uploads.rs",
+    "bytes": 26184,
+    "sha256": "b7e5edcd1b194084cd4c3522b476a596d4192bcca5d5be01a27f69805e577585"
+  },
+  {
+    "path": "weebdex-platform/backend/src/public_api/upload_extensions.rs",
+    "bytes": 19565,
+    "sha256": "e4c199e90d47ccd25966b586f9f5ee7b7b124c6d769a2b3f76938b27fbc9f87f"
+  },
+  {
+    "path": "weebdex-platform/backend/src/public_api/reports.rs",
+    "bytes": 16586,
+    "sha256": "0250e973cf7532102d4f9cbcc3cca312e389c8eeadae9407b2e80cc23f0d5980"
+  },
+  {
+    "path": "weebdex-platform/backend/src/domains/uploads/sessions.rs",
+    "bytes": 72520,
+    "sha256": "5e55e9287ed4edcf3d20c8f2c5073ce8f59a0f8c3e55f468adb8268550ddc483"
+  },
+  {
+    "path": "weebdex-platform/platform-integrations/public-api/upload-client.ts",
+    "bytes": 68738,
+    "sha256": "e8a0d062f6cbc56e5f169bacac394b2f0d7a82ca7715b3d2efa09667824e2ce3"
+  },
+  {
+    "path": "weebdex-platform/backend/tests/public_chapter_writes.rs",
+    "bytes": 24867,
+    "sha256": "b3d33586ed1ebcf8814fd4b735e910b92799746773c021a0289ac79716d82cba"
+  }
+]

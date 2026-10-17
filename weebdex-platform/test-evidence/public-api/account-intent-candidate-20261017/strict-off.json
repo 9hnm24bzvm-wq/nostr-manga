@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "31396b44e0abbb4d9fc3689545a5cd2425b8879b",
+  "command": [
+    "node",
+    "weebdex-platform/scripts/check-composed-frontend.mjs"
+  ],
+  "gate": 0,
+  "exitCode": 0,
+  "elapsedSeconds": 18.276,
+  "minimumFreeBytes": 4472123392,
+  "floorBytes": 4294967296,
+  "stopReason": null
+}

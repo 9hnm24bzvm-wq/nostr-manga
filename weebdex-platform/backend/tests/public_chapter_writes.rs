@@ -186,6 +186,8 @@ async fn signed_chapter_metadata_claim_and_review_first_removal_preserve_authori
         if !stale {assert_eq!(reviewed["status"],"accepted");}
         let hidden:bool=db.query_one("SELECT deleted_at IS NOT NULL FROM platform.catalog_chapters WHERE id=$1",&[&native]).await.unwrap().get(0);assert_eq!(hidden,!stale);
     }
+    captured_account_intent_refuses_eligible_rebind(&f).await;
+    captured_chapter_removal_effect_is_preserved(&f).await;
     signed_original_deletion_request_remains_review_only(&f).await;
     f.repository.set_account_admission(id(1),false).await.unwrap();
     let c=alias(&f,ResourceKind::Chapter,"ChapterC01").await;f.call(Some(1),"PUT",&format!("/api/v1/chapter/{c}"),Some(json!({"version":2,"title":"Revoked"})),403).await;
@@ -196,6 +198,124 @@ async fn signed_chapter_metadata_claim_and_review_first_removal_preserve_authori
 
 #[path="../../../manga-protocol-lab/server/tests/support/mod.rs"]
 mod original_fixture;
+
+// These are actual proof/body captures followed by an eligible native-account
+// rebind, not simulated authorization failures. Missing extensions remain
+// compatible in the existing journey above; first-party commands always bind it.
+async fn captured_account_intent_refuses_eligible_rebind(f:&Fixture) {
+    let db=f.state.db.client().await.unwrap();
+    db.batch_execute(r#"UPDATE platform.users SET permissions='["chapter.create","self.chapter.update","self.chapter.remove","report.create"]' WHERE id IN('PublicUploadUser1','PublicUploadUser2');
+      INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES('IntentGp01','PublicUploadUser1','Fixture','Intent group A'),('IntentGp02','PublicUploadUser2','Fixture','Intent group B');
+      INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader) VALUES('IntentGp01','PublicUploadUser1','A',TRUE),('IntentGp02','PublicUploadUser2','B',TRUE);
+      INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,language,title) SELECT x,'UploadMng1','PublicUploadUser4','Other uploader','en','Before' FROM unnest(ARRAY['IntentUp01','IntentCl01','IntentDl01','IntentEd01']) x;
+      INSERT INTO platform.catalog_chapter_groups(chapter_id,group_id) SELECT c,g FROM unnest(ARRAY['IntentUp01','IntentCl01','IntentDl01','IntentEd01']) c CROSS JOIN unnest(ARRAY['IntentGp01','IntentGp02']) g;"#).await.unwrap();
+    let manga=alias(f,ResourceKind::Manga,FIXTURE_MANGA_ID).await;
+    for group in ["IntentGp01","IntentGp02"] {alias(f,ResourceKind::Group,group).await;}
+    for user in ["PublicUploadUser2","PublicUploadUser4"] {alias(f,ResourceKind::User,user).await;}
+    let intended=alias(f,ResourceKind::User,"PublicUploadUser1").await;
+    let other=alias(f,ResourceKind::User,"PublicUploadUser2").await;
+    let chapter=alias(f,ResourceKind::Chapter,"IntentUp01").await;
+    let claim=alias(f,ResourceKind::Chapter,"IntentCl01").await;
+    let remove=alias(f,ResourceKind::Chapter,"IntentDl01").await;
+    let edit=alias(f,ResourceKind::Chapter,"IntentEd01").await;
+    let reason=alias(f,ResourceKind::ReportReason,"manga_spam").await;
+    let snapshot=r#"SELECT jsonb_build_object(
+      'chapters',(SELECT jsonb_agg(to_jsonb(c) ORDER BY c.id) FROM platform.catalog_chapters c WHERE id LIKE 'Intent%'),
+      'sessions',(SELECT jsonb_agg(to_jsonb(s) ORDER BY s.id) FROM platform.upload_sessions s WHERE owner_id IN('PublicUploadUser1','PublicUploadUser2')),
+      'reports',(SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM platform.reports r),
+      'audit',(SELECT jsonb_agg(to_jsonb(a) ORDER BY a.id) FROM platform.catalog_audit a))"#;
+    let mut verified=Vec::new();
+    for (method,path,payload,status,observation_sql) in [
+      ("PUT",format!("/api/v1/chapter/{chapter}"),Some(json!({"version":1,"title":"Captured account A intent","expectedAccountId":intended})),200,"SELECT actor_id FROM platform.catalog_audit WHERE entity_id='IntentUp01' ORDER BY id DESC LIMIT 1"),
+      ("POST",format!("/api/v1/chapter/{claim}/claim?expectedAccountId={intended}"),None,200,"SELECT uploader_id FROM platform.catalog_chapters WHERE id='IntentCl01'"),
+      ("DELETE",format!("/api/v1/chapter/{remove}?expectedAccountId={intended}"),None,202,"SELECT submitter_id FROM platform.reports WHERE entity_id='IntentDl01'"),
+      ("POST","/api/v1/upload/begin".into(),Some(json!({"manga":manga,"groups":[],"expectedAccountId":intended})),200,"SELECT owner_id FROM platform.upload_sessions WHERE state='open'"),
+      ("POST",format!("/api/v1/upload/begin/{edit}"),Some(json!({"version":1,"expectedAccountId":intended})),200,"SELECT owner_id FROM platform.upload_sessions WHERE state='open'"),
+      ("POST","/api/v1/report".into(),Some(json!({"category":"manga","reason":reason,"objectId":manga,"details":"Captured account A report","expectedAccountId":intended})),201,"SELECT submitter_id FROM platform.reports WHERE entity_id='UploadMng1' AND reason_id='manga_spam'"),
+    ] {
+      let context=f.call(Some(1),"GET","/api/v1/nostr/account-context",None,200).await;assert_eq!(context["user"]["id"],intended);
+      let body=payload.clone().map_or_else(Vec::new,|v|serde_json::to_vec(&v).unwrap());
+      let token=proof(1,11,&format!("{}{path}",f.origin),method,&body);
+      let before:Value=db.query_one(snapshot,&[]).await.unwrap().get(0);
+      db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser2' WHERE publisher=$1",&[&public(1)]).await.unwrap();
+      f.raw(method,&path,body,"application/json",Some(token),409).await;
+      let after:Value=db.query_one(snapshot,&[]).await.unwrap().get(0);assert_eq!(after,before,"refused captured-account command changed native state: {method} {path}");
+      db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser1' WHERE publisher=$1",&[&public(1)]).await.unwrap();
+      let result=f.call(Some(1),method,&path,payload,status).await;
+      let actor:String=db.query_one(observation_sql,&[]).await.unwrap().get(0);assert_eq!(actor,"PublicUploadUser1");
+      verified.push(json!({"method":method,"path":path,"rebindStatus":409,"sameAccountStatus":status,"actualActor":actor,"rollback":true}));
+      if path.starts_with("/api/v1/upload/begin") {let session=result["id"].as_str().unwrap();f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,200).await;}
+    }
+    // Signed account-bound discovery cannot adopt another account's session.
+    let opened=f.call(Some(2),"POST","/api/v1/upload/begin",Some(json!({"manga":manga,"groups":[],"expectedAccountId":other})),200).await;
+    let other_session=opened["id"].as_str().unwrap();
+    let path=format!("/api/v1/upload?expectedAccountId={intended}");
+    let token=proof(1,11,&format!("{}{path}",f.origin),"GET",b"");
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser2' WHERE publisher=$1",&[&public(1)]).await.unwrap();
+    f.raw("GET",&path,vec![],"application/json",Some(token),409).await;
+    assert_eq!(f.call(Some(2),"GET",&format!("/api/v1/upload?expectedAccountId={other}"),None,200).await["id"],other_session);
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser1' WHERE publisher=$1",&[&public(1)]).await.unwrap();
+    f.call(Some(1),"GET",&path,None,404).await;
+    let own=f.call(Some(1),"POST","/api/v1/upload/begin",Some(json!({"manga":manga,"groups":[],"expectedAccountId":intended})),200).await;
+    let own_session=own["id"].as_str().unwrap();
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser2' WHERE publisher=$1",&[&public(1)]).await.unwrap();
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{own_session}"),None,404).await;
+    let open:i64=db.query_one("SELECT count(*) FROM platform.upload_sessions WHERE state='open'",&[]).await.unwrap().get(0);assert_eq!(open,2,"session owner fences must remain independent of discovery intent");
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser1' WHERE publisher=$1",&[&public(1)]).await.unwrap();
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{own_session}"),None,200).await;
+    f.call(Some(2),"DELETE",&format!("/api/v1/upload/{other_session}"),None,200).await;
+    // The signed URL includes its exact sole account query; no proof stripping.
+    let wrong_proof=proof(1,11,&format!("{}/api/v1/upload",f.origin),"GET",b"");
+    f.raw("GET",&path,vec![],"application/json",Some(wrong_proof),401).await;
+    for query in [format!("expectedAccountId={manga}"),"expectedAccountId=not-a-uuid".into(),format!("expectedAccountId={intended}&expectedAccountId={other}"),"unexpected=1".into()] {
+      f.call(Some(1),"GET",&format!("/api/v1/upload?{query}"),None,if query==format!("expectedAccountId={manga}"){404}else{400}).await;
+    }
+    let claim_path=format!("/api/v1/chapter/{claim}/claim?expectedAccountId={intended}");
+    f.call(Some(1),"POST",&claim_path,Some(json!({})),400).await;
+    println!("ACCOUNT_INTENT_VERIFIED={}",json!({"writes":verified,"discoveryRebindStatus":409,"retainedSessionOwnerStatus":404,"foreignSessionsUnchanged":true}));
+}
+// Staged real grant-gain/loss regression. The compatibility request deliberately
+// demonstrates the legacy inferred effect; the first-party signed mode must not.
+async fn captured_chapter_removal_effect_is_preserved(f:&Fixture) {
+    let db=f.state.db.client().await.unwrap();
+    db.batch_execute("INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,language,title) SELECT x,'UploadMng1','PublicUploadUser1','Fixture','en','Captured removal effect' FROM unnest(ARRAY['ModeOld001','ModeGain01','ModeDeny01','ModeLost01']) x").await.unwrap();
+    let account=alias(f,ResourceKind::User,"PublicUploadUser1").await;
+    let mut paths=Vec::new();for native in ["ModeOld001","ModeGain01","ModeDeny01","ModeLost01"] {paths.push(format!("/api/v1/chapter/{}?expectedAccountId={account}",alias(f,ResourceKind::Chapter,native).await));}
+    let ordinary=f.call(Some(1),"GET","/api/v1/nostr/account-context",None,200).await;
+    assert!(!ordinary["user"]["roles"].as_array().unwrap().iter().any(|r|r=="moderator"));
+    let snapshot="SELECT jsonb_build_object('chapters',(SELECT jsonb_agg(to_jsonb(c) ORDER BY id) FROM platform.catalog_chapters c WHERE id LIKE 'Mode%'),'reports',(SELECT jsonb_agg(to_jsonb(r) ORDER BY id) FROM platform.reports r),'audit',(SELECT jsonb_agg(to_jsonb(a) ORDER BY id) FROM platform.catalog_audit a))";
+    let before:Value=db.query_one(snapshot,&[]).await.unwrap().get(0);
+    f.call(Some(1),"DELETE",&format!("{}&removalMode=approve-hide",paths[2]),None,403).await;
+    let after:Value=db.query_one(snapshot,&[]).await.unwrap().get(0);assert_eq!(before,after,"ordinary approval must not fall back to a review report");
+    let review_path=format!("{}&removalMode=request-review",paths[1]);
+    let legacy=proof(1,11,&format!("{}{}",f.origin,paths[0]),"DELETE",b"");
+    let review=proof(1,11,&format!("{}{review_path}",f.origin),"DELETE",b"");
+    db.execute(r#"UPDATE platform.users SET roles='["moderator"]',permissions=permissions || '["chapter.remove"]'::jsonb WHERE id='PublicUploadUser1'"#,&[]).await.unwrap();
+    async fn hide(f:&Fixture,path:&str,token:String) {
+        let response=f.http.delete(format!("{}{path}",f.origin)).header("authorization",token).send().await.unwrap();
+        assert_eq!(response.status().as_u16(),204);assert_eq!(response.headers()["cache-control"],"no-store");
+        assert_eq!(response.headers()["x-weebdex-instance-removal"],"soft-hidden");assert_eq!(response.headers()["x-weebdex-source-deletion-status"],"instance-local-only");
+        assert!(response.bytes().await.unwrap().is_empty());
+    }
+    hide(f,&paths[0],legacy).await; // Explicitly retained legacy API compatibility.
+    let queued=f.raw("DELETE",&review_path,vec![],"application/json",Some(review),202).await;
+    assert_eq!(queued["instanceRemoval"],"pending-moderation");assert_eq!(queued["sourceDeletionStatus"],"instance-local-only");
+    let visible:bool=db.query_one("SELECT deleted_at IS NULL FROM platform.catalog_chapters WHERE id='ModeGain01'",&[]).await.unwrap().get(0);assert!(visible,"captured review must stay visible after grant gain");
+    let approve_path=format!("{}&removalMode=approve-hide",paths[3]);
+    let approve=proof(1,11,&format!("{}{approve_path}",f.origin),"DELETE",b"");
+    db.execute(r#"UPDATE platform.users SET permissions=permissions - 'chapter.remove' WHERE id='PublicUploadUser1'"#,&[]).await.unwrap();
+    let before:Value=db.query_one(snapshot,&[]).await.unwrap().get(0);
+    f.raw("DELETE",&approve_path,vec![],"application/json",Some(approve),403).await;
+    let after:Value=db.query_one(snapshot,&[]).await.unwrap().get(0);assert_eq!(before,after,"revoked approval must not hide or silently queue");
+    db.execute(r#"UPDATE platform.users SET permissions=permissions || '["chapter.remove"]'::jsonb WHERE id='PublicUploadUser1'"#,&[]).await.unwrap();
+    let approve_path=format!("{}&removalMode=approve-hide",paths[1]);
+    hide(f,&approve_path,proof(1,11,&format!("{}{approve_path}",f.origin),"DELETE",b"")).await;
+    let report= f.native(ResourceKind::Report,queued["requestId"].as_str().unwrap()).await;
+    let status:String=db.query_one("SELECT status FROM platform.reports WHERE id=$1",&[&report]).await.unwrap().get(0);assert_eq!(status,"accepted");
+    for suffix in ["&removalMode=bad","&removalMode=request-review&removalMode=approve-hide"] {f.call(Some(1),"DELETE",&format!("{}{suffix}",paths[2]),None,400).await;}
+    db.execute(r#"UPDATE platform.users SET roles='["user"]',permissions=permissions - 'chapter.remove' WHERE id='PublicUploadUser1'"#,&[]).await.unwrap();
+    println!("CHAPTER_REMOVAL_EFFECT_VERIFIED={}",json!({"grantGainSignedReview":202,"grantGainLegacyCompatibility":204,"ordinaryApproval":403,"revokedApproval":403,"freshExplicitApproval":204,"refusalNativeStateUnchanged":true}));
+}
 async fn signed_original_deletion_request_remains_review_only(f:&Fixture) {
     use std::collections::BTreeMap;
     use weebdex_platform::protocol::{bridge,publication::PublicationInput};

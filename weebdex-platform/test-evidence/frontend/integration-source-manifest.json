@@ -1,386 +1,4 @@
 {
-  "public_signed_title_metadata_enabled": true,
-  "public_signed_title_client_sha256": "a8e436ce2a0b515051d84eb88756230f2e1baefe47cfb7c5ccf40ac4cdf70736",
-  "public_signed_title_qualification": "Scoped signer-bound metadata create/edit and draft review controls; cover/relations/delete/lock remain unsupported. This preparation is not browser or live HTTP acceptance.",
-  "public_api_catalogue_enabled": true,
-  "public_signed_upload_enabled": true,
-  "public_signed_upload_overlay_sha256": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
-  "public_signed_upload_anchors_sha256": "9d01e42a445cdd67ed4536a64e57fae20afb1cf7a25b31f81adc1380f249fb26",
-  "approved_public_signed_upload_extensions": [
-    {
-      "path": "src/lib/components/upload/UploadChapter.svelte",
-      "source_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
-      "composed_sha256": "ae8daf28579b883c7d0cdc9d6319e668f310b85b3a443ee62cbe3a21d7552377",
-      "output_sha256": "f1531010cc406773fd03154d5e76696dcf51426374910ac22b98fd4028c994e5"
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapterPages.svelte",
-      "source_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
-      "composed_sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
-      "output_sha256": "b2e32ebffa14bf3826262c4c60f8c1b57dd063f38c3e02b0b7be38d8d96899c2"
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
-      "source_sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
-      "composed_sha256": "89332d03f7df53ee4d55f3ca99d056ba9a0ad8ed8a1f865e7f764aa73e186460",
-      "output_sha256": "7cea506e72c022607f7584dc1daaead7b90cfb349a7930892714a6df0a69d78c"
-    },
-    {
-      "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
-      "source_sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
-      "composed_sha256": "8a2861de12aa32d3e1f70a74b8e2ceacecba4a070aadeb383111f7d1bbaed1bb",
-      "output_sha256": "3ec51ec4f91ee79f537342b2112459f76200a4b6116affd1705e50902f2084ee"
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
-      "source_sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
-      "composed_sha256": "bc8765c437333eb3ccf613368efbfa39da4b3567bf797cc5fdaf0d7932a33f97",
-      "output_sha256": "8ebe992e4ca5f9978cc90b038da03bd6d44975d62a462929e43e4e4f70b5df8d"
-    },
-    {
-      "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
-      "source_sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c",
-      "composed_sha256": "3b6a2330a628cde259b173823578926d83a9e1778bdbb89ca2536739c727650a",
-      "output_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d"
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/edit/+layout.svelte",
-      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-      "composed_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-      "output_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d"
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapterGroups.svelte",
-      "source_sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
-      "composed_sha256": "5ce9490fda4b757072b8c30025291c4fbb847d982311822fbde299eaa1974280",
-      "output_sha256": "0500a0fb7a843503e137b44355ef51e683e3484fb54b8784c8b9c66e22857184"
-    }
-  ],
-  "public_api_base": "/api/v1",
-  "public_api_reconstructed_unverified": true,
-  "public_api_overlay_sha256": "1e624226fafab377627aaa9f27d9f2fcebfa653dda3820216e29eb372ce6964d",
-  "public_api_script_repairs": [
-    {
-      "path": "src/lib/API/Analytics.ts",
-      "sha256": "4f74b65eae53929329a4d8f1b4dd6fc3a12f0c108d4f85c18e3d284291f730fa",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Author.ts",
-      "sha256": "48a8f9f7aaac6a5562044118a5242e72f1ba05e057ebf371bd08251e87192360",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Chapter.ts",
-      "sha256": "9ace62d770d644ce7b8255a7e6fd3a9bb2f98f296046cf3a3f3d474194428d20",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Cover.ts",
-      "sha256": "3af93906c6013d76d04a1cae33d85cdea7e0191624cc093ab8542eb4610bdb98",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Group.ts",
-      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Manga.ts",
-      "sha256": "774f88cdb48ae17ddd08dfc532082ce59069b3263525db9ee21b8e5ab4466193",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Statistics.ts",
-      "sha256": "cd6faf267238897bd991c68c9f6ccbb9b3d930d52beaae0b0d87740a1413d973",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Tag.ts",
-      "sha256": "14762c1cc63805aee3a188b091a1b3e31a9772b69271b649630311dfae995195",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/AppSidebar.svelte",
-      "sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
-      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
-      "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/ChapterListEntry.svelte",
-      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/MangaSearchEntryCard.svelte",
-      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/MostReadCarouselEntry.svelte",
-      "sha256": "861574c9d7f8573d4a35577cdf06af7a078628c7530ed978910dd4dd27798791",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/SearchDialogMangaEntry.svelte",
-      "sha256": "486dc00e4d09c719fc44537f8d9283642b0aca344edffae315ec489828697790",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
-      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/reader/reader-queue.svelte",
-      "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/reader/reader.svelte",
-      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/author/[id]/Author.svelte",
-      "sha256": "607323da047e82b934677e2b70338b16e90b8916bb5b87dc1f9690353bc24b22",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page.ts",
-      "sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page.ts",
-      "sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/create/+layout.svelte",
-      "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/create/title/+layout.svelte",
-      "sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/create/title/+page.svelte",
-      "sha256": "cb557f50780fd4c5a146553ad154923b5e71594e89554d84750cca529f640f96",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/+layout.svelte",
-      "sha256": "641924a49a8d67bd1ccf9b08ca454117e0046db5ca55afc1d8a75b4e20910869",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/+page.svelte",
-      "sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/Group.svelte",
-      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/comments/+page.svelte",
-      "sha256": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/popular/MostReadChapter.svelte",
-      "sha256": "594316bd2d4b31652a093557ab44686f31d9a6d286b49d2fd4078c22ed9f431c",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/MangaActions.svelte",
-      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
-      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
-      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/[id]/edit/+page.ts",
-      "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    }
-  ],
-  "approved_public_media_exceptions": [
-    {
-      "path": "src/routes/(app)/popular/MostReadChapter.svelte",
-      "sha256": "594316bd2d4b31652a093557ab44686f31d9a6d286b49d2fd4078c22ed9f431c",
-      "count": 1,
-      "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`",
-      "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}.${manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\"}.webp`, manga.relationships.cover.dimensions[1] < manga.relationships.cover.dimensions[0] ? \"512\" : \"256\")",
-      "helper": "media",
-      "approved_public_media_exception": "uuid_cover_url_expression"
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "count": 1,
-      "before": "`${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}${manga.relationships.cover.ext}`",
-      "after": "retainedCoverUrl(manga.id, manga.relationships.cover, `${PUBLIC_COVER_URL}/${manga.id}/${manga.relationships.cover.id}${manga.relationships.cover.ext}`, \"original\")",
-      "helper": "media",
-      "approved_public_media_exception": "uuid_cover_url_expression"
-    },
-    {
-      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
-      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
-      "count": 1,
-      "before": "src=\"{PUBLIC_COVER_URL}/{manga.id}/{cover.id}.512.webp\"",
-      "after": "src={retainedCoverUrl(manga.id, cover, `${PUBLIC_COVER_URL}/${manga.id}/${cover.id}.512.webp`, \"512\")}",
-      "helper": "media",
-      "approved_public_media_exception": "uuid_cover_url_expression"
-    }
-  ],
-  "approved_public_availability_exceptions": [
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "count": 1,
-      "before": "{#if mangaStats && comments.stats && isPublished}",
-      "after": "{#if mangaStats && comments?.stats && isPublished}",
-      "approved_public_availability_exception": "missing_native_comments_statistics"
-    },
-    {
-      "path": "src/lib/components/ChapterListEntry.svelte",
-      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
-      "count": 1,
-      "before": "<a\r\n\t\t\t\t\t\tclass=\"hover:text-accent-foreground relative flex w-18 shrink-0 items-center gap-1.5\"\r\n\t\t\t\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\t\t\t\ttitle=\"Go to comments\"\r\n\t\t\t\t\t>\r\n\t\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t\t\t\t<span class=\"truncate\">{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</a>",
-      "after": "{#if chapter.relationships.thread}<a\r\n\t\t\t\t\t\tclass=\"hover:text-accent-foreground relative flex w-18 shrink-0 items-center gap-1.5\"\r\n\t\t\t\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\t\t\t\ttitle=\"Go to comments\"\r\n\t\t\t\t\t>\r\n\t\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t\t\t\t<span class=\"truncate\">{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
-      "approved_public_availability_exception": "actual_native_forum_context_only"
-    },
-    {
-      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
-      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
-      "count": 1,
-      "before": "<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>",
-      "after": "{#if chapter.relationships.thread}<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
-      "approved_public_availability_exception": "actual_native_forum_context_only"
-    },
-    {
-      "path": "src/lib/components/reader/reader.svelte",
-      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
-      "count": 1,
-      "before": "{#if reader.chapter.relationships.thread}<Comments.Comments />{/if}",
-      "after": "{#if reader.chapter.relationships.thread}<Comments.Comments />{:else}<p role=\"status\">Comments are unavailable for this resource.</p>{/if}",
-      "composed_before": true,
-      "approved_public_availability_exception": "missing_native_forum_context"
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/+page.svelte",
-      "sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
-      "count": 1,
-      "before": "{#if !$group.relationships?.members?.some(member => member.is_leader)}",
-      "after": "{#if retainedGroupCanClaim($group, !$group.relationships?.members?.some(member => member.is_leader))}",
-      "helper": "group-presentation",
-      "approved_public_availability_exception": "public_group_claim_requires_exact_review_adapter"
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/Group.svelte",
-      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
-      "count": 1,
-      "before": "{#if !$group.relationships?.members?.some(member => member.is_leader)}",
-      "after": "{#if retainedGroupCanClaim($group, !$group.relationships?.members?.some(member => member.is_leader))}",
-      "helper": "group-presentation",
-      "approved_public_availability_exception": "public_group_claim_requires_exact_review_adapter"
-    }
-  ],
   "anonymous_recovery_derivation": {
     "original": "src/routes/(app)/auth/recovery/+page.svelte",
     "preserved_byte_copy": "platform-integrations/frontend-behavior/RetainedRecovery.svelte",
@@ -389,7 +7,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": ".build/editorial-account-gate-on-final/production-input",
+  "frontend": ".build/frontend-onboarding",
   "original_files_written": false,
   "integration_utility_sources": {
     "method": "build-local explicit Tailwind source declaration",
@@ -397,34 +15,6 @@
     "original_stylesheet_unchanged": true
   },
   "reconstructed_routes": [
-    {
-      "source": "platform-integrations/frontend-reconstruction/editorial/+page.svelte",
-      "target": "src/routes/(app)/catalogue-tools/+page.svelte",
-      "reconstruction": false,
-      "additive_editorial_route": true,
-      "sha256": "122cad734e3b32deff2cd7e7430eeda5968dd9e893c75972e8bd6d61ea6558e7"
-    },
-    {
-      "source": "platform-integrations/frontend-reconstruction/editorial/author-settings-page.ts",
-      "target": "src/routes/(app)/author/[id]/settings/+page.ts",
-      "reconstruction": false,
-      "additive_editorial_route": true,
-      "sha256": "f71d786bb56d503dfeacc1794861e647a92780e0fe03c16d31aebcc13dd5e646"
-    },
-    {
-      "source": "platform-integrations/frontend-reconstruction/editorial/group-settings-page.ts",
-      "target": "src/routes/(app)/group/[id]/settings/+page.ts",
-      "reconstruction": false,
-      "additive_editorial_route": true,
-      "sha256": "7953632e710b460e5c45ac667329b82cacac99fe19425848199a3d33f859cb80"
-    },
-    {
-      "source": "platform-integrations/frontend-reconstruction/editorial/group-create-page.ts",
-      "target": "src/routes/(app)/create/group/+page.ts",
-      "reconstruction": false,
-      "additive_editorial_route": true,
-      "sha256": "bb0367a20beb5d8f4773cdb8d847d102520d9b444af57e7ba84b01a339ddf691"
-    },
     {
       "source": "platform-integrations/frontend-reconstruction/announcements/routes/+page.svelte",
       "target": "src/routes/(app)/announcements/+page.svelte",
@@ -464,8 +54,8 @@
     },
     {
       "path": "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
-      "bytes": 2311,
-      "sha256": "325ba6a91c5e20ea7efc79e230d92ec3d0066135cdc961d9caa09eebbb995633"
+      "bytes": 2663,
+      "sha256": "a81906e7c7f78ca68be41ea745056dcfa2cdb1f6d142544fdacc089ed6e4f46b"
     },
     {
       "path": "platform-integrations/frontend-behavior/actor-follow-state.ts",
@@ -639,8 +229,8 @@
     },
     {
       "path": "platform-integrations/frontend-overlays.mjs",
-      "bytes": 502511,
-      "sha256": "c41f6a0290306e4ba803b341fee577a5bc4c7692cda458c73faa111e66122b7e"
+      "bytes": 472351,
+      "sha256": "33b62c0d955cb3e05d997ead078896f40d501ea615406c54fe639bd99f6907c2"
     },
     {
       "path": "platform-integrations/frontend-reader-overlays.mjs",
@@ -678,34 +268,14 @@
       "sha256": "0b8e1fb9939652dcd1ae964bcc85b0d215cceff577e9357906665fd0790b006e"
     },
     {
-      "path": "platform-integrations/frontend-reconstruction/editorial/+page.svelte",
-      "bytes": 611,
-      "sha256": "122cad734e3b32deff2cd7e7430eeda5968dd9e893c75972e8bd6d61ea6558e7"
-    },
-    {
-      "path": "platform-integrations/frontend-reconstruction/editorial/author-settings-page.ts",
-      "bytes": 382,
-      "sha256": "f71d786bb56d503dfeacc1794861e647a92780e0fe03c16d31aebcc13dd5e646"
-    },
-    {
-      "path": "platform-integrations/frontend-reconstruction/editorial/group-create-page.ts",
-      "bytes": 199,
-      "sha256": "bb0367a20beb5d8f4773cdb8d847d102520d9b444af57e7ba84b01a339ddf691"
-    },
-    {
-      "path": "platform-integrations/frontend-reconstruction/editorial/group-settings-page.ts",
-      "bytes": 380,
-      "sha256": "7953632e710b460e5c45ac667329b82cacac99fe19425848199a3d33f859cb80"
-    },
-    {
       "path": "platform-integrations/frontend-reconstruction/settings/identity/+page.svelte",
       "bytes": 286,
       "sha256": "dfab136b804bf4a0f877b621179ea439097ff6a6418fa3086e1ce6e769202ad5"
     },
     {
       "path": "platform-integrations/frontend-route-additions.mjs",
-      "bytes": 1147,
-      "sha256": "5fad8925d4bd09979893191318985939bdf74ae1367a3be5db163181465edfcd"
+      "bytes": 597,
+      "sha256": "77f28d494e406f239a725fc54291f0f8d22f67c363dbb3197b2febe245b121bf"
     },
     {
       "path": "platform-integrations/integration-utility-sources.mjs",
@@ -724,18 +294,13 @@
     },
     {
       "path": "platform-integrations/local-library/ChapterHistory.ts",
-      "bytes": 3758,
-      "sha256": "bd94c48364a043b4c53d1ed1e8e46eb03118734f2899d8bb8d842292009e5ed2"
+      "bytes": 3524,
+      "sha256": "32e6976fa4bfb57160b09b3c56f741dc27425861f614ec3296d41dd3da80ad7c"
     },
     {
       "path": "platform-integrations/local-library/device-store.ts",
-      "bytes": 15854,
-      "sha256": "08658b7a8b35e7abebbb506f01aca9371ea1029c3de23e2fd2239bfd38efa67d"
-    },
-    {
-      "path": "platform-integrations/local-library/enrollment-policy.ts",
-      "bytes": 1661,
-      "sha256": "f0584a3f16aed5c3f312902a9dc71418ccddf77d6fc5e8f0af581e0f7ac5fa4a"
+      "bytes": 14899,
+      "sha256": "5c2bf2331c467b0d165a75618fdc03a5fdda91becc97b16a320d1c2c23bc6937"
     },
     {
       "path": "platform-integrations/local-library/graph-transfer.ts",
@@ -743,14 +308,9 @@
       "sha256": "0cbee4047d8bc0d1c3d6c7632e27ef98b2ce18bdc869dccb4df11d669275f669"
     },
     {
-      "path": "platform-integrations/local-library/IdentitySetup.svelte",
-      "bytes": 17889,
-      "sha256": "ecc6fee5e72755fd257e57783c00a379eadb592ee16c7b50fdfacf6996868c73"
-    },
-    {
       "path": "platform-integrations/local-library/library.ts",
-      "bytes": 30128,
-      "sha256": "8c3fbae0f1cb87e27f2a7783f90dfbeea344bea5c789cb78d2180bf7d16f985a"
+      "bytes": 29081,
+      "sha256": "e30fdf5e0dcec64f8eeefa1e9fd98bd49887381514c0b36f646a4b494dec1b68"
     },
     {
       "path": "platform-integrations/local-library/LibraryManagementTools.svelte",
@@ -759,18 +319,13 @@
     },
     {
       "path": "platform-integrations/local-library/LibraryProtected.svelte",
-      "bytes": 1305,
-      "sha256": "edcc631f5f58b90548ecc5c2347192ae31d3c00e55f8c34f9b6224682db283ba"
+      "bytes": 996,
+      "sha256": "7e40c424393c26f39801a796c5a4ced5e0808a2d2e113985ef5fba09cbb93d6d"
     },
     {
       "path": "platform-integrations/local-library/LibraryRuntime.svelte",
       "bytes": 734,
       "sha256": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8"
-    },
-    {
-      "path": "platform-integrations/local-library/local-signing-key.ts",
-      "bytes": 7230,
-      "sha256": "f9ea32185d0085ac808d134848a7042d11a35a4bc5c6a8d83ca321d0ce48b6ef"
     },
     {
       "path": "platform-integrations/local-library/LocalLibraryPanel.svelte",
@@ -784,8 +339,8 @@
     },
     {
       "path": "platform-integrations/local-library/MangaFollow.ts",
-      "bytes": 10718,
-      "sha256": "80543297f6c7c1ab96f1b1e7ae1c5f80d447a83b32ce1d0ab84467201fbf8750"
+      "bytes": 10408,
+      "sha256": "6e28bc272124f56324fa32fd988e051c2dd5e4aa3966b2a77fc9e891637b844a"
     },
     {
       "path": "platform-integrations/local-library/overlays.mjs",
@@ -869,225 +424,20 @@
     },
     {
       "path": "platform-integrations/local-library/publication.ts",
-      "bytes": 24822,
-      "sha256": "d4bb0f8e4a3f8645a348816f73cb730725c36982859e11ede50c7a460c9ca74e"
+      "bytes": 23641,
+      "sha256": "15a014a71c7321b7c5ab1373e6ba82d601c33d2a05df354f71ebc1dff5498b0c"
     },
     {
       "path": "platform-integrations/local-library/PublicIdentitySettings.svelte",
-      "bytes": 4530,
-      "sha256": "c813d66dae44a64fe8bca82eb2c492c7e9b4ea62d784c62d0638068b26875012"
-    },
-    {
-      "path": "platform-integrations/local-library/signing-dependencies/package-lock.json",
-      "bytes": 574,
-      "sha256": "dc5d74f233da82060765b02d329cdb630b5327708b8d5b853512bbbf13cfaf3a"
-    },
-    {
-      "path": "platform-integrations/local-library/signing-dependencies/package.json",
-      "bytes": 148,
-      "sha256": "8012fc7f414a87dec5fcfec55c5d167a1d33141acdd63722c28031b87788c8cb"
-    },
-    {
-      "path": "platform-integrations/public-api/anchors.json",
-      "bytes": 18679,
-      "sha256": "7ffcbb1dcbb7402e956139fffe590227899a11d2666e3add57ad3d29e4a518b4"
-    },
-    {
-      "path": "platform-integrations/public-api/author-chapter-feed.ts",
-      "bytes": 6187,
-      "sha256": "38828c187518ae88e4061bb3c723468ec953a7c9b5c3d3dcf687e10e61768a27"
-    },
-    {
-      "path": "platform-integrations/public-api/catalogue-edges.ts",
-      "bytes": 5386,
-      "sha256": "2a5f569bbc6c28773129061497d88a5510b05acb8cc3f56c61afdee542360ea5"
-    },
-    {
-      "path": "platform-integrations/public-api/client.ts",
-      "bytes": 9815,
-      "sha256": "def5055ee7d37bfb2dd01caa10b211163402885dddb5213c73835b22e94735d3"
-    },
-    {
-      "path": "platform-integrations/public-api/device-id-migration.ts",
-      "bytes": 23269,
-      "sha256": "54f12f96c0a34fddef4ed8a32299ed0dd620cbfbb52cbad97c80b7d45b829096"
-    },
-    {
-      "path": "platform-integrations/public-api/device-id-readiness.ts",
-      "bytes": 202,
-      "sha256": "833a6a0dfe8951d36c23d167f2e6fb163f0f2230c48bba59b11451c8533f5105"
-    },
-    {
-      "path": "platform-integrations/public-api/device-id-state.ts",
-      "bytes": 13134,
-      "sha256": "8d0e4856f2ac9cfaccb69566f293b9f2f12708f3cb169fae6d39d08ef147b204"
-    },
-    {
-      "path": "platform-integrations/public-api/device-id-transport.ts",
-      "bytes": 6063,
-      "sha256": "bd1d01fddad7abbf819260ef39d496e6396f59382d1012301380b49304f8c292"
-    },
-    {
-      "path": "platform-integrations/public-api/editorial-client.ts",
-      "bytes": 10630,
-      "sha256": "3611c3af5dde82919e7fb292deb44b3074050bf0f21db1affe06cb50d23e2117"
-    },
-    {
-      "path": "platform-integrations/public-api/group-presentation.ts",
-      "bytes": 978,
-      "sha256": "a362294137961fcc355ce2d69564a74f12fbd1df06ad7076a4e9ab6aafb988fb"
-    },
-    {
-      "path": "platform-integrations/public-api/library-staging.ts",
-      "bytes": 627,
-      "sha256": "09bfdc46154741cbece9dda150d632976f6ea6d23800cd666fb34ec4f41251dc"
-    },
-    {
-      "path": "platform-integrations/public-api/media.ts",
-      "bytes": 786,
-      "sha256": "85791b87e3703b80ed22b985946421c4a8830330c2ba402b6d558fbd33cca513"
-    },
-    {
-      "path": "platform-integrations/public-api/native-forum/Comments.svelte",
-      "bytes": 377,
-      "sha256": "4356d78b5642e2865908b006f8040d37ab5ad174e31e876714046448505ef908"
-    },
-    {
-      "path": "platform-integrations/public-api/native-forum/index.ts",
-      "bytes": 159,
-      "sha256": "c976f9ea72ed86b9b93fd0ca97dc4952b2b1f26c498d71fcde9927e21bca9f43"
-    },
-    {
-      "path": "platform-integrations/public-api/native-forum/Provider.svelte",
-      "bytes": 390,
-      "sha256": "d2f4933b1b4cb11fb2d1d8666e3555c75b6ee87c2d4825381ec18c18a27e6bde"
-    },
-    {
-      "path": "platform-integrations/public-api/native-forum/UnavailableContext.svelte",
-      "bytes": 344,
-      "sha256": "a0413c0d9ffb6231d8f59a38ab24074d2dfde2892201593202194461f52a1f41"
-    },
-    {
-      "path": "platform-integrations/public-api/native-forum/Votes.svelte",
-      "bytes": 215,
-      "sha256": "bae726082d98618cfb91a2e010d3b8664a2cc3ee9dd7478d96dbf0691055ae35"
-    },
-    {
-      "path": "platform-integrations/public-api/normalize.ts",
-      "bytes": 8576,
-      "sha256": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b"
-    },
-    {
-      "path": "platform-integrations/public-api/nostr-upload-request.ts",
-      "bytes": 15087,
-      "sha256": "9418845c867fd7fd0706756197900221e3cd73cd87a48133d5ed3ff6ef0d3056"
-    },
-    {
-      "path": "platform-integrations/public-api/overlays.mjs",
-      "bytes": 7202,
-      "sha256": "1e624226fafab377627aaa9f27d9f2fcebfa653dda3820216e29eb372ce6964d"
-    },
-    {
-      "path": "platform-integrations/public-api/presentation.ts",
-      "bytes": 378,
-      "sha256": "5f045c1c3cefa7126b4e325787938094c62afcd8967eb9c439a40ec8b9655328"
-    },
-    {
-      "path": "platform-integrations/public-api/PublicChapterEditor.svelte",
-      "bytes": 8121,
-      "sha256": "6a6eabfa648fac52a49af964c253c8894880a165e1696e99d96cbb256ce9d11e"
-    },
-    {
-      "path": "platform-integrations/public-api/PublicCreateGate.svelte",
-      "bytes": 372,
-      "sha256": "4f4ef18bd7c7407939d2f2541e6c03f9ec48c575ee17d39bd537720b3ed29009"
-    },
-    {
-      "path": "platform-integrations/public-api/PublicEditorialTools.svelte",
-      "bytes": 9271,
-      "sha256": "965723b7ece64bba3ab4136c35557fdd88593a8dc72ce8eb225e064f22ecccd4"
-    },
-    {
-      "path": "platform-integrations/public-api/PublicGroupClaimDialog.svelte",
-      "bytes": 751,
-      "sha256": "bec0859318be9f99330da3fe899d1f08b8eccbcfbb0887c9b7aa23147c5264b7"
-    },
-    {
-      "path": "platform-integrations/public-api/PublicTitleEditor.svelte",
-      "bytes": 8752,
-      "sha256": "f355e45291bd7d7dec4e5f0501b65847f56f39e395fb8af34d84243df1e727e0"
-    },
-    {
-      "path": "platform-integrations/public-api/PublicTitleShell.svelte",
-      "bytes": 314,
-      "sha256": "2312e11adce6f9ade8c27c23f4df47ac826d9b0ff7ad652280894a31c382605e"
-    },
-    {
-      "path": "platform-integrations/public-api/query.ts",
-      "bytes": 9600,
-      "sha256": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193"
-    },
-    {
-      "path": "platform-integrations/public-api/random-manga.ts",
-      "bytes": 2302,
-      "sha256": "9edb6bbffb27281a8b145330f3bf9a934a784667b8662fcbf267c69c37ca3602"
-    },
-    {
-      "path": "platform-integrations/public-api/site-client.ts",
-      "bytes": 17194,
-      "sha256": "790e0f3a660b0027fdd65def4135ea190e8cd11898a15286e2634242e34b5e66"
-    },
-    {
-      "path": "platform-integrations/public-api/source-hashes.json",
-      "bytes": 3813,
-      "sha256": "9e8dd4ce6e54606f5e302cfc78692ebee7469e1f6d0ad8bde91e27a3b495d0a7"
-    },
-    {
-      "path": "platform-integrations/public-api/title-client.ts",
-      "bytes": 16696,
-      "sha256": "a8e436ce2a0b515051d84eb88756230f2e1baefe47cfb7c5ccf40ac4cdf70736"
-    },
-    {
-      "path": "platform-integrations/public-api/types.ts",
-      "bytes": 4350,
-      "sha256": "4908f0bb72ed14484b1e49d5baacbc1c055e56e014660ee7faf8a08a9695b410"
-    },
-    {
-      "path": "platform-integrations/public-api/upload-anchors.json",
-      "bytes": 40479,
-      "sha256": "9d01e42a445cdd67ed4536a64e57fae20afb1cf7a25b31f81adc1380f249fb26"
-    },
-    {
-      "path": "platform-integrations/public-api/upload-client.ts",
-      "bytes": 68738,
-      "sha256": "e8a0d062f6cbc56e5f169bacac394b2f0d7a82ca7715b3d2efa09667824e2ce3"
-    },
-    {
-      "path": "platform-integrations/public-api/upload-multipart.ts",
-      "bytes": 5322,
-      "sha256": "460b130db0e71ff98b85662129060e4a85c8ee9e502f161b9cd33873ffd6c7c0"
-    },
-    {
-      "path": "platform-integrations/public-api/upload-overlays.mjs",
-      "bytes": 2042,
-      "sha256": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f"
-    },
-    {
-      "path": "platform-integrations/public-api/upload-preview.ts",
-      "bytes": 8537,
-      "sha256": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8"
-    },
-    {
-      "path": "platform-integrations/public-api/validation.ts",
-      "bytes": 2001,
-      "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce"
+      "bytes": 4001,
+      "sha256": "6885e2856293f7b6fa3197bba35a25ad2d1b9ecffa46554a725882820fb11dbe"
     }
   ],
-  "integration_source_inventory_sha256": "d3ec0e9375a8288db58b3a5815d7aea805f1f1bf6a7e6ef25f829e2d9fd4a26b",
+  "integration_source_inventory_sha256": "a558d9b95b85e1a8e69e39ef43559f386ad56308f3bba714106362712d91ca5d",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
-      "sha256": "325ba6a91c5e20ea7efc79e230d92ec3d0066135cdc961d9caa09eebbb995633",
+      "sha256": "a81906e7c7f78ca68be41ea745056dcfa2cdb1f6d142544fdacc089ed6e4f46b",
       "intentional_rendered_extension": true
     },
     {
@@ -1112,7 +462,7 @@
     },
     {
       "path": "platform-integrations/local-library/LibraryProtected.svelte",
-      "sha256": "edcc631f5f58b90548ecc5c2347192ae31d3c00e55f8c34f9b6224682db283ba",
+      "sha256": "7e40c424393c26f39801a796c5a4ced5e0808a2d2e113985ef5fba09cbb93d6d",
       "intentional_rendered_extension": true
     },
     {
@@ -1132,41 +482,11 @@
     },
     {
       "path": "platform-integrations/local-library/PublicIdentitySettings.svelte",
-      "sha256": "c813d66dae44a64fe8bca82eb2c492c7e9b4ea62d784c62d0638068b26875012",
-      "intentional_rendered_extension": true
-    },
-    {
-      "path": "platform-integrations/local-library/IdentitySetup.svelte",
-      "sha256": "ecc6fee5e72755fd257e57783c00a379eadb592ee16c7b50fdfacf6996868c73",
-      "intentional_rendered_extension": true
-    },
-    {
-      "path": "platform-integrations/public-api/PublicTitleEditor.svelte",
-      "sha256": "f355e45291bd7d7dec4e5f0501b65847f56f39e395fb8af34d84243df1e727e0",
-      "intentional_rendered_extension": true
-    },
-    {
-      "path": "platform-integrations/public-api/PublicCreateGate.svelte",
-      "sha256": "4f4ef18bd7c7407939d2f2541e6c03f9ec48c575ee17d39bd537720b3ed29009",
-      "intentional_rendered_extension": true
-    },
-    {
-      "path": "platform-integrations/public-api/PublicTitleShell.svelte",
-      "sha256": "2312e11adce6f9ade8c27c23f4df47ac826d9b0ff7ad652280894a31c382605e",
-      "intentional_rendered_extension": true
-    },
-    {
-      "path": "platform-integrations/public-api/PublicEditorialTools.svelte",
-      "sha256": "965723b7ece64bba3ab4136c35557fdd88593a8dc72ce8eb225e064f22ecccd4",
-      "intentional_rendered_extension": true
-    },
-    {
-      "path": "platform-integrations/public-api/PublicGroupClaimDialog.svelte",
-      "sha256": "bec0859318be9f99330da3fe899d1f08b8eccbcfbb0887c9b7aa23147c5264b7",
+      "sha256": "6885e2856293f7b6fa3197bba35a25ad2d1b9ecffa46554a725882820fb11dbe",
       "intentional_rendered_extension": true
     }
   ],
-  "overlay_module_sha256": "c41f6a0290306e4ba803b341fee577a5bc4c7692cda458c73faa111e66122b7e",
+  "overlay_module_sha256": "33b62c0d955cb3e05d997ead078896f40d501ea615406c54fe639bd99f6907c2",
   "script_repairs": [
     {
       "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -3849,261 +3169,6 @@
       "count": 1
     },
     {
-      "path": "src/routes/(app)/title/MangaActions.svelte",
-      "label": "all-read Continue Reading stays at newest completed aggregate chapter",
-      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronsLeft accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronLeft accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronRight accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronsRight accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader page selector accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronsLeft accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronLeft accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronRight accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronsRight accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader chapter selector accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader HomeIcon accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader Undo2 accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader SettingsIcon accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader ChevronsLeft accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader ChevronsRight accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader pagination chapter selector accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "label": "reader HomeIcon accessible name",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "label": "reader BookIcon accessible name",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "label": "reader XIcon accessible name",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/comments/comments-votes.svelte",
-      "label": "reader discussion vote 1 accessible name",
-      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/comments/comments-votes.svelte",
-      "label": "reader discussion vote -1 accessible name",
-      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-image.svelte",
-      "label": "reader page image exposes its page number",
-      "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-settings.svelte",
-      "label": "reader narrow-phone direction LTR retains nonoverlapping controls",
-      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-      "count": 1,
-      "approved_reader_control_exception": "reader_narrow_direction_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-settings.svelte",
-      "label": "reader narrow-phone direction RTL retains nonoverlapping controls",
-      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-      "count": 1,
-      "approved_reader_control_exception": "reader_narrow_direction_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-image.svelte",
-      "label": "reader Stretch Width expands its actual image wrapper",
-      "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
-      "count": 1,
-      "approved_reader_control_exception": "reader_stretch_width_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-provider.svelte",
-      "label": "reader malformed raw page always resolves a finite bounded image index",
-      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader selecting current last page leaves end-of-chapter card",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/reader-last-page.svelte",
-      "label": "mobile long-strip Home accessible name",
-      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-last-page.svelte",
-      "label": "mobile long-strip Back to title accessible name",
-      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapter.svelte",
-      "label": "recovered upload begin acknowledges only returned server staging baseline",
-      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapter.svelte",
-      "label": "recovered upload autosave waits for a valid nonempty language",
-      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
-      "label": "recovered upload begin acknowledges only returned server staging baseline",
-      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
-      "label": "recovered upload autosave waits for a valid nonempty language",
-      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader missing current chapter has no accidental minus-one navigation index",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader chapter selection rejects noninteger indices before aggregate access",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader empty aggregate entries do not crash chapter navigation",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader page selection rejects noninteger indices before changing current page",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
       "path": "src/lib/components/reader/reader-pages-double.svelte",
       "label": "selected second page keeps its double spread visible",
       "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf",
@@ -5257,244 +4322,6 @@
       "count": 1,
       "label": "UI16 approved RecentlyAddedCarousel explicit current public-feed retry",
       "approved_public_carousel_exception": "public_carousel_error_retry"
-    },
-    {
-      "path": "src/lib/API/Analytics.ts",
-      "sha256": "4f74b65eae53929329a4d8f1b4dd6fc3a12f0c108d4f85c18e3d284291f730fa",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Author.ts",
-      "sha256": "48a8f9f7aaac6a5562044118a5242e72f1ba05e057ebf371bd08251e87192360",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Chapter.ts",
-      "sha256": "9ace62d770d644ce7b8255a7e6fd3a9bb2f98f296046cf3a3f3d474194428d20",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Cover.ts",
-      "sha256": "3af93906c6013d76d04a1cae33d85cdea7e0191624cc093ab8542eb4610bdb98",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Group.ts",
-      "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Manga.ts",
-      "sha256": "774f88cdb48ae17ddd08dfc532082ce59069b3263525db9ee21b8e5ab4466193",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Statistics.ts",
-      "sha256": "cd6faf267238897bd991c68c9f6ccbb9b3d930d52beaae0b0d87740a1413d973",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/API/Tag.ts",
-      "sha256": "14762c1cc63805aee3a188b091a1b3e31a9772b69271b649630311dfae995195",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/AppSidebar.svelte",
-      "sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
-      "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
-      "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/ChapterListEntry.svelte",
-      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/MangaSearchEntryCard.svelte",
-      "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/MostReadCarouselEntry.svelte",
-      "sha256": "861574c9d7f8573d4a35577cdf06af7a078628c7530ed978910dd4dd27798791",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/SearchDialogMangaEntry.svelte",
-      "sha256": "486dc00e4d09c719fc44537f8d9283642b0aca344edffae315ec489828697790",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/draft/manga/MangaEdit.svelte",
-      "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/reader/reader-queue.svelte",
-      "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/lib/components/reader/reader.svelte",
-      "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/author/[id]/Author.svelte",
-      "sha256": "607323da047e82b934677e2b70338b16e90b8916bb5b87dc1f9690353bc24b22",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page.ts",
-      "sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page.ts",
-      "sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/create/+layout.svelte",
-      "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/create/title/+layout.svelte",
-      "sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/create/title/+page.svelte",
-      "sha256": "cb557f50780fd4c5a146553ad154923b5e71594e89554d84750cca529f640f96",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/+layout.svelte",
-      "sha256": "641924a49a8d67bd1ccf9b08ca454117e0046db5ca55afc1d8a75b4e20910869",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/+page.svelte",
-      "sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/Group.svelte",
-      "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/comments/+page.svelte",
-      "sha256": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/popular/MostReadChapter.svelte",
-      "sha256": "594316bd2d4b31652a093557ab44686f31d9a6d286b49d2fd4078c22ed9f431c",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/Manga.svelte",
-      "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/MangaActions.svelte",
-      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/MangaCoversSection.svelte",
-      "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
-      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
-    },
-    {
-      "path": "src/routes/(app)/title/[id]/edit/+page.ts",
-      "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
-      "public_api_base": "/api/v1",
-      "activation": "explicit staged gate; default off",
-      "reconstructed_unverified": true
     }
   ],
   "shared_script_repairs": [
@@ -8177,261 +7004,6 @@
       "label": "verification preserves onboarding continuation without double decoding",
       "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
       "count": 1
-    },
-    {
-      "path": "src/routes/(app)/title/MangaActions.svelte",
-      "label": "all-read Continue Reading stays at newest completed aggregate chapter",
-      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronsLeft accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronLeft accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronRight accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader ChevronsRight accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "label": "reader page selector accessible name",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronsLeft accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronLeft accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronRight accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader ChevronsRight accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "label": "reader chapter selector accessible name",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader HomeIcon accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader Undo2 accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader SettingsIcon accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader ChevronsLeft accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader ChevronsRight accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "label": "reader pagination chapter selector accessible name",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "label": "reader HomeIcon accessible name",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "label": "reader BookIcon accessible name",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "label": "reader XIcon accessible name",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/comments/comments-votes.svelte",
-      "label": "reader discussion vote 1 accessible name",
-      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/comments/comments-votes.svelte",
-      "label": "reader discussion vote -1 accessible name",
-      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-image.svelte",
-      "label": "reader page image exposes its page number",
-      "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-settings.svelte",
-      "label": "reader narrow-phone direction LTR retains nonoverlapping controls",
-      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-      "count": 1,
-      "approved_reader_control_exception": "reader_narrow_direction_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-settings.svelte",
-      "label": "reader narrow-phone direction RTL retains nonoverlapping controls",
-      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-      "count": 1,
-      "approved_reader_control_exception": "reader_narrow_direction_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-image.svelte",
-      "label": "reader Stretch Width expands its actual image wrapper",
-      "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
-      "count": 1,
-      "approved_reader_control_exception": "reader_stretch_width_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-provider.svelte",
-      "label": "reader malformed raw page always resolves a finite bounded image index",
-      "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader selecting current last page leaves end-of-chapter card",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/reader-last-page.svelte",
-      "label": "mobile long-strip Home accessible name",
-      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-last-page.svelte",
-      "label": "mobile long-strip Back to title accessible name",
-      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
-      "count": 1,
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapter.svelte",
-      "label": "recovered upload begin acknowledges only returned server staging baseline",
-      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapter.svelte",
-      "label": "recovered upload autosave waits for a valid nonempty language",
-      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
-      "label": "recovered upload begin acknowledges only returned server staging baseline",
-      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/upload/UploadChapterEdit.svelte",
-      "label": "recovered upload autosave waits for a valid nonempty language",
-      "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader missing current chapter has no accidental minus-one navigation index",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader chapter selection rejects noninteger indices before aggregate access",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader empty aggregate entries do not crash chapter navigation",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
-    },
-    {
-      "path": "src/lib/components/reader/context.svelte.ts",
-      "label": "reader page selection rejects noninteger indices before changing current page",
-      "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "count": 1
     }
   ],
   "reader_script_repairs": [
@@ -10011,226 +8583,8 @@
       "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
       "count": 1,
       "before": "{#if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
-      "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} current={registrationWelcome.current} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+      "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
       "approved_registration_onboarding_exception": "fresh_registration_welcome"
-    }
-  ],
-  "approved_reader_control_exceptions": [
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
-      "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last page\" : \"First page\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoNextPage() : reader.gotoPreviousPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
-      "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoNextPage() : reader.gotoPreviousPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Next page\" : \"Previous page\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoPreviousPage() : reader.gotoNextPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
-      "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoPreviousPage() : reader.gotoNextPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Previous page\" : \"Next page\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
-      "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First page\" : \"Last page\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "count": 1,
-      "before": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })}>",
-      "after": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })} aria-label=\"Select page\">",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
-      "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last chapter\" : \"First chapter\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
-      "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Next chapter\" : \"Previous chapter\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
-      "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Previous chapter\" : \"Next chapter\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
-      "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First chapter\" : \"Last chapter\"}\r\n\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "count": 1,
-      "before": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })}>",
-      "after": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })} aria-label=\"Select chapter\">",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "before": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })} href=\"/\">",
-      "after": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })} href=\"/\" aria-label=\"Home\">",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })}\r\n\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t)}\"\r\n\t\t\t\t>",
-      "after": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })}\r\n\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t)}\"\r\n\t\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "before": "<Button class=\"border-none\" variant=\"outline\" size=\"icon-lg\" onclick={sidebar.toggle}>",
-      "after": "<Button class=\"border-none\" variant=\"outline\" size=\"icon-lg\" onclick={sidebar.toggle} aria-label=\"Reader settings\">",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "before": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t>",
-      "after": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last page\" : \"First page\"}\r\n\t\t\t\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "before": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t>",
-      "after": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First page\" : \"Last page\"}\r\n\t\t\t\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "count": 1,
-      "before": "\t\t\t\t<Combobox.Trigger\r\n",
-      "after": "\t\t\t\t<Combobox.Trigger\r\n\t\t\t\t\taria-label=\"Select chapter\"\r\n",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "before": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })} href=\"/\">",
-      "after": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })} href=\"/\" aria-label=\"Home\">",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "before": "<a\r\n\t\t\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\t\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t\t\t)}\"\r\n\t\t\t\t\t\t>",
-      "after": "<a\r\n\t\t\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\t\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t\t\t)}\"\r\n\t\t\t\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t\t\t\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-panel.svelte",
-      "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "count": 1,
-      "before": "<Button class=\"border-none\" type=\"button\" variant=\"outline\" size=\"icon\" onclick={sidebar.toggle}>",
-      "after": "<Button class=\"border-none\" type=\"button\" variant=\"outline\" size=\"icon\" onclick={sidebar.toggle} aria-label=\"Close reader settings\">",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/comments/comments-votes.svelte",
-      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
-      "count": 1,
-      "before": "\t<Button\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === 1",
-      "after": "\t<Button\r\n\t\taria-label=\"Upvote chapter or discussion\"\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === 1",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/comments/comments-votes.svelte",
-      "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
-      "count": 1,
-      "before": "\t<Button\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === -1",
-      "after": "\t<Button\r\n\t\taria-label=\"Downvote chapter or discussion\"\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === -1",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-image.svelte",
-      "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
-      "count": 1,
-      "before": "\t<img\r\n\t\tclass=\"object-contain\"",
-      "after": "\t<img\r\n\t\talt={`Page ${page.index + 1}`}\r\n\t\tclass=\"object-contain\"",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-settings.svelte",
-      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-      "count": 1,
-      "before": "class={cn(\"w-0 flex-auto border-none\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.LTR\r\n\t\t\t})}",
-      "after": "class={cn(\"w-0 flex-auto border-none max-[360px]:gap-1 max-[360px]:px-1 max-[360px]:text-xs max-[360px]:[&>svg]:size-4\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.LTR\r\n\t\t\t})}",
-      "approved_reader_control_exception": "reader_narrow_direction_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-settings.svelte",
-      "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-      "count": 1,
-      "before": "class={cn(\"w-0 flex-auto border-none\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t})}",
-      "after": "class={cn(\"w-0 flex-auto border-none max-[360px]:gap-1 max-[360px]:px-1 max-[360px]:text-xs max-[360px]:[&>svg]:size-4\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t})}",
-      "approved_reader_control_exception": "reader_narrow_direction_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-image.svelte",
-      "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
-      "count": 1,
-      "before": "<div class=\"group relative\" bind:this={$ref}>",
-      "after": "<div class=\"group relative\" class:w-full={$readerPrefs.scale === Constants.Reader.Scale.StretchWidth} bind:this={$ref}>",
-      "approved_reader_control_exception": "reader_stretch_width_fit"
-    },
-    {
-      "path": "src/lib/components/reader/reader-last-page.svelte",
-      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
-      "count": 1,
-      "before": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>",
-      "after": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t\taria-label=\"Home\"\r\n\t\t\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
-    },
-    {
-      "path": "src/lib/components/reader/reader-last-page.svelte",
-      "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
-      "count": 1,
-      "before": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>",
-      "after": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t>",
-      "approved_reader_control_exception": "reader_accessible_control_name"
     }
   ],
   "approved_feed_pagination_exceptions": [
@@ -10446,21 +8800,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/upload/UploadChapterEdit.svelte",
       "original_sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
-      "executed_source_sha256": "b3177267b7f7a4b108cfcbdcbe7fe72ad52ce5d71e398b7afa93fff16f82a2c9",
+      "executed_source_sha256": "56a3bf1da41b02d4ab225c1510cc8b4ac89c50e29b41c800bcfb9f17533dd424",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10472,8 +8822,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10485,8 +8833,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10498,8 +8844,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10511,8 +8855,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10524,8 +8866,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10537,8 +8877,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10550,8 +8888,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10563,8 +8899,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10576,21 +8910,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/auth/register/+page.svelte",
       "original_sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
-      "executed_source_sha256": "d4d0067c0cadbf63aef8e254360e6ff4471d44348b8713701d4a61baf7e2fc43",
+      "executed_source_sha256": "9b8736c5cf5ed25a3c179bb042655639aec1b75aa71e93137a5593181fa7a8df",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10602,52 +8932,39 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/reader/reader-queue.svelte",
       "original_sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
-      "executed_source_sha256": "0942a26bfa480052a9c748e8b445b1fc3cc924be56acc5f6fb0e0114fab29335",
+      "executed_source_sha256": "14ab9d4b571f17cd2d768674d88bbff28cf7e15e15dee0352a22ca467e5654e5",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/reader/reader-provider.svelte",
       "original_sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
-      "executed_source_sha256": "1f3a5dd4f379b9089a9e9e7e427cc7510dedf7fa729d2b386d00102e4c3fcf44",
+      "executed_source_sha256": "5e9665057129d8bdf128665e6f6d97956be7845bebca2082abe2ee47894b05c6",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/upload/UploadChapter.svelte",
       "original_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
-      "executed_source_sha256": "f1531010cc406773fd03154d5e76696dcf51426374910ac22b98fd4028c994e5",
+      "executed_source_sha256": "633341e1edf475f0c5e5854a97e516daf841dd42cdc023b77c7062c5b2d3a8fb",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/lib/components/upload/UploadChapter.svelte",
-        "source_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
-        "composed_sha256": "ae8daf28579b883c7d0cdc9d6319e668f310b85b3a443ee62cbe3a21d7552377",
-        "output_sha256": "f1531010cc406773fd03154d5e76696dcf51426374910ac22b98fd4028c994e5"
-      },
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10659,8 +8976,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": true
     },
     {
@@ -10672,8 +8987,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10685,8 +8998,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10698,8 +9009,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10711,26 +9020,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
       "original_sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
-      "executed_source_sha256": "3ec51ec4f91ee79f537342b2112459f76200a4b6116affd1705e50902f2084ee",
+      "executed_source_sha256": "8a2861de12aa32d3e1f70a74b8e2ceacecba4a070aadeb383111f7d1bbaed1bb",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
-        "source_sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
-        "composed_sha256": "8a2861de12aa32d3e1f70a74b8e2ceacecba4a070aadeb383111f7d1bbaed1bb",
-        "output_sha256": "3ec51ec4f91ee79f537342b2112459f76200a4b6116affd1705e50902f2084ee"
-      },
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10742,44 +9042,28 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/upload/UploadChapterPages.svelte",
       "original_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
-      "executed_source_sha256": "b2e32ebffa14bf3826262c4c60f8c1b57dd063f38c3e02b0b7be38d8d96899c2",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
+      "executed_source_sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/lib/components/upload/UploadChapterPages.svelte",
-        "source_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
-        "composed_sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
-        "output_sha256": "b2e32ebffa14bf3826262c4c60f8c1b57dd063f38c3e02b0b7be38d8d96899c2"
-      },
+      "explicit_local_protocol_ui_extension": false,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
       "original_sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
-      "executed_source_sha256": "7cea506e72c022607f7584dc1daaead7b90cfb349a7930892714a6df0a69d78c",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
+      "executed_source_sha256": "89332d03f7df53ee4d55f3ca99d056ba9a0ad8ed8a1f865e7f764aa73e186460",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/lib/components/upload/UploadChapterPagesEntry.svelte",
-        "source_sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
-        "composed_sha256": "89332d03f7df53ee4d55f3ca99d056ba9a0ad8ed8a1f865e7f764aa73e186460",
-        "output_sha256": "7cea506e72c022607f7584dc1daaead7b90cfb349a7930892714a6df0a69d78c"
-      },
+      "explicit_local_protocol_ui_extension": false,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10791,21 +9075,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/reader/reader.svelte",
       "original_sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
-      "executed_source_sha256": "6ec20d781083dd55e0508b3538aa99172d2cf21f8892e034290485194af57dde",
+      "executed_source_sha256": "6bfe86b5517644c278bfcb939a37af7e38b6f45fd945c1700c872da5bff91096",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10817,8 +9097,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10830,65 +9108,50 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
       "original_sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c",
-      "executed_source_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
+      "executed_source_sha256": "3b6a2330a628cde259b173823578926d83a9e1778bdbb89ca2536739c727650a",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
-        "source_sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c",
-        "composed_sha256": "3b6a2330a628cde259b173823578926d83a9e1778bdbb89ca2536739c727650a",
-        "output_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d"
-      },
+      "explicit_local_protocol_ui_extension": false,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/draft/manga/MangaEdit.svelte",
       "original_sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782",
-      "executed_source_sha256": "dd9efad72dbc5505c46347d6551189c445db77dafa7cb5fd3871109f16acb1dd",
+      "executed_source_sha256": "ea2a516e445890185514113070c4a95a3a7ae0e12a9b4a1aaadd8b0b2ec509ab",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
       "original_sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
-      "executed_source_sha256": "78fae0c1ff8543ace215d70d3e2d169e0fe9a2e7f770ce7ca3d11dbd1d6e1f7a",
+      "executed_source_sha256": "7e14fc46ca515634bdc18ee2292b3952846594fe87c8f984bfffe07dcaeded37",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/title/[id]/edit/+page.ts",
       "original_sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
-      "executed_source_sha256": "2a0af371e0bd05b4a4f0b8f5b01a8d38a2e5730e60ac24561d5a0ef04a313851",
+      "executed_source_sha256": "0109c41a6e2e60f9e237bce451974566136ce0315bda25d012181e2f91f71de2",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10900,8 +9163,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10913,8 +9174,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10926,8 +9185,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10939,8 +9196,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10952,39 +9207,28 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/title/MangaActions.svelte",
       "original_sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
-      "executed_source_sha256": "653e706c76dd387fa766bcea94ff94d806bec457f079e9dcf163e4f7b50b814f",
+      "executed_source_sha256": "c6fad7a8566bd4c49faaab46e7d156290c0d6e3f3db95f15f9cf56a4dfba5567",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
       "original_sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
-      "executed_source_sha256": "8ebe992e4ca5f9978cc90b038da03bd6d44975d62a462929e43e4e4f70b5df8d",
+      "executed_source_sha256": "bc8765c437333eb3ccf613368efbfa39da4b3567bf797cc5fdaf0d7932a33f97",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
-        "source_sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
-        "composed_sha256": "bc8765c437333eb3ccf613368efbfa39da4b3567bf797cc5fdaf0d7932a33f97",
-        "output_sha256": "8ebe992e4ca5f9978cc90b038da03bd6d44975d62a462929e43e4e4f70b5df8d"
-      },
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -10996,8 +9240,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11009,8 +9251,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11022,8 +9262,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11035,8 +9273,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11048,8 +9284,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11061,8 +9295,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11074,8 +9306,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11087,8 +9317,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11100,8 +9328,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11113,8 +9339,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11126,21 +9350,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/comments/comments-votes.svelte",
       "original_sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
-      "executed_source_sha256": "129a6fff5264834e313c70ad0a5b47c2d244d1c5446476b0c8f395f5000e36db",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
+      "executed_source_sha256": "cd66321e44be04962f739dc1fdd4136bfdc8b6649a28de0e374d903751f547e5",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
+      "explicit_local_protocol_ui_extension": false,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11152,8 +9372,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11165,21 +9383,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/group/[id]/Group.svelte",
       "original_sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
-      "executed_source_sha256": "cf8a94f0518eb4ee559ad19151385751b647d43f94d2955f5279eb8cdd1fea12",
+      "executed_source_sha256": "2a5200217bf9d624e8ad92ecdef36485000f945ded82f400e5624801273d7976",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11191,21 +9405,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/API/Group.ts",
       "original_sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff",
-      "executed_source_sha256": "c7447fcbaa914d567b34de109dbffa40e3a8bc9154a8fb6ad1717e090e2aeffb",
+      "executed_source_sha256": "2895d14c39fa09480464ef87546a6f5802bf1da7b6a3a984aa3c129462c54a01",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11217,8 +9427,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11230,34 +9438,28 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/API/Manga.ts",
       "original_sha256": "774f88cdb48ae17ddd08dfc532082ce59069b3263525db9ee21b8e5ab4466193",
-      "executed_source_sha256": "fb3e0173c889a8685d57d405701f6401317ab46518d58ac7cc92371acf128015",
+      "executed_source_sha256": "de6bb13f2e7552d87dacb9ba4c797e60a43014f440844edb9641500038c1cd0c",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/API/Author.ts",
       "original_sha256": "48a8f9f7aaac6a5562044118a5242e72f1ba05e057ebf371bd08251e87192360",
-      "executed_source_sha256": "75175ab5819dbc33eaa084e841a29ba8a2cce257cd9e98f220305951c1c914df",
+      "executed_source_sha256": "43a7f265bfb3928cb8fec5b59d7339e19138a8ae5cd50d2c3c12a93ad2ccb10b",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11269,8 +9471,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11282,8 +9482,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11295,26 +9493,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/upload/UploadChapterGroups.svelte",
       "original_sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
-      "executed_source_sha256": "0500a0fb7a843503e137b44355ef51e683e3484fb54b8784c8b9c66e22857184",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
+      "executed_source_sha256": "5ce9490fda4b757072b8c30025291c4fbb847d982311822fbde299eaa1974280",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/lib/components/upload/UploadChapterGroups.svelte",
-        "source_sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
-        "composed_sha256": "5ce9490fda4b757072b8c30025291c4fbb847d982311822fbde299eaa1974280",
-        "output_sha256": "0500a0fb7a843503e137b44355ef51e683e3484fb54b8784c8b9c66e22857184"
-      },
+      "explicit_local_protocol_ui_extension": false,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11326,8 +9515,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11339,8 +9526,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11352,8 +9537,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11365,8 +9548,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11378,8 +9559,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11391,21 +9570,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/reader/context.svelte.ts",
       "original_sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
-      "executed_source_sha256": "5e3c97a752675226ba8de833aea497ca990f82674413af0a459e77495ce28df9",
+      "executed_source_sha256": "ff1d88178d37f277329d13b486f419c1fb9e92d5e70169f43912a3a23bd548fb",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11417,8 +9592,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11430,8 +9603,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11443,8 +9614,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11456,8 +9625,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11469,8 +9636,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11482,8 +9647,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11495,8 +9658,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11508,8 +9669,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11521,8 +9680,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11534,8 +9691,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11547,8 +9702,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11560,21 +9713,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/title/Manga.svelte",
       "original_sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-      "executed_source_sha256": "d14f689194c12a9bf6cd540d3f0c177f6d624600f73063190e1c2d3dd0fc93e6",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
+      "executed_source_sha256": "8ba56eb70f2a7b76e2c719ab82149d86bff3633a23bb4db7364aa8945b4252ab",
+      "retained_html_css_unchanged": true,
+      "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
+      "explicit_local_protocol_ui_extension": false,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11586,8 +9735,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11599,47 +9746,39 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/reader/reader-panel.svelte",
       "original_sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
-      "executed_source_sha256": "72edf7f161f7e81f961703558a6cb8fc8490151bea77a7e721bbb0d8c0b2c0c8",
+      "executed_source_sha256": "40b535782f9f7b6c86f85f92090a10a136c24b6c50a490f422f69a4761afeccc",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/reader/reader-last-page.svelte",
       "original_sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
-      "executed_source_sha256": "b3cb494ecc020b7d8e70855722233c18502be5258d7a527b166bec09445570f8",
+      "executed_source_sha256": "9dcfa889752d07ad0f047af3d344866ce1a05830dfc462141fee30ecf39aaef1",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/reader/reader-settings.svelte",
       "original_sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
-      "executed_source_sha256": "a8ccde33706b87f954b473f48ad62093f591de18783d57f8ad969cc0f1478306",
+      "executed_source_sha256": "23bda870f3667ecca8e3362e84d60fe14fcd075253b5830a73722908a47235e5",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11651,60 +9790,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-selector.svelte",
-      "original_sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
-      "executed_source_sha256": "939630a4d221fdcefcafbea5de2b0f19ce0e67cf09796f99c10d0f5f535af3d3",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/components/reader/reader-chapter-selector.svelte",
-      "original_sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
-      "executed_source_sha256": "b259c3d69822b834b9a3b5b0f4335c2076012b973e0daa824f7a81c9122d9b88",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/components/reader/reader-pagination.svelte",
-      "original_sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
-      "executed_source_sha256": "9b6319bc5ea4c5915d5bc7aca89c63ffa6416097c70506e1bcf219f990f05aa4",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/components/reader/reader-page-image.svelte",
-      "original_sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
-      "executed_source_sha256": "642d6a824cd7a074be9fb09dd145bb81302e930042026f68286b39fd14d63b01",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11716,8 +9801,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11729,8 +9812,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11742,8 +9823,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11755,60 +9834,50 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/MangaSearchEntryCard.svelte",
       "original_sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
-      "executed_source_sha256": "0fb88028413da8c50ac660a35ce5644d4255e16346b977577421638a0527af36",
+      "executed_source_sha256": "9be0682ed413a90512291c0cfd5dda0b1267bf681b1c3edc6a22af2bbb75561a",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
       "original_sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
-      "executed_source_sha256": "6ba078a3ee2c131d1d5d70421f971ae03228d393ce342327c6b0d9a458c26b96",
+      "executed_source_sha256": "4e60dffa427f423d7a61ac3e9a1d7d49757f6bd81b2e45931a0a591496deab20",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/ChapterListEntry.svelte",
       "original_sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
-      "executed_source_sha256": "cd6d49679b179104896f2676bb93d8f455ee2ccff9424013ba07efbb58ebf98d",
+      "executed_source_sha256": "65eeebf6bd2c54b0fd380fc77b71f3888a51b96afb8daf8c9fe46e58233be43b",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
       "original_sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
-      "executed_source_sha256": "e012b1941fcc6a5cce954b15d043d229f5effba2e1f967be667a0ad756060506",
+      "executed_source_sha256": "60bd7dfb471f60d95a8ba6251087b8b123b0d809d6c8b5b074ea7effffcfd5c1",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11820,8 +9889,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11833,21 +9900,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/lib/components/AppSidebar.svelte",
       "original_sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
-      "executed_source_sha256": "0239cb7428b70b00ccb95a0e24cf0fae223f3dcbe07093d255c4e3c043b564e0",
+      "executed_source_sha256": "0ed2ea9b565a69f42338bdb7244ff4a9ad62cbe7719740b9e6fa10444b1cd369",
       "retained_html_css_unchanged": true,
       "retained_dom_classes_styles_unchanged": true,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11859,8 +9922,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11872,8 +9933,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11885,8 +9944,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11898,8 +9955,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11911,8 +9966,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11924,8 +9977,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
+      "approved_event_handler_javascript_changed": false
+    },
+    {
+      "path": "src/lib/components/reader/reader-page-selector.svelte",
+      "original_sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+      "executed_source_sha256": "ae9d05e8b077c2ec9536ced647f4f3ee2653a052268d11dcd639d252812bd484",
+      "retained_html_css_unchanged": false,
+      "retained_dom_classes_styles_unchanged": false,
+      "retained_original_markup_after_exact_exceptions": true,
+      "supplied_styles_unchanged": true,
+      "explicit_local_protocol_ui_extension": true,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11937,8 +9999,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11950,21 +10010,17 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
       "path": "src/routes/(app)/title/MangaCoversSection.svelte",
       "original_sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b",
-      "executed_source_sha256": "b193c51c5cc5f17de389623ced1f856c5b3d7e5ee6926ab6752b1e005581d646",
+      "executed_source_sha256": "fd1389ea66abab0e4e59324f1b418a265ed4d922fe0a4c66650b9e6e209f88fe",
       "retained_html_css_unchanged": false,
       "retained_dom_classes_styles_unchanged": false,
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11976,8 +10032,6 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
       "approved_event_handler_javascript_changed": false
     },
     {
@@ -11989,249 +10043,8 @@
       "retained_original_markup_after_exact_exceptions": true,
       "supplied_styles_unchanged": true,
       "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/API/Analytics.ts",
-      "original_sha256": "4f74b65eae53929329a4d8f1b4dd6fc3a12f0c108d4f85c18e3d284291f730fa",
-      "executed_source_sha256": "8f183c09291b91eddbf704d41eea82d5c716bf6559b9d9c1822ef60f774b28c7",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/API/Chapter.ts",
-      "original_sha256": "9ace62d770d644ce7b8255a7e6fd3a9bb2f98f296046cf3a3f3d474194428d20",
-      "executed_source_sha256": "0c4ad0cdd643b683fdfba2fdeadcc5221a46a38d8f616a91371b9af9829d5e6c",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/API/Cover.ts",
-      "original_sha256": "3af93906c6013d76d04a1cae33d85cdea7e0191624cc093ab8542eb4610bdb98",
-      "executed_source_sha256": "e7d9706fb121db7b88314669237fe95b37aae1d42bc4484484e3fe50e78d38b4",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/API/Statistics.ts",
-      "original_sha256": "cd6faf267238897bd991c68c9f6ccbb9b3d930d52beaae0b0d87740a1413d973",
-      "executed_source_sha256": "8e5d5739305f82c966db3707e95d2887d5bd0c793556a285e4d22047711a61cd",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/API/Tag.ts",
-      "original_sha256": "14762c1cc63805aee3a188b091a1b3e31a9772b69271b649630311dfae995195",
-      "executed_source_sha256": "f505a39978b07f93c1e9bbab439122d3c97ff0c8a5608456e69ee2a960941dca",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/components/MostReadCarouselEntry.svelte",
-      "original_sha256": "861574c9d7f8573d4a35577cdf06af7a078628c7530ed978910dd4dd27798791",
-      "executed_source_sha256": "691529ac857faaf825dec9492bf46af480d2e50037f0ecf9ed47d44383e6da6a",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/lib/components/SearchDialogMangaEntry.svelte",
-      "original_sha256": "486dc00e4d09c719fc44537f8d9283642b0aca344edffae315ec489828697790",
-      "executed_source_sha256": "daeb184b312319de83cb7fe34117a8a2fcd79cc8d342cfd4f01204665835711a",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/author/[id]/Author.svelte",
-      "original_sha256": "607323da047e82b934677e2b70338b16e90b8916bb5b87dc1f9690353bc24b22",
-      "executed_source_sha256": "7e15343af71ab077006661cb56cc6f18be249609429db7a71df15b48e565dc70",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/+page.ts",
-      "original_sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
-      "executed_source_sha256": "1374bace2b56d7ce6357efcc498ea7d7c9a3b82ff0f07eb7f6381496707713a0",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/[page]/+page.ts",
-      "original_sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
-      "executed_source_sha256": "1374bace2b56d7ce6357efcc498ea7d7c9a3b82ff0f07eb7f6381496707713a0",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/create/+layout.svelte",
-      "original_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-      "executed_source_sha256": "6c5ca6df69950f9210487cc5fe8ca3b4f9a14518c1ae7e4feff34a1a88f0cbdb",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/create/title/+layout.svelte",
-      "original_sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
-      "executed_source_sha256": "27c24371f09aa303ce30344ff92422596f11727c27a307665cc12947916fc453",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/create/title/+page.svelte",
-      "original_sha256": "cb557f50780fd4c5a146553ad154923b5e71594e89554d84750cca529f640f96",
-      "executed_source_sha256": "53636d9ccb945cd814d8d012337624944ecf645876f3ae2508b81447a1704852",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/+layout.svelte",
-      "original_sha256": "641924a49a8d67bd1ccf9b08ca454117e0046db5ca55afc1d8a75b4e20910869",
-      "executed_source_sha256": "abda17bc0ea8d2f7b7be12cde4a38df563e50988a0c3a5c9de18b40986d81836",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/+page.svelte",
-      "original_sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
-      "executed_source_sha256": "304119982e951d4eddbc8b099d37413a3a2819fa103b75e0782b0105908a688b",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/group/[id]/comments/+page.svelte",
-      "original_sha256": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
-      "executed_source_sha256": "568d566ae5b8891ac0b5ac83273cde524866c3ef82fa702165a8117ed0d43e09",
-      "retained_html_css_unchanged": true,
-      "retained_dom_classes_styles_unchanged": true,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": false,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/popular/MostReadChapter.svelte",
-      "original_sha256": "594316bd2d4b31652a093557ab44686f31d9a6d286b49d2fd4078c22ed9f431c",
-      "executed_source_sha256": "a0785124a17772a47f212eb734fbf74002110dd715ba8150b16091bdc1f5f0d0",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": false,
-      "public_signed_upload_stage": null,
-      "approved_event_handler_javascript_changed": false
-    },
-    {
-      "path": "src/routes/(app)/chapter/[id]/edit/+layout.svelte",
-      "original_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-      "executed_source_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d",
-      "retained_html_css_unchanged": false,
-      "retained_dom_classes_styles_unchanged": false,
-      "retained_original_markup_after_exact_exceptions": true,
-      "supplied_styles_unchanged": true,
-      "explicit_local_protocol_ui_extension": true,
-      "explicit_public_signed_upload_extension": true,
-      "public_signed_upload_stage": {
-        "path": "src/routes/(app)/chapter/[id]/edit/+layout.svelte",
-        "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-        "composed_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
-        "output_sha256": "6e93dd252716da72ff0b86c52cc6b387ae8845b803e77c8a9b62a29eb3a7f16d"
-      },
       "approved_event_handler_javascript_changed": false
     }
   ],
-  "qualification": "All supplied source bytes remain unchanged. Executed script source differs, including one exact approved onclick JavaScript body; unrelated retained markup/styles match after narrowly enumerated handler, local availability/key, target/discussion-key, existing share handler/name, supported client-name validation, staging cancel/reset, restricted recovery boundary, current-actor follow readiness/retry and fresh-registration welcome exceptions are normalized. Exact reader accessible-name and narrow direction/width fit exceptions are separately enumerated. Anonymous recovery executes a guarded script derivative of a checked byte-identical source copy; its original markup/styles match exactly. Executed HTML has necessary explicit local/protocol, staging-cancel, restricted-reset current-actor follow readiness/retry and fresh-registration welcome UI extensions, so globally exact rendered HTML is not claimed. Absent announcements are reconstructed."
+  "qualification": "All supplied source bytes remain unchanged. Executed script source differs, including one exact approved onclick JavaScript body; unrelated retained markup/styles match after narrowly enumerated handler, local availability/key, target/discussion-key, existing share handler/name, supported client-name validation, staging cancel/reset, restricted recovery boundary, current-actor follow readiness/retry and fresh-registration welcome exceptions are normalized. Anonymous recovery executes a guarded script derivative of a checked byte-identical source copy; its original markup/styles match exactly. Executed HTML has necessary explicit local/protocol, staging-cancel, restricted-reset current-actor follow readiness/retry and fresh-registration welcome UI extensions, so globally exact rendered HTML is not claimed. Absent announcements are reconstructed."
 }

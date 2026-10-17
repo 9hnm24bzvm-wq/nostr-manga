@@ -188,7 +188,8 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
       if (owned.commitAttempt !== ownCommit.token || pending?.sessionId !== ownCommit.sessionId || pending.state !== 'uncertain' || pending.attempt !== ownCommit.attempt || owned.sessionId !== ownCommit.sessionId) throw new VisibleError('Publication context changed', unknownCommit);
     };
     guard(); const request = method === 'GET' && path !== '/upload' ? owned.request : transport(owned.account, guard);
-    const response = await request({ url: owned.account.scope.origin + '/api/v1' + path, method, responseType, ...(payload === undefined ? {} : { body: encoder.encode(JSON.stringify(payload)), contentType: 'application/json' }) }); guard(); return response;
+    const signedPath = method === 'GET' && path === '/upload' ? path + '?expectedAccountId=' + owned.account.actor : path;
+    const response = await request({ url: owned.account.scope.origin + '/api/v1' + signedPath, method, responseType, ...(payload === undefined ? {} : { body: encoder.encode(JSON.stringify(payload)), contentType: 'application/json' }) }); guard(); return response;
   }
   function basicSession(input: unknown): string { const row = record(input, 'upload session resource'); if (row.type !== 'upload_session') fail('Invalid upload session resource'); const attrs = record(row.attributes); integer(attrs.version, 1); boolean(attrs.isCommitted); boolean(attrs.isDeleted); boolean(attrs.isProcessed); return publicUuid(row.id); }
   function normalizeFile(input: unknown, sessionId: string, detailed: boolean): PublicFile {
@@ -280,21 +281,28 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
         const grants = account.facts.permissions, staff = (user.roles ?? []).some(role => ['moderator', 'staff', 'sysop'].includes(role));
         const permission = method === 'DELETE' ? 'remove' : 'update';
         if (!grants.includes(`self.chapter.${permission}`) && !(method !== 'POST' && staff && grants.includes(`chapter.${permission}`))) fail('This bound account has no chapter mutation grant', 403);
-        let body: unknown;
+        let body: unknown, removalMode: 'request-review' | 'approve-hide' | undefined;
         if (method === 'PUT') {
           const input = record(payload); if (Object.keys(input).some(key => !['version', 'title', 'volume', 'chapter', 'language', 'groups'].includes(key))) fail('Only chapter metadata can be edited', 422);
-          const output: Record<string, unknown> = { version: integer(input.version, 1) };
+          const output: Record<string, unknown> = { version: integer(input.version, 1), expectedAccountId: account.actor };
           for (const key of ['title', 'volume', 'chapter', 'language']) if (input[key] !== undefined) { if (typeof input[key] !== 'string') fail('Invalid chapter metadata', 422); output[key === 'language' ? 'translatedLanguage' : key] = input[key]; }
           if (input.groups !== undefined) output.groups = ids(input.groups, 10);
           body = output;
-        } else if (payload !== undefined) fail('Chapter claim and removal accept no body', 422);
-        const response = await raw(owned, route, method, body);
+        } else if (method === 'DELETE') {
+          const input = record(payload);
+          if (Object.keys(input).some(key => key !== 'removalMode') || input.removalMode !== 'request-review' && input.removalMode !== 'approve-hide') fail('Confirm the exact chapter removal effect first', 422);
+          removalMode = input.removalMode as 'request-review' | 'approve-hide';
+          if (removalMode === 'approve-hide' && (!staff || !grants.includes('chapter.remove'))) fail('This captured account cannot approve an instance hide', 403);
+        } else if (payload !== undefined) fail('Chapter claim accepts no body', 422);
+        const signedRoute = method === 'PUT' ? route : route + '?expectedAccountId=' + account.actor + (removalMode ? '&removalMode=' + removalMode : '');
+        const response = await raw(owned, signedRoute, method, body);
         if (method !== 'DELETE' && response.status === 200) {
           const envelope = record(response.body), chapter = resource(envelope.data, 'chapter');
           if (envelope.result !== 'ok' || envelope.response !== 'entity' || publicUuid(chapter.id) !== id) fail('Chapter mutation returned a different target');
           integer(chapter.attributes.version, 1);
         }
         if (method === 'DELETE' && response.status === 202) {
+          if (removalMode !== 'request-review') fail('Chapter removal effect was not confirmed');
           const pending = record(response.body);
           if (pending.result !== 'ok' || pending.status !== 'pending-moderation' || pending.instanceRemoval !== 'pending-moderation' || response.headers['x-weebdex-instance-removal'] !== 'pending-moderation') fail('Chapter removal was not durably queued');
           publicUuid(pending.requestId);
@@ -302,7 +310,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
           if (!['instance-local-only', 'moderator-review-requested', 'not-authorized', 'unconfirmed'].includes(String(sourceStatus)) || response.headers['x-weebdex-source-deletion-status'] !== sourceStatus || (sourceStatus === 'moderator-review-requested') !== (pending.sourceDeletionRequestId !== null)) fail('Invalid source deletion status');
           if (pending.sourceDeletionRequestId !== null && (typeof pending.sourceDeletionRequestId !== 'string' || !/^[0-9a-f]{64}$/.test(pending.sourceDeletionRequestId))) fail('Invalid source deletion receipt');
         }
-        if (method === 'DELETE' && response.status === 204 && (!staff || !grants.includes('chapter.remove') || response.headers['x-weebdex-instance-removal'] !== 'soft-hidden' || !['instance-local-only', 'independent-original-moderation'].includes(response.headers['x-weebdex-source-deletion-status'] ?? ''))) fail('Instance chapter removal was not confirmed');
+        if (method === 'DELETE' && response.status === 204 && (removalMode !== 'approve-hide' || !staff || !grants.includes('chapter.remove') || response.headers['x-weebdex-instance-removal'] !== 'soft-hidden' || !['instance-local-only', 'independent-original-moderation'].includes(response.headers['x-weebdex-source-deletion-status'] ?? ''))) fail('Instance chapter removal was not confirmed');
         return callerView<T>(response);
       }
       if (!route.startsWith('/upload') || /[?#\\]/.test(route)) fail('Unsupported signed upload route', 422);
@@ -311,8 +319,8 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
       if (route === '/upload/check-approval-required' && method === 'POST') { const value = record(payload); const locale = text(value.language ?? value.locale, 'upload language'); const manga = owned.latest?.manga_id ?? id; const response = await raw(owned, route, method, { manga, locale }); if (response.status === 200 && (record(response.body).result !== 'ok' || typeof record(response.body).requiresApproval !== 'boolean')) fail('Invalid actual approval decision'); return callerView<T>(response); }
       if ((route === '/upload/begin' || route.startsWith('/upload/begin/')) && method === 'POST') {
         const value = record(payload); let body: unknown;
-        if (route === '/upload/begin') { if (targetKind !== 'manga' || !account.facts.canBegin || !account.facts.canManage || publicUuid(value.manga) !== id) fail('The bound native account cannot begin this target upload', 403); body = { manga: id, groups: ids(value.groups, 10) }; }
-        else { if (value.replace === true) fail('Replace-all has no public upload command. No native request was sent.', 422); if (targetKind !== 'chapter' || publicUuid(route.slice('/upload/begin/'.length)) !== id || !account.facts.canManage) fail('The bound native account cannot edit this upload target', 403); body = { version: integer(value.version, 1) }; }
+        if (route === '/upload/begin') { if (targetKind !== 'manga' || !account.facts.canBegin || !account.facts.canManage || publicUuid(value.manga) !== id) fail('The bound native account cannot begin this target upload', 403); body = { manga: id, groups: ids(value.groups, 10), expectedAccountId: account.actor }; }
+        else { if (value.replace === true) fail('Replace-all has no public upload command. No native request was sent.', 422); if (targetKind !== 'chapter' || publicUuid(route.slice('/upload/begin/'.length)) !== id || !account.facts.canManage) fail('The bound native account cannot edit this upload target', 403); body = { version: integer(value.version, 1), expectedAccountId: account.actor }; }
         if (owned.sessionId) fail('An owned upload already exists. Resume or explicitly cancel it first.', 409);
         const response = await raw(owned, route, method, body); if (response.status !== 200) return callerView<T>(response);
         owned.sessionId = basicSession(response.body); return callerView<T>({ ...response, body: await exact(owned, owned.sessionId) });

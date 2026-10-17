@@ -1,0 +1,13 @@
+{
+  "source": "e47b33aeb371dc08f4486ca86217e52cde7e1227",
+  "state": "source-audit-only-resource-held",
+  "compileExecuted": false,
+  "runtimeExecuted": false,
+  "productionChanged": false,
+  "confirmedRuntimeDriftCases": 0,
+  "potentialPersistentRoutes": 6,
+  "potentialDiscoverySequence": 1,
+  "baselineProbe": "uncompiled-baseline-probe.patch",
+  "warning": "The diagnostic is uncompiled and has not produced any observations. It must not be counted as a passing feature test or a reproduced runtime defect.",
+  "next": "After authorized resource recovery, compile offline with one job and run only the owned probe. Fix only confirmed captured-account intent drift, preserving session-owner authority and compatibility contracts."
+}
