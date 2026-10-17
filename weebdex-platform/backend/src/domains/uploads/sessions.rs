@@ -890,7 +890,7 @@ pub(crate) async fn attach_in(
         json!({"id":file,"file_hash":image.digest,"file_name":format!("{}.{}",file,image.ext),"file_ext":format!(".{}",image.ext),"file_size":image.bytes.to_string(),"original_file_name":original}),
     )
 }
-async fn insert_object(tx: &Transaction<'_>, image: &StoredImage) -> ApiResult<String> {
+pub(crate) async fn insert_object(tx: &Transaction<'_>, image: &StoredImage) -> ApiResult<String> {
     tx.query_one(
         "SELECT pg_advisory_xact_lock(hashtextextended($1,724194))",
         &[&image.key],
@@ -1237,7 +1237,7 @@ async fn expire_owner(tx: &Transaction<'_>, owner: &str) -> ApiResult<()> {
     tx.execute("DELETE FROM platform.upload_files f USING platform.upload_sessions s WHERE f.session_id=s.id AND s.owner_id=$1 AND s.state='deleted' AND NOT EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.state IN ('prepared','source_accepted')) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.protocol_publication_originals pins ON pins.object_id=retained.object_id WHERE retained.session_id=s.id) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.upload_file_derivatives derivative ON derivative.file_id=retained.id JOIN platform.protocol_publication_originals pins ON pins.object_id=derivative.object_id WHERE retained.session_id=s.id)",&[&owner]).await?;
     queue_unused(tx).await
 }
-async fn queue_unused(tx: &Transaction<'_>) -> ApiResult<()> {
+pub(crate) async fn queue_unused(tx: &Transaction<'_>) -> ApiResult<()> {
     // Foreign keys serialize concurrent reference insertion against object deletion.
     let rows=tx.query("WITH unused AS (SELECT o.id FROM platform.media_objects o WHERE NOT EXISTS(SELECT 1 FROM platform.upload_files f WHERE f.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.chapter_pages p WHERE p.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.cover_media c WHERE c.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.upload_file_derivatives d WHERE d.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.chapter_page_derivatives d WHERE d.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.protocol_publication_originals p WHERE p.object_id=o.id) ORDER BY o.created_at,o.id LIMIT 100 FOR UPDATE OF o SKIP LOCKED) DELETE FROM platform.media_objects o USING unused u WHERE o.id=u.id RETURNING o.storage_key",&[]).await?;
     for row in rows {

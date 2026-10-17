@@ -1,0 +1,71 @@
+{
+  "schema": "signed-relations-source-candidate-v1",
+  "utc": "2026-10-17T19:08:38.010555+00:00",
+  "source_commit": "f10958fa99631ef9cd2ed6e3c73b15e25d3dc3c4",
+  "final_acceptance": false,
+  "final_qualification": "Held: no new Rust/database/Vite or composed strict execution until parent clears the shared below4GiB disk floor.",
+  "source_manifest_sha256": "a9d863bfda06c1722285e4996c8603cc417d04696c92413ac18271bb1e183d1f",
+  "source_files": 728,
+  "finite": {
+    "passed": 264,
+    "failed": 0,
+    "new_relation_cases": 30,
+    "log_sha256": "409e1d0a1ebedf0f8589d27d9242c1b0641d53d934832f0ecdf21f30c0901223",
+    "scope": "Actual controller and mounted-guard finite seams with signer/HTTP/storage stand-ins; no browser/IDB/live transport claim."
+  },
+  "svelte_parse": {
+    "files": [
+      "PublicRelationEditor.svelte",
+      "PublicTitleEditor.svelte"
+    ],
+    "tool": "Cached actual Svelte compiler compile(generate:false)",
+    "warnings": 0,
+    "scope": "Light syntax/rune compilation only, not composed strict, Vite production, or browser acceptance."
+  },
+  "canonical_source": {
+    "files": 679,
+    "changed": false,
+    "comparison": "No tracked canonical frontend changes against13ff71d baseline."
+  },
+  "prototype_http": {
+    "started_at_utc": "2026-10-17T19:02:19.038252+00:00",
+    "ended_at_utc": "2026-10-17T19:02:21.067379+00:00",
+    "source_commit": "8e37420252c73548cdc8016187a22368336e0c36",
+    "test_executable_sha256": "75a5b9fb916601d2f73442ce868c03759b7d1f9ecc62ee03a817f3d1a1c0c69e",
+    "test_executable_sha256_after": "75a5b9fb916601d2f73442ce868c03759b7d1f9ecc62ee03a817f3d1a1c0c69e",
+    "executable_unchanged": true,
+    "log_sha256": "249e41ae8218203d92c57799190d1eec7de6d6c4a4344a650ed64ef38807fae9",
+    "cleanup_receipt_sha256": "8f17f6d5135808ab1431b360faa608e75cd1a29d964960718b0ca0815452d56a",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 1,
+      "seconds": 1.02
+    },
+    "final_source_acceptance": false,
+    "source_tree_was_uncommitted": true,
+    "limitation": "Prototype used native-style create201; final public adapter was changed to upstream200 and the disposition parent mount came later. No final-source runtime acceptance is carried forward."
+  },
+  "pending": [
+    "Rebuild exact final relation test binary against the current source.",
+    "Run the final real PostgreSQL/original-strfry HTTP fixture and verify source/binary pins and physical cleanup.",
+    "Run actual gate-on/off composed strict checks including the new disposition prerequisite and all child guards.",
+    "Independent exact-source review/runtime qualification."
+  ],
+  "limitations": [
+    "Signed CAS/account fields and DELETE JSON are documented platform extensions; PUT is a retained extension.",
+    "No external publication, live browser, external relay or original signing-authority mutation was performed.",
+    "Per-tab sessionStorage unknown-write fencing has no browser-restart or automatic-reconciliation guarantee."
+  ]
+}

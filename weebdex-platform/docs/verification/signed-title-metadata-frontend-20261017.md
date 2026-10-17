@@ -64,3 +64,34 @@ with the historical25-path manifest; prior assertions were retained. Dependencie
 were reused from verified local inputs without installation or download. No
 browser or live HTTP runtime was executed by this frontend qualification. A fresh
 production Vite build of this source is still separate from these compiler checks.
+
+## Later owned build and independent HTTP check
+
+The actual gate-on production Vite build of source `42424932f62c9c4a3becaa9d68d79fee31c39426`
+passed in50.188seconds with434 files/7,114,978bytes. All source,679 canonical
+frontend files and39,226 dependency pins remained unchanged. The owned runner
+closed normally with0 survivors; no dependency download or browser was used.
+Full manifests and byte-preserved compressed build output are in
+`test-evidence/frontend/signed-title-production-build-20261017/`. This does not
+claim a production build of later application-source successors.
+
+An independent real HTTP rerun of backend source `17dba0827c8e87a815c8bdc88b47008f3bb0eea3`
+also passed its one selected signed title create/edit/submit/publish/local-overlay
+case. All436 pinned backend/original inputs were unchanged; its fresh owned
+PostgreSQL guard reports normal stopped cleanup, a closed port and no survivors,
+unknown births or errors. See
+`test-evidence/public-api/title-independent-review-20261017/review-result.json`.
+This backend journey and the frontend finite/compiler/build checks are separate
+evidence. They are not a rendered end-to-end browser journey.
+
+## Pending-publication control guard
+
+A small application-source successor additionally keeps a valid
+`accepted_pending_projection` receipt read-only in both the controller and form.
+Only a fresh successful server read observing actual projection re-enables edits;
+it never replays the original publish. This is separate from an unknown-request
+fence. Its one added finite case brings the focused suite to426 passes, including
+47 title cases; actual gate1 composed strict remains0 errors/12 warnings with679
+canonical files unchanged. See
+`test-evidence/frontend/signed-title-pending-projection-20261017/result.json`.
+No production Vite build or rendered browser run of this successor is claimed.

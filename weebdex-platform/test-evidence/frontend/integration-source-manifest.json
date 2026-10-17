@@ -1,7 +1,12 @@
 {
+  "public_signed_title_relations_enabled": true,
+  "public_signed_relation_client_sha256": "239e288dc77575d03d4dd130cb0a785df05215e81c2fed53c1fce887de315746",
+  "public_signed_original_covers_enabled": true,
+  "public_signed_cover_client_sha256": "a81e83505f7368554d037b34bdd357e220b184b7471a0a10ad19ba83067201c7",
+  "public_signed_cover_multipart_sha256": "6c73d14a4654bd3630d5928c5e2d3788f07afc9ae1873c0dadf183207ee95c21",
   "public_signed_title_metadata_enabled": true,
-  "public_signed_title_client_sha256": "a8e436ce2a0b515051d84eb88756230f2e1baefe47cfb7c5ccf40ac4cdf70736",
-  "public_signed_title_qualification": "Scoped signer-bound metadata create/edit and draft review controls; cover/relations/delete/lock remain unsupported. This preparation is not browser or live HTTP acceptance.",
+  "public_signed_title_client_sha256": "0d3c4108326221d2d283a55a56d320db9666405188a4a9a871c234673deb927d",
+  "public_signed_title_qualification": "Scoped signer-bound metadata create/edit, original-only cover upload/metadata/moderator removal, versioned instance lock/removal review, and draft review controls; versioned directional relation controls with lazy snapshot-bound byte-budgeted pages are included; official links remain unsupported here. This preparation is not browser or live HTTP acceptance.",
   "public_api_catalogue_enabled": true,
   "public_signed_upload_enabled": true,
   "public_signed_upload_overlay_sha256": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
@@ -389,7 +394,7 @@
     "executed_source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
     "original_markup_styles_identical": true
   },
-  "frontend": ".build/editorial-account-gate-on-final/production-input",
+  "frontend": ".build/relation-paged-gate-on-20261017/production-input",
   "original_files_written": false,
   "integration_utility_sources": {
     "method": "build-local explicit Tailwind source declaration",
@@ -908,6 +913,16 @@
       "sha256": "def5055ee7d37bfb2dd01caa10b211163402885dddb5213c73835b22e94735d3"
     },
     {
+      "path": "platform-integrations/public-api/cover-client.ts",
+      "bytes": 16171,
+      "sha256": "a81e83505f7368554d037b34bdd357e220b184b7471a0a10ad19ba83067201c7"
+    },
+    {
+      "path": "platform-integrations/public-api/cover-multipart.ts",
+      "bytes": 3424,
+      "sha256": "6c73d14a4654bd3630d5928c5e2d3788f07afc9ae1873c0dadf183207ee95c21"
+    },
+    {
       "path": "platform-integrations/public-api/device-id-migration.ts",
       "bytes": 23269,
       "sha256": "54f12f96c0a34fddef4ed8a32299ed0dd620cbfbb52cbad97c80b7d45b829096"
@@ -998,6 +1013,11 @@
       "sha256": "6a6eabfa648fac52a49af964c253c8894880a165e1696e99d96cbb256ce9d11e"
     },
     {
+      "path": "platform-integrations/public-api/PublicCoverEditor.svelte",
+      "bytes": 6997,
+      "sha256": "e975dcb98ec0aa4a760a82a4be36f8d292098aabbb39fa38f383be95f989d7dd"
+    },
+    {
       "path": "platform-integrations/public-api/PublicCreateGate.svelte",
       "bytes": 372,
       "sha256": "4f4ef18bd7c7407939d2f2541e6c03f9ec48c575ee17d39bd537720b3ed29009"
@@ -1013,9 +1033,19 @@
       "sha256": "bec0859318be9f99330da3fe899d1f08b8eccbcfbb0887c9b7aa23147c5264b7"
     },
     {
+      "path": "platform-integrations/public-api/PublicRelationEditor.svelte",
+      "bytes": 7209,
+      "sha256": "6cc16389094341272418838e8e1435e8adc8591d576238b55e5504c942986bcc"
+    },
+    {
+      "path": "platform-integrations/public-api/PublicTitleDisposition.svelte",
+      "bytes": 4100,
+      "sha256": "6987809d22e5a985f2242f0eac49f35cbc6b006c362629a3e0fec58c71b4e413"
+    },
+    {
       "path": "platform-integrations/public-api/PublicTitleEditor.svelte",
-      "bytes": 8752,
-      "sha256": "f355e45291bd7d7dec4e5f0501b65847f56f39e395fb8af34d84243df1e727e0"
+      "bytes": 12318,
+      "sha256": "bdf7ea66e32051fc8ba6e7e66a09a2d24746c3cf16622ff36bf52b7af8d2a897"
     },
     {
       "path": "platform-integrations/public-api/PublicTitleShell.svelte",
@@ -1033,6 +1063,11 @@
       "sha256": "9edb6bbffb27281a8b145330f3bf9a934a784667b8662fcbf267c69c37ca3602"
     },
     {
+      "path": "platform-integrations/public-api/relation-client.ts",
+      "bytes": 14716,
+      "sha256": "239e288dc77575d03d4dd130cb0a785df05215e81c2fed53c1fce887de315746"
+    },
+    {
       "path": "platform-integrations/public-api/site-client.ts",
       "bytes": 17194,
       "sha256": "790e0f3a660b0027fdd65def4135ea190e8cd11898a15286e2634242e34b5e66"
@@ -1044,13 +1079,13 @@
     },
     {
       "path": "platform-integrations/public-api/title-client.ts",
-      "bytes": 16696,
-      "sha256": "a8e436ce2a0b515051d84eb88756230f2e1baefe47cfb7c5ccf40ac4cdf70736"
+      "bytes": 22320,
+      "sha256": "0d3c4108326221d2d283a55a56d320db9666405188a4a9a871c234673deb927d"
     },
     {
       "path": "platform-integrations/public-api/types.ts",
-      "bytes": 4350,
-      "sha256": "4908f0bb72ed14484b1e49d5baacbc1c055e56e014660ee7faf8a08a9695b410"
+      "bytes": 4362,
+      "sha256": "1741306f7b757b39bc1e5d4116b0cf5a9c113862ff2c6378dc9818381c2fd6e1"
     },
     {
       "path": "platform-integrations/public-api/upload-anchors.json",
@@ -1083,7 +1118,7 @@
       "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce"
     }
   ],
-  "integration_source_inventory_sha256": "d3ec0e9375a8288db58b3a5815d7aea805f1f1bf6a7e6ef25f829e2d9fd4a26b",
+  "integration_source_inventory_sha256": "da7b8ff7dc8be77116398ec7e9edcab970696ba28d5993dc33d58a3f1e6c3c98",
   "external_component_extensions": [
     {
       "path": "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
@@ -1142,7 +1177,22 @@
     },
     {
       "path": "platform-integrations/public-api/PublicTitleEditor.svelte",
-      "sha256": "f355e45291bd7d7dec4e5f0501b65847f56f39e395fb8af34d84243df1e727e0",
+      "sha256": "bdf7ea66e32051fc8ba6e7e66a09a2d24746c3cf16622ff36bf52b7af8d2a897",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/public-api/PublicCoverEditor.svelte",
+      "sha256": "e975dcb98ec0aa4a760a82a4be36f8d292098aabbb39fa38f383be95f989d7dd",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/public-api/PublicTitleDisposition.svelte",
+      "sha256": "6987809d22e5a985f2242f0eac49f35cbc6b006c362629a3e0fec58c71b4e413",
+      "intentional_rendered_extension": true
+    },
+    {
+      "path": "platform-integrations/public-api/PublicRelationEditor.svelte",
+      "sha256": "6cc16389094341272418838e8e1435e8adc8591d576238b55e5504c942986bcc",
       "intentional_rendered_extension": true
     },
     {

@@ -1,0 +1,169 @@
+{
+  "started_at_utc": "2026-10-17T22:13:09.855241+00:00",
+  "approval_at_utc": "2026-10-17T22:10:42.956935Z",
+  "inventory_sha256": "b25857b6183d261297bac13ce33ac07e667330c7400f8889bd32c84700ee723c",
+  "validation_sha256": "cd509b3b6e1b656ea160ac8a56e7be78e05f9f227e973ee7ea4ff8f0bdec5716",
+  "action": "delete_only_exact38_approved_stopped_synthetic_postgres_data_directories",
+  "free_before_bytes": 4417032192,
+  "deleted": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-35zhotcp/data",
+      "allocated_bytes": 78520320
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-c8qrd6p_/data",
+      "allocated_bytes": 55812096
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-kdubpf0s/data",
+      "allocated_bytes": 55812096
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-kg_g89k6/data",
+      "allocated_bytes": 78585856
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-wv59_82g/data",
+      "allocated_bytes": 75784192
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-2vc96xox/data",
+      "allocated_bytes": 55083008
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-7hr4_zxu/data",
+      "allocated_bytes": 55062528
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-8qmfcp83/data",
+      "allocated_bytes": 55914496
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-bsmqm0b6/data",
+      "allocated_bytes": 55062528
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-bsqs8w7q/data",
+      "allocated_bytes": 55062528
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-bwlcsutu/data",
+      "allocated_bytes": 55083008
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-eano2__3/data",
+      "allocated_bytes": 55083008
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-k8_02f1g/data",
+      "allocated_bytes": 54956032
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-l81mkxkr/data",
+      "allocated_bytes": 55054336
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-nh5is5lp/data",
+      "allocated_bytes": 54951936
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-orem7tls/data",
+      "allocated_bytes": 55083008
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-q2ydxrq5/data",
+      "allocated_bytes": 55083008
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-r8f9j6j7/data",
+      "allocated_bytes": 55914496
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-rhtlf1tm/data",
+      "allocated_bytes": 55062528
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/author-group-interface-worktree/weebdex-platform/test-runtime/auth-t3pkpq1t/data",
+      "allocated_bytes": 55926784
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-0531hrp2/data",
+      "allocated_bytes": 55914496
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-48_78p1t/data",
+      "allocated_bytes": 55914496
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-4u68pl1d/data",
+      "allocated_bytes": 56516608
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-a_vnxt0t/data",
+      "allocated_bytes": 55046144
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-aa18ocr2/data",
+      "allocated_bytes": 55922688
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-b6iu9fnf/data",
+      "allocated_bytes": 89153536
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-fe6wcm44/data",
+      "allocated_bytes": 55980032
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-gouthoul/data",
+      "allocated_bytes": 89120768
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-imje7bgq/data",
+      "allocated_bytes": 89128960
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-jfusmo00/data",
+      "allocated_bytes": 56545280
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-kybxq6s5/data",
+      "allocated_bytes": 56635392
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-uv36b3o0/data",
+      "allocated_bytes": 55914496
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-vsja_7tm/data",
+      "allocated_bytes": 55914496
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-write-worktree/weebdex-platform/test-runtime/auth-ydlyyp6i/data",
+      "allocated_bytes": 55914496
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-final-qualification-worktree/weebdex-platform/test-runtime/auth-5cmnhzwu/data",
+      "allocated_bytes": 55980032
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-final-qualification-worktree/weebdex-platform/test-runtime/auth-6j4qtfv6/data",
+      "allocated_bytes": 88776704
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-final-qualification-worktree/weebdex-platform/test-runtime/auth-fzagmzjw/data",
+      "allocated_bytes": 56504320
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-final-qualification-worktree/weebdex-platform/test-runtime/auth-pfxc0_l_/data",
+      "allocated_bytes": 56610816
+    }
+  ],
+  "pass": true,
+  "retained_files_verified": 13119,
+  "retained_hashes_unchanged": true,
+  "approved_bytes_removed": 2314391552,
+  "ended_at_utc": "2026-10-17T22:13:10.911350+00:00",
+  "free_after_bytes": 6731423744,
+  "observed_free_delta_bytes": 2314391552
+}

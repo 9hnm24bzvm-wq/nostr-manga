@@ -29,6 +29,7 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
         if (operation.method == "POST" && matches!(operation.path.as_str(), "/manga" | "/manga/draft/{id}/commit"))
             || (operation.method == "PUT" && operation.path == "/manga/{id}") { continue; }
         if matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/chapter/{id}" { continue; }
+        if (operation.method=="POST" && operation.path=="/manga/{mangaId}/relation") || (operation.method=="DELETE" && operation.path=="/manga/{mangaId}/relation/{id}") {continue;}
         if operation.path == "/upload" || operation.path.starts_with("/upload/") { continue; }
         if operation.method == "GET"
             && matches!(
@@ -61,9 +62,9 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                 "/manga/draft" | "/manga/draft/{id}"
             ))
             || (operation.method == "POST"
-                && matches!(operation.path.as_str(), "/author" | "/group"))
+                && matches!(operation.path.as_str(), "/author" | "/group" | "/cover/{mangaOrCoverId}"))
             || (matches!(operation.method.as_str(), "PUT" | "DELETE")
-                && matches!(operation.path.as_str(), "/author/{id}" | "/group/{id}"))
+                && matches!(operation.path.as_str(), "/author/{id}" | "/group/{id}" | "/cover/{mangaOrCoverId}"))
         {
             continue;
         }

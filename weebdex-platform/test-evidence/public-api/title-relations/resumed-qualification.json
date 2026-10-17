@@ -1,0 +1,225 @@
+{
+  "schema": "signed-relations-resumed-qualification-v1",
+  "utc": "2026-10-17T20:18:50.612470+00:00",
+  "source_commit": "db05adc326772c98d6ce4666f9a606d3b277d88b",
+  "source_files": 728,
+  "source_manifest_sha256": "c1d51cee6ac236ca2681f03c46e96d697add264b4a71c4e39625585f5b4fdc5f",
+  "source_unchanged": true,
+  "final_acceptance": false,
+  "status": "Resource-blocked; latest real HTTP case interrupted at cleanup reserve and remains inconclusive.",
+  "http_history": [
+    {
+      "name": "relation-final-http",
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-17T20:03:11.149632+00:00",
+      "source_commit": "90f1f8e18dcb3ffca3d3c6cd489cdddd2715907a",
+      "test_executable_sha256": "af2c4d0e17e9cbbac5c9240972c8b192694454f479df72c6b1aa4972189d033a",
+      "pass": true,
+      "exit_code": 0,
+      "test_executable_sha256_after": "af2c4d0e17e9cbbac5c9240972c8b192694454f479df72c6b1aa4972189d033a",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-17T20:03:13.876278+00:00",
+      "log_sha256": "60ae20adce9b993eac42df8fca29d0b701d0e911ec85f3520ad34585bf99b181",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "e8e602fbfa95b91f005dd1d09f2a084aa45e2778d0642cc71187489936ab6ae5",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 1.5
+      },
+      "cases": [
+        "signed_relations_preserve_directional_identity_owner_versions_and_original_source"
+      ]
+    },
+    {
+      "name": "relation-frozen-http",
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-17T20:08:37.712824+00:00",
+      "source_commit": "feb7a8f58dddc69e148df80286dfebf03cc0e039",
+      "test_executable_sha256": "2183e38f25354b8190340d1cb5623aca2f2753042c4f14e9857c37966fb319d2",
+      "pass": false,
+      "exit_code": 101,
+      "test_executable_sha256_after": "2183e38f25354b8190340d1cb5623aca2f2753042c4f14e9857c37966fb319d2",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-17T20:08:40.373616+00:00",
+      "log_sha256": "8252b7753300423823759e8dd5a1f4e183115c62ab4c188d04537953e4480ff5",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "ccf267ff7841ec3817c4f7e4860cc741e166a537ac8a5467ab695fb8455f66b3",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 101,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "receipt_error": {
+        "class": "AssertionError",
+        "message": ""
+      }
+    },
+    {
+      "name": "relation-qualified-http",
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-17T20:11:45.094612+00:00",
+      "source_commit": "de7d794bcd5a2183a2f4ff2c50e9031c55430a40",
+      "test_executable_sha256": "c34e8f49c01fdac74a31c6c5057c042889c25bb5b9a12eab40553055467a6972",
+      "pass": false,
+      "exit_code": 101,
+      "test_executable_sha256_after": "c34e8f49c01fdac74a31c6c5057c042889c25bb5b9a12eab40553055467a6972",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-17T20:11:55.742351+00:00",
+      "log_sha256": "2afd87b96657329709a6fc2ea80ecdbe8cd88d07c8cf7ba108e58ded598e7d31",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "6db3fd55fa014075429932a19dfa143599e794107dc1ad9e4488fb6b91916382",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 101,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "receipt_error": {
+        "class": "AssertionError",
+        "message": ""
+      }
+    },
+    {
+      "name": "relation-batched-http",
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-17T20:16:00.758924+00:00",
+      "source_commit": "db05adc326772c98d6ce4666f9a606d3b277d88b",
+      "test_executable_sha256": "3e53d9d2ce91d9204fb85693e3f5bc85b76e1a7050aa04597dfaeb3d9b665a03",
+      "pass": false,
+      "disk_guard": {
+        "floor_bytes": 4294967296,
+        "cleanup_reserve_bytes": 134217728,
+        "min_observed_free_bytes": 4429127680,
+        "signalled": true,
+        "identity": "pidfd-owned guard child",
+        "reason": "cleanup reserve reached"
+      },
+      "exit_code": 143,
+      "test_executable_sha256_after": "3e53d9d2ce91d9204fb85693e3f5bc85b76e1a7050aa04597dfaeb3d9b665a03",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-17T20:16:59.890700+00:00",
+      "log_sha256": "ba53b0a06cd8cc829cb8bcc2b6c6c996ca8eef409e9c7ec7da8c2fdada6ad6d7",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "ab1d4ed3b58ae8eb4be0174c159ea25a0d08a4838c56c9de9cf3a5a143b09b4e",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 143,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "receipt_error": {
+        "class": "AssertionError",
+        "message": ""
+      }
+    }
+  ],
+  "rust": {
+    "source_commit": "db05adc326772c98d6ce4666f9a606d3b277d88b",
+    "passed": 120,
+    "failed": 0,
+    "ignored": 2,
+    "log_sha256": "a04b80e35e02c9335b4916614665e8cc0ad746282820e92c0a0833eb923cafcc"
+  },
+  "finite": {
+    "passed": 273,
+    "failed": 0,
+    "new_relation_cases": 32,
+    "log_sha256": "1d3247123273c0fee4e3fef7490b500c039e2d89ee16dae17ac871177afd1d0a",
+    "scope": "Finite actual-controller and mounted guard seams; signer/HTTP/storage stand-ins."
+  },
+  "strict": {
+    "on": {
+      "status": "passed",
+      "base_commit": "de7d794bcd5a2183a2f4ff2c50e9031c55430a40",
+      "errors": 0,
+      "warnings": 12,
+      "canonical_frontend_files": 679,
+      "canonical_frontend_unchanged": true,
+      "summary_sha256": "278384f1d33660c916f5eaac2497df470a36e5a120f20b96efef4b2252f82d2b"
+    },
+    "off": {
+      "status": "passed",
+      "base_commit": "de7d794bcd5a2183a2f4ff2c50e9031c55430a40",
+      "errors": 0,
+      "warnings": 15,
+      "canonical_frontend_files": 679,
+      "canonical_frontend_unchanged": true,
+      "summary_sha256": "5859b5bc9e4069ac6722283053e404a3c84a918aaff43989b07df2d089fb9f07"
+    }
+  },
+  "strict_inputs_unchanged_after_de7d794": true,
+  "only_changes_after_strict": [
+    "weebdex-platform/backend/src/public_api/relation_writes.rs",
+    "weebdex-platform/backend/tests/public_relation_writes.rs"
+  ],
+  "current_executable": {
+    "source_commit": "db05adc326772c98d6ce4666f9a606d3b277d88b",
+    "source_pins": 728,
+    "test_executable": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_relation_writes-99b9de3e5f20e5d8",
+    "test_executable_sha256": "3e53d9d2ce91d9204fb85693e3f5bc85b76e1a7050aa04597dfaeb3d9b665a03",
+    "unit_executable": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/weebdex_platform-6aaf54311af4c097",
+    "unit_executable_sha256": "a41ca7ceaab9c8610676c978663b1eb6b9554ec42311c427b005ba55b16bc88d"
+  },
+  "failure_diagnoses": [
+    {
+      "run": "relation-frozen-http",
+      "observed": "PostgreSQL out of shared memory in synthetic4095-row alias-trigger setup; cap assertions not reached.",
+      "correction": "128-row autocommit setup batches; default PG lock settings retained."
+    },
+    {
+      "run": "relation-qualified-http",
+      "observed": "Cap refusal preserves4096 count/version/audit, then actual private4096 relation GET returns503.",
+      "cause": "Not conclusively diagnosed: native statement timeout is5s, but safe SQLSTATE logging was absent in this run.",
+      "candidate": "db05adc batches64 full target projections in one authorized RR snapshot; not accepted by runtime yet."
+    },
+    {
+      "run": "relation-batched-http",
+      "observed": "Live disk reserve reached during boundary work; exact phase timings absent, so setup versus actual read duration is unknown.",
+      "controller_timeout_ms": 60000,
+      "outcome": "Inconclusive; owned pidfd guard interrupted before4GiB floor and physically cleaned."
+    }
+  ],
+  "resource_hold": {
+    "no_deletion": true,
+    "latest_free_bytes": 4421750784,
+    "floor_bytes": 4294967296,
+    "no_heavy_until_headroom": true
+  },
+  "pending": [
+    "Restore safe disk headroom with separately approved bounded cleanup; retain logs/receipts/source.",
+    "Record setup/cap/private-read/refill phase timing and safe SQLSTATE to diagnose503 precisely.",
+    "Complete exact-source real4096 HTTP lifecycle within the normal request budget.",
+    "Independent exact-binary HTTP rerun with unchanged source pins and verified cleanup."
+  ],
+  "limitations": [
+    "No browser, real IndexedDB, external relay or external publication acceptance.",
+    "Strict source pass is over byte-identical frontend/script inputs; subsequent changes are only the two explicitly listed Rust files.",
+    "Unknown-write recovery remains per-tab and does not claim automatic reconciliation or browser-restart durability."
+  ]
+}

@@ -1,17 +1,25 @@
 <script lang="ts">
  import { onDestroy, onMount, untrack } from 'svelte';
- import { createSignedTitleController, type SignedTitleController, type TitleAction } from './title-client';
+ import { createSignedTitleController, titleAwaitingProjection, type SignedTitleController, type TitleAction } from './title-client';
+ import PublicCoverEditor from './PublicCoverEditor.svelte';
+ import PublicTitleDisposition from './PublicTitleDisposition.svelte';
+ import PublicRelationEditor from './PublicRelationEditor.svelte';
  import type { MangaView } from './types';
  let { data }: { data?: { manga?: { id:string }; covers?: unknown[] } } = $props();
  const captured=untrack(()=>data?.manga?.id),path=window.location.pathname;
- let owner:SignedTitleController|undefined,disposed=false;
+ let owner=$state<SignedTitleController>();
+ let disposed=false;
  let current=$state<MangaView>(),ready=$state(false),busy=$state(false),pending=$state(false),message=$state('');
  let title=$state(''),language=$state('en'),description=$state(''),status=$state('ongoing'),rating=$state('safe');
+ let coverPending=$state(false),coverBusy=$state(false),dispositionBusy=$state(false),dispositionPending=$state(false),removed=$state(false);
+ let relationBusy=$state(false),relationPending=$state(false);
  let permissions=$state<string[]>([]),roles=$state<string[]>([]);
  const active=()=>{if(disposed||window.location.pathname!==path||data?.manga?.id!==captured)throw Error('The title editor changed. Reopen the current route.');};
  onDestroy(()=>{disposed=true;owner?.dispose();});
- const canWrite=$derived(current?(current.state==='published'?permissions.includes('manga.update'):permissions.includes('manga.create')):permissions.includes('manga.create'));
+ const canWrite=$derived(current?(!current.locked||roles.some(role=>['moderator','staff','sysop'].includes(role))&&permissions.includes('manga.update'))&&(current.state==='published'?permissions.includes('manga.update'):permissions.includes('manga.create')):permissions.includes('manga.create'));
  const canReview=$derived(roles.some(role=>['moderator','staff','sysop'].includes(role))&&permissions.includes('manga.state.update'));
+ const metadataDirty=$derived(!!current&&(title!==originalText(current,'title')||description!==originalText(current,'description')||language!==current.language||status!==current.status||rating!==current.content_rating));
+ const awaitingProjection=$derived(titleAwaitingProjection(current));
  const hasCover=$derived(!!current?.relationships.cover&&current.relationships.cover.language===current.language);
  function originalText(value:MangaView,key:'title'|'description'){const map=value.public_api.resource.attributes[key];return map&&typeof map==='object'&&value.language in map&&typeof (map as Record<string,unknown>)[value.language]==='string'?(map as Record<string,string>)[value.language]:'';}
  function restore(value:MangaView){current=value;title=originalText(value,'title');language=value.language;description=originalText(value,'description');status=value.status;rating=value.content_rating;}
@@ -19,7 +27,8 @@
  function responseError(response:{status:number;body?:unknown}){const body=response.body as {errors?:{detail?:string}[]}|undefined;return body?.errors?.[0]?.detail??`Title request refused (HTTP ${response.status})`;}
  onMount(()=>{void(async()=>{try{owner=await createSignedTitleController(active,captured);active();permissions=[...owner.account.permissions];roles=[...owner.account.roles];pending=owner.pending();if(captured){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}ready=true;if(pending)message='A previous title command has an unconfirmed outcome. It will not be replayed. Review the actual account drafts or contact the instance operator before further changes.';}catch(error){if(!disposed)message=failure(error);}})();});
  async function command(action:TitleAction){
-  if(!owner||!ready||busy||pending)return;
+  if(!owner||!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed)return;
+  if(metadataDirty&&action!=='create'&&action!=='update'){message='Save metadata changes before reviewing this title.';return;}
   busy=true;message='';
   try{
    let payload:Record<string,unknown>|undefined;
@@ -39,21 +48,24 @@
    restore(response.body);
    const source=response.body.public_api.resource.attributes.nostr as {publicationStatus?:string;publicationScope?:string;metadataScope?:string}|undefined;
    message=action==='publish'?(source?.publicationStatus==='accepted_pending_projection'?'The original signed title was accepted and is waiting for actual local source projection. Public detail is not readable yet.':source?.publicationScope==='original-protocol'?'The original signed title publication receipt was accepted. Public readability remains a separate observation.':'Title published on this instance. No original-protocol publication is claimed.'):
-    action==='submit'?'Draft submitted for instance review.':action==='reject'?'Draft rejected by the instance reviewer.':action==='create'?'Metadata draft saved. Add an actual original-language cover through the native cover interface before submission.':'Instance-local metadata saved. Original signed source metadata is unchanged.';
+    action==='submit'?'Draft submitted for instance review.':action==='reject'?'Draft rejected by the instance reviewer.':action==='create'?'Metadata draft saved. Upload an actual original-language cover below before submission.':'Instance-local metadata saved. Original signed source metadata is unchanged.';
   }catch(error){if(!disposed)message=failure(error);}
   finally{if(!disposed){busy=false;pending=owner?.pending()??pending;}}
  }
- async function reload(){if(!owner||busy||!current)return;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);message='Current title read from the server. No mutation was replayed; an unconfirmed command remains fenced.';}catch(error){if(!disposed)message=failure(error);}finally{if(!disposed){busy=false;pending=owner?.pending()??pending;}}}
+ async function reload(){if(!owner||busy||coverBusy||dispositionBusy||relationBusy||removed||!current)return;if(metadataDirty&&!confirm('Discard unsaved title metadata changes and reload the actual server record?'))return;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);message='Current title read from the server. No mutation was replayed; an unconfirmed command remains fenced.';}catch(error){if(!disposed)message=failure(error);}finally{if(!disposed){busy=false;pending=owner?.pending()??pending;}}}
 </script>
 <section class="space-y-4 rounded border p-4">
  <h3 class="text-lg font-medium">Signed title metadata</h3>
  <p>Uses the selected public signing identity and its explicitly bound native account. Published edits are instance-local annotations; original signed source content is immutable.</p>
- <p>Cover uploads, relation changes, delete, lock/unlock and official-link controls are unavailable here. This form never calls their native commands.</p>
+ <p>Cover, relation and instance title controls use separate exact signed interfaces below. Official-link controls remain unavailable here; this form never calls native command chains.</p>
  {#if message}<p role="status" class="rounded border p-3">{message}</p>{/if}
  {#if !ready}<p>Select a signing identity in Public identity settings and reopen this editor. A cookie session alone does not authorize these commands.</p>{/if}
+ {#if removed}<p role="status">This title was soft-hidden on this instance. Original signed publications are unchanged. Reopen the catalogue to continue.</p>{/if}
+ {#if metadataDirty}<p>Save metadata changes before cover, relation, review or instance title actions.</p>{/if}
  {#if current}<p>Current state: {current.state}. Version: {current.version}.</p>{/if}
+ {#if awaitingProjection}<p>This accepted original publication is read-only while local source projection is pending. Reload current metadata to observe actual public visibility.</p>{/if}
  <form onsubmit={event=>{event.preventDefault();void command(current?'update':'create');}} class="space-y-3">
-  <fieldset disabled={!ready||busy||pending||!canWrite} class="space-y-3">
+  <fieldset disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||awaitingProjection||!canWrite} class="space-y-3">
    <label class="block">Original-language title<input class="block w-full rounded border p-2" bind:value={title} maxlength="500" required={!current} /></label>
    <label class="block">Original language<input class="block w-full rounded border p-2" bind:value={language} maxlength="12" required /></label>
    <label class="block">Description<textarea class="block w-full rounded border p-2" bind:value={description} maxlength="30000"></textarea></label>
@@ -63,15 +75,18 @@
   </fieldset>
  </form>
  {#if current}
-  {#if !hasCover&&(current.state==='draft'||current.state==='rejected')}<p>Submission needs an actual original-language cover with hosted original bytes. Cover upload is unavailable in this editor; use the native cover interface first. The server checks actual cover availability.</p>{/if}
+  {#key current.id}<PublicCoverEditor title={current} accountId={owner!.account.id} disabled={busy||pending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||awaitingProjection||!canWrite} assertCurrent={active} onState={state=>{coverPending=state.pending;coverBusy=state.busy;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}
+  {#if !removed}{#key current.id}<PublicRelationEditor title={current} accountId={owner!.account.id} disabled={busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{relationBusy=state.busy;relationPending=state.pending;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}{/if}
+  {#if !hasCover&&(current.state==='draft'||current.state==='rejected')}<p>Submission needs an actual original-language cover with hosted original bytes. Upload an original-language cover below and reload its acknowledged metadata. The server checks actual cover availability.</p>{/if}
   <div class="flex flex-wrap gap-3">
-   {#if current.state==='draft'||current.state==='rejected'}<button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||!canWrite||!hasCover} onclick={()=>command('submit')}>Submit for review</button>{/if}
+   {#if current.state==='draft'||current.state==='rejected'}<button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||!canWrite||!hasCover} onclick={()=>command('submit')}>Submit for review</button>{/if}
    {#if current.state==='submitted'&&canReview}
-    <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending} onclick={()=>command('publish')}>Publish reviewed title</button>
-    <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending} onclick={()=>command('reject')}>Reject reviewed draft</button>
+    <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty} onclick={()=>command('publish')}>Publish reviewed title</button>
+    <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty} onclick={()=>command('reject')}>Reject reviewed draft</button>
    {/if}
-   <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy} onclick={reload}>Reload current metadata</button>
+   <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||coverBusy||dispositionBusy||relationBusy||removed} onclick={reload}>Reload current metadata</button>
   </div>
+  {#if !removed}<PublicTitleDisposition title={current} controller={owner!} disabled={busy||pending||coverBusy||coverPending||relationBusy||relationPending||metadataDirty||awaitingProjection} onTitle={restore} onRemoved={()=>{removed=true;}} onState={state=>{dispositionBusy=state.busy;dispositionPending=state.pending;}} />{/if}
   <a class="underline" href={`/title/${current.id}/edit?draft=${current.state!=='published'}`}>Open canonical title editor</a>
  {/if}
 </section>

@@ -1,0 +1,31 @@
+{
+  "schema": "signed-title-pending-projection-read-only-v1",
+  "behavior": "A validated accepted_pending_projection title stays read-only until a fresh successful server read observes actual projection; the original publish is never replayed. This is distinct from an unknown mutation fence.",
+  "finite": {
+    "passed": 426,
+    "failed": 0,
+    "new_title_cases": 47,
+    "added_this_successor": 1,
+    "stand_ins": true
+  },
+  "strict": {
+    "gate": 1,
+    "errors": 0,
+    "warnings": 12,
+    "canonical_files": 679,
+    "canonical_unchanged": true
+  },
+  "source_pins": {
+    "platform-integrations/public-api/title-client.ts": "3eadc61b5c0713c99a16294e77f8c7a4d0d1035bccbbd8e66229ef1011b04b44",
+    "platform-integrations/public-api/PublicTitleEditor.svelte": "7c9578493b931641a941892301108f1c0839aa163dcad343843e58d17f3f6c8c",
+    "tests/ci/test_public_title_commands.mjs": "afcbc936dafd81070118b963b84b18e7ae5c9e7411d52b9ea5fb6eaa8b950842"
+  },
+  "logs": {
+    "finite.log": "255c3301b7851ee02e2896f33e36b987f682f4f108964d7b579333e017017674",
+    "strict.log": "3d25d79b8177dc378711d71cb7cc1636b76d35bb551092e7fc4c16b777f702ad"
+  },
+  "browser_executed": false,
+  "live_http_executed_by_this_successor": false,
+  "production_vite_build_for_this_successor": false,
+  "prior_build": "42424932f62c9c4a3becaa9d68d79fee31c39426 passed actual Vite; that proof is not restated as a build of this application-source successor."
+}

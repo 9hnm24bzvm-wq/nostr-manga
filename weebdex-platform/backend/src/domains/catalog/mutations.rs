@@ -605,21 +605,34 @@ pub async fn relation_create(
     Json(payload): Json<Value>,
 ) -> ApiResult<(StatusCode, Json<Value>)> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let data = relation_create_in(&tx,&actor,&id,&payload).await?;
+    tx.commit().await?;
+    Ok((StatusCode::CREATED, Json(data)))
+}
+
+pub(crate) async fn relation_create_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<Value> {
     v::id(&id)?;
     let (related, kind, expected) = relation_fields(&payload, false)?;
     if id == related {
         return Err(ApiError::bad_request("A manga cannot relate to itself"));
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    require_manga_edit(&tx, &id, &actor, "manga.relation.edit").await?;
-    let version = relation_owner_version(&tx, &id, expected).await?;
-    require_related_title(&tx, &related).await?;
-    if tx.execute("INSERT INTO platform.catalog_relations(manga_id,related_id,relation_type,created_by) VALUES($1,$2,$3,$4) ON CONFLICT(manga_id,related_id) DO NOTHING",&[&id,&related,&kind,&actor.user_id]).await?==0{return Err(ApiError::conflict("Relation already exists"));}
+    require_manga_edit(tx, &id, actor, "manga.relation.edit").await?;
+    let version = relation_owner_version(tx, &id, expected).await?;
+    require_related_title(tx, &related).await?;
+    // The owner row lock above serializes every relation command. Count all
+    // persisted edges, including currently invisible targets, so a successful
+    // insert cannot make the bounded public/private collection unreadable.
+    let count: i64 = tx.query_one("SELECT count(*) FROM platform.catalog_relations WHERE manga_id=$1", &[&id]).await?.get(0);
+    if count >= 4096 {
+        return Err(ApiError::conflict("Relation limit reached; remove an existing relation first"));
+    }
+    if tx.execute("INSERT INTO platform.catalog_relations(manga_id,related_id,relation_type,created_by) VALUES($1,$2,$3,$4) ON CONFLICT(manga_id,related_id) DO NOTHING",&[&id,&related,&kind,&actor.user_id()]).await?==0{return Err(ApiError::conflict("Relation already exists"));}
     tx.execute("UPDATE platform.catalog_manga SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
     audit(
-        &tx,
-        &actor.user_id,
+        tx,
+        &actor.user_id(),
         "manga",
         &id,
         "relation_create",
@@ -627,9 +640,8 @@ pub async fn relation_create(
         Some(version + 1),
     )
     .await?;
-    let data = relation_response(&tx, &id, &related, version + 1).await?;
-    tx.commit().await?;
-    Ok((StatusCode::CREATED, Json(data)))
+    let data = relation_response(tx, &id, &related, version + 1).await?;
+    Ok(data)
 }
 
 /// An explicit instance-local edit, distinct from duplicate-conflicting POST.
@@ -641,24 +653,30 @@ pub async fn relation_update(
     Json(payload): Json<Value>,
 ) -> ApiResult<Json<Value>> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let data = relation_update_in(&tx,&actor,&id,&payload).await?;
+    tx.commit().await?;
+    Ok(Json(data))
+}
+
+pub(crate) async fn relation_update_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<Value> {
     v::id(&id)?;
     let (related, kind, expected) = relation_fields(&payload, true)?;
     if id == related {
         return Err(ApiError::bad_request("A manga cannot relate to itself"));
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    require_manga_edit(&tx, &id, &actor, "manga.relation.edit").await?;
-    let version = relation_owner_version(&tx, &id, expected).await?;
-    require_related_title(&tx, &related).await?;
+    require_manga_edit(tx, &id, actor, "manga.relation.edit").await?;
+    let version = relation_owner_version(tx, &id, expected).await?;
+    require_related_title(tx, &related).await?;
     let row=tx.query_opt("SELECT relation_type FROM platform.catalog_relations WHERE manga_id=$1 AND related_id=$2 FOR UPDATE",&[&id,&related]).await?.ok_or_else(||ApiError::not_found("Relation not found"))?;
     let changed = row.get::<_, String>(0) != kind;
     let new_version = if changed {
         tx.execute("UPDATE platform.catalog_relations SET relation_type=$3 WHERE manga_id=$1 AND related_id=$2",&[&id,&related,&kind]).await?;
         tx.execute("UPDATE platform.catalog_manga SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
         audit(
-            &tx,
-            &actor.user_id,
+            tx,
+            &actor.user_id(),
             "manga",
             &id,
             "relation_update",
@@ -670,9 +688,8 @@ pub async fn relation_update(
     } else {
         version
     };
-    let data = relation_response(&tx, &id, &related, new_version).await?;
-    tx.commit().await?;
-    Ok(Json(data))
+    let data = relation_response(tx, &id, &related, new_version).await?;
+    Ok(data)
 }
 
 fn relation_fields(
@@ -743,28 +760,28 @@ async fn relation_response(
     related: &str,
     owner_version: i32,
 ) -> ApiResult<Value> {
-    let relations: Value = tx
-        .query_one("SELECT platform.catalog_relations_json($1)", &[&id])
-        .await?
-        .get(0);
-    let mut data = relations
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|r| r["id"] == related)
-        .cloned()
-        .ok_or_else(|| ApiError::not_found("Related manga is unavailable"))?;
+    // Preserve the exact native relation shape, but project only the selected
+    // directional edge. Aggregating every owner edge merely to find one would
+    // make successful writes at the supported capacity depend on list size.
+    let mut data: Value = tx.query_opt("SELECT platform.catalog_manga_base(m.id) || jsonb_build_object('type',r.relation_type,'relationships',jsonb_strip_nulls(jsonb_build_object('tags',platform.catalog_manga_tags_json(m.id),'cover',(SELECT platform.catalog_cover_json(c.id) FROM platform.catalog_covers c WHERE c.manga_id=m.id AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) ORDER BY c.is_main DESC,c.created_at DESC,c.id LIMIT 1)))) FROM platform.catalog_relations r JOIN platform.catalog_manga m ON m.id=r.related_id WHERE r.manga_id=$1 AND r.related_id=$2 AND EXISTS(SELECT 1 FROM platform.catalog_manga root WHERE root.id=$1 AND root.deleted_at IS NULL AND root.protocol_source_visible AND platform.protocol_source_is_visible(root.protocol_series_id)) AND m.state='published' AND m.deleted_at IS NULL AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)",&[&id,&related]).await?
+        .and_then(|row|row.get::<_,Option<Value>>(0))
+        .ok_or_else(||ApiError::not_found("Related manga is unavailable"))?;
     data["manga_version"] = json!(owner_version);
     data["relation_scope"] = json!("instance-local");
     Ok(data)
 }
 pub async fn relation_delete(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-    headers: HeaderMap,
-    Json(payload): Json<Value>,
+    State(state): State<AppState>, Path(id): Path<String>, headers: HeaderMap, Json(payload): Json<Value>,
 ) -> ApiResult<Response> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;let tx=client.transaction().await?;
+    let version=relation_delete_in(&tx,&actor,&id,&payload).await?;tx.commit().await?;
+    let mut response=StatusCode::NO_CONTENT.into_response();
+    response.headers_mut().insert("x-weebdex-manga-version",HeaderValue::from_str(&version.to_string()).map_err(|_|ApiError::unavailable())?);
+    Ok(response)
+}
+
+pub(crate) async fn relation_delete_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<i32> {
     v::id(&id)?;
     v::allowed(&payload, &["related_id", "version"])?;
     let related = v::string(&payload, "related_id", 128, true)?.unwrap();
@@ -774,10 +791,8 @@ pub async fn relation_delete(
     } else {
         None
     };
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    require_manga_edit(&tx, &id, &actor, "manga.relation.edit").await?;
-    let version = relation_owner_version(&tx, &id, expected).await?;
+    require_manga_edit(tx, &id, actor, "manga.relation.edit").await?;
+    let version = relation_owner_version(tx, &id, expected).await?;
     if tx
         .execute(
             "DELETE FROM platform.catalog_relations WHERE manga_id=$1 AND related_id=$2",
@@ -790,8 +805,8 @@ pub async fn relation_delete(
     }
     tx.execute("UPDATE platform.catalog_manga SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
     audit(
-        &tx,
-        &actor.user_id,
+        tx,
+        &actor.user_id(),
         "manga",
         &id,
         "relation_delete",
@@ -799,13 +814,7 @@ pub async fn relation_delete(
         Some(version + 1),
     )
     .await?;
-    tx.commit().await?;
-    let mut response = StatusCode::NO_CONTENT.into_response();
-    response.headers_mut().insert(
-        "x-weebdex-manga-version",
-        HeaderValue::from_str(&(version + 1).to_string()).map_err(|_| ApiError::unavailable())?,
-    );
-    Ok(response)
+    Ok(version+1)
 }
 fn staff_permission(actor: &impl CatalogMutationActor, perm: &str) -> ApiResult<()> {
     if !actor.is_moderator() {

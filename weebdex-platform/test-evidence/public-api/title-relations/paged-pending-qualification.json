@@ -1,0 +1,128 @@
+{
+  "schema": "signed-relations-bounded-page-candidate-v1",
+  "utc": "2026-10-17T22:33:29.576936+00:00",
+  "source_commit": "9c97ea6524739e6a901a80899a5ae15cd87b5c1b",
+  "shared_helper_original_commit": "041edce9fedbc737bdc72372db97c37dd6560b48",
+  "shared_helper_local_duplicate": "33ffdec",
+  "final_acceptance": false,
+  "status": "Source-frozen; fresh Rust/HTTP/strict/independent qualification held by shared disk cleanup reserve.",
+  "source_files": 1408,
+  "source_manifest_sha256": "b9f8fb8c2d98861ac3561e08bb4e83e33ce3a2454b3ba528ee38ccf7dd3fdb25",
+  "finite": {
+    "passed": 288,
+    "failed": 0,
+    "relation_cases": 47,
+    "log_sha256": "6ad126ee2c9c9481dfa0bbbb6227deaae2d7b55f82ab2238b0b0cb1cc835f55c",
+    "scope": "Actual finite controller and mounted UI seams; signature/HTTP/storage stand-ins."
+  },
+  "svelte_parse": {
+    "tool": "Cached actual Svelte compiler compile(generate:false)",
+    "files": [
+      "PublicRelationEditor.svelte",
+      "PublicTitleEditor.svelte"
+    ],
+    "warnings": 0,
+    "scope": "Light source parse, not composed strict or browser acceptance."
+  },
+  "conclusive_unpaged_diagnosis": {
+    "source_commit": "1b451ac7ee37f25074e228e36737f45887f1d7e4",
+    "setup_ms": 3595,
+    "previous_query_sqlstate": "57014",
+    "previous_query_elapsed_ms": 5000,
+    "actual_batched_http_status": 200,
+    "actual_batched_http_elapsed_ms": 39247,
+    "actual_response_bytes": 2945172,
+    "transport_response_limit_bytes": 1048576,
+    "transport_request_limit_ms": 60000,
+    "test_correctly_failed_response_budget": true,
+    "run": {
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-17T22:19:15.990938+00:00",
+      "source_commit": "1b451ac7ee37f25074e228e36737f45887f1d7e4",
+      "test_executable_sha256": "23c9577e6bfb34637594115ee9eee4eefed2e0bd641e0fc73bb226124340f4e5",
+      "pass": false,
+      "diagnostic_previous_query": true,
+      "runner_sha256": "3bd9c06210897b149d2bfc40a1b82674701bb2673cdb11f48b7ef4961c1cc28c",
+      "disk_guard": {
+        "floor_bytes": 4294967296,
+        "cleanup_reserve_bytes": 134217728,
+        "min_observed_free_bytes": 5964681216,
+        "signalled": false,
+        "identity": "pidfd-owned guard child"
+      },
+      "exit_code": 101,
+      "test_executable_sha256_after": "23c9577e6bfb34637594115ee9eee4eefed2e0bd641e0fc73bb226124340f4e5",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-17T22:20:08.094136+00:00",
+      "log_sha256": "f9eb99a4620c26b60f5c770ed041e2f3abb0fa4c64718eec98117152841f27c6",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "a3e4aad4d92294cd0a7dcc27d94f0a8f6c28ecb22032b805b9990162eb3738c5",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 101,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "receipt_error": {
+        "class": "AssertionError",
+        "message": ""
+      }
+    }
+  },
+  "bounded_contract": {
+    "route": "GET /api/v1/nostr/manga/{ownerUuid}/relations",
+    "draft_alias": "GET /api/v1/manga/draft/{ownerUuid}/relation",
+    "maximum_rows": 32,
+    "maximum_response_bytes": 1048576,
+    "request_timeout_ms": 60000,
+    "required_every_page": [
+      "expectedAccountId",
+      "ownerVersion"
+    ],
+    "required_continuation": [
+      "offset",
+      "snapshot"
+    ],
+    "snapshot_binds": [
+      "native owner",
+      "owner version",
+      "actual private persisted count",
+      "ordered native edge/kind/target/version tuples"
+    ],
+    "full_metadata": true,
+    "byte_overflow": "Whole prefix shortened; truthful nextOffset. One oversized resource fails closed.",
+    "ui": "One lazy page plus explicit next/previous; account/owner/version/snapshot/total/offset drift and cross-page duplicate edges rejected.",
+    "hidden_capacity": "Only authorized native relation editor receives persistedTotal; source/lock/grant/draft-owner policy is current.",
+    "unknown_write": "Read-only pages/reloads never clear an unknown mutation fence or replay a write."
+  },
+  "new_real_fixture_scope": [
+    "4096 exact persisted capacity; hidden-target409refusal without version/audit change",
+    "every page\u22641MiB, stable owner/version/snapshot, ordered full collection with no omitted/duplicate edge",
+    "equal-count visibility-set change409",
+    "64 real signed legal~32KiB localized metadata updates; complete large metadata with truthful shortened page prefix",
+    "captured account rebind409 and owner-version continuation409",
+    "removal at capacity and slot refill; unchanged original signed source event/metadata"
+  ],
+  "cleanup": {
+    "receipt_sha256": "f1d2a3810e71fac65d915ad94b6383364ce186e4b317146feca6f6026506bc17",
+    "deleted_only_approved_count": 38,
+    "actual_reclaimed_bytes": 2314391552,
+    "retained_source_log_evidence_files_unchanged": 13119
+  },
+  "pending": [
+    "Fresh warm jobs1 Rust compile/unit tests after safe headroom restoration",
+    "Owned exact-source paged4096 HTTP lifecycle",
+    "Composed gate-on/off strict checks over changed frontend source",
+    "Independent source and exact-binary lifecycle verification",
+    "Final integration of distinct cover-capability parent hunk and account/editorial prerequisites"
+  ],
+  "limitations": [
+    "No browser, real IndexedDB, external relay or publication acceptance.",
+    "Public optional paging is a separate API-owned patch; no public unpaged capacity success is claimed.",
+    "Owner Manga Entity reread at4096 is separately being measured by API owner; no speculative alias-budget increase."
+  ]
+}

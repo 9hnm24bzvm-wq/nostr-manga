@@ -38,6 +38,8 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(upload_extensions::router())
         .merge(chapter_writes::router())
         .merge(manga_writes::router())
+        .merge(cover_writes::router())
+        .merge(relation_writes::router())
         .method_not_allowed_fallback(routes::wrong_method)
 }
 
@@ -75,3 +77,8 @@ mod uploads_body;
 pub mod chapter_writes;
 
 pub mod manga_writes;
+
+pub mod cover_writes;
+
+pub mod relation_writes;
+pub(crate) mod relation_paging;

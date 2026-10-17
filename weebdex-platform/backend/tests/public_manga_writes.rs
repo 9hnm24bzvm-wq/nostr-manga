@@ -45,13 +45,19 @@ struct Fixture {
 impl Fixture {
     async fn raw(&self,method:&str,path:&str,body:Vec<u8>,content_type:&str,authorization:Option<String>,expected:u16)->Value {
         let mut request=self.http.request(method.parse().unwrap(),format!("{}{path}",self.origin))
-            .header("content-type",content_type);
+            .header("content-type",content_type).header("origin",&self.origin);
         if let Some(value)=authorization { request=request.header("authorization",value); }
         let response=request.body(body).send().await.unwrap();
         let status=response.status().as_u16();
         let private_upload=path.split('?').next().unwrap().starts_with("/api/v1/nostr/uploads/")
             && ["/preview","/replace"].iter().any(|suffix|path.split('?').next().unwrap().ends_with(suffix));
-        assert_eq!(response.headers()["cache-control"],if private_upload {"private, no-store"}else{"no-store"});
+        let private_cover=path.starts_with("/api/v1/nostr/") && (path.ends_with("/covers")||path.ends_with("/original")) || path.starts_with("/api/v1/cover/") && ["POST","PUT","DELETE"].contains(&method);
+        assert_eq!(response.headers()["cache-control"],if private_upload || private_cover {"private, no-store"}else{"no-store"},"{method} {path}");
+        if private_cover {
+            let vary=response.headers().get_all("vary").iter().map(|v|v.to_str().unwrap().to_ascii_lowercase()).collect::<Vec<_>>().join(",");
+            assert!(vary.split(',').any(|v|v.trim()=="authorization"),"missing Authorization variation: {vary}");
+            assert!(vary.split(',').any(|v|v.trim()=="origin"),"missing Origin variation: {vary}");
+        }
         let text=response.text().await.unwrap();
         let value:Value=serde_json::from_str(&text).unwrap_or_else(|_|panic!("{method} {path}: non-JSON {text}"));
         assert_eq!(status,expected,"{method} {path}: {value}");
@@ -59,6 +65,13 @@ impl Fixture {
         value
     }
     async fn call(&self,key:Option<u8>,method:&str,path:&str,payload:Option<Value>,expected:u16)->Value {
+        let mut payload=payload;
+        if path.starts_with("/api/v1/cover/")&&["PUT","DELETE"].contains(&method){
+            if let (Some(key),Some(input))=(key,payload.as_mut()){
+                let user=PostgresPublicIdResolver::new(self.state.db.clone()).preferred(ResourceKind::User,&format!("PublicUploadUser{key}")).await.unwrap().unwrap();
+                input["expectedAccountId"]=json!(user);
+            }
+        }
         let body=payload.map_or_else(Vec::new,|v|serde_json::to_vec(&v).unwrap());
         let authorization=key.map(|key|proof(key,11,&format!("{}{path}",self.origin),method,&body));
         self.raw(method,path,body,"application/json",authorization,expected).await
@@ -120,6 +133,7 @@ async fn fixture()->Fixture {
     Fixture{state,repository,http:reqwest::Client::new(),origin,_server:server,_storage:storage,native}
 }
 fn png()->Vec<u8> {let mut bytes=Cursor::new(Vec::new());DynamicImage::ImageRgb8(RgbImage::from_pixel(13,17,Rgb([71,28,149]))).write_to(&mut bytes,ImageFormat::Png).unwrap();bytes.into_inner()}
+#[allow(dead_code)]
 async fn cover(f:&Fixture,manga:&str) {
     // Real native cover route is an independent existing interface; the public
     // title adapter never invents cover bytes or claims unsupported upload parity.
@@ -177,8 +191,8 @@ async fn signed_title_create_edit_submit_publish_and_overlay_preserve_original_a
     f.raw("PUT",&path,body,"application/json",Some(token),401).await;
     let commit=format!("/api/v1/manga/draft/{manga}/commit");let publish=format!("/api/v1/manga/draft/{manga}/publish");let reject=format!("/api/v1/manga/draft/{manga}/reject");
     f.call(Some(1),"POST",&commit,Some(json!({"version":3})),400).await;
-    cover(&f,&native).await;
-    // Native cover upload changes the title version. Read its real optimistic token.
+    signed_cover_lifecycle(&f,&native).await;
+    // Read the current title token after the signed cover lifecycle.
     let version:i32=db.query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&native]).await.unwrap().get(0);
     f.call(Some(2),"POST",&commit,Some(json!({"version":version})),403).await;
     let submitted=f.call(Some(1),"POST",&commit,Some(json!({"version":version})),201).await;
@@ -211,6 +225,15 @@ async fn signed_title_create_edit_submit_publish_and_overlay_preserve_original_a
     assert_eq!(overlay["data"]["attributes"]["nostr"]["metadataScope"],"instance-local");assert_eq!(overlay["data"]["attributes"]["title"]["en"],"Local annotation");
     let unchanged=f.state.protocol.entry(eid).await.unwrap().unwrap();assert_eq!(serde_json::to_value(&unchanged.event).unwrap(),serde_json::to_value(&source.event).unwrap());assert_eq!(unchanged.metadata,source.metadata);
     let provenance:Value=db.query_one("SELECT metadata->'protocol_source_metadata' FROM platform.catalog_manga WHERE id=$1",&[&native]).await.unwrap().get(0);assert_eq!(&provenance,source_metadata);
+    let covers=f.call(Some(1),"GET",&format!("/api/v1/nostr/manga/{manga}/covers"),None,200).await;
+    let original=covers["data"].as_array().unwrap().iter().find(|row|row["attributes"]["nostr"]["original"].is_object()).unwrap();
+    let cover_id=original["id"].as_str().unwrap();let cover_version=original["attributes"]["version"].as_i64().unwrap();
+    let annotation=f.call(Some(1),"PUT",&format!("/api/v1/cover/{cover_id}"),Some(json!({"version":cover_version,"description":"Instance-only cover annotation"})),200).await;
+    assert_eq!(annotation["data"]["attributes"]["nostr"]["original"],original["attributes"]["nostr"]["original"]);
+    assert_eq!(annotation["data"]["attributes"]["nostr"]["sourceEventId"],original["attributes"]["nostr"]["sourceEventId"]);
+    assert_eq!(annotation["data"]["attributes"]["nostr"]["originalEventRewritten"],false);
+    let retained=f.state.protocol.entry(eid).await.unwrap().unwrap();assert_eq!(serde_json::to_value(&retained.event).unwrap(),serde_json::to_value(&source.event).unwrap());assert_eq!(retained.metadata,source.metadata);
+
     // Also annotate a genuinely imported title with no native publication
     // command. It must disclose the same local scope and exact source identity.
     let runtime=f.state.protocol.publication_runtime().await.unwrap();
@@ -252,4 +275,102 @@ async fn signed_title_create_edit_submit_publish_and_overlay_preserve_original_a
     let count:i64=db.query_one("SELECT count(*) FROM platform.protocol_publication_commands WHERE catalog_id=$1",&[&native]).await.unwrap().get(0);assert_eq!(count,1);
     drop(db);let mut native=f.native.take().unwrap();if let Some(shutdown)=native.shutdown.take(){let _=shutdown.send(());}
     tokio::time::timeout(Duration::from_secs(30),native.task).await.unwrap().unwrap().unwrap();
+}
+
+fn cover_multipart(version:i32, account:&str, fields:&[(&str,&str)], invalid_after_file:bool)->(Vec<u8>,String) {
+    let boundary="OwnedSignedCoverBoundary";
+    let mut body=format!("--{boundary}\r\nContent-Disposition: form-data; name=\"expectedVersion\"\r\n\r\n{version}\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"expectedAccountId\"\r\n\r\n{account}\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"synthetic-cover.png\"\r\nContent-Type: image/png\r\n\r\n").into_bytes();
+    body.extend(png());
+    for (key,value) in fields {body.extend(format!("\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"{key}\"\r\n\r\n{value}").as_bytes());}
+    if invalid_after_file {body.extend(format!("\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"unrequestedImageRevision\"\r\n\r\ntrue").as_bytes());}
+    body.extend(format!("\r\n--{boundary}--\r\n").as_bytes());(body,format!("multipart/form-data; boundary={boundary}"))
+}
+fn object_files(root:&std::path::Path)->usize {if !root.is_dir(){return 0;}std::fs::read_dir(root).unwrap().map(|entry|{let path=entry.unwrap().path();if path.is_dir(){object_files(&path)}else{1}}).sum()}
+async fn signed_cover_lifecycle(f:&Fixture,native:&str) {
+    let db=f.state.db.client().await.unwrap();
+    db.execute("UPDATE platform.users SET permissions=permissions || '[\"cover.delete\",\"manga.cover.edit\"]'::jsonb WHERE id='PublicUploadUser8'",&[]).await.unwrap();
+    let public=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::Manga,native).await.unwrap().unwrap().to_string();
+    let version:i32=db.query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&native]).await.unwrap().get(0);
+    let account=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::User,"PublicUploadUser1").await.unwrap().unwrap().to_string();
+    let moderator=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::User,"PublicUploadUser8").await.unwrap().unwrap().to_string();
+    let path=format!("/api/v1/cover/{public}");let list=format!("/api/v1/nostr/manga/{public}/covers");
+    let (body,mime)=cover_multipart(version,&account,&[("locale","ja"),("main","true"),("description","Signed original cover")],false);
+    f.raw("POST",&path,body.clone(),&mime,None,401).await;
+    let other=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::User,"PublicUploadUser2").await.unwrap().unwrap().to_string();
+    let (foreign,foreign_mime)=cover_multipart(version,&other,&[("locale","ja")],false);
+    f.raw("POST",&path,foreign.clone(),&foreign_mime,Some(proof(2,11,&format!("{}{path}",f.origin),"POST",&foreign)),403).await;
+    let mut tampered=body.clone();tampered.push(b' ');
+    f.raw("POST",&path,tampered,&mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&body)),401).await;
+    let (stale,stale_mime)=cover_multipart(version+1,&account,&[("locale","ja")],false);
+    f.raw("POST",&path,stale.clone(),&stale_mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&stale)),409).await;
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser8' WHERE publisher=$1",&[&hex::encode(id(1))]).await.unwrap();
+    f.raw("POST",&path,body.clone(),&mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&body)),409).await;
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser1' WHERE publisher=$1",&[&hex::encode(id(1))]).await.unwrap();
+    let token=proof(1,11,&format!("{}{path}",f.origin),"POST",&body);
+    let response=f.raw("POST",&path,body.clone(),&mime,Some(token.clone()),201).await;
+    f.raw("POST",&path,body,&mime,Some(token),401).await;
+    let cover=response["data"]["id"].as_str().unwrap();let cover_native=f.native(ResourceKind::Cover,cover).await;
+    assert_eq!(response["data"]["type"],"cover_art");assert_eq!(response["data"]["attributes"]["locale"],"ja");assert_eq!(response["data"]["attributes"]["version"],1);
+    assert_eq!(response["data"]["attributes"]["nostr"]["original"]["sha256"],auth::hash(&png()));assert_eq!(response["data"]["attributes"]["nostr"]["metadataScope"],"instance-local");
+    assert!(response["data"]["relationships"].as_array().unwrap().iter().any(|row|row["type"]=="manga"&&row["id"]==public));
+    let variants:Vec<String>=db.query("SELECT variant FROM platform.cover_media WHERE cover_id=$1 ORDER BY variant",&[&cover_native]).await.unwrap().into_iter().map(|r|r.get(0)).collect();assert_eq!(variants,vec!["original"]);
+    let key:String=db.query_one("SELECT o.storage_key FROM platform.cover_media c JOIN platform.media_objects o ON o.id=c.object_id WHERE c.cover_id=$1 AND c.variant='original'",&[&cover_native]).await.unwrap().get(0);
+    assert_eq!(tokio::fs::read(domains::uploads::storage::object_path(&f.state.config.uploads_dir,&key).unwrap()).await.unwrap(),png());
+    f.call(None,"GET",&format!("/api/v1/cover/{cover}"),None,404).await;
+    f.call(None,"GET",&list,None,401).await;f.call(Some(2),"GET",&list,None,404).await;
+    let own=f.call(Some(1),"GET",&list,None,200).await;assert!(own["data"].as_array().unwrap().iter().any(|r|r["id"]==cover));
+    let preview=format!("/api/v1/nostr/covers/{cover}/original");
+    let read=f.http.get(format!("{}{preview}",f.origin)).header("origin",&f.origin).header("authorization",proof(1,11,&format!("{}{preview}",f.origin),"GET",&[])).send().await.unwrap();assert_eq!(read.status().as_u16(),200);assert_eq!(read.headers()["cache-control"],"private, no-store");assert_eq!(read.headers()["content-type"],"image/png");let vary=read.headers().get_all("vary").iter().map(|v|v.to_str().unwrap().to_ascii_lowercase()).collect::<Vec<_>>().join(",");assert!(vary.contains("authorization")&&vary.contains("origin"));assert_eq!(read.bytes().await.unwrap().as_ref(),png());
+    let forbidden=f.http.get(format!("{}{preview}",f.origin)).header("authorization",proof(2,11,&format!("{}{preview}",f.origin),"GET",&[])).send().await.unwrap();assert_eq!(forbidden.status().as_u16(),404);assert_eq!(forbidden.headers()["cache-control"],"private, no-store");assert!(forbidden.headers().get_all("vary").iter().any(|v|v.to_str().unwrap().to_ascii_lowercase().contains("authorization")));
+    f.call(None,"GET",&preview,None,401).await;
+    let target=format!("/api/v1/cover/{cover}");
+    // Promoting B implicitly changes A: its CAS and audit must move too.
+    let (second,second_mime)=cover_multipart(version,&account,&[("locale","ja"),("main","true")],false);
+    let second=f.raw("POST",&path,second.clone(),&second_mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&second)),201).await;
+    let second_id=second["data"]["id"].as_str().unwrap();let second_native=f.native(ResourceKind::Cover,second_id).await;
+    let a=db.query_one("SELECT is_main,version FROM platform.catalog_covers WHERE id=$1",&[&cover_native]).await.unwrap();assert!(!a.get::<_,bool>(0));assert_eq!(a.get::<_,i32>(1),2);
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.catalog_audit WHERE entity_type='cover' AND entity_id=$1 AND operation='main-clear' AND old_version=1 AND new_version=2",&[&cover_native]).await.unwrap().get::<_,i64>(0),1);
+    f.call(Some(1),"PUT",&target,Some(json!({"version":1,"main":true})),409).await;
+    let accepted=f.call(Some(1),"PUT",&target,Some(json!({"version":2,"locale":"ja","description":"Updated annotation","volume":"2","main":true})),200).await;assert_eq!(accepted["data"]["attributes"]["version"],3);
+    let b=db.query_one("SELECT is_main,version FROM platform.catalog_covers WHERE id=$1",&[&second_native]).await.unwrap();assert!(!b.get::<_,bool>(0));assert_eq!(b.get::<_,i32>(1),2);
+    f.call(Some(1),"PUT",&format!("/api/v1/cover/{second_id}"),Some(json!({"version":1,"main":true})),409).await;
+    f.call(Some(1),"PUT",&target,Some(json!({"version":1,"description":"Stale"})),409).await;
+    f.call(Some(1),"PUT",&target,Some(json!({"version":3,"fileName":"swap.png"})),400).await;
+    f.call(Some(1),"DELETE",&target,Some(json!({"version":3})),403).await;
+    let missing=serde_json::to_vec(&json!({"version":3,"description":"Missing account intent"})).unwrap();
+    f.raw("PUT",&target,missing.clone(),"application/json",Some(proof(1,11,&format!("{}{target}",f.origin),"PUT",&missing)),400).await;
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser8' WHERE publisher=$1",&[&hex::encode(id(1))]).await.unwrap();
+    f.call(Some(1),"PUT",&target,Some(json!({"version":3,"description":"Rebound actor"})),409).await;
+    f.call(Some(1),"DELETE",&target,Some(json!({"version":3})),409).await;
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser1' WHERE publisher=$1",&[&hex::encode(id(1))]).await.unwrap();
+    // A saved UUID never bypasses a withdrawn parent, including private reads.
+    db.execute("UPDATE platform.catalog_manga SET protocol_source_visible=FALSE WHERE id=$1",&[&native]).await.unwrap();
+    f.call(Some(1),"GET",&list,None,404).await;
+    f.call(Some(1),"GET",&preview,None,404).await;
+    f.call(Some(1),"PUT",&target,Some(json!({"version":3,"description":"Hidden"})),404).await;
+    let (hidden,hidden_mime)=cover_multipart(version,&account,&[("locale","ja")],false);
+    f.raw("POST",&path,hidden.clone(),&hidden_mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&hidden)),404).await;
+    db.execute("UPDATE platform.catalog_manga SET protocol_source_visible=TRUE WHERE id=$1",&[&native]).await.unwrap();
+    // Failure after native cover/main/alias writes rolls back rows, audit and
+    // original object bytes, without replacing the existing main cover.
+    let before:i64=db.query_one("SELECT count(*) FROM platform.public_resource_ids WHERE kind='cover'",&[]).await.unwrap().get(0);
+    let bytes_before=object_files(&f.state.config.uploads_dir.join("objects"));
+    let audit_before:i64=db.query_one("SELECT count(*) FROM platform.catalog_audit WHERE entity_type='cover'",&[]).await.unwrap().get(0);
+    let (bad,bad_mime)=cover_multipart(version,&account,&[("locale","ja")],true);
+    f.raw("POST",&path,bad.clone(),&bad_mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&bad)),400).await;
+    db.batch_execute("CREATE FUNCTION platform.cover_fixture_reject() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'owned cover rollback seam'; END $$; CREATE TRIGGER cover_fixture_reject BEFORE INSERT ON platform.cover_media FOR EACH ROW EXECUTE FUNCTION platform.cover_fixture_reject();").await.unwrap();
+    let (rollback,rollback_mime)=cover_multipart(version,&account,&[("locale","ja"),("main","true")],false);
+    f.raw("POST",&path,rollback.clone(),&rollback_mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&rollback)),503).await;
+    db.batch_execute("DROP TRIGGER cover_fixture_reject ON platform.cover_media;DROP FUNCTION platform.cover_fixture_reject();").await.unwrap();
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.public_resource_ids WHERE kind='cover'",&[]).await.unwrap().get::<_,i64>(0),before);assert_eq!(object_files(&f.state.config.uploads_dir.join("objects")),bytes_before);
+    let retained=db.query_one("SELECT is_main,version FROM platform.catalog_covers WHERE id=$1",&[&cover_native]).await.unwrap();assert!(retained.get::<_,bool>(0));assert_eq!(retained.get::<_,i32>(1),3);
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.catalog_audit WHERE entity_type='cover'",&[]).await.unwrap().get::<_,i64>(0),audit_before);
+    let (spare,spare_mime)=cover_multipart(version,&account,&[("locale","ja")],false);
+    let spare=f.raw("POST",&path,spare.clone(),&spare_mime,Some(proof(1,11,&format!("{}{path}",f.origin),"POST",&spare)),201).await;
+    let spare=spare["data"]["id"].as_str().unwrap();let target=format!("/api/v1/cover/{spare}");
+    f.call(Some(8),"DELETE",&target,Some(json!({"version":2})),409).await;
+    let bytes=serde_json::to_vec(&json!({"version":1,"expectedAccountId":moderator})).unwrap();
+    let deleted=f.http.delete(format!("{}{target}",f.origin)).header("content-type","application/json").header("authorization",proof(8,11,&format!("{}{target}",f.origin),"DELETE",&bytes)).body(bytes).send().await.unwrap();assert_eq!(deleted.status().as_u16(),204);
+    f.call(Some(8),"PUT",&target,Some(json!({"version":1,"locale":"en"})),404).await;
+    f.repository.set_account_admission(id(1),false).await.unwrap();f.call(Some(1),"GET",&list,None,403).await;f.repository.set_account_admission(id(1),true).await.unwrap();
 }

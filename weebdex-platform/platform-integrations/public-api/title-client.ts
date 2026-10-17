@@ -9,6 +9,9 @@ import type { MangaView, Resource, Response } from './types';
 type Policy = Awaited<ReturnType<typeof capabilities>>;
 type Scope = { origin:string; proofOrigin:string; serviceKey:string; catalogNamespace:string };
 export type TitleAction = 'create'|'update'|'submit'|'publish'|'reject';
+export type TitleDispositionAction='lock'|'unlock'|'remove';
+export type TitleRemovalMode='request-review'|'approve-hide';
+export type TitleDispositionReceipt={status:200;title:MangaView}|{status:202;requestId:string;targetId:string;targetVersion:number;sourceEventId:string|null}|{status:204};
 export interface TitleAccount { id:string; name:string; permissions:string[]; roles:string[]; }
 export interface TitleFenceStore { get(key:string):string|null; set(key:string,value:string):void; delete(key:string):void; }
 export interface TitleDependencies {
@@ -65,6 +68,10 @@ function titleEntity(response:Response<unknown>,expected?:string):Resource {
  const titles=record(attrs.title,'actual localized title');if(!Object.values(titles).some(value=>typeof value==='string'&&value.trim()))fail('Title response lacks actual localized title');
  return row;
 }
+export function titleAwaitingProjection(view:MangaView|undefined):boolean {
+ const provenance=view?.public_api.resource.attributes.nostr;
+ return !!provenance&&typeof provenance==='object'&&'publicationStatus' in provenance&&provenance.publicationStatus==='accepted_pending_projection';
+}
 export interface SignedTitleController {
  readonly account:TitleAccount;
  current():MangaView|undefined;
@@ -73,6 +80,7 @@ export interface SignedTitleController {
  dispose():void;
  read():Promise<Response<MangaView>>;
  mutate(action:TitleAction,input?:unknown):Promise<Response<MangaView>>;
+ disposition(action:TitleDispositionAction,removalMode?:TitleRemovalMode):Promise<TitleDispositionReceipt>;
 }
 export async function createSignedTitleController(assertCurrent:()=>void,target?:string,injected:Partial<TitleDependencies>={}):Promise<SignedTitleController> {
  const deps={...defaults,...injected},identity=deps.selectedSigner();identity.check();assertCurrent();
@@ -93,7 +101,7 @@ export async function createSignedTitleController(assertCurrent:()=>void,target?
  positive(user.version);
  return {id:publicUuid(user.id),name:plainText(user.username,'bound username',500),permissions:strings(user.permissions),roles:strings(user.roles)};
  }
- const account=accountFacts(bound);
+ const account=Object.freeze(accountFacts(bound));
  const mutationRequest=deps.createRequest({scope:captured,identity,assertCurrent:check,beforeSend:async signal=>{
   if(signal.aborted)fail('Title request cancelled',409);await refresh();
   const fresh=accountFacts(await request({url:captured.origin+'/api/v1/nostr/account-context',method:'GET'}));check();
@@ -127,6 +135,7 @@ export async function createSignedTitleController(assertCurrent:()=>void,target?
   if(action==='create'&&(id||current))fail('This editor already has a title target',409);
   if(action!=='create'&&(!id||!current))fail('Read the current canonical title before changing it',409);
   const previous=current,version=previous&&positive(previous.version);
+  if(titleAwaitingProjection(previous))fail('Original title publication is accepted but awaiting projection. This title is read-only until a fresh visible server read.',409);
   let payload:Record<string,unknown>;
   if(action==='create'||action==='update'){
    payload=titleMetadata(input,previous?.language);
@@ -159,7 +168,50 @@ export async function createSignedTitleController(assertCurrent:()=>void,target?
   }catch(error){if(installed&&error instanceof PublicUploadRequestError&&error.outcome==='unsent')deps.fences.delete(fenceKey);throw error;}
   finally{busy=false;}
  };
- return {account,current:()=>current,pending,assert:check,dispose:()=>{disposed=true;},read,mutate};
+ const disposition=async(action:TitleDispositionAction,removalMode?:TitleRemovalMode):Promise<TitleDispositionReceipt>=>{
+  check();
+  if(busy||reading||pending())fail('A title command is in progress or unconfirmed. Nothing was replayed.',409);
+  if(!['lock','unlock','remove'].includes(action))fail('Unsupported instance title disposition',422);
+  if(action==='remove'?!['request-review','approve-hide'].includes(removalMode??''):removalMode!==undefined)fail('Explicit captured title removal mode is required',422);
+  if(!id||!current)fail('Read the exact current title before its disposition',409);
+  const target=id,previous=current,version=positive(previous.version);
+  if(titleAwaitingProjection(previous))fail('Accepted original title is read-only while projection is pending',409);
+  const previousSource=record(previous.public_api.resource.attributes.nostr??{}),source=previousSource.eventId??null;
+  const body=encoder.encode(JSON.stringify({version,expectedAccountId:account.id,...(action==='remove'?{removalMode}:{})}));
+  busy=true;const fenceKey=key();let installed=false;
+  try{
+   const marker=JSON.stringify({action,target,version,expectedAccountId:account.id,...(action==='remove'?{removalMode}:{})});
+   deps.fences.set(fenceKey,marker);installed=true;
+   if(deps.fences.get(fenceKey)!==marker)fail('Title disposition fence was not persisted',409);
+   const response=await mutationRequest({url:`${captured.origin}/api/v1/manga/${target}${action==='remove'?'':'/'+action}`,method:action==='remove'?'DELETE':'POST',body,contentType:'application/json'});check();
+   if(response.status>=400&&response.status<500){deps.fences.delete(fenceKey);installed=false;fail(`Title disposition refused (HTTP ${response.status})`,response.status);}
+   const cache=new Set((response.headers['cache-control']??'').toLowerCase().split(',').map(value=>value.trim())),vary=new Set((response.headers.vary??'').toLowerCase().split(',').map(value=>value.trim()));
+   if(!cache.has('private')||!cache.has('no-store')||!vary.has('authorization')||response.headers['x-content-type-options']?.toLowerCase()!=='nosniff')fail('Title disposition privacy headers were not confirmed');
+   let result:TitleDispositionReceipt;
+   if(action==='remove'){
+    if(response.headers['x-weebdex-source-deletion-status']!=='not-requested'||response.headers['x-weebdex-source-deletion-request'])fail('Title removal unexpectedly claimed original deletion');
+    if(response.status===204){
+     if(removalMode!=='approve-hide')fail('Review-only title request unexpectedly claimed an immediate hide');
+     if(response.body!==undefined||response.headers['x-weebdex-instance-removal']!=='soft-hidden')fail('Instance title hide receipt was not confirmed');
+     current=undefined;result={status:204};
+    }else if(response.status===202){
+     if(removalMode!=='request-review')fail('Explicit title approval was not acknowledged as a hide');
+     const value=record(response.body,'title moderation receipt');
+     if(value.result!=='ok'||value.status!=='pending-moderation'||value.instanceRemoval!=='pending-moderation'||response.headers['x-weebdex-instance-removal']!=='pending-moderation'||value.sourceDeletionStatus!=='not-requested'||value.originalEventRewritten!==false||publicUuid(value.mangaId)!==target||value.targetVersion!==version||value.sourceEventId!==source||value.sourceDeletionRequestId!=null)fail('Title moderation receipt changed the reviewed target/source/version');
+     if(source!==null&&(typeof source!=='string'||! /^[0-9a-f]{64}$/.test(source)))fail('Invalid actual original title identity');
+     result={status:202,requestId:publicUuid(value.requestId),targetId:target,targetVersion:version,sourceEventId:source as string|null};
+    }else fail(`Title removal outcome is unconfirmed (HTTP ${response.status})`);
+   }else{
+    if(response.status!==200)fail(`Title lock outcome is unconfirmed (HTTP ${response.status})`);
+    const row=titleEntity(response,target),next=normalizeManga(row),provenance=record(row.attributes.nostr,'instance lock provenance');
+    if(next.version!==version+1||next.state!==previous.state||typeof row.attributes.isLocked!=='boolean'||next.locked!==(action==='lock')||provenance.metadataScope!=='instance-local'||provenance.originalEventRewritten!==false||(provenance.eventId??null)!==source||(provenance.publisher??null)!==(previousSource.publisher??null))fail('Title lock receipt changed its exact state/version/original');
+    current=next;result={status:200,title:next};
+   }
+   deps.fences.delete(fenceKey);installed=false;return result;
+  }catch(error){if(installed&&error instanceof PublicUploadRequestError&&error.outcome==='unsent')deps.fences.delete(fenceKey);throw error;}
+  finally{busy=false;}
+ };
+ return {account,current:()=>current,pending,assert:check,dispose:()=>{disposed=true;},read,mutate,disposition};
 }
 export async function publicTitleRead(id:string):Promise<Response<MangaView>> {
  const path=window.location.pathname,controller=await createSignedTitleController(()=>{if(window.location.pathname!==path)fail('Title route changed',409);},id);
