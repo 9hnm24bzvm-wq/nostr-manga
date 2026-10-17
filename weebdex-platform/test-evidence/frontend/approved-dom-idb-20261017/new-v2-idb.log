@@ -1,0 +1,21 @@
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ real IDB fresh UUID store saves every local family and reopens exact owner/scope/progress without a signer or transport (19.32828ms)
+✔ two real IDB connections serialize same-revision CAS and preserve only the actual winning write (4.059464ms)
+✔ real IDB transaction rollback restores deleted rows and all sidecars after an invalid later put (4.413165ms)
+✔ context interruption aborts actual queued IDB deletes and leaves revision, archives and tombstones unchanged (8.040629ms)
+✔ immutable chapter parent and missing membership list fail atomically on the real IDB facade (3.703839ms)
+✔ namespace mismatch persists across real connections and missing identity cannot erase the durable write fence (3.522797ms)
+✔ service discovery never silently adopts an empty UUID library; explicit adoption keeps truthful archive authority (7.735841ms)
+✔ real UUID deletion cascades local memberships and reviewed old-backup merge cannot resurrect removed rows (8.496996ms)
+✔ a populated legacy real database stays preserved and UUID-fenced until an explicit reviewed migration (2.883245ms)
+✔ real database versionchange closes every old facade and prevents stale writes after schema ownership changes (1.431032ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 234.359925

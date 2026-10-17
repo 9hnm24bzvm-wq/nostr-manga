@@ -1,0 +1,6 @@
+# Run from weebdex-platform; exact existing warm dependency inputs.
+# Require df -B1 available >=4399824896 before each fresh generation.
+for gate in 0 1; do
+ WEEBDEX_SEMANTIC_NODE_MODULES="$PWD/.build/frontend-restore3/node_modules" WEEBDEX_SEMANTIC_OUTPUT="$PWD/.build/user-directory-final-approved-strict-$gate-20261017-2215" PUBLIC_MANGADEX_CATALOGUE=$gate node scripts/check-composed-frontend.mjs
+done
+# Use fresh output paths for later reruns; existing receipts are immutable.
