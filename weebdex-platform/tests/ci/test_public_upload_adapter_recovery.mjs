@@ -389,3 +389,44 @@ test('busy bounded lock admission prevents install, while busy clear retains an 
     assert.equal(f.storage.size, busyAt === 1 ? 0 : 1);
   }
 });
+
+const GROUP = uuid('9');
+test('chapter metadata uses exact signed target and official fields, never upload/native fallback', async () => {
+  const wire = chapterResource(3);
+  const f = fixture({ request: (request, next) => request.url.endsWith('/chapter/' + CHAPTER)
+    ? response({ result: 'ok', response: 'entity', data: wire }) : next(request) });
+  const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+  const updated = await owner.request('/chapter/' + CHAPTER, 'PUT', { version: 2, title: '', language: 'es', groups: [GROUP] });
+  assert.equal(updated.status, 200); assert.equal(updated.body.data.id, CHAPTER);
+  const sent = f.requests.at(-1); assert.equal(sent.method, 'PUT'); assert.equal(sent.url, PUBLIC + '/api/v1/chapter/' + CHAPTER);
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(sent.body)), { version: 2, title: '', translatedLanguage: 'es', groups: [GROUP] });
+  const count = mutations(f).length;
+  for (const [route, method, payload] of [['/chapter/' + SECOND_SESSION, 'PUT', { version: 2 }], ['/chapter/' + CHAPTER + '?x=1', 'DELETE'], ['/chapter/' + CHAPTER, 'POST'], ['/chapter/' + CHAPTER + '/claim', 'DELETE'], ['/chapter/' + CHAPTER, 'PUT', { version: 2, data: [] }], ['/chapter/' + CHAPTER, 'PUT', { version: 2, groups: [GROUP, GROUP] }], ['/chapter/' + CHAPTER + '/claim', 'POST', {}]]) await assert.rejects(() => owner.request(route, method, payload));
+  assert.equal(mutations(f).length, count);
+});
+test('chapter claims have no body and ordinary removal keeps actual durable moderation receipt', async () => {
+  const f = fixture({ account: account => account.user.permissions.push('self.chapter.remove'), request: (request, next) => {
+    if (request.url.endsWith('/chapter/' + CHAPTER + '/claim')) return response({ result: 'ok', response: 'entity', data: chapterResource(3) });
+    if (request.url.endsWith('/chapter/' + CHAPTER)) { const result = response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202); result.headers['x-weebdex-instance-removal'] = 'pending-moderation'; result.headers['x-weebdex-source-deletion-status'] = 'instance-local-only'; return result; }
+    return next(request);
+  } });
+  const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+  await owner.request('/chapter/' + CHAPTER + '/claim', 'POST'); assert.equal(f.requests.at(-1).body, undefined);
+  const pending = await owner.request('/chapter/' + CHAPTER, 'DELETE'); assert.equal(pending.status, 202); assert.equal(pending.body.instanceRemoval, 'pending-moderation'); assert.equal(pending.body.requestId, SECOND_SESSION); assert.equal(f.requests.at(-1).body, undefined);
+});
+test('chapter write results are exact-target, identity-fenced and never automatically replayed', async () => {
+  for (const change of ['wrong-id', 'wrong-envelope', 'unavailable-body', 'scope', 'disposed']) {
+    let owner;
+    const f = fixture({ request: async (request, next, state) => { if (!request.url.includes('/chapter/')) return next(request); if (change === 'unavailable-body') throw Object.assign(Error('Explicit uncertain write'), { outcome: 'uncertain' }); if (change === 'scope') state.generation++; if (change === 'disposed') owner.dispose(); return response({ result: 'ok', response: change === 'wrong-envelope' ? 'collection' : 'entity', data: { ...chapterResource(3), id: change === 'wrong-id' ? SECOND_SESSION : CHAPTER } }); } });
+    const user = await f.api.loadUploadAccount(); owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+    await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'PUT', { version: 2, title: 'Exact' }));
+    assert.equal(mutations(f).length, 1, change);
+  }
+});
+test('chapter removal cannot invent pending moderation or successful hide from status alone', async () => {
+  for (const result of [response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202), response(undefined, 204)]) {
+    const f = fixture({ account: account => account.user.permissions.push('self.chapter.remove'), request: (request, next) => request.url.includes('/chapter/') ? result : next(request) });
+    const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+    await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'DELETE')); assert.equal(mutations(f).length, 1);
+  }
+});

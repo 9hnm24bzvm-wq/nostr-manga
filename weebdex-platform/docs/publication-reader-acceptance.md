@@ -2,13 +2,16 @@
 
 ## Current qualification status
 
-An independent exact-source, exact-executable repeat on 2026-10-17 failed the
-completed-session resume check: `GET /api/upload` returned HTTP 200 instead of
-204 after the chapter became readable. The earlier isolated passes below remain
-historical results; they do not currently qualify this transition. Correction
-and a fresh independent repeat are required. Cleanup still verified normal
-shutdown, closed owned ports and zero survivors. See the sanitized
-[`independent repeat`](../test-evidence/final/publication-reader-20261017/independent-repeat-failed.json).
+The first repair failed an independent exact-source/executable repeat: completed
+`GET /api/upload` returned HTTP 200 instead of 204 after readable projection.
+The [sanitized failure](../test-evidence/final/publication-reader-20261017/independent-repeat-failed.json)
+remains preserved. The corrected page-end repair below passed its deterministic
+child-before-parent regression independently, with normal verified cleanup.
+
+The complete integrated HTTP, chapter and source-lifecycle suites are being
+rerun on commit `eca83392ae039487b2e3376c2fdee8f0961f2d8a`. Their final-source
+qualification is pending its fresh receipts. Native browser and production
+acceptance remain separate unverified scopes.
 
 ## Historical isolated result
 
@@ -25,11 +28,27 @@ upload receipt marked pending. Consequently, `GET /api/upload` kept returning th
 already completed upload indefinitely. The regression reproduces the old HTTP
 200 where the completed resume selector should return 204.
 
-Materialization now advances only the exact matching committed intent, checking
-session, owner, chapter and commit hash. The new snapshot is taken from the
-current canonical, source-visible chapter DTO. Pending source or parent visibility
-cannot become a readable receipt. Already-readable snapshots are not rewritten
-by later source sweeps; the regression checks stable session versioning.
+The first repair updated the receipt inside chapter materialization. An
+independent rerun exposed a dependency-order race: signed content hashes can put
+a child before its parent. The child saw its platform parent hidden; a later
+parent in the same page made the chapter readable while its saved receipt stayed
+pending. The returned owner DTO hydrates current catalogue state, so that DTO's
+readable status did not prove its stored snapshot had advanced. The earlier pass
+was insufficient; the corrected evidence retains the independent failure digest.
+
+Receipt reconciliation now runs after all projections in a source page. It
+selects at most 16 currently ready pending receipts, including earlier-page
+children, and checks the exact command/session/owner/chapter/commit hash/source
+event. Current canonical child and parent visibility must both hold. Busy
+sessions are skipped for a later page; invisible candidates do not consume the
+ready batch. Already-readable snapshots are not rewritten.
+
+The real-source regression performs a pending sweep before starting the original
+worker. It selects actual synthetic publications until a child-before-parent
+hash order is exercised (bounded at 64 attempts; a pass requires that order).
+It directly checks stored committed_result before requesting resume dismissal.
+No additional wait after reader visibility hides a stale receipt. Later sweeps
+must preserve the reconciled session version.
 
 ## Executed coverage
 
@@ -42,8 +61,15 @@ by later source sweeps; the regression checks stable session versioning.
   byte-exact original GETs, HEAD and ranges, valid optimized JPEGs, current
   idempotent commit replay, completed-session resume dismissal, and stable later
   source sweeps.
-- Both final disposable PostgreSQL fixtures report verified shutdown, closed
-  loopback ports, no remaining owned processes and no unconfirmed births.
+- An independent rerun of the corrected ordering case passed (one case, 1.84s)
+  against the pinned unchanged source and executable. The earlier independent
+  failing run remains associated with the superseded repair in the evidence.
+- Both final disposable PostgreSQL fixtures and the independent rerun report
+  verified shutdown, closed loopback ports, no remaining owned processes and no
+  unconfirmed births.
+- Reconciliation also runs on empty source pages, and the importer repeats after
+  completed sweeps without new events. More than 16 ready receipts therefore
+  drain through subsequent bounded pages; earlier-page children stay eligible.
 
 Machine-readable counts, source hashes, final runtime-log digests and cleanup
 receipt digests are in

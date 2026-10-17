@@ -63,3 +63,62 @@ test('only the all-read fallback changes and existing authority fences remain', 
   assert.match(transformed, /context !== readContext\(\)/);
   assert.equal(fs.readFileSync(target, 'utf8'), original, 'Preserved frontend source must remain unchanged');
 });
+
+// Execute the complete composed click handler with finite API/navigation boundaries.
+// This covers empty/repeated reads and actual selected-language query precedence.
+const handlerStart = transformed.indexOf('\tconst startRead = () =>');
+const handlerEnd = transformed.indexOf('</script>', handlerStart);
+const contextDeclaration = transformed.match(/\tconst readContext = \(\) => [^\r\n]+;/)[0];
+const createHandler = new Function('environment', 'with (environment) {' + contextDeclaration + transformed.slice(handlerStart, handlerEnd) + '; return startRead; }');
+function clickFixture({ chapters = aggregated.chapters, history, url = 'https://fixture.example.invalid/title/title?tab=chapters', gated = false } = {}) {
+  const calls = { aggregate: [], navigation: [], errors: [] };
+  let release; const gate = new Promise(resolve => { release = resolve; });
+  class UserError extends Error {}
+  const environment = {
+    mutex: { exec: operation => operation() }, isPublished: true, isEmpty: false, isStartReading: false,
+    aggregated: { chapters: [chapter('99','99','stale')] }, targetAggregatedChapter: chapter('99','99','stale'), isChapterSelectionDialogOpen: true,
+    readGeneration: 0, readDisposed: false, manga: { id: 'title' }, $readHistory: history === undefined ? undefined : { title: history },
+    page: { url: new URL(url) }, window: { location: new URL(url) },
+    $prefs: {}, $libraryIdentity: { mode: 'device', accountId: null }, $localLibraryState: { scopeStatus: 'verified' },
+    prefs: { applyChapterPreferences(query) { query.append('tlang','fr'); query.append('groupx','hidden-group'); } },
+    API: { Chapter: { async Aggregate(id, query) { calls.aggregate.push({ id, query: new URLSearchParams(query) }); if (gated) await gate; return { status: 200, body: { chapters } }; } } },
+    StatusCodes: { OK: 200, TOO_MANY_REQUESTS: 429 }, Constants: { Error: { Error: UserError, TooManyRequests: new UserError('rate limited'), Unknown: new UserError('unknown') } },
+    console: { info() {}, error() {} }, toast: { error: (...args) => calls.errors.push(args) },
+    goto: async target => { calls.navigation.push(target); },
+  };
+  return { environment, calls, run: createHandler(environment), release };
+}
+test('an empty current aggregate clears earlier targets and never opens a stale chapter', async () => {
+  const f = clickFixture({ chapters: [], history: { deleted: null } }); await f.run();
+  assert.equal(f.environment.targetAggregatedChapter, undefined); assert.equal(f.environment.isChapterSelectionDialogOpen, false);
+  assert.equal(f.environment.isStartReading, false); assert.deepEqual(f.calls.navigation, []); assert.deepEqual(f.calls.errors, []);
+});
+test('single completed visible chapter is the only Continue target', async () => {
+  const only = chapter(null, null, 'only'), f = clickFixture({ chapters: [only], history: { only: null, deleted: null } }); await f.run();
+  assert.equal(f.environment.targetAggregatedChapter, only); assert.deepEqual(f.calls.navigation, ['/chapter/only/1']);
+});
+test('deleted last-read IDs never become routes or count as a current visible completion', async () => {
+  const f = clickFixture({ history: { deleted: null } }); await f.run();
+  assert.equal(f.environment.targetAggregatedChapter, oldest); assert.deepEqual(f.calls.navigation, []); assert.equal(f.environment.isChapterSelectionDialogOpen, true);
+  const complete = clickFixture({ history: { deleted: null, v2c1: null, v1c10: null, v1c2en: null } }); await complete.run();
+  assert.equal(complete.environment.targetAggregatedChapter, newest); assert.deepEqual(complete.calls.navigation, ['/chapter/v2c1/1']);
+});
+test('visible aggregate order is preserved across volume and decimal chapter labels', async () => {
+  const rows = [chapter('2','1','newest'), chapter('1','10','ten'), chapter('1','2.5','decimal'), chapter('1','2','oldest')];
+  const f = clickFixture({ chapters: rows, history: { newest: null, ten: null, decimal: null, oldest: null } }); await f.run();
+  assert.equal(f.environment.targetAggregatedChapter, rows[0]); assert.deepEqual(f.calls.navigation, ['/chapter/newest/1']); assert.deepEqual(rows.map(row=>row.chapter), ['1','10','2.5','2']);
+});
+test('an explicit chapter language/group selection overrides device language preferences exactly', async () => {
+  const f = clickFixture({ chapters: [chapter('1','1','english')], url: 'https://fixture.example.invalid/title/title?tlang=en&group=actual-group', history: { french: null } }); await f.run();
+  assert.deepEqual(f.calls.aggregate[0].query.getAll('tlang'), ['en']); assert.deepEqual(f.calls.aggregate[0].query.getAll('group'), ['actual-group']);
+  assert.deepEqual(f.calls.aggregate[0].query.getAll('groupx'), ['hidden-group']); assert.deepEqual(f.calls.navigation, ['/chapter/english/1']);
+});
+test('a late aggregate cannot navigate after a language or title selection changes', async () => {
+  for (const kind of ['language','title','library','destroy']) {
+    const f = clickFixture({ chapters: [chapter('1','1','late')], gated: true }), pending = f.run();
+    if (kind === 'language') f.environment.page.url.searchParams.set('tlang','ja');
+    else if (kind === 'title') f.environment.manga.id = 'new-title';
+    else if (kind === 'library') f.environment.$libraryIdentity.mode = 'account'; else f.environment.readDisposed = true;
+    f.release(); await pending; assert.equal(f.environment.aggregated, undefined); assert.equal(f.environment.targetAggregatedChapter, undefined); assert.deepEqual(f.calls.navigation, []);
+  }
+});

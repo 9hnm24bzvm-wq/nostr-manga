@@ -27,6 +27,7 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(statistics::router())
         .merge(catalogue::router())
         .merge(catalogue_edges::router())
+        .merge(account_reads::router())
         .merge(media::router())
         .merge(native_forum::router())
         .merge(legacy::router())
@@ -35,6 +36,7 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(drafts::router())
         .merge(uploads::router())
         .merge(upload_extensions::router())
+        .merge(chapter_writes::router())
         .method_not_allowed_fallback(routes::wrong_method)
 }
 
@@ -53,6 +55,7 @@ pub mod statistics;
 
 pub mod catalogue;
 pub mod catalogue_edges;
+pub mod account_reads;
 
 pub mod media;
 
@@ -67,3 +70,5 @@ pub mod editorial;
 pub mod uploads;
 pub mod upload_extensions;
 mod uploads_body;
+
+pub mod chapter_writes;

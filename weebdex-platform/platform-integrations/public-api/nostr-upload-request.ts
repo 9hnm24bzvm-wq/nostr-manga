@@ -20,7 +20,7 @@ export interface UploadRequestContext {
 }
 export interface PublicUploadRequest {
   url: string;
-  method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   // Serialize multipart ONCE before calling. The boundary must match these
   // bytes. Never pass FormData to fetch after signing a different encoding.
   body?: Uint8Array;
@@ -41,6 +41,9 @@ export interface PublicUploadResponse {
     'cache-control': string | null;
     vary: string | null;
     'x-content-type-options': string | null;
+    'x-weebdex-instance-removal': string | null;
+    'x-weebdex-source-deletion-status': string | null;
+    'x-weebdex-source-deletion-request': string | null;
   };
 }
 export type PublicUploadOutcome = 'unsent' | 'uncertain' | 'response';
@@ -147,7 +150,7 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       const parsed = new URL(url);
       if (url.length > 32768 || parsed.href !== url || parsed.origin !== scope.origin || parsed.username || parsed.password ||
           url.includes('#') || /[\\\u0000-\u0020\u007f]/.test(url)) throw Error('Upload request URL escaped the captured origin');
-      if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(method)) throw Error('Unsupported upload request method');
+      if (!['GET', 'POST', 'PATCH', 'PUT', 'DELETE'].includes(method)) throw Error('Unsupported upload request method');
       if (!['json', 'image'].includes(responseType)) throw Error('Unsupported upload response type');
       const multipart = contentType !== undefined && /^multipart\/form-data;\s*boundary=[A-Za-z0-9_-]{1,70}$/.test(contentType);
       if (contentType !== undefined && contentType !== 'application/json' && !multipart) throw Error('Upload body requires JSON or an explicit multipart boundary');
@@ -202,6 +205,9 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
         'cache-control': safeHeader('cache-control'),
         vary: safeHeader('vary'),
         'x-content-type-options': safeHeader('x-content-type-options'),
+        'x-weebdex-instance-removal': safeHeader('x-weebdex-instance-removal'),
+        'x-weebdex-source-deletion-status': safeHeader('x-weebdex-source-deletion-status'),
+        'x-weebdex-source-deletion-request': safeHeader('x-weebdex-source-deletion-request'),
       };
       const mediaType = receivedHeaders['content-type']?.split(';', 1)[0].trim().toLowerCase();
       const image = responseType === 'image' && status >= 200 && status < 300;

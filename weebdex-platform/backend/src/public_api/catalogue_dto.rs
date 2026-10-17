@@ -435,6 +435,9 @@ impl AliasIndex {
                 }
                 a
             }
+            ResourceKind::User => {
+                json!({"username":value["username"],"roles":value["roles"],"version":value["version"]})
+            }
             _ => return Err(PublicApiError::unsupported()),
         };
         let wire = match kind {
@@ -444,6 +447,7 @@ impl AliasIndex {
             ResourceKind::Author => ResourceType::Author,
             ResourceKind::Group => ResourceType::ScanlationGroup,
             ResourceKind::Tag => ResourceType::Tag,
+            ResourceKind::User => ResourceType::User,
             _ => return Err(PublicApiError::unsupported()),
         };
         Ok(Resource {
