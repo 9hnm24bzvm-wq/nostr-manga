@@ -197,18 +197,6 @@ async fn review(
         .await?;
         effect = json!({"action":"grant_group_leadership","group_id":group_id,"claimant_id":claimant,"old_group_version":group_version,"new_group_version":group_version+1});
     }
-    if status == "accepted" && row.get::<_, String>(5) == "chapter_removal_request" {
-        a.require_permission("chapter.remove")?;
-        let chapter: String = row.get(4);
-        let submitted_version: Option<i32> = row.get(6);
-        let current = tx.query_opt("SELECT version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL FOR UPDATE", &[&chapter]).await?
-            .ok_or_else(|| ApiError::not_found("Chapter removal target no longer exists"))?;
-        if submitted_version != Some(current.get::<_, i32>(0)) {
-            return Err(ApiError::conflict("Chapter changed since this removal request; review its current state"));
-        }
-        crate::domains::catalog::CatalogRepository::delete_chapter(&tx, &chapter, &a).await?;
-        effect = json!({"action":"instance_soft_hide", "chapter_id":chapter, "source_deletion":"independent_original_moderation"});
-    }
     tx.execute("UPDATE platform.reports SET status=$2,notes=$3,reviewed_by=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&status,&notes,&a.user_id]).await?;
     tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version,notes,effect) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)",&[&id,&a.user_id,&operation,&old,&status,&version,&(version+1),&notes,&effect]).await?;
     let value = tx

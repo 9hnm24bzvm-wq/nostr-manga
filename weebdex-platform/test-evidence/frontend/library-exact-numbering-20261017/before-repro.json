@@ -1,0 +1,88 @@
+{
+  "schema": "independent-chapter-volume-numeric-order-repro-v1",
+  "source_head": "0bbb4c00431c5b71f1d18151d4db6b13452076c8",
+  "source_files": [
+    {
+      "path": "platform-integrations/public-api/library-catalogue.ts",
+      "sha256": "018e6479e3078e624707ff10fa5689abe931aee28f682c339833b27df44d213f"
+    },
+    {
+      "path": "platform-integrations/local-library/catalog.ts",
+      "sha256": "c43467046ba3010af1fefb56e7cc0661d2468fc62882f0c8725e3af627445676"
+    }
+  ],
+  "examples": [
+    {
+      "field": "chapter",
+      "direction": "asc",
+      "expected": [
+        "9.99999999999999999999",
+        "10"
+      ],
+      "actual": [
+        "10",
+        "9.99999999999999999999"
+      ],
+      "numeric_keys": [
+        10,
+        10
+      ],
+      "reproduced": true
+    },
+    {
+      "field": "chapter",
+      "direction": "desc",
+      "expected": [
+        "10",
+        "9.99999999999999999999"
+      ],
+      "actual": [
+        "9.99999999999999999999",
+        "10"
+      ],
+      "numeric_keys": [
+        10,
+        10
+      ],
+      "reproduced": true
+    },
+    {
+      "field": "volume",
+      "direction": "asc",
+      "expected": [
+        "9.99999999999999999999",
+        "10"
+      ],
+      "actual": [
+        "10",
+        "9.99999999999999999999"
+      ],
+      "numeric_keys": [
+        10,
+        10
+      ],
+      "reproduced": true
+    },
+    {
+      "field": "volume",
+      "direction": "desc",
+      "expected": [
+        "10",
+        "9.99999999999999999999"
+      ],
+      "actual": [
+        "9.99999999999999999999",
+        "10"
+      ],
+      "numeric_keys": [
+        10,
+        10
+      ],
+      "reproduced": true
+    }
+  ],
+  "all_reproduced": true,
+  "transport_stand_in": true,
+  "browser_executed": false,
+  "live_http_executed": false
+}

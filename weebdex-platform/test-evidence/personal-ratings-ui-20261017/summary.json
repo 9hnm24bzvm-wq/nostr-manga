@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-17",
+  "kind": "finite signed-client/UI contract and source composition checks; no genuine browser/account action",
+  "backend_dependency": "ef4f960aab273800ee39a1a0b60acafe06b493ab",
+  "scope": "public UUID mode; optional native-style title rating action and genuine instance aggregate display",
+  "finite": {
+    "rating_client_ui_and_summary": 19,
+    "combined_library_publication_upload_bootstrap_and_ratings": 190,
+    "unchanged_exact_NIP98_transport": 24,
+    "failed": 0
+  },
+  "strict": {
+    "native": {
+      "errors": 0,
+      "warnings": 15,
+      "integration_files": 84
+    },
+    "public": {
+      "errors": 0,
+      "warnings": 15,
+      "integration_files": 97
+    },
+    "canonical_files": 679,
+    "canonical_unchanged": true
+  },
+  "authority": [
+    "signer authenticated via genuine exact-byte request-bound NIP-98 transport",
+    "bound native account comes from signed /user/me and exact accountId provenance",
+    "POST/DELETE always include expectedAccountId and version inside signed JSON",
+    "native Session and device library identity are not authority substitutes"
+  ],
+  "not_verified": [
+    "genuine browser/DOM/layout accessibility",
+    "real external signer, account or public service",
+    "production or realistic load acceptance"
+  ]
+}

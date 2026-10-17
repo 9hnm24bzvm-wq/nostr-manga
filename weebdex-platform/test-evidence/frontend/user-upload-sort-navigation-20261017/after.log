@@ -1,0 +1,21 @@
+✔ real build preparation keeps canonical markup after exact rating exceptions: 0 (114.103484ms)
+✔ real build preparation keeps canonical markup after exact rating exceptions: 1 (84.999296ms)
+✔ Latest preserves route and uses a real query delimiter: (empty) (2.432277ms)
+✔ Latest preserves route and uses a real query delimiter: ?order=asc (0.888967ms)
+✔ Latest preserves route and uses a real query delimiter: ?order=desc (0.541695ms)
+✔ Latest preserves route and uses a real query delimiter: ?language=en&order=desc (0.583868ms)
+✔ Latest preserves route and uses a real query delimiter: ?group=a%26b&title=%E6%BC%AB+%E7%94%BB&order=asc (0.654063ms)
+✔ Oldest preserves route and uses a real query delimiter: (empty) (0.607603ms)
+✔ Oldest preserves route and uses a real query delimiter: ?order=asc (0.51165ms)
+✔ Oldest preserves route and uses a real query delimiter: ?order=desc (1.454557ms)
+✔ Oldest preserves route and uses a real query delimiter: ?language=en&order=desc (0.612191ms)
+✔ Oldest preserves route and uses a real query delimiter: ?group=a%26b&title=%E6%BC%AB+%E7%94%BB&order=asc (0.704649ms)
+✔ upload sort repair is exactly two handler expressions and preserves canonical source/markup/classes (0.246471ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 298.004883

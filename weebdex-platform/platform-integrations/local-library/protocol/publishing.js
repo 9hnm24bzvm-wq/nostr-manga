@@ -212,6 +212,7 @@ async function queueSnapshotInner(
  * @param {string} owner
  * @param {(job: Job) => void} [onUpdate]
  * @param {() => void} [assertCurrent]
+ * @param {Pick<LocalLibrary, "job" | "saveJob">} [completionStore]
  * @returns {Promise<Job>}
  */
 export async function deliverJob(
@@ -221,6 +222,7 @@ export async function deliverJob(
   owner,
   onUpdate = () => {},
   assertCurrent = () => {},
+  completionStore = store,
 ) {
   if (!navigator.locks)
     throw Error("This browser needs Web Locks for safe multi-tab publishing");
@@ -350,13 +352,15 @@ export async function deliverJob(
               ? error.message
               : "Publication request failed";
         }
-        const current = await store.job(id);
+        // Preserve an exact response even if the selected key changes after
+        // HTTP completed. New requests still go through active() above.
+        const current = await completionStore.job(id);
         if (!current) return job;
         if (current.cancelled) {
           job.cancelled = true;
           r.message += " (publishing cancelled)";
         }
-        await store.saveJob(job);
+        await completionStore.saveJob(job);
         onUpdate(job);
         if (job.cancelled) break;
       }

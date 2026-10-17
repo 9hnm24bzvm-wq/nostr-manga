@@ -1,6 +1,9 @@
-// Native catalogue identifiers are a device-only extension, never protocol IDs.
-import { installDeviceIdSchema, readDeviceMigrationState } from '../public-api/device-id-migration';
-import { publicDeviceBackup, validatePublicDeviceBackup, type PublicDeviceBackup } from '../public-api/device-id-state';
+// Native and public UUID catalogue references are local device records.
+// Only verified explicit source projection can create original protocol IDs.
+import { installDeviceIdSchema, readDeviceMigrationState, ensureDeviceMigrationOwner } from '../public-api/device-id-migration';
+import { publicDeviceBackup, validatePublicDeviceBackup, normalizeMigrationRecord, checkedPublicDeviceScope, canonicalLibrary, type PublicDeviceBackup } from '../public-api/device-id-state';
+import { mutatePublicDevice } from '../public-api/device-write-v2';
+import { publicUuid, uuidPattern } from '../public-api/validation';
 import { request, transaction } from './protocol/indexeddb.js';
 import { normalize, integer, hex } from './protocol/codec.js';
 import { MAX_RECORDS } from './protocol/limits.js';
@@ -14,7 +17,7 @@ export const sameScope = (a: InstanceScope, b: InstanceScope) => a.origin === b.
 export type DeviceSnapshotV1 = { scope: InstanceScope; format: 'weebdex-device-library'; version: 1; revision: number; exported_at: string; records: DeviceRecord[]; migration_reason?: string };
 export type DeviceSnapshot = DeviceSnapshotV1 | PublicDeviceBackup;
 export const PUBLIC_DEVICE_FORMAT_FENCE = 'This saved library uses the updated link format. Complete backups and inspection remain available. Saving, catalogue hydration and publication need the compatible library commands.';
-export const catalogueId = (id: unknown): string => {
+const legacyCatalogueId = (id: unknown): string => {
   if (typeof id !== 'string' || !/^[a-zA-Z0-9]{10}$/.test(id)) throw Error('Invalid catalogue identifier');
   return id;
 };
@@ -22,16 +25,16 @@ const date = (value: unknown): string => {
   if (typeof value !== 'string' || !Number.isFinite(Date.parse(value)) || value.length > 40) throw Error('Invalid library date');
   return value;
 };
-export function normalizeDevice(value: DeviceRecord): DeviceRecord {
+function normalizeLegacyDevice(value: DeviceRecord): DeviceRecord {
   const updated_at = integer(value.updated_at ?? Math.floor(Date.now() / 1000));
   if (value.family === 'series') {
-    const id = catalogueId(value.id);
+    const id = legacyCatalogueId(value.id);
     if (!statuses.includes(value.status as typeof statuses[number])) throw Error('Invalid reading status');
     if (typeof value.notification !== 'boolean') throw Error('Invalid notification preference');
     return { family: 'series', key: id, id, status: value.status, notification: value.notification, followedAt: date(value.followedAt), updated_at };
   }
   if (value.family === 'chapters') {
-    const id = catalogueId(value.id), mangaId = catalogueId(value.mangaId);
+    const id = legacyCatalogueId(value.id), mangaId = legacyCatalogueId(value.mangaId);
     if (typeof value.completed !== 'boolean') throw Error('Invalid completion state');
     return { family: 'chapters', key: id, id, mangaId, completed: value.completed, page: value.page == null ? null : integer(value.page, 0xffffffff), readAt: value.readAt === undefined ? undefined : date(value.readAt), updated_at };
   }
@@ -42,17 +45,20 @@ export function normalizeDevice(value: DeviceRecord): DeviceRecord {
   if (value.family === 'members') {
     // Lists use the original 128-bit IDs. Native series refs remain device-only.
     if (typeof value.list !== 'string' || !/^[0-9a-f]{32}$/.test(value.list)) throw Error('Invalid list identifier');
-    const series = catalogueId(value.series);
+    const series = legacyCatalogueId(value.series);
     return { family: 'members', key: value.list + ':' + series, list: value.list, series, position: integer(value.position), updated_at };
   }
   throw Error('Unsupported device record');
 }
+export const catalogueId = (id: unknown): string => typeof id === 'string' && uuidPattern.test(id) ? publicUuid(id) : legacyCatalogueId(id);
+export function normalizeDevice(value: DeviceRecord): DeviceRecord { return normalizeMigrationRecord({ ...value, updated_at: value.updated_at ?? Math.floor(Date.now() / 1000) }); }
+export type DeviceStoreOptions = { idFormat?: 'native-v1' | 'public_uuid-v2' };
 export function validateSnapshot(input: unknown): DeviceSnapshot {
   if ((input as { version?: unknown })?.version === 2) return validatePublicDeviceBackup(input);
   const value = input as DeviceSnapshotV1;
   if (!value?.scope || (value.scope.catalogNamespace !== null && (typeof value.scope.catalogNamespace !== 'string' || !/^[0-9a-f-]{32,36}$/.test(value.scope.catalogNamespace))) || typeof value.scope.origin !== 'string' || new URL(value.scope.origin).origin !== value.scope.origin || (value.scope.serviceKey !== null && !/^[0-9a-f]{64}$/.test(value.scope.serviceKey))) throw Error('Backup is missing a trustworthy instance scope');
   if (value?.format !== 'weebdex-device-library' || value.version !== 1 || !Array.isArray(value.records) || value.records.length > MAX_RECORDS) throw Error('Unsupported or oversized device backup');
-  const records = value.records.map(normalizeDevice), seen = new Set<string>();
+  const records = value.records.map(normalizeLegacyDevice), seen = new Set<string>();
   for (const row of records) {
     const key = row.family + ':' + row.key;
     if (seen.has(key)) throw Error('Duplicate backup record');
@@ -68,12 +74,15 @@ export async function deviceWriteLock<T>(operation: () => Promise<T>): Promise<T
 export class DeviceStore {
   readonly channel: BroadcastChannel | null;
   private closed = false;
-  constructor(readonly db: IDBDatabase, public scope: InstanceScope, onChanged: () => void, onClosed: () => void) {
+  readonly publicFormat: boolean;
+  constructor(readonly db: IDBDatabase, public scope: InstanceScope, onChanged: () => void, onClosed: () => void, options: DeviceStoreOptions = {}) {
+    if (options.idFormat !== undefined && !['native-v1', 'public_uuid-v2'].includes(options.idFormat)) throw Error('Unsupported device ID format');
+    this.publicFormat = options.idFormat === 'public_uuid-v2';
     this.channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel(db.name) : null;
     if (this.channel) this.channel.onmessage = onChanged;
     db.onversionchange = () => { this.closed = true; db.close(); this.channel?.close(); onClosed(); };
   }
-  static async open(scope: InstanceScope, onChanged: () => void, onClosed: () => void) {
+  static async open(scope: InstanceScope, onChanged: () => void, onClosed: () => void, options: DeviceStoreOptions = {}) {
     if (!globalThis.indexedDB) throw Error('This browser cannot provide durable IndexedDB storage');
     const query = indexedDB.open(DEVICE_DATABASE + ':' + encodeURIComponent(scope.origin), 2);
     query.onupgradeneeded = () => {
@@ -92,23 +101,29 @@ export class DeviceStore {
     });
     let bound: InstanceScope;
     try {
+      const ownerId = await ensureDeviceMigrationOwner(db);
       bound = await transaction(db, ['records', 'meta'], 'readwrite', async (tx: IDBTransaction) => {
         const meta = tx.objectStore('meta'), remembered = await request(meta.get('instanceScope'));
         if (remembered?.serviceKey && scope.serviceKey && remembered.serviceKey !== scope.serviceKey) throw Error('This instance changed its protocol service identity. Existing device data is preserved; a reviewed migration is required.');
         if (remembered?.catalogNamespace && scope.catalogNamespace && remembered.catalogNamespace !== scope.catalogNamespace) throw Error('This instance rebuilt its native catalogue namespace. Existing device data is preserved; a reviewed migration is required.');
-        const count = await request(tx.objectStore('records').count());
-        const bound = { origin: scope.origin, serviceKey: remembered?.serviceKey ?? (count ? null : scope.serviceKey), catalogNamespace: remembered?.catalogNamespace ?? (count ? null : scope.catalogNamespace) };
-        meta.put(bound, 'instanceScope'); return bound;
+        const count = await request(tx.objectStore('records').count()), marker = await request(meta.get('publicIdOwner'));
+        // A v2 owner marker binds even an empty origin-only library. Discovering
+        // an original service later never silently adopts it.
+        const bound = marker ? checkedPublicDeviceScope(remembered) : { origin: scope.origin, serviceKey: remembered?.serviceKey ?? (count ? null : scope.serviceKey), catalogNamespace: remembered?.catalogNamespace ?? (count ? null : scope.catalogNamespace) };
+        meta.put(bound, 'instanceScope');
+        if (!count && options.idFormat === 'public_uuid-v2' && bound.catalogNamespace && uuidPattern.test(bound.catalogNamespace) && !await request(meta.get('publicIdOwner'))) meta.put({ version: 2, ownerId, scope: checkedPublicDeviceScope(bound) }, 'publicIdOwner');
+        return bound;
       });
     } catch (error) { db.close(); throw error; }
-    return new DeviceStore(db, bound, onChanged, onClosed);
+    return new DeviceStore(db, bound, onChanged, onClosed, options);
   }
   async verifyLiveScope(live: InstanceScope): Promise<{ status: 'verified' | 'origin_only' | 'migration_required'; reason?: string }> {
     this.ensureOpen();
+    let selectedScope: InstanceScope | undefined;
     const result = await deviceWriteLock(() => transaction(this.db, ['records', 'meta'], 'readwrite', async (tx: IDBTransaction) => {
       const meta = tx.objectStore('meta'), scope: InstanceScope = await request(meta.get('instanceScope'));
       const previousReason = await request(meta.get('scopeMigrationReason'));
-      if (await request(meta.get('publicIdOwner'))) return { status: 'migration_required' as const, reason: PUBLIC_DEVICE_FORMAT_FENCE };
+      const marker = await request(meta.get('publicIdOwner'));
       if ((scope.catalogNamespace && live.catalogNamespace && scope.catalogNamespace !== live.catalogNamespace) || (scope.serviceKey && live.serviceKey && scope.serviceKey !== live.serviceKey) || scope.origin !== live.origin) {
         const reason = 'This instance changed its catalogue namespace or service identity. Saved records can be inspected and backed up in their previous scope; all native mutations are fenced until the original scope is verified or a migration is reviewed.';
         meta.put(reason, 'scopeMigrationReason');
@@ -118,12 +133,26 @@ export class DeviceStore {
       // disappeared. This durable fence is shared by already-open tabs.
       if (previousReason && (scope.catalogNamespace !== live.catalogNamespace || (scope.serviceKey && scope.serviceKey !== live.serviceKey))) return { status: 'migration_required' as const, reason: previousReason };
       const count = await request(tx.objectStore('records').count());
+      if (marker) {
+        if (!this.publicFormat) return { status: 'migration_required' as const, reason: PUBLIC_DEVICE_FORMAT_FENCE };
+        const owner = await request(meta.get('deviceOwnerId'));
+        if (marker.version !== 2 || marker.ownerId !== publicUuid(owner) || canonicalLibrary(checkedPublicDeviceScope(marker.scope)) !== canonicalLibrary(checkedPublicDeviceScope(scope))) throw Error('UUID device owner or scope marker changed');
+        selectedScope = scope; meta.delete('scopeMigrationReason'); return { status: 'verified' as const };
+      }
+      if (this.publicFormat) {
+        if (count) return { status: 'migration_required' as const, reason: 'Review the populated legacy library before enabling UUID writes. No saved records were converted.' };
+        const bound = checkedPublicDeviceScope({ origin: scope.origin, serviceKey: scope.serviceKey ?? live.serviceKey, catalogNamespace: scope.catalogNamespace ?? live.catalogNamespace });
+        const ownerId = publicUuid(await request(meta.get('deviceOwnerId')));
+        meta.put(bound, 'instanceScope'); meta.put({ version: 2, ownerId, scope: bound }, 'publicIdOwner'); meta.delete('scopeMigrationReason'); selectedScope = bound;
+        return { status: 'verified' as const };
+      }
       if (!scope.catalogNamespace && count) return { status: 'origin_only' as const, reason: 'This populated origin-only library needs explicit adoption of the verified catalogue/service identity before catalogue hydration or publication.' };
       if (!live.catalogNamespace) throw Error('Current catalogue namespace is unavailable');
       if (!count && (!scope.catalogNamespace || !scope.serviceKey)) meta.put({ origin: scope.origin, catalogNamespace: scope.catalogNamespace ?? live.catalogNamespace, serviceKey: scope.serviceKey ?? live.serviceKey }, 'instanceScope');
       meta.delete('scopeMigrationReason');
       return { status: 'verified' as const };
     }));
+    if (selectedScope) this.scope = selectedScope;
     this.channel?.postMessage({ scopeStatus: result.status });
     return result;
   }
@@ -137,11 +166,18 @@ export class DeviceStore {
   revision(): Promise<number> { this.ensureOpen(); return transaction(this.db, 'meta', 'readonly', (tx: IDBTransaction) => request(tx.objectStore('meta').get('revision'))); }
   publicationState(): Promise<{ revision: number; migration_reason?: string }> {
     this.ensureOpen();
-    return transaction(this.db, 'meta', 'readonly', async (tx: IDBTransaction) => ({ revision: await request(tx.objectStore('meta').get('revision')), migration_reason: (await request(tx.objectStore('meta').get('publicIdOwner'))) ? PUBLIC_DEVICE_FORMAT_FENCE : await request(tx.objectStore('meta').get('scopeMigrationReason')) }));
+    return transaction(this.db, 'meta', 'readonly', async (tx: IDBTransaction) => ({ revision: await request(tx.objectStore('meta').get('revision')), migration_reason: (await request(tx.objectStore('meta').get('publicIdOwner'))) && !this.publicFormat ? PUBLIC_DEVICE_FORMAT_FENCE : await request(tx.objectStore('meta').get('scopeMigrationReason')) }));
   }
-  async mutate(operation: (rows: IDBObjectStore, meta: IDBObjectStore) => Promise<void>, expectedRevision?: number, alreadyLocked = false) {
+  async mutate(operation: (rows: IDBObjectStore, meta: IDBObjectStore) => Promise<void>, expectedRevision?: number, alreadyLocked = false, adoptScope?: InstanceScope) {
     const run = async () => {
       this.ensureOpen();
+      const marker = await transaction(this.db, 'meta', 'readonly', (tx: IDBTransaction) => request(tx.objectStore('meta').get('publicIdOwner')));
+      if (marker && this.publicFormat) {
+        const revision = await mutatePublicDevice(this.db, { scope: this.scope, expectedRevision, assertCurrent: () => this.ensureOpen(), operation, adoptScope });
+        if (adoptScope) this.scope = { ...adoptScope };
+        this.channel?.postMessage({ revision }); return revision;
+      }
+      if (!marker && this.publicFormat) throw Error('Verify the UUID catalogue scope first; populated legacy libraries require a reviewed migration');
       const revision = await transaction(this.db, ['records', 'meta'], 'readwrite', async (tx: IDBTransaction) => {
         const rows = tx.objectStore('records'), meta = tx.objectStore('meta'), old = (await request(meta.get('revision'))) ?? 0;
         const migrationReason = await request(meta.get('scopeMigrationReason'));
@@ -160,7 +196,7 @@ export class DeviceStore {
     return alreadyLocked ? run() : deviceWriteLock(run);
   }
   writeBatch(values: DeviceRecord[], remove: [Family, string][] = [], expectedRevision?: number) {
-    const records = values.map(normalizeDevice);
+    const records = values.map(this.publicFormat ? normalizeDevice : normalizeLegacyDevice);
     return this.mutate(async (rows) => { for (const key of remove) rows.delete(key); for (const row of records) rows.put(row); }, expectedRevision);
   }
   async remove(family: Family, key: string) {
@@ -190,6 +226,10 @@ export class DeviceStore {
   async pinServiceIdentity(serviceKey: string, catalogNamespace: string, expectedRevision: number) {
     if (!/^[0-9a-f-]{32,36}$/.test(catalogNamespace)) throw Error('Invalid catalogue namespace');
     if (!/^[0-9a-f]{64}$/.test(serviceKey)) throw Error('Invalid service public key');
+    if (this.publicFormat) {
+      const scope = { origin: this.scope.origin, serviceKey, catalogNamespace };
+      await this.mutate(async () => {}, expectedRevision, false, scope); this.scope = scope; return;
+    }
     await this.mutate(async (_rows, meta) => {
       const scope = await request(meta.get('instanceScope'));
       if ((scope.serviceKey && scope.serviceKey !== serviceKey) || (scope.catalogNamespace && scope.catalogNamespace !== catalogNamespace)) throw Error('Instance identity or catalogue namespace changed; migration required');

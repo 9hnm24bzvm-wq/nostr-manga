@@ -1,14 +1,3 @@
-# Current separate public-upload profile
-
-The current scheduler adds a separately built gate-on `public-upload` batch:
-40 distinct current phases, 12 fresh-fixture batches and 52 scheduled executions.
-Native Startup and all previous batches retain the default-off profile. The UUID
-upload journey uses its own current operational-readiness gate and strict closed
-result projection. See [profile and acceptance contract](verification/public-upload-hosted-profile.md).
-This addition has only source/controller qualification; no new browser or hosted
-execution is claimed. The actor-follow and earlier descriptions below retain
-their historical counts and source associations.
-
 # Supplemental actor-follow phase
 
 The current source adds `ui14-actor-follow` in the fresh-fixture `actor-follow`

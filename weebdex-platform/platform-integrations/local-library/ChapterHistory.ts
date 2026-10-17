@@ -1,5 +1,5 @@
 import {assertCataloguePreviewLibraryReady} from '../public-api/library-staging';
-import { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isAccountMode, updateChapters, params, assertCatalogueScope, openLibrary, captureLibraryContext, assertLibraryContext } from './library';
+import { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isCurrentCatalogueId, isAccountMode, updateChapters, params, assertCatalogueScope, openLibrary, captureLibraryContext, assertLibraryContext } from './library';
 import { HTTPError } from '$lib/HTTP';
 import { filteredCatalog, pageRows, compareValue } from './catalog';
 export interface UpdateChapterHistoryBatchRequest { read_ids?: string[]; unread_ids?: string[] }
@@ -7,7 +7,7 @@ async function localHistory(ids?: string[]) {
   await assertCatalogueScope();
   const snapshot = await currentDeviceSnapshot(), result: Record<string, Record<string, null>> = {};
   if (snapshot.migration_reason) throw new HTTPError(409, snapshot.migration_reason, 'Catalogue scope changed');
-  for (const row of snapshot.records) if (row.family === 'chapters' && row.completed && (!ids || ids.includes(row.mangaId!))) (result[row.mangaId!] ??= {})[row.id!] = null;
+  for (const row of snapshot.records) if (row.family === 'chapters' && isCurrentCatalogueId(row.id) && isCurrentCatalogueId(row.mangaId) && row.completed && (!ids || ids.includes(row.mangaId!))) (result[row.mangaId!] ??= {})[row.id!] = null;
   return result;
 }
 export async function Search(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady();
@@ -23,7 +23,7 @@ export async function List(mangaId: string) { assertCataloguePreviewLibraryReady
 export async function Feed(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady();
   const q = params(searchParams), account = await isAccountMode(), view = captureLibraryView();
   if (account) { const body = await apiRead<MappedChapterHistoryFeedResponse>('/user/history/manga/feed', q, true); assertLibraryView(view); return { status: 200, body }; }
-  const snapshot = await currentDeviceSnapshot(), history = new Map(snapshot.records.filter(row => row.family === 'chapters' && row.completed).map(row => [row.id!, row]));
+  const snapshot = await currentDeviceSnapshot(), history = new Map(snapshot.records.filter(row => row.family === 'chapters' && isCurrentCatalogueId(row.id) && isCurrentCatalogueId(row.mangaId) && row.completed).map(row => [row.id!, row]));
   const rows = await filteredCatalog<Chapter>('/chapter/feed', 'id', [...history.keys()], q);
   const chapters: ChapterHistory[] = rows.filter(row => history.has(row.id)).map(row => ({ ...row, read_at: history.get(row.id)!.readAt ?? new Date(history.get(row.id)!.updated_at * 1000).toISOString() }));
   const direction = q.get('order') === 'asc' ? 1 : -1;

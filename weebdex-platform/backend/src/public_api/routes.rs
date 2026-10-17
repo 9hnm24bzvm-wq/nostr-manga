@@ -26,20 +26,16 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
         serde_json::from_str(INVENTORY).expect("checked-in derived API inventory");
     let mut paths = BTreeMap::<String, MethodRouter<S>>::new();
     for operation in inventory.operations {
-        if matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/chapter/{id}" { continue; }
         if operation.path == "/upload" || operation.path.starts_with("/upload/") { continue; }
         if operation.method == "GET"
             && matches!(
                 axum_path(&operation.path).as_str(),
-                "/ping"
-                    | "/manga"
+                "/manga"
                     | "/manga/{p0}"
                     | "/manga/random"
                     | "/manga/tag"
                     | "/manga/{p0}/feed"
                     | "/manga/{p0}/aggregate"
-                    | "/manga/{p0}/relation"
-                    | "/manga/{p0}/recommendation"
                     | "/chapter"
                     | "/chapter/{p0}"
                     | "/author"
@@ -90,15 +86,6 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                     | "/list/{id}"
                     | "/list/{id}/feed"
                     | "/user/{id}"
-                    | "/user"
-                    | "/user/me"
-                    | "/user/follows/manga"
-                    | "/user/follows/manga/{id}"
-                    | "/user/follows/manga/feed"
-                    | "/user/follows/group"
-                    | "/user/follows/group/{id}"
-                    | "/user/follows/user"
-                    | "/user/follows/user/{id}"
             ))
             || (operation.method == "POST" && operation.path == "/manga/{id}/read")
         {
@@ -146,7 +133,7 @@ async fn unsupported() -> PublicApiError {
 async fn unknown() -> PublicApiError {
     PublicApiError::not_found_detail("Unknown public API endpoint")
 }
-pub(super) async fn wrong_method(method: Method) -> impl IntoResponse {
+async fn wrong_method(method: Method) -> impl IntoResponse {
     let _ = method;
     PublicApiError::new(
         StatusCode::METHOD_NOT_ALLOWED,

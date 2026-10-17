@@ -70,8 +70,8 @@ test('single real owner is preserved while selection guards cross asynchronous f
   assert.match(pages,/runUploadBatch\(session, chunk, owner, onProgress, \(\) => assertFileSession\(session\)\)/);
   for (const code of [main,pages,entry]) assert.doesNotMatch(code,/\$platform\/(?:upload-batch|upload-resume|target-owner)|new HTTP|setWithCredentials|PUBLIC_API_URL/);
 });
-test('chapter editing uses the signed review-first editor while page replacement uses only its public helper', () => {
-  assert.match(edit,/PublicChapterEditor/); assert.doesNotMatch(edit,/UploadChapterEdit|API\./);
+test('chapter editing remains unavailable while page replacement uses only the signed public helper', () => {
+  assert.match(edit,/Public signed chapter editing is unavailable/); assert.doesNotMatch(edit,/UploadChapterEdit|owner.request|API\./);
   const replacement = pages.slice(pages.indexOf('const replaceFile ='),pages.indexOf('const inspectImageDimensions'));
   assert.match(replacement,/replaceUploadPage\(session, target, file, owner, current\)/); assert.doesNotMatch(replacement,/request\(|HTTP|FormData|fetch\(/);
 });
@@ -232,17 +232,4 @@ test('changed confirmed bytes update the existing keyed card for its hash-keyed 
   fixture.api.adoptReplacement(fixture.session,{...fixture.session,version:3},{...fixture.old,file_hash:'b'.repeat(64)},fixture.old);
   assert.equal(fixture.context.pages[0],fixture.old);assert.equal(fixture.old.file_hash,'b'.repeat(64));
   assert.equal(fixture.old.thumbnail,undefined);assert.equal(fixture.context.pages[1],fixture.neighbour);assert.deepEqual(fixture.calls.created,[]);
-});
-test('signed chapter editor keeps local annotations, exact owner and distinct moderator confirmation', () => {
-  const source = fs.readFileSync(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'), 'utf8');
-  assert.match(source, /loadUploadAccount\(current\)/);
-  assert.match(source, /publicUploadOwner\(\(\) => initial.id, account, 'chapter'\)/);
-  assert.match(source, /approvesHide = \$derived\([\s\S]*?\['moderator', 'staff', 'sysop'\][\s\S]*?includes\('chapter.remove'\)/);
-  assert.match(source, /Approve hiding this chapter on this instance immediately/);
-  assert.match(source, /chapter remains visible until approval/);
-  assert.match(source, /approvesHide \? 'Approve and hide on this instance' : 'Submit removal request'/);
-  assert.match(source, /Signed source metadata and published image pages are immutable/);
-  assert.doesNotMatch(source, /API\.|UploadChapterEdit|replaceUploadPage|setInterval/);
-  assert.match(source, /pending = true/);
-  assert.match(source, /No mutation was replayed/);
 });

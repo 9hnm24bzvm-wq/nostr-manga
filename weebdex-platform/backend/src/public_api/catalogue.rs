@@ -18,9 +18,9 @@ use axum::{
 };
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
-pub(super) const MANGA_VISIBLE: &str = "m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)";
+const MANGA_VISIBLE: &str = "m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)";
 const CHAPTER_VISIBLE: &str = "c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)";
-pub const MANGA_INCLUDES: &[&str] = &["author", "artist", "cover_art", "manga", "tag", "creator"];
+pub const MANGA_INCLUDES: &[&str] = &["author", "artist", "cover_art", "manga"];
 const CHAPTER_INCLUDES: &[&str] = &["manga", "scanlation_group", "user"];
 const MANGA_ORDER: &[&str] = &[
     "title",
@@ -96,7 +96,6 @@ const CHAPTER_ARRAY: &[&str] = &[
 ];
 pub fn router() -> Router<AppState> {
     Router::new()
-        .route("/ping", get(|| async { "pong" }))
         .route("/manga", get(manga_many))
         .route("/manga/random", get(random))
         .route("/manga/tag", get(tags))
@@ -112,7 +111,7 @@ pub fn router() -> Router<AppState> {
         .route("/cover", get(cover_many))
         .route("/cover/{p0}", get(cover_one))
 }
-pub(super) fn schema(kind: ResourceKind) -> QuerySchema<'static> {
+fn schema(kind: ResourceKind) -> QuerySchema<'static> {
     match kind {
         ResourceKind::Manga => QuerySchema {
             default_limit: 10,
@@ -215,7 +214,7 @@ handlers!(chapter_many, chapter_one, Chapter);
 handlers!(author_many, author_one, Author);
 handlers!(group_many, group_one, Group);
 handlers!(cover_many, cover_one, Cover);
-pub(super) async fn resolve(state: &AppState, kind: ResourceKind, public: &str) -> PublicApiResult<String> {
+async fn resolve(state: &AppState, kind: ResourceKind, public: &str) -> PublicApiResult<String> {
     let id = PublicUuid::parse(public)?;
     let target = PostgresPublicIdResolver::new(state.db.clone())
         .resolve(kind, &id)
@@ -258,7 +257,7 @@ async fn detail(
         &q.includes,
     )?)))
 }
-pub(super) fn parts(
+fn parts(
     kind: ResourceKind,
 ) -> PublicApiResult<(&'static str, &'static str, &'static str, &'static str)> {
     Ok(match kind {
@@ -292,11 +291,6 @@ pub(super) fn parts(
             "platform.catalog_group_json(g.id)",
             "g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id)",
         ),
-        ResourceKind::User => (
-            "u", "platform.users u",
-            "jsonb_build_object('id',u.id,'username',u.username,'roles',u.roles,'version',u.version)",
-            "NOT u.disabled",
-        ),
         ResourceKind::Tag => (
             "t",
             "platform.catalog_tags t",
@@ -308,7 +302,6 @@ pub(super) fn parts(
 }
 async fn mapped(
     state: &AppState,
-    tx: Option<&tokio_postgres::Transaction<'_>>,
     q: &PublicQuery,
     key: &str,
     kind: ResourceKind,
@@ -321,11 +314,9 @@ async fn mapped(
         .iter()
         .map(|v| PublicUuid::parse(v).map_err(Into::into))
         .collect::<PublicApiResult<Vec<_>>>()?;
-    let rows = if let Some(tx) = tx {
-        PostgresPublicIdResolver::resolve_many_in(tx, kind, &ids).await?
-    } else {
-        PostgresPublicIdResolver::new(state.db.clone()).resolve_many(kind, &ids).await?
-    };
+    let rows = PostgresPublicIdResolver::new(state.db.clone())
+        .resolve_many(kind, &ids)
+        .await?;
     let missing = ids.iter().filter(|id| !rows.contains_key(*id)).count();
     let native = rows
         .into_values()
@@ -337,7 +328,6 @@ async fn mapped(
 }
 async fn id_filter(
     state: &AppState,
-    tx: Option<&tokio_postgres::Transaction<'_>>,
     q: &PublicQuery,
     sql: &mut Sql,
     key: &str,
@@ -345,7 +335,7 @@ async fn id_filter(
     column: &str,
     exclude: bool,
 ) -> PublicApiResult<Vec<String>> {
-    let (ids, _) = mapped(state, tx, q, key, kind).await?;
+    let (ids, _) = mapped(state, q, key, kind).await?;
     if !q.list(key).is_empty() && ids.is_empty() && !exclude {
         sql.conditions.push("FALSE".into());
     }
@@ -421,18 +411,16 @@ fn valid_utc_datetime(value: &str) -> bool {
     };
     y > 0 && d > 0 && d <= days && num(11, 13) < 24 && num(14, 16) < 60 && num(17, 19) < 60
 }
-pub(super) async fn filters(
+async fn filters(
     state: &AppState,
-    tx: Option<&tokio_postgres::Transaction<'_>>,
     kind: ResourceKind,
     q: &PublicQuery,
     sql: &mut Sql,
     scope: Option<&[String]>,
-    account_scope: Option<&str>,
 ) -> PublicApiResult<()> {
     let (alias, _, _, visible) = parts(kind)?;
     sql.conditions.push(visible.into());
-    id_filter(state, tx, q, sql, "ids[]", kind, &format!("{alias}.id"), false).await?;
+    id_filter(state, q, sql, "ids[]", kind, &format!("{alias}.id"), false).await?;
     match kind {
         ResourceKind::Manga => {
             let mut n = native_query(q);
@@ -481,7 +469,7 @@ pub(super) async fn filters(
                 ("artists[]", "artist", ResourceKind::Author),
                 ("authorOrArtist", "authorOrArtist", ResourceKind::Author),
             ] {
-                let (ids, _) = mapped(state, tx, q, key, kind).await?;
+                let (ids, _) = mapped(state, q, key, kind).await?;
                 if !q.list(key).is_empty() && ids.is_empty() {
                     sql.conditions.push("FALSE".into());
                 }
@@ -493,7 +481,7 @@ pub(super) async fn filters(
                 ("includedTags[]", "tag", "includedTagsMode", false),
                 ("excludedTags[]", "tagx", "excludedTagsMode", true),
             ] {
-                let (ids, missing) = mapped(state, tx, q, key, ResourceKind::Tag).await?;
+                let (ids, missing) = mapped(state, q, key, ResourceKind::Tag).await?;
                 let mode = q.first(mode).unwrap_or(if exclude { "OR" } else { "AND" });
                 if !matches!(mode, "AND" | "OR") {
                     return Err(PublicApiError::bad_request("Invalid tag mode"));
@@ -533,7 +521,7 @@ pub(super) async fn filters(
                 }
             }
             if q.first("group").is_some() {
-                let (ids, _) = mapped(state, tx, q, "group", ResourceKind::Group).await?;
+                let (ids, _) = mapped(state, q, "group", ResourceKind::Group).await?;
                 if ids.is_empty() {
                     sql.conditions.push("FALSE".into());
                 } else {
@@ -556,7 +544,7 @@ pub(super) async fn filters(
                 ("excludedUploaders[]", "uploaderx", ResourceKind::User),
                 ("manga", "manga", ResourceKind::Manga),
             ] {
-                let (ids, _) = mapped(state, tx, q, key, kind).await?;
+                let (ids, _) = mapped(state, q, key, kind).await?;
                 if !q.list(key).is_empty() && ids.is_empty() && !key.starts_with("excluded") {
                     sql.conditions.push("FALSE".into());
                 }
@@ -565,10 +553,6 @@ pub(super) async fn filters(
                 }
             }
             chapter_filters(&n, sql, "c")?;
-            if let Some(owner) = account_scope {
-                let owner = sql.bind(owner.to_owned());
-                sql.conditions.push(format!("EXISTS(SELECT 1 FROM platform.library_manga_follows af WHERE af.user_id={owner} AND af.manga_id=c.manga_id)"));
-            }
             if let Some(scope) = scope {
                 if scope.is_empty() {
                     sql.conditions.push("FALSE".into());
@@ -634,7 +618,7 @@ pub(super) async fn filters(
             }
             for (key, exclude) in [("externalUrl", false), ("excludeExternalUrl", true)] {
                 if let Some(host) = q.first(key) {
-                    if scope.is_none() && account_scope.is_none() && q.first("manga").is_none() {
+                    if scope.is_none() && q.first("manga").is_none() {
                         return Err(PublicApiError::bad_request(
                             "External host filter requires manga scope",
                         ));
@@ -682,7 +666,6 @@ pub(super) async fn filters(
         ResourceKind::Cover => {
             id_filter(
                 state,
-                tx,
                 q,
                 sql,
                 "manga[]",
@@ -693,7 +676,6 @@ pub(super) async fn filters(
             .await?;
             id_filter(
                 state,
-                tx,
                 q,
                 sql,
                 "uploaders[]",
@@ -723,11 +705,9 @@ pub(super) fn order_clause(
   (ResourceKind::Manga,"followedCount")=>"COALESCE(stats.follows,0)".into(),(ResourceKind::Manga,"rating")=>"COALESCE(stats.rating,0)".into(),
   (ResourceKind::Manga,"relevance")=>{let p=sql.bind(q.first("title").unwrap_or("").to_owned());format!("CASE WHEN lower(m.title)=lower({p}) THEN 3 WHEN starts_with(lower(m.title),lower({p})) THEN 2 ELSE 1 END")},
   (_,"createdAt")=>format!("{alias}.created_at"),(_,"updatedAt")=>format!("{alias}.updated_at"),(_,"name")=>format!("lower({alias}.name)"),
-  (ResourceKind::User,"username")=>"lower(u.username)".into(),
   (ResourceKind::Chapter,"publishAt"|"readableAt")=>"c.published_at".into(),
   (ResourceKind::Chapter,"volume"|"chapter")|(ResourceKind::Cover,"volume")=>format!("CASE WHEN {alias}.{field} ~ '^[0-9]+([.][0-9]+)?$' THEN {alias}.{field}::numeric END"),
-  (ResourceKind::Group,"followedCount")=>"(SELECT count(*) FROM platform.library_group_follows gf JOIN platform.users gu ON gu.id=gf.user_id AND NOT gu.disabled WHERE gf.group_id=g.id)".into(),
-  (ResourceKind::Group,"relevance")=>{let p=sql.bind(q.first("name").unwrap_or("").to_owned());format!("CASE WHEN lower(g.name)=lower({p}) THEN 3 WHEN starts_with(lower(g.name),lower({p})) THEN 2 ELSE 1 END")},
+  (ResourceKind::Group,"followedCount"|"relevance")=>return Err(PublicApiError::unsupported()),
   _=>return Err(PublicApiError::bad_request("Unsupported order field")),
  };
         order.push(format!("{column} {} NULLS LAST", direction.sql()));
@@ -744,24 +724,8 @@ async fn collection(
     raw: Option<String>,
     scope: Option<Vec<String>>,
 ) -> PublicApiResult<Json<CollectionResponse<Resource>>> {
-    let operation = collection_schema(kind, scope.is_some());
-    let q = PublicQuery::parse(raw.as_deref(), &operation)?;
-    if scope.is_some() && q.limit == 0 {
-        return Err(PublicApiError::bad_request("Feed limit must be 1..500"));
-    }
-    let mut client = state.db.client().await?;
-    let tx = client.build_transaction()
-        .isolation_level(tokio_postgres::IsolationLevel::RepeatableRead)
-        .read_only(true).start().await?;
-    let mut sql = Sql::default();
-    filters(&state, Some(&tx), kind, &q, &mut sql, scope.as_deref(), None).await?;
-    let response = collection_in(&tx, kind, &q, &mut sql).await?;
-    tx.commit().await?;
-    Ok(Json(response))
-}
-pub(super) fn collection_schema(kind: ResourceKind, scoped: bool) -> QuerySchema<'static> {
     let mut operation = schema(kind);
-    if kind == ResourceKind::Chapter && scoped {
+    if kind == ResourceKind::Chapter && scope.is_some() {
         operation.default_limit = 100;
         operation.max_limit = 500;
         operation.scalar = &[
@@ -785,39 +749,42 @@ pub(super) fn collection_schema(kind: ResourceKind, scoped: bool) -> QuerySchema
             "excludedUploaders[]",
         ];
     }
-    operation
-}
-pub(super) async fn collection_in(
-    tx: &tokio_postgres::Transaction<'_>,
-    kind: ResourceKind,
-    q: &PublicQuery,
-    sql: &mut Sql,
-) -> PublicApiResult<CollectionResponse<Resource>> {
+    let q = PublicQuery::parse(raw.as_deref(), &operation)?;
+    if scope.is_some() && q.limit == 0 {
+        return Err(PublicApiError::bad_request("Feed limit must be 1..500"));
+    }
+    let mut sql = Sql::default();
+    filters(&state, kind, &q, &mut sql, scope.as_deref()).await?;
     let (alias, table, projection, _) = parts(kind)?;
-    let order = order_clause(kind, q, sql)?;
+    let order = order_clause(kind, &q, &mut sql)?;
     let limit = sql.bind(i64::from(q.limit));
     let offset = sql.bind(i64::from(q.offset));
     let predicate = sql.predicate();
     let projection_query = format!(
         "WITH matched AS MATERIALIZED(SELECT {alias}.id,row_number() OVER(ORDER BY {order}) position FROM {table} WHERE {predicate}),selected AS(SELECT * FROM matched ORDER BY position LIMIT {limit} OFFSET {offset}) SELECT (SELECT count(*) FROM matched),COALESCE((SELECT jsonb_agg((SELECT {projection} FROM {table} WHERE {alias}.id=selected.id) ORDER BY selected.position) FROM selected),'[]'::jsonb)"
     );
-    let row = tx.query_one(&projection_query, &sql.params())
+    let row = state
+        .db
+        .client()
+        .await?
+        .query_one(&projection_query, &sql.params())
         .await?;
     let total: i64 = row.get(0);
     let native: Vec<Value> =
         serde_json::from_value(row.get(1)).map_err(|_| PublicApiError::unavailable())?;
     let resources = native.into_iter().map(|v| (kind, v)).collect::<Vec<_>>();
-    let index = AliasIndex::load_in(tx, &resources).await?;
+    let resolver = PostgresPublicIdResolver::new(state.db.clone());
+    let index = AliasIndex::load(&state, &resolver, &resources).await?;
     let data = resources
         .iter()
         .map(|(kind, v)| index.resource(*kind, v, &q.includes))
         .collect::<PublicApiResult<Vec<_>>>()?;
-    Ok(CollectionResponse::new(
+    Ok(Json(CollectionResponse::new(
         data,
         q.limit,
         q.offset,
         total as u64,
-    ))
+    )))
 }
 async fn feed(
     State(state): State<AppState>,
@@ -903,7 +870,7 @@ async fn random(
     operation.order = &[];
     let q = PublicQuery::parse(raw.as_deref(), &operation)?;
     let mut sql = Sql::default();
-    filters(&state, None, ResourceKind::Manga, &q, &mut sql, None, None).await?;
+    filters(&state, ResourceKind::Manga, &q, &mut sql, None).await?;
     let value:Option<Value>=state.db.client().await?.query_opt(&format!("SELECT platform.catalog_manga_json(m.id) FROM platform.catalog_manga m WHERE {} ORDER BY random() LIMIT 1",sql.predicate()),&sql.params()).await?.and_then(|r|r.get(0));
     let value = value.ok_or_else(PublicApiError::not_found)?;
     let resolver = PostgresPublicIdResolver::new(state.db.clone());
@@ -953,11 +920,11 @@ async fn aggregate(
     sql.conditions.push(format!("c.manga_id={p}"));
     validate_languages(&q.list("translatedLanguage[]"))?;
     sql.array("c.language", q.list("translatedLanguage[]"), false);
-    if q.bounded_usize("includeUnavailable", 0, 0, 1)? == 0 {
+    if !q.boolean("includeUnavailable")?.unwrap_or(false) {
         sql.conditions.push("NOT c.is_unavailable".into());
     }
     if !q.list("groups[]").is_empty() {
-        let (ids, _) = mapped(&state, None, &q, "groups[]", ResourceKind::Group).await?;
+        let (ids, _) = mapped(&state, &q, "groups[]", ResourceKind::Group).await?;
         if ids.is_empty() {
             sql.conditions.push("FALSE".into());
         } else {
@@ -965,7 +932,7 @@ async fn aggregate(
             sql.conditions.push(format!("EXISTS(SELECT 1 FROM platform.catalog_chapter_groups cg WHERE cg.chapter_id=c.id AND cg.group_id=ANY({p}))"));
         }
     }
-    let rows=state.db.client().await?.query(&format!("SELECT c.id,c.volume,c.chapter,c.is_unavailable FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE {} ORDER BY c.volume NULLS LAST,c.chapter NULLS LAST,c.is_unavailable,c.id LIMIT 10001",sql.predicate()),&sql.params()).await?;
+    let rows=state.db.client().await?.query(&format!("SELECT c.id,c.volume,c.chapter FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE {} ORDER BY c.volume NULLS LAST,c.chapter NULLS LAST,c.id LIMIT 10001",sql.predicate()),&sql.params()).await?;
     if rows.len() > 10000 {
         return Err(PublicApiError::unavailable());
     }
@@ -978,7 +945,7 @@ async fn aggregate(
     for ids in natives.chunks(super::postgres_identity::MAX_PUBLIC_ID_BATCH) {
         aliases.extend(resolver.preferred_many(ResourceKind::Chapter, ids).await?);
     }
-    let mut grouped = BTreeMap::<String, BTreeMap<String, Vec<(PublicUuid, bool)>>>::new();
+    let mut grouped = BTreeMap::<String, BTreeMap<String, Vec<PublicUuid>>>::new();
     for row in rows {
         let native: String = row.get(0);
         let volume: Option<String> = row.get(1);
@@ -988,13 +955,12 @@ async fn aggregate(
             .or_default()
             .entry(chapter.unwrap_or_else(|| "none".into()))
             .or_default()
-            .push((
+            .push(
                 aliases
                     .get(&native)
                     .cloned()
                     .ok_or_else(PublicApiError::unavailable)?,
-                row.get(3),
-            ));
+            );
     }
     let volumes = grouped
         .into_iter()
@@ -1003,12 +969,11 @@ async fn aggregate(
             let chapters = chapters
                 .into_iter()
                 .map(|(chapter, mut ids)| {
-                    let (id, unavailable) = ids.remove(0);
+                    let id = ids.remove(0);
                     let count = ids.len() + 1;
-                    let others = ids.into_iter().map(|(id, _)| id).collect::<Vec<_>>();
                     (
                         chapter.clone(),
-                        json!({"chapter":chapter,"id":id,"isUnavailable":unavailable,"others":others,"count":count}),
+                        json!({"chapter":chapter,"id":id,"others":ids,"count":count}),
                     )
                 })
                 .collect::<BTreeMap<_, _>>();
@@ -1023,38 +988,6 @@ async fn aggregate(
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn read_schemas_cover_pinned_filters_sorts_and_reference_expansions() {
-        let inventory: Value = serde_json::from_str(include_str!("../../../contracts/mangadex-5.13.1-inventory.json")).unwrap();
-        for (path, kind) in [
-            ("/manga", ResourceKind::Manga),
-            ("/chapter", ResourceKind::Chapter),
-            ("/author", ResourceKind::Author),
-            ("/group", ResourceKind::Group),
-            ("/cover", ResourceKind::Cover),
-        ] {
-            let operation = inventory["operations"].as_array().unwrap().iter()
-                .find(|operation| operation["method"] == "GET" && operation["path"] == path).unwrap();
-            let s = schema(kind);
-            for parameter in operation["parameters"].as_array().unwrap() {
-                let name = parameter["name"].as_str().unwrap();
-                match name {
-                    "limit" | "offset" => {},
-                    "includes[]" | "includes" => {
-                        for include in parameter["schema"]["items"]["enum"].as_array().unwrap() {
-                            assert!(s.includes.contains(&include.as_str().unwrap()), "{path} missing include {include}");
-                        }
-                    },
-                    "order" => {
-                        for field in parameter["schema"]["properties"].as_array().unwrap() {
-                            assert!(s.order.contains(&field.as_str().unwrap()), "{path} missing sort {field}");
-                        }
-                    },
-                    _ => assert!(s.scalar.contains(&name) || s.arrays.contains(&name), "{path} missing filter {name}"),
-                }
-            }
-        }
-    }
     #[test]
     fn actual_utc_date_validation_rejects_invalid_calendar_and_offsets() {
         for good in ["2024-02-29T12:00:00", "2025-01-01T00:00:00"] {

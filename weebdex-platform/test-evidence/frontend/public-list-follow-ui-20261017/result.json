@@ -1,0 +1,17 @@
+{
+  "scope": "finite frontend source/client/component/preparation regressions; no genuine browser runtime",
+  "tests": 278,
+  "passed": 278,
+  "failed": 0,
+  "dedicated_list_client_tests": 24,
+  "dedicated_list_component_tests": 11,
+  "backend_dependency": "e6a5a749718cef4f1c63412af73c5197c3aad99f",
+  "command": "WEEBDEX_FRONTEND_ROOT=\"$PWD/weebdex-platform/.build/frontend-restore3\" node --experimental-vm-modules --test weebdex-platform/tests/ci/test_public_list_clients.mjs weebdex-platform/tests/ci/test_public_list_ui.mjs weebdex-platform/tests/ci/test_public_rating_build_seam.mjs weebdex-platform/tests/ci/test_public_library_catalogue.mjs weebdex-platform/tests/ci/test_personal_rating_client.mjs weebdex-platform/tests/ci/test_personal_rating_ui.mjs weebdex-platform/tests/ci/test_instance_rating_summary.mjs weebdex-platform/tests/ci/public-device-projection.test.mjs weebdex-platform/tests/ci/public-library-relay-support.test.mjs weebdex-platform/tests/ci/public-protocol-scope.test.mjs weebdex-platform/tests/ci/public-uuid-publication.test.mjs weebdex-platform/tests/ci/public-canonical-ui-generation.test.mjs weebdex-platform/tests/ci/public-job-completion.test.mjs weebdex-platform/tests/ci/test_public_social_source_mapping.mjs weebdex-platform/tests/ci/test_uuid_library_orchestration.mjs weebdex-platform/tests/ci/public-api-recovery.test.mjs weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs weebdex-platform/tests/ci/test_public_upload_provenance_recovery.mjs weebdex-platform/tests/ci/test_frontend_bootstrap.mjs weebdex-platform/tests/ci/test_public_upload_request_recovery.mjs",
+  "installed_dependencies": false,
+  "canonical_frontend_unchanged": true,
+  "real_accounts_used": false,
+  "network_publication": false,
+  "browser_qa": "unrun: execution/dependency bootstrap remains blocked; no substitute proof claimed",
+  "strict_node_modules": "weebdex-platform/.build/frontend-restore3/node_modules",
+  "strict_existing_dependency_source": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+}

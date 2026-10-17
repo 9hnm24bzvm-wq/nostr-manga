@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-17",
+  "kind": "finite implementation seams and composed strict checks; not browser acceptance",
+  "finite": {
+    "tests": 70,
+    "passed": 70,
+    "failed": 0
+  },
+  "strict": {
+    "default": {
+      "errors": 0,
+      "warnings": 15,
+      "integration_files": 77
+    },
+    "public": {
+      "errors": 0,
+      "warnings": 15,
+      "integration_files": 87
+    },
+    "canonical_files": 679,
+    "canonical_unchanged": true
+  },
+  "unavailable": [
+    "IndexedDB lifetime and DOM source-control suites require missing fake-indexeddb@6.2.4/jsdom@27.0.1; dependency acquisition denied twice, no fallback fetch",
+    "No real browser, relay, database, production instance or account was used"
+  ],
+  "product_gate": "Global preview write fence intentionally remains until mutable UUID-v2 store and exact source mapping are validated."
+}

@@ -3,6 +3,7 @@ import { Error as UserVisibleError } from '$lib/constants/Error';
 import { scopedMangaChapterCollection } from './author-chapter-feed';
 import { randomManga } from './random-manga';
 import { catalogueEdges } from './catalogue-edges';
+import { normalizePublicUser } from './user-profile';
 import { PublicApiClient } from './client';
 import { atHomePages,normalizeChapter,normalizeCover,normalizeFeed,normalizeManga,normalizeNamed,normalizeTag } from './normalize';
 import { publicQuery,canUseMangaFeed,chapterParentControls } from './query';
@@ -21,6 +22,8 @@ export class RetainedCatalogueClient{
  private async chapterFeed(response:Response<Collection>,signal?:AbortSignal):Promise<Response<ViewFeed<ChapterView>>>{if(failed(response)||!response.body)return response as unknown as Response<ViewFeed<ChapterView>>;const mangas=await this.mangaMap(response.body.data,signal),feed=normalizeFeed(response.body,row=>{const parent=row.relationships.find(relation=>relation.type==='manga'),manga=parent&&mangas[publicUuid(parent.id)];if(!manga)throw new PublicApiContractError('A visible chapter has no visible parent resource');return normalizeChapter(row,manga);});await this.attachNativeForum('chapter',feed.data,signal);return {...response,body:{...feed,map:{manga:mangas}}};}
  async read(operation:string,{id,query=new URLSearchParams(),signal}:ReadOptions={}):Promise<Response<unknown>>{
   if(operation.startsWith('analytics.'))return {status:501,body:{result:'error',errors:[{status:501,title:'Catalogue analytics unavailable',detail:'This build has no verified UUID analytics command adapter. No native mutation was sent.'}]}};
+  if(operation==='user.search'){const {searchUserDirectory}=await import('./user-directory');return searchUserDirectory(query,signal);}
+  if(operation==='user.get'){const response=await this.api.entity(`/user/${publicUuid(id)}`,'user',undefined,signal);return failed(response)||!response.body?response:{...response,body:normalizePublicUser(response.body.data)};}
   if(id!==undefined){const family=operation.startsWith('statistics.')?operation.split('.')[1]:['chapter.list','chapter.aggregate','cover.list'].includes(operation)?'manga':operation.split('.')[0];if(!['manga','chapter','cover','author','group'].includes(family))throw new CatalogueUnavailableError('Unsupported resource family',422);id=await this.routeId(family as'manga'|'chapter'|'cover'|'author'|'group',id,signal);}
   if(operation.startsWith('statistics.')){const kind=operation.split('.')[1]as'manga'|'chapter'|'group';if(!['manga','chapter','group'].includes(kind))throw new CatalogueUnavailableError('Unsupported catalogue statistics family',422);const response=await this.api.statistics(kind,publicUuid(id),signal);if(failed(response)||!response.body)return response;const entries=Object.entries(response.body.statistics);if(entries.length!==1)throw new PublicApiContractError('Detail statistics must identify exactly one visible resource');const[canonicalId,statistics]=entries[0];return {...response,body:{...(kind==='manga'?{follows:statistics.follows}:{}),public_api:{id:publicUuid(canonicalId),statistics}}};}
   const detailIncludes=(types:string[])=>new URLSearchParams(types.map(type=>['includes[]',type]));

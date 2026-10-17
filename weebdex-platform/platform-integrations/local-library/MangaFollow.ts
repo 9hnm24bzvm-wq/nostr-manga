@@ -1,10 +1,11 @@
-import {assertCataloguePreviewLibraryReady} from '../public-api/library-staging';
+import {assertCataloguePreviewLibraryReady,publicUuidLibraryEnabled} from '../public-api/library-staging';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { HTTPError } from '$lib/HTTP';
 import type { Constants } from '$lib';
-import { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isAccountMode, saveSeries, removeSeries, params, applyImport, type ImportReview, captureImportContext, assertImportContext, type LibraryImportContext, openLibrary, captureLibraryContext, assertLibraryContext } from './library';
+import { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isCurrentCatalogueId, isAccountMode, saveSeries, removeSeries, params, applyCatalogueRecords, captureImportContext, assertImportContext, type LibraryImportContext, openLibrary, captureLibraryContext, assertLibraryContext } from './library';
 import { filteredCatalog, pageRows, compareValue, compareCatalogueRows } from './catalog';
 import { normalizeDevice } from './device-store';
+import {publicImportMappings} from '../public-api/import-mappings';
 export async function Search(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady();
   await openLibrary();
   const q = params(searchParams), context = captureLibraryContext(), account = context.mode === 'account', view = captureLibraryView();
@@ -16,7 +17,7 @@ export async function Search(searchParams: URLSearchParams) { assertCataloguePre
   assertLibraryContext(context);
   if (list && !snapshot.records.some(row => row.family === 'lists' && row.id === list)) throw new HTTPError(404, 'This list is not present in the current saved-device scope', 'Device list unavailable');
   const members = list ? new Set(snapshot.records.filter(row => row.family === 'members' && row.list === list).map(row => row.series)) : null;
-  const records = snapshot.records.filter(row => row.family === 'series' && (!wanted.length || wanted.includes(row.status!)) && (!members || members.has(row.id)));
+  const records = snapshot.records.filter(row => row.family === 'series' && isCurrentCatalogueId(row.id) && (!wanted.length || wanted.includes(row.status!)) && (!members || members.has(row.id)));
   const allowed = q.getAll('id');
   const rows = records.filter(row => !allowed.length || allowed.includes(row.id!));
   const follows = new Map(rows.map(row => [row.id!, row]));
@@ -36,7 +37,7 @@ export async function LatestUpdates(searchParams: URLSearchParams) { assertCatal
 async function localUpdates(searchParams: URLSearchParams, accountPath: string, latestOnly: boolean) {
   const q = params(searchParams), account = await isAccountMode(), view = captureLibraryView();
   if (account) { const body = await apiRead<MappedChapterFeedResponse>(accountPath, q, true); assertLibraryView(view); return { status: 200, body }; }
-  const snapshot = await currentDeviceSnapshot(), ids = snapshot.records.filter(row => row.family === 'series' && row.notification).map(row => row.id!);
+  const snapshot = await currentDeviceSnapshot(), ids = snapshot.records.filter(row => row.family === 'series' && isCurrentCatalogueId(row.id) && row.notification).map(row => row.id!);
   let chapters = await filteredCatalog<Chapter & { _sort_value?: unknown; _sort_text?: string }>('/chapter/feed', 'manga', ids, q);
   if (latestOnly) {
     const newest = new Map<string, Chapter & { _sort_value?: unknown; _sort_text?: string }>();
@@ -74,10 +75,11 @@ export async function Import(payload: { weebdex?: Record<string, Constants.Manga
     if (!ids.length || ids.length > 400 || ids.some(id => !/^[0-9]{1,20}$/.test(id))) throw new HTTPError(400, 'Import at most 400 valid MyAnimeList identifiers at once', 'Invalid import');
     const response = await fetch(PUBLIC_API_URL.replace(/\/$/, '') + '/manga/import-mappings', { method: 'POST', credentials: 'omit', cache: 'no-store', redirect: 'error', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ myanimelist: ids }), signal: AbortSignal.timeout(30000) });
     if (!response.ok) throw new HTTPError(response.status, 'The instance could not resolve this MyAnimeList import', 'Import mapping failed');
-    const mappings = await response.json(); assertImportContext(context);
+    const rawMappings = await response.json(); assertImportContext(context);
+    const mappings = publicUuidLibraryEnabled ? await publicImportMappings(rawMappings,ids,current.scope.catalogNamespace!,()=>assertImportContext(context)) : rawMappings;
     if (!Array.isArray(mappings.data) || !Array.isArray(mappings.missing) || !Array.isArray(mappings.ambiguous)) throw new HTTPError(502, 'Invalid catalogue import mapping', 'Import mapping failed');
     missing = mappings.missing; ambiguous = mappings.ambiguous;
-    for (const row of mappings.data) { if (!(row.myanimelist in payload.myanimelist)) throw Error('Unexpected import mapping'); selected.set(row.id, payload.myanimelist[row.myanimelist]); titles.set(row.id, row.title); }
+    for (const row of mappings.data) { if (!(row.myanimelist in payload.myanimelist)) throw Error('Unexpected import mapping'); if(selected.has(row.id)&&selected.get(row.id)!==payload.myanimelist[row.myanimelist])throw new HTTPError(400,'The import gives different reading states to the same title. Review those entries before importing.','Conflicting import'); selected.set(row.id, payload.myanimelist[row.myanimelist]); titles.set(row.id, row.title); }
   }
   if (selected.size > 400) throw new HTTPError(400, 'Import at most 400 entries at once', 'Invalid import');
   const visibilityQuery = new URLSearchParams();
@@ -90,6 +92,5 @@ export async function Import(payload: { weebdex?: Record<string, Constants.Manga
   const collisions = records.filter(row => current.records.some(old => old.family === row.family && old.key === row.key)).length;
   const sample = [...titles].slice(0, 12).map(([id, title]) => id + ': ' + title).join('\n');
   if (!confirm(`Interpret these IDs in the current instance ${current.scope.origin}, namespace ${current.scope.catalogNamespace ?? 'origin-only'}?\nMerge ${records.length} entries, ${collisions} overlapping keys. Missing ${missing.length}, ambiguous ${ambiguous.length} are excluded.\n${sample}\nNewer local records win. Nothing will be published.`)) throw new HTTPError(409, 'No device records were imported', 'Import cancelled');
-  const review: ImportReview = { source: 'Reviewed catalogue import', expectedRevision: current.revision, snapshot: { scope: current.scope, format: 'weebdex-device-library', version: 1, revision: 0, exported_at: new Date().toISOString(), records } };
-  assertImportContext(context); await applyImport(review, 'merge', scope => assertImportContext(context, scope)); return { status: 204 };
+  assertImportContext(context); await applyCatalogueRecords(records,current.revision,current.scope,()=>assertImportContext(context)); return { status: 204 };
 }

@@ -66,6 +66,7 @@ async function fixture({ random, secureRandom = true } = {}) {
   const fence = deviceSource.match(/^export const PUBLIC_DEVICE_FORMAT_FENCE = (.+);$/m);
   assert.ok(fence, 'review the production publication fence export');
   synthetic('device-store', { deviceWriteLock: never('device-write'), PUBLIC_DEVICE_FORMAT_FENCE: vm.runInNewContext(fence[1]) });
+  synthetic('protocol/store.js', { LocalLibrary: { open: never('canonical store') } });
   synthetic('protocol/publishing.js', Object.fromEntries(['queueSnapshot', 'deliverJob', 'cancelJob', 'recoverPublic'].map(name => [name, never(name)])));
   synthetic('protocol/backup.js', { backupBlob: never('backup') });
   function moduleFor(file) {

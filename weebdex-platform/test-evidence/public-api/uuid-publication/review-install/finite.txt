@@ -1,0 +1,16 @@
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ late previous-key preferences cannot repopulate reset relay or job state (39.892468ms)
+✔ key change between preferences and jobs rejects the old refresh continuation (1.380726ms)
+✔ same-key reconnect invalidates a pending refresh and newer refresh epoch wins (1.245513ms)
+✔ canonical rows/counts require returned key generation even before reset effect executes (1.149839ms)
+✔ late canonical import/publication/recovery review cannot reinstall after key reset or new epoch (5.33351ms)
+✔ canonical export rechecks the selected key immediately before download (1.699446ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 146.001404

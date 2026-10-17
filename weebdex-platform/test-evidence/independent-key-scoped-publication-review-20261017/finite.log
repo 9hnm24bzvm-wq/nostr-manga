@@ -1,0 +1,38 @@
+(node:19) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ late previous-key preferences cannot repopulate reset relay or job state (49.882972ms)
+✔ key change between preferences and jobs rejects the old refresh continuation (1.492654ms)
+✔ same-key reconnect invalidates a pending refresh and newer refresh epoch wins (1.471713ms)
+✔ canonical rows/counts require returned key generation even before reset effect executes (1.713467ms)
+✔ late canonical import/publication/recovery review cannot reinstall after key reset or new epoch (7.750344ms)
+✔ canonical export rechecks the selected key immediately before download (2.512258ms)
+(node:20) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ validated old-key acceptance is durably retained after response despite a new selected key (61.914213ms)
+✔ key change before the final send boundary prevents HTTP while retaining exact retry state (6.647266ms)
+✔ completion cannot access another job, change owner, or expose signing/network methods (4.136651ms)
+(node:21) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ canonical databases are distinct per key and origin; unsigned preferences contain no canonical owner (1.614849ms)
+✔ key switching isolates records and returning to a key recovers only its exact canonical data (1.45689ms)
+✔ generation changes, including same-key reconnect, invalidate pending reads and opens (0.5388ms)
+✔ unsigned settings and old legacy data are never automatically promoted into key-owned canonical stores (0.541574ms)
+(node:22) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ UUID preview maps verified originals/parents and key-scoped canonical DB without signing or delivery (92.168509ms)
+✔ explicit consent is required; supported reviewed publication queues only its selected key (12.616722ms)
+✔ key change rejects old reviewed publication and canonical row removal; backups show selected key only (14.23061ms)
+✔ device revision or key change inside signing prompt retains no queued job or delivery (21.746442ms)
+✔ unsupported relay refuses before snapshot signature, and unresolved origin-only scope refuses publication (14.41731ms)
+✔ service adoption reviews preserve unresolved legacy rows but hydrate only typed public UUIDs (6.745733ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 246.221872

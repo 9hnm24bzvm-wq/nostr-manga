@@ -1,0 +1,42 @@
+{
+  "status": "passed",
+  "source_parent_commit": "8bdf5997f0302ab228f1a39ceb271dcae5d658b0",
+  "finite_tests": 370,
+  "passed": 370,
+  "failed": 0,
+  "new_following_reader_cases": 12,
+  "new_following_component_cases": 12,
+  "account_follow_component_cases": 12,
+  "production_prepare_cases": 2,
+  "full_strict": {
+    "gates": [
+      "0",
+      "1"
+    ],
+    "errors_each": 0,
+    "existing_warnings_each": 15
+  },
+  "canonical_frontend_files": 679,
+  "canonical_frontend_unchanged": true,
+  "backend_collection_contract": "265804862294a9fa82dcaeabdd3843779be047b2",
+  "settings_schema_input_sha256": "d17707cc8a529e7fea1feebc647d2cf0c4072f1faa77cc0664dd59052e202c35",
+  "installed_dependencies": false,
+  "copied_dependency_caches": false,
+  "runtime_browser_database_started": false,
+  "cleanup_performed": false,
+  "independent_source_review": "API owner confirmed exact source hashes and corrected later-page account-rebind regression; no remaining contract blocker",
+  "source_pins": {
+    "platform-integrations/frontend-reconstruction/following/group/+page.svelte": "ee4f3eb57348a3743fac79b3bf4b37b13d7bd43ee8b261a122e13380e1e296d3",
+    "platform-integrations/frontend-reconstruction/following/lists/+page.svelte": "cfb63fbfa9852b9947745b2288b6ab06eeacadca234831bc16749893b767a7ba",
+    "platform-integrations/frontend-reconstruction/following/manga/+page.svelte": "86a424d968386c76156f688c2af8fa828db30938b50d7810d4649580de21a7fc",
+    "platform-integrations/frontend-reconstruction/following/user/+page.svelte": "8884bc3578b3298f0195167d95457100be30c1bc0688941efe74cbdb75d4aa3a",
+    "platform-integrations/frontend-route-additions.mjs": "488ae4a6f2ad8b63de11f0a1d9a64e92b8def18e2ee3553f3091fec5db0eaf6c",
+    "platform-integrations/public-api/AccountFollow.svelte": "85c209062ff98f00bf537728493dedb2deba10b742cd5605f01f55bd15922860",
+    "platform-integrations/public-api/AccountFollowing.svelte": "8b75553f50950f43c68068866da827deeed94d8b9ec331b3523183fcee4700a5",
+    "platform-integrations/public-api/FollowedLists.svelte": "2c621f3557a40a33d26e0d54d837b2efa254fdd115ffbf56bee7905ac876d76a",
+    "platform-integrations/public-api/FollowingNavigation.svelte": "8e979d041ef159b70b28e8d3d0172935fdaef1ef2fb296d68fd4d005db706bd8",
+    "platform-integrations/public-api/account-following-reader.ts": "171dac6ab28d9c986f3838c0421b38864f10618bdd9c89c00b3c121deb78d455"
+  },
+  "browser_qa": "Not run; genuine browser/IndexedDB dependency approval remains separate",
+  "integration_and_backup_holds": "Not lifted or taken over"
+}

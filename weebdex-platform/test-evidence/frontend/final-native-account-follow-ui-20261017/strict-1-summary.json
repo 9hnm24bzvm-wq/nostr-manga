@@ -1,0 +1,541 @@
+{
+  "status": "passed",
+  "utc": "2026-10-17T19:59:55.745Z",
+  "base_commit": "f6ecdb560f0be5dd767698003ee52a08d42f5531",
+  "canonical_frontend_files": 679,
+  "canonical_frontend_unchanged": true,
+  "runtime_browser_database_services_started": false,
+  "installed_dependencies": false,
+  "production_configuration_sha256": "7159a90ba070c2bc2fa3649ec502cdb2f5416117ae22add5152f4072d8e22355",
+  "production_overlay_order": [
+    "weebdex-reviewed-script-overlays",
+    "weebdex-reviewed-reader-overlays",
+    "weebdex-local-library-overlays",
+    "retained-public-uuid-catalogue-staging",
+    "recovered-public-signed-upload"
+  ],
+  "production_aliases": [
+    {
+      "find": "$announcements",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/platform-integrations/frontend-reconstruction/announcements"
+    },
+    {
+      "find": "$platform",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/platform-integrations/frontend-behavior"
+    },
+    {
+      "find": "$localLibrary",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/platform-integrations/local-library"
+    },
+    {
+      "find": "$publicApi",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/platform-integrations/public-api"
+    },
+    {
+      "find": "svelte-sonner",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/final-f6ecdb5-follow-strict-1-20261017-1959/production-input/node_modules/svelte-sonner/dist/index.js"
+    },
+    {
+      "find": "axios",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/final-f6ecdb5-follow-strict-1-20261017-1959/production-input/node_modules/axios/index.js"
+    },
+    {
+      "find": "http-status-codes",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/final-f6ecdb5-follow-strict-1-20261017-1959/production-input/node_modules/http-status-codes/build/es/index.js"
+    },
+    {
+      "find": "@noble/curves",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/curves"
+    },
+    {
+      "find": "@noble/hashes",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/hashes"
+    },
+    {
+      "find": "@scure/base",
+      "replacement": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/local-signing-base-2.0.0/node_modules/@scure/base"
+    }
+  ],
+  "declaration_entrypoints_for_runtime_package_aliases": [
+    {
+      "name": "svelte-sonner",
+      "production_entry": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/final-f6ecdb5-follow-strict-1-20261017-1959/production-input/node_modules/svelte-sonner/dist/index.js",
+      "same_package_declaration": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/svelte-sonner/dist/index.d.ts",
+      "declaration_sha256": "40a547e2db24b394dd949ea7608a4fba487194844b7bc4a35e54e146c4d97358"
+    },
+    {
+      "name": "axios",
+      "production_entry": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/final-f6ecdb5-follow-strict-1-20261017-1959/production-input/node_modules/axios/index.js",
+      "same_package_declaration": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/axios/index.d.ts",
+      "declaration_sha256": "faf770b3935c2ba6558b2bb65af5d5de58945d81f496dc1a5938c41a1abb358b"
+    },
+    {
+      "name": "http-status-codes",
+      "production_entry": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/final-f6ecdb5-follow-strict-1-20261017-1959/production-input/node_modules/http-status-codes/build/es/index.js",
+      "same_package_declaration": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/final-f6ecdb5-follow-strict-1-20261017-1959/production-input/node_modules/http-status-codes/build/es/index.d.ts",
+      "declaration_sha256": "bf028cb4dfbaa3e027a2d8935a48d323ba5c98c68f8197f38bf341b64c8c467f"
+    }
+  ],
+  "worker_platform_type_bindings": [
+    {
+      "file": "platform-integrations/local-library/projection-worker.ts",
+      "binding": "module-local ambient self: DedicatedWorkerGlobalScope",
+      "runtime_effect": "none; declaration is erased"
+    },
+    {
+      "file": "platform-integrations/local-library/protocol/worker.js",
+      "binding": "JSDoc DedicatedWorkerGlobalScope assertion on the worker platform self only",
+      "runtime_effect": "projection-local alias of the same self object"
+    }
+  ],
+  "strict": true,
+  "checkJs": true,
+  "skipLibCheck": true,
+  "skipLibCheck_inherited_from_original": true,
+  "source_diagnostic_suppressions_added": false,
+  "reachable_integration_files": [
+    "platform-integrations/frontend-behavior/AccountOnboarding.svelte",
+    "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+    "platform-integrations/frontend-behavior/RecoveryBoundary.svelte",
+    "platform-integrations/frontend-behavior/RecoveryRequest.svelte",
+    "platform-integrations/frontend-behavior/account-onboarding.ts",
+    "platform-integrations/frontend-behavior/account-preferences.ts",
+    "platform-integrations/frontend-behavior/actor-follow-state.ts",
+    "platform-integrations/frontend-behavior/auth-form-owner.ts",
+    "platform-integrations/frontend-behavior/authenticated-mutation.ts",
+    "platform-integrations/frontend-behavior/client-name.ts",
+    "platform-integrations/frontend-behavior/editor-cover-read.ts",
+    "platform-integrations/frontend-behavior/feed-continuation.ts",
+    "platform-integrations/frontend-behavior/install-prompt.ts",
+    "platform-integrations/frontend-behavior/latest-search.ts",
+    "platform-integrations/frontend-behavior/manga-search-query.ts",
+    "platform-integrations/frontend-behavior/mutation-authority.ts",
+    "platform-integrations/frontend-behavior/mutation-feedback.ts",
+    "platform-integrations/frontend-behavior/navigation-authority.ts",
+    "platform-integrations/frontend-behavior/private-feed.ts",
+    "platform-integrations/frontend-behavior/public-manga-widget-read.ts",
+    "platform-integrations/frontend-behavior/reader-navigation.ts",
+    "platform-integrations/frontend-behavior/route-action-owner.ts",
+    "platform-integrations/frontend-behavior/safe-read-owner.ts",
+    "platform-integrations/frontend-behavior/target-owner.ts",
+    "platform-integrations/frontend-behavior/thread-read.ts",
+    "platform-integrations/frontend-behavior/upload-batch.ts",
+    "platform-integrations/frontend-behavior/upload-resume.ts",
+    "platform-integrations/frontend-reconstruction/announcements/AnnouncementEntry.svelte",
+    "platform-integrations/frontend-reconstruction/announcements/announcement-client.ts",
+    "platform-integrations/frontend-reconstruction/announcements/announcement.svelte.ts",
+    "platform-integrations/local-library/ChapterHistory.ts",
+    "platform-integrations/local-library/IdentitySetup.svelte",
+    "platform-integrations/local-library/LibraryManagementTools.svelte",
+    "platform-integrations/local-library/LibraryProtected.svelte",
+    "platform-integrations/local-library/LibraryRuntime.svelte",
+    "platform-integrations/local-library/LocalLibraryPanel.svelte",
+    "platform-integrations/local-library/MangaDiscussion.svelte",
+    "platform-integrations/local-library/MangaFollow.ts",
+    "platform-integrations/local-library/ProtocolIdentityPanel.svelte",
+    "platform-integrations/local-library/PublicIdentitySettings.svelte",
+    "platform-integrations/local-library/action-owner.ts",
+    "platform-integrations/local-library/catalog.ts",
+    "platform-integrations/local-library/device-store.ts",
+    "platform-integrations/local-library/enrollment-policy.ts",
+    "platform-integrations/local-library/graph-transfer.ts",
+    "platform-integrations/local-library/library-relay-support.ts",
+    "platform-integrations/local-library/library.ts",
+    "platform-integrations/local-library/local-signing-key.ts",
+    "platform-integrations/local-library/projection-worker.ts",
+    "platform-integrations/local-library/protocol-identity.ts",
+    "platform-integrations/local-library/protocol-receipt.ts",
+    "platform-integrations/local-library/protocol-scope.ts",
+    "platform-integrations/local-library/protocol/backup.js",
+    "platform-integrations/local-library/protocol/codec.js",
+    "platform-integrations/local-library/protocol/indexeddb.js",
+    "platform-integrations/local-library/protocol/limits.js",
+    "platform-integrations/local-library/protocol/nostr.js",
+    "platform-integrations/local-library/protocol/outbox.js",
+    "platform-integrations/local-library/protocol/publishing.js",
+    "platform-integrations/local-library/protocol/store.js",
+    "platform-integrations/local-library/protocol/types.d.ts",
+    "platform-integrations/local-library/protocol/worker.js",
+    "platform-integrations/local-library/public-device-projection.ts",
+    "platform-integrations/local-library/publication.ts",
+    "platform-integrations/public-api/AccountFollow.svelte",
+    "platform-integrations/public-api/AccountPreferenceSave.svelte",
+    "platform-integrations/public-api/FollowedLists.svelte",
+    "platform-integrations/public-api/PersonalRating.svelte",
+    "platform-integrations/public-api/PublicListFollow.svelte",
+    "platform-integrations/public-api/PublicListPage.svelte",
+    "platform-integrations/public-api/PublisherLists.svelte",
+    "platform-integrations/public-api/account-follow-client.ts",
+    "platform-integrations/public-api/author-chapter-feed.ts",
+    "platform-integrations/public-api/bound-account-request.ts",
+    "platform-integrations/public-api/catalogue-edges.ts",
+    "platform-integrations/public-api/client.ts",
+    "platform-integrations/public-api/device-id-migration.ts",
+    "platform-integrations/public-api/device-id-state.ts",
+    "platform-integrations/public-api/device-id-transport.ts",
+    "platform-integrations/public-api/device-write-v2.ts",
+    "platform-integrations/public-api/exact-order.ts",
+    "platform-integrations/public-api/import-mappings.ts",
+    "platform-integrations/public-api/library-catalogue.ts",
+    "platform-integrations/public-api/library-staging.ts",
+    "platform-integrations/public-api/list-follow-client.ts",
+    "platform-integrations/public-api/media.ts",
+    "platform-integrations/public-api/native-forum/Comments.svelte",
+    "platform-integrations/public-api/native-forum/Provider.svelte",
+    "platform-integrations/public-api/native-forum/UnavailableContext.svelte",
+    "platform-integrations/public-api/native-forum/Votes.svelte",
+    "platform-integrations/public-api/native-forum/index.ts",
+    "platform-integrations/public-api/normalize.ts",
+    "platform-integrations/public-api/nostr-upload-request.ts",
+    "platform-integrations/public-api/presentation.ts",
+    "platform-integrations/public-api/public-lists.ts",
+    "platform-integrations/public-api/query.ts",
+    "platform-integrations/public-api/random-manga.ts",
+    "platform-integrations/public-api/rating-client.ts",
+    "platform-integrations/public-api/rating-summary.ts",
+    "platform-integrations/public-api/resource-mappings.ts",
+    "platform-integrations/public-api/settings-client.ts",
+    "platform-integrations/public-api/settings-schema.ts",
+    "platform-integrations/public-api/site-client.ts",
+    "platform-integrations/public-api/types.ts",
+    "platform-integrations/public-api/upload-client.ts",
+    "platform-integrations/public-api/upload-multipart.ts",
+    "platform-integrations/public-api/upload-preview.ts",
+    "platform-integrations/public-api/user-profile.ts",
+    "platform-integrations/public-api/validation.ts"
+  ],
+  "redirected_inactive_source_roots": [
+    "src/lib/API/MangaFollow.ts",
+    "src/lib/API/ChapterHistory.ts"
+  ],
+  "fragments": [
+    {
+      "path": "platform-integrations/frontend-behavior/upload-admission.fragment.ts",
+      "sha256": "59ed27e8ea4c1aeaef57224edfcff0ba85b24ed9e9aafcdba85a5632d961a31c",
+      "exact_inserted_into": [
+        "src/lib/components/upload/UploadChapterPages.svelte"
+      ],
+      "embedded_recipe_derivations": [
+        {
+          "projection": "src/lib/components/upload/UploadChapterPages.svelte",
+          "matching_recipe_lines": 57,
+          "distinctive_recipe_lines": 57,
+          "exact_fraction": 1
+        }
+      ],
+      "standalone_check_root": false,
+      "qualification": "Exact normalized recipe present in composed production source"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/upload-edit-resume.fragment.ts",
+      "sha256": "4b47f7cbb776bb13ab95e072428ab4619e1e7ef0aa98b832e5e00d79c649eb30",
+      "exact_inserted_into": [],
+      "embedded_recipe_derivations": [
+        {
+          "projection": "src/lib/components/upload/UploadChapterEdit.svelte",
+          "matching_recipe_lines": 37,
+          "distinctive_recipe_lines": 40,
+          "exact_fraction": 0.925
+        },
+        {
+          "projection": "src/lib/components/upload/UploadChapter.svelte",
+          "matching_recipe_lines": 26,
+          "distinctive_recipe_lines": 40,
+          "exact_fraction": 0.65
+        }
+      ],
+      "standalone_check_root": false,
+      "qualification": "Reference fragment recipe has subsequent reviewed repairs already embedded in production overlay literals; exact production plugin output is checked, never the stale standalone recipe"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/upload-new-resume.fragment.ts",
+      "sha256": "ab468154dd0285137dfc8e1890ef02989b9749db53581a737b1ed4baf63d7273",
+      "exact_inserted_into": [],
+      "embedded_recipe_derivations": [
+        {
+          "projection": "src/lib/components/upload/UploadChapter.svelte",
+          "matching_recipe_lines": 52,
+          "distinctive_recipe_lines": 56,
+          "exact_fraction": 0.9285714285714286
+        }
+      ],
+      "standalone_check_root": false,
+      "qualification": "Reference fragment recipe has subsequent reviewed repairs already embedded in production overlay literals; exact production plugin output is checked, never the stale standalone recipe"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/upload-process.fragment.ts",
+      "sha256": "2e76d9d8eabddea90b2aaaae96dfff7b28238f3c67be95246f8cd153e4cc2c4b",
+      "exact_inserted_into": [],
+      "embedded_recipe_derivations": [
+        {
+          "projection": "src/lib/components/upload/UploadChapterPages.svelte",
+          "matching_recipe_lines": 44,
+          "distinctive_recipe_lines": 48,
+          "exact_fraction": 0.9166666666666666
+        }
+      ],
+      "standalone_check_root": false,
+      "qualification": "Reference fragment recipe has subsequent reviewed repairs already embedded in production overlay literals; exact production plugin output is checked, never the stale standalone recipe"
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/upload-replacement.fragment.ts",
+      "sha256": "accfcd3062c871b4639082fdf59f95fcd8f0ad5489e59f3b58662916db44186b",
+      "standalone_check_root": false,
+      "active_in_final": false,
+      "qualification": "Exact prior native recipe is superseded by the public signed atomic replacement adapter; source association does not qualify actual HTTP or browser behavior",
+      "historical_origin": {
+        "projection": "src/lib/components/upload/UploadChapterPages.svelte",
+        "plugin": "weebdex-reviewed-script-overlays",
+        "snapshot": "production-stages/weebdex-reviewed-script-overlays/src/lib/components/upload/UploadChapterPages.svelte",
+        "sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
+        "matching_recipe_lines": 21,
+        "distinctive_recipe_lines": 35
+      },
+      "superseded_by": {
+        "plugin": "recovered-public-signed-upload",
+        "snapshot": "production-stages/recovered-public-signed-upload/src/lib/components/upload/UploadChapterPages.svelte",
+        "input_sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
+        "output_sha256": "b2e32ebffa14bf3826262c4c60f8c1b57dd063f38c3e02b0b7be38d8d96899c2"
+      },
+      "exact_inserted_into": [],
+      "embedded_recipe_derivations": []
+    },
+    {
+      "path": "platform-integrations/frontend-behavior/upload-scan.fragment.ts",
+      "sha256": "ea081c0235cfc6047d0bb01aec2150fbd6fbe285e983150464087ec75922ad5c",
+      "exact_inserted_into": [
+        "src/lib/components/upload/UploadChapterPages.svelte"
+      ],
+      "embedded_recipe_derivations": [
+        {
+          "projection": "src/lib/components/upload/UploadChapterPages.svelte",
+          "matching_recipe_lines": 16,
+          "distinctive_recipe_lines": 16,
+          "exact_fraction": 1
+        }
+      ],
+      "standalone_check_root": false,
+      "qualification": "Exact normalized recipe present in composed production source"
+    }
+  ],
+  "resolver_rewrites": [
+    {
+      "importer": "src/lib/API/index.ts",
+      "specifier": "./ChapterHistory",
+      "replacement": "../../../platform-integrations/local-library/ChapterHistory.ts",
+      "target": "platform-integrations/local-library/ChapterHistory.ts",
+      "resolver": "weebdex-local-library-api-resolver"
+    },
+    {
+      "importer": "src/lib/API/index.ts",
+      "specifier": "./MangaFollow",
+      "replacement": "../../../platform-integrations/local-library/MangaFollow.ts",
+      "target": "platform-integrations/local-library/MangaFollow.ts",
+      "resolver": "weebdex-local-library-api-resolver"
+    },
+    {
+      "importer": "src/lib/API/index.ts",
+      "specifier": "./ChapterHistory",
+      "replacement": "../../../platform-integrations/local-library/ChapterHistory.ts",
+      "target": "platform-integrations/local-library/ChapterHistory.ts",
+      "resolver": "weebdex-local-library-api-resolver"
+    },
+    {
+      "importer": "src/lib/API/index.ts",
+      "specifier": "./MangaFollow",
+      "replacement": "../../../platform-integrations/local-library/MangaFollow.ts",
+      "target": "platform-integrations/local-library/MangaFollow.ts",
+      "resolver": "weebdex-local-library-api-resolver"
+    },
+    {
+      "importer": "src/lib/components/ui/avatar/avatar-fallback.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/avatar/avatar-image.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/avatar/avatar.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-item.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-content.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-group-heading.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-item.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-label.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-radio-item.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-shortcut.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-sub-content.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/dropdown-menu/dropdown-menu-sub-trigger.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/progress/progress.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/slider/slider.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/tabs/tabs-content.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/tabs/tabs-list.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/tabs/tabs-trigger.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/components/ui/tabs/tabs.svelte",
+      "specifier": "$lib/utils.js",
+      "replacement": "../../../Utils.ts",
+      "target": "src/lib/Utils.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/lib/stores/index.ts",
+      "specifier": "./session",
+      "replacement": "./Session.ts",
+      "target": "src/lib/stores/Session.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/routes/(app)/+page.svelte",
+      "specifier": "./announcements/announcement.svelte",
+      "replacement": "../../../platform-integrations/frontend-reconstruction/announcements/announcement.svelte.ts",
+      "target": "platform-integrations/frontend-reconstruction/announcements/announcement.svelte.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/routes/(app)/+page.svelte",
+      "specifier": "./announcements/AnnouncementEntry.svelte",
+      "replacement": "../../../platform-integrations/frontend-reconstruction/announcements/AnnouncementEntry.svelte",
+      "target": "platform-integrations/frontend-reconstruction/announcements/AnnouncementEntry.svelte",
+      "resolver": "attachment-exact-import-case-repair"
+    },
+    {
+      "importer": "src/routes/(app)/announcements/manage/+page.svelte",
+      "specifier": "$announcements/announcement.svelte",
+      "replacement": "../../../../../platform-integrations/frontend-reconstruction/announcements/announcement.svelte.ts",
+      "target": "platform-integrations/frontend-reconstruction/announcements/announcement.svelte.ts",
+      "resolver": "attachment-exact-import-case-repair"
+    }
+  ],
+  "errors": 0,
+  "warnings": 15,
+  "svelte_check_receipt": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/svelte-check/bin/svelte-check",
+      "--tsconfig",
+      "./tsconfig.semantic.json",
+      "--output",
+      "machine"
+    ],
+    "exit_code": 0,
+    "signal": null,
+    "elapsed_ms": 15699
+  },
+  "service_worker_receipt": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/typescript/bin/tsc",
+      "--project",
+      "./tsconfig.worker.json",
+      "--pretty",
+      "false"
+    ],
+    "exit_code": 0,
+    "signal": null,
+    "elapsed_ms": 621
+  },
+  "limitation": "Projection maps resolve to exact composed production snapshots, not falsely to pre-overlay source. Stage hashes preserve original → shared → reader → local provenance. No application behavior is changed; residual diagnostics are reported."
+}

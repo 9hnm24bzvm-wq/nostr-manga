@@ -1,5 +1,8 @@
 // Public original account/social transport. Password accounts never sign here.
-import { PUBLIC_API_URL } from '$env/static/public';
+import { PUBLIC_API_URL, PUBLIC_MANGADEX_CATALOGUE } from '$env/static/public';
+import {publicResourceMappings} from '../public-api/resource-mappings';
+import {publicUuid} from '../public-api/validation';
+import {sameScope} from './device-store';
 import { request, transaction } from './protocol/indexeddb.js';
 import { stores, currentDeviceSnapshot } from './library';
 import { capabilities, assertAllowedRelay, selectedSigner, type Relay, type SourceMapping } from './publication';
@@ -7,10 +10,23 @@ import { origin, proveService, bytesResponse, signExact, signedRequest, verifyEv
 import { isPublicActionReceipt } from './protocol-receipt';
 export type SignedEvent = { id: string; pubkey: string; kind: number; created_at: number; tags: string[][]; content: string; sig: string };
 export type PublicReview = { relay: Relay; owner: string; generation: number; kind: number; content: string; tags: string[][]; purpose: string; source?: SourceMapping; parent?: SignedEvent };
-export async function sourceResource(kind: 'manga' | 'chapter', id: string): Promise<SourceMapping> {
-  if (!/^[A-Za-z0-9]{10}$/.test(id)) throw Error('Choose a native catalogue resource from this instance');
-  const scope = (await currentDeviceSnapshot()).scope, policy = await capabilities();
+export async function sourceResource(kind: 'manga' | 'chapter', id: string, assertContext: () => void = () => {}): Promise<SourceMapping> {
+  assertContext();
+  if (PUBLIC_MANGADEX_CATALOGUE === '1') id = publicUuid(id);
+  else if (!/^[A-Za-z0-9]{10}$/.test(id)) throw Error('Choose a native catalogue resource from this instance');
+  const scope = (await currentDeviceSnapshot()).scope; assertContext();
+  const policy = await capabilities(); assertContext();
   if (!scope.catalogNamespace || scope.catalogNamespace !== policy.catalog_namespace || (scope.serviceKey && scope.serviceKey !== policy.service_key)) throw Error('Catalogue scope changed. Review the instance before using this native ID.');
+  if (PUBLIC_MANGADEX_CATALOGUE === '1') {
+    if (typeof policy.origin !== 'string' || typeof policy.service_key !== 'string' || !/^[0-9a-f]{64}$/.test(policy.service_key)) throw Error('This instance has no verified signed-source service.');
+    const result = await publicResourceMappings({publicOrigin:scope.origin,sourceOrigin:policy.origin,serviceKey:policy.service_key,catalogNamespace:scope.catalogNamespace},[{kind,id}],assertContext);
+    assertContext();
+    const current = (await currentDeviceSnapshot()).scope; assertContext();
+    if (!sameScope(scope,current)) throw Error('Catalogue scope changed while resolving this source. Review it again.');
+    const source = result.mappings.find(row=>row.kind===kind&&row.id===id);
+    if (!source || result.unresolved.length) throw Error('This resource has no visible signed source. Use the instance community if available.');
+    return source;
+  }
   const response = await fetch(PUBLIC_API_URL.replace(/\/$/, '') + '/protocol/resources', { method: 'POST', credentials: 'omit', cache: 'no-store', redirect: 'error', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resources: [{ kind, id }] }), signal: AbortSignal.timeout(30000) });
   if (!response.ok) throw Error(`Source mapping failed: HTTP ${response.status}`);
   const result = await response.json();
@@ -102,7 +118,7 @@ export async function sendReviewed(review: PublicReview, publicConsent: boolean,
   assertAllowedRelay(review.relay.origin, policy); await proveService(review.relay.origin, review.relay.serviceKey);
   assertContext();
   if (review.source) {
-    const current = await sourceResource(review.source.kind, review.source.id);
+    const current = await sourceResource(review.source.kind, review.source.id, assertContext);
     assertContext();
     if (current.event_id !== review.source.event_id || current.publisher !== review.source.publisher || current.source_kind !== review.source.source_kind) throw Error('Source mapping changed since review');
     const root = await publicJson(review.relay, `/events/${current.event_id}`, 16384);

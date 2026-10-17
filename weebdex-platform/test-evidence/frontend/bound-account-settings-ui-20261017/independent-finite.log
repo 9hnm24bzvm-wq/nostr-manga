@@ -1,0 +1,34 @@
+✔ pinned frontend schema matches the real immutable backend template, without invented vocabulary/defaults (1.738955ms)
+✔ only changed known form fields are selected; unchanged/hidden/private settings are omitted (0.421083ms)
+✔ actual selected UUID references are translated from native form objects without fabricating unknown filters (1.333255ms)
+✔ changed invalid language/page-size/booleans, duplicate or legacy references never become account commands (0.567804ms)
+✔ actual account settings preserve omitted fields, version and unavailable count without defaults (0.856428ms)
+✔ explicit settings POST captures actual account/version/template/server timestamp and sends only selected patch (0.682747ms)
+✔ same-state merge retains real revision and preview timestamp (0.32572ms)
+✔ invalid/empty/unsupported patches and unloaded state never dispatch a write (0.853543ms)
+✔ settings preview rejects wrong bound account/template/source, unknown fields and malformed actual values (1.727718ms)
+✔ native account rebind with colliding preference version cannot redirect captured intent (0.457088ms)
+✔ authorization/CAS/overload refusals freeze account saves until a new read, without replay (0.854815ms)
+✔ lost or malformed successful receipts never claim account save and require explicit reread (1.071031ms)
+✔ caller mutations to a returned settings snapshot cannot change the captured command version/reference state (1.354747ms)
+✔ pending write cannot race another request and signer/view invalidation discards its completion (0.288053ms)
+✔ default preference editing never requests a signer/account; optional action is connected-only (4.206806ms)
+✔ intentional account preview contains only actual changed form fields and actual target username (1.952085ms)
+✔ confirmed save uses exact captured patch and does not apply response to device/native preferences or form baseline (2.79948ms)
+✔ closing during account preview discards late account/user state and pending indicator (1.55621ms)
+✔ signer generation change during save cannot install old-account confirmation or counts (1.5432ms)
+✔ form changes before Svelte effect flush cannot dispatch a stale account patch (1.42292ms)
+✔ form changes during save discard the old form/account result (3.446272ms)
+✔ unknown outcome requires explicit reload and cannot automatically repeat the command (1.435929ms)
+✔ invalid legacy filter or no supported form change never invokes an account request (2.78035ms)
+✔ real composed native form retains its original Save flow and adds only optional explicit account action (15.790655ms)
+✔ editing the form during a delayed account preview discards that preview before confirmation becomes available (1.978525ms)
+✔ post-save form edits clear prior success/account state and require a new exact changed-field preview (2.006267ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 187.831654

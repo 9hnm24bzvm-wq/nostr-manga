@@ -67,7 +67,7 @@ def main():
         before = source_snapshot()
         public.update(source_files_checked=676, frontend_preserved=True)
         env = dict(os.environ)
-        env.update(RUSTUP_TOOLCHAIN='1.90.0', CARGO_TARGET_DIR=str(ROOT / '.build/hosted-native'), WEEBDEX_FRONTEND_ROOT=str(ROOT / '.build/frontend-hosted'), PUBLIC_MANGADEX_CATALOGUE='0')
+        env.update(RUSTUP_TOOLCHAIN='1.90.0', CARGO_TARGET_DIR=str(ROOT / '.build/hosted-native'), WEEBDEX_FRONTEND_ROOT=str(ROOT / '.build/frontend-hosted'))
         os.environ.update(env)
         frontend_stage = ROOT / '.build/frontend-hosted'
         if frontend_stage.exists():
@@ -98,18 +98,6 @@ def main():
             public['stage'] = label
             write(PUBLIC / 'preparation.json', public)
             run(label, argv, ROOT, 60)
-        import importlib.util
-        public_upload_profile = None
-        if os.environ.get('SELECTED_BATCH', 'all') in ['all', 'public-upload']:
-            public['stage'] = 'public-upload-profile'
-            write(PUBLIC / 'preparation.json', public)
-            spec = importlib.util.spec_from_file_location('hosted_public_upload_profile', ROOT / 'scripts/ci/hosted-public-upload-profile.py')
-            profile = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(profile)
-            def verify_source():
-                if source_snapshot() != before:
-                    raise RuntimeError('Frozen source changed during public upload preparation')
-            public_upload_profile = profile.prepare(ROOT, STAGE, run, verify_source)
         verify_frontend()
         if source_snapshot() != before:
             raise RuntimeError('Frozen source changed at the final boundary')
@@ -118,8 +106,6 @@ def main():
         provisioner = ROOT / '.build/hosted-native/debug/examples/browser_fixture_provisioner'
         runtime = json.loads((STAGE / 'runtime.json').read_text())
         plan = {'schema': 1, 'normal_binary': str(normal), 'normal_sha256': sha(normal), 'provisioner': str(provisioner), 'provisioner_sha256': sha(provisioner), 'frontend_manifest': str(manifest), 'frontend_manifest_sha256': sha(manifest), 'frontend_index_sha256': sha(ROOT / 'artifacts/frontend/index.html'), 'node': subprocess.check_output(['node', '-p', 'process.execPath'], text=True).strip(), 'runtime_sha256': sha(STAGE / 'runtime.json')}
-        if public_upload_profile is not None:
-            plan['public_upload_recovery'] = public_upload_profile
         write(STAGE / 'plan.json', plan)
         import importlib.util
         spec = importlib.util.spec_from_file_location('prepared_native_feed_contract', ROOT / 'scripts/ci/native-feed-diagnostics.py')

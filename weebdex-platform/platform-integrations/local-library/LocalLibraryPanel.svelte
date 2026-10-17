@@ -4,6 +4,7 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import { localLibraryState, openLibrary, useMode, message, currentDeviceSnapshot, previewImport, previewAccountImport, applyImport, exportBackup, downloadBlob, type ImportReview } from './library';
   import { sameScope } from './device-store';
+  import {publicAccountLibraryUnavailable} from '../public-api/library-staging';
   import LibraryManagementTools from './LibraryManagementTools.svelte';
   let pending = $state(''), error = $state(''), notice = $state('');
   let imported = $state<ImportReview>(), scopeMatches = $state(false), reviewOpen = $state(false);
@@ -39,7 +40,7 @@
     <div class="space-y-1"><strong class="block font-semibold">Save reading progress</strong><p class="text-foreground/85 max-w-md">Library source: {$localLibraryState.mode === 'device' ? 'this browser device' : 'signed-in WeebDex account'}. Device saves do not need an account.</p></div>
     <div class="flex flex-wrap gap-2">
       <Button variant="outline" disabled={!!pending || $localLibraryState.mode === 'device'} onclick={() => run('device-mode', async () => { await useMode('device'); notice = 'Using this device library.'; })}>Use device library</Button>
-      <Button variant="outline" disabled={!!pending || $localLibraryState.mode === 'account'} onclick={() => run('account-mode', async () => { await useMode('account'); notice = 'Using your account library. Device saves are preserved.'; })}>Use account library</Button>
+      {#if !publicAccountLibraryUnavailable}<Button variant="outline" disabled={!!pending || $localLibraryState.mode === 'account'} onclick={() => run('account-mode', async () => { await useMode('account'); notice = 'Using your account library. Device saves are preserved.'; })}>Use account library</Button>{/if}
     </div>
     <p class="text-muted-foreground text-sm">{titles.length} saved titles · {lists.length} device lists</p>
   </section>
@@ -48,7 +49,7 @@
     <div class="flex flex-wrap items-center gap-2">
       <Button variant="outline" disabled={!!pending} onclick={() => run('export', async () => { downloadBlob(await exportBackup(), 'weebdex-device-library.json'); notice = 'Device backup downloaded.'; })}>Export device backup</Button>
       <label class="text-sm">Preview device backup <input type="file" accept="application/json,.json" disabled={!!pending} onchange={fileChanged} /></label>
-      <Button variant="outline" disabled={!!pending} onclick={() => run('account-import', () => preview(previewAccountImport))}>Preview account import to device</Button>
+      {#if !publicAccountLibraryUnavailable}<Button variant="outline" disabled={!!pending} onclick={() => run('account-import', () => preview(previewAccountImport))}>Preview account import to device</Button>{/if}
     </div>
     <p class="text-muted-foreground text-sm">Browsers can clear saved data. Keep an exported backup even when storage is protected.</p>
     <Button variant="ghost" disabled={!!pending} onclick={() => run('persist', async () => { if (!navigator.storage?.persist) throw Error('Persistent storage is unavailable in this browser'); notice = await navigator.storage.persist() ? 'Persistent storage granted. Keep backups anyway.' : 'Persistence was not granted. Keep exported backups.'; })}>Request persistent storage</Button>

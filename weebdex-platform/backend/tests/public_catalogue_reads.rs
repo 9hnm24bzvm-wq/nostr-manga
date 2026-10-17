@@ -475,8 +475,7 @@ async fn catalogue_actual_filters_paging_relationships_order_visibility_and_cont
         get(&client, &base, &path, 404).await;
     }
     get(&client, &base, "/manga/CatManga01", 400).await;
-    let group_order = get(&client, &base, "/group?order[followedCount]=desc", 200).await;
-    assert_eq!(group_order["total"], 2);
+    get(&client, &base, "/group?order[followedCount]=desc", 501).await;
     get(&client, &base, "/unknown", 404).await;
     let response = client
         .patch(format!("{base}/api/v1/manga"))

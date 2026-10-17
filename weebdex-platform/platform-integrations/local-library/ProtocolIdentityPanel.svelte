@@ -72,7 +72,7 @@
     const context = currentContext(), recipient = contextRelay(context);
     const previousSource = more ? selectedSource(context) : undefined;
     const next = more ? offset + 50 : 0, previous = more ? events : [];
-    const mapped = await contextResult(context, sourceResource(context.kind, context.id));
+    const mapped = await contextResult(context, sourceResource(context.kind, context.id, () => assertContext(context)));
     if (previousSource && previousSource.event_id !== mapped.event_id) { clearReview(); source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0; generation++; throw Error('The canonical source mapping changed. Reload this conversation before continuing.'); }
     const rows = await contextResult(context, readSocial(recipient, mapped, next));
     if (source?.event_id !== mapped.event_id) { if (source) generation++; clearReview(); replyParent = undefined; comment = ''; reaction = '+'; }

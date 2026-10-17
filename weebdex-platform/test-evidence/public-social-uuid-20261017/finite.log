@@ -1,0 +1,25 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ versioned read-only mapper preserves requested aliases, exact source and parent provenance (5.610216ms)
+✔ unmapped local-only UUID remains explicit and empty references never fetch (0.562816ms)
+✔ wrong service, namespace, kind, missing parent, invented or incomplete resources fail closed (3.988097ms)
+✔ legacy IDs, duplicate input, invalid origins and oversize input fail before network (0.555515ms)
+✔ captured scope cannot be rebound during fetch; caller scope generation is checked (0.788716ms)
+✔ bounded response rejects HTML, non-JSON, HTTP refusal and oversized bodies (1.178292ms)
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ UUID source discussion reads versioned exact original provenance without signing or native lookup (78.348514ms)
+✔ native gate-off source lookup preserves existing ten-character path (9.952236ms)
+✔ public source resolver rejects native-shaped IDs before any source transport (6.697952ms)
+✔ unresolved original, mismatched proof and changed catalogue never enable a discussion action (23.367047ms)
+✔ discussion-context changes stop before mapping and invalidate returned mapping (45.255962ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 242.946533
