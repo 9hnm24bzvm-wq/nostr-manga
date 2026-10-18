@@ -7,20 +7,33 @@
     "lossless public recipe reconstruction",
     "signed upload proxy budgets and native forwarding headers",
     "private backup/restore tooling and bounded CI registration",
-    "discovered CI portability and artifact-provenance repairs"
+    "discovered CI portability and artifact-provenance repairs",
+    "approved narrow original-migration Python dependency qualification",
+    "reviewed official nginx bootstrap version pin and check-mode path fence"
   ],
   "qualifiedSources": {
     "frontendAndCiExecution": "15030c51a622d5303ff645c57e9665a8884aaf7d",
     "fullTreeVitePin": "34042537b23df594a0c7923773ea4f00c6e47b9c",
     "backendAndOriginalProtocol": "c0e82cb1032a972bc1234166518dcd979fe4868d",
-    "integratedEvidenceBeforeThisSummary": "8e9257d0aeb4c2d03930cdb4cd2b479807cbe555"
+    "integratedEvidenceBeforeThisSummary": "01739dd48dca450941e32c5497b103a3cb01c0f7",
+    "originalMigrationEvidence": "f662c3f11e79e32dd94e471fb96a39319aa3921c",
+    "originalCliCodecEvidence": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
+    "pureBenchEvidence": "f1bbb9fe7a7bff11fdee4ac1dc9eec72cd4b0aba",
+    "controlledLoopbackBenchEvidence": "91e1381bcf004bfcfca70555299a0a50571bd031",
+    "privateRecoveryMechanicsEvidence": "5909da54714faf61e23f2050d7ba263b29de4f8d",
+    "nginxBootstrapSource": "ad668c0f40d6d238770fbf97066c1a7349b268c7"
   },
   "sourceAssociation": {
-    "frontendToolingAndCiInputsEqualVitePin": true,
-    "backendAndOriginalProtocolEqualQualifiedSource": true,
+    "frontendToolingAndCiInputsEqualVitePin": false,
+    "backendAndOriginalProtocolEqualQualifiedSource": false,
     "canonicalFrontendFilesUnchanged": 679,
     "currentProductInputHashes": 922,
-    "executionInputHashes": 1242
+    "executionInputHashes": 1242,
+    "frontendProductBuildInputsEqualVitePin": true,
+    "backendAndProtocolRuntimeEqualQualifiedSource": true,
+    "unchangedCurrentProductInputHashes": 922,
+    "unchangedExistingExecutionInputHashes": 1241,
+    "knownExecutionSourceExceptions": "nginx-bootstrap-source-association-20261018.json"
   },
   "platformCi": {
     "discoveredNodeFiles": 126,
@@ -32,21 +45,55 @@
     "actualCssConsumerFiles": 1,
     "actualCssProfilesPassed": 2,
     "pythonFiles": 9,
-    "pythonCasesPassed": 146
+    "pythonCasesPassed": 146,
+    "executionSnapshot": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+    "postExecutionAddedNodeFiles": [
+      "weebdex-platform/tests/ci/test_nginx_bootstrap_pin.mjs"
+    ],
+    "separatelyQualifiedAdditionalNodeCasesPassed": 6,
+    "currentDiscoveredNodeFiles": 127
   },
   "additionalOriginalTests": {
     "browserModelFiles": 20,
     "browserModelCasesPassed": 140,
     "packagingCasesPassed": 12,
     "apiIndexCasesPassed": 5,
-    "localMigrationCasesPassed": 6,
-    "localMigrationCasesDependencyFailed": 1,
-    "actualMissingImport": "cbor2",
-    "additionalRequiredUninstalledImport": "coincurve",
-    "selectedBenchCasesPassed": 19,
+    "localMigrationCasesPassed": 7,
+    "localMigrationCasesDependencyFailed": 0,
+    "selectedBenchCasesPassed": 75,
     "selectedBenchOwnedPostgresSkips": 12,
-    "wholeAdditionalFilesHeld": 16,
-    "classification": "../frontend/complete-discovered-physical-ci-20261018/repository-additional-discovery.json"
+    "wholeAdditionalFilesHeld": 3,
+    "classification": "current-repository-test-discovery-20261018.json",
+    "migrationContinuationEvidence": "../frontend/approved-python-migration-20261018/status.json",
+    "historicalMigrationDependencyFailure": {
+      "localCheckpoint": "3fd29a15e58c1a168d259edba0adf00cbaf43c8f",
+      "passed": 6,
+      "dependencyFailed": 1,
+      "actualMissingImport": "cbor2",
+      "otherRequiredImport": "coincurve",
+      "originalFailureEvidenceRetained": true
+    },
+    "approvedPinnedMigrationRuntime": {
+      "cbor2": "5.6.5",
+      "coincurve": "21.0.0",
+      "onlyTwoOfficialHashPinnedWheelsAdded": true,
+      "fullRequirementsParity": false,
+      "aiohttp": {
+        "projectRequired": "3.13.5",
+        "actual": "3.14.4",
+        "modified": false
+      }
+    },
+    "originalCliCodecAdditionalFiles": 6,
+    "originalCliCodecAdditionalCasesPassed": 38,
+    "selectedBenchModules": 11,
+    "selectedBenchSetupErrors": 2,
+    "selectedBenchSkipped": 12,
+    "controlledLoopbackBenchFiles": 5,
+    "controlledLoopbackBenchCasesPassed": 47,
+    "controlledLoopbackBenchMissingFixtureErrors": 2,
+    "pureBenchAdditionalFiles": 2,
+    "pureBenchAdditionalCasesPassed": 9
   },
   "strict": {
     "off": {
@@ -99,8 +146,28 @@
     "proxyFiniteCasesPassed": 11,
     "privateRecoverySyntheticCasesPassed": 18,
     "nginxParserExecuted": false,
-    "realBackupRestoreDrillExecuted": false,
-    "exactApprovedStoppedFixtureCleanupReceipt": "approved-nine-db-cleanup-20261018.json"
+    "realBackupRestoreDrillExecuted": true,
+    "exactApprovedStoppedFixtureCleanupReceipt": "approved-nine-db-cleanup-20261018.json",
+    "recoveryDrillScope": "Synthetic PostgreSQL17 mechanics with three tiny storage roots",
+    "applicationConsistentRecoveryQualified": false,
+    "mechanicsDrill": {
+      "passed": true,
+      "seconds": 2.641,
+      "commandSteps": 17,
+      "dumpVerifyTransactionalRestoreAndNonemptyRefusal": true,
+      "databaseTableAndStorageRootParity": true,
+      "databaseContentsOrBackupArchivePublished": false,
+      "evidence": "../deployment/private-checkpoint-mechanics-20261018/result.json"
+    },
+    "nginxBootstrap": {
+      "officialVersion": "1.30.6",
+      "sourceCommit": "ad668c0f40d6d238770fbf97066c1a7349b268c7",
+      "bashSyntaxPassed": true,
+      "finiteCasesPassed": 6,
+      "checkModeForeignPathExecutionRefused": true,
+      "compiledInstalledOrParserExecuted": false,
+      "evidence": "../deployment/nginx-bootstrap-security-20261018/review-correction.json"
+    }
   },
   "limits": {
     "wholeRepositoryTestsPassed": false,
@@ -114,6 +181,24 @@
     "frontend": "../frontend/complete-discovered-physical-ci-20261018/status.json",
     "initialRedAndIncompletePhysicalCoverageRetained": "../frontend/final-discovered-ci-20261018/initial-status.json",
     "backend": "../native-account-profile-20261018/report.json",
-    "vite": "../frontend/profile-title-final-builds-20261018/result.json"
+    "vite": "../frontend/profile-title-final-builds-20261018/result.json",
+    "originalMigration": "../frontend/approved-python-migration-20261018/status.json",
+    "currentOriginalDiscovery": "current-repository-test-discovery-20261018.json",
+    "controlledLoopbackBenches": "../frontend/controlled-bench-seams-final-20261018/status.json",
+    "normalBrowserBlocker": "../frontend/normal-browser-capability-probe-20261018/result.json",
+    "privateRecoveryMechanics": "../deployment/private-checkpoint-mechanics-20261018/result.json",
+    "nginxBootstrapSourceAssociation": "nginx-bootstrap-source-association-20261018.json"
+  },
+  "browserCapabilityProbe": {
+    "sourceEvidenceCommit": "7f1cacd54b2ef286010fa2505cc9d2016929ce77",
+    "normalLaunchAttempts": 1,
+    "installedChromiumPresent": true,
+    "chromiumSandbox": true,
+    "customSecurityFlags": [],
+    "browserStarted": false,
+    "fixtureRequests": 0,
+    "observedBlocker": "socket() failed: Operation not permitted during normal startup",
+    "evidence": "../frontend/normal-browser-capability-probe-20261018/result.json",
+    "applicationOrE2EAcceptance": false
   }
 }

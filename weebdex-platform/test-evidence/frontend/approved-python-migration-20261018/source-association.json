@@ -1,0 +1,12 @@
+{
+  "productInputs": 922,
+  "executionInputs": 1242,
+  "actualProductAndTestSourceUnchanged": true,
+  "priorEvidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+  "productSource": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+  "integrationEquivalent": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+  "testFile": "manga-protocol-lab/tests/test_local_library_migration.py",
+  "testFileSha256": "ef1da229525dcebf6fbdbe5ec304d932deafe188acebd94c944ac80f812f0ab6",
+  "testImplementationChanged": false,
+  "pinnedPackagesAddedOnlyToIgnoredTarget": true
+}

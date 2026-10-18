@@ -1,0 +1,12 @@
+{
+  "run.log": {
+    "bytes": 12641,
+    "sha256": "e7ac6f1e5ee7c94e3cadd16be7e446fb4c66b693db2c501fb51555798b9f39dd",
+    "retained": "run.log.gz"
+  },
+  "initial-run.log": {
+    "bytes": 4665,
+    "sha256": "7771ec337694d8968f5f702106ed3a191c32c363a372a70c91348fa22d4e4899",
+    "retained": "initial-run.log.gz"
+  }
+}

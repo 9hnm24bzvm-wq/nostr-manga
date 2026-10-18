@@ -1,0 +1,33 @@
+{
+  "system_browser_wrapper": {
+    "path": "/usr/bin/chromium",
+    "bytes": 5064,
+    "sha256": "2c8d32d29dc6781c35ae196ea83299d507ac88fc339301abe74672feda299779"
+  },
+  "actual_browser_binary": {
+    "path": "/usr/lib/chromium/chromium",
+    "bytes": 326880088,
+    "sha256": "4dc9f9f9b20e9bd95bf201f43d2d643f48938f36a70ddcb6fce3dd611a178180"
+  },
+  "packages": {
+    "playwright": {
+      "version": "1.62.1",
+      "package_json_sha256": "ca170ec143a88ed3043ac953eb3b2377b2b97304104f4e1e23316684ce2c35af"
+    },
+    "playwright-core": {
+      "version": "1.62.1",
+      "package_json_sha256": "07c47543631fef9508760365dee9fbe958c562093ec8d122543949ed231f233f"
+    }
+  },
+  "bundled_chromium_revision_1234_download_present": false,
+  "load_runtime_source": {
+    "path": "weebdex-platform/scripts/ci/browser-runtime.mjs",
+    "sha256": "061be4487096eda05f3411d2a584cd5971cd62629173ae748a38c0e0e9cd279d"
+  },
+  "actual_capability": "The existing runtime loader verified reviewed installed Playwright source and chose system Chromium. A normal sandbox-enabled launch was attempted once against an owned co-located HTTP fixture.",
+  "custom_security_flags": [],
+  "chromiumSandbox": true,
+  "security_or_network_settings_changed": false,
+  "download_or_install": false,
+  "repeat_after_permission_failure": false
+}

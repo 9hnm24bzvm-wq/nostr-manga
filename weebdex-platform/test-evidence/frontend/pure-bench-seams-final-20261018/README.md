@@ -1,0 +1,7 @@
+# Pure configuration/cryptographic bench seams
+
+Exactly two now-dependency-ready files were enumerated before execution and pass9/9unchanged unittest methods: test_mixed_fixture_config.py7 and test_wire_security.py2. The first invokes only the small local fixture-configuration CLI and temporary JSON/config writes; it does not launch its referenced nginx/strfry/DB executables. The second uses Wire(None) to verify in-memory real cryptographic proofs without issuing a request. No listener, actual database, HTTP service, load, heavy history or broad bench discovery ran.
+
+Runtime is1.357s, guarded1.827s; the owned fixture cap is16MiB/120s, no resource trigger or owned survivors. Existing approved cbor2 5.6.5/coincurve21.0.0imports remain actual and isolated. All47installed entries/consumer alias, prior7physical dependency roots and922product/1,242execution source pins remain exact. No install, dependency/cache copy, product/test assertion change or additional cleanup occurred.
+
+Actual aiohttp is3.14.4 versus project3.13.5 and was not changed; importing its verifier support is not live HTTP qualification or full requirements-runtime parity. The separate discovery continuation now records35of43additional files with an execution result, including the PG file with12explicit owned-fixture skips. Eight whole files remain unexecuted: real-nginx1 plus7controlled-runtime/heavy bench files. Earlier classifications and results remain unchanged in their immutable commits. This is not whole-repository, live-browser or production acceptance.

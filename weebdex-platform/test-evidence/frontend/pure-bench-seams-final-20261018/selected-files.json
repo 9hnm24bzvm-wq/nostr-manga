@@ -1,0 +1,26 @@
+{
+  "files": [
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_mixed_fixture_config.py",
+      "sha256": "e241bb7d20312d8b1ca75ce135d1b0156020b8cacb3872e5825166513d5bf185",
+      "unittestMethods": 7,
+      "externalNetwork": false,
+      "listener": false,
+      "databaseStarted": false,
+      "loadBenchmark": false
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_wire_security.py",
+      "sha256": "14e4e5bd57381536292185941f7427ce5f101a0285db0e8994880e95e54cccf4",
+      "unittestMethods": 2,
+      "externalNetwork": false,
+      "listener": false,
+      "databaseStarted": false,
+      "loadBenchmark": false
+    }
+  ],
+  "fixtureAllocatedBytesCap": 16777216,
+  "deadlineSeconds": 120,
+  "ownedFixtureRoot": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/.build/pure-bench-seams-final-20261018",
+  "scope": "Pure configuration CLI/in-memory cryptographic verifier only"
+}

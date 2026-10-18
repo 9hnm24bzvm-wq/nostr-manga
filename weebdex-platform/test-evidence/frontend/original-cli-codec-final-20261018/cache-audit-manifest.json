@@ -1,0 +1,10 @@
+[
+  {
+    "file": "cache-audit/36.json",
+    "sha256": "3233a50777a1346369822d338d1f75eb18ac38b65874194f046160e9d84d5a38",
+    "pid": 36,
+    "protectedRoots": 7,
+    "checkedMutations": 0,
+    "protectedWriteAttempts": 0
+  }
+]

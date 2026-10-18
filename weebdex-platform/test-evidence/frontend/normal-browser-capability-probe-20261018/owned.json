@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/browser-normal-capability-probe-20261018/probe.mjs"
+  ],
+  "exitCode": 1,
+  "elapsedSeconds": 0.437,
+  "stopReason": null,
+  "minimumFreeBytes": 4621905920,
+  "maximumSampledOwnedRssBytes": 215592960,
+  "ownedBirths": [
+    [
+      8,
+      9699990
+    ],
+    [
+      20,
+      9700020
+    ],
+    [
+      25,
+      9700020
+    ],
+    [
+      38,
+      9700026
+    ],
+    [
+      39,
+      9700026
+    ]
+  ],
+  "ownedSurvivors": [],
+  "cleanupSignals": [],
+  "cleanupVerified": true,
+  "descendantMethod": "PPID lineage plus exact process birth and pidfd retention; detached browser descendants included"
+}

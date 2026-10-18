@@ -51,6 +51,17 @@
       "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/2d31e42e3f66c97714def167fbddc1773d3b4a31",
       "verifiedUTC": "2026-10-18T02:46:12Z",
       "qualification": "Exact755frontend/strict/both-build successor;140backend units,four affected real database suites and22-request production-client bridge. Prior full19-case matrix remains tied to0395;native browser/load pending."
+    },
+    {
+      "localSourceCommit": "3fd29a15e58c1a168d259edba0adf00cbaf43c8f",
+      "localSourceTree": "b80777b3193c3303ca4dc353086cc43994bb0cae",
+      "remoteCommit": "ca7ef03b99c5ac31a987ea19d7d59c7457d48b29",
+      "remoteTree": "b80777b3193c3303ca4dc353086cc43994bb0cae",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/ca7ef03b99c5ac31a987ea19d7d59c7457d48b29",
+      "verifiedUTC": "2026-10-18T05:52:02Z",
+      "verifiedSourceEntries": 5267,
+      "qualification": "Exact native-profile/title/operations successor: 2,016 platform Node cases, 146 platform Python cases, both strict and production-build profiles with actual CSS checks, 141 Rust units and four affected HTTP suites. Original migration dependency failure and other declared original-suite holds remain explicit. The full 19-case matrix remains historical at 0395; native browser, load, nginx runtime and real restore drill remain unqualified."
     }
   ],
   "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"

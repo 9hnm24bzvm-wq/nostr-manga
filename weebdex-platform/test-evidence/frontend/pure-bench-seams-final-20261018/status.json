@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "files": 2,
+  "unittestMethods": 9,
+  "passed": 9,
+  "failures": 0,
+  "skipped": 0,
+  "unittestElapsedSeconds": 1.357,
+  "guardedElapsedSeconds": 1.827,
+  "deadlineSeconds": 120,
+  "ownedFixtureAllocationCapBytes": 16777216,
+  "maximumObservedOwnedFixtureAllocatedBytes": 57344,
+  "actualNetworkRequestListenerDatabaseOrLoad": false,
+  "aiohttpRequired": "3.13.5",
+  "aiohttpActual": "3.14.4",
+  "aiohttpChanged": false,
+  "installedPinnedInputEntriesUnchanged": 47,
+  "consumerAliasUnchanged": true,
+  "priorSevenPhysicalRootsStillExact": true,
+  "productInputsUnchanged": 922,
+  "executionInputsUnchanged": 1242,
+  "sourceOrAssertionsChanged": false,
+  "currentAdditionalDiscovery": {
+    "files": 43,
+    "executedFiles": 35,
+    "wholeFilesUnexecuted": 8,
+    "unexecutedWholeFiles": "1real-nginx +7owned-controlled-runtime/heavybench",
+    "pgMethodsExplicitlySkipped": 12
+  },
+  "noWholeRepositoryOrLiveHttpRuntimeParityClaim": true
+}

@@ -1,0 +1,24 @@
+{
+  "archive": {
+    "bytes": 1331698,
+    "safeMemberCount": 546,
+    "sha256": "3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8",
+    "url": "https://nginx.org/download/nginx-1.30.6.tar.gz",
+    "vendorSignatureVerificationClaimed": false,
+    "verifiedBy": "bounded in-memory download/hash and tar metadata/header inspection; no filesystem extraction or execution",
+    "versionHeader": "src/core/nginx.h declares nginx/1.30.6"
+  },
+  "checks": {
+    "bashSyntax": true,
+    "failures": 0,
+    "finiteNodeCases": 5,
+    "nginxCompiledOrInstalled": false,
+    "nginxParserOrLiveProxyClaimed": false
+  },
+  "retainedHistoricalReceipts": true,
+  "schema": "official-nginx-bootstrap-pin-v1",
+  "sourceSha256": {
+    "manga-protocol-lab/scripts/bootstrap.sh": "1fbcbbb4a5bbdc763b0ba9ee8f635ce6c43728cfe2ecf88eb3ae25a942bac35c",
+    "weebdex-platform/tests/ci/test_nginx_bootstrap_pin.mjs": "b63505a71385e142683285a6acc0b8c5ecf4515772a4bbd2d48edbd1cf17b0fb"
+  }
+}

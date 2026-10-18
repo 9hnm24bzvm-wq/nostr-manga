@@ -1,0 +1,7 @@
+{
+  "alias": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/manga-protocol-lab/vendor/pydeps",
+  "physicalTarget": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/.build/python-migration-approved-20261018-0556/site-packages",
+  "mode": 511,
+  "mtimeNs": 1792303108881279790,
+  "purpose": "Existing operator_support passes vendor/pydeps in its child PYTHONPATH; this ignored link exposes only the two installed pinned packages without changing product or test source"
+}

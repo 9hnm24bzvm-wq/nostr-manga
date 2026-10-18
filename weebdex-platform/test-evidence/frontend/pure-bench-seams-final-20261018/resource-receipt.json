@@ -1,0 +1,633 @@
+{
+  "command": [
+    "bash",
+    "weebdex-platform/test-evidence/frontend/pure-bench-seams-final-20261018/run-selected.sh"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017",
+  "exitCode": 0,
+  "stopReason": null,
+  "elapsedSeconds": 1.827,
+  "minimumFreeBytes": 4621934592,
+  "minimumAvailableMemoryBytes": 8363618304,
+  "ownedSurvivors": [],
+  "samples": [
+    {
+      "elapsedSeconds": 0.0,
+      "freeBytes": 4621987840,
+      "availableMemoryBytes": 8414146560,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 131072
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 8192
+    },
+    {
+      "elapsedSeconds": 0.051,
+      "freeBytes": 4621987840,
+      "availableMemoryBytes": 8408768512,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 12582912
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 8192
+    },
+    {
+      "elapsedSeconds": 0.102,
+      "freeBytes": 4621987840,
+      "availableMemoryBytes": 8400830464,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 20578304
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 8192
+    },
+    {
+      "elapsedSeconds": 0.153,
+      "freeBytes": 4621987840,
+      "availableMemoryBytes": 8398254080,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 24817664
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 8192
+    },
+    {
+      "elapsedSeconds": 0.203,
+      "freeBytes": 4621987840,
+      "availableMemoryBytes": 8394752000,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31109120
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 8192
+    },
+    {
+      "elapsedSeconds": 0.254,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8386420736,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 10,
+          "rssBytes": 2883584
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.305,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8376737792,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 11,
+          "rssBytes": 7995392
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.356,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8371359744,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 12,
+          "rssBytes": 13004800
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.406,
+      "freeBytes": 4621955072,
+      "availableMemoryBytes": 8367857664,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 13,
+          "rssBytes": 13369344
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 36864
+    },
+    {
+      "elapsedSeconds": 0.457,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8367857664,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 15,
+          "rssBytes": 6029312
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.508,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8367759360,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 16,
+          "rssBytes": 7995392
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.559,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8367759360,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 17,
+          "rssBytes": 12808192
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.61,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8367767552,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 19,
+          "rssBytes": 3014656
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.661,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8367767552,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 20,
+          "rssBytes": 8388608
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.711,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8367775744,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 21,
+          "rssBytes": 12976128
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.762,
+      "freeBytes": 4621955072,
+      "availableMemoryBytes": 8367775744,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 22,
+          "rssBytes": 13246464
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 36864
+    },
+    {
+      "elapsedSeconds": 0.813,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8367775744,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 24,
+          "rssBytes": 7077888
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.864,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8366841856,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 25,
+          "rssBytes": 9568256
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.915,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363646976,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 26,
+          "rssBytes": 13004800
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 0.966,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363646976,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 28,
+          "rssBytes": 262144
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.016,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363646976,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 29,
+          "rssBytes": 7733248
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.067,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363646976,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 30,
+          "rssBytes": 12197888
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.118,
+      "freeBytes": 4621934592,
+      "availableMemoryBytes": 8363646976,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 31,
+          "rssBytes": 0
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 57344
+    },
+    {
+      "elapsedSeconds": 1.169,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363659264,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 33,
+          "rssBytes": 6160384
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.22,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363675648,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 34,
+          "rssBytes": 9961472
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.271,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363618304,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 35,
+          "rssBytes": 13385728
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.321,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8363618304,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 37,
+          "rssBytes": 5111808
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.372,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8364318720,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 38,
+          "rssBytes": 7733248
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.423,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8365281280,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 39,
+          "rssBytes": 12214272
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.474,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8364544000,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 40,
+          "rssBytes": 13398016
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.525,
+      "freeBytes": 4621971456,
+      "availableMemoryBytes": 8364310528,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 31502336
+        },
+        {
+          "pid": 42,
+          "rssBytes": 2490368
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 20480
+    },
+    {
+      "elapsedSeconds": 1.575,
+      "freeBytes": 4621983744,
+      "availableMemoryBytes": 8364310528,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 1703936
+        },
+        {
+          "pid": 8,
+          "rssBytes": 32407552
+        }
+      ],
+      "ownedFixtureAllocatedBytes": 8192
+    }
+  ],
+  "launchDiskFloorBytes": 4563402752,
+  "liveDiskFloorBytes": 4429185024,
+  "fixtureCapBytes": 16777216,
+  "deadlineSeconds": 120,
+  "sampleIntervalSeconds": 0.05,
+  "status": "passed"
+}

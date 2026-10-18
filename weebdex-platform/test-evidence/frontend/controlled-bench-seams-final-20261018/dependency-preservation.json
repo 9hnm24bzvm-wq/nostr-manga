@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "priorPhysicalSnapshotSource": "d491b597b913cd25cf978498c88e432133cc4e25",
+  "physicalRoots": 7,
+  "physicalEntries": 45438,
+  "physicalRegularFiles": 40955,
+  "exactByteModeMtimeNsSymlinkEquality": true,
+  "installedEntries": 47,
+  "installedInputEquality": true,
+  "consumerAliasUnchanged": true,
+  "nodeGuardAudits": 0,
+  "nodeAuditInterpretation": "No Node command executes in this selected Python HTTP/process batch; no Node write-enforcement assertion is substituted for exact read-only physical equality"
+}

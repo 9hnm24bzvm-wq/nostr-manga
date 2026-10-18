@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "bashSyntax": true,
+    "failures": 0,
+    "finiteNodeCases": 6,
+    "nginxCompiledOrInstalled": false,
+    "nginxParserOrLiveProxyClaimed": false,
+    "unknownLinkRealDirectoryAndLegacyMarkerExecutablesNeverInvoked": true
+  },
+  "correction": "Require an actual symlink to the exact current nginx-1.30.6 relative target before invoking the compatibility executable",
+  "finding": "--check previously executed an unfamiliar historical compatibility path before validating its link type and target",
+  "schema": "official-nginx-bootstrap-pin-review-correction-v1",
+  "sourceSha256": {
+    "manga-protocol-lab/scripts/bootstrap.sh": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0",
+    "weebdex-platform/tests/ci/test_nginx_bootstrap_pin.mjs": "421e8279795071869e2ef5fc402dfef6b2fe476c645a08e77ad9e821f7031648"
+  },
+  "supersedesSourceOnlyCandidate": "421ed3d4119408a7d809986412a3629cb189d736"
+}
