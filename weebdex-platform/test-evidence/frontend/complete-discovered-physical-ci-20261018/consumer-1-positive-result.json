@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "canonical_files": 679,
+  "product_inputs": 922,
+  "valid_source_maps": 684,
+  "graph_edges": 2614,
+  "physical_dependency_roots": 7,
+  "required_production_roots": 3,
+  "strict_process_audits": 8,
+  "protected_node_write_attempts": 0,
+  "semantic_check_status": "passed",
+  "errors": 0,
+  "warnings": 12,
+  "physical_dependency_entries": 45438,
+  "qualification": "Exact byte/mode/mtimeNs/symlink snapshots plus in-process Node mutation denial; not OS syscall enforcement."
+}

@@ -34,11 +34,27 @@ test('reviewed library publication uses the same local identity and immutable si
   const { f, draft } = await localFixture();
   try {
     const selected = f.publication.selectedSigner();
-    const review = { ...f.review, owner: selected.owner, generation: selected.generation };
+    assert.notEqual(selected.owner, f.owner, 'local activation selects a different key-owned canonical database');
+    const preferences = await f.publication.relayPreferences();
+    assert.equal(preferences.revision, 0); assert.equal(preferences.relays.length, 0);
+    await assert.rejects(() => f.publication.publishReviewed(f.review, true, f.assertCurrent), /Signer changed since preview/);
+    // Relabeling the previous key's review cannot adopt its selected recipients.
+    await assert.rejects(() => f.publication.publishReviewed({ ...f.review, owner: selected.owner, generation: selected.generation }, true, f.assertCurrent), /Library, canonical mapping or recipient selection changed/);
+    assert.equal((await f.publication.publicationJobs()).length, 0); assert.equal(f.calls.posts, 0);
+    // Explicitly choose recipients for this key, then run the actual preview.
+    await f.publication.selectRelays(f.review.recipients, preferences.revision);
+    const review = await f.publication.previewPublication();
+    assert.equal(review.owner, draft.publicKey); assert.equal(review.generation, selected.generation);
+    assert.equal(review.relayRevision, 1);
     const id = await f.publication.publishReviewed(review, true, f.assertCurrent);
     const jobs = await f.publication.publicationJobs();
     assert.equal(jobs.length, 1); assert.equal(jobs[0].event.pubkey, draft.publicKey);
     assert.equal(jobs[0].id, id); assert.equal(jobs[0].recipients[0].state, 'retryable');
+    assert.equal(jobs[0].event.id, id); assert.equal(jobs[0].relayRevision, review.relayRevision);
+    assert.equal(jobs[0].event.content, JSON.stringify({ manifest: review.graph.root.hash, version: 1 }));
+    assert.equal(JSON.stringify(jobs[0]), JSON.stringify((await f.publication.publicationJobs())[0]), 'persisted immutable signed job survives readback');
+    assert.equal((await f.protocol.jobs()).length, 0, 'the previous key receives no new job');
+    assert.equal((await f.protocol.relayPreferences()).revision, f.review.relayRevision);
     assert.equal(f.nostr.verifyEvent(jobs[0].event), true); assert.equal(f.calls.posts, 1);
     assert.deepEqual(f.calls.kinds, [], 'external signer is never invoked');
   } finally { f.publication.disconnectSigner(); await f.dispose(); }

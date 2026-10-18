@@ -1,0 +1,22 @@
+{
+  "@noble/curves": {
+    "version": "2.0.1",
+    "physical": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/curves",
+    "alias": "manga-protocol-lab/browser-client/node_modules/@noble/curves"
+  },
+  "@noble/hashes": {
+    "version": "2.0.1",
+    "physical": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/hashes",
+    "alias": "manga-protocol-lab/browser-client/node_modules/@noble/hashes"
+  },
+  "fake-indexeddb": {
+    "version": "6.2.4",
+    "physical": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/browser-dom-dependencies/node_modules/fake-indexeddb",
+    "alias": "manga-protocol-lab/browser-client/node_modules/fake-indexeddb"
+  },
+  "jsdom": {
+    "version": "27.0.1",
+    "physical": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/browser-dom-dependencies/node_modules/jsdom",
+    "alias": "manga-protocol-lab/browser-client/node_modules/jsdom"
+  }
+}

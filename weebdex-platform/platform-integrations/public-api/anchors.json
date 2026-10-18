@@ -604,5 +604,77 @@
     "count": 1,
     "before": "\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\tfeed = res.body;\r\n\t\t\t}",
     "after": "\t\t\tif (res?.status !== StatusCodes.OK || !res.body) throw new Constants.Error.Error(\"Popular chapters unavailable\", \"The observed read window could not be loaded. No empty result was inferred.\");\r\n\t\t\tfeed = res.body;"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/settings/+page.svelte",
+    "sha256": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
+    "count": 1,
+    "before": "import { API, Constants, Mutex, UserLink, Utils } from \"$lib\";",
+    "after": "import AccountProfileEditor from \"$publicApi/AccountProfileEditor.svelte\";\r\n\timport { normalizePublicUser } from \"$publicApi/user-profile\";\r\n\timport { API, Constants, Mutex, UserLink, Utils } from \"$lib\";",
+    "label": "Native user settings imports explicitly bound public profile consumer"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/settings/+page.svelte",
+    "sha256": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
+    "count": 1,
+    "before": "{#if draft}",
+    "after": "{#if $user.public_profile_readonly}\r\n\t<AccountProfileEditor targetId={$user.id} nativeEligible={$user.public_account_follow_available === true} onSaved={result => { if (result.resource) $user = normalizePublicUser(result.resource) as unknown as User; }} />\r\n{:else if draft}",
+    "label": "Existing native biography route separates explicit bound profile edits from cookie-native form",
+    "approved_public_feature_exception": "public_uuid_bound_account_profile_editor"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/settings/+layout.svelte",
+    "sha256": "d224a7f313c8a80f64cdd448c71225bf038f463ab13c6eba2785851535a58bea",
+    "count": 1,
+    "before": "<ProtectedVerified>\r\n\t<ProtectedCondition isAllowed={!!$Session && Permission.User.canUpdate($user)}>\r\n\t\t{@render children?.()}\r\n\t</ProtectedCondition>\r\n</ProtectedVerified>",
+    "after": "{#if $user.public_profile_readonly}\r\n\t{@render children?.()}\r\n{:else}\r\n<ProtectedVerified>\r\n\t<ProtectedCondition isAllowed={!!$Session && Permission.User.canUpdate($user)}>\r\n\t\t{@render children?.()}\r\n\t</ProtectedCondition>\r\n</ProtectedVerified>\r\n{/if}",
+    "label": "Signed native profile route reaches its self-only editor without cookie-session authority",
+    "approved_public_feature_exception": "public_uuid_bound_account_profile_route"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+layout.svelte",
+    "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+    "count": 1,
+    "before": "import ProtectedVerified from \"$lib/components/ui/ProtectedVerified.svelte\";",
+    "after": "import ProtectedVerified from \"$publicApi/PublicTitleShell.svelte\";",
+    "label": "Only the public title editor delegates authority to its actual bound-signer loader and child controls"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+    "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+    "count": 1,
+    "before": "<script lang=\"ts\">\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport { API, Constants, Utils, Permission } from \"$lib\";\r\n\timport { createEditorCoverReader } from \"$platform/editor-cover-read\";\r\n\timport { privateFeedIdentity } from \"$platform/private-feed\";\r\n\timport MangaEdit from \"$publicApi/PublicTitleEditor.svelte\";\r\n\timport ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\r\n\timport { buttonVariants } from \"$lib/components/ui/button\";\r\n\timport * as Empty from \"$lib/components/ui/empty\";\r\n\timport NotFound from \"$lib/components/ui/NotFound.svelte\";\r\n\timport { Spinner } from \"$lib/components/ui/spinner\";\r\n\timport { from } from \"$lib/stores\";\r\n\timport { ArrowLeftIcon } from \"@lucide/svelte\";\r\n\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { onDestroy, onMount } from \"svelte\";\r\n\r\n\tconst { data: loadedData } = $props();\r\n\tlet resolvedEditorManga = $state<Manga>(), resolvedEditorAuthority = $state<string>();\r\n\t// Every retained head/body expression sees only the current owned read.\r\n\tconst data = $derived({ ...loadedData, manga: resolvedEditorAuthority === $privateFeedIdentity && resolvedEditorManga?.id === loadedData.manga?.id ? resolvedEditorManga : undefined });\r\n\tlet covers = $state<Cover[]>([]);\r\n\r\n\tlet isMounted = $state(false);\r\n\tlet error = $state<Constants.Error.Error>();\r\n\r\n\tconst editCoverReader = createEditorCoverReader(() => loadedData.manga?.id ?? \"\");\r\n\tlet coverGeneration = 0, editDisposed = false;\r\n\tonDestroy(() => { editDisposed = true; coverGeneration++; });\r\n\t$effect.pre(() => {\r\n\t\tconst selectedAuthority = $privateFeedIdentity;\r\n\t\tconst mangaId = loadedData.manga?.id, generation = ++coverGeneration;\r\n\t\tresolvedEditorManga = undefined; resolvedEditorAuthority = undefined;\r\n\t\tcovers = []; error = undefined; isMounted = false;\r\n\t\tif (!mangaId) { isMounted = true; return; }\r\n\t\tlet ticket: ReturnType<typeof editCoverReader.capture>;\r\n\t\ttry { ticket = editCoverReader.capture(); }\r\n\t\tcatch (cause) { error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; isMounted = true; return; }\r\n\t\tconst current = () => !editDisposed && generation === coverGeneration && loadedData.manga?.id === mangaId && selectedAuthority === $privateFeedIdentity;\r\n\t\tvoid (async () => {\r\n\t\t\ttry {\r\n\t\t\t\tconst manga = await editCoverReader.currentTitle(mangaId, ticket); if (!current()) return;\r\n\t\t\t\tconst full = !!manga.relationships && typeof manga.language === \"string\";\r\n\t\t\t\tif (full && !Permission.Manga.canUpdate(manga)) throw Constants.Error.Forbidden;\r\n\t\t\t\tconst images = full ? await editCoverReader.covers(manga, ticket) : []; if (!current()) return;\r\n\t\t\t\tticket.assert(); covers = images; resolvedEditorManga = manga; resolvedEditorAuthority = selectedAuthority; isMounted = true;\r\n\t\t\t} catch (cause) {\r\n\t\t\t\tif (!current()) return;\r\n\t\t\t\terror = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; isMounted = true;\r\n\t\t\t} finally { ticket.release(); }\r\n\t\t})();\r\n\t});\r\n\r\n\r\n</script>",
+    "after": "<script lang=\"ts\">\n import { page } from \"$app/state\";\n import { PUBLIC_SITE_NAME } from \"$env/static/public\";\n import { Constants, Utils } from \"$lib\";\n import MangaEdit from \"$publicApi/PublicTitleEditor.svelte\";\n import ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\n import { buttonVariants } from \"$lib/components/ui/button\";\n import * as Empty from \"$lib/components/ui/empty\";\n import NotFound from \"$lib/components/ui/NotFound.svelte\";\n import { Spinner } from \"$lib/components/ui/spinner\";\n import { from } from \"$lib/stores\";\n import { ArrowLeftIcon } from \"@lucide/svelte\";\n // The signed loader supplies the actual title. PublicTitleEditor owns the\n // current account, title read and signed cover lifecycle; native cookie\n // private-feed/cover readers cannot authorize or hydrate this UUID route.\n const { data }: { data: { manga?: Manga } } = $props();\n const isMounted = true;\n const error: Constants.Error.Error | undefined = undefined;\n const covers: unknown[] | undefined = undefined;\n</script>",
+    "composed_before": true,
+    "label": "Public title edit keeps native page chrome while removing cookie-only cover and permission admission; signed child owns exact lifecycle"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "import { goto } from \"$app/navigation\";",
+    "after": "import { signerIdentity } from \"$localLibrary/publication\";\r\n\timport { goto } from \"$app/navigation\";",
+    "composed_before": true,
+    "label": "Title editor discovery follows the selected public signer, never cookie grants"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "{#if $Session && Permission.Manga.canUpdate(manga)}",
+    "after": "{#if $signerIdentity.owner}",
+    "composed_before": true,
+    "approved_public_feature_exception": "public_uuid_signed_title_editor_link",
+    "label": "Selected signer may open the scoped editor; actual bound-account authority remains in signed loader, child and server"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+    "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+    "count": 1,
+    "before": "{#key data.manga.id}",
+    "after": "{#key [page.url.pathname, data.manga.id].join(\":\")}",
+    "composed_before": true,
+    "approved_public_feature_exception": "public_uuid_title_editor_route_lifecycle",
+    "label": "Recreate captured signed title and cover ownership when canonical target or alias/canonical route pathname changes"
   }
 ]

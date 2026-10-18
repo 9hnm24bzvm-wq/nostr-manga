@@ -1,0 +1,11 @@
+{
+  "runtimeAnchorsSHA256": "e6dd74da63dbb23a571aa775a65f0709d6fb638d0737f3bdd92193e543f9f1c2",
+  "runtimeSourceHashesSHA256": "822477b547f98e0241d439cce91a817f0a4d7186031a12fd99d13e70b4a87f33",
+  "runtimeRecipesUnchanged": 84,
+  "runtimeSourcePinsUnchanged": 49,
+  "original64RecipesUnchanged": true,
+  "appendedExplicitValidatedRecipes": 20,
+  "generatorSHA256": "b09ee2a67115eebb06ba280d06459bdcfa389f61497f1f4e0b5c230de96b618d",
+  "generatorWritesIntercepted": true,
+  "sourceManifestFilesUntouched": true
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7a55916b05eab61ee5e7ec3039f29a00d1871027",
+  "baseCommit": "f2a4f7da8f2d3d788780584de0e4523837c18c10",
+  "status": "passed",
+  "focused": {
+    "files": 9,
+    "tests": 188,
+    "passed": 188,
+    "failed": 0,
+    "skipped": 0,
+    "newClientCases": 34,
+    "newCompiledSvelteDomCases": 23,
+    "affectedRegressionCases": 131
+  },
+  "review": {
+    "apiContract": "clear after role128 correction",
+    "independentFrontend": "clear after exact settings-parent gate correction and Rust Unicode normalization",
+    "outerUserDiscussion": "existing public wrapper confirmed safe; no source change"
+  },
+  "canonicalFilesUnchanged": 679,
+  "registry": {
+    "sources": 48,
+    "availability": 9,
+    "media": 3,
+    "features": 12
+  },
+  "fullStrict": "pending-final-composed-freeze",
+  "vite": "pending-final-composed-freeze",
+  "actualBackendContract": "qualified separately by API owner; no actual TS/profile live bridge claimed here",
+  "boundaries": [
+    "Actual production client, public profile normalizer and compiled profile component execute",
+    "Compiled actual outer user layout/public missing-thread Provider/UnavailableContext/User/settings layout/original page/editor chain executes",
+    "Native signed HTTP/storage and leaf UI/media/follow primitives are explicit finite stand-ins",
+    "No native-browser, deployment, complete mounted app or fresh full-matrix claim"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "weebdex-platform/tests/ci/test_public_title_commands.mjs"
+  ],
+  "exitCode": 0,
+  "logSHA256": "1bced8d8337c27fcc4dd955b68338c2de480661c1cc4543c3cc53f833fb90ea7",
+  "sourceCommitBeforeToolingFix": "ac4c332a1aa3708886509290d908a9719fcd5ffc"
+}

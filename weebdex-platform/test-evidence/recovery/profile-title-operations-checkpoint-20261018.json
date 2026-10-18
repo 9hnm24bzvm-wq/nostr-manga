@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "status": "qualified-scoped-recovery-checkpoint",
+  "scope": [
+    "native account biography/contact editor",
+    "public title edit route and same-ID alias navigation",
+    "lossless public recipe reconstruction",
+    "signed upload proxy budgets and native forwarding headers",
+    "private backup/restore tooling and bounded CI registration",
+    "discovered CI portability and artifact-provenance repairs"
+  ],
+  "qualifiedSources": {
+    "frontendAndCiExecution": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+    "fullTreeVitePin": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+    "backendAndOriginalProtocol": "c0e82cb1032a972bc1234166518dcd979fe4868d",
+    "integratedEvidenceBeforeThisSummary": "8e9257d0aeb4c2d03930cdb4cd2b479807cbe555"
+  },
+  "sourceAssociation": {
+    "frontendToolingAndCiInputsEqualVitePin": true,
+    "backendAndOriginalProtocolEqualQualifiedSource": true,
+    "canonicalFrontendFilesUnchanged": 679,
+    "currentProductInputHashes": 922,
+    "executionInputHashes": 1242
+  },
+  "platformCi": {
+    "discoveredNodeFiles": 126,
+    "finiteNodeFiles": 123,
+    "finiteNodeRunnerCasesPassed": 2016,
+    "semanticArtifactConsumerFiles": 2,
+    "semanticPositivePasses": 2,
+    "negativeControlsRejectedPerGate": 16,
+    "actualCssConsumerFiles": 1,
+    "actualCssProfilesPassed": 2,
+    "pythonFiles": 9,
+    "pythonCasesPassed": 146
+  },
+  "additionalOriginalTests": {
+    "browserModelFiles": 20,
+    "browserModelCasesPassed": 140,
+    "packagingCasesPassed": 12,
+    "apiIndexCasesPassed": 5,
+    "localMigrationCasesPassed": 6,
+    "localMigrationCasesDependencyFailed": 1,
+    "actualMissingImport": "cbor2",
+    "additionalRequiredUninstalledImport": "coincurve",
+    "selectedBenchCasesPassed": 19,
+    "selectedBenchOwnedPostgresSkips": 12,
+    "wholeAdditionalFilesHeld": 16,
+    "classification": "../frontend/complete-discovered-physical-ci-20261018/repository-additional-discovery.json"
+  },
+  "strict": {
+    "off": {
+      "errors": 0,
+      "warnings": 15,
+      "maps": 654
+    },
+    "on": {
+      "errors": 0,
+      "warnings": 12,
+      "maps": 684
+    },
+    "actualPhysicalDependencyRoots": 7,
+    "physicalRegularFiles": 40955,
+    "physicalEntries": 45438,
+    "preservation": "exact byte, mode, nanosecond timestamp and symlink-target equality",
+    "realCacheAudits": 262,
+    "realCacheProtectedWriteAttempts": 0,
+    "expectedOwnedFakeCacheDeniedWritesPerGate": 1,
+    "enforcementBoundary": "in-process Node guard plus observed snapshots; not OS syscall isolation"
+  },
+  "vite": {
+    "profilesPassed": 2,
+    "artifactFiles": 899,
+    "artifactBytes": 14579213,
+    "actualCssArtifactCasesPassed": 2,
+    "evidence": "../frontend/profile-title-final-builds-20261018/result.json",
+    "cacheAuditProcessObservation": {
+      "audits": 8,
+      "sampledBirths": 7,
+      "unsampledShortLivedBuildChildAudits": 1,
+      "unsampledChildArgvAndBirth": "not independently observed",
+      "boundary": "synchronous build commands completed; terminal owned-process scans were clean"
+    }
+  },
+  "backend": {
+    "rustLibraryCasesPassed": 141,
+    "preexistingIgnoredCases": 2,
+    "affectedActualHttpSuitesPassed": 4,
+    "actualRoutingProbeOperations": 113,
+    "evidence": "../native-account-profile-20261018/report.json",
+    "newFullProtocolMatrixRun": false,
+    "historicalFullProtocolMatrix": {
+      "localCheckpoint": "0395fbc3f0191008d07c1cd8c9c6a5de8801d59b",
+      "remoteCheckpoint": "a62f811c9736330b48d9e78d127ae1a96e9a8091",
+      "passed": 19
+    }
+  },
+  "operations": {
+    "proxyFiniteCasesPassed": 11,
+    "privateRecoverySyntheticCasesPassed": 18,
+    "nginxParserExecuted": false,
+    "realBackupRestoreDrillExecuted": false,
+    "exactApprovedStoppedFixtureCleanupReceipt": "approved-nine-db-cleanup-20261018.json"
+  },
+  "limits": {
+    "wholeRepositoryTestsPassed": false,
+    "nativeBrowserExecuted": false,
+    "hostedBrowserExecuted": false,
+    "renderedVisualParityEstablished": false,
+    "productionLoadQualified": false,
+    "deploymentPerformed": false
+  },
+  "evidence": {
+    "frontend": "../frontend/complete-discovered-physical-ci-20261018/status.json",
+    "initialRedAndIncompletePhysicalCoverageRetained": "../frontend/final-discovered-ci-20261018/initial-status.json",
+    "backend": "../native-account-profile-20261018/report.json",
+    "vite": "../frontend/profile-title-final-builds-20261018/result.json"
+  }
+}

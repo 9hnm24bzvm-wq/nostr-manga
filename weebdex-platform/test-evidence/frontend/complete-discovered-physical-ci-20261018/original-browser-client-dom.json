@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "execution": "jsdom plus fake-indexeddb; not an actual browser, visual/layout, download, service-worker or offline certification",
+  "checks": [
+    "startup has no relay or signer traffic",
+    "progress form writes locally without a key",
+    "native form constraints reject malformed IDs",
+    "series/list/member forms persist all four families",
+    "import picker accept filter includes the actual export, JSONL/NDJSON and legacy JSON",
+    "export creates the correct local-only backup payload",
+    "cancelled deletion does nothing; confirmed list removal preserves series",
+    "import restores locally; duplicate records cannot partially replace the library",
+    "missing signer is handled; publication needs explicit public consent",
+    "reopened app restores data/preferences without contacting a saved relay or signer"
+  ],
+  "fetchCalls": 0,
+  "signerCalls": 1,
+  "jsdomErrors": []
+}

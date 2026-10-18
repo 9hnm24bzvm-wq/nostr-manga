@@ -1,0 +1,139 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "weebdex-platform/tests/ci",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017",
+  "exitCode": 0,
+  "stopReason": null,
+  "elapsedSeconds": 8.206,
+  "minimumFreeBytes": 4836298752,
+  "minimumAvailableMemoryBytes": 8301887488,
+  "ownedSurvivors": [],
+  "samples": [
+    {
+      "elapsedSeconds": 0.0,
+      "freeBytes": 4836974592,
+      "availableMemoryBytes": 8394657792,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 131072
+        }
+      ]
+    },
+    {
+      "elapsedSeconds": 1.001,
+      "freeBytes": 4836302848,
+      "availableMemoryBytes": 8345038848,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 50057216
+        },
+        {
+          "pid": 11,
+          "rssBytes": 20684800
+        }
+      ]
+    },
+    {
+      "elapsedSeconds": 2.001,
+      "freeBytes": 4836302848,
+      "availableMemoryBytes": 8345866240,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 50057216
+        },
+        {
+          "pid": 16,
+          "rssBytes": 20631552
+        }
+      ]
+    },
+    {
+      "elapsedSeconds": 3.002,
+      "freeBytes": 4836302848,
+      "availableMemoryBytes": 8345636864,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 50057216
+        },
+        {
+          "pid": 16,
+          "rssBytes": 20631552
+        }
+      ]
+    },
+    {
+      "elapsedSeconds": 4.003,
+      "freeBytes": 4836302848,
+      "availableMemoryBytes": 8323973120,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 50057216
+        },
+        {
+          "pid": 16,
+          "rssBytes": 20631552
+        }
+      ]
+    },
+    {
+      "elapsedSeconds": 5.003,
+      "freeBytes": 4836302848,
+      "availableMemoryBytes": 8324612096,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 50057216
+        },
+        {
+          "pid": 16,
+          "rssBytes": 20631552
+        }
+      ]
+    },
+    {
+      "elapsedSeconds": 6.004,
+      "freeBytes": 4836302848,
+      "availableMemoryBytes": 8324612096,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 50057216
+        },
+        {
+          "pid": 16,
+          "rssBytes": 20631552
+        }
+      ]
+    },
+    {
+      "elapsedSeconds": 7.005,
+      "freeBytes": 4836298752,
+      "availableMemoryBytes": 8301887488,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 52019200
+        },
+        {
+          "pid": 43,
+          "rssBytes": 40763392
+        }
+      ]
+    }
+  ],
+  "status": "passed"
+}

@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "sampled_cache_audit_births": 7,
+  "unsampled_short_lived_cache_audits": 1,
+  "unsampled_pids": [
+    78
+  ],
+  "records": [
+    {
+      "profile": "default",
+      "pid": 12,
+      "audit": "default/cache-audit/12.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "sampled owned process birth",
+      "owned_receipt": "default/build-owned.json",
+      "sampled_start_ticks": 9518369
+    },
+    {
+      "profile": "default",
+      "pid": 19,
+      "audit": "default/cache-audit/19.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "sampled owned process birth",
+      "owned_receipt": "default/build-owned.json",
+      "sampled_start_ticks": 9518381
+    },
+    {
+      "profile": "default",
+      "pid": 78,
+      "audit": "default/cache-audit/78.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "short-lived build-child audit; exact argv and birth not independently sampled",
+      "parent_terminal_receipt": "default/build-owned.json",
+      "scope": "Audit directory/environment were supplied only to the synchronous guarded build before the separately guarded CSS command. The build source awaits Vite and post_build.js via spawnSync; success establishes both command exits, without retroactively identifying this PID argv."
+    },
+    {
+      "profile": "default",
+      "pid": 86,
+      "audit": "default/cache-audit/86.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "sampled owned process birth",
+      "owned_receipt": "default/css-consumer-owned.json",
+      "sampled_start_ticks": 9523588
+    },
+    {
+      "profile": "enabled",
+      "pid": 103,
+      "audit": "enabled/cache-audit/103.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "sampled owned process birth",
+      "owned_receipt": "enabled/build-owned.json",
+      "sampled_start_ticks": 9524462
+    },
+    {
+      "profile": "enabled",
+      "pid": 162,
+      "audit": "enabled/cache-audit/162.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "sampled owned process birth",
+      "owned_receipt": "enabled/build-owned.json",
+      "sampled_start_ticks": 9529043
+    },
+    {
+      "profile": "enabled",
+      "pid": 170,
+      "audit": "enabled/cache-audit/170.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "sampled owned process birth",
+      "owned_receipt": "enabled/css-consumer-owned.json",
+      "sampled_start_ticks": 9529532
+    },
+    {
+      "profile": "enabled",
+      "pid": 96,
+      "audit": "enabled/cache-audit/96.json",
+      "all_seven_roots_declared": true,
+      "protected_write_attempts": 0,
+      "observation": "sampled owned process birth",
+      "owned_receipt": "enabled/build-owned.json",
+      "sampled_start_ticks": 9524447
+    }
+  ],
+  "boundaries": "Resource samples are100ms observations. All4build/CSS parent commands exited0; all synchronous child operations were awaited and terminal process-group/session scans were empty. Every8audit records verifies the7protected cache roots and zero denied writes. Do not claim exact PID78 argv/birth was sampled or OS-syscall enforcement."
+}

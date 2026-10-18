@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "762b9934f93fffd9f4e35c8d7c2e02ed1f7d057e",
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-name-pattern=recovery anchor generator",
+    "weebdex-platform/tests/ci/test_public_title_commands.mjs"
+  ],
+  "exitCode": 1,
+  "logSHA256": "8ca1760b088e6e8c3d03ad40ced82f3a4fade19cb75bcefe19979b52368f96ae",
+  "limitation": "Only the existing selected reconstruction parity case; no runtime/browser or broad-suite qualification."
+}

@@ -1,0 +1,34 @@
+{
+  "records": [
+    {
+      "file": "default/cache-audit/12.json",
+      "sha256": "7acf17e3077d75d43ec15ac879d88b282dc62b2234ecc5c5ceffce66b86004e4",
+      "pid": 12,
+      "checked_mutations": 68,
+      "roots": 7
+    },
+    {
+      "file": "default/cache-audit/19.json",
+      "sha256": "4637cbc35f3b6ac4dceb83a8d28e10a1468f65c28fde5690f8894564a5869f24",
+      "pid": 19,
+      "checked_mutations": 3672,
+      "roots": 7
+    },
+    {
+      "file": "default/cache-audit/78.json",
+      "sha256": "e2df7d62292b6afcd13378a84fdec2a3134a7710ad08386fb0ce710925178b61",
+      "pid": 78,
+      "checked_mutations": 5,
+      "roots": 7
+    },
+    {
+      "file": "default/cache-audit/86.json",
+      "sha256": "ead17cd5e502bd83482450a597a841f1a5582675bd7fec338fbd45aaaab2ed0d",
+      "pid": 86,
+      "checked_mutations": 9,
+      "roots": 7
+    }
+  ],
+  "protected_write_attempts": 0,
+  "all_physical_roots_protected": true
+}

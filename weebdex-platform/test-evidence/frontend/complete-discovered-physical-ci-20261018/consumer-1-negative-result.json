@@ -1,0 +1,114 @@
+{
+  "status": "passed",
+  "rejected_negative_controls": 16,
+  "real_dependency_caches_written": false,
+  "results": [
+    {
+      "probe": "empty-canonical-inventory",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Actual canonical inventory must contain 679 records"
+    },
+    {
+      "probe": "missing-map-manifest-entry",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Every actual frontend source must have one manifest entry"
+    },
+    {
+      "probe": "forged-composed-transform-output",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Actual reviewed transform output differs: src/@types/Upload.d.ts"
+    },
+    {
+      "probe": "missing-map-validation-entry",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Map validation identities must cover every manifest map"
+    },
+    {
+      "probe": "empty-dependency-inventory",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Actual dependency inventory must not be empty"
+    },
+    {
+      "probe": "no-cache-process-audits",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: At least one actual strict cache-guard audit is required"
+    },
+    {
+      "probe": "empty-audit-protected-roots",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Each strict audit must declare physical cache roots"
+    },
+    {
+      "probe": "missing-physical-primary-root",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Missing physical dependency root inventory: /workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+    },
+    {
+      "probe": "unprotected-physical-primary-root",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Each strict audit must protect every actual physical dependency root: /workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+    },
+    {
+      "probe": "changed-cache-metadata-snapshot",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Exact physical dependency snapshot verification failed: Traceback (most recent call last):"
+    },
+    {
+      "probe": "forged-matching-cache-metadata",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Exact physical dependency snapshot verification failed: Traceback (most recent call last):"
+    },
+    {
+      "probe": "missing-actual-graph-import",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Graph must cover every actual resolved import literal: src/@types/Draft.d.ts"
+    },
+    {
+      "probe": "guard-missing-protected-roots",
+      "status": "rejected",
+      "exit_code": 1
+    },
+    {
+      "probe": "guard-empty-protected-roots",
+      "status": "rejected",
+      "exit_code": 1
+    },
+    {
+      "probe": "guard-missing-audit-directory",
+      "status": "rejected",
+      "exit_code": 1
+    },
+    {
+      "probe": "guard-valid-root-blocks-write",
+      "status": "rejected",
+      "exit_code": 1
+    }
+  ],
+  "guard_denied_write_receipt": {
+    "pid": 373,
+    "protected_roots": [
+      "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/.build/semantic-negative-controls-4JOXq3/protected-probe-cache"
+    ],
+    "checked_node_mutations": 1,
+    "protected_write_attempts": 1,
+    "denied": [
+      {
+        "operation": "writeFileSync",
+        "resolved": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/.build/semantic-negative-controls-4JOXq3/protected-probe-cache/must-not-exist"
+      }
+    ]
+  },
+  "evidence": ".build/semantic-negative-controls-4JOXq3/negative-controls.json"
+}

@@ -1,0 +1,32 @@
+{
+  "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core": {
+    "entries": 136,
+    "regularFiles": 111,
+    "canonicalManifestSha256": "cae30309fad12f84d289dc3d81a79333fa3acfb3e4cbe15f8e01fb4081f91a69"
+  },
+  "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/browser-dom-dependencies/node_modules": {
+    "entries": 1996,
+    "regularFiles": 1757,
+    "canonicalManifestSha256": "01f24947785eae5b8ba5534d8edb7bac9e4e74a83c18be61a85a2edcab4a107f"
+  },
+  "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules": {
+    "entries": 42592,
+    "regularFiles": 38873,
+    "canonicalManifestSha256": "ed92da1528399c6e5320722c6d9db1885a04a0e0bed2bb9e97e937884f9af521"
+  },
+  "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules": {
+    "entries": 213,
+    "regularFiles": 206,
+    "canonicalManifestSha256": "ca284610c323d782fac005f87fcd23690db81c91b930a92eb1741c5069fe64e8"
+  },
+  "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-signing-base-2.0.0/node_modules": {
+    "entries": 10,
+    "regularFiles": 8,
+    "canonicalManifestSha256": "79cbd3f7aa3832bc72bb6f776651083115826e0c4492c22ee35b37bd99f67418"
+  },
+  "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules": {
+    "entries": 486,
+    "regularFiles": 0,
+    "canonicalManifestSha256": "06fef80eb483b8bf28961e00535cee1aa3ba40835698f82577d64ba949922a1f"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "source_commit": "e4584b208327eecb6ff978a573bbdf47031cac43",
+  "source_base": "f593787141469cc8d6da057545eb11a53fb7271b",
+  "required_ops_prerequisite": "c6a0dc38a7be5026dbd3c7a5f2ec4c04a752f1d2",
+  "supersedes_nonportable_test_commits": [
+    "e76bd8434cd99b71b8f8748f17ce16ed9c2596b3",
+    "090db8ab276c37080ac70d849835abd24bc080c2"
+  ],
+  "baseline": {
+    "exact_tests": "f593787141469cc8d6da057545eb11a53fb7271b",
+    "cases": 80,
+    "passed": 35,
+    "failed": 45,
+    "exitCode": 1,
+    "raw_bytes": 73635,
+    "raw_sha256": "767ad5e95b4a755600d31b169dca76e2ca825c2ba9e880e9090afa78a2555a7a"
+  },
+  "corrected": {
+    "cases": 85,
+    "passed": 85,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "without_git_on_PATH": {
+    "PATH": "/nonexistent",
+    "absolute_node_executable": true,
+    "cases": 85,
+    "passed": 85,
+    "failed": 0,
+    "skipped": 0,
+    "scope": "Confirms the test invokes no Git executable. Historical Git objects were used only once during reviewed fixture preparation; committed tests read only self-contained bytes and current files."
+  },
+  "case_count_change": {
+    "new_explicit_current_source_association": 1,
+    "previous_startup_failure_runner_cases_replaced": 1,
+    "actual_signed_envelope_cases_now_executed": 5,
+    "net_additional_cases": 5
+  },
+  "historical_snapshot": {
+    "exact_source_files": 16,
+    "immutable_plan_sha256": "e82b475739a1db651cec5897fbdd330381d11621ff520df6a3cd5105cf3607ba",
+    "compressed_fixture_bytes": 131692,
+    "maximum_expanded_bytes": 4194304,
+    "actual_expanded_bytes": 440954,
+    "current_runtime_files_directly_hash_checked": 8,
+    "prior_workflow_and_exact_three_line_delta_preserved": true
+  },
+  "source_files": [
+    {
+      "path": "weebdex-platform/tests/ci/test_account_onboarding_seams.mjs",
+      "bytes": 32094,
+      "sha256": "a7e380ccbbe03e146c4ee2399f049ed1ae3ad3c736f91a658a8655531c9322bc"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs",
+      "bytes": 20682,
+      "sha256": "ee010e25b29ddfa09cb71ab1980506d0101ce345d52d13953e020ea77c9a2bae"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_event_envelope.mjs",
+      "bytes": 6418,
+      "sha256": "d4b359cedc4b0ef2ab87a92e2f8a1863bb441a8c1c086f010806b5e7b688ddfe"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/fixtures/browser-actor-follow-current-source.json",
+      "bytes": 2135,
+      "sha256": "ec236f2d33caca6900a260ea36804ba3c5b4f4e1d94a62fe2dc166e4621906d9"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/fixtures/browser-actor-follow-historical-source.json.gz",
+      "bytes": 131692,
+      "sha256": "e9b26938a27beebc727debb4a2b576a9b733339f19c558fc42b16efc8dc0b2af"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "weebdex-platform/test-evidence/frontend/discovered-harness-portable-20261018/baseline-focused.log.gz",
+      "bytes": 5090,
+      "sha256": "f89bcfd946dccebf73e5512891c07874378e874f09e91d2657c4d718aecfdeba"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/frontend/discovered-harness-portable-20261018/portable-focused.log",
+      "bytes": 9471,
+      "sha256": "0506e48a2b939fd3532b647a1433e8613340d70c0e2ca265c703f175f3dffd2a"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/frontend/discovered-harness-portable-20261018/portable-no-git.log",
+      "bytes": 9470,
+      "sha256": "c528d917132fb05445b74bc5d8847766728b160ce0dc12e8227f51b488453654"
+    }
+  ],
+  "command": "WEEBDEX_FRONTEND_ROOT=<existing verified exact-lock dependencies> node --experimental-vm-modules --test --test-concurrency=1 weebdex-platform/tests/ci/test_account_onboarding_seams.mjs weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs weebdex-platform/tests/ci/test_browser_signed_event_envelope.mjs",
+  "boundaries": {
+    "production_code_changed": false,
+    "no_dependency_download_copy_or_mutation": true,
+    "browser_or_service_or_database_started": false,
+    "full_discovered_suite_pending": true,
+    "not_feature_acceptance": true
+  }
+}

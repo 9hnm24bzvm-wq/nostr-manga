@@ -1,0 +1,16 @@
+{
+  "source_commit": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+  "source_tree": "b201ba3f9a64614880e4db539030f32d9c07d307",
+  "physical_dependency_inventory": {
+    "roots": 7,
+    "entries": 45438,
+    "regular_files": 40955,
+    "symlinks": 627,
+    "snapshot_sha256": "237d3eb24d76eedbc06753f045f0367519e3632a56cb11608c5f183dede297b8"
+  },
+  "original_verified_dependency_entries": 39226,
+  "original_manifest_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "canonical_files": 679,
+  "at_utc": "2026-10-18T05:36:08.504829+00:00",
+  "no_download_copy_or_install_of_dependencies": true
+}

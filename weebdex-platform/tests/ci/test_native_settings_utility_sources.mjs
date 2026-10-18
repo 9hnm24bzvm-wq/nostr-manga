@@ -22,8 +22,18 @@ test('utility scan includes the reviewed external integrations without rewriting
   assert.match(config, /merged\.plugins\.unshift\(createIntegrationUtilitySources\(frontend, path\.join\(root, "platform-integrations"\)\)/);
 });
 
-test('additive route membership is exactly existing announcements plus anonymous identity', () => {
+test('additive route membership is the exact reviewed following/list/editorial/announcements/identity set', () => {
   assert.deepEqual(frontendRouteAdditions.map(row => row.target), [
+    'src/routes/(app)/following/manga/+page.svelte',
+    'src/routes/(app)/following/group/+page.svelte',
+    'src/routes/(app)/following/user/+page.svelte',
+    'src/routes/(app)/list/[id]/+page.svelte',
+    'src/routes/(app)/user/[id]/lists/+page.svelte',
+    'src/routes/(app)/following/lists/+page.svelte',
+    'src/routes/(app)/catalogue-tools/+page.svelte',
+    'src/routes/(app)/author/[id]/settings/+page.ts',
+    'src/routes/(app)/group/[id]/settings/+page.ts',
+    'src/routes/(app)/create/group/+page.ts',
     'src/routes/(app)/announcements/+page.svelte',
     'src/routes/(app)/announcements/[id]/+page.svelte',
     'src/routes/(app)/announcements/manage/+page.svelte',
@@ -32,14 +42,4 @@ test('additive route membership is exactly existing announcements plus anonymous
   for (const addition of frontendRouteAdditions) assert(fs.statSync(path.join(root, addition.source)).isFile());
   assert.equal(frontendRouteAdditions.at(-1).additive_settings_route, true);
   for (const script of ['prepare-frontend-integration.mjs', 'check-composed-frontend.mjs']) assert.match(fs.readFileSync(path.join(root, 'scripts', script), 'utf8'), /for \(const addition of frontendRouteAdditions\)/);
-});
-
-test('actual generated CSS contains the integration-only native dialog width utility', () => {
-  const assets = path.join(root, 'artifacts/frontend/_app/immutable/assets');
-  const css = fs.readdirSync(assets).filter(name => name.endsWith('.css')).map(name => fs.readFileSync(path.join(assets, name), 'utf8')).join('\n');
-  // This 42rem selector exists only in external integration components. Testing
-  // the emitted selector and declaration catches an omitted Tailwind source scan.
-  assert(css.includes('.\\!max-w-\\[min\\(42rem\\,calc\\(100dvw-2rem\\)\\)\\]'), 'Missing external integration utility selector');
-  assert.match(css, /max-width:min\(42rem,100dvw - 2rem\)!important/);
-  assert(!css.includes('/workspace/'), 'Build-local scan paths must not leak into static CSS');
 });

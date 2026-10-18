@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
+import { gunzipSync } from 'node:zlib';
 import test from 'node:test';
 import { actorFollowPhase, actorFollowDiagnosticChecks, actorFollowCaseChecks, runActorFollowJourneys, watchActorFollowRequests } from '../../scripts/browser-actor-follow-journeys.mjs';
 import { ui11To16JourneyPhases, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
@@ -37,9 +38,31 @@ test('actor-follow enrollment is fixed, complete, ordered and frozen', () => {
   assert.deepEqual(ui11To16DiagnosticChecks[actorFollowPhase], expected);
 });
 
-test('supplemental source plan binds exact new source without changing historical baseline scope', () => {
+const currentSourceAssociation = JSON.parse(fs.readFileSync(new URL('./fixtures/browser-actor-follow-current-source.json', import.meta.url), 'utf8'));
+const hash = value => createHash('sha256').update(value).digest('hex');
+const historicalFixture = currentSourceAssociation.historical_source_fixture;
+assert.equal(historicalFixture.path, 'fixtures/browser-actor-follow-historical-source.json.gz');
+assert.equal(historicalFixture.maximum_uncompressed_bytes, 4 * 1024 * 1024);
+const historicalCompressed = fs.readFileSync(new URL('./' + historicalFixture.path, import.meta.url));
+assert.equal(historicalCompressed.length, historicalFixture.bytes);
+assert.equal(hash(historicalCompressed), historicalFixture.sha256);
+const historicalExpanded = gunzipSync(historicalCompressed, { maxOutputLength: historicalFixture.maximum_uncompressed_bytes });
+assert.equal(historicalExpanded.length, historicalFixture.recorded_uncompressed_bytes);
+const historicalSource = JSON.parse(historicalExpanded);
+assert.equal(historicalSource.schema, 1);
+assert.equal(historicalSource.historical_commit, currentSourceAssociation.historical_commit);
+assert.equal(historicalSource.initial_current_commit, currentSourceAssociation.current_commit);
+function historicalBytes(file) {
+  assert.ok(Object.hasOwn(historicalSource.historical_source_base64, file), 'Missing portable historical source: ' + file);
+  return Buffer.from(historicalSource.historical_source_base64[file], 'base64');
+}
+
+test('supplemental source plan binds its frozen source without changing historical baseline scope', () => {
   const root = new URL('../../', import.meta.url);
-  const plan = JSON.parse(fs.readFileSync(new URL('test-evidence/frontend/browser-actor-follow-plan.json', root), 'utf8'));
+  const planBytes = fs.readFileSync(new URL('test-evidence/frontend/browser-actor-follow-plan.json', root));
+  assert.equal(hash(planBytes), currentSourceAssociation.historical_plan_sha256);
+  assert.deepEqual(planBytes, Buffer.from(historicalSource.historical_plan_base64, 'base64'));
+  const plan = JSON.parse(planBytes);
   const historical = JSON.parse(fs.readFileSync(new URL(plan.historical_browser_plan, root), 'utf8'));
   assert.equal(plan.base_commit, '56f9cb248334eff951be571a567697b73f710fab');
   assert.equal(plan.observed_correction_base, '94c00b8b0688b121499743ed213e465eec69bc37');
@@ -47,8 +70,33 @@ test('supplemental source plan binds exact new source without changing historica
   assert.deepEqual(plan.supplemental_phases, [actorFollowPhase]); assert.deepEqual(plan.checks, expected);
   assert.equal(new Set(['startup', ...Object.values(historical.phases).flatMap(group => group.names ?? [])]).size, 38);
   assert.equal(plan.historical_phases_retained, 38); assert.equal(plan.total_required_unique_phases, 39);
-  for (const [file, digest] of Object.entries(plan.source_sha256)) assert.equal(createHash('sha256').update(fs.readFileSync(new URL(file, root))).digest('hex'), digest, file);
+  assert.deepEqual(Object.keys(historicalSource.historical_source_base64).sort(), Object.keys(plan.source_sha256).sort());
+  for (const [file, digest] of Object.entries(plan.source_sha256)) assert.equal(hash(historicalBytes(file)), digest, file);
   for (const required of ['scripts/browser-actor-follow-journeys.mjs', 'scripts/browser-actor-follow-controls.mjs', 'scripts/browser-ui11-16-journeys.mjs', 'scripts/ci/run-hosted-browser.py', 'scripts/ci/journey-diagnostics.py', 'scripts/ci/validate-ci-evidence.py']) assert.ok(Object.hasOwn(plan.source_sha256, required), required);
+});
+
+test('current actor-follow runtime source has a separate exact association without relabeling historical evidence', () => {
+  const root = new URL('../../', import.meta.url);
+  assert.equal(currentSourceAssociation.status, 'source-associated-browser-unrun');
+  assert.equal(currentSourceAssociation.current_commit, 'f593787141469cc8d6da057545eb11a53fb7271b');
+  assert.equal(currentSourceAssociation.historical_commit, '9079c3bf02ef49c5d94fdcaf1d696bdb61416cd1');
+  assert.deepEqual(Object.keys(currentSourceAssociation.current_runtime_sha256), [
+    'scripts/browser-actor-follow-journeys.mjs', 'scripts/browser-actor-follow-controls.mjs',
+    'scripts/browser-actor-follow-observations.mjs', 'scripts/browser-ui11-16-journeys.mjs',
+    'scripts/ci/run-hosted-browser.py', 'scripts/ci/journey-diagnostics.py',
+    'scripts/ci/validate-ci-evidence.py', '../.github/workflows/hosted-browser-e2e.yml',
+  ]);
+  const workflow = '../.github/workflows/hosted-browser-e2e.yml';
+  assert.deepEqual(currentSourceAssociation.current_source_overrides, { [workflow]: 'c6a0dc38a7be5026dbd3c7a5f2ec4c04a752f1d2' });
+  const priorWorkflow = Buffer.from(historicalSource.initial_current_workflow_base64, 'base64');
+  assert.equal(hash(priorWorkflow), currentSourceAssociation.initial_current_workflow_sha256);
+  const proxyStep = '      - name: Check finite deployment proxy route and header contracts\n        timeout-minutes: 2\n        run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs\n';
+  const currentWorkflow = fs.readFileSync(new URL(workflow, root), 'utf8');
+  assert.equal(currentWorkflow.split(proxyStep).length - 1, 1);
+  assert.equal(currentWorkflow.replace(proxyStep, ''), priorWorkflow.toString('utf8'));
+  for (const [file, digest] of Object.entries(currentSourceAssociation.current_runtime_sha256)) {
+    assert.equal(hash(fs.readFileSync(new URL(file, root))), digest, 'current source: ' + file);
+  }
 });
 
 test('request counter observes exact browser target methods/settings only and removes its listener', () => {

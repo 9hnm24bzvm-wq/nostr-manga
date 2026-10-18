@@ -12,6 +12,7 @@ pub(crate) mod ratings;
 mod query;
 mod repository;
 mod users;
+pub(crate) mod profile_mutations;
 mod validation;
 use crate::{db::Migration, state::AppState};
 use axum::{

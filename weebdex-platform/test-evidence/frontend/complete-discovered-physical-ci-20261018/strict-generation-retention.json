@@ -1,0 +1,20 @@
+{
+  "0": {
+    "generation": "weebdex-platform/.build/complete-discovered-strict-physical-0-20261018-0335",
+    "files": 3248,
+    "fileManifestSha256": "2a270194a120a2951b526ed7ef8333040433ac60906edb17e35851e34e9b8b5a",
+    "evidenceArchive": "strict-0-generation-evidence.tar.gz",
+    "evidenceArchiveSha256": "fec1e96ac198952529278a6a47ce3c6fb94645bfa145a09174ee99d4aa24f35a",
+    "evidenceArchiveBytes": 893067,
+    "dependencyFilesCopied": false
+  },
+  "1": {
+    "generation": "weebdex-platform/.build/complete-discovered-strict-physical-1-20261018-0335",
+    "files": 3335,
+    "fileManifestSha256": "df0c0e0efa8036da366d4612c4731ed05a953b768d59fc2d3e0cddf82b632b10",
+    "evidenceArchive": "strict-1-generation-evidence.tar.gz",
+    "evidenceArchiveSha256": "b37e0796197b2146d46810f4e256610c090b912c8ce1e377ed3aa3b0babb5cf4",
+    "evidenceArchiveBytes": 984225,
+    "dependencyFilesCopied": false
+  }
+}

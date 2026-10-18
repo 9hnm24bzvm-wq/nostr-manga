@@ -1,0 +1,30 @@
+{
+  "boundary": {
+    "databaseConnection": false,
+    "filesystem": "small generated synthetic data retained",
+    "libpq": "installed official connection parser; no connection",
+    "postgresCommands": "synthetic injected stand-in only",
+    "realBackupRestoreDrill": false,
+    "servicesStartedStopped": false,
+    "sourceProtocolChanged": false
+  },
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s weebdex-platform/tests/ci -p test_private_checkpoint.py -v",
+  "failed": 0,
+  "files": {
+    "weebdex-platform/docs/backup-restore.md": "daec8a5d78bd3e847a8c063c276a1df4c81a6b6bed530f37bfb5ed0026146c87",
+    "weebdex-platform/docs/production-readiness.md": "0439a031559d0398c0a177eacfdb17298c3cf410c295be531eb46a28ee3b9edc",
+    "weebdex-platform/scripts/private-checkpoint.py": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+    "weebdex-platform/tests/ci/test_private_checkpoint.py": "3767ddeb35f9e99af092d4e49b9177a8cf52f4c7bcfe3fc13acc2aebfd2a1c27"
+  },
+  "logSha256": "c5b95675e63b238c37856bc2ad1d88f6bf612ede0198b8c6618908f528ae82ca",
+  "passed": 18,
+  "python": "3.12.14",
+  "schema": "private-checkpoint-finite-v1",
+  "skipped": 0,
+  "sourceBase": "a5c3d683c350707fcf215e7c8da67f408423e439",
+  "upstreamReferences": [
+    "https://www.postgresql.org/docs/17/app-pgrestore.html",
+    "https://www.postgresql.org/docs/17/libpq-connect.html#LIBPQ-CONNSTRING",
+    "https://www.postgresql.org/docs/17/libpq-envars.html"
+  ]
+}

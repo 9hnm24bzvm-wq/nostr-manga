@@ -15,7 +15,10 @@ const rustEvent = JSON.parse(read('./fixtures/signed-envelope/rust-event.json'))
 const hash = value => createHash('sha256').update(value).digest('hex');
 const frontend = process.env.WEEBDEX_FRONTEND_ROOT;
 if (!frontend) throw Error('The existing verified exact-lock frontend dependency stage is required');
-const stage = path.resolve(frontend, '../local-library-noble-2.0.1');
+// The reviewed shared stage may itself be reached through a directory symlink.
+// Canonicalize that root once; every pinned package file must still be a real,
+// byte-verified file beneath it, with no substituted inner symlinks.
+const stage = fs.realpathSync(path.resolve(frontend, '../local-library-noble-2.0.1'));
 const manifestBytes = read('../../test-evidence/frontend/noble-restore/package-provenance.json');
 assert.equal(hash(manifestBytes), 'f7cd7c2d6d7b14b9eaec4d38b4405267cc9ba291f0808dc3687822e28a3d24f3');
 for (const item of JSON.parse(manifestBytes).packages) for (const file of item.files) {

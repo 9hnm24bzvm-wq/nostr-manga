@@ -104,7 +104,8 @@ async function registration({ route = registerRoute, signedIn = false, url = 'ht
   const stagingSource = fs.readFileSync(path.join(root, 'platform-integrations/public-api/library-staging.ts'), 'utf8');
   vm.runInContext(transform(withoutImports(stagingSource).replace(/^export /gm, '')), context);
   const librarySource = fs.readFileSync(path.join(root, 'platform-integrations/local-library/library.ts'), 'utf8');
-  const library = vm.runInContext('(function(){' + transform(withoutImports(librarySource).replace(/^export /gm, '')) + '\nreturn { localLibraryState, libraryIdentity }; })()', context);
+  // Erase type-only re-exports before stripping runtime export keywords.
+  const library = vm.runInContext('(function(){' + transform(withoutImports(librarySource)).replace(/^export /gm, '') + '\nreturn { localLibraryState, libraryIdentity }; })()', context);
   // Import local, pure helpers used by this registration route. Unexpected
   // integrations are rejected rather than silently turned into no-ops.
   for (const match of source.matchAll(/import\s+\{([^}]+)\}\s+from\s+["']\$platform\/([^"']+)["'];/g)) {

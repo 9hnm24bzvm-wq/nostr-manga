@@ -26,7 +26,7 @@
  <header class="space-y-3"><h1 class="text-xl font-semibold">{title}</h1><nav class="flex flex-wrap items-center gap-3"><a class="text-sm underline" href="/library">My library</a><Button variant="outline" disabled={pending||!$signerIdentity.owner} onclick={refresh}>Refresh</Button></nav></header>
  <FollowingNavigation active={kind}/>
  {#if !$signerIdentity.owner}<p class="text-muted-foreground">Connect your public identity to view account following on this instance.</p><a class="underline" href="/settings/identity">Manage public identity</a>{/if}
- {#if username}<p class="text-sm text-muted-foreground">Following as {username} on this instance.</p>{/if}
+ {#if username}<p class="text-sm text-muted-foreground">Following as {username} on this instance. <a class="underline" href={'/user/'+accountId+'/settings?account='+accountId}>Edit profile</a></p>{/if}
  {#if pending}<p role="status" class="text-muted-foreground">Loading account following…</p>{/if}
  {#if error}<p role="alert" class="text-destructive">{error}</p>{:else if username&&!pending&&!rows.length}<p class="text-muted-foreground">There are no available followed {kind==='manga'?'titles':kind==='group'?'groups':'users'} on this page.</p>{/if}
  <div class="grid gap-3 md:grid-cols-2">{#each rows as row (row.id)}<div class="space-y-2">

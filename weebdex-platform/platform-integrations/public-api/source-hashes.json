@@ -44,5 +44,8 @@
   "src/routes/(app)/user/[id]/+layout.svelte": "624730ba5cdb267bb95116e49e1416c9108506543a75e449b358c935828869e7",
   "src/routes/(app)/user/[id]/User.svelte": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
   "src/routes/(app)/user/[id]/comments/+page.svelte": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
-  "src/routes/(app)/users/+page.svelte": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a"
+  "src/routes/(app)/users/+page.svelte": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
+  "src/routes/(app)/user/[id]/settings/+page.svelte": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
+  "src/routes/(app)/user/[id]/settings/+layout.svelte": "d224a7f313c8a80f64cdd448c71225bf038f463ab13c6eba2785851535a58bea",
+  "src/routes/(app)/title/[id]/edit/+layout.svelte": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696"
 }

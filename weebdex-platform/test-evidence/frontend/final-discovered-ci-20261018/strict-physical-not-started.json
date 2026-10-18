@@ -1,0 +1,10 @@
+{
+  "status": "not-started",
+  "phase": "physical-cache-corrected-strict",
+  "reason": "unchanged4GiB+256MiB start reserve not met",
+  "availableBytesAtGuard": 4552806400,
+  "requiredStartBytes": 4563402752,
+  "rawLog": "strict-run.log",
+  "compilerStarted": false,
+  "cleanupAttempted": false
+}

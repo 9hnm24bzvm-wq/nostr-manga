@@ -76,42 +76,10 @@ pub async fn update(
         }
         actor.require_permission("user.update")?;
     }
-    let patch = v::profile(&p)?;
-    if patch.as_object().expect("profile object").is_empty() {
-        return Err(ApiError::bad_request("No profile changes supplied"));
-    }
-    let next = p
-        .version
-        .checked_add(1)
-        .ok_or_else(|| ApiError::conflict("Profile version limit reached"))?;
     let mut db = state.db.client().await?;
     let tx = db.transaction().await?;
-    let row = tx
-        .query_opt(
-            "SELECT version FROM platform.users WHERE id=$1 AND NOT disabled FOR UPDATE",
-            &[&id],
-        )
-        .await?
-        .ok_or_else(|| ApiError::not_found("User not found"))?;
-    if row.get::<_, i32>(0) != p.version {
-        return Err(ApiError::conflict("Profile changed; reload before editing"));
-    }
-    // Empty strings remove contact/biography fields; profile metadata cannot overwrite identity or authority.
-    tx.execute("UPDATE platform.users SET profile=(profile || $2),version=$3,updated_at=clock_timestamp() WHERE id=$1",&[&id,&patch,&next]).await?;
-    for (key, value) in patch.as_object().expect("profile object") {
-        if value.as_str() == Some("") {
-            tx.execute(
-                "UPDATE platform.users SET profile=profile-$2 WHERE id=$1",
-                &[&id, &key],
-            )
-            .await?;
-        }
-    }
-    tx.execute("INSERT INTO platform.catalog_audit(actor_id,entity_type,entity_id,operation,old_version,new_version) VALUES($1,'user',$2,'update',$3,$4)",&[&actor.user_id,&id,&p.version,&next]).await?;
-    let result: Value = tx
-        .query_one("SELECT platform.library_user_json($1)", &[&id])
-        .await?
-        .get(0);
+    super::profile_mutations::update_in(&tx, &actor, &id, &p).await?;
+    let result: Value = tx.query_one("SELECT platform.library_user_json($1)", &[&id]).await?.get(0);
     tx.commit().await?;
     Ok(Json(result))
 }

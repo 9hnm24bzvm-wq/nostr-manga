@@ -38,6 +38,9 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24.19.0
+      - name: Check finite deployment proxy route and header contracts
+        timeout-minutes: 2
+        run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs
       - name: Prepare pinned dependencies and frozen-source builds
         timeout-minutes: 90
         env:

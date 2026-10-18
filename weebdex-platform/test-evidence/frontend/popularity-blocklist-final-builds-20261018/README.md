@@ -3,7 +3,7 @@
 Exact source 351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9, tree ee48a2664a5ab89b4863b0bfa9440ffaf16afe7f. Both actual production profiles passed sequentially in a fresh owned worktree with the existing verified dependencies.
 
 - Gate off: 44.357 s, 449 files, 7,266,474 bytes.
-- Gate on: 46.364 s, 450 files, 7,305,886 bytes.
+- Gate on: 46.363 s, 450 files, 7,305,886 bytes.
 - All 899 physical artifact files were independently rehashed after both runs.
 - All 917 frontend/build inputs, 679 canonical files and 39,226 existing dependency entries were unchanged. The 1,273-input snapshot of this sparse frontend-validation checkout is preserved before/after; it is not a full backend compilation manifest.
 - Both pidfd-owned build trees stopped without signals, survivors or resource stops. Bounds: 2 GiB Node heap, one Terser worker, 900 s, 4 GiB disk floor plus 128 MiB cleanup reserve, 4 GiB owned RSS and 1 GiB shared available RAM reserve. No dependency installation/copy or deletion occurred.

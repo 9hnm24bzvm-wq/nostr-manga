@@ -3,7 +3,7 @@ use super::{
     PostgresPublicIdResolver, PublicApiError, PublicApiResult, PublicIdResolver, PublicIdTarget,
     PublicUuid, ResourceKind,
 };
-use crate::{domains::library::public_user_profile, error::ApiError, state::AppState};
+use crate::{domains::library::profile_mutations, error::ApiError, state::AppState};
 use axum::{
     Json, Router,
     extract::{Path, RawQuery, State},
@@ -11,7 +11,7 @@ use axum::{
 };
 use serde_json::{Value, json};
 pub fn router() -> Router<AppState> {
-    Router::new().route("/user/{p0}", get(one))
+    Router::new().route("/user/{p0}", get(one).put(super::native_profile::write))
 }
 async fn one(
     State(state): State<AppState>,
@@ -46,13 +46,9 @@ async fn one(
             )
         }
         PublicIdTarget::NativeResource => {
-            let profile = public_user_profile(&state.db, &target.native_id)
-                .await?
-                .ok_or_else(PublicApiError::not_found)?;
-            (
-                json!({"username":profile.username,"roles":profile.roles,"version":profile.version}),
-                json!({"identity":"native_public_user"}),
-            )
+            let db=state.db.client().await?;
+            let attributes=profile_mutations::read_in(&**db,&target.native_id).await?;
+            (attributes,json!({"identity":"native_public_user"}))
         }
         PublicIdTarget::ProtocolList { .. } => return Err(PublicApiError::not_found()),
     };

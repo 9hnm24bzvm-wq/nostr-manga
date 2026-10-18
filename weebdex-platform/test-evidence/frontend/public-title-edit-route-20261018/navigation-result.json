@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "base_commit": "762b9934f93fffd9f4e35c8d7c2e02ed1f7d057e",
+  "source_commit": "82123b0d6d9856700cd65e8040ae619d326b001c",
+  "source_files": [
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicTitleShell.svelte",
+      "bytes": 332,
+      "sha256": "c350f5ef090790cf9f5476802078af3a5efe912efef85a8b91bb868bbf9f689b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/anchors.json",
+      "bytes": 53413,
+      "sha256": "e6dd74da63dbb23a571aa775a65f0709d6fb638d0737f3bdd92193e543f9f1c2"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+      "bytes": 9653,
+      "sha256": "1d001de81da56f4399c5618c971ed7d3dbb82b260cc24810859275b876139916"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/source-hashes.json",
+      "bytes": 5541,
+      "sha256": "822477b547f98e0241d439cce91a817f0a4d7186031a12fd99d13e70b4a87f33"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_title_composition.mjs",
+      "bytes": 6117,
+      "sha256": "77c96ddf59d8967c50d8ed2938e561a889970fc885371d5b01833ab15c595b41"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_rating_build_seam.mjs",
+      "bytes": 3035,
+      "sha256": "40a679849ebdb969ac4e87d0bccc4749fa53a9595a379cb032f6271010f7de9c"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_title_commands.mjs",
+      "bytes": 34835,
+      "sha256": "07998112594d6b8b257f167c764d094388f629987b522a6d88baecea15509f6d"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_title_edit_route_dom.mjs",
+      "bytes": 21978,
+      "sha256": "56bdd83e466c290ecb74005d91df7f3010c918df56938754986f2ea3daf63ec4"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/title-edit-route-fixture.mjs",
+      "bytes": 5354,
+      "sha256": "5fd9bee19c8f3fc5c6fd4abc3e6e77c65d890818c5d795a2ecaaea59f989a131"
+    }
+  ],
+  "qualification": {
+    "actual_svelte_jsdom_route_cases": 12,
+    "focused_finite_total_passed": 92,
+    "failed": 0,
+    "excluded_tests": [
+      "the recovery anchor generator reproduces the complete current public manifest without writing source"
+    ],
+    "exclusion_reason": "Integrator owns pre-existing reconstruction-generator parity drift repair after this additive recipe successor. Sparse source-parity fixture is not materialized in this worktree.",
+    "compiler": "Svelte 5.55.1",
+    "dom": "jsdom 27.0.1",
+    "node": "v24.19.0",
+    "live_browser": false,
+    "live_http": false,
+    "full_composed_strict": "pending one coordinated final freeze",
+    "vite_build": "pending one coordinated final freeze"
+  },
+  "contract": {
+    "public_gate_only": true,
+    "canonical_frontend_files_changed": false,
+    "backend_files_changed": false,
+    "existing_anchor_entries_preserved": 79,
+    "new_anchor_entries": 5,
+    "source_manifest_paths": 49,
+    "feature_exceptions": 14,
+    "availability_exceptions": 9,
+    "media_exceptions": 3,
+    "cover_component": "actual lifecycle with declared cover-controller transport stand-in",
+    "unchanged_authority": "actual signed title loader/controller plus server authority and captured account/version fences",
+    "actual_outer_layouts": [
+      "src/routes/+layout.svelte",
+      "src/routes/(app)/+layout.svelte",
+      "src/routes/(app)/title/[id]/edit/+layout.svelte"
+    ],
+    "actual_action_row": "src/routes/(app)/title/MangaActions.svelte",
+    "declared_stand_ins": "Service/signing transport, cover controller transport, library state and visual/provider/runtime/navigation leaves; actual global/app/edit composition and editor/cover lifecycles execute.",
+    "captured_route_key": "[page.url.pathname, data.manga.id].join(\":\")"
+  },
+  "command": "WEEBDEX_FRONTEND_ROOT=<existing verified Svelte dependency stage> WEEBDEX_BROWSER_DOM_NODE_MODULES=<existing jsdom27 dependency stage> node --experimental-vm-modules --test --test-skip-pattern=\"recovery anchor generator\" tests/ci/test_public_title_edit_route_dom.mjs tests/ci/test_public_title_commands.mjs tests/ci/test_account_title_composition.mjs tests/ci/test_public_rating_build_seam.mjs",
+  "actual_component_and_route_input_pins": [
+    {
+      "path": "weebdex-platform/frontend/src/routes/+layout.svelte",
+      "bytes": 1514,
+      "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/+layout.svelte",
+      "bytes": 475,
+      "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/edit/+layout.svelte",
+      "bytes": 205,
+      "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/edit/+page.svelte",
+      "bytes": 2645,
+      "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/edit/+page.ts",
+      "bytes": 723,
+      "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/title/MangaActions.svelte",
+      "bytes": 12126,
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/lib/components/ui/ProtectedVerified.svelte",
+      "bytes": 1529,
+      "sha256": "175bbb7e6ad8a3616d0f5f80e713cf1aef69cec21861f765d5dffb8cd11d3b4c"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicTitleShell.svelte",
+      "bytes": 332,
+      "sha256": "c350f5ef090790cf9f5476802078af3a5efe912efef85a8b91bb868bbf9f689b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicTitleEditor.svelte",
+      "bytes": 12307,
+      "sha256": "6eb94e292a0900b0c9dc3dd69f2a87cd996c67ee375c13e51bd3caaf636f7859"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicCoverEditor.svelte",
+      "bytes": 7115,
+      "sha256": "07726d31a705a0b5ed79693f0205a0be3d3455dacf301bae8f9f8f24f8e4b65a"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/title-client.ts",
+      "bytes": 22320,
+      "sha256": "0d3c4108326221d2d283a55a56d320db9666405188a4a9a871c234673deb927d"
+    }
+  ],
+  "navigation_regression": {
+    "same_mounted_canonical_A_to_B": "passes using the pre-existing common-stage target key",
+    "delayed_old_target_read": "passes with late A dropped",
+    "delayed_committed_old_target_save": "one A write; B untouched; no old success installed",
+    "same_canonical_id_alias_to_canonical_path": {
+      "before": "reproduced with 0writes instead of1 after route reuse",
+      "after": "new exact pathname+canonical-target key reopens current signed ownership and saves once"
+    },
+    "red_production_commit": "6661be054d27acd1bbc76c855da7edd238a591ed",
+    "red_test_snapshot": "test and fixture source pins at corrected source commit; added test is identical between red and green",
+    "red_result": {
+      "tests": 12,
+      "passed": 11,
+      "failed": 1
+    },
+    "green_dom_result": {
+      "tests": 12,
+      "passed": 12,
+      "failed": 0
+    }
+  },
+  "logs": [
+    {
+      "path": "weebdex-platform/test-evidence/frontend/public-title-edit-route-20261018/alias-navigation-red.log.gz",
+      "bytes": 1226,
+      "sha256": "ff2f14bd350355279b42b527e67651ffaac04853187f2ab80671209bf77b83d8",
+      "uncompressed_bytes": 2486,
+      "uncompressed_sha256": "ec9b4703dfb38ab33b56df26731bf39f0f32edead0b728f282e6507db4b391db"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/frontend/public-title-edit-route-20261018/navigation-green.log",
+      "bytes": 9447,
+      "sha256": "6e65f48e75210fab33a7c9b2da75c35672f098a5620ad77d39d34dcc1b1cc6d6"
+    }
+  ]
+}

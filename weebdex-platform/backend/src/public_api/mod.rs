@@ -33,6 +33,7 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(list_follows::router())
         .merge(follow_writes::router())
         .merge(native_reading_status::router())
+        .merge(native_profile::router())
         .merge(media::router())
         .merge(native_forum::router())
         .merge(legacy::router())
@@ -73,6 +74,7 @@ pub mod ratings;
 pub mod list_follows;
 pub mod follow_writes;
 pub mod native_reading_status;
+pub mod native_profile;
 
 pub mod media;
 

@@ -1,0 +1,117 @@
+{
+  "weebdex-platform/tests/ci/public-api-recovery.test.mjs": {
+    "failedCases": 1,
+    "firstError": [
+      "test at weebdex-platform/tests/ci/public-api-recovery.test.mjs:43:1",
+      "\u2716 both product gates are off by default and original API source stays immutable (2.148977ms)",
+      "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "  ",
+      "  38 !== 37",
+      "  ",
+      "      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/tests/ci/public-api-recovery.test.mjs:43:870)",
+      "      at Test.runInAsyncScope (node:async_hooks:227:14)",
+      "      at Test.run (node:internal/test_runner/test:1382:25)",
+      "      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)",
+      "      at Test.postRun (node:internal/test_runner/test:1522:19)",
+      "      at Test.run (node:internal/test_runner/test:1447:12)",
+      "      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {",
+      "    generatedMessage: true,"
+    ]
+  },
+  "weebdex-platform/tests/ci/test_account_onboarding_seams.mjs": {
+    "failedCases": 43,
+    "firstError": [
+      "test at weebdex-platform/tests/ci/test_account_onboarding_seams.mjs:151:1",
+      "\u2716 opening signup leaves the familiar form and does not show a welcome or write anything (45.448643ms)",
+      "  :11",
+      "  ",
+      "  type { DeviceListNameReview } from './device-list-name';",
+      "       ^",
+      "  ",
+      "  SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Expected ';', '}' or <eof>",
+      "      at parseTypeScript (node:internal/modules/typescript:72:36)",
+      "      at processTypeScriptCode (node:internal/modules/typescript:146:42)",
+      "      at stripTypeScriptTypes (node:internal/modules/typescript:123:10)",
+      "      at transform (file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/tests/ci/test_account_onboarding_seams.mjs:27:29)",
+      "      at registration (file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/tests/ci/test_account_onboarding_seams.mjs:107:52)",
+      "      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/tests/ci/test_account_onboarding_seams.mjs:152:23)"
+    ]
+  },
+  "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs": {
+    "failedCases": 1,
+    "firstError": [
+      "test at weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs:40:1",
+      "\u2716 supplemental source plan binds exact new source without changing historical baseline scope (2.356219ms)",
+      "  AssertionError [ERR_ASSERTION]: scripts/ci/run-hosted-browser.py",
+      "  + actual - expected",
+      "  ",
+      "  + 'a904994f8ab19164174dc62f17df48ed926de0567603340f080b39415e00c0a6'",
+      "  - '275aaddfe32bf3b1fa5824d0285161a7d2ffd353037438433ee8796c1492c8a3'",
+      "  ",
+      "      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs:50:75)",
+      "      at Test.runInAsyncScope (node:async_hooks:227:14)",
+      "      at Test.run (node:internal/test_runner/test:1382:25)",
+      "      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)",
+      "      at Test.postRun (node:internal/test_runner/test:1522:19)",
+      "      at Test.run (node:internal/test_runner/test:1447:12)"
+    ]
+  },
+  "weebdex-platform/tests/ci/test_browser_local_signing_integration.mjs": {
+    "failedCases": 1,
+    "firstError": [
+      "test at weebdex-platform/tests/ci/test_browser_local_signing_integration.mjs:33:1",
+      "\u2716 reviewed library publication uses the same local identity and immutable signed job (101.13671ms)",
+      "  Error: Library, canonical mapping or recipient selection changed. Review again.",
+      "      at Module.publishReviewed (/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/platform-integrations/local-library/publication.ts:261:15)",
+      "      at async TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/tests/ci/test_browser_local_signing_integration.mjs:38:16)",
+      "      at async Test.run (node:internal/test_runner/test:1389:7)",
+      "      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)"
+    ]
+  },
+  "weebdex-platform/tests/ci/test_browser_signed_event_envelope.mjs": {
+    "failedCases": 1,
+    "firstError": [
+      "test at weebdex-platform/tests/ci/test_browser_signed_event_envelope.mjs:1:1",
+      "\u2716 weebdex-platform/tests/ci/test_browser_signed_event_envelope.mjs (54.183115ms)",
+      "  'test failed'"
+    ]
+  },
+  "weebdex-platform/tests/ci/test_native_settings_utility_sources.mjs": {
+    "failedCases": 2,
+    "firstError": [
+      "test at weebdex-platform/tests/ci/test_native_settings_utility_sources.mjs:25:1",
+      "\u2716 additive route membership is exactly existing announcements plus anonymous identity (1.597151ms)",
+      "  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "  + actual - expected",
+      "  ",
+      "    [",
+      "  +   'src/routes/(app)/following/manga/+page.svelte',",
+      "  +   'src/routes/(app)/following/group/+page.svelte',",
+      "  +   'src/routes/(app)/following/user/+page.svelte',",
+      "  +   'src/routes/(app)/list/[id]/+page.svelte',",
+      "  +   'src/routes/(app)/user/[id]/lists/+page.svelte',",
+      "  +   'src/routes/(app)/following/lists/+page.svelte',",
+      "  +   'src/routes/(app)/catalogue-tools/+page.svelte',",
+      "  +   'src/routes/(app)/author/[id]/settings/+page.ts',"
+    ]
+  },
+  "weebdex-platform/tests/ci/test_public_editorial_commands.mjs": {
+    "failedCases": 1,
+    "firstError": [
+      "test at weebdex-platform/tests/ci/test_public_editorial_commands.mjs:46:1",
+      "\u2716 actual entry composition preserves supplied markup while linking signed Settings, Claim and sidebar tools (73.11849ms)",
+      "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "  + actual - expected",
+      "  ... Skipped lines",
+      "  ",
+      "    '<script></script>\\r\\n' +",
+      "      '\\r\\n' +",
+      "      '<svelte:head>\\r\\n' +",
+      "      '\\t<title>{$group.name} - {PUBLIC_SITE_NAME}</title>\\r\\n' +",
+      "      '</svelte:head>\\r\\n' +",
+      "  ...",
+      "      '\\t\\t\\t\\t<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\\r\\n' +",
+      "  +   '\\t\\t\\t\\t\\t<AccountFollow kind=\"group\" targetId={$group.id} requestedId={page.params.id??\"\"}/>\\r\\n' +"
+    ]
+  }
+}

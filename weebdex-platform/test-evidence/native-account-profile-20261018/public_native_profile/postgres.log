@@ -1,0 +1,14 @@
+2026-10-17 22:46:01.030 EDT [172] LOG:  starting PostgreSQL 17.11 (Debian 17.11-0+deb13u1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-17 22:46:01.030 EDT [172] LOG:  listening on IPv4 address "127.0.0.1", port 46595
+2026-10-17 22:46:01.031 EDT [175] LOG:  database system was shut down at 2026-10-17 22:46:00 EDT
+2026-10-17 22:46:01.032 EDT [172] LOG:  database system is ready to accept connections
+2026-10-17 22:46:01.749 EDT [191] ERROR:  synthetic profile rollback
+2026-10-17 22:46:01.749 EDT [191] CONTEXT:  PL/pgSQL function platform.profile_fixture_rollback() line 1 at RAISE
+2026-10-17 22:46:01.749 EDT [191] STATEMENT:  UPDATE platform.users SET profile=(profile || $2),version=$3,updated_at=clock_timestamp() WHERE id=$1
+2026-10-17 22:46:01.848 EDT [172] LOG:  received fast shutdown request
+2026-10-17 22:46:01.848 EDT [172] LOG:  aborting any active transactions
+2026-10-17 22:46:01.849 EDT [172] LOG:  background worker "logical replication launcher" (PID 178) exited with exit code 1
+2026-10-17 22:46:01.850 EDT [173] LOG:  shutting down
+2026-10-17 22:46:01.850 EDT [173] LOG:  checkpoint starting: shutdown immediate
+2026-10-17 22:46:01.855 EDT [173] LOG:  checkpoint complete: wrote 953 buffers (46.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.001 s, total=0.006 s; sync files=0, longest=0.000 s, average=0.000 s; distance=8666 kB, estimate=8666 kB; lsn=0/1D81470, redo lsn=0/1D81470
+2026-10-17 22:46:01.858 EDT [172] LOG:  database system is shut down

@@ -46,7 +46,15 @@ provisioned by this implementation.
   Atomic `POST /api/upload/{session}/files/{file}/replace` has its own exact
   40 MiB multipart proxy/core budget and upload intake deadline. The nginx
   example preserves its URI and `X-WeebDex-Upload-Version` header while keeping
-  the generic JSON cap at 1 MiB. Operational acceptance must exercise a real
+  the generic JSON cap at 1 MiB. Signed UUID transports also require the exact
+  `/api/v1/upload/{session}` (96 MiB),
+  `/api/v1/nostr/uploads/{session}/files/{file}/replace` (40 MiB), and
+  `/api/v1/cover/{manga}` (40 MiB) proxy locations. Their example body inactivity
+  timeout is 180 s; Rust retains the finite configured total intake deadline and
+  the method-specific JSON budget. If changing runtime upload/body settings,
+  review the matching proxy ceilings too. Quote regex location arguments with
+  brace quantifiers so nginx does not parse a quantifier as a block delimiter.
+  Operational acceptance must exercise a real
   encoded replacement larger than 1 MiB through the actual proxy.
   The body wrapper streams without whole-upload buffering and preserves
   backpressure. Upload module adds 32 MiB/file, image decode/pixel/frame limits,
@@ -116,6 +124,11 @@ operator-owned current-release switch. Provision writable private native/origina
 storage separately, with adequate disk/inodes and tested backup/restore. Review
 `deployment/weebdex.service.example` and `deployment/nginx.example.conf`; these
 are templates, not verified installed services.
+
+Use the bounded private [backup and restore runbook](backup-restore.md) for a
+whole-database plus native/original/projection-storage checkpoint. Its script
+defaults to a read-only plan; a real isolated recovery drill remains required.
+Public source archives never substitute for private runtime-data backups.
 
 Inject runtime JSON and secrets through the service manager or approved secret
 store. The only database value is `PLATFORM_DATABASE_URL` (legacy

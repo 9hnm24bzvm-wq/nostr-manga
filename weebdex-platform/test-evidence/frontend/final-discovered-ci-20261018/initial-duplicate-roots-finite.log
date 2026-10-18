@@ -1,0 +1,18 @@
+/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/scripts/semantic-readonly-cache-guard.cjs:11
+if (new Set(roots).size !== roots.length) throw Error('Read-only cache guard roots must be distinct');
+                                          ^
+
+Error: Read-only cache guard roots must be distinct
+    at Object.<anonymous> (/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/scripts/semantic-readonly-cache-guard.cjs:11:49)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1617:12)
+    at node:internal/modules/cjs/loader:2164:12
+    at loadPreloadModules (node:internal/process/pre_execution:710:5)
+    at initializeModuleLoaders (node:internal/process/pre_execution:243:5)
+
+Node.js v24.19.0
+{"command": ["bash", "weebdex-platform/test-evidence/frontend/final-discovered-ci-20261018/run-finite.sh"], "cwd": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017", "exitCode": 1, "stopReason": null, "elapsedSeconds": 1.201, "minimumFreeBytes": 4838223872, "minimumAvailableMemoryBytes": 8422252544, "ownedSurvivors": [], "status": "failed"}

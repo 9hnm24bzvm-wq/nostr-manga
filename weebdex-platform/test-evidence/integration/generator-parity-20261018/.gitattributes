@@ -1,0 +1,2 @@
+# Preserve the exact raw assertion log, including its two trailing-space lines.
+before.log -whitespace

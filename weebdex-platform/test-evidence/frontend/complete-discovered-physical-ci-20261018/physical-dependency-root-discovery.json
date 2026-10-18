@@ -1,0 +1,16 @@
+{
+  "roots": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core",
+    "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/browser-dom-dependencies/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/manga-protocol-lab/browser-client/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-signing-base-2.0.0/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+  ],
+  "uncoveredSymlinks": [],
+  "examinedSymlinks": 627,
+  "source": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+  "method": "Canonical declared roots plus actual primary package root; recursively inventory every directory symlink target without following symlinks during entry hashing",
+  "aliasContainer": "Original browser-model ignored four-link container is included for symlink/mode/mtimeNs snapshot and mutation guarding"
+}

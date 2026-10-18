@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "base_commit": "762b9934f93fffd9f4e35c8d7c2e02ed1f7d057e",
+  "source_commit": "68c73c68d47a56efc47666d5d578618723af52f2",
+  "source_files": [
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicTitleShell.svelte",
+      "bytes": 332,
+      "sha256": "c350f5ef090790cf9f5476802078af3a5efe912efef85a8b91bb868bbf9f689b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/anchors.json",
+      "bytes": 52854,
+      "sha256": "9cca7ff06913483c687870dddea7441b5b9996fed3e3ce16ed384b86f8489750"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+      "bytes": 9562,
+      "sha256": "79d3303651e0017a21c8223b65155b24808894a6cf25276f9d989668ed3a948e"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/source-hashes.json",
+      "bytes": 5541,
+      "sha256": "822477b547f98e0241d439cce91a817f0a4d7186031a12fd99d13e70b4a87f33"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_title_composition.mjs",
+      "bytes": 6117,
+      "sha256": "d1d1cbfa9fd9f655201e9b7706ddd53b6458049183c9df2e0fa3a24b34bff96d"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_rating_build_seam.mjs",
+      "bytes": 3035,
+      "sha256": "0d632c8e4a32690a792d2d6928621d996f139d057f8370e2a487bc3cea1f9deb"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_title_commands.mjs",
+      "bytes": 34704,
+      "sha256": "9b1af1e360568093b5611e16f1f4314cb45b2431bc40bc0dd0d3f93904aaa4fc"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_title_edit_route_dom.mjs",
+      "bytes": 14764,
+      "sha256": "c2f6b9ec70b2c1840ba9de92016be635d3b447de8db6bdd24225d5d7bafa0c2f"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/title-edit-route-fixture.mjs",
+      "bytes": 4642,
+      "sha256": "255efe3e795f3346e5367b353d482cd65a2898dfc7cbdb9e029a790d6d7b44c3"
+    }
+  ],
+  "qualification": {
+    "actual_svelte_jsdom_route_cases": 7,
+    "focused_finite_total_passed": 87,
+    "failed": 0,
+    "excluded_tests": [
+      "the recovery anchor generator reproduces the complete current public manifest without writing source"
+    ],
+    "exclusion_reason": "Integrator owns pre-existing reconstruction-generator parity drift repair after this additive recipe successor. Sparse source-parity fixture is not materialized in this worktree.",
+    "compiler": "Svelte 5.55.1",
+    "dom": "jsdom 27.0.1",
+    "node": "v24.19.0",
+    "live_browser": false,
+    "live_http": false,
+    "full_composed_strict": "pending one coordinated final freeze",
+    "vite_build": "pending one coordinated final freeze"
+  },
+  "contract": {
+    "public_gate_only": true,
+    "canonical_frontend_files_changed": false,
+    "backend_files_changed": false,
+    "existing_anchor_entries_preserved": 79,
+    "new_anchor_entries": 4,
+    "source_manifest_paths": 49,
+    "feature_exceptions": 13,
+    "availability_exceptions": 9,
+    "media_exceptions": 3,
+    "cover_component": "actual lifecycle with declared cover-controller transport stand-in",
+    "unchanged_authority": "actual signed title loader/controller plus server authority and captured account/version fences"
+  },
+  "command": "WEEBDEX_FRONTEND_ROOT=<existing verified Svelte dependency stage> WEEBDEX_BROWSER_DOM_NODE_MODULES=<existing jsdom27 dependency stage> node --experimental-vm-modules --test --test-skip-pattern=\"recovery anchor generator\" tests/ci/test_public_title_edit_route_dom.mjs tests/ci/test_public_title_commands.mjs tests/ci/test_account_title_composition.mjs tests/ci/test_public_rating_build_seam.mjs",
+  "log": {
+    "path": "weebdex-platform/test-evidence/frontend/public-title-edit-route-20261018/finite.log",
+    "bytes": 8851,
+    "sha256": "de1195d840cbc2f5f5b89f36e943e31f3db79927787e246a456bea993504fbc4"
+  }
+}
