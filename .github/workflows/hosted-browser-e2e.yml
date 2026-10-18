@@ -25,7 +25,7 @@ jobs:
     # Standard public runner only. Never fall back to private/paid/self-hosted.
     if: github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && (github.ref == 'refs/heads/ci/hosted-browser-e2e' || github.ref == 'refs/heads/ci/browser-failure-diagnostics')
     runs-on: ubuntu-24.04
-    timeout-minutes: 345
+    timeout-minutes: 140
     env:
       CARGO_BUILD_JOBS: 2
       NODE_OPTIONS: --max-old-space-size=2048
@@ -44,7 +44,7 @@ jobs:
       - name: Prepare pinned dependencies and frozen-source builds
         timeout-minutes: 90
         env:
-          SELECTED_BATCH: ${{ inputs.batch || 'all' }}
+          SELECTED_BATCH: ${{ inputs.batch || 'public-upload' }}
         run: |
           mkdir -p weebdex-platform/.build/hosted-browser
           if ! bash weebdex-platform/scripts/ci/prepare-hosted-browser.sh >weebdex-platform/.build/hosted-browser/preparation.log 2>&1; then
@@ -55,13 +55,13 @@ jobs:
         timeout-minutes: 12
         run: python3 weebdex-platform/scripts/ci/run-hosted-feed-regression.py
       - name: Run genuine browser batches under the owned fixture supervisor
-        timeout-minutes: 245
+        timeout-minutes: 30
         env:
-          SELECTED_BATCH: ${{ inputs.batch || 'all' }}
+          SELECTED_BATCH: ${{ inputs.batch || 'public-upload' }}
         run: |
           weebdex-platform/.build/hosted-python/bin/python \
             weebdex-platform/scripts/ci/run-hosted-browser.py \
-            --batch "$SELECTED_BATCH" --budget-seconds 14400
+            --batch "$SELECTED_BATCH" --budget-seconds 3600
       - name: Validate the closed public evidence schemas
         id: evidence-validation
         if: always()

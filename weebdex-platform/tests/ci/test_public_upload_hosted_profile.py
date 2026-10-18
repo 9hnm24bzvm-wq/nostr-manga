@@ -64,7 +64,28 @@ class PublicUploadHostedProfile(unittest.TestCase):
         self.assertEqual(runner.requested_phases(runner.BATCHES), runner.ALL_PHASES)
         workflow = (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text()
         self.assertIn('actor-follow, public-upload]', workflow)
-        self.assertEqual(workflow.count("SELECTED_BATCH: ${{ inputs.batch || 'all' }}"), 2)
+        self.assertEqual(workflow.count("SELECTED_BATCH: ${{ inputs.batch || 'public-upload' }}"), 2)
+
+    def test_reviewed_single_public_upload_push_has_tighter_outer_bounds(self):
+        workflow = (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text()
+        self.assertEqual(workflow.count("SELECTED_BATCH: ${{ inputs.batch || 'public-upload' }}"), 2)
+        self.assertNotIn("inputs.batch || 'all'", workflow)
+        self.assertEqual(workflow.count('timeout-minutes: 140'), 1)
+        self.assertEqual(workflow.count('timeout-minutes: 30'), 1)
+        self.assertIn('--batch "$SELECTED_BATCH" --budget-seconds 3600', workflow)
+        reserve = runner.maximum(runner.PUBLIC_UPLOAD_PHASE) + 35 + 300 + 600
+        self.assertEqual(reserve, 1535)
+        self.assertLess(reserve, 30 * 60)
+        self.assertLessEqual(2 + 90 + 12 + 30, 140)
+        self.assertIn('runs-on: ubuntu-24.04', workflow)
+        self.assertIn('contents: read', workflow)
+        self.assertIn('retention-days: 1', workflow)
+
+    def test_hosted_launch_keeps_chromium_sandbox_enabled(self):
+        source = (ROOT / 'scripts/browser-acceptance.mjs').read_text()
+        self.assertIn('chromium.launch({ executablePath, headless: true, chromiumSandbox: true,', source)
+        self.assertNotIn('"--no-sandbox"', source)
+        self.assertNotIn('"--disable-setuid-sandbox"', source)
 
     def profile_fixture(self, root, fail_at=None):
         stage = root / '.build/hosted-browser'

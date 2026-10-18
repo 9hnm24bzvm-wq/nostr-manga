@@ -54,7 +54,7 @@ class HostedBrowserSeams(unittest.TestCase):
         routes += [prefix + ids[kind] for kind, prefix in [('manga', '/title/'), ('group', '/group/'), ('chapter', '/chapter/')]]
         self.assertEqual(diagnostics.ROUTES, ['/', *routes])
         self.assertEqual(diagnostics.CHECK_NAMES, ['homepage bootstraps under exact generated CSP', *['fresh deep link ' + route for route in routes], 'missing built/static assets produce real 404'])
-        self.assertIn("inputs.batch || 'all'", (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text())
+        self.assertIn("inputs.batch || 'public-upload'", (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text())
 
     def test_startup_projection_serializes_only_closed_diagnostics_and_passes_real_gate(self):
         diagnostics, validator, acceptance, owned, private = self.diagnostic_inputs()

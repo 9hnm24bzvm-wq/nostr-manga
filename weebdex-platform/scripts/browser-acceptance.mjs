@@ -82,7 +82,7 @@ try {
 	await new Promise((resolve, reject) => { proxy.once('error', reject); proxy.listen(0, "127.0.0.1", () => { proxy.off('error', reject); resolve(); }); });
 	const proxyAddress = proxy.address();
 	runnerStage("launching-browser");
-	browser = await chromium.launch({ executablePath, headless: true,
+	browser = await chromium.launch({ executablePath, headless: true, chromiumSandbox: true,
 		proxy: { server: `http://127.0.0.1:${proxyAddress.port}`, bypass: "127.0.0.1,localhost" },
 		args: ["--disable-background-networking", "--disable-component-update", "--disable-sync", "--no-first-run", "--disable-default-apps", "--disable-features=MediaRouter"] });
 	report.cleanup.browser_created = true;

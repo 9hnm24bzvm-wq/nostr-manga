@@ -91,11 +91,25 @@ test('current actor-follow runtime source has a separate exact association witho
   const priorWorkflow = Buffer.from(historicalSource.initial_current_workflow_base64, 'base64');
   assert.equal(hash(priorWorkflow), currentSourceAssociation.initial_current_workflow_sha256);
   const proxyStep = '      - name: Check finite deployment proxy route and header contracts\n        timeout-minutes: 2\n        run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs\n';
-  const currentWorkflow = fs.readFileSync(new URL(workflow, root), 'utf8');
+  const publishedCiWorkflow = fs.readFileSync(new URL(workflow, root), 'utf8');
+  // Exact CI-only successor: retain the immutable c6/f593/9079 associations.
+  assert.equal(hash(publishedCiWorkflow), '19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1');
+  let currentWorkflow = publishedCiWorkflow;
+  for (const [current, historical, count] of [
+    ["inputs.batch || 'public-upload'", "inputs.batch || 'all'", 2],
+    ['timeout-minutes: 140', 'timeout-minutes: 345', 1],
+    ['timeout-minutes: 30', 'timeout-minutes: 245', 1],
+    ['--budget-seconds 3600', '--budget-seconds 14400', 1],
+  ]) {
+    assert.equal(currentWorkflow.split(current).length - 1, count);
+    currentWorkflow = currentWorkflow.replaceAll(current, historical);
+  }
+  assert.equal(hash(currentWorkflow), currentSourceAssociation.current_runtime_sha256[workflow]);
   assert.equal(currentWorkflow.split(proxyStep).length - 1, 1);
   assert.equal(currentWorkflow.replace(proxyStep, ''), priorWorkflow.toString('utf8'));
   for (const [file, digest] of Object.entries(currentSourceAssociation.current_runtime_sha256)) {
-    assert.equal(hash(fs.readFileSync(new URL(file, root))), digest, 'current source: ' + file);
+    const bound = file === workflow ? currentWorkflow : fs.readFileSync(new URL(file, root));
+    assert.equal(hash(bound), digest, 'historical current association: ' + file);
   }
 });
 
