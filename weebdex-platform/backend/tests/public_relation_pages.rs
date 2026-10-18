@@ -79,19 +79,23 @@ async fn public_relation_pages_recover_all_4096_with_full_metadata_and_snapshot_
     }
     assert_eq!(actual,expected);assert_eq!(page_count,128);assert_eq!(seen.len(),4096);
     let all_pages_ms=start.elapsed().as_millis();eprintln!("relation_pages_measurement={}",json!({"edges":4096,"pages":page_count,"elapsedMs":all_pages_ms,"maxResponseBytes":max_bytes,"fullTargetMetadata":true,"perRequestBudgetSeconds":60,"responseBudgetBytes":1024*1024}));
-    let mut adapter_probe_passed = true;
-    if let Ok(script) = std::env::var("PLATFORM_PUBLIC_RELATION_ADAPTER_SCRIPT") {
+    let adapter_probe_passed = {
         use sha2::{Digest,Sha256};
-        let script=std::path::PathBuf::from(script);
-        assert!(script.ends_with("public-relation-ui-worktree/weebdex-platform/tests/ci/probe_public_relation_pages.mjs"));
+        // Always exercise this compiled checkout's production adapter. A
+        // historical sibling worktree must not qualify the current source.
+        let script=std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../tests/ci/probe_public_relation_pages.mjs").canonicalize().expect("Current checkout adapter probe is required");
+        if let Some(requested)=std::env::var_os("PLATFORM_PUBLIC_RELATION_ADAPTER_SCRIPT") {
+            assert_eq!(std::path::PathBuf::from(requested).canonicalize().unwrap(),script,"Adapter probe must belong to this compiled checkout");
+        }
         assert_eq!(hex::encode(Sha256::digest(std::fs::read(&script).unwrap())),"a3c857eb5be4d1140b8e8ec8d71b7c2af874f39910edfeb681d2e1678b09dc66");
         let output=tokio::time::timeout(Duration::from_secs(70),tokio::process::Command::new("node")
             .arg("--experimental-vm-modules").arg(script).env("PUBLIC_API_ORIGIN",&base).env("MANGA_ID",root.as_str())
             .env("EXPECTED_RELATIONS","4096").env("RELATION_PROBE_RECEIPT",runtime.join("actual-public-relation-adapter.json"))
             .kill_on_drop(true).output()).await.expect("Actual adapter exceeded its own60s budget and shutdown margin").unwrap();
-        adapter_probe_passed=output.status.success();
+        let adapter_probe_passed=output.status.success();
         eprintln!("actual_relation_adapter_passed={adapter_probe_passed}\n{}\n{}",String::from_utf8_lossy(&output.stdout),String::from_utf8_lossy(&output.stderr));
-    }
+        adapter_probe_passed
+    };
     // The relation editor refreshes its owner after mutation. Capacity is not a
     // usable journey if the owner+4096 related UUIDs cannot be presented too.
     let (owner_at_cap,_)=get(&client,&base,&format!("/manga/{root}"),200).await;

@@ -30,6 +30,7 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
             || (matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/manga/{id}") { continue; }
         if matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/chapter/{id}" { continue; }
         if operation.method=="POST" && operation.path=="/settings" {continue;}
+        if operation.method=="POST" && operation.path=="/manga/{id}/status" {continue;}
         if matches!(operation.method.as_str(),"POST"|"DELETE") && matches!(operation.path.as_str(),"/manga/{id}/follow"|"/group/{id}/follow") {continue;}
         if (operation.method == "GET" && matches!(operation.path.as_str(),"/user/follows/list"|"/user/follows/list/{id}"))
             || (matches!(operation.method.as_str(),"POST"|"DELETE") && operation.path=="/list/{id}/follow") {continue;}

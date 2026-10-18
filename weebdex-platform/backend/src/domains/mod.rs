@@ -212,4 +212,5 @@ pub const MIGRATIONS: &[Migration] = &[
     Migration {version:99,name:"0099_native_public_list_follows",sql:include_str!("../../migrations/0099_native_public_list_follows.sql")},
     Migration {version:100,name:"0100_native_follow_revisions",sql:include_str!("../../migrations/0100_native_follow_revisions.sql")},
     Migration {version:101,name:"0101_title_removal_review",sql:include_str!("../../migrations/0101_title_removal_review.sql")},
+    Migration {version:102,name:"0102_native_reading_status_revisions",sql:include_str!("../../migrations/0102_native_reading_status_revisions.sql")},
 ];

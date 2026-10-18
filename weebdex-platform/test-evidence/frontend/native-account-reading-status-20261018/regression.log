@@ -1,0 +1,79 @@
+(node:14) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ manga follows bind exact resource/account and use genuine status/CAS without device-library payloads (2.391336ms)
+✔ group follows bind exact resource/account and use genuine status/CAS without device-library payloads (1.440145ms)
+✔ user follows bind exact resource/account and use genuine status/CAS without device-library payloads (0.347703ms)
+✔ same-state Follow preserves actual existing membership version rather than reapplying manga defaults (0.328263ms)
+✔ native self-follow and unsupported kinds reject before follow-status/write dispatch (0.639181ms)
+✔ only actual native public users expose bound-account follow control; protocol publishers never do (0.333221ms)
+✔ native rebind with matching version cannot redirect a captured follow command (0.37261ms)
+✔ wrong account/resource/kind/source/version or false active-status response cannot enable mutations (1.379324ms)
+✔ unconfirmed denied writes require a fresh read, without replay or optimistic membership (1.080634ms)
+✔ receipt loss or wrong successful target/account/version never confirms; explicit reread observes actual membership (0.950449ms)
+✔ known native target can remove hidden membership intent after404 without assuming tombstone version zero (0.388525ms)
+✔ pending account command cannot race and signer invalidation discards delayed completion (0.413922ms)
+✔ known CAS receipt cannot claim a contradictory changed flag even with self-consistent revision arithmetic (0.353692ms)
+(node:15) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ default anonymous title/profile viewing performs no account/signing work and account action is connected-only (52.457544ms)
+✔ intentional native follow dialog shows the actual bound account and confirmed follow/unfollow state (10.629363ms)
+✔ unproven alias or mismatched selected target cannot dispatch even a signed account lookup (5.866301ms)
+✔ closing or destruction during deferred status drops late account and follow state (8.943188ms)
+✔ signer generation change during command cannot install stale account success (3.042545ms)
+✔ unknown account-follow outcome requires explicit reload and cannot repeat automatically (3.152159ms)
+✔ exact production attachments retain default local manga controls and use native action rows with supported user domain (25.660836ms)
+✔ 404 unknown membership exposes explicit saved-follow removal without inventing version zero or hidden metadata (2.436003ms)
+✔ collection management checks its captured source account before reading or changing another binding’s membership (1.989571ms)
+✔ matching collection source account still requires fresh membership status; malformed expected account cannot prompt access (4.720999ms)
+✔ confirmed membership passes actual account state to a parent refresh hook once, without replaying the write (1.937213ms)
+✔ uncertain membership never triggers a parent refresh as a confirmed write (1.654157ms)
+(node:16) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ native reading writes bind exact account/title and independent status revision (5.52603ms)
+✔ native plan_to_read writes bind exact account/title and independent status revision (0.511809ms)
+✔ native completed writes bind exact account/title and independent status revision (0.473182ms)
+✔ native on_hold writes bind exact account/title and independent status revision (0.318119ms)
+✔ native re_reading writes bind exact account/title and independent status revision (0.399231ms)
+✔ native dropped writes bind exact account/title and independent status revision (0.309385ms)
+✔ never-followed and removed tombstone previews never create an account follow or enable status mutation (1.192904ms)
+✔ current same-status no-op retains the exact status revision and stored time (0.49872ms)
+✔ captured expected account rejects rebind before even status lookup (0.33956ms)
+✔ native UPDATE/import with unchanged membership and identical display timestamp invalidates old status CAS (0.569987ms)
+✔ remove and readd cannot reuse an earlier independent status revision (0.360873ms)
+✔ same-signer account rebind at a colliding revision cannot redirect a status write (0.275514ms)
+✔ wrong target/account/source/revision/followed/status/timestamp preview never enables writes (1.947889ms)
+✔ unconfirmed error responses fence another write until explicit read without replay (2.058585ms)
+✔ lost or inconsistent receipt cannot confirm; explicit read observes the actual result without another write (0.717408ms)
+✔ contradictory same-status changed receipt cannot advance clocks or version (0.35208ms)
+✔ invalid status and null clear are rejected before dispatch, and no preview means no write (0.280011ms)
+✔ pending status mutation blocks all other status requests and signer invalidation discards completion (0.306942ms)
+✔ production status client stays separate from original signed-library reads and device defaults (0.554394ms)
+(node:22) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ actual anonymous title UI performs no private requests and keeps account controls absent (19.07345ms)
+✔ actual native dialog renders exactly six status options and saves explicit selection with captured status CAS (31.749911ms)
+✔ unfollowed title has no status editor; explicit account Follow observes new native status without touching device defaults (6.847757ms)
+✔ pending status write disables membership and selector until completion (6.296508ms)
+✔ pending unfollow blocks status write and confirmed removal clears old status and CAS (5.738379ms)
+✔ lost status receipt fences both mutation families; explicit Reload observes result and never replays save (14.885072ms)
+✔ known successful status save survives failed membership refresh with further controls fenced (6.479002ms)
+✔ same-signer rebind at matching versions never redirects status and does not adopt another account on Reload (5.835344ms)
+✔ native same-clock update invalidates status CAS without reusing membership version (6.731632ms)
+✔ close change during delayed status preview drops late editor and performs no mutation (3.162716ms)
+✔ signer change during delayed status preview drops late editor and performs no mutation (2.363474ms)
+✔ target change during delayed status preview drops late editor and performs no mutation (1.736401ms)
+✔ follow with contradictory absent status preview keeps confirmed membership but fences another action (3.227263ms)
+✔ close change before a delayed status write dispatch cannot mutate the old account or install success (3.780655ms)
+✔ signer change before a delayed status write dispatch cannot mutate the old account or install success (3.522366ms)
+✔ target change before a delayed status write dispatch cannot mutate the old account or install success (3.888958ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 978.273005

@@ -1,0 +1,27 @@
+{
+  "repository": "https://github.com/9hnm24bzvm-wq/nostr-manga",
+  "association": "Remote commit metadata differs from local recovered commits; the complete Git source tree SHA is exact.",
+  "checkpoints": [
+    {
+      "localSourceCommit": "9e3d164d17c57f4d888ee3bafdbf05dbf7a2826d",
+      "localSourceTree": "0a62a2575c83caa2ad287f7a5497897839168b97",
+      "remoteCommit": "69e8ab1096e0689308b703ffeea75ce2aacbea5e",
+      "remoteTree": "0a62a2575c83caa2ad287f7a5497897839168b97",
+      "branch": "recovery/combined-source-20261017",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/69e8ab1096e0689308b703ffeea75ce2aacbea5e",
+      "verifiedUTC": "2026-10-18T01:27:32Z",
+      "qualification": "Preservation checkpoint. Combined backend matrix pending; frontend qualifications remain explicitly source-associated in tracked evidence."
+    },
+    {
+      "localSourceCommit": "ff19f8fea0f1358505f83ed418f8299757db2ecf",
+      "localSourceTree": "4efa11481b981877dd821c9566697540b50e4ec4",
+      "remoteCommit": "a7cc86eb7a8ba7131dacd7205d3c30fe4f3e3607",
+      "remoteTree": "4efa11481b981877dd821c9566697540b50e4ec4",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/a7cc86eb7a8ba7131dacd7205d3c30fe4f3e3607",
+      "verifiedUTC": "2026-10-18T01:32:44Z",
+      "qualification": "Preservation checkpoint; new full frontend strict/build association and remaining combined backend matrix qualification are pending."
+    }
+  ],
+  "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"
+}

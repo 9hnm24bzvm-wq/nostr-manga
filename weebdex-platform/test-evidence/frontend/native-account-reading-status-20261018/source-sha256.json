@@ -1,0 +1,8 @@
+{
+  "platform-integrations/public-api/AccountFollow.svelte": "ba55863a9824552a4b44c762abe748eb8ea237b50eb7dcfafb36da42d9883933",
+  "platform-integrations/public-api/account-reading-status-client.ts": "e59d6dd7199afec248c923ee70e3b221db14677591a8b28dbcbed996250b4d00",
+  "tests/ci/account-reading-status-fixture.mjs": "0dc494b41922be9a833fcb4c4fee1bc4ddd58c1f6f530b6502545215978efb12",
+  "tests/ci/test_account_reading_status_client.mjs": "602a2d3f7df09e4c14b90fd34becf8ab1546cc4a5c2c6ca94d141363dfc3f811",
+  "tests/ci/test_account_reading_status_dom.mjs": "84c65ac995f25dbee57e9c69579b122d1e83546195066e5e66e78015ca12ad97",
+  "tests/ci/test_account_follow_ui.mjs": "73f57a85cc3230c1af0e7c925aebbc94fb82b2a6df8bdfae33fc476a6379d9e3"
+}

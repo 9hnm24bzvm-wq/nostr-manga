@@ -134,7 +134,7 @@
       </form>
       {#each lists as list}
         <div class="my-1 flex flex-wrap items-center gap-2"><a class="underline" href={'/library?list=' + list.id} onclick={event => openDeviceList(event, list.id!)}>{list.name}</a><Button variant="ghost" disabled={!!pending} onclick={() => beginListRename(list.id!)}>Rename</Button><Button variant="ghost" disabled={!!pending} onclick={() => { if (confirm('Remove this local list and its memberships?')) void run('remove-list', async () => { await removeLocalRecord('lists', list.key); }); }}>Remove locally</Button></div>
-        {#if listNameReview?.id === list.id}
+        {#if listNameReview && listNameReview.id === list.id}
           <form class="my-2 flex flex-wrap items-end gap-2" onsubmit={event => { event.preventDefault(); void saveListName(); }}>
             <label for={'rename-list-' + list.id}>List name<Input id={'rename-list-' + list.id} class="mt-1" bind:value={renamedListName} maxlength={128} required disabled={!!pending} /></label>
             <Button type="submit" disabled={!!pending || !renamedListName.trim() || $localLibraryState.revision !== listNameReview.revision}>Save name</Button><Button variant="ghost" disabled={!!pending} onclick={cancelListRename}>Cancel</Button>

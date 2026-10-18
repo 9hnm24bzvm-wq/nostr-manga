@@ -288,6 +288,7 @@ fn read_class(request: &Request) -> Class {
     let path=public.or_else(||path.strip_prefix("/api")).unwrap_or(path);
     let segments=path.split('/').filter(|s|!s.is_empty()).collect::<Vec<_>>();
     let private=path.starts_with("/user/history") || path.starts_with("/user/follows")
+        || (public.is_some() && matches!(segments.as_slice(),["nostr","manga",_,"reading-status"]))
         || (public.is_some() && (path=="/manga/read" || path=="/manga/status"
             || matches!(segments.as_slice(),["manga",_,"read"|"status"])
             || path=="/user/list" || matches!(segments.as_slice(),["user",_,"list"])
@@ -529,6 +530,8 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
     let signed_upload_private = {
         let parts = original_path(&request).split('/').filter(|part| !part.is_empty()).collect::<Vec<_>>();
         signed_relation_page_private(&parts, request.method()) || matches!(parts.as_slice(), ["api", "v1", "cover", _]) && matches!(*request.method(), Method::POST | Method::PUT | Method::DELETE)
+            || matches!(parts.as_slice(),["api","v1","nostr","manga",_,"reading-status"])
+            || matches!(parts.as_slice(),["api","v1","manga",_,"status"]) && *request.method()==Method::POST
             || matches!(parts.as_slice(), ["api", "v1", "manga", _, "lock" | "unlock"])
             || matches!(parts.as_slice(), ["api", "v1", "manga", _]) && *request.method()==Method::DELETE
             || matches!(parts.as_slice(), ["api", "v1", "nostr", "manga", _, "covers"])
@@ -732,7 +735,7 @@ mod public_boundary_tests {
     }
     #[test]
     fn nested_private_reads_use_original_external_uri() {
-        for path in ["/api/v1/manga/read","/api/v1/manga/status","/api/v1/manga/id/read","/api/v1/manga/id/status","/api/v1/user/list","/api/v1/user/id/list","/api/v1/list/id","/api/v1/list/id/feed","/api/user/history","/api/user/follows/manga"] {
+        for path in ["/api/v1/nostr/manga/id/reading-status","/api/v1/manga/read","/api/v1/manga/status","/api/v1/manga/id/read","/api/v1/manga/id/status","/api/v1/user/list","/api/v1/user/id/list","/api/v1/list/id","/api/v1/list/id/feed","/api/user/history","/api/user/follows/manga"] {
             let mut request=Request::builder().uri("/stripped").body(Body::empty()).unwrap();
             request.extensions_mut().insert(OriginalUri(path.parse().unwrap()));
             assert!(matches!(read_class(&request),Class::LibraryHead),"{path}");

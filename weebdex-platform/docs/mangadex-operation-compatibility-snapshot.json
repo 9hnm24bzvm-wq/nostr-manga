@@ -1,18 +1,18 @@
 {
-  "audit_date_utc": "2026-10-17",
-  "source_baseline": "ec1b2160b8a37bd53acac7edcc5bbb0bac24ff0f",
-  "snapshot_scope": "Frozen combined backend source, reconciled after all six feature lanes. Source routing is not full MangaDex API compatibility. Runtime evidence is recorded separately and never inferred from non-501 routing.",
+  "audit_date_utc": "2026-10-18",
+  "source_baseline": "717d88936cd654529a197ca9bcabc9af47cab6e9",
+  "snapshot_scope": "Source-only reconciliation of the exact new composed backend with scoped native reading-status writes and final chapter authority-lock correction. This is not full MangaDex API compatibility; post-ec1 runtime qualification is pending.",
   "public_base": "/api/v1",
   "upstream_api_version": "5.13.1",
   "inventory_source_sha256": "004031ccdfc4b66727dd1f85d09b5300cf60235bbab2de6f6ea4816094bd6d33",
   "operation_count": 113,
   "counts": {
-    "source_routed_scoped_operation": 90,
+    "source_routed_scoped_operation": 91,
     "explicit_501_protocol_auth_exception": 12,
-    "known_501_unimplemented": 10,
+    "known_501_unimplemented": 9,
     "explicit_501_operator_administration_boundary": 1
   },
-  "verification_scope": "Exact-source combined lib and seven API HTTP seam reruns plus 113-operation unauthenticated routing probe; see test-evidence/final-combined-api-20261017/report.json for actual outcomes. Independent owner source and prior fixture evidence are not silently promoted to this run.",
+  "verification_scope": "The retained final-combined-api-20261017 report qualifies ec1b216 only. It does not qualify the new717d889 native-status0102 or final chapter lock source. Current-source lib, account113routing/status HTTP and the remaining backend matrix require fresh explicit receipts.",
   "operations": [
     {
       "method": "GET",
@@ -903,10 +903,17 @@
       "method": "POST",
       "path": "/manga/{id}/status",
       "operation_id": "post-manga-id-status",
-      "status": "known_501_unimplemented",
-      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
-      "module": "routes",
-      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+      "status": "source_routed_scoped_operation",
+      "module": "native_reading_status",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred.",
+      "scope": "Explicitly bound active native-account status edit for an already-followed visible native Manga; mandatory captured expectedAccountId/expectedMangaId and independent0102status CAS. Six nonnull native values only; null clear fails closed and never unfollows. Existing GET status routes retain original signed-library meaning. Source-only pending runtime qualification.",
+      "evidence": [
+        "backend/src/public_api/native_reading_status.rs",
+        "backend/src/domains/library/reading_status.rs",
+        "backend/migrations/0102_native_reading_status_revisions.sql",
+        "backend/tests/public_native_reading_status.rs",
+        "docs/mangadex-native-reading-status.md"
+      ]
     },
     {
       "method": "GET",

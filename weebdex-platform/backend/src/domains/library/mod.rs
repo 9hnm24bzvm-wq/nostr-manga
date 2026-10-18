@@ -2,6 +2,7 @@
 //! signed Nostr library publication remain separate and unchanged.
 mod follows;
 pub(crate) mod follow_mutations;
+pub(crate) mod reading_status;
 mod history;
 mod lists;
 mod preferences;

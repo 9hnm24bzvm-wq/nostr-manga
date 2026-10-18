@@ -1,0 +1,100 @@
+{
+  "sourceCommit": "836ba3a19f3a7634896d899689ee10e4ff381947",
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/cargo/bin/cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "weebdex-platform/backend/Cargo.toml",
+    "--lib",
+    "--test",
+    "public_chapter_writes",
+    "--no-run",
+    "-j",
+    "1"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 105.968,
+  "minimumFreeBytes": 4733603840,
+  "floorBytes": 4294967296,
+  "cleanupReserveBytes": 134217728,
+  "maxOwnedRssBytes": 1564004352,
+  "minimumAvailableMemoryBytes": 6992007168,
+  "stopReason": null,
+  "sourceFiles": 903,
+  "sourceChanged": [],
+  "ownedProcessBirths": [
+    [
+      7,
+      8013123
+    ],
+    [
+      18,
+      8013139
+    ],
+    [
+      41,
+      8017074
+    ],
+    [
+      64,
+      8018696
+    ],
+    [
+      65,
+      8018697
+    ],
+    [
+      66,
+      8018697
+    ],
+    [
+      77,
+      8018757
+    ],
+    [
+      100,
+      8020537
+    ],
+    [
+      101,
+      8020538
+    ],
+    [
+      102,
+      8020538
+    ],
+    [
+      113,
+      8020597
+    ],
+    [
+      136,
+      8023662
+    ],
+    [
+      137,
+      8023663
+    ],
+    [
+      138,
+      8023664
+    ]
+  ],
+  "cleanupSignals": [],
+  "ownedSurvivors": [],
+  "executableFiles": {
+    "unittests src/lib.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/weebdex_platform-4adb5f241d38c865",
+      "sha256": "9d2699770de5acf79acdc057e29b49395f5f6e11f87c7f9708795e2824f9bd60",
+      "bytes": 47352152
+    },
+    "tests/public_chapter_writes.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_chapter_writes-c05f34738ef4361f",
+      "sha256": "9aec49252679a73e6ca6a7bbfa4a7256370c638d8eb186cc9bdf8091eb31514a",
+      "bytes": 83744944
+    }
+  },
+  "passed": true
+}

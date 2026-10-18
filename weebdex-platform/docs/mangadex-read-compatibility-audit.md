@@ -1,23 +1,21 @@
 # MangaDex read compatibility and public UUID audit
 
-Audit date: 2026-10-17. Final combined backend source:
-`ec1b2160b8a37bd53acac7edcc5bbb0bac24ff0f`.
+Audit dates: 2026-10-17/18. Current composed source (runtime pending):
+`717d88936cd654529a197ca9bcabc9af47cab6e9`.
 The [113-operation snapshot](mangadex-operation-compatibility-snapshot.json)
-now covers every pinned upstream operation exactly once. It identifies 90
+now covers every pinned upstream operation exactly once. It identifies 91
 source-routed scoped operations, 12 explicit protocol/authentication 501
-exceptions, one operator-only template administration boundary, and 10
+exceptions, one operator-only template administration boundary, and 9
 unsupported plain-REST operations. **This is not full MangaDex compatibility.**
-The real unauthenticated routing probe passed all 113 paths/methods independently
-of the functional seam tests. An authentication or validation refusal establishes
-routing only; it cannot establish a working authorized command.
+The actual unauthenticated routing probe passed all 113 operations on the earlier
+ec1b216 baseline, independently of functional seam tests. A refusal establishes
+handler/auth/validation routing only, never a working authorized command.
 
-Current-source lib and seven functional HTTP/PostgreSQL rerun outcomes, exact
-source/binary hashes, routing observations and fixture shutdown receipts belong
-in `test-evidence/final-combined-api-20261017/report.json`. That report is the
-acceptance record; older branch-only evidence is not combined acceptance.
-At this checkpoint138 lib tests pass (2 ignored), all seven functional HTTP
-seams pass, and all113 actual routing checks pass. The two reserve-held seams
-were completed after narrowly approved synthetic fixture cleanup.
+The retained `test-evidence/final-combined-api-20261017/report.json` establishes
+138 lib tests (2 ignored), seven functional HTTP seams and 113 routing checks
+for **ec1b216 only**. The new native-status0102 and final chapter authority-lock
+source require fresh current-source runtime receipts. Source review, previous
+branch checks and composed frontend tests cannot replace that acceptance.
 The read checklist below remains a bounded catalogue audit. Native account,
 original signed graph, source publication and device-local features have separate
 contracts and dedicated tests.
@@ -134,22 +132,14 @@ not a claim of a remote recommendation engine.
 
 ## Remaining plain-REST coverage and supported journeys
 
-The ten unsupported plain-REST operations are explicit gaps in this API surface:
+The nine unsupported plain-REST operations are explicit gaps in this API surface:
 
 - `POST /list`, `PUT /list/{id}`, `DELETE /list/{id}` and both membership commands
   at `/manga/{id}/list/{listId}`: the application has persisted device-local list
-  creation/removal/membership and explicit client-signed original graph
+  creation/rename/removal/membership and explicit client-signed original graph
   publication (`library.ts`, `LibraryManagementTools.svelte`, `publication.ts`).
-  A natural list rename/edit-name form was not found, so complete list-update
-  UI coverage is not claimed. These
-  journeys do not authorize a server to invent a Nostr event or convert a public
+  These journeys do not authorize a server to invent a Nostr event or convert a public
   protocol list into a native private list. These REST commands remain 501.
-- `POST /manga/{id}/status`: device-local status changes and explicit original
-  signed status publication are distinct domains. `local-library/MangaFollow.ts`
-  updates real device-local status through `library.ts` saveSeries. Bound native
-  AccountFollow changes membership only; a full native-account status editor
-  remains a genuine feature gap. The plain MangaDex
-  command remains 501; native account follow membership is not reading status.
 - `DELETE /user/{id}` and `POST /user/delete/{code}`: no public MangaDex-style
   account deletion/verification-code command exists. Directory/profile/follow
   reads do not grant deletion, moderation or signer ownership. A supported
@@ -169,6 +159,16 @@ The 12 Nostr/auth exceptions remain documented separately: password login,
 logout, refresh, seven OAuth client/secret operations, plain read-marker mutation
 and MangaDex forum-thread creation. Native forum companion IDs and original
 signed read-marker commits are their own types and capabilities.
+
+[Native-account status editing](mangadex-native-reading-status.md) now has a
+source-implemented private preview and scoped POST `/manga/{id}/status`. It uses
+captured account/canonical target plus a genuine independent status revision
+observing native-session/import updates and removal/readd. It edits existing
+membership only, preserves flags/followtime/counters, and refuses null clear
+rather than silently unfollowing. Original GET status routes still project the
+signed library; device Save stays local by default. The secondary AccountFollow
+status editor and device list rename are composed source, pending fresh final
+backend/UI qualification. Native account deletion remains unsupported.
 
 Implemented operations are still scoped adapters. Title creation/edit accepts
 only the documented localized/UUID fields. Title request-review returns 202,
