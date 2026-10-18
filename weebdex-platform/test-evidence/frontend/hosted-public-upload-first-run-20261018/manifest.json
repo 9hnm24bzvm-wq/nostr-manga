@@ -1,0 +1,26 @@
+{
+  "README.md": {
+    "bytes": 1679,
+    "sha256": "2d6b0d9e6b55ce4881fa944c97e2149b247178cb70468b536251142a428b5f15"
+  },
+  "ci-source-pins.json": {
+    "bytes": 997,
+    "sha256": "2c3207efc6a970e89ebca6994409623eca7b591c0184c6bbf59df04516db25cf"
+  },
+  "job-steps.json": {
+    "bytes": 1934,
+    "sha256": "f73d41003227396353f10ed23558a9097dc951b7529aaa81ac8e561ebe71a6e4"
+  },
+  "preparation.json": {
+    "bytes": 1360,
+    "sha256": "71dddf7643129eeb468c87a85950dbbc3922b915ac0d1a3229fc9a4eab24b4fb"
+  },
+  "raw-log-provenance.json": {
+    "bytes": 474,
+    "sha256": "bb712dd080f2ce5449b5db5ff639aa9b687ec9ba71e1e8824b6ba44f34a28278"
+  },
+  "run.json": {
+    "bytes": 2261,
+    "sha256": "ba412568eaa2713d934e884778b7af28fa4bcceca37fabb370c68c28eecf6035"
+  }
+}

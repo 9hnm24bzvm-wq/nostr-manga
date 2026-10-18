@@ -23,7 +23,7 @@ class RunnerDiagnosticSeams(unittest.TestCase):
     def inputs(self):
         acceptance = {'phase': 'account', 'passed': True, 'completed_utc': 'synthetic-only', 'proxy_lifecycle': {'connect_denials': 0, 'expected_connect_resets': 0, 'remaining_socket_count': 0, 'observations_truncated': False, 'shutdown_started': True, 'closed': True},
                       'steps': [{'status': 'passed'}], 'page_errors': [],
-                      'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'exit_observed': True, 'exit_code': 0}}
+                      'cleanup': {'browser_created': True, 'context_created': True, 'page_created': True}, 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'caught_stage': 'none', 'caught_category': 'none', 'exit_observed': True, 'exit_code': 0}}
         owned = {'fixture_only': True, 'phase': 'account', 'verified_stopped': True, 'forced': False, 'returncode': 0}
         return acceptance, owned
 
@@ -113,6 +113,83 @@ class RunnerDiagnosticSeams(unittest.TestCase):
         self.assertFalse(row['runner_report_present'])
         self.assertFalse(row['runner_diagnostics']['exit_observed'])
         self.assertEqual(row['runner_diagnostics']['owned_exit_code'], -15)
+
+    def test_caught_pre_step_failure_survives_final_cleanup_without_a_fatal_exit(self):
+        acceptance, owned = self.inputs()
+        acceptance.update(passed=False, steps=[], harness_error='private-value?token=never-export')
+        acceptance['runner_lifecycle'].update(caught_stage='launching-browser', caught_category='browser-sandbox-refused', exit_code=1)
+        row = self.row(acceptance, dict(owned, returncode=1))
+        value = row['runner_diagnostics']
+        self.assertEqual(row['status'], 'failed')
+        self.assertEqual(row['actual_steps'], 0)
+        self.assertEqual(value['stage'], 'complete')
+        self.assertEqual(value['fatal_kind'], 'none')
+        self.assertEqual(value['caught_stage'], 'launching-browser')
+        self.assertEqual(value['caught_category'], 'browser-sandbox-refused')
+        self.assertNotIn('private-value', json.dumps(row))
+        # Even a forged success exit/report cannot turn an observed catch into a pass.
+        acceptance.update(passed=True, steps=[{'status': 'passed'}]); acceptance.pop('harness_error')
+        acceptance['runner_lifecycle']['exit_code'] = 0
+        self.assertEqual(self.row(acceptance, owned)['status'], 'failed')
+
+    def test_caught_records_refuse_unknown_missing_extra_or_cross_stage_facts(self):
+        acceptance, owned = self.inputs()
+        baseline = acceptance['runner_lifecycle']
+        private = 'https://private.invalid/path?nsec=do-not-export'
+        for changes in [{'caught_stage': private}, {'caught_category': private},
+                        {'caught_stage': 'none', 'caught_category': 'browser-launch-failed'},
+                        {'caught_stage': 'launching-browser', 'caught_category': 'none'},
+                        {'caught_stage': 'creating-context', 'caught_category': 'browser-sandbox-refused'},
+                        {'caught_stage': [], 'caught_category': {}}, {'raw_error': private}]:
+            with self.subTest(changes=changes):
+                raw = dict(baseline, **changes)
+                row = self.row(dict(acceptance, runner_lifecycle=raw), owned)
+                self.assertFalse(row['runner_diagnostics']['record_valid'])
+                self.assertEqual(row['status'], 'failed')
+                self.assertNotIn(private, json.dumps(row))
+        for key in ['caught_stage', 'caught_category']:
+            raw = dict(baseline); raw.pop(key)
+            row = self.row(dict(acceptance, runner_lifecycle=raw), owned)
+            self.assertFalse(row['runner_diagnostics']['record_valid'])
+            self.assertEqual(row['runner_diagnostics']['caught_stage'], 'unavailable')
+            self.assertEqual(row['runner_diagnostics']['caught_category'], 'unavailable')
+
+    def test_creation_facts_are_actual_booleans_or_explicitly_unavailable(self):
+        acceptance, owned = self.inputs()
+        for setup in [None, {}, {'browser_created': True},
+                      {'browser_created': 1, 'context_created': True, 'page_created': True},
+                      {'browser_created': False, 'context_created': True, 'page_created': False},
+                      {'browser_created': True, 'context_created': False, 'page_created': True}]:
+            with self.subTest(setup=setup):
+                row = self.row(dict(acceptance, cleanup=setup), owned)
+                self.assertFalse(row['runner_diagnostics']['record_valid'])
+                self.assertEqual(row['status'], 'failed')
+                for key in ['browser_created', 'context_created', 'page_created']:
+                    self.assertIsNone(row['runner_diagnostics'][key])
+        for flags in [(False, False, False), (True, False, False), (True, True, False)]:
+            setup = dict(zip(['browser_created', 'context_created', 'page_created'], flags))
+            row = self.row(dict(acceptance, cleanup=setup), owned)
+            self.assertTrue(row['runner_diagnostics']['record_valid'])
+            self.assertEqual(row['status'], 'failed')
+            self.assertEqual(tuple(row['runner_diagnostics'][key] for key in setup), flags)
+
+    def test_serialized_caught_projection_refuses_omissions_unknowns_and_cross_stage_claims(self):
+        acceptance, owned = self.inputs(); baseline = self.row(acceptance, owned)
+        for mutate in [lambda d: d.pop('caught_stage'), lambda d: d.pop('caught_category'),
+                       lambda d: d.update(caught_category='private'),
+                       lambda d: d.update(caught_stage='private'),
+                       lambda d: d.update(caught_stage='none', caught_category='browser-launch-failed'),
+                       lambda d: d.update(caught_stage='creating-context', caught_category='browser-sandbox-refused'),
+                       lambda d: d.update(caught_stage='unavailable', caught_category='none'),
+                       lambda d: d.update(browser_created=False, context_created=True),
+                       lambda d: d.update(context_created=None),
+                       lambda d: d.update(page_created='private'),
+                       lambda d: d.update(raw_error='private')]:
+            row = copy.deepcopy(baseline); mutate(row['runner_diagnostics'])
+            # Invalid serialized associations refuse even when explicitly failed.
+            row.update(status='failed')
+            row['runner_diagnostics']['record_valid'] = False
+            with self.assertRaises(ValueError): validator.phases({'schema': 1, 'phases': [row], 'batches': []})
 
     def test_serialized_gate_rejects_omission_unknowns_and_forged_pass(self):
         acceptance, owned = self.inputs(); baseline = self.row(acceptance, owned)

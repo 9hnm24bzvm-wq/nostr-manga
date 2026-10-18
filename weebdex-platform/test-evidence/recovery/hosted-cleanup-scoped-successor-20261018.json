@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "status": "scoped-correctness-and-ci-diagnosis-continuation",
+  "sourceAssociation": "hosted-cleanup-source-association-20261018.json",
+  "publishedBase": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+  "applicationCodeChanged": false,
+  "originalDiscovery": {
+    "filesWithExecutionResults": 43,
+    "fullyPassedFiles": 42,
+    "fileWithTwelveActualPgSkips": 1,
+    "wholeFilesStillHeld": 0,
+    "wholeRepositoryGreenClaim": false,
+    "evidence": "current-repository-test-discovery-20261018.json"
+  },
+  "remainingMixedRead": {
+    "originalSourceUnchanged": true,
+    "methodsPassed": 1,
+    "actualOwnedLoopbackHttpObservations": 9,
+    "histories": [
+      30000,
+      500000
+    ],
+    "corrupt200Refused": true,
+    "seconds": 2.326,
+    "maximumOwnedRssBytes": 197566464,
+    "normalClosedPortCleanup": true,
+    "evidence": "../deployment/mixed-read-correctness-20261018/result.json"
+  },
+  "firstHostedAttempt": {
+    "runURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/39142927874",
+    "ciCommit": "323d0990101e6b6a21328b252444c68060ecb97f",
+    "ciProductBaseline": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+    "status": "failed-native-cleanup-contract",
+    "coldPreparationPassed": true,
+    "nativeTestExitCode": 0,
+    "nativeMeasurementsPassed": true,
+    "privateFixtureCleanupReceiptAvailable": false,
+    "browserStepSkipped": true,
+    "sandboxedBrowserLaunchAttempted": false,
+    "evidence": "../frontend/hosted-public-upload-first-run-20261018/run.json"
+  },
+  "cleanupContractRepair": {
+    "source": "c963d383559769a97b7b0709499520adfbeac3f7",
+    "changedExecutableAndTestFiles": 2,
+    "privateProducerFieldsValidated": 15,
+    "publicSchemaUnchanged": true,
+    "nativeContractCases": 12,
+    "affectedCombinedCases": 48,
+    "countsOverlap": true,
+    "distinctAffectedCases": 48,
+    "realNewPostgresOrBrowserRunInFiniteEvidence": false,
+    "evidence": "../native-feed-cleanup-contract-20261018/result.json",
+    "recoveryVersusCiPinDifferencesRecorded": true
+  },
+  "retryBoundary": "The separately approved retry below used the unchanged reviewed CI product baseline. No further attempt is represented. Its zero-step result does not establish Chromium launch or a specific browser failure cause.",
+  "historicalQualification": "Prior full frontend strict/build, platform CI and full protocol-matrix results remain tied to their exact snapshots. Current client source still needs fresh complete frontend qualification.",
+  "limits": {
+    "genuineBrowserAcceptance": false,
+    "sandboxSupportEstablished": false,
+    "freshWholeRepositoryPass": false,
+    "fullApplicationConsistentRecovery": false,
+    "productionLoadCapacity": false,
+    "deploymentPerformed": false,
+    "mainMerged": false,
+    "fullRequirementsParity": false
+  },
+  "runtimeMismatch": {
+    "aiohttpActual": "3.14.4",
+    "projectRequired": "3.13.5",
+    "modified": false
+  },
+  "hostedRetry": {
+    "runURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/39144824203",
+    "ciCommit": "3e019d2d274dd2f9ca7a39c094c219bfc5ad260b",
+    "localReviewedSource": "c963d383559769a97b7b0709499520adfbeac3f7",
+    "status": "failed-before-first-observed-browser-step",
+    "coldPreparationPassed": true,
+    "realNativePgGateAndFixtureCleanupPassed": true,
+    "fixtureReachedReadiness": true,
+    "actualSteps": 0,
+    "exactBrowserCauseEstablished": false,
+    "chromiumLaunchEstablished": false,
+    "sandboxSupportEstablished": false,
+    "finalFixtureTeardownClean": true,
+    "allPortsClosed": true,
+    "remainingOwnedProcesses": 0,
+    "outerForcedCleanup": false,
+    "fixtureLifecycleClean": false,
+    "evidence": "../frontend/hosted-public-upload-retry-20261018/run.json",
+    "reportedSignedRequestCount": 0,
+    "reportedMutationCount": 0,
+    "reportedPageErrorCount": 0,
+    "publicUploadDiagnosticRecordValid": false,
+    "reportedZeroCountersAreFallbacks": true,
+    "actualTrafficMutationAndPageErrorCountsEstablished": false
+  },
+  "laterSourceContinuation": "caught-diagnostic-scoped-successor-20261018.json",
+  "historicalSourceBoundary": "Source counts and association remain pinned to the preceding cleanup-only continuation. Later diagnostic, monitor and recovery-sandbox source changes are recorded separately."
+}

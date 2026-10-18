@@ -1,0 +1,8 @@
+{
+  "base": "c75f0c9c4551fede33fa71092f5fd9d47b26c522",
+  "lifecycleSha256": "b89cd51a6e55ebf02331c6d37e06ca4bb524c2daa7d8caee1e678d45f39065d0",
+  "acceptanceSha256": "d9432dbe9ebaaa2365015495ec34f7e7d787f8cc2ccf88c55176c8831a0646dc",
+  "method": "Execute exact prior passive recorder plus exact actual acceptance catch body with a synthetic thrown launch error and no browser. The immutable old code is embedded passively; ordinary CI tests do not require historical Git objects.",
+  "controlSha256": "60f5ee906ad72558e527095eaed750dd27dd0e83f6e8b336885fe354e4dc5b4f",
+  "expectedFailure": "caught_stage absent, final stage complete, harness_error true"
+}

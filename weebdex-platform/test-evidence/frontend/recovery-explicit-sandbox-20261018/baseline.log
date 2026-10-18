@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_recovery_browser_launch_requires_explicit_chromium_sandbox (__main__.HostedBrowserSeams.test_recovery_browser_launch_requires_explicit_chromium_sandbox)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/shared/nostr-manga-recovery-20261018/post-nginx-integration-worktree/weebdex-platform/tests/ci/test_hosted_browser.py", line 25, in test_recovery_browser_launch_requires_explicit_chromium_sandbox
+    self.assertEqual(len(re.findall(r'\bchromiumSandbox\s*:\s*true\b', launch.group(1))), 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

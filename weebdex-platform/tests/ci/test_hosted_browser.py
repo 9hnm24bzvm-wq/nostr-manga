@@ -16,6 +16,16 @@ spec.loader.exec_module(runner)
 
 
 class HostedBrowserSeams(unittest.TestCase):
+    def test_recovery_browser_launch_requires_explicit_chromium_sandbox(self):
+        import re
+        source = (ROOT / 'scripts/browser-acceptance.mjs').read_text()
+        self.assertEqual(source.count('await chromium.launch('), 1)
+        launch = re.search(r'await chromium\.launch\(\{(.*?)\}\);', source, re.S)
+        self.assertIsNotNone(launch)
+        self.assertEqual(len(re.findall(r'\bchromiumSandbox\s*:\s*true\b', launch.group(1))), 1)
+        self.assertNotIn('chromiumSandbox: false', launch.group(1))
+        self.assertNotIn('--no-sandbox', launch.group(1))
+
     def diagnostic_inputs(self):
         spec = importlib.util.spec_from_file_location('startup_seam', ROOT / 'scripts/ci/startup-diagnostics.py')
         diagnostics = importlib.util.module_from_spec(spec)
@@ -224,7 +234,7 @@ class HostedBrowserSeams(unittest.TestCase):
 
     def passed_phase_inputs(self):
         # Explicit test doubles for validator checks, never browser evidence.
-        acceptance = {'phase': 'account', 'passed': True, 'completed_utc': 'synthetic-finalized', 'proxy_lifecycle': {'connect_denials': 0, 'expected_connect_resets': 0, 'remaining_socket_count': 0, 'observations_truncated': False, 'shutdown_started': True, 'closed': True}, 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'exit_observed': True, 'exit_code': 0}, 'steps': [{'status': 'passed'}], 'page_errors': []}
+        acceptance = {'phase': 'account', 'passed': True, 'completed_utc': 'synthetic-finalized', 'proxy_lifecycle': {'connect_denials': 0, 'expected_connect_resets': 0, 'remaining_socket_count': 0, 'observations_truncated': False, 'shutdown_started': True, 'closed': True}, 'cleanup': {'browser_created': True, 'context_created': True, 'page_created': True}, 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'caught_stage': 'none', 'caught_category': 'none', 'exit_observed': True, 'exit_code': 0}, 'steps': [{'status': 'passed'}], 'page_errors': []}
         owned = {'fixture_only': True, 'phase': 'account', 'verified_stopped': True, 'forced': False, 'returncode': 0}
         return acceptance, owned
 

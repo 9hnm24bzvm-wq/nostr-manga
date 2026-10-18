@@ -84,6 +84,17 @@
       "verifiedUTC": "2026-10-18T15:12:00Z",
       "verifiedSourceEntries": 5375,
       "qualification": "Exact isolated official nginx 1.30.6 lifecycle and mapped parser continuation, with explicit redirect access-log privacy fence and scoped finite checks. Application frontend/backend qualification remains source-associated to retained historical snapshots; browser, full application restore, load and whole-repository acceptance remain unqualified."
+    },
+    {
+      "localSourceCommit": "6c5000081092134facb8713ccea202fc37edd7b5",
+      "localSourceTree": "9fad0a11e76c4ca2174b4d103dfc8238a0e7124f",
+      "remoteCommit": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+      "remoteTree": "9fad0a11e76c4ca2174b4d103dfc8238a0e7124f",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+      "verifiedUTC": "2026-10-18T16:02:37Z",
+      "verifiedSourceEntries": 5510,
+      "qualification": "Scoped collection validation, backup exclusion, authentic fixture recovery, finite mixed accounting/import checks, compact correctness and finite browser-helper readiness. Fresh full frontend strict/build and genuine browser qualification remain separate. Original inventory had 42 files with execution results and 12 actual-PG method skips."
     }
   ],
   "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"

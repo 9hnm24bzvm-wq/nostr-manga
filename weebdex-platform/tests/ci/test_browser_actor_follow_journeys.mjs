@@ -91,11 +91,76 @@ test('current actor-follow runtime source has a separate exact association witho
   const priorWorkflow = Buffer.from(historicalSource.initial_current_workflow_base64, 'base64');
   assert.equal(hash(priorWorkflow), currentSourceAssociation.initial_current_workflow_sha256);
   const proxyStep = '      - name: Check finite deployment proxy route and header contracts\n        timeout-minutes: 2\n        run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs\n';
-  const currentWorkflow = fs.readFileSync(new URL(workflow, root), 'utf8');
+  const publishedCiWorkflow = fs.readFileSync(new URL(workflow, root), 'utf8');
+  // Admit only the exact recovery workflow or its separately approved CI-only
+  // successor. Neither may relabel immutable c6/f593/9079 evidence.
+  const recoveryWorkflowSha = 'df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27';
+  const publicUploadWorkflowSha = '19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1';
+  assert.equal(currentSourceAssociation.current_runtime_sha256[workflow], recoveryWorkflowSha);
+  const workflowChanges = [
+    ["inputs.batch || 'public-upload'", "inputs.batch || 'all'", 2],
+    ['timeout-minutes: 140', 'timeout-minutes: 345', 1],
+    ['timeout-minutes: 30', 'timeout-minutes: 245', 1],
+    ['--budget-seconds 3600', '--budget-seconds 14400', 1],
+  ];
+  const normalizeWorkflow = input => {
+    const digest = hash(input);
+    assert([recoveryWorkflowSha, publicUploadWorkflowSha].includes(digest), 'Unknown workflow source profile');
+    let value = input;
+    if (digest === publicUploadWorkflowSha) for (const [current, historical, count] of workflowChanges) {
+      assert.equal(value.split(current).length - 1, count);
+      value = value.replaceAll(current, historical);
+    }
+    assert.equal(hash(value), recoveryWorkflowSha);
+    return value;
+  };
+  const currentWorkflow = normalizeWorkflow(publishedCiWorkflow);
+  // Exercise both known profiles regardless of which exact checkout runs this
+  // test, and refuse an otherwise similar workflow with a changed budget.
+  let proposedWorkflow = currentWorkflow;
+  for (const [current, historical, count] of workflowChanges) {
+    assert.equal(proposedWorkflow.split(historical).length - 1, count);
+    proposedWorkflow = proposedWorkflow.replaceAll(historical, current);
+  }
+  assert.equal(hash(proposedWorkflow), publicUploadWorkflowSha);
+  assert.equal(normalizeWorkflow(proposedWorkflow), currentWorkflow);
+  assert.equal(normalizeWorkflow(currentWorkflow), currentWorkflow);
+  assert.throws(() => normalizeWorkflow(proposedWorkflow.replace('--budget-seconds 3600', '--budget-seconds 3601')), /Unknown workflow source profile/);
   assert.equal(currentWorkflow.split(proxyStep).length - 1, 1);
   assert.equal(currentWorkflow.replace(proxyStep, ''), priorWorkflow.toString('utf8'));
+  const validator = 'scripts/ci/validate-ci-evidence.py';
+  let currentValidator = fs.readFileSync(new URL(validator, root), 'utf8');
+  // Exact diagnostic-only successor; preserve the immutable historical/runtime pins.
+  assert.equal(hash(currentValidator), "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77");
+  for (const [current, historical] of [
+    [
+        ", 'caught_stage', 'caught_category', 'browser_created', 'context_created', 'page_created'",
+        ""
+    ],
+    [
+        "    insist(type(value['caught_stage']) is str and value['caught_stage'] in runner_diagnostics.STAGES | {'none', 'unavailable'})\n    insist(type(value['caught_category']) is str and value['caught_category'] in runner_diagnostics.CAUGHT_CATEGORIES | {'unavailable'})\n    insist((value['caught_stage'] == 'unavailable') is (value['caught_category'] == 'unavailable'))\n    if value['caught_stage'] != 'unavailable':\n        insist(runner_diagnostics.caught_pair(value['caught_stage'], value['caught_category']))\n    created = [value[key] for key in ['browser_created', 'context_created', 'page_created']]\n    insist(all(item is None for item in created) or all(type(item) is bool for item in created))\n    if all(type(item) is bool for item in created):\n        insist(not value['context_created'] or value['browser_created'])\n        insist(not value['page_created'] or value['context_created'])\n",
+        ""
+    ],
+    [
+        "        insist(all(type(item) is bool for item in created))\n",
+        ""
+    ],
+    [
+        "'fatal_stage', 'caught_stage', 'caught_category'",
+        "'fatal_stage'"
+    ],
+    [
+        "        insist(runner_diagnostics.caught_pair(value['caught_stage'], value['caught_category']))\n",
+        ""
+    ]
+]) {
+    assert.equal(currentValidator.split(current).length - 1, 1);
+    currentValidator = currentValidator.replace(current, historical);
+  }
+  assert.equal(hash(currentValidator), currentSourceAssociation.current_runtime_sha256[validator]);
   for (const [file, digest] of Object.entries(currentSourceAssociation.current_runtime_sha256)) {
-    assert.equal(hash(fs.readFileSync(new URL(file, root))), digest, 'current source: ' + file);
+    const bound = file === workflow ? currentWorkflow : file === validator ? currentValidator : fs.readFileSync(new URL(file, root));
+    assert.equal(hash(bound), digest, 'historical current association: ' + file);
   }
 });
 

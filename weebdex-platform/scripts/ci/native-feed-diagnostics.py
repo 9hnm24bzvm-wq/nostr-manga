@@ -8,6 +8,11 @@ FLAGS = {'all_505_ids_reached', 'bilingual506_preserved', 'canonical_sample_pari
 MEASUREMENT_FIELDS = FLAGS | {'scenario', 'baseline_outcome', 'baseline_ms', 'batched_first_page_ms'}
 RESULT_FIELDS = {'schema', 'status', 'process_started', 'process_exit_code', 'deadline_exceeded',
                  'owned_terminal', 'cleanup_verified', 'fixture_cleanup_verified', 'measurement'}
+FIXTURE_FIELDS = {'postgres_cleanup', 'exit', 'forced', 'closed_port', 'remaining_owned_processes',
+                  'cleanup_errors', 'error', 'test_timeout_seconds', 'captured_births',
+                  'unconfirmed_births', 'unconfirmed_child_pids', 'test_returncode',
+                  'postgres_returncode', 'startup_timeout_seconds', 'cleanup_phase_seconds'}
+BIRTH_FIELDS = {'pid', 'start_ticks', 'group', 'session'}
 
 
 def insist(value):
@@ -75,6 +80,48 @@ def parse_measurement(text):
     return rows[0]
 
 
+def fixture_cleanup_verified(value):
+    """Consume the full private auth_fixture_guard receipt; export one boolean.
+
+    verified_stopped alone does not exclude forced shutdown, an earlier fixture
+    error or a failed test. Keep the producer schema and all terminal witnesses
+    closed, including its birth ledger and fixed timeout policy.
+    """
+    if type(value) is not dict or set(value) != FIXTURE_FIELDS:
+        return False
+    if (value['postgres_cleanup'] != 'verified_stopped' or value['forced'] is not False
+            or value['closed_port'] is not True or value['error'] is not None):
+        return False
+    for key in ['exit', 'test_returncode', 'postgres_returncode']:
+        if type(value[key]) is not int or value[key] != 0:
+            return False
+    for key in ['remaining_owned_processes', 'cleanup_errors', 'unconfirmed_births', 'unconfirmed_child_pids']:
+        if type(value[key]) is not list or value[key] != []:
+            return False
+    for key, seconds in [('test_timeout_seconds', 180), ('startup_timeout_seconds', 10)]:
+        if type(value[key]) is not int or value[key] != seconds:
+            return False
+    phases = value['cleanup_phase_seconds']
+    if type(phases) is not list or phases != [15, 5, 5] or any(type(item) is not int for item in phases):
+        return False
+    births = value['captured_births']
+    if type(births) is not list or not 1 <= len(births) <= 4096:
+        return False
+    seen = set()
+    for birth in births:
+        if type(birth) is not dict or set(birth) != BIRTH_FIELDS:
+            return False
+        for key in BIRTH_FIELDS:
+            maximum = (1 << 63) - 1 if key == 'start_ticks' else (1 << 31) - 1
+            if type(birth[key]) is not int or not 0 < birth[key] <= maximum:
+                return False
+        identity = (birth['pid'], birth['start_ticks'])
+        if identity in seen:
+            return False
+        seen.add(identity)
+    return True
+
+
 def project(owned, observed, fixture):
     value = not_run()
     value['status'] = 'failed'
@@ -92,10 +139,7 @@ def project(owned, observed, fixture):
             and owned.get('surviving_owned_process_ids') == []
             and owned.get('cleanup_signals') == []
             and owned.get('prior_or_unrelated_processes_touched') is False)
-    value['fixture_cleanup_verified'] = (type(fixture) is dict
-        and set(fixture) == {'postgres_cleanup', 'exit'}
-        and fixture['postgres_cleanup'] == 'verified_stopped'
-        and type(fixture['exit']) is int and fixture['exit'] == 0)
+    value['fixture_cleanup_verified'] = fixture_cleanup_verified(fixture)
     if observed is not None:
         measurement(observed)
         value['measurement'] = observed

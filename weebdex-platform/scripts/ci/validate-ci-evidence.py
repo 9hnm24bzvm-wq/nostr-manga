@@ -200,7 +200,7 @@ def journey_checks(value, phase):
 
 
 def runner_checks(value, phase):
-    fields(value, {'schema', 'record_valid', 'stage', 'fatal_kind', 'fatal_code', 'fatal_stage', 'exit_observed', 'exit_code', 'owned_exit_code', 'report_finalized', 'report_passed', 'proxy_diagnostics', 'private_values_omitted', 'raw_messages_exported'})
+    fields(value, {'schema', 'record_valid', 'stage', 'fatal_kind', 'fatal_code', 'fatal_stage', 'caught_stage', 'caught_category', 'browser_created', 'context_created', 'page_created', 'exit_observed', 'exit_code', 'owned_exit_code', 'report_finalized', 'report_passed', 'proxy_diagnostics', 'private_values_omitted', 'raw_messages_exported'})
     insist(type(value['schema']) is int and value['schema'] == 1)
     for key in ['record_valid', 'exit_observed', 'report_finalized', 'report_passed']:
         boolean(value[key])
@@ -209,15 +209,27 @@ def runner_checks(value, phase):
     insist(type(value['fatal_kind']) is str and value['fatal_kind'] in runner_diagnostics.FATAL_KINDS | {'unavailable'})
     insist(type(value['fatal_code']) is str and value['fatal_code'] in runner_diagnostics.FATAL_CODES | {'unavailable'})
     insist(type(value['fatal_stage']) is str and value['fatal_stage'] in runner_diagnostics.STAGES | {'none', 'unavailable'})
+    insist(type(value['caught_stage']) is str and value['caught_stage'] in runner_diagnostics.STAGES | {'none', 'unavailable'})
+    insist(type(value['caught_category']) is str and value['caught_category'] in runner_diagnostics.CAUGHT_CATEGORIES | {'unavailable'})
+    insist((value['caught_stage'] == 'unavailable') is (value['caught_category'] == 'unavailable'))
+    if value['caught_stage'] != 'unavailable':
+        insist(runner_diagnostics.caught_pair(value['caught_stage'], value['caught_category']))
+    created = [value[key] for key in ['browser_created', 'context_created', 'page_created']]
+    insist(all(item is None for item in created) or all(type(item) is bool for item in created))
+    if all(type(item) is bool for item in created):
+        insist(not value['context_created'] or value['browser_created'])
+        insist(not value['page_created'] or value['context_created'])
     for key, low in [('exit_code', 0), ('owned_exit_code', -64)]:
         if value[key] is not None:
             integer(value[key], low, 255)
     insist(phase['runner_exit_zero'] is (value['owned_exit_code'] == 0))
     if value['record_valid']:
-        insist(all(value[key] != 'unavailable' for key in ['stage', 'fatal_kind', 'fatal_code', 'fatal_stage']))
+        insist(all(type(item) is bool for item in created))
+        insist(all(value[key] != 'unavailable' for key in ['stage', 'fatal_kind', 'fatal_code', 'fatal_stage', 'caught_stage', 'caught_category']))
         insist(value['exit_observed'] or value['exit_code'] is None)
         insist((value['fatal_kind'] == 'none') is (value['fatal_stage'] == 'none'))
         insist((value['fatal_kind'] == 'none') is (value['fatal_code'] == 'none'))
+        insist(runner_diagnostics.caught_pair(value['caught_stage'], value['caught_category']))
     proxy = value['proxy_diagnostics']
     fields(proxy, {'schema', 'record_valid', 'connect_denials', 'expected_connect_resets', 'remaining_socket_count', 'observations_truncated', 'shutdown_started', 'closed'})
     insist(type(proxy['schema']) is int and proxy['schema'] == 1)

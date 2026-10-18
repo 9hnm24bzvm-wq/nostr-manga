@@ -1,5 +1,7 @@
 """Closed result and owned-command seams; no native database or browser run."""
 import importlib.util
+import ast
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -32,7 +34,88 @@ class NativeFeedDiagnostics(unittest.TestCase):
                 'prior_or_unrelated_processes_touched': False}
 
     def fixture(self):
-        return {'postgres_cleanup': 'verified_stopped', 'exit': 0}
+        # Unchanged retained output of the actual auth_fixture_guard producer,
+        # not a reconstructed two-field stand-in or a fresh PostgreSQL run.
+        path = ROOT / 'test-evidence/native-account-profile-20261018/public_native_profile/cleanup.json'
+        content = path.read_bytes()
+        self.assertEqual(hashlib.sha256(content).hexdigest(), '70676f2f5a325eeae2c1a12c25adc3de1da1bb8634831a10ce9ad71b153b31cb')
+        return json.loads(content, object_pairs_hook=contract.unique_object)
+
+    def test_actual_retained_producer_receipt_matches_closed_schema_and_stays_private(self):
+        fixture = self.fixture()
+        self.assertEqual(set(fixture), contract.FIXTURE_FIELDS)
+        self.assertTrue(contract.fixture_cleanup_verified(fixture))
+        value = contract.project(self.owned(), self.measurement(), fixture)
+        self.assertEqual(value['status'], 'passed')
+        self.assertEqual(set(value), contract.RESULT_FIELDS)
+        for private in ['captured_births', 'postgres_returncode', 'cleanup_errors', 'start_ticks']:
+            self.assertNotIn(private, json.dumps(value))
+        # Bind exact declared producer fields and policy without running its
+        # process owner, creating a database or opening a socket.
+        source = ast.parse((ROOT / 'tests/runtime/auth_fixture_guard.py').read_text())
+        receipts = [node.value for node in ast.walk(source) if isinstance(node, ast.Assign)
+                    and any(isinstance(target, ast.Name) and target.id == 'receipt' for target in node.targets)]
+        self.assertEqual(len(receipts), 1)
+        self.assertIsInstance(receipts[0], ast.Call)
+        self.assertEqual(receipts[0].func.id, 'dict')
+        self.assertEqual({item.arg for item in receipts[0].keywords}, contract.FIXTURE_FIELDS)
+        constants = {target.id: node.value for node in source.body if isinstance(node, ast.Assign)
+                     for target in node.targets if isinstance(target, ast.Name)}
+        self.assertEqual([ast.literal_eval(item.elts[1]) for item in constants['STOP_PHASES'].elts], [15, 5, 5])
+        timeout = next(node for node in source.body if isinstance(node, ast.Assign)
+                       and isinstance(node.targets[0], ast.Tuple)
+                       and [item.id for item in node.targets[0].elts] == ['START_SECONDS', 'TEST_SECONDS'])
+        self.assertEqual(ast.literal_eval(timeout.value), (10, 180))
+
+    def test_fixture_requires_every_field_and_rejects_legacy_or_extra_keys(self):
+        fixture = self.fixture()
+        for field in contract.FIXTURE_FIELDS:
+            with self.subTest(missing=field):
+                missing = dict(fixture)
+                del missing[field]
+                self.assertFalse(contract.fixture_cleanup_verified(missing))
+                self.assertEqual(contract.project(self.owned(), self.measurement(), missing)['status'], 'failed')
+        for malformed in [None, [], '', 0, True, {'postgres_cleanup': 'verified_stopped', 'exit': 0},
+                          dict(fixture, raw='private')]:
+            with self.subTest(malformed=malformed):
+                self.assertFalse(contract.fixture_cleanup_verified(malformed))
+
+    def test_fixture_refuses_forced_open_unknown_error_and_nonzero_lifecycle(self):
+        changes = {'postgres_cleanup': ['cleanup_unconfirmed', None, True],
+                   'forced': [True, 0, None, 'false'], 'closed_port': [False, 1, None, 'true'],
+                   'error': ['fixture error', '', False, []],
+                   'remaining_owned_processes': [[{'pid': 42}], None, {}, False],
+                   'cleanup_errors': [['error'], None, {}, False],
+                   'unconfirmed_births': [[{'pid': 42}], None, {}, False],
+                   'unconfirmed_child_pids': [[42], None, {}, False],
+                   'exit': [1, -1, False, 0.0, None, '0'],
+                   'test_returncode': [1, -15, False, 0.0, None, '0'],
+                   'postgres_returncode': [1, -15, False, 0.0, None, '0'],
+                   'test_timeout_seconds': [181, 0, True, 180.0, None],
+                   'startup_timeout_seconds': [11, 0, True, 10.0, None],
+                   'cleanup_phase_seconds': [[15, 5], [15, 5, 6], [15, 5.0, 5], None, '15,5,5']}
+        for field, replacements in changes.items():
+            for replacement in replacements:
+                with self.subTest(field=field, replacement=replacement):
+                    fixture = dict(self.fixture(), **{field: replacement})
+                    self.assertFalse(contract.fixture_cleanup_verified(fixture))
+                    self.assertEqual(contract.project(self.owned(), self.measurement(), fixture)['status'], 'failed')
+
+    def test_fixture_requires_bounded_exact_unique_owned_birth_identities(self):
+        first = self.fixture()['captured_births'][0]
+        malformed = [None, {}, [], [None], [dict(first, raw='private')], [first, first], [first] * 4097]
+        for field in contract.BIRTH_FIELDS:
+            missing = dict(first)
+            del missing[field]
+            malformed.append([missing])
+            malformed.extend([[dict(first, **{field: value})] for value in [None, True, 0, -1, 1.0, '1', 1 << 64]])
+        for births in malformed:
+            with self.subTest(births=births):
+                self.assertFalse(contract.fixture_cleanup_verified(dict(self.fixture(), captured_births=births)))
+        # Reused numeric PID with a genuinely different captured birth is a
+        # distinct identity, not an ownership collision.
+        reused = dict(first, start_ticks=first['start_ticks'] + 1)
+        self.assertTrue(contract.fixture_cleanup_verified(dict(self.fixture(), captured_births=[first, reused])))
 
     def test_not_run_and_failed_are_honest_closed_states(self):
         value = contract.not_run()

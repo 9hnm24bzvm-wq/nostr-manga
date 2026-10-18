@@ -1,0 +1,20 @@
+{
+  "baseline.log.gz": {
+    "rawBytes": 688,
+    "rawSha256": "f8f919e482930b4db177e617e6728bd945e9a53141f3b744fe26ec5b447a81c1",
+    "gzipBytes": 457,
+    "gzipSha256": "da7ca44f890c86b41db02a318fe41078606b6bec72401678eb3804cd93a7e753"
+  },
+  "initial-selected.log.gz": {
+    "rawBytes": 891,
+    "rawSha256": "b692ef9dfec66bb2c3b351569a1bae3c8c0d5843710f9460ebda80fc8b527a66",
+    "gzipBytes": 404,
+    "gzipSha256": "93b63325d1c2137fb9803bc1108d3ce842ba2552f425e6f6b035ed83238c4975"
+  },
+  "selected.log.gz": {
+    "rawBytes": 14917,
+    "rawSha256": "0a22f5235b2193ae87e34ab29ecfbb8722aceab7e4f248408423eb6b2f5151a5",
+    "gzipBytes": 2911,
+    "gzipSha256": "7cb6a9d395a2658c112305340947184153f5799c1ab04dfc737f9218c03cd7bf"
+  }
+}

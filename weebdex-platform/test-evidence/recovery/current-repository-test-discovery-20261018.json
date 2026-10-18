@@ -2,10 +2,10 @@
   "baselineEvidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
   "method": "Latest scoped execution results combined with retained source-associated earlier phases; historical source hashes, classifications and raw failures remain preserved. This is not one complete current-source suite run.",
   "priorWholeFileHolds": 16,
-  "newlyExercisedPriorHolds": 15,
+  "newlyExercisedPriorHolds": 16,
   "formerlyPartialMigrationNowPassed": true,
-  "currentExecutedFiles": 42,
-  "currentWholeFilesUnexecuted": 1,
+  "currentExecutedFiles": 43,
+  "currentWholeFilesUnexecuted": 0,
   "files": [
     {
       "path": "manga-protocol-lab/bench/library-node/test_compact.py",
@@ -122,8 +122,15 @@
       "path": "manga-protocol-lab/bench/library-node/test_mixed_reads.py",
       "sha256": "4cf3d84c118a22016d18faec0bd7c6e57bb7d8abe091f5a49f48a997a400e59f",
       "priorExecutionClassification": "held",
-      "current": "unexecuted-heavy-import-budget",
-      "reason": "Large-history resource scope was not executed in these finite continuations."
+      "current": "executed-pass-controlled-loopback-library-read",
+      "reason": "Unchanged original one-method suite with canonical 30k/500k library histories, nine owned-loopback HTTP reads and corrupt-200 refusal. No database or application binary.",
+      "priorCurrentClassification": "unexecuted-heavy-import-budget",
+      "currentSourceSha256": "4cf3d84c118a22016d18faec0bd7c6e57bb7d8abe091f5a49f48a997a400e59f",
+      "executedMethods": 1,
+      "passedMethods": 1,
+      "setupErrors": 0,
+      "actualHttpObservations": 9,
+      "evidence": "../deployment/mixed-read-correctness-20261018/result.json"
     },
     {
       "path": "manga-protocol-lab/bench/library-node/test_pg_diagnostics.py",
@@ -407,17 +414,17 @@
     }
   ],
   "noWholeRepositoryPassClaim": true,
-  "priorContinuationCommit": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "priorContinuationCommit": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
   "newlyExercisedPriorWholeHoldsThisPhase": 1,
   "controlledLoopbackEvidenceCommit": "91e1381bcf004bfcfca70555299a0a50571bd031",
   "currentFileOutcomes": {
-    "fullyPassed": 41,
+    "fullyPassed": 42,
     "withMissingFixtureErrors": 0,
     "withExplicitPostgresSkips": 1,
-    "unexecuted": 1
+    "unexecuted": 0
   },
   "initialWholeFileHolds": 16,
-  "immediatePriorWholeFileHolds": 2,
+  "immediatePriorWholeFileHolds": 1,
   "exercisedWholeHoldContinuations": [
     {
       "kind": "original CLI and codec",
@@ -443,6 +450,11 @@
       "kind": "unchanged original in-memory 30k/500k compaction correctness script",
       "files": 1,
       "evidenceCommit": "6c4ee7377fa0da209adc2bc26e07c8aec4da939d"
+    },
+    {
+      "kind": "unchanged original controlled-loopback 30k/500k library-read correctness method",
+      "files": 1,
+      "evidenceCommit": "9b1a00e8a4cd21b26660014400b5dfb0c10d9c20"
     }
   ],
   "priorCurrentPhaseRecord": {
@@ -904,5 +916,17 @@
     "evidence": "../frontend/mixed-import-followon-20261018/result.json"
   },
   "originalHistorical210sPlanRecovered": false,
-  "fullRealImageCorpusRecovered": false
+  "fullRealImageCorpusRecovered": false,
+  "priorPhaseAtPublishedCc5": {
+    "remoteCheckpoint": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+    "localSource": "6c5000081092134facb8713ccea202fc37edd7b5",
+    "executedFiles": 42,
+    "wholeFilesUnexecuted": 1,
+    "currentFileOutcomes": {
+      "fullyPassed": 41,
+      "withMissingFixtureErrors": 0,
+      "withExplicitPostgresSkips": 1,
+      "unexecuted": 1
+    }
+  }
 }

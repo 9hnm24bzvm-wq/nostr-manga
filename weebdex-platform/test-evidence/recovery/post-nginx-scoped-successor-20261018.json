@@ -116,5 +116,7 @@
     "deploymentPerformed": false,
     "mainMerged": false
   },
-  "qualificationNote": "Each number is a separately retained affected scope and overlaps earlier scopes. They must not be summed into a new full-suite result. All current runtime fixtures were owned and closed in their scoped receipts."
+  "qualificationNote": "Each number is a separately retained affected scope and overlaps earlier scopes. They must not be summed into a new full-suite result. All current runtime fixtures were owned and closed in their scoped receipts.",
+  "recordScope": "Historical scoped source snapshot published as cc5b237d33ceb8a9027feaa2b64682f0826cc012.",
+  "supersededByScopedContinuation": "hosted-cleanup-scoped-successor-20261018.json"
 }

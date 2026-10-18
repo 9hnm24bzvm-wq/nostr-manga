@@ -1,0 +1,20 @@
+{
+  "status": "finite-qualified-hosted-retry-unrun",
+  "sourceCommit": "26a79f6775f4b52ae745c9fab5f1b321faa50378",
+  "previousSource": "d57a1f0ba55b65c2d4f4927afc1b350712569c0e",
+  "previousEvidence": "c7a45aa3d67ede6c979f581a8064ad62b1ba3a1e",
+  "pythonMethods": 76,
+  "nodeLifecycleControls": 11,
+  "actorSourceAssociationRunnerCases": 2,
+  "countsDescribeDistinctCommandScopes": true,
+  "failuresOrSkips": 0,
+  "guardSeconds": 8.54,
+  "deadlineSeconds": 30.0,
+  "cleanupVerified": true,
+  "sourcePins": 31,
+  "sourcePinsUnchanged": true,
+  "productionDelta": "Fatal monitor code extraction reads exactly once in a try/unknown fallback, preserving original Node exit behavior and preventing unstable getters bypassing the allowlist.",
+  "independentActualFatalRedControls": "Separate mixed-reviewer evidence retains no-monitor exit1 versus old-monitor exit7 and second-read private-code bypass, followed by actual corrected controls. Not a browser test.",
+  "noBrowserServiceDatabaseBuildInstallNetworkOrCiRetry": true,
+  "scope": "Full same affected finite command rerun on the guarded passive-monitor source. Prior diagnostic source/evidence preserved as historical."
+}

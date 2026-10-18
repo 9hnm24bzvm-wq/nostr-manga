@@ -40,7 +40,7 @@ def accepted_report():
         previews.append({'file_id': identity, 'file_hash': file_hash, 'event_ids': [event_id]})
     report = {'phase': runner.PUBLIC_UPLOAD_PHASE, 'passed': True, 'completed_utc': 'synthetic-finalized', 'steps': [{'name': 'synthetic', 'status': 'passed'} for _ in range(14)], 'page_errors': [],
               'proxy_lifecycle': {'connect_denials': 0, 'expected_connect_resets': 0, 'remaining_socket_count': 0, 'observations_truncated': False, 'shutdown_started': True, 'closed': True},
-              'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'exit_observed': True, 'exit_code': 0}}
+              'cleanup': {'browser_created': True, 'context_created': True, 'page_created': True}, 'runner_lifecycle': {'stage': 'complete', 'fatal_kind': 'none', 'fatal_code': 'none', 'fatal_stage': 'none', 'caught_stage': 'none', 'caught_category': 'none', 'exit_observed': True, 'exit_code': 0}}
     report['steps'][12] = {'name': 'hard reload, real key reconnect and durable signed private previews', 'status': 'passed', 'observation': {'hard_reload': True, 'explicit_key_reimport': True, 'local_File_thumbnails_absent': True, 'signed_previews': previews}}
     report['public_upload'] = {'scope': 'reconstructed-public-upload-replacement-v1', 'supported_replacement': True, 'completed': True, 'actual_context_closed': True, 'fixture_control_calls': 14,
         'browser_http': {'closed': True, 'failures': [], 'rows': rows},

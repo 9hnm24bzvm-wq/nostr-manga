@@ -1,0 +1,22 @@
+{
+  "artifactId": 12142918731,
+  "zipBytes": 2313,
+  "zipSha256": "128c3366fc3def1a69606572239f77c6f7a6dd2d673ff7652b18d8e2a585bfe6",
+  "members": [
+    {
+      "name": "preparation.json",
+      "bytes": 1359,
+      "sha256": "dc362172848c5ae912e99ac46dc0628201d117e9f9c75b6314743b423bc95eb5"
+    },
+    {
+      "name": "summary.json",
+      "bytes": 1205,
+      "sha256": "ae384d8957d467173b49bc2c9eda72a3c6af27c89754d0731e8762a1abb8cd94"
+    },
+    {
+      "name": "phases.json",
+      "bytes": 1778,
+      "sha256": "501ad32de5e12288547656bb4b4feaf41a1e4a0661f28897304b3c04c2ff52f4"
+    }
+  ]
+}

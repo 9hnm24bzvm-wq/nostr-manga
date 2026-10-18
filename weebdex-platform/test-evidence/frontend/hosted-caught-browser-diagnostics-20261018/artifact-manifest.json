@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "files": {
+    "README.md": {
+      "bytes": 2828,
+      "sha256": "5a499ca2682deebe0e2d9b2a04a3c49fc7b8ee06e153e78c781af4c81c7c4b5a"
+    },
+    "baseline-caught-control.mjs": {
+      "bytes": 2865,
+      "sha256": "60f5ee906ad72558e527095eaed750dd27dd0e83f6e8b336885fe354e4dc5b4f"
+    },
+    "baseline-owned.json": {
+      "bytes": 552,
+      "sha256": "6a5b99d7ed508b34b19c97a001b5712bcad06f495f830383d28af6b5316d23b0"
+    },
+    "baseline-recipe.json": {
+      "bytes": 657,
+      "sha256": "837667471b27af2776bd1743ae0eacbbfcbe6deba445f272157a119ced9a3f9d"
+    },
+    "baseline.log.gz": {
+      "bytes": 457,
+      "sha256": "da7ca44f890c86b41db02a318fe41078606b6bec72401678eb3804cd93a7e753"
+    },
+    "initial-selected-owned.json": {
+      "bytes": 552,
+      "sha256": "a08ef4dfd357e7e03661f1c36fb836b63b87d7983c99dd0a72d0c2ae8a9b83a6"
+    },
+    "initial-selected.log.gz": {
+      "bytes": 404,
+      "sha256": "93b63325d1c2137fb9803bc1108d3ce842ba2552f425e6f6b035ed83238c4975"
+    },
+    "raw-log-manifest.json": {
+      "bytes": 737,
+      "sha256": "a0909bc0d4d7258f19f8cf5687694013df2f5b906d1984691a26d40f189011c1"
+    },
+    "result.json": {
+      "bytes": 1620,
+      "sha256": "0707840914169a51b34c32f4fb4335bc3c551000d1b287708776c09641d1840b"
+    },
+    "run-selected.py": {
+      "bytes": 907,
+      "sha256": "e89c241ea7cc2c93a862643fff4009ad2cb31259a5a65c4ba8266986a23e36d3"
+    },
+    "selected-owned.json": {
+      "bytes": 552,
+      "sha256": "7467eb0df9d01486eae6ae72340ead2276d3a51156c15425ff29668194945827"
+    },
+    "selected.log.gz": {
+      "bytes": 2911,
+      "sha256": "7cb6a9d395a2658c112305340947184153f5799c1ab04dfc737f9218c03cd7bf"
+    },
+    "source-pins-after.json": {
+      "bytes": 4038,
+      "sha256": "65dfcaf20c90f6d0d7a5e75c8e445909fe77b6400cea468a09fd7f41145891fa"
+    },
+    "source-pins-before.json": {
+      "bytes": 4038,
+      "sha256": "65dfcaf20c90f6d0d7a5e75c8e445909fe77b6400cea468a09fd7f41145891fa"
+    }
+  },
+  "excludesSelf": true,
+  "rawLogsRetainedViaGzip": true
+}

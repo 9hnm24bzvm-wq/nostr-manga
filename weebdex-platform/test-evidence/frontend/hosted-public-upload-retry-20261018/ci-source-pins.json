@@ -1,0 +1,11 @@
+{
+  ".github/workflows/hosted-browser-e2e.yml": "19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1",
+  "weebdex-platform/scripts/browser-acceptance.mjs": "d9432dbe9ebaaa2365015495ec34f7e7d787f8cc2ccf88c55176c8831a0646dc",
+  "weebdex-platform/scripts/ci/native-feed-diagnostics.py": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c",
+  "weebdex-platform/scripts/ci/run-hosted-feed-regression.py": "f68f1ae7aaa4339a43e682168bc54c290a764d678aba102ba8f8e6b60c0cc2f4",
+  "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+  "weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+  "weebdex-platform/scripts/run-feed-projection-tests.sh": "bfe349c4490e38177fc412cd53e87f5ff750260052146c2bb3937e1a9b08ec11",
+  "weebdex-platform/backend/tests/catalog_feed_projection.rs": "7c98a5c2deb0f50f08e488efc95f987da119428eff993f34cf66084ca258ca1f",
+  "weebdex-platform/tests/ci/test_native_feed_diagnostics.py": "1101cbb285c830e4453903c16c6053fc545281b100c523ed0a1a670f686688f6"
+}
