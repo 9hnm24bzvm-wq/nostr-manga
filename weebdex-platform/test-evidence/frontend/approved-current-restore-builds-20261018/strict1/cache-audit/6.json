@@ -1,0 +1,11 @@
+{
+  "pid": 6,
+  "protected_roots": [
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/.build/local-library-noble-2.0.1",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/.build/local-signing-base-2.0.0"
+  ],
+  "checked_node_mutations": 7876,
+  "protected_write_attempts": 0,
+  "denied": []
+}

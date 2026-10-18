@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "passed-synthetic-finite-controls-only",
+  "sourceCommit": "7b6bd82690a0493ae92ca18c7e41289ace77dc34",
+  "sourceTree": "7adf07eb0a9484335b78cb3f6b66c7f0f589438b",
+  "sourcePins": 10,
+  "sourceBeforeAfterEqual": true,
+  "qualification": {
+    "pythonMethods": 20,
+    "nodeCases": 12,
+    "skips": 0,
+    "pythonUnittestSeconds": 1.39,
+    "pythonGuardedSeconds": 1.519,
+    "nodeGuardedSeconds": 0.215,
+    "eachCommandDeadlineSeconds": 30,
+    "python310AstParse": true,
+    "actualBrowserLaunched": false,
+    "networkOrInstallPerformed": false
+  },
+  "reviewCorrections": {
+    "currentInvocationPublicByteHashRequired": true,
+    "sameBufferHashAndSchemaValidation": true,
+    "terminalOutputOverflowRefused": true,
+    "terminalStdoutEofRequiredWithinDeadline": true,
+    "missingEofFailsClosed": true,
+    "retainedPrivateLogCapBytes": 4194304,
+    "largeBufferedTailControl": {
+      "generatedBytes": 20000,
+      "testRetentionCapBytes": 16384,
+      "eofVerified": true,
+      "outputLimitRefused": true
+    }
+  },
+  "historicalTestSetupFailure": {
+    "file": "initial-comment-assertion-red.log.gz",
+    "cases": 11,
+    "passed": 10,
+    "failed": 1,
+    "reason": "Source-contract test initially matched a no-self-hosted comment as executable workflow text; executable-line filtering corrected it.",
+    "exactInitialSourceSnapshotCaptured": false,
+    "notBrowserOrProductFailure": true,
+    "expandedSha256": "81d6d2ec2a6fe504ffd758a3e97dc7a5849213c2f41baa005ad6661f7f266bf6",
+    "expandedBytes": 7846
+  },
+  "hostedProposal": {
+    "branch": "ci/browser-sandbox-preflight",
+    "runner": "ubuntu-22.04",
+    "jobMinutes": 20,
+    "installMinutes": 12,
+    "ownerWorkSeconds": 90,
+    "ownerCleanupSeconds": 25,
+    "ownerHardTotalSeconds": 120,
+    "publicArtifactMaximumBytes": 65536,
+    "retentionDays": 1,
+    "chromiumSandbox": true,
+    "hostedPublicationOrExecutionRepresented": false
+  },
+  "limits": {
+    "browserSandboxRuntimeSupportEstablished": false,
+    "genuineApplicationBrowserAcceptance": false,
+    "fullSuiteQualification": false,
+    "productionRecoveryOrLoadQualification": false
+  }
+}

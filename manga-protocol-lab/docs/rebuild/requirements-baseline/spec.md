@@ -92,16 +92,16 @@ Performance evidence and qualifications live in docs/library-ac-performance.md. 
 
 ## 2026-10-07 clarified library throughput
 
-The user explicitly requires300 million library/progress saves/month (messages Sentinel_833cfb1e00148191bf4d1c81e84f2702 and Sentinel_af8d877a4e1c8191b38687db810e69b5). This is separate from image/page-view traffic. Over30days it averages115.74 successful saves/s. Use120/s as a rounded baseline test, disclose higher peak assumptions, count HTTP rejections and growing projection backlog as failure to sustain offered work. Do not certify a month from a short test.
+The user explicitly requires300 million library/progress saves/month (messages private-chat-reference-016-redacted and private-chat-reference-017-redacted). This is separate from image/page-view traffic. Over30days it averages115.74 successful saves/s. Use120/s as a rounded baseline test, disclose higher peak assumptions, count HTTP rejections and growing projection backlog as failure to sustain offered work. Do not certify a month from a short test.
 
 ## 2026-10-07 feature-first priority
 
-At03:34UTC the owner explicitly asked to focus on all features before worrying too much about performance (Sentinel_0e5a4985c5f481918950c5e416f38b86). Retain the PostgreSQL/deadpool/Moka scale-oriented architecture and correctness/resource bounds, but defer deeper load tuning. Finish lifecycle work already in progress, then ordinary social/library deletion, approved library replication, repair/serving, migration and backup/restore. The interrupted schema19 GC soak is not a capacity result. Existing300M monthly saves target remains a later validation requirement.
+At03:34UTC the owner explicitly asked to focus on all features before worrying too much about performance (private-chat-reference-005-redacted). Retain the PostgreSQL/deadpool/Moka scale-oriented architecture and correctness/resource bounds, but defer deeper load tuning. Finish lifecycle work already in progress, then ordinary social/library deletion, approved library replication, repair/serving, migration and backup/restore. The interrupted schema19 GC soak is not a capacity result. Existing300M monthly saves target remains a later validation requirement.
 
 
 ## Q93/Q94 resolved -2026-10-07
 
-The owner's DA response (Sentinel_750546eb47f8819185ca223ed265595c) selected Q93D: HTTP discovery clients must explicitly supply ordering, and Q94A: exact totals are optional, with an explicit error if counting exceeds its budget. The current request parameter is `order=asc|desc`; `include_total=true` requests the count. No estimated count is silently substituted. Per-page consistency does not turn live offset pagination into a multi-request snapshot.
+The owner's DA response (private-chat-reference-015-redacted) selected Q93D: HTTP discovery clients must explicitly supply ordering, and Q94A: exact totals are optional, with an explicit error if counting exceeds its budget. The current request parameter is `order=asc|desc`; `include_total=true` requests the count. No estimated count is silently substituted. Per-page consistency does not turn live offset pagination into a multi-request snapshot.
 
 ## Scope correction after the feature audit
 

@@ -1,0 +1,12 @@
+{
+  ".ci/browser/package-lock.json": "b117dbd1c52f362161dfd20bb6bae12145db37b2ebf0c63004dc738363738d7d",
+  ".ci/browser/package.json": "df01a6927293a82d018723c3d9932ac584bf16ce3559b80004d137d8affc82fc",
+  ".github/workflows/hosted-browser-e2e.yml": "19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1",
+  ".github/workflows/hosted-sandbox-preflight.yml": "3c82f40f102ef8722dfb9ce3236ac026f498b6b2f805568d6f38766faebc6494",
+  "weebdex-platform/docs/verification/hosted-sandbox-preflight-proposal-20261018.md": "db744cfd889a1e068da5fc396aa824c10373f5e681341b46c4a54390a57b6543",
+  "weebdex-platform/scripts/ci/browser-runtime.mjs": "061be4487096eda05f3411d2a584cd5971cd62629173ae748a38c0e0e9cd279d",
+  "weebdex-platform/scripts/ci/run-sandbox-preflight.py": "8d9ba2db2629c171e6bf936ddb389f48e6f5e141dcc663381cb03a4c012b3a1a",
+  "weebdex-platform/scripts/ci/sandbox-preflight.mjs": "738f4fafc5d1c6bee99b3a3fbb4967b729dbb74ae1356389305be3abb7112ffb",
+  "weebdex-platform/tests/ci/test_sandbox_preflight.mjs": "6d8e2fc5169ae0ec3f3c1a002b5d7f67b10ed8dedbf9e4d961d224ee3b01661f",
+  "weebdex-platform/tests/ci/test_sandbox_preflight.py": "23aee4b46d877fe2cd098246bb7945edbde376b2d7a870734f3c7892d9172a9c"
+}

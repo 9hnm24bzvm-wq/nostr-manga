@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "status": "fresh-frontend-and-controlled-pg-diagnostics-with-retained-browser-blocker",
+  "sourceAssociation": "sandbox-terminal-source-association-20261018.json",
+  "precedingContinuation": "caught-diagnostic-scoped-successor-20261018.json",
+  "sourceChangesSincePublishedRecovery": {
+    "applicationFrontendBackendProtocolSource": false,
+    "newSharedLoadBudgetTooling": true,
+    "newReadFanoutMapAndFiniteTests": true,
+    "newDormantSandboxPreflightProposalAndFiniteTests": true,
+    "privateLegacyProvenanceReferencesRedactedInCurrentDocs": true,
+    "gitHistoryRewritten": false
+  },
+  "freshFrontend": {
+    "result": "../frontend/approved-current-restore-builds-20261018/result.json",
+    "strictErrors": [
+      0,
+      0
+    ],
+    "strictWarnings": [
+      15,
+      12
+    ],
+    "viteSeconds": [
+      47.55,
+      50.344
+    ],
+    "cssCasesPassedEach": 1,
+    "physicalArtifacts": 899,
+    "artifactBytes": 14579777,
+    "physicalDependencyMetadataEntriesPreserved": 42822,
+    "sampledCacheAuditBirths": 14,
+    "unattributedCacheAudits": 2,
+    "browserExecuted": false
+  },
+  "thirdHostedApplicationAttempt": {
+    "result": "../frontend/hosted-sandbox-refusal-20261018/run.json",
+    "run": 39148301394,
+    "ciCommit": "1261b19561af6c2f09909f09a823ac98cafb95e2",
+    "nativePgGateIncludingFixtureCleanupPassed": true,
+    "fixtureReady": true,
+    "observedBrowserSteps": 0,
+    "caughtStage": "launching-browser",
+    "caughtCategory": "browser-sandbox-refused",
+    "browserContextPageHandlesReturned": false,
+    "underlyingHostPolicyCauseEstablished": false,
+    "noTransientOsProcessClaim": true,
+    "uploadDiagnosticRecordValid": false,
+    "zeroCountersAreFallbacks": true,
+    "actualTrafficMutationPageErrorCountsEstablished": false,
+    "finalFixtureTeardownClean": true,
+    "fixtureLifecycleClean": false,
+    "genuineJourneyPassed": false
+  },
+  "scopedFiniteContinuations": {
+    "mountedReadFanout": {
+      "result": "../integrated-read-fanout-20261018/result.json",
+      "cases": 7,
+      "requestsActuallyExecutedAgainstApp": false
+    },
+    "sharedTransportBudget": {
+      "result": "../ci/integrated-load-budget-url-bound-20261018/receipt.json",
+      "cases": 19,
+      "productionCapacityQualified": false
+    },
+    "sandboxPreflight": {
+      "result": "../ci/sandbox-preflight-finite-20261018/result.json",
+      "pythonMethods": 20,
+      "nodeCases": 12,
+      "actualBrowserExecuted": false,
+      "hostedProposalUnrun": true
+    }
+  },
+  "pg18Diagnostics": {
+    "result": "../operations/pg18-diagnostics-20261018/result.json",
+    "methodsPassed": 17,
+    "realDatabaseMethods": 12,
+    "skipped": 0,
+    "guardSeconds": 11.516,
+    "ownedBirths": 84,
+    "portClosed": 55437,
+    "forced": false,
+    "applicationRestoreQualified": false
+  },
+  "originalRepositoryDiscovery": {
+    "continuation": "sandbox-terminal-original-discovery-continuation-20261018.json",
+    "filesWithExecutionResults": 43,
+    "filesWithLatestScopedPasses": 43,
+    "wholeFilesHeld": 0,
+    "currentPgMethodSkips": 0,
+    "sameSourceWholeSuiteRun": false
+  },
+  "privateReferenceCleanup": {
+    "result": "private-provenance-redaction-20261018.json",
+    "note": "../../docs/verification/private-provenance-redaction-20261018.md",
+    "credentialCompromiseClaimed": false,
+    "earlierPublishedHistoryRetainsReferences": true
+  },
+  "remainingBoundaries": {
+    "genuineSandboxedBrowserApplicationAcceptance": false,
+    "wholeCurrentCiSuitePass": false,
+    "applicationConsistentBackupRestore": false,
+    "integratedTargetDemandLoadOrCapacity": false,
+    "nativeAccountClosurePolicyImplemented": false,
+    "mainMerged": false,
+    "deploymentPerformed": false,
+    "fullRuntimeRequirementsParity": false
+  }
+}

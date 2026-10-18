@@ -1,0 +1,29 @@
+{
+  "records": [
+    {
+      "path": "vite1/cache-audit/13.json",
+      "sha256": "910885e99359f5820d54e3241a2f99d241bdb34bdec9c2df70dedac15cee974a",
+      "pid": 13,
+      "checked_node_mutations": 3670
+    },
+    {
+      "path": "vite1/cache-audit/6.json",
+      "sha256": "57177228785ecd01fa4c1aec32ffd09d98b24956ad40eb05c975989c5de50454",
+      "pid": 6,
+      "checked_node_mutations": 68
+    },
+    {
+      "path": "vite1/cache-audit/74.json",
+      "sha256": "ff878dd30914f1d0b4edb27d9c76734077ef9096453f574358b1d71b58749738",
+      "pid": 74,
+      "checked_node_mutations": 5
+    },
+    {
+      "path": "vite1/cache-audit/81.json",
+      "sha256": "14b8aee7b33b4e011d7538ec15648ebb46bfb402a6a6988dee35ffc7f1b9ad02",
+      "pid": 81,
+      "checked_node_mutations": 9
+    }
+  ],
+  "protected_write_attempts": 0
+}

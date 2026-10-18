@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "../../../../../../production-composed/src/routes/(app)/trending/+page.svelte"
+  ],
+  "sourcesContent": [
+    ""
+  ],
+  "names": [],
+  "mappings": "",
+  "file": "../../../../../../project/src/routes/(app)/trending/+page.svelte"
+}

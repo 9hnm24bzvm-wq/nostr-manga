@@ -1,0 +1,19 @@
+{
+  "status": "finite-source-checks-passed-full-strict-build-blocked-on-dependencies",
+  "source": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "nodeRunnerCases": 29,
+  "affectedNodeFiles": 8,
+  "failedOrSkipped": 0,
+  "guardSeconds": 1.827,
+  "deadlineSeconds": 30.0,
+  "cleanupVerified": true,
+  "nodeBuiltinTypeScriptStrippingUsed": true,
+  "actualTypeScriptCompilerUsed": false,
+  "customScriptCases": "The bootstrap/semantic script outputs are represented by one runner case each and not added to29.",
+  "noNetworkInstallBrowserApplicationDatabaseOrBuild": true,
+  "fullStrict": "unrun: exact frontend+signer dependency caches absent",
+  "viteBothProfiles": "unrun: same prerequisite",
+  "rawLogBytes": 5626,
+  "rawLogSha256": "d4a93f866a1f5d2c38d081e0ecc7312fca86ccb11a41e1f5b6461636c59ffb84",
+  "planSha256": "1c950b2ba4824e3b0183a78209d94acba9b7b8f6d09ba9b4dd7eab44a596d61e"
+}

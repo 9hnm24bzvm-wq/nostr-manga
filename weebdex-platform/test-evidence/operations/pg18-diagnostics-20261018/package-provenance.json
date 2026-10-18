@@ -1,0 +1,175 @@
+{
+  "debianLiburingVerification": "Official Debian HTTPS package-page checksum; no Debian signed-index verification claimed.",
+  "metadata": {
+    "InRelease": "97fbcf24b43ff386ea077b1a4887199e4edbb5de38ee5a9fd1ab30a7d03dfb09",
+    "PLAN.md": "aa6b5a61cb9b10983ac61d515f20848302fcb62f565a71b99f73111ba7fae3ee",
+    "Packages.gz": "a3f950abbc70349df9319027bda0cf963a10e22535f6492b984e8ef1f7fc1965",
+    "Release.verified": "1b4fa563f6fde40e4e512b36e0b2a2525e0414f691ae27c4d1ddd44e3818ac4a",
+    "key.asc": "0144068502a1eddd2a0280ede10ef607d1ec592ce819940991203941564e8e76",
+    "proposal.json": "eeaa90c2d4c6987c32ac40d39ace8246ed84e14d38d7f1358e1a9495e9580353",
+    "signature-verification.txt": "984d05fdd507698ef65ccdc4ae37d66c133109109d4fd71b371436fe465431c9"
+  },
+  "normalTransport": "Existing invocation-bound credential-free loopback HTTPS proxy and inherited environment CA, TLS hostname/certificate verification; no redirect, no NO_PROXY bypass, no trust/network setting changes.",
+  "packages": [
+    {
+      "Architecture": "amd64",
+      "Depends": "libc6 (>= 2.38), libgssapi-krb5-2 (>= 1.17), libldap2 (>= 2.6.2), libssl3t64 (>= 3.0.0)",
+      "Filename": "pool/main/p/postgresql-18/libpq5_18.6-1.pgdg13+2_amd64.deb",
+      "Installed-Size": "1253",
+      "Package": "libpq5",
+      "SHA256": "c6cc459bb499db4697686533e50bf5943f7e7d6929c04ef55eec184d5436859b",
+      "Size": "266004",
+      "URL": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/libpq5_18.6-1.pgdg13+2_amd64.deb",
+      "Version": "18.6-1.pgdg13+2"
+    },
+    {
+      "Architecture": "amd64",
+      "Depends": "locales | locales-all, postgresql-client-18 (= 18.6-1.pgdg13+2), postgresql-common (>= 275~), ssl-cert, tzdata, debconf (>= 0.5) | debconf-2.0, libc6 (>= 2.38), libgssapi-krb5-2 (>= 1.14+dfsg), libicu76 (>= 76.1-1~), libldap2 (>= 2.6.2), liblz4-1 (>= 0.0~r130), libnuma1 (>= 2.0.11), libpam0g (>= 0.99.7.1), libpq5 (>= 17~~), libselinux1 (>= 3.1~), libssl3t64 (>= 3.4.0), libsystemd0, liburing2 (>= 2.5), libuuid1 (>= 2.16), libxml2 (>= 2.7.4), libxslt1.1 (>= 1.1.25), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)",
+      "Filename": "pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg13+2_amd64.deb",
+      "Installed-Size": "35149",
+      "Package": "postgresql-18",
+      "SHA256": "bf4062a44757c3f7a207a1b9e20c2bf93f9847257516c2ce0befc1257d3dcf8e",
+      "Size": "7302408",
+      "URL": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg13+2_amd64.deb",
+      "Version": "18.6-1.pgdg13+2"
+    },
+    {
+      "Architecture": "amd64",
+      "Depends": "libpq5 (>= 18.6), postgresql-client-common (>= 182~), sensible-utils, libc6 (>= 2.38), liblz4-1 (>= 0.0~r127), libreadline8t64 (>= 6.0), libssl3t64 (>= 3.0.0), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)",
+      "Filename": "pool/main/p/postgresql-18/postgresql-client-18_18.6-1.pgdg13+2_amd64.deb",
+      "Installed-Size": "11104",
+      "Package": "postgresql-client-18",
+      "SHA256": "9af40c99f7074f8ff3798155af2f07f1a4e1e3bd4edce44ef928c1e03aea620e",
+      "Size": "2144864",
+      "URL": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-client-18_18.6-1.pgdg13+2_amd64.deb",
+      "Version": "18.6-1.pgdg13+2"
+    },
+    {
+      "Architecture": "amd64",
+      "Depends": "libc6 (>=2.4) [amd64]",
+      "Filename": "pool/main/libu/liburing/liburing2_2.9-1_amd64.deb",
+      "Installed-Size": "117",
+      "Package": "liburing2",
+      "SHA256": "4b589c00c7a51172aace2cb2fb3d3ff32daf86c644023126dcfcaa840cc941ea",
+      "Size": "26448",
+      "URL": "https://deb.debian.org/debian/pool/main/libu/liburing/liburing2_2.9-1_amd64.deb",
+      "Version": "2.9-1",
+      "checksumSource": "https://packages.debian.org/trixie/amd64/liburing2/download"
+    }
+  ],
+  "pgdgVerification": "Existing sqv verified InRelease; its SHA256/size authenticated Packages.gz and three exact PGDG package records. Official key fingerprint B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8.",
+  "setup": {
+    "allSevenToolElfResolutionsPassed": true,
+    "archives": [
+      {
+        "declaredPayloadBytes": 1218018,
+        "members": 67,
+        "package": "libpq5"
+      },
+      {
+        "declaredPayloadBytes": 35559957,
+        "members": 684,
+        "package": "postgresql-18"
+      },
+      {
+        "declaredPayloadBytes": 11095096,
+        "members": 446,
+        "package": "postgresql-client-18"
+      },
+      {
+        "declaredPayloadBytes": 91764,
+        "members": 14,
+        "package": "liburing2"
+      }
+    ],
+    "installedEntries": 1024,
+    "installedInventorySha256": "e4cbc464100b9ad3fa27fba5a2ee391bace8dc391f085b87955e90756c804774",
+    "noGlobalInstall": true,
+    "noMaintainerScripts": true,
+    "noServerStarted": true,
+    "tools": {
+      "createdb": {
+        "elfNeeded": [
+          "0x0000000000000001 (NEEDED)             Shared library: [libpq.so.5]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+        ],
+        "sha256": "45b2ad3eb37f11c292b4c78fe718b72f4a2a11a3ec0584216158be38725b6047",
+        "version": "createdb (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)"
+      },
+      "initdb": {
+        "elfNeeded": [
+          "0x0000000000000001 (NEEDED)             Shared library: [libpq.so.5]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libicuuc.so.76]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+        ],
+        "sha256": "e625647c2750ff98d37f812e9fba60e9f6418e7d5a7488dfe7b6996312dbf206",
+        "version": "initdb (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)"
+      },
+      "pg_ctl": {
+        "elfNeeded": [
+          "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+        ],
+        "sha256": "a05a893224f0edefe258c99d0c9c875156a8778af43653419093cad5ed66439d",
+        "version": "pg_ctl (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)"
+      },
+      "pg_dump": {
+        "elfNeeded": [
+          "0x0000000000000001 (NEEDED)             Shared library: [libpq.so.5]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libzstd.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [liblz4.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+        ],
+        "sha256": "66115325f4e49f7f9c79a83cfc89d2c9a1698858a1ae9786ae7595cd7a9f2de9",
+        "version": "pg_dump (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)"
+      },
+      "pg_restore": {
+        "elfNeeded": [
+          "0x0000000000000001 (NEEDED)             Shared library: [libpq.so.5]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libzstd.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [liblz4.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+        ],
+        "sha256": "06115b93c3d1bf9d7c62563abb595792ea90acb9083233fd293eac1b34695840",
+        "version": "pg_restore (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)"
+      },
+      "postgres": {
+        "elfNeeded": [
+          "0x0000000000000001 (NEEDED)             Shared library: [libzstd.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [liblz4.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libxml2.so.2]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libpam.so.0]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libgssapi_krb5.so.2]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libnuma.so.1]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libldap.so.2]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libicui18n.so.76]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libicuuc.so.76]",
+          "0x0000000000000001 (NEEDED)             Shared library: [liburing.so.2]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libsystemd.so.0]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+        ],
+        "sha256": "4944085dba4adcf0f65b8fb4e698c5ac353ecff890fdc89afe8007c2547b1469",
+        "version": "postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)"
+      },
+      "psql": {
+        "elfNeeded": [
+          "0x0000000000000001 (NEEDED)             Shared library: [libpq.so.5]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libreadline.so.8]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+          "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+        ],
+        "sha256": "651b44cd205e8c25e7fc6a1079e949188a7acb2d9119db1c8c4479c08b7b0d3c",
+        "version": "psql (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)"
+      }
+    }
+  },
+  "totalCompressedBytes": 9739724
+}

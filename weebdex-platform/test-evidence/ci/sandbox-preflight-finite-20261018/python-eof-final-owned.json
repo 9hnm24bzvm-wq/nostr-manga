@@ -1,0 +1,20 @@
+{
+  "source": "7b6bd82690a0493ae92ca18c7e41289ace77dc34",
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "weebdex-platform/tests/ci",
+    "-p",
+    "test_sandbox_preflight.py",
+    "-v"
+  ],
+  "deadlineSeconds": 30,
+  "exitCode": 0,
+  "elapsedSeconds": 1.519,
+  "timeout": false,
+  "actualBrowserStarted": false
+}

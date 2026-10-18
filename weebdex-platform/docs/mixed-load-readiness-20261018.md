@@ -117,7 +117,10 @@ eight chapter commits and one load process. Do not convert the old driver's
 logical lane rates to this cap using `--scale`: its multi-request operations,
 setup and diagnostics require an actual transport-level budget. A dedicated
 integrated driver with global request/byte/deadline accounting is still required.
-No retry of an uncertain mutation is permitted. Preserve unexpected errors and
+A [bounded shared transport primitive](integrated-load-transport-budget.md) now
+provides finite request/upload/read-credit/deadline controls and controlled HTTP
+seams. Full integrated scenario scheduling, measured browser progress and
+application-load qualification remain pending. No retry of an uncertain mutation is permitted. Preserve unexpected errors and
 stop on integrity/authority failures or the established resource limits.
 
 Keep TTFB/complete-body and client signing/serialization time distinct. Current

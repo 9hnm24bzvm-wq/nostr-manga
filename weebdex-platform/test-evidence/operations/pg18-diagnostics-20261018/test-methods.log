@@ -1,0 +1,22 @@
+test_activity_empty_excludes_sampler_and_other_database (bounded_pg_diagnostics.DiagnosticCli.test_activity_empty_excludes_sampler_and_other_database) ... ok
+test_activity_groups_idle_active_and_lock_wait_without_identities (bounded_pg_diagnostics.DiagnosticCli.test_activity_groups_idle_active_and_lock_wait_without_identities) ... ok
+test_actual_cli_5s_child_timeout_reaps_process (bounded_pg_diagnostics.DiagnosticCli.test_actual_cli_5s_child_timeout_reaps_process) ... ok
+test_actual_cli_async_cancellation_waits_for_psql_reaping (bounded_pg_diagnostics.DiagnosticCli.test_actual_cli_async_cancellation_waits_for_psql_reaping) ... ok
+test_actual_lock_timeout_bounded_and_activity_remains_available (bounded_pg_diagnostics.DiagnosticCli.test_actual_lock_timeout_bounded_and_activity_remains_available) ... ok
+test_actual_postgres_rejects_writes_in_both_modes (bounded_pg_diagnostics.DiagnosticCli.test_actual_postgres_rejects_writes_in_both_modes) ... ok
+test_actual_sql_statement_timeout_reaps_psql (bounded_pg_diagnostics.DiagnosticCli.test_actual_sql_statement_timeout_reaps_psql) ... ok
+test_cli_rejects_malformed_snapshot_without_fabricating_counters (bounded_pg_diagnostics.DiagnosticCli.test_cli_rejects_malformed_snapshot_without_fabricating_counters) ... ok
+test_failed_connection_is_explicit_without_connection_secrets (bounded_pg_diagnostics.DiagnosticCli.test_failed_connection_is_explicit_without_connection_secrets) ... ok
+test_read_only_sampler_reports_arranged_backlogs (bounded_pg_diagnostics.DiagnosticCli.test_read_only_sampler_reports_arranged_backlogs) ... ok
+test_wal_checkpointer_and_settings_are_actual_cluster_snapshots (bounded_pg_diagnostics.DiagnosticCli.test_wal_checkpointer_and_settings_are_actual_cluster_snapshots) ... ok
+test_wal_snapshot_retains_independent_real_reset_epochs (bounded_pg_diagnostics.DiagnosticCli.test_wal_snapshot_retains_independent_real_reset_epochs) ... ok
+test_activity_field_required_and_array_validated (bounded_pg_diagnostics.DiagnosticShape.test_activity_field_required_and_array_validated) ... ok
+test_default_backlog_contract_unchanged (bounded_pg_diagnostics.DiagnosticShape.test_default_backlog_contract_unchanged) ... ok
+test_missing_nonfinite_boolean_negative_and_invalid_identity_are_errors (bounded_pg_diagnostics.WalSnapshotShape.test_missing_nonfinite_boolean_negative_and_invalid_identity_are_errors) ... ok
+test_only_known_bounded_snapshot_fields_are_preserved (bounded_pg_diagnostics.WalSnapshotShape.test_only_known_bounded_snapshot_fields_are_preserved) ... ok
+test_settings_missing_or_unbounded_are_errors_and_reset_identity_is_raw (bounded_pg_diagnostics.WalSnapshotShape.test_settings_missing_or_unbounded_are_errors_and_reset_identity_is_raw) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 10.340s
+
+OK

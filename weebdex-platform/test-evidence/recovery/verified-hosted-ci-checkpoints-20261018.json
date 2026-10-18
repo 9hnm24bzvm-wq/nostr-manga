@@ -27,9 +27,21 @@
       "conclusion": "failure",
       "qualification": "Fresh preparation and actual native gate including cleanup passed. Fixture ready, browser harness failed before first observed step; exact browser cause and Chromium launch unestablished.",
       "evidence": "../frontend/hosted-public-upload-retry-20261018/run.json"
+    },
+    {
+      "localSourceCommit": "1dad688c23d24a2dd0338f26391d278be662d4b3",
+      "remoteCommit": "1261b19561af6c2f09909f09a823ac98cafb95e2",
+      "tree": "5c80a5bc1b5cf2c108360edcd9df556bfd5f7236",
+      "parent": "3e019d2d274dd2f9ca7a39c094c219bfc5ad260b",
+      "fullTreeEntriesVerified": 5376,
+      "verifiedUTC": "2026-10-18T17:09:54Z",
+      "runURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/39148301394",
+      "conclusion": "failure",
+      "qualification": "Cold preparation/native gate and final fixture teardown passed; sandboxtrue launch matched a fixed sandbox-refusal banner before any browser handle returned. Lifecycle clean remains false; underlying host policy cause and actual traffic counts are unestablished.",
+      "evidence": "../frontend/hosted-sandbox-refusal-20261018/run.json"
     }
   ],
-  "currentVerifiedCiRef": "3e019d2d274dd2f9ca7a39c094c219bfc5ad260b",
+  "currentVerifiedCiRef": "1261b19561af6c2f09909f09a823ac98cafb95e2",
   "recoveryRefVerifiedUnchangedAtRetryLaunch": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
   "mainVerifiedUnchangedAtRetryLaunch": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"
 }

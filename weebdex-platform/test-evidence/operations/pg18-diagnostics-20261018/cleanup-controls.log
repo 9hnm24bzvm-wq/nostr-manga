@@ -1,0 +1,8 @@
+test_census_failure_still_signals_exact_captured_birth (__main__.CleanupControls.test_census_failure_still_signals_exact_captured_birth) ... ok
+test_failed_signal_cannot_claim_stopped_and_respects_deadline (__main__.CleanupControls.test_failed_signal_cannot_claim_stopped_and_respects_deadline) ... ok
+test_primary_failure_runs_exact_birth_fallback (__main__.CleanupControls.test_primary_failure_runs_exact_birth_fallback) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.221s
+
+OK
