@@ -1,0 +1,24 @@
+{
+  "status": "scoped-finite-pass",
+  "baseline": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "qualifiedSource": "cd4522538e5a0cae30839074b61faffb537e8406",
+  "sourceReview": "Independent collection contract review clear; legitimate short prefixes/count-only/beyond-end/non2xx supported",
+  "baselineNewCases": {
+    "total": 8,
+    "passed": 5,
+    "expectedFailed": 3,
+    "productFilesEdited": false
+  },
+  "newCasesPassed": 8,
+  "existingCasesPassed": 186,
+  "frozenCombinedCasesPassed": 194,
+  "frozenCombinedFailures": 0,
+  "inputPinsUnchanged": 930,
+  "runtime": "Nodev24.19.0 built-in VM/TS",
+  "actualBackendHttp": false,
+  "realBrowser": false,
+  "fullStrictOrViteRun": false,
+  "wholeRepositoryQualification": false,
+  "publicationPerformed": false,
+  "remainingPolicyGate": "Native account closure retention/anonymization/authority/session policy; no destructive implementation"
+}

@@ -1,0 +1,19 @@
+{
+  "base": "f1d54c027402829ca76fd3cf2f228a92ceef973a",
+  "modules": 5,
+  "tests": 46,
+  "passed": 45,
+  "failures": 1,
+  "errors": 0,
+  "skipped": 0,
+  "failure": "test_cli_matches_reviewed_current_plan_and_observer_only_adds_diagnostics",
+  "cause": "Composed mixed.py adds reviewed demand-accounting/scope/caveat fields absent from the earlier b269 versioned current-plan fixture",
+  "unittestSeconds": 35.898,
+  "guardedSeconds": 36.394,
+  "resourceStop": false,
+  "ownedSurvivors": [],
+  "sourcePinsUnchanged": 70,
+  "dependencyEntriesUnchanged": 47,
+  "historicalPlanEquivalenceClaim": false,
+  "staticFixtureOrTestAssertionChangedDuringRed": false
+}

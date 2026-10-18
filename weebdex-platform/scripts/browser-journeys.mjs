@@ -4,6 +4,9 @@ import { randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
 import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
+import { exerciseGeneratedKeyBackup } from "./browser-identity-key-controls.mjs";
+import { exerciseDeviceContinuity } from "./browser-device-continuity.mjs";
+import { exerciseReaderContinuation } from "./browser-reader-continuation.mjs";
 import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel, selectListboxTrigger, clickListboxOption, setListboxOptions, searchRatingTrigger } from "./browser-select-controls.mjs";
 const journeyRootUrl = new URL("../", import.meta.url);
 export const localLibraryDiagnosticChecks = Object.freeze({ 'local-library': Object.freeze([
@@ -62,6 +65,7 @@ export async function runJourneys(h) {
 		await page.getByRole("button", { name: "Create Account", exact: true }).click();
 		await until(() => api("/auth/check"), value => value.status === 200 && value.body?.identity?.username === username, "Registration did not establish a real session");
 		await page.getByRole("heading", { name: "Your account is ready", exact: true }).waitFor({ state: "visible" });
+		const keyBackup = phase === 'account' ? await exerciseGeneratedKeyBackup({page, context, origin, redactions}) : undefined;
 		await page.getByRole("button", { name: "Finish later", exact: true }).click();
 		await page.waitForURL(url => url.pathname === "/" && url.search === "" && url.hash === "");
 		const provision = await control("/fixture/provision", { email, profile, join_seed_group: true });
@@ -76,7 +80,7 @@ export async function runJourneys(h) {
 		await page.goto(link.href, { waitUntil: "domcontentloaded" });
 		await until(() => api("/auth/check"), value => value.status === 200 && (value.body?.identity?.is_verified || value.body?.roles?.includes("verified")), "One-time verification link did not verify account");
 		await open("/");
-		return { registered_by_ui: true, welcome_completed_by_ui: true, public_identity_deferred_by_ui: true, verified_by_one_time_local_mail: true, profile, session_cookie_present: (await context.cookies()).some(cookie => /session/i.test(cookie.name)) };
+		return { registered_by_ui: true, welcome_completed_by_ui: true, public_identity_deferred_by_ui: true, ...(keyBackup ? {key_backup: keyBackup} : {}), verified_by_one_time_local_mail: true, profile, session_cookie_present: (await context.cookies()).some(cookie => /session/i.test(cookie.name)) };
 	};
 	const logout = async () => {
 		await open("/");
@@ -592,15 +596,21 @@ export async function runJourneys(h) {
 			await inspect('device-library-navigation', async () => { await open('/library'); await page.locator(`a[href^="/title/${manga}"]`).first().waitFor({ state: 'visible' }); });
 			return { anonymous_saved: true, scoped_device_persistence: true, reload_and_library_control: true, outbox_jobs: 0 };
 		});
+		await step('live device status crosses two tabs and remains locally writable while offline', async () => {
+			await open(`/title/${manga}`);
+			return exerciseDeviceContinuity({page, context, origin, manga, readDevice: device, outboxCount, until});
+		});
 		await step('real reader progress persists locally and survives password identity changes', async () => {
 			await open(`/chapter/${chapter}/1`); await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), count => count > 0, 'Reader did not decode actual bytes');
 			await page.keyboard.press('ArrowRight'); await page.waitForURL(url => /\/2$/.test(url.pathname));
-			const progress = await until(device, value => value?.records.some(row => row.family === 'chapters' && row.id === chapter && row.page >= 1), 'Reader page control did not persist device progress');
-			const before = progress.records.map(row => row.family + ':' + row.key).sort();
+			const progress = await until(device, value => value?.records.some(row => row.family === 'chapters' && row.id === chapter && row.mangaId === manga && row.page === 2 && row.completed === false), 'Reader page two did not persist exact incomplete device progress');
+			const savedProgress = progress.records.find(row => row.family === 'chapters' && row.id === chapter);
+			const continuation = await exerciseReaderContinuation({page, origin, manga, chapter, nextChapter: ids.next_chapter, api, open, readDevice: device, until});
+			const before = (await device()).records.map(row => row.family + ':' + row.key).sort();
 			await signup('user'); const after = await device(); insist(before.every(key => after.records.some(row => row.family + ':' + row.key === key)), 'Password signup replaced device library');
 			await openLibraryManagement(); await panel().getByText('Library source: this browser device.', { exact: false }).waitFor({ state: 'visible' });
 			await logout(); const loggedOut = await device(); insist(before.every(key => loggedOut.records.some(row => row.family + ':' + row.key === key)), 'Logout erased the independent device library');
-			return { reader_progress_saved: true, signup_did_not_select_account_mode: true, logout_preserved_device_records: true };
+			return { reader_progress_saved: true, actual_device_page: savedProgress.page, actual_device_completed: savedProgress.completed, reader_continuation: continuation, signup_did_not_select_account_mode: true, logout_preserved_device_records: true };
 		});
 		await step('custom list controls and reviewed scoped backup export/import persist actual device rows', async () => {
 			let target;

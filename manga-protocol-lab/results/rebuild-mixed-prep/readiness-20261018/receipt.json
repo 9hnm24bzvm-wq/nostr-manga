@@ -1,0 +1,51 @@
+{
+  "status": "passed-finite-harness-only",
+  "base_source": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "utc": "2026-10-18T15:23:59Z",
+  "tests": 37,
+  "elapsed_s": 32.575,
+  "command": "PYTHONPATH=bench/library-node timeout 90s python3 -m unittest test_mixed test_image_shards test_process_metrics test_diagnostic_process -v",
+  "command_cwd": "manga-protocol-lab",
+  "python": "3.12.14",
+  "packages": {
+    "aiohttp": "3.14.4",
+    "Pillow": "12.3.0"
+  },
+  "source_sha256": {
+    "manga-protocol-lab/bench/library-node/mixed.py": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b",
+    "manga-protocol-lab/bench/library-node/test_mixed.py": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db",
+    "manga-protocol-lab/bench/library-node/MIXED.md": "018559a05e4b4cb621b0b7c5c7bf86bc78b6673e5cf03d5bf3c6e4476fbf7547",
+    "manga-protocol-lab/bench/library-node/README.md": "205aa49ee3bce3e3b98c6dfdbbe8376aa452a2b7757db2f1ed1d7ca6d71dea3c",
+    "weebdex-platform/docs/mixed-load-qualification-plan.md": "6da17212573f8c1ec9ac5f7020d36941afebdebf73aa851948171a49e74220a8",
+    "weebdex-platform/docs/mixed-load-readiness-20261018.md": "93ca1cc937c6e4397580bf5d278552c0eb47b31a013adc9a99b46434378fcb7c"
+  },
+  "evidence_sha256": {
+    "accounting-red.log": "1b618c043ac6ecab666245feb5ac21220ceddb52cdc186992fbb625e62fada8d",
+    "seams-green.log": "eb6054e35364c70363000d679385678e3b9307131d80f72203633928ddcfa8de",
+    "original-node-tiny-plan.json": "8d7eb266507a534df52db1865792e8df017d95888ef91f6c1be9f95d28830d11"
+  },
+  "application_load_executed": false,
+  "postgres_executed": false,
+  "install_or_download_executed": false,
+  "capacity_qualified": false,
+  "notes": [
+    "Baseline red reproduces rejected503 status omission and absence of logical-demand separation.",
+    "Finalgreen exercises rejected/verification-failed200 status retention without acceptance and both authentic/synthetic JPEG stream seams.",
+    "Tinyplan contains79 rounded logical lane offers; it is not79 totalHTTP requests.",
+    "Timed image hashing remains defaultoff; optional profile sync is separate from library snapshots.",
+    "cbor2/coincurve were recovered independently and are not required by this finite suite."
+  ],
+  "skipped": 0,
+  "authentic_fixture": {
+    "override_variable": "MIXED_JPEG_SOURCE",
+    "source_file": "met-57682.jpg",
+    "bytes": 1227747,
+    "sha256": "3ac595477a047f9fa78166a88fd2a8a0306d3d6698fca655e430b5c4e1b4603a",
+    "provided_by_separate_restore": true,
+    "read_only": true
+  },
+  "test_environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MIXED_JPEG_SOURCE": "externally restored exact manifest JPEG selected explicitly"
+  }
+}

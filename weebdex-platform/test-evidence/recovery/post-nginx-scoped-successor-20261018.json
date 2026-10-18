@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "status": "scoped-successor-qualified-full-frontend-revalidation-pending",
+  "publishedBase": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "composedSourceBeforeRecoveryMetadata": "66d2ba6a2190667493ba508e7025e23b7e30fced",
+  "sourceAssociation": "post-nginx-source-association-20261018.json",
+  "currentDiscovery": "current-repository-test-discovery-20261018.json",
+  "scope": [
+    "authentic public-domain JPEG and explicitly new static current-plan fixture",
+    "mixed harness logical-demand accounting and truthful rejected/verification-failed HTTP status retention",
+    "strict public collection response cardinality and normalized UUID uniqueness",
+    "private backup/restore runtime-config storage-root exclusion",
+    "ordinary browser journey helper readiness with finite stand-ins",
+    "unchanged original offline compact correctness"
+  ],
+  "affectedQualification": {
+    "publicCollection": {
+      "newCases": 8,
+      "sharedExistingCases": 186,
+      "frozenCasesPassed": 194,
+      "actualBackendOrBrowser": false,
+      "evidence": "../public-collection-contract-20261018/status.json"
+    },
+    "privateCheckpoint": {
+      "finiteCasesPassed": 24,
+      "fakeDatabaseCommandBoundary": true,
+      "actualNewDatabaseRestoreDrill": false,
+      "evidence": "../deployment/private-checkpoint-hardening-20261018/result.json"
+    },
+    "mixedFixtureUnion": {
+      "methodsPassed": 46,
+      "uniqueModules": 5,
+      "initialPassed": 45,
+      "initialFailureRetained": true,
+      "staticFixtureV1Retained": true,
+      "reviewedStaticFixtureV2": true,
+      "historicalPlanRecovered": false,
+      "evidence": "../frontend/fixture-mixed-union-postmerge-20261018/green-result.json"
+    },
+    "affectedMixedImports": {
+      "methodsPassed": 11,
+      "uniqueModules": 2,
+      "evidence": "../frontend/mixed-import-followon-20261018/result.json"
+    },
+    "offlineCompact": {
+      "histories": [
+        30000,
+        500000
+      ],
+      "identicalFiveUpdatesEach": true,
+      "seconds": 5.209,
+      "peakRssBytes": 312688640,
+      "actualApplicationOrThroughput": false,
+      "evidence": "../deployment/offline-compact-correctness-20261018/result.json"
+    },
+    "browserReadiness": {
+      "finiteRunnerCasesPassed": 78,
+      "affectedNodeFiles": 7,
+      "standInDriversOnly": true,
+      "realBrowser": false,
+      "clipboardOrIndexedDbExecuted": false,
+      "evidence": "../frontend/browser-readiness-seams-20261018/review-correction/result.json"
+    }
+  },
+  "sourceAssociationCounts": {
+    "historicalProductInputs": 922,
+    "unchangedHistoricalProductInputs": 919,
+    "historicalExecutionInputs": 1242,
+    "unchangedHistoricalExecutionInputs": 1230,
+    "currentRecordedUnion": 1265,
+    "currentPlatformNodeTestFiles": 133,
+    "currentPlatformPythonTestFiles": 9,
+    "canonicalFrontendUnchanged": true,
+    "backendTrackedTreeUnchangedFromPublishedBase": true
+  },
+  "historicalQualifiedEvidence": {
+    "record": "profile-title-operations-checkpoint-20261018.json",
+    "fullFrontendStrictAndBuildSourceStillCurrent": false,
+    "fullPlatformNode2016AndPython146RunSourceStillCurrent": false,
+    "backendNativeProfile141UnitsAndFourHttpSuitesRustBytesStillCurrent": true,
+    "fullNineteenCaseProtocolMatrix": "Historical at 0395fbc; no new full matrix run.",
+    "realTinyPostgres17BackupMechanicsScriptStillCurrent": false,
+    "nginxLifecycleSourceAndRedirectParserStillCurrent": true
+  },
+  "runtimeLimits": {
+    "aiohttpActual": "3.14.4",
+    "aiohttpProjectRequired": "3.13.5",
+    "fullRequirementsParity": false,
+    "noNewInstallInPostmerge57Methods": true,
+    "authenticImageCorpusRestoredFiles": 1,
+    "otherThreeImageFixturesStillAbsent": true
+  },
+  "original43FileDiscovery": {
+    "withExecutionResults": 42,
+    "fullyPassed": 41,
+    "explicitPgSkipFile": 1,
+    "pgMethodsSkipped": 12,
+    "wholeFilesStillHeld": 1,
+    "heldPath": "manga-protocol-lab/bench/library-node/test_mixed_reads.py",
+    "missingFixtureErrorsCurrentlyResolved": 2,
+    "historical47of49AndMissingHistoricalPlanPreserved": true
+  },
+  "hostedCiProposal": {
+    "separateSource": "9feba101f8bb1bda487d1df56a5952151d9f5022",
+    "recoveryCandidateDoesNotIncludeItsWorkflowOrSandboxDelta": true,
+    "publicationOrTriggerPerformedByThisCheckpoint": false,
+    "proposedSelectedPublicUploadDoesNotExerciseOrdinaryHelperAdditions": true
+  },
+  "limits": {
+    "wholeRepositoryTestsPassed": false,
+    "freshFullFrontendStrictAndViteQualified": false,
+    "genuineBrowserAcceptance": false,
+    "renderedVisualParity": false,
+    "fullApplicationConsistentRecovery": false,
+    "productionLoadOrCapacity": false,
+    "deploymentPerformed": false,
+    "mainMerged": false
+  },
+  "qualificationNote": "Each number is a separately retained affected scope and overlaps earlier scopes. They must not be summed into a new full-suite result. All current runtime fixtures were owned and closed in their scoped receipts."
+}

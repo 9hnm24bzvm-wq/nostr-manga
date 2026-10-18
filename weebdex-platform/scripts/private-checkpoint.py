@@ -110,11 +110,13 @@ def discover(config_path, node_path=None):
     config_path = absolute(config_path)
     require(config_path.is_file() and config_path.stat().st_size <= 4*CHUNK, 'Configuration is unavailable or oversized')
     config = json.loads(config_path.read_text())
+    config_files = [config_path]
     publication = config.get('protocol_publication')
     if node_path:
         node_file = absolute(node_path)
         require(node_file.is_file() and node_file.stat().st_size <= 4*CHUNK, 'Original configuration is unavailable or oversized')
         node = json.loads(node_file.read_text())
+        config_files.append(node_file)
     else:
         node = (publication or {}).get('native_node')
     require(isinstance(node, dict), 'An explicit original node configuration is required')
@@ -130,6 +132,8 @@ def discover(config_path, node_path=None):
         require(not overlap(root, PROJECT), 'Storage cannot overlap project/source artifacts')
         for b, other in roots.items():
             require(a == b or not overlap(root, other), 'Storage roots must be disjoint')
+    require(all(not overlap(path, root) for path in config_files for root in roots.values()),
+            'Configuration files must be separate from checkpointed storage')
     secrets = [(publication or {}).get('operator_key_file'), (publication or {}).get('group_keys_dir'),
                node.get('service_key_file'), node.get('group_keys_dir')]
     for secret in filter(None, secrets):

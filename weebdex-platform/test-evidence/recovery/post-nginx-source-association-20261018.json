@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "publishedBase": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "composedSourceBeforeRecoveryMetadata": "66d2ba6a2190667493ba508e7025e23b7e30fced",
+  "composedTreeBeforeRecoveryMetadata": "7744f88146f51831add3ddc33a3c016ba6219c72",
+  "composedPathsBeforeRecoveryMetadata": 144,
+  "applicationOrder": [
+    {
+      "original": "b269bf2e8aa45c921c33e6cd9ada5d60592f2e0a",
+      "applied": "7e8c31f5de1da62162dc0ca854cef5ebde6ce62d"
+    },
+    {
+      "original": "66bf5bf6c04bdf564e7e073b22415021ecef7eed",
+      "applied": "102831dfe32771436ba784ec3d96b2409d1125b6"
+    },
+    {
+      "original": "b7316fd9556ac2768fe61b71522d847f8d0b6e9f",
+      "applied": "a874b4ff2e74a1a53a4d0d1366c2c5dbd0af0f21"
+    },
+    {
+      "original": "810e8439efe484c9ee79a8de01966d71751b7b92",
+      "applied": "f1d54c027402829ca76fd3cf2f228a92ceef973a"
+    },
+    {
+      "original": "cd4522538e5a0cae30839074b61faffb537e8406",
+      "applied": "25c580ee5bcbbe7b88034b00ffb584959ec63773"
+    },
+    {
+      "original": "27f9cca89a5b191c88f42aece89b300599c72309",
+      "applied": "a970c35b8369d9548b5c0cd6e7088d835eae47bc"
+    },
+    {
+      "original": "d5ed8291775fe602b0fbb17d9e1b555e03e0042d",
+      "applied": "0fa8b08b98dc9c2854a0bd615d9a7687d9682ab0"
+    },
+    {
+      "original": "60dbc50b8c26b68df44469d5b1da2b8a828ae9cd",
+      "applied": "428c18f9927740373ad9c545584e617885570310"
+    },
+    {
+      "original": "45f5336f458cf14bee148da88325f341c069f02e",
+      "applied": "f72d079ada7f5fdbbc0f8999942d974276a14334"
+    },
+    {
+      "original": "a31ca8cad523fae97685fbbcf65688325b6638e7",
+      "applied": "53efbeab24ab4d956fb7a1f80e589b1bbed3ab5b"
+    },
+    {
+      "original": "0474ebc895fdead291dd66c69e0dc87866fba068",
+      "applied": "7ada230e13330933b07917acbff1cbeb3798f891"
+    },
+    {
+      "original": "c43f2cccf6a68965cd002183f20067b2115be3ed",
+      "applied": "9355cd26ab903da03fcf77f27f0c0df12f3a8d46"
+    },
+    {
+      "original": "7413c8ebb21ead0f6436e8ed89ea85a61c3c753a",
+      "applied": "8809e2df6b9581930ff1698eb26288f6feef8657"
+    },
+    {
+      "original": "6c4ee7377fa0da209adc2bc26e07c8aec4da939d",
+      "applied": "c3a38164477280966d416edf27ef0dad7f3514ce"
+    },
+    {
+      "original": "ed21d6421dff98553470cdd58d401d74877821c3",
+      "applied": "fdc84b7a38263ca4067d863919f4a0bdbd175568"
+    },
+    {
+      "original": "1a683bae7b2d3f7b554a04347c69f0890b5b3a69",
+      "applied": "5cab4ebafebcefba89396b66e6112388020879e1"
+    },
+    {
+      "original": "3a7ef1f149baa4200234ec15e91f796495eb84ac",
+      "applied": "57b6606747a6222be0fa7ed6e58e8000695d8eb5"
+    },
+    {
+      "original": "ea5fde5cfcb9dd1b2c95c36be1c6922ddf90f2f9",
+      "applied": "66d2ba6a2190667493ba508e7025e23b7e30fced"
+    }
+  ],
+  "conflictResolution": {
+    "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+    "sourcePick": "b7316fd9556ac2768fe61b71522d847f8d0b6e9f",
+    "resolution": "The first mixed-harness pick retains the exact final reviewed 810e843 test file, including authentic JPEG length/hash assertions, explicit optional source override and a separate synthetic JPEG seam. The following 810e843 pick consequently applies its remaining evidence/docs. No assertion was discarded.",
+    "currentSha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db",
+    "finalReviewedSha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db"
+  },
+  "historicallyQualifiedProductInputs": 922,
+  "unchangedHistoricallyQualifiedProductInputs": 919,
+  "changedHistoricallyQualifiedProductInputs": [
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+      "qualifiedSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+      "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-journeys.mjs",
+      "qualifiedSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+      "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+    },
+    {
+      "path": "weebdex-platform/scripts/private-checkpoint.py",
+      "qualifiedSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+      "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+    }
+  ],
+  "historicallyQualifiedExecutionInputs": 1242,
+  "unchangedHistoricallyQualifiedExecutionInputs": 1230,
+  "changedHistoricallyQualifiedExecutionInputs": [
+    {
+      "path": "manga-protocol-lab/bench/library-node/MIXED.md",
+      "qualifiedSha256": "f447c2263354dad6914c3f4ba7262de3b0a4490da2563ef65bfcfd215ca72504",
+      "currentSha256": "018559a05e4b4cb621b0b7c5c7bf86bc78b6673e5cf03d5bf3c6e4476fbf7547"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/README.md",
+      "qualifiedSha256": "cdbffc8497395a66eac4c36c981786858f22f0c5b862ee316af321f0239e1032",
+      "currentSha256": "205aa49ee3bce3e3b98c6dfdbbe8376aa452a2b7757db2f1ed1d7ca6d71dea3c"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/mixed.py",
+      "qualifiedSha256": "d5592e7a72b6828640bf89b54331996059389f7271a61ee7dcc795e661ae9d1d",
+      "currentSha256": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py",
+      "qualifiedSha256": "cc887d16336bdad53c1dfaccfea02c4ac9e010cf6c844ac3a0206e5aa1bc911f",
+      "currentSha256": "92c7d81ed72ccfa22b9610b1d91712579a4d272c2360d594a3c0973a4586cc04"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+      "qualifiedSha256": "77fe28fae8f9075c1fb18feeebe5f879bb0f10a355565f74902324cc68fb1374",
+      "currentSha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db"
+    },
+    {
+      "path": "manga-protocol-lab/scripts/bootstrap.sh",
+      "qualifiedSha256": "a4d56b91647d443223c4ddd2bf8682aa16811532bed55b34a6c8c141dbe1b384",
+      "currentSha256": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+      "qualifiedSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+      "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-journeys.mjs",
+      "qualifiedSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+      "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+    },
+    {
+      "path": "weebdex-platform/scripts/private-checkpoint.py",
+      "qualifiedSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+      "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+      "qualifiedSha256": "264321df786164d2bf5c79b1e2a210c7224a388145b6de568f28076d528f8940",
+      "currentSha256": "ba6c483dc1eb118d5a5345c5cfcd805494dd29af96dcad507e2be028abbab5e9"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+      "qualifiedSha256": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101",
+      "currentSha256": "1dd590c4c20aa71174bcaa4bfa523479bca1d3433e91bb03995af66046053bf1"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_private_checkpoint.py",
+      "qualifiedSha256": "3767ddeb35f9e99af092d4e49b9177a8cf52f4c7bcfe3fc13acc2aebfd2a1c27",
+      "currentSha256": "98b284a1bf31a9b08b086e1d28a6026d9ca7cc25eeb5240e305386bd031cc886"
+    }
+  ],
+  "currentRecordedSourcePinUnionCount": 1265,
+  "currentSourcePinManifest": "post-nginx-current-source-pins-20261018.json",
+  "currentSourcePinManifestSha256": "0910f11b246012981a2b764fef10844147b11ec5264587f9b2a90f59c7b702a3",
+  "unionMethod": "Unique historical 1242 execution paths plus two separately qualified nginx finite tests, five runtime paths, and all changed non-evidence source/test/data/documentation paths in this successor. This is a declared association set, not all-repository execution.",
+  "currentPlatformNodeTestFiles": 133,
+  "currentPlatformPythonTestFiles": 9,
+  "canonicalFrontendTree": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+  "canonicalFrontendEqualsPublishedBase": true,
+  "backendCompiledSourcePinsMatchingHistoricalNativeProfile": 208,
+  "backendTrackedTreeEqualsPublishedBase": true,
+  "originalProtocolSrcTreeEqualsPublishedBase": true,
+  "fullCurrentFrontendStrictOrViteQualified": false,
+  "currentBackupScriptRealDatabaseDrillQualified": false,
+  "scopedResultAssociations": {
+    "weebdex-platform/test-evidence/frontend/fixture-mixed-union-postmerge-20261018/green-result.json": "a343ffb213b122b6b72da293d14cf27f89207dbc295b0486a58f4fe4ea17a8ae",
+    "weebdex-platform/test-evidence/frontend/mixed-import-followon-20261018/result.json": "832811ef6471ea921132ed3c6c8fd13d4813aebc9dd9ffbbf4dc175d11b2bd68",
+    "weebdex-platform/test-evidence/deployment/offline-compact-correctness-20261018/result.json": "13306a0c5476a80fcb3922c4945bdd547d775aff6f01f4b58ff730db1fd887b1",
+    "weebdex-platform/test-evidence/frontend/browser-readiness-seams-20261018/review-correction/result.json": "48b14c0eed28d78df8720a1d03f112982717375f79c33d5768a2570abb60319f"
+  },
+  "boundary": "The collection client, private backup script and browser journey harness differ from the historical product map. Retained complete frontend/CI and tiny real-PG mechanics receipts remain historical. Current affected finite scopes are separately associated; no new full suite, real browser, application-consistent restore, deployment or load qualification.",
+  "recoveryMetadataDocFreshnessUpdate": {
+    "path": "weebdex-platform/docs/verification/api-feature-gap-audit-20261018.md",
+    "sha256": "fb4df1e82c4d31f1bce3be8895d3951cc143b9c8f241b175c7b667afc394130f",
+    "scope": "Appends explicit current continuation to the timestamped historical audit priority; no executable source change."
+  }
+}

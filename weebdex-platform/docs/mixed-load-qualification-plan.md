@@ -2,6 +2,9 @@
 
 Status: prepared, not executed. Updated after native-profile backend qualification; final feature composition/frontend qualification still takes priority.
 This is a local backend experiment proposal, not a production capacity promise.
+The [2026-10-18 readiness audit](mixed-load-readiness-20261018.md) distinguishes
+the retained original-node generator from this integrated-app proposal and gives
+reproducible finite harness checks. Neither has established the requested capacity.
 
 ## Entry gate
 

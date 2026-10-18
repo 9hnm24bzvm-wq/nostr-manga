@@ -1,0 +1,44 @@
+test_actual_http_acknowledgements_match_offered_work (test_mixed.ControlledHttpWorkload.test_actual_http_acknowledgements_match_offered_work) ... ok
+test_cutoff_never_counts_queued_unacknowledged_write (test_mixed.ControlledHttpWorkload.test_cutoff_never_counts_queued_unacknowledged_write) ... ok
+test_delayed_ack_reports_open_loop_underoffer (test_mixed.ControlledHttpWorkload.test_delayed_ack_reports_open_loop_underoffer) ... ok
+test_http_rejection_poisoning_prevents_false_acceptance (test_mixed.ControlledHttpWorkload.test_http_rejection_poisoning_prevents_false_acceptance) ... ok
+test_non_power_of_two_reader_mix_uses_all_identities (test_mixed.ControlledHttpWorkload.test_non_power_of_two_reader_mix_uses_all_identities) ... ok
+test_verification_failure_preserves_200_without_acceptance (test_mixed.ControlledHttpWorkload.test_verification_failure_preserves_200_without_acceptance) ... ok
+test_cli_plan_and_execution_gate (test_mixed.MixedHarness.test_cli_plan_and_execution_gate) ... ok
+test_cli_rejects_nonfinite_safety_bounds (test_mixed.MixedHarness.test_cli_rejects_nonfinite_safety_bounds) ... ok
+test_default_plan_routes_images_separately (test_mixed.MixedHarness.test_default_plan_routes_images_separately) ... ok
+test_disabled_features_are_explicit (test_mixed.MixedHarness.test_disabled_features_are_explicit) ... ok
+test_percentile_output_contract (test_mixed.MixedHarness.test_percentile_output_contract) ... ok
+test_requested_logical_demand_is_separate_from_synthetic_http_rates (test_mixed.MixedHarness.test_requested_logical_demand_is_separate_from_synthetic_http_rates) ... ok
+test_unique_jpeg_metadata_preserves_original_stream (test_mixed.MixedHarness.test_unique_jpeg_metadata_preserves_original_stream) ... ok
+test_unique_synthetic_jpeg_metadata_preserves_original_stream (test_mixed.MixedHarness.test_unique_synthetic_jpeg_metadata_preserves_original_stream) ... ok
+test_actual_orchestrator_paused_workers_cross_dispatch_boundary (test_image_shards.ImageSharding.test_actual_orchestrator_paused_workers_cross_dispatch_boundary) ... ok
+test_bounded_completion_rejects_real_http_rejections_and_pending_drops (test_image_shards.ImageSharding.test_bounded_completion_rejects_real_http_rejections_and_pending_drops) ... ok
+test_common_closing_deadline_cancels_without_acceptance (test_image_shards.ImageSharding.test_common_closing_deadline_cancels_without_acceptance) ... ok
+test_common_window_keeps_late_ack_separate (test_image_shards.ImageSharding.test_common_window_keeps_late_ack_separate) ... ok
+test_delayed_loop_preserves_eventual_ack_beyond_absolute_closing (test_image_shards.ImageSharding.test_delayed_loop_preserves_eventual_ack_beyond_absolute_closing) ... Executing <Task finished name='Task-251' coro=<run_workload.<locals>.execute() done, defined at /workspace/shared/nostr-manga-recovery-20261018/mixed-load-worktree/manga-protocol-lab/bench/library-node/mixed.py:269> result=None created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/tasks.py:420> took 0.151 seconds
+ok
+test_delayed_loop_preserves_known_ack_beyond_request_deadline (test_image_shards.ImageSharding.test_delayed_loop_preserves_known_ack_beyond_request_deadline) ... Executing <Task finished name='Task-264' coro=<run_workload.<locals>.execute() done, defined at /workspace/shared/nostr-manga-recovery-20261018/mixed-load-worktree/manga-protocol-lab/bench/library-node/mixed.py:269> result=None created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/tasks.py:420> took 0.151 seconds
+ok
+test_dispatch_tail_rejects_stale_closing_and_pending_without_http (test_image_shards.ImageSharding.test_dispatch_tail_rejects_stale_closing_and_pending_without_http) ... ok
+test_explicit_bounded_completion_accepts_normal_tail_not_strict_window (test_image_shards.ImageSharding.test_explicit_bounded_completion_accepts_normal_tail_not_strict_window) ... ok
+test_global_credit_bounds_parent_and_children_without_closed_loop (test_image_shards.ImageSharding.test_global_credit_bounds_parent_and_children_without_closed_loop) ... ok
+test_one_and_four_workers_preserve_nondivisible_peak_schedule (test_image_shards.ImageSharding.test_one_and_four_workers_preserve_nondivisible_peak_schedule) ... ok
+test_orchestration_aborts_promptly_when_worker_dies_holding_credit (test_image_shards.ImageSharding.test_orchestration_aborts_promptly_when_worker_dies_holding_credit) ... ok
+test_orchestration_rejects_nonfinite_worker_protocol_timestamps (test_image_shards.ImageSharding.test_orchestration_rejects_nonfinite_worker_protocol_timestamps) ... ok
+test_orchestration_strict_window_and_offer_conservation (test_image_shards.ImageSharding.test_orchestration_strict_window_and_offer_conservation) ... ok
+test_queued_reader_tail_still_owns_single_causal_write (test_image_shards.ImageSharding.test_queued_reader_tail_still_owns_single_causal_write) ... ok
+test_real_clock_dispatch_tail_parent_and_four_workers (test_image_shards.ImageSharding.test_real_clock_dispatch_tail_parent_and_four_workers) ... ok
+test_worker_crash_makes_missing_schedule_explicit (test_image_shards.ImageSharding.test_worker_crash_makes_missing_schedule_explicit) ... ok
+test_worker_startup_pause_cannot_start_other_streams_early (test_image_shards.ImageSharding.test_worker_startup_pause_cannot_start_other_streams_early) ... ok
+test_wrong_length_mime_and_truncated_200_never_acknowledge (test_image_shards.ImageSharding.test_wrong_length_mime_and_truncated_200_never_acknowledge) ... ok
+test_bad_stat_and_unrelated_process_are_ignored (test_process_metrics.ProcessMetrics.test_bad_stat_and_unrelated_process_are_ignored) ... ok
+test_sample_delta_and_pid_reuse (test_process_metrics.ProcessMetrics.test_sample_delta_and_pid_reuse) ... ok
+test_stat_fields_and_comm_parentheses (test_process_metrics.ProcessMetrics.test_stat_fields_and_comm_parentheses) ... ok
+test_cancellation_waits_for_cli_to_reap_its_child (test_diagnostic_process.DiagnosticProcess.test_cancellation_waits_for_cli_to_reap_its_child) ... ok
+test_malformed_zero_exit_is_explicit_failure (test_diagnostic_process.DiagnosticProcess.test_malformed_zero_exit_is_explicit_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 32.575s
+
+OK

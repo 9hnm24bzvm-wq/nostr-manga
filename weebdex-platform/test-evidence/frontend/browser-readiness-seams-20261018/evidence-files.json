@@ -1,0 +1,46 @@
+{
+  "README.md": {
+    "bytes": 2214,
+    "sha256": "a6372c9e6b160945e72fc3479567168fe565addea2232c394229480fac953b91"
+  },
+  "baseline-progress.log.gz": {
+    "bytes": 787,
+    "sha256": "c747ab13bcffd0ca8532cb85774b8d1a7654489cf1f7d6f272f6304525a8c414"
+  },
+  "baseline-recipe.json": {
+    "bytes": 1024,
+    "sha256": "bc55430f2c6ca84b8815556e4099fe81d5941045e0d20f8d0a01c9bfdefc00cf"
+  },
+  "baseline-wiring.log.gz": {
+    "bytes": 1184,
+    "sha256": "314fef8bbe4117477a352a2b478aee03f7c5fcd3272f9ba2ab732a8c09d654a3"
+  },
+  "candidate-owned.json": {
+    "bytes": 968,
+    "sha256": "525351eb984873cc473c083f04c97f8713a98966db40bbe9cd88df6e3b2ab8dd"
+  },
+  "candidate.log.gz": {
+    "bytes": 2143,
+    "sha256": "8a7a1b30e1475d83170e1e05edd834500e6b0328b7817b06c8927b9becc83fd8"
+  },
+  "initial-candidate.log.gz": {
+    "bytes": 1967,
+    "sha256": "0224d4e336adf17b9a1e48c7525a5c46a208a14211104f9fbd37075d8bbdc692"
+  },
+  "raw-log-manifest.json": {
+    "bytes": 1008,
+    "sha256": "cd59ac4149a30c83e3eeec1b061141a95f7e92395a7128949577d0d0b5ee03f8"
+  },
+  "raw-results.json": {
+    "bytes": 2373,
+    "sha256": "c4a7294143dd534173949b303d475f7ed3e3a77651bb311a7341fd519df58b62"
+  },
+  "result.json": {
+    "bytes": 1998,
+    "sha256": "d3649f3b2c43f41dc0615784815ebce46731699962bfb240b8bf16bf9b1b8c80"
+  },
+  "source-pins.json": {
+    "bytes": 1350,
+    "sha256": "87c47fb1bfe7d6f8cee63e9b6269faf6c255438572815119a1f127046b362fc2"
+  }
+}

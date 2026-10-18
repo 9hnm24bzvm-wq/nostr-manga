@@ -19,6 +19,37 @@ from mixed_metrics import Histogram, ScopedSampler
 CURRENT = contextvars.ContextVar('operation', default='setup')
 BASE_RATES = dict(save=120.0, api=405.0, image=3087.0, api_image=1.0,
                   social=2.0, upload=.1, sync=.05, library_read=10.0)
+MONTH_SECONDS = 30 * 24 * 60 * 60
+
+
+def demand_accounting(args, rates):
+    """Separate requested logical demand from this original-node experiment.
+
+    A local progress save has no implied network write. No consent fraction or
+    publication cadence was supplied, so optional sync demand remains unknown.
+    Legacy synthetic defaults stay stable for historical run comparisons.
+    """
+    return dict(
+        accounting_month_days=30,
+        requested_monthly=dict(image_deliveries=8_000_000_000, page_load_events=350_000_000,
+                               logical_progress_saves=300_000_000, library_bytes_decimal=100_000_000_000_000),
+        requested_average_per_s=dict(image_deliveries=8_000_000_000 / MONTH_SECONDS,
+                                     page_load_events=350_000_000 / MONTH_SECONDS,
+                                     logical_progress_saves=300_000_000 / MONTH_SECONDS),
+        default_progress_destination='device IndexedDB; zero progress HTTP writes',
+        default_progress_network_writes_per_s=0,
+        optional_public_sync_publications_per_s=None,
+        synthetic_original_node=dict(durable_library_http_saves_per_s=rates['save'],
+                                     catalogue_http_reads_per_s=rates['api'],
+                                     page_equivalents_per_s=args.pageviews * args.scale,
+                                     assumed_http_reads_per_page=args.api_per_page,
+                                     public_profile_sync_operations_per_s=rates['sync']),
+        qualifies_integrated_app_demand=False,
+        unresolved_inputs=['Meaning of page loads versus reader page positions',
+                           'Measured integrated-route API/image fan-out',
+                           'Image byte distribution and measured hot/cold/cache behavior',
+                           'Optional public-library sync consent, publication cadence and snapshot bytes',
+                           'Peak and latency objectives; representative 100TB working set'])
 
 
 def arguments(argv=None):
@@ -96,6 +127,8 @@ def plan(args):
                 readers=dict(total=args.users, histories_30000=args.users - args.extreme_users, histories_500000=args.extreme_users),
                 pageview_equivalent_rate=args.pageviews * args.scale, api_calls_per_page=args.api_per_page,
                 seed=args.seed, timed_image_hashing=args.image_hash,
+                workload_scope='synthetic original-node public seams; not integrated browser/local-progress demand',
+                demand_accounting=demand_accounting(args, rates),
                 qualification_contract=args.qualification_contract,
                 dispatch_start_policy=dispatch_start_policy(args),
                 completion_bounds=dict(request_timeout_s=args.request_timeout, closing_timeout_s=args.closing_timeout,
@@ -107,7 +140,8 @@ def plan(args):
                 pending_limit=args.pending_limit, image_workers=args.image_workers, aggregate_image_inflight=args.image_inflight, reader_model='seeded round-robin synthetic contention, not human think time',
                 semantics='save acceptance requires signed durable HTTP acknowledgement for the exact event; image acceptance requires complete body length/mime; sync acceptance requires terminal completed job and exact imported event',
                 caveats=['All but the final manifest image are static assets; the final image is the decoded-image-preserving JPEG metadata-variant source for fresh signed publication/import. Corpus size and skew are recorded, never treated as cold-storage proof.',
-                         'Pageviews mean scheduled catalogue/discovery API calls, not browser/HTML navigation. Separate library_read operations fetch a signed head, root and up to three chunks; they are selective restores, not full-tree downloads.',
+                         'Page equivalents use an explicit synthetic API fan-out assumption, not measured browser/HTML navigation. Separate library_read operations fetch a signed head, root and up to three chunks; they are selective restores, not full-tree downloads.',
+                         'The save lane is an explicitly synthetic durable original-node library write stream; default integrated reader progress remains device-local and implies zero network writes. The sync lane imports public profiles, not optional reader-library snapshots.',
                          'Finite windows begin each enabled lane at time0; rare lanes round up and actual offered counts/rates are reported.',
                          'No real WAN, TLS, cold100TB corpus, independent generator host or capacity claim follows from harness preparation.'])
     if args.diagnostic_waits:
@@ -270,6 +304,9 @@ async def run_workload(args, settings, operation, stream, observe=None, start_at
             lane[kind].counts['errors'] += 1
             reason = (('workload_abort_cancel' if aborted else 'closing_deadline_cancel') if isinstance(error, asyncio.CancelledError) else ('closing_deadline_cancel' if time.monotonic() >= stop + args.closing_timeout else 'request_timeout') if isinstance(error, asyncio.TimeoutError) else 'response_verification_http_' + str(error.status) if getattr(error, 'response_verification', False) else 'server_' + str(error.status) if getattr(error, 'status', None) else 'operation_error')
             lane[kind].counts['error_reason_' + reason] += 1
+            if getattr(error, 'status', None) is not None:
+                lane[kind].statuses[str(error.status)] += 1
+                record['status'] = error.status
             if kind == 'save': poisoned.add(user)
             record.update(outcome='unacknowledged_or_error', reason=reason, error=type(error).__name__, detail=str(error)[:240])
             if len(lane[kind].error_samples) < 16: lane[kind].error_samples.append(record.copy())

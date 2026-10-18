@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "0474ebc895fdead291dd66c69e0dc87866fba068",
+  "reviewer": "fixture owner",
+  "scope": "Read-only field-by-field static fixture and assertion review; no execution",
+  "result": "clear",
+  "checks": [
+    "Original v1 SHA remains 50303533772c9454f367109b3267a6671828524f2387d8853198c3bff26e034f",
+    "V2 adds only reviewed scope/accounting and caveat delta",
+    "All other prior fields identical",
+    "V2 equals independently retained development plan output",
+    "mixed.py equals reviewed b731 source",
+    "Monthly averages equal counts divided by 30*24*60*60",
+    "Optional sync unknown and integrated-demand qualification false",
+    "Observer changes basename only; full-plan and diagnostic-only assertions retained"
+  ]
+}

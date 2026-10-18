@@ -104,6 +104,8 @@ const followSource = signedSource.match(/const follow = ([^\n]+);/)[1];
 
 async function wiringProbe(phase, failAt) {
   const report = {}, steps = [], failure = Error('synthetic private checkpoint failure');
+  let continuityCalls = 0;
+  const continuityBoundary = {context: {}, origin: 'http://127.0.0.1:1', manga: 'SeedManga1', device() {}, outboxCount() {}, until() {}};
   const recorder = createJourneyCheck(report);
   const inventory = phase === 'local-library' ? expected[phase] : signedSuffixes.map(suffix => phase + '-' + suffix);
   const check = async (id, operation) => {
@@ -122,6 +124,20 @@ async function wiringProbe(phase, failAt) {
     try { await operation(); row.status = 'passed'; } catch (cause) { row.status = 'failed'; row.error = cause; }
   };
   const globals = { h: { check }, check, phase, step, page: checkOnlyPage, selectTitleLibraryStatus,
+    ...continuityBoundary,
+    async open(value) { assert.equal(value, '/title/' + continuityBoundary.manga); },
+    // The inner continuity helper has its own executable negative drivers. This
+    // fixed-check seam still executes and verifies the actual outer enrollment.
+    async exerciseDeviceContinuity(value) {
+      continuityCalls++;
+      assert.equal(value.page, checkOnlyPage);
+      assert.equal(value.context, continuityBoundary.context);
+      assert.equal(value.origin, continuityBoundary.origin);
+      assert.equal(value.manga, continuityBoundary.manga);
+      assert.equal(value.readDevice, continuityBoundary.device);
+      assert.equal(value.outboxCount, continuityBoundary.outboxCount);
+      assert.equal(value.until, continuityBoundary.until);
+    },
     insist(condition, message) { assert(condition, message); }, panel: () => ({}), identityPanel: () => ({}),
     inspect: (suffix, operation) => check(phase + '-' + suffix, operation),
     // Assignment-only private fixtures are explicit stand-ins, never evidence.
@@ -130,6 +146,7 @@ async function wiringProbe(phase, failAt) {
   };
   globals.follow = vm.runInNewContext('(' + followSource + ')', globals);
   await vm.runInNewContext('(async () => {' + (phase === 'local-library' ? localSource.slice(localStart, localEnd) : signedSource.slice(signedStart, signedEnd)) + '})()', globals);
+  assert.equal(continuityCalls, phase === 'local-library' ? 1 : 0);
   const failed = steps.filter(row => row.status === 'failed');
   assert.equal(failed.length, failAt ? 1 : 0, JSON.stringify(steps.map(row => [row.label, row.status])));
   if (failAt) assert.equal(failed[0].error, failure);
@@ -152,6 +169,36 @@ async function wiringProbe(phase, failAt) {
 test('actual local outer code retains monotone checkpoints and original failure after every split', async () => {
   await wiringProbe('local-library');
   for (const id of expected['local-library']) await wiringProbe('local-library', id);
+});
+
+test('actual library predecessor and continuity enrollment await the exact title arrival', async () => {
+  const events = [], manga = 'SeedManga1';
+  let route = '/title/' + manga, continuityCalls = 0;
+  const predecessorStart = localSource.indexOf("await inspect('device-library-navigation'");
+  const predecessorEnd = localSource.indexOf('\n\t\t\treturn { anonymous_saved:', predecessorStart);
+  const continuityStart = localSource.indexOf("\t\tawait step('live device status crosses two tabs");
+  const continuityEnd = localSource.indexOf("\n\t\tawait step('real reader progress", continuityStart);
+  assert(predecessorStart > 0 && predecessorEnd > predecessorStart && continuityEnd > continuityStart);
+  const page = {locator(selector) {
+    assert.equal(selector, `a[href^="/title/${manga}"]`);
+    return {first() { return this; }, async waitFor(options) {
+      assert.equal(options.state, 'visible'); assert.equal(route, '/library'); events.push('library-entry-visible');
+    }};
+  }};
+  const context = {}, device = () => {}, outboxCount = () => {}, until = () => {};
+  await vm.runInNewContext('(async () => {' + localSource.slice(predecessorStart, predecessorEnd) + '\n' + localSource.slice(continuityStart, continuityEnd) + '})()', {
+    page, context, manga, origin: 'http://127.0.0.1:8123', device, outboxCount, until,
+    async inspect(id, operation) { assert.equal(id, 'device-library-navigation'); return operation(); },
+    async step(label, operation) { assert.match(label, /^live device status/); return operation(); },
+    async open(path) { events.push('navigate:' + path); await Promise.resolve(); route = path; events.push('arrived:' + path); },
+    async exerciseDeviceContinuity(value) {
+      continuityCalls++; assert.equal(route, '/title/' + manga, 'Continuity must not inherit the preceding /library route');
+      assert.equal(value.page, page); assert.equal(value.context, context); assert.equal(value.readDevice, device);
+      events.push('continuity-entered');
+    }
+  });
+  assert.equal(continuityCalls, 1);
+  assert.deepEqual(events, ['navigate:/library', 'arrived:/library', 'library-entry-visible', 'navigate:/title/' + manga, 'arrived:/title/' + manga, 'continuity-entered']);
 });
 
 test('actual signed common outer code records every fixed phase split and original failure', async () => {

@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -170,6 +171,37 @@ class PrivateCheckpointTests(unittest.TestCase):
         self.config.write_text(json.dumps(config))
         with self.assertRaises(m.Refused): self.backup()
 
+    def test_platform_config_inside_storage_refused_before_tools(self):
+        inside=self.roots['native']/'platform-private.json'
+        inside.write_bytes(self.config.read_bytes()); self.args.config=str(inside)
+        with self.assertRaisesRegex(m.Refused,'Configuration files'):
+            self.backup()
+        self.assertEqual(self.calls,[])
+        self.assertFalse(Path(self.args.bundle).exists())
+
+    def test_original_config_inside_storage_refused_before_tools(self):
+        config=json.loads(self.config.read_text())
+        node=config['protocol_publication']['native_node']
+        node['storage']={'path':str(self.roots['originals'])}
+        inside=self.roots['projection']/'original-private.json'
+        inside.write_text(json.dumps(node)); self.args.node_config=str(inside)
+        with self.assertRaisesRegex(m.Refused,'Configuration files'):
+            self.backup()
+        self.assertEqual(self.calls,[])
+        self.assertFalse(Path(self.args.bundle).exists())
+
+    def test_same_size_original_change_during_dump_never_completes_checkpoint(self):
+        changed=self.roots['originals']/'nested/original.bin'
+        before=changed.read_bytes()
+        def mutate_after_dump(name,argv,env,budget,capture=False):
+            answer=self.fake_tool(name,argv,env,budget,capture)
+            if name=='pg_dump': changed.write_bytes(bytes([before[0]^1])+before[1:])
+            return answer
+        with patch.object(m,'stopped'),self.assertRaises(m.Refused):
+            m.backup(self.args,mutate_after_dump)
+        self.assertEqual(changed.stat().st_size,len(before))
+        self.assertFalse((Path(self.args.bundle)/'COMPLETE.json').exists())
+
     def test_production_tls_downgrade_refused_without_tool(self):
         os.environ[self.args.database_env]='host=db.example.invalid dbname=synthetic_target sslmode=require'
         with self.assertRaises(m.Refused): self.backup()
@@ -199,6 +231,56 @@ class PrivateCheckpointTests(unittest.TestCase):
         with patch.object(m,'stopped'),self.assertRaises(m.Refused): m.backup(self.args,failed)
         self.assertTrue(Path(self.args.bundle).is_dir())
         self.assertFalse((Path(self.args.bundle)/'COMPLETE.json').exists())
+
+
+class RecoveryRuntimeBoundaries(unittest.TestCase):
+    """Wrapper stand-ins and source contracts, never application-start acceptance."""
+    def setUp(self):
+        self.base=Path(tempfile.mkdtemp(prefix='synthetic-recovery-boundary-'))
+        self.wrapper=SCRIPT.parent/'run-platform.sh'
+        self.capture=self.base/'arguments.txt'
+        self.binary=self.base/'synthetic-boundary.sh'
+        self.binary.write_text('#!/bin/sh\nprintf \'%s\\n\' "$#" "$1" > "$SYNTHETIC_CAPTURE"\n')
+        self.binary.chmod(0o700)
+        self.env={'PATH':'/usr/bin:/bin','LANG':'C','PLATFORM_CONFIG':str(self.base/'synthetic-config.json'),
+                  'PLATFORM_BIN':str(self.binary),'SYNTHETIC_CAPTURE':str(self.capture)}
+
+    def invoke(self,*args,env=None):
+        return subprocess.run(['bash',str(self.wrapper),*args],env=env or self.env,
+                              capture_output=True,text=True,timeout=5)
+
+    def test_wrapper_forwards_only_exact_reviewed_action_to_standin(self):
+        for action in ['check-config','verify','migrate','serve']:
+            value=self.invoke(action,env={**self.env,'PLATFORM_DATABASE_URL':'dbname=synthetic_boundary'})
+            self.assertEqual(value.returncode,0,value.stderr)
+            self.assertEqual(self.capture.read_text().splitlines(),['1',action])
+        value=self.invoke(env={**self.env,'MANGA_DATABASE_URL':'dbname=synthetic_boundary'})
+        self.assertEqual(value.returncode,0,value.stderr)
+        self.assertEqual(self.capture.read_text().splitlines(),['1','serve'])
+
+    def test_wrapper_refuses_unconfigured_database_unknown_or_extra_action(self):
+        self.assertNotEqual(self.invoke('verify').returncode,0)
+        self.assertEqual(self.invoke('unexpected').returncode,64)
+        self.assertEqual(self.invoke('verify','unexpected').returncode,64)
+        env={k:v for k,v in self.env.items() if k!='PLATFORM_CONFIG'}
+        self.assertNotEqual(self.invoke('check-config',env=env).returncode,0)
+        self.assertFalse(self.capture.exists())
+
+    def test_graceful_signal_drain_and_service_deadline_source_contract(self):
+        root=SCRIPT.parents[1]
+        source=(root/'backend/src/main.rs').read_text()
+        self.assertLess(source.index('if action == "verify"'),source.index('configure_publication'))
+        self.assertIn('with_graceful_shutdown',source)
+        self.assertIn('SignalKind::terminate()',source)
+        self.assertIn('tokio::signal::ctrl_c()',source)
+        self.assertLess(source.index('state.runtime.begin_draining();'),source.index('let _ = shutdown_sender.send(())'))
+        self.assertIn('state.requests.available_permits() != state.config.maximum_requests',source)
+        unit=(root/'deployment/weebdex.service.example').read_text()
+        self.assertIn('KillSignal=SIGTERM',unit)
+        seconds=int(re.search(r'^TimeoutStopSec=(\d+)$',unit,re.M)[1])
+        for name in ['platform.publisher.example.json','platform.read-only.example.json']:
+            config=json.loads((root/'deployment'/name).read_text())
+            self.assertGreater(seconds,config['shutdown_grace_seconds'])
 
 
 if __name__ == '__main__': unittest.main()

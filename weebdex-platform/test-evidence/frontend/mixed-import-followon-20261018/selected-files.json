@@ -1,0 +1,29 @@
+[
+  {
+    "module": "test_disk_guard",
+    "path": "manga-protocol-lab/bench/library-node/test_disk_guard.py",
+    "sha256": "8b9adfa723bd06c28c169a565c2d1bcdcc93bcbf1469a6d2855a1223f896bc3b",
+    "methods": [
+      "test_preflight_low_disk_never_launches_or_signals",
+      "test_actual_fixture_exit_requires_explicit_guard_clear",
+      "test_actual_http_worker_abort_is_owned_and_reaped",
+      "test_missing_or_unrelated_target_never_signals_guess",
+      "test_pretraffic_worker_unavailable_reports_no_automatic_stop",
+      "test_stale_worker_start_refused_without_replaying_or_signalling",
+      "test_stale_fixture_identity_rejected_without_signal",
+      "test_guard_lifespan_is_bounded",
+      "test_final_actual_filesystem_sample_can_fail_after_healthy_first_sample"
+    ],
+    "expectedMethods": 9
+  },
+  {
+    "module": "test_head_verification",
+    "path": "manga-protocol-lab/bench/library-node/test_head_verification.py",
+    "sha256": "604cb11c6935ca3840442adf09bf7a2f0fc5b9c9b4326c441141e71f924bc98b",
+    "methods": [
+      "test_429_is_retried_after_delay_and_never_accepted",
+      "test_permanent_throttle_obeys_overall_deadline"
+    ],
+    "expectedMethods": 2
+  }
+]

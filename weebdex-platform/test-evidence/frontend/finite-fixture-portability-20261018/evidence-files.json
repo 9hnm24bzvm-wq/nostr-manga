@@ -1,0 +1,16 @@
+{
+  "README.md": "f6ad390cd192e5ed27eab061ca52d7efbe5d42ef8db2e691eb35703efea525ba",
+  "finite-owned.json": "f35491005adc0cebcd16676fd420cb75d5b718fbff2eb45bf9760eb02d5c473f",
+  "finite.log.gz": "431f411ef03cf0d26248ec453af5962a9298a9daee20d4a890caf73e1ae4b15b",
+  "install-resource-receipt.json": "29109a2b8b061e688ae75e3a206e98252402d54c3b508605c748dbb762c0171e",
+  "install.log.gz": "75f7898fb4ed60a08666790b7bbb46ed208a507f85f6352768bd9f92f07a2f52",
+  "installed-inventory.json": "7e7c5c88bc831111cc7583dbc2d6706ca133a9cff2d427dfb8b54f1085c2dcca",
+  "jpeg-before.log.gz": "2b10351634ad7009bf4fe02860c6a7c8cae49539bfad049c5bbde3547beab4e1",
+  "plan-before.log.gz": "5b4dd4350ab194a2685e5f3981d09a391dc48a3834df91f7844a83e0662da056",
+  "published-wheel-metadata.json": "1cbacff4a904eb23c4f3236444bd2953b69e923a38b63cbfeecc099a1baeee74",
+  "raw-log-manifest.json": "be27046dda34b9c455679430211cffcf45717e219220c92c2cbaaffbce4b3a48",
+  "requirements-hashed.txt": "f3bc45040f787329949b5ac56ed2969f9adb4a7a2d6a0059aa53cda41eb04a56",
+  "result.json": "34a77c358d3a359c8d81e7cf8f53e95260d86007ad4e352fdc0aec919cf45e37",
+  "runtime.json": "6aaa03e1b18cfa48d9b4c7c910aa09411226e905fdad863d8d7134318a1127b2",
+  "source-pins.json": "22dc03e4e4067076f376e515af2d642430c8bbfd44c910880481b623482460b9"
+}

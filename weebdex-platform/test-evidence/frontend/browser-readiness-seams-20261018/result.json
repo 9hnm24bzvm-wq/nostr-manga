@@ -1,0 +1,50 @@
+{
+  "status": "finite-harness-qualified-browser-unrun",
+  "sourceCommit": "ed21d6421dff98553470cdd58d401d74877821c3",
+  "baseCommit": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "affectedNodeFiles": 7,
+  "nodeRunnerCases": 75,
+  "passed": 75,
+  "failures": 0,
+  "skipped": 0,
+  "newFiniteCases": 54,
+  "newFiniteFiles": 4,
+  "existingLegacyFileInternalHelperCases": 17,
+  "legacyInternalCasesAlreadyRepresentedByOneNodeRunnerCase": true,
+  "guardedSeconds": 1.068,
+  "deadlineSeconds": 20,
+  "cleanupVerified": true,
+  "actualBrowser": false,
+  "realClipboardAccess": false,
+  "realIndexedDB": false,
+  "applicationOrDatabase": false,
+  "dependencyInstall": false,
+  "productFrontendChanged": false,
+  "canonicalFrontendGitTree": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+  "schedulerOrPhaseInventoryChanged": false,
+  "historicalCurrentWorkflowCandidateMerged": false,
+  "baselineProgress": {
+    "runnerCases": 6,
+    "passed": 1,
+    "failed": 5,
+    "actualWeakAcceptedRows": [
+      "stale-page-one",
+      "later-page-three",
+      "completed-true",
+      "different-title"
+    ],
+    "positiveNewObservedReportFieldsMissing": true,
+    "wrongChapterWasAlreadyRejected": true
+  },
+  "oldWiringFixture": {
+    "runnerCases": 14,
+    "passed": 13,
+    "failed": 1,
+    "cause": "New continuity outer enrollment absent from original finite fixture; corrected boundary preserves all fixed-check assertions and checks arguments."
+  },
+  "unexecutedAffectedSuite": {
+    "path": "weebdex-platform/tests/ci/test_browser_ordinary_library_source_seams.mjs",
+    "blocker": "Restored jsdom27.0.1 dependency root is absent; initial exploratory attempt failed at module startup before any suite methods. No installation or substitute performed."
+  },
+  "scope": "Prepared real-control additions for existing native account/local-library phases, with finite stand-ins only. Current one-public-upload hosted proposal does not exercise them. No genuine browser/full-suite/offline-app/capacity claim."
+}

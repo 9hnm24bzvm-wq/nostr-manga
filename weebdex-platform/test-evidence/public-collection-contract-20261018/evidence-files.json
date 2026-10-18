@@ -1,0 +1,46 @@
+{
+  "README.md": {
+    "bytes": 2276,
+    "sha256": "9469b8b18b3c4d23da1105f46a0aa0c5212a57c977be85ffb3d4d3e01d57ddfa"
+  },
+  "baseline-probe.mjs": {
+    "bytes": 1078,
+    "sha256": "2ed37f039a9df3389081f0339c8f874cc73c5289dad69cd70e4c05a0fd75df7d"
+  },
+  "baseline.log.gz": {
+    "bytes": 1144,
+    "sha256": "3a5483366a29e0f7ef13e1878eccbd59477f1c4a818bd11c8a2653f101e1f92e"
+  },
+  "frozen-regressions.log.gz": {
+    "bytes": 6526,
+    "sha256": "e615b6c34231391b4948387070f13eca525e328b8c4a0d80c3e85924ece8928d"
+  },
+  "new-regressions.log.gz": {
+    "bytes": 584,
+    "sha256": "19237413cf5ca423beae04529f9c1ad2db781b15314be5995ed320b813b799f0"
+  },
+  "raw-log-manifest.json": {
+    "bytes": 699,
+    "sha256": "3a38432e1d17d687d83ddd11cffce76c4dd557f0586dbadf1190f9eb93f7c115"
+  },
+  "resource-receipt.json": {
+    "bytes": 19410,
+    "sha256": "aa0ed6743eaed170bcdd037ba2389d7145023b4a50ab0e6bf507362370d4c316"
+  },
+  "shared-regressions.log.gz": {
+    "bytes": 6326,
+    "sha256": "719c72293ec65684a41ed9c4481efeaaf7ecd64492ce30270ed9cf50072f91f8"
+  },
+  "source-pins-after.json": {
+    "bytes": 130979,
+    "sha256": "078451649a321396854f2386ff47579429a9951c503a43bfefc4e3e963646523"
+  },
+  "source-pins-before.json": {
+    "bytes": 130979,
+    "sha256": "078451649a321396854f2386ff47579429a9951c503a43bfefc4e3e963646523"
+  },
+  "status.json": {
+    "bytes": 895,
+    "sha256": "dea3ae27d888a2ef598cede67a82e70f3e27d30723c229528c17e6a59555e529"
+  }
+}

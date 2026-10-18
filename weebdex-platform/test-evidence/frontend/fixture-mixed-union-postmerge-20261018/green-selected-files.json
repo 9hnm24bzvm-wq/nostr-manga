@@ -1,0 +1,88 @@
+[
+  {
+    "module": "test_mixed",
+    "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+    "sha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db",
+    "expectedMethods": 14,
+    "methods": [
+      "test_default_plan_routes_images_separately",
+      "test_requested_logical_demand_is_separate_from_synthetic_http_rates",
+      "test_cli_plan_and_execution_gate",
+      "test_disabled_features_are_explicit",
+      "test_cli_rejects_nonfinite_safety_bounds",
+      "test_unique_jpeg_metadata_preserves_original_stream",
+      "test_unique_synthetic_jpeg_metadata_preserves_original_stream",
+      "test_percentile_output_contract",
+      "test_actual_http_acknowledgements_match_offered_work",
+      "test_non_power_of_two_reader_mix_uses_all_identities",
+      "test_delayed_ack_reports_open_loop_underoffer",
+      "test_cutoff_never_counts_queued_unacknowledged_write",
+      "test_verification_failure_preserves_200_without_acceptance",
+      "test_http_rejection_poisoning_prevents_false_acceptance"
+    ]
+  },
+  {
+    "module": "test_diagnostic_observer",
+    "path": "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py",
+    "sha256": "92c7d81ed72ccfa22b9610b1d91712579a4d272c2360d594a3c0973a4586cc04",
+    "expectedMethods": 9,
+    "methods": [
+      "test_signed_status_filters_fields_and_keeps_diagnostic_context",
+      "test_real_signed_rejection_timeout_malformed_and_bad_proof_are_gaps",
+      "test_single_flight_skips_catchup_and_stops_with_workload",
+      "test_child_cancellation_is_reaped_and_does_not_block_event_loop",
+      "test_real_four_worker_workload_owns_optional_observers",
+      "test_default_off_has_no_request_file_or_child",
+      "test_real_cli_counter_reset_decrease_gap_and_restart_never_fabricate_zero",
+      "test_real_cli_malformed_counter_and_timestamp_are_sample_gaps",
+      "test_cli_matches_reviewed_current_plan_and_observer_only_adds_diagnostics"
+    ]
+  },
+  {
+    "module": "test_image_shards",
+    "path": "manga-protocol-lab/bench/library-node/test_image_shards.py",
+    "sha256": "a11ae68b70a89199461d944d6a314203cd2b81963b383a4d407948e25fd72290",
+    "expectedMethods": 18,
+    "methods": [
+      "test_one_and_four_workers_preserve_nondivisible_peak_schedule",
+      "test_global_credit_bounds_parent_and_children_without_closed_loop",
+      "test_wrong_length_mime_and_truncated_200_never_acknowledge",
+      "test_common_window_keeps_late_ack_separate",
+      "test_common_closing_deadline_cancels_without_acceptance",
+      "test_worker_crash_makes_missing_schedule_explicit",
+      "test_orchestration_aborts_promptly_when_worker_dies_holding_credit",
+      "test_orchestration_strict_window_and_offer_conservation",
+      "test_delayed_loop_preserves_eventual_ack_beyond_absolute_closing",
+      "test_worker_startup_pause_cannot_start_other_streams_early",
+      "test_explicit_bounded_completion_accepts_normal_tail_not_strict_window",
+      "test_delayed_loop_preserves_known_ack_beyond_request_deadline",
+      "test_bounded_completion_rejects_real_http_rejections_and_pending_drops",
+      "test_orchestration_rejects_nonfinite_worker_protocol_timestamps",
+      "test_real_clock_dispatch_tail_parent_and_four_workers",
+      "test_dispatch_tail_rejects_stale_closing_and_pending_without_http",
+      "test_queued_reader_tail_still_owns_single_causal_write",
+      "test_actual_orchestrator_paused_workers_cross_dispatch_boundary"
+    ]
+  },
+  {
+    "module": "test_process_metrics",
+    "path": "manga-protocol-lab/bench/library-node/test_process_metrics.py",
+    "sha256": "95fb4ebfb708648c0e2b22503fff2360249cb6e13a140e55b68ba88fa4a5ce67",
+    "expectedMethods": 3,
+    "methods": [
+      "test_stat_fields_and_comm_parentheses",
+      "test_sample_delta_and_pid_reuse",
+      "test_bad_stat_and_unrelated_process_are_ignored"
+    ]
+  },
+  {
+    "module": "test_diagnostic_process",
+    "path": "manga-protocol-lab/bench/library-node/test_diagnostic_process.py",
+    "sha256": "24874746b08ed1132142ce3144c5a680d9272f20128b5412cf62db9fdff75bcd",
+    "expectedMethods": 2,
+    "methods": [
+      "test_malformed_zero_exit_is_explicit_failure",
+      "test_cancellation_waits_for_cli_to_reap_its_child"
+    ]
+  }
+]

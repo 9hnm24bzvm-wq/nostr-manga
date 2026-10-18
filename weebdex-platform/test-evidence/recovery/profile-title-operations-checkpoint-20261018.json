@@ -253,5 +253,7 @@
     "observedBlocker": "socket() failed: Operation not permitted during normal startup",
     "evidence": "../frontend/normal-browser-capability-probe-20261018/result.json",
     "applicationOrE2EAcceptance": false
-  }
+  },
+  "recordScope": "Historical qualified application/operations snapshot preserved at public be283b664f699e8c7175f6eac0200cd22e212c8a. Current successor exceptions and affected qualifications are in the linked continuation.",
+  "supersededByScopedContinuation": "post-nginx-scoped-successor-20261018.json"
 }

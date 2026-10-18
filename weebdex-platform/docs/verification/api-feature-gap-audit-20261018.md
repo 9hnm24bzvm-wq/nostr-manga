@@ -1,0 +1,33 @@
+# API and mounted-feature gap audit, 2026-10-18
+
+Source: restored `be283b664f699e8c7175f6eac0200cd22e212c8a`. This is a source and finite-transport audit, not fresh browser, database, deployment, load or complete MangaDex parity acceptance. The pinned113-operation artifact is historical/hash-associated; its old pending wording must not be silently rewritten to claim a new routing execution. Later exact-source receipts are linked by `docs/mangadex-read-compatibility-audit.md`.
+
+## Verified nonpolicy repair
+
+`platform-integrations/public-api/client.ts`, `PublicApiClient.collection`, formerly accepted repeated resource UUIDs (including case-equivalent duplicates), more rows than the declared limit, and rows beyond the declared remaining total. These malformed successful envelopes can duplicate/corrupt visible search, feed, cover and library paging. The shared typed boundary now refuses them with502, preserving the server payload/order and non-success responses, without trimming, retry or native fallback.
+
+`tests/ci/test_public_collection_contract.mjs` executes the actual production client with only transport replaced. Against exact published baseline bytes, three new regression cases fail as expected; the repaired source passes all eight. Seven existing catalogue/relation/probe/library/popularity/directory files pass186cases. Valid limit0count responses, beyond-end empty pages and deliberately byte-short relation prefixes remain accepted. This guard does not invent a full-page/snapshot guarantee or replace request-specific target/account/continuation checks.
+
+## Remaining routes and user journeys
+
+- **Deliberate local-first separation:** plain `POST /api/v1/list`, `PUT/DELETE /api/v1/list/{id}`, and `POST/DELETE /api/v1/manga/{id}/list/{listId}` remain501. `/library` has real device list create/rename/remove/membership through `platform-integrations/local-library/LibraryManagementTools.svelte` and `library.ts`. Reviewed optional signed publication uses `publication.ts`; these are not a server-owned private-list REST implementation. Adding full private cross-device server library is a product-scope choice, not an automatic parity repair.
+- **Actual missing account feature requiring policy:** `DELETE /api/v1/user/{id}` and `POST /api/v1/user/delete/{code}` remain501; no native account-closure UI/command exists. Retention/anonymization, shared ownership, moderation records and session/binding revocation require a decision before destructive implementation. Original kind5 authored-content withdrawal does not close a native account. No implementation is attempted here.
+- **Different external authority/data:** `POST /api/v1/legacy/mapping` cannot fabricate MangaDex numeric IDs. App-owned typed persisted `/api/v1/legacy/resolve` and explicit import mappings already exist. `POST /api/v1/captcha/solve` does not simulate MangaDex CAPTCHA authority. Neither has a missing retained public UI consumer established by this audit.
+- **Intentional authentication/protocol differences:** the twelve frozen501exceptions cover MangaDex password/OAuth client/secret operations, plain read-marker mutation and its forum-thread command. Native sessions, explicit bound-account Nostr proofs, local progress and original signed graph/forum capabilities remain separate; manufacturing OAuth credentials or server-signed user events is not a completion task.
+- **Operator boundary:** `POST /api/v1/settings/template` is operator-only. Existing user preferences save uses signed `/api/v1/settings` plus captured account/version; it is not a missing user template editor.
+
+## Existing flows that must not be restated as gaps
+
+- Native biography/contact editing: `backend/src/public_api/native_profile.rs`, `domains/library/profile_mutations.rs`, `AccountProfileEditor.svelte`; private preview and self-only `PUT /api/v1/user/{UUID}` with captured native account/target/shared user revision. Distinct from original Nostr profile publication.
+- Native six-value reading status: `native_reading_status.rs`, `account-reading-status-client.ts`, existing `AccountFollow.svelte` secondary dialog. Genuine independent0102revision; edits existing membership only. Original signed-library GET semantics and primary device Save remain unchanged.
+- Actual persisted ratings, followed lists/native follow collections, bound-account settings, editorial/title/chapter/cover/relation commands have dedicated adapters and separate permission/version/source contracts. See their backend public_api modules and matching platform-integrations clients rather than generic native cookie methods fenced in public mode.
+- Genuine popularity and observation recording: `/api/v1/{manga|chapter}/top` and `/api/v1/analytics/{manga|chapter}/{UUID}/views`, `popularity.ts` and retained popular/home components. These local extensions do not inflate the pinned113-operation count or claim MangaDex ranking data.
+
+## Qualification and next priorities
+
+1. Merge/review the bounded collection repair, then qualify the actual composed frontend source when its agreed tool/runtime is available. Current8+186finite passes are not a full strict/build/browser pass.
+2. Close real user/browser and application-consistent restore acceptance through the separately owned bounded fixtures. Existing model/DOM/IDB, backend HTTP and isolated nginx/parser proofs remain scoped; a workspace reset does not create fresh runtime acceptance.
+3. Historical audit state at `be283`: two missing benchmark fixture errors,12PG18diagnostic skips and two30k/500k-history modules were explicit. The later [scoped continuation](../../test-evidence/recovery/post-nginx-scoped-successor-20261018.json) resolves both fixture errors through an authentic public-domain JPEG and an explicitly new current-plan fixture, retains the corrected46-case plus11-case affected-import runs, and executes the unchanged offline30k/500k compaction script. The original historical210splan is still unrecovered; only `test_mixed_reads.py` remains wholly unexecuted in the43-file inventory, and12PG18diagnostic methods remain skipped. These finite correctness/harness results are not production-load acceptance.
+4. Decide native account-closure policy and optional private cross-device library separately. Preserve local-first defaults; do not implement destructive closure or fake upstream authority to make a route count look complete.
+
+Source evidence: `backend/src/public_api/routes.rs`, `docs/mangadex-operation-compatibility-snapshot.json`, `docs/mangadex-read-compatibility-audit.md`, `platform-integrations/public-api/{client,site-client,title-client,user-profile}.ts`, the local-library modules above, and `test-evidence/recovery/profile-title-operations-checkpoint-20261018.json`.

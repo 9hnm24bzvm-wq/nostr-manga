@@ -20,7 +20,7 @@ def controlled_pg_snapshot():
 
 class DiagnosticObserver(unittest.IsolatedAsyncioTestCase):
  async def asyncSetUp(self):
-  self.temp=tempfile.TemporaryDirectory(prefix='observer-test-',dir=ROOT/'results/rebuild-mixed-prep');self.out=Path(self.temp.name)
+  self.temp=tempfile.TemporaryDirectory(prefix='observer-test-');self.out=Path(self.temp.name)
   self.mode='good';self.delay=0;self.active=0;self.peak=0;self.requests=[];self.http=collections.Counter()
   async def status(request):
    raw=await request.read();event=json.loads(base64.b64decode(request.headers['Authorization'].removeprefix('Nostr ')))
@@ -152,10 +152,11 @@ print(json.dumps(v))'''
    rows=[json.loads(x) for x in (directory/'additional-diagnostics.jsonl').read_text().splitlines()]
    row=next(r for r in rows if r['kind']=='pg_activity');self.assertEqual(row['outcome'],'error');self.assertNotIn('counter_deltas',row)
    self.assertTrue(summary['tasks_joined']);self.assertEqual(summary['task_errors'],[])
- async def test_cli_default_plan_unchanged_and_enabled_observer_not_target_offers(self):
+ async def test_cli_matches_reviewed_current_plan_and_observer_only_adds_diagnostics(self):
   base=[sys.executable,str(ROOT/'bench/library-node/mixed.py'),'--plan','--duration','210','--qualification-contract','full-dispatch-bounded-completion']
-  old=json.loads((ROOT/'results/rebuild-mixed-prep/proposed-210s-plan.json').read_text())
-  default=json.loads(subprocess.run(base,capture_output=True,text=True,check=True).stdout);self.assertEqual(default,old)
+  # This versioned current contract is not the unrecovered historical run plan.
+  expected=json.loads((Path(__file__).with_name('fixtures')/'mixed-210s-bounded-plan-v2.json').read_text())
+  default=json.loads(subprocess.run(base,capture_output=True,text=True,check=True).stdout);self.assertEqual(default,expected)
   enabled=json.loads(subprocess.run(base+['--diagnostic-waits'],capture_output=True,text=True,check=True).stdout)
   settings=enabled.pop('additional_diagnostics');self.assertEqual(enabled,default);self.assertEqual(settings['interval_s'],5);self.assertFalse(settings['affects_target_offer_counts']);self.assertFalse(settings['missing_samples_are_zero'])
 

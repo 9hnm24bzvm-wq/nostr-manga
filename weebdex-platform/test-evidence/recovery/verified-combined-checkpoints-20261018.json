@@ -73,6 +73,17 @@
       "verifiedUTC": "2026-10-18T13:27:11Z",
       "verifiedSourceEntries": 5356,
       "qualification": "Exact recovery continuation: unchanged qualified frontend/backend application bytes; migration7/7,CLI38/38,purebench9/9,controlledbench47/49 with two missing-fixture errors,one ordinary Chromium startup permission failure,and synthetic PostgreSQL17 backup/restore mechanics. Reviewed nginx bootstrap source has six finite cases; installed nginx/parser/runtime was still pending in this historical snapshot."
+    },
+    {
+      "localSourceCommit": "6671c45404d4897417c4d3feb0780dff3755cf3e",
+      "localSourceTree": "59cbf855807428690c975bbbba31705aca03464d",
+      "remoteCommit": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+      "remoteTree": "59cbf855807428690c975bbbba31705aca03464d",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/be283b664f699e8c7175f6eac0200cd22e212c8a",
+      "verifiedUTC": "2026-10-18T15:12:00Z",
+      "verifiedSourceEntries": 5375,
+      "qualification": "Exact isolated official nginx 1.30.6 lifecycle and mapped parser continuation, with explicit redirect access-log privacy fence and scoped finite checks. Application frontend/backend qualification remains source-associated to retained historical snapshots; browser, full application restore, load and whole-repository acceptance remain unqualified."
     }
   ],
   "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"

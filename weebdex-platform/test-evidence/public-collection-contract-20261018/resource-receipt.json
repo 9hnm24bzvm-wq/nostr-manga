@@ -1,0 +1,950 @@
+{
+  "source": "cd4522538e5a0cae30839074b61faffb537e8406",
+  "baseline": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test-concurrency=1",
+    "--test",
+    "weebdex-platform/tests/ci/test_public_collection_contract.mjs",
+    "weebdex-platform/tests/ci/public-api-recovery.test.mjs",
+    "weebdex-platform/tests/ci/test_public_relation_pages.mjs",
+    "weebdex-platform/tests/ci/test_public_relation_probe.mjs",
+    "weebdex-platform/tests/ci/test_public_library_catalogue.mjs",
+    "weebdex-platform/tests/ci/test_public_popularity.mjs",
+    "weebdex-platform/tests/ci/test_public_popularity_probe.mjs",
+    "weebdex-platform/tests/ci/test_user_directory.mjs"
+  ],
+  "exitCode": 0,
+  "guardStopReason": null,
+  "seconds": 2.568,
+  "maximumObservedOwnedRssBytes": 192913408,
+  "minimumObservedFreeBytes": 30824493056,
+  "rssCapBytes": 536870912,
+  "liveFreeFloorBytes": 4429185024,
+  "deadlineSeconds": 60,
+  "sampleIntervalSeconds": 0.05,
+  "sourcePinsUnchanged": true,
+  "pinnedInputs": 930,
+  "nodeVersion": "v24.19.0",
+  "tests": 194,
+  "passed": 194,
+  "failed": 0,
+  "samples": [
+    {
+      "seconds": 0.001,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 0,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 0
+        }
+      ]
+    },
+    {
+      "seconds": 0.051,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 34865152,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 34865152
+        }
+      ]
+    },
+    {
+      "seconds": 0.102,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 58720256,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 41025536
+        },
+        {
+          "pid": 14,
+          "startTicks": 2877666,
+          "rssBytes": 17694720
+        }
+      ]
+    },
+    {
+      "seconds": 0.153,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 82280448,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 41025536
+        },
+        {
+          "pid": 14,
+          "startTicks": 2877666,
+          "rssBytes": 41254912
+        }
+      ]
+    },
+    {
+      "seconds": 0.209,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 112963584,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 41025536
+        },
+        {
+          "pid": 14,
+          "startTicks": 2877666,
+          "rssBytes": 71938048
+        }
+      ]
+    },
+    {
+      "seconds": 0.259,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 123187200,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 41025536
+        },
+        {
+          "pid": 14,
+          "startTicks": 2877666,
+          "rssBytes": 82161664
+        }
+      ]
+    },
+    {
+      "seconds": 0.311,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 132624384,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 41025536
+        },
+        {
+          "pid": 14,
+          "startTicks": 2877666,
+          "rssBytes": 91598848
+        }
+      ]
+    },
+    {
+      "seconds": 0.362,
+      "freeBytes": 30824517632,
+      "ownedRssBytes": 139964416,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 41025536
+        },
+        {
+          "pid": 14,
+          "startTicks": 2877666,
+          "rssBytes": 98938880
+        }
+      ]
+    },
+    {
+      "seconds": 0.412,
+      "freeBytes": 30824509440,
+      "ownedRssBytes": 63832064,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 43909120
+        },
+        {
+          "pid": 22,
+          "startTicks": 2877697,
+          "rssBytes": 19922944
+        }
+      ]
+    },
+    {
+      "seconds": 0.463,
+      "freeBytes": 30824509440,
+      "ownedRssBytes": 98361344,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 43909120
+        },
+        {
+          "pid": 22,
+          "startTicks": 2877697,
+          "rssBytes": 54452224
+        }
+      ]
+    },
+    {
+      "seconds": 0.514,
+      "freeBytes": 30824509440,
+      "ownedRssBytes": 116056064,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 43909120
+        },
+        {
+          "pid": 22,
+          "startTicks": 2877697,
+          "rssBytes": 72146944
+        }
+      ]
+    },
+    {
+      "seconds": 0.565,
+      "freeBytes": 30824505344,
+      "ownedRssBytes": 70385664,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 44433408
+        },
+        {
+          "pid": 30,
+          "startTicks": 2877711,
+          "rssBytes": 25952256
+        }
+      ]
+    },
+    {
+      "seconds": 0.616,
+      "freeBytes": 30824505344,
+      "ownedRssBytes": 100696064,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 44433408
+        },
+        {
+          "pid": 30,
+          "startTicks": 2877711,
+          "rssBytes": 56262656
+        }
+      ]
+    },
+    {
+      "seconds": 0.672,
+      "freeBytes": 30824505344,
+      "ownedRssBytes": 120619008,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 44433408
+        },
+        {
+          "pid": 30,
+          "startTicks": 2877711,
+          "rssBytes": 76185600
+        }
+      ]
+    },
+    {
+      "seconds": 0.723,
+      "freeBytes": 30824505344,
+      "ownedRssBytes": 67952640,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45015040
+        },
+        {
+          "pid": 38,
+          "startTicks": 2877728,
+          "rssBytes": 22937600
+        }
+      ]
+    },
+    {
+      "seconds": 0.773,
+      "freeBytes": 30824505344,
+      "ownedRssBytes": 95801344,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45015040
+        },
+        {
+          "pid": 38,
+          "startTicks": 2877728,
+          "rssBytes": 50786304
+        }
+      ]
+    },
+    {
+      "seconds": 0.824,
+      "freeBytes": 30824505344,
+      "ownedRssBytes": 118607872,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45015040
+        },
+        {
+          "pid": 38,
+          "startTicks": 2877728,
+          "rssBytes": 73592832
+        }
+      ]
+    },
+    {
+      "seconds": 0.874,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 123318272,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45015040
+        },
+        {
+          "pid": 38,
+          "startTicks": 2877728,
+          "rssBytes": 78303232
+        }
+      ]
+    },
+    {
+      "seconds": 0.925,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 80142336,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 34996224
+        }
+      ]
+    },
+    {
+      "seconds": 0.976,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 113020928,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 41398272
+        },
+        {
+          "pid": 54,
+          "startTicks": 2877753,
+          "rssBytes": 26476544
+        }
+      ]
+    },
+    {
+      "seconds": 1.026,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 143265792,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 41398272
+        },
+        {
+          "pid": 54,
+          "startTicks": 2877753,
+          "rssBytes": 56721408
+        }
+      ]
+    },
+    {
+      "seconds": 1.077,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 161878016,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 42315776
+        },
+        {
+          "pid": 54,
+          "startTicks": 2877753,
+          "rssBytes": 74416128
+        }
+      ]
+    },
+    {
+      "seconds": 1.128,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 180166656,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 43233280
+        },
+        {
+          "pid": 54,
+          "startTicks": 2877753,
+          "rssBytes": 91787264
+        }
+      ]
+    },
+    {
+      "seconds": 1.179,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 124661760,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 43995136
+        },
+        {
+          "pid": 62,
+          "startTicks": 2877772,
+          "rssBytes": 35520512
+        }
+      ]
+    },
+    {
+      "seconds": 1.232,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 153706496,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 43995136
+        },
+        {
+          "pid": 62,
+          "startTicks": 2877772,
+          "rssBytes": 64565248
+        }
+      ]
+    },
+    {
+      "seconds": 1.283,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 177750016,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 44257280
+        },
+        {
+          "pid": 62,
+          "startTicks": 2877772,
+          "rssBytes": 88346624
+        }
+      ]
+    },
+    {
+      "seconds": 1.334,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 110374912,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 46,
+          "startTicks": 2877747,
+          "rssBytes": 45174784
+        },
+        {
+          "pid": 70,
+          "startTicks": 2877789,
+          "rssBytes": 20054016
+        }
+      ]
+    },
+    {
+      "seconds": 1.384,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 46587904,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 1441792
+        }
+      ]
+    },
+    {
+      "seconds": 1.435,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 84336640,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 39190528
+        }
+      ]
+    },
+    {
+      "seconds": 1.485,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 116621312,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 71475200
+        }
+      ]
+    },
+    {
+      "seconds": 1.536,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 129466368,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 84320256
+        }
+      ]
+    },
+    {
+      "seconds": 1.587,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 142573568,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 97427456
+        }
+      ]
+    },
+    {
+      "seconds": 1.637,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 154501120,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 109355008
+        }
+      ]
+    },
+    {
+      "seconds": 1.688,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 170893312,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 125747200
+        }
+      ]
+    },
+    {
+      "seconds": 1.739,
+      "freeBytes": 30824501248,
+      "ownedRssBytes": 192913408,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45146112
+        },
+        {
+          "pid": 78,
+          "startTicks": 2877796,
+          "rssBytes": 147767296
+        }
+      ]
+    },
+    {
+      "seconds": 1.79,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 60219392,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 14680064
+        }
+      ]
+    },
+    {
+      "seconds": 1.84,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 85909504,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 40370176
+        }
+      ]
+    },
+    {
+      "seconds": 1.891,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 120664064,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 41570304
+        },
+        {
+          "pid": 94,
+          "startTicks": 2877842,
+          "rssBytes": 33554432
+        }
+      ]
+    },
+    {
+      "seconds": 1.941,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 150134784,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 41570304
+        },
+        {
+          "pid": 94,
+          "startTicks": 2877842,
+          "rssBytes": 63025152
+        }
+      ]
+    },
+    {
+      "seconds": 1.992,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 161800192,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 42487808
+        },
+        {
+          "pid": 94,
+          "startTicks": 2877842,
+          "rssBytes": 73773056
+        }
+      ]
+    },
+    {
+      "seconds": 2.043,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 91041792,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 43274240
+        },
+        {
+          "pid": 102,
+          "startTicks": 2877862,
+          "rssBytes": 2228224
+        }
+      ]
+    },
+    {
+      "seconds": 2.093,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 128921600,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 43274240
+        },
+        {
+          "pid": 102,
+          "startTicks": 2877862,
+          "rssBytes": 40108032
+        }
+      ]
+    },
+    {
+      "seconds": 2.144,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 159232000,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 43274240
+        },
+        {
+          "pid": 102,
+          "startTicks": 2877862,
+          "rssBytes": 70418432
+        }
+      ]
+    },
+    {
+      "seconds": 2.195,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 156889088,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 43929600
+        },
+        {
+          "pid": 102,
+          "startTicks": 2877862,
+          "rssBytes": 67420160
+        }
+      ]
+    },
+    {
+      "seconds": 2.245,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 117387264,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 86,
+          "startTicks": 2877835,
+          "rssBytes": 44060672
+        },
+        {
+          "pid": 110,
+          "startTicks": 2877879,
+          "rssBytes": 27787264
+        }
+      ]
+    },
+    {
+      "seconds": 2.296,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 63234048,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 118,
+          "startTicks": 2877886,
+          "rssBytes": 17694720
+        }
+      ]
+    },
+    {
+      "seconds": 2.347,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 86040576,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 118,
+          "startTicks": 2877886,
+          "rssBytes": 40501248
+        }
+      ]
+    },
+    {
+      "seconds": 2.397,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 108670976,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 118,
+          "startTicks": 2877886,
+          "rssBytes": 63131648
+        }
+      ]
+    },
+    {
+      "seconds": 2.448,
+      "freeBytes": 30824497152,
+      "ownedRssBytes": 123236352,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45539328
+        },
+        {
+          "pid": 118,
+          "startTicks": 2877886,
+          "rssBytes": 77697024
+        }
+      ]
+    },
+    {
+      "seconds": 2.499,
+      "freeBytes": 30824493056,
+      "ownedRssBytes": 45596672,
+      "owned": [
+        {
+          "pid": 7,
+          "startTicks": 2877658,
+          "rssBytes": 45596672
+        }
+      ]
+    }
+  ]
+}
