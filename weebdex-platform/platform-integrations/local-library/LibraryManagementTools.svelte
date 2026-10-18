@@ -4,7 +4,7 @@
   import { createRouteActionOwner } from '$platform/route-action-owner';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
-  import { localLibraryState, libraryIdentity, openLibrary, useMode, verifyCatalogueScope, message, currentDeviceSnapshot, downloadBlob, createList, saveListMember, saveSavedSeries, removeLocalRecord, captureLibraryContext, assertLibraryContext } from './library';
+  import { localLibraryState, libraryIdentity, openLibrary, useMode, verifyCatalogueScope, message, currentDeviceSnapshot, downloadBlob, createList, previewListName, renameList, type DeviceListNameReview, saveListMember, saveSavedSeries, removeLocalRecord, captureLibraryContext, assertLibraryContext } from './library';
   import { sameScope, statuses } from './device-store';
   import { recordKey } from './protocol/codec.js';
   import type { Counts, LibraryRecord } from './protocol/types.d.ts';
@@ -18,6 +18,9 @@
   let policy = $state<Capabilities>(), relayOrigin = $state(''), serviceKey = $state('');
   let publicConsent = $state(false), publication = $state<PublicationReview>(), recovery = $state<RecoveryReview>();
   let listName = $state(''), memberList = $state(''), memberSeries = $state(''), memberPosition = $state(0), scopeText = $state('');
+  let listNameReview = $state.raw<DeviceListNameReview>();
+  let renamedListName = $state('');
+  let listNameContext: ReturnType<typeof captureLibraryContext> | undefined;
   let adoption = $state<ServiceAdoptionReview>(), adoptionPage = $state(0);
   let canonicalFamily = $state('series'), canonicalRows = $state<LibraryRecord[]>([]), canonicalCounts = $state<Partial<Counts>>({}), canonicalAfter = $state<string | null>(null), canonicalImport = $state<CanonicalImportReview>();
   let canonicalSelection = $state<CanonicalSelection>();
@@ -96,6 +99,18 @@
       assertActive(); await goto('/library?list=' + encodeURIComponent(listId));
     });
   }
+  function cancelListRename() { listNameReview = undefined; listNameContext = undefined; renamedListName = ''; }
+  async function beginListRename(id: string) {
+    const route = listRouteOwner.capture(), context = captureLibraryContext();
+    const current = () => { if (!route.alive() || view !== 'lists') throw Error('The list view changed. Reopen Rename.'); assertActive(); assertLibraryContext(context); };
+    await run('rename-start', async () => { current(); const review = await previewListName(id, current); current(); listNameContext = context; renamedListName = review.name; listNameReview = review; });
+  }
+  async function saveListName() {
+    const review = listNameReview, context = listNameContext, name = renamedListName;
+    if (!review || !context) return;
+    const current = () => { assertActive(); assertLibraryContext(context); if (view !== 'lists' || listNameReview !== review) throw Error('The selected list edit changed. Reopen Rename.'); };
+    await run('rename-list', async () => { current(); const result = await renameList(review, name, current); current(); cancelListRename(); notice = result.changed ? 'List renamed on this device.' : 'List name unchanged.'; });
+  }
   $effect(() => {
     if (publication && (publication.deviceRevision !== $localLibraryState.revision || publication.owner !== $signerIdentity.owner || publication.generation !== $signerIdentity.generation)) { publication = undefined; publicConsent = false; }
   });
@@ -118,7 +133,14 @@
         <Button type="submit" disabled={!!pending}>Save member</Button>
       </form>
       {#each lists as list}
-        <div class="my-1"><a class="underline" href={'/library?list=' + list.id} onclick={event => openDeviceList(event, list.id!)}>{list.name}</a> <Button variant="ghost" disabled={!!pending} onclick={() => { if (confirm('Remove this local list and its memberships?')) void run('remove-list', async () => { await removeLocalRecord('lists', list.key); }); }}>Remove locally</Button></div>
+        <div class="my-1 flex flex-wrap items-center gap-2"><a class="underline" href={'/library?list=' + list.id} onclick={event => openDeviceList(event, list.id!)}>{list.name}</a><Button variant="ghost" disabled={!!pending} onclick={() => beginListRename(list.id!)}>Rename</Button><Button variant="ghost" disabled={!!pending} onclick={() => { if (confirm('Remove this local list and its memberships?')) void run('remove-list', async () => { await removeLocalRecord('lists', list.key); }); }}>Remove locally</Button></div>
+        {#if listNameReview?.id === list.id}
+          <form class="my-2 flex flex-wrap items-end gap-2" onsubmit={event => { event.preventDefault(); void saveListName(); }}>
+            <label for={'rename-list-' + list.id}>List name<Input id={'rename-list-' + list.id} class="mt-1" bind:value={renamedListName} maxlength={128} required disabled={!!pending} /></label>
+            <Button type="submit" disabled={!!pending || !renamedListName.trim() || $localLibraryState.revision !== listNameReview.revision}>Save name</Button><Button variant="ghost" disabled={!!pending} onclick={cancelListRename}>Cancel</Button>
+            {#if $localLibraryState.revision !== listNameReview.revision}<p role="status" class="w-full text-sm">The device library changed. Cancel and reopen Rename before saving.</p>{/if}
+          </form>
+        {/if}
         {#each $localLibraryState.records.filter(row => row.family === 'members' && row.list === list.id) as member}
           <div class="ml-3 text-sm">#{member.position}: {savedTitle(member.series)} <Button variant="ghost" disabled={!!pending} onclick={() => run('remove-member', async () => { await removeLocalRecord('members', member.key); })}>Remove member</Button></div>
         {/each}

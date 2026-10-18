@@ -117,6 +117,10 @@ async fn remove(State(state):State<AppState>, Path(chapter):Path<String>, Origin
     // missing original key cannot prevent a legitimate local claimant's queue.
     let existing=tx.query_opt("SELECT id,target_version FROM platform.reports WHERE submitter_id=$1 AND entity_type='chapter' AND entity_id=$2 AND reason_id='chapter_removal_request' AND status='waiting' AND deleted_at IS NULL FOR UPDATE",&[&actor.user_id(),&chapter]).await?;
     let version:i32=tx.query_opt("SELECT version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&chapter]).await?.ok_or_else(PublicApiError::not_found)?.get(0);
+    // The unlocked preflight can precede a concurrent ownership claim. Recheck
+    // current owner/delegation and source/parent visibility after acquiring the
+    // chapter lock, before attaching a durable request to this version.
+    let source=CatalogRepository::check_chapter_delete_authority(&tx,&chapter,&actor).await?;
     let report=if let Some(row)=existing {
         if row.get::<_,Option<i32>>(1)!=Some(version) { return Err(PublicApiError::conflict("Chapter changed since this pending removal request; ask a moderator to review it")); }
         row.get::<_,String>(0)

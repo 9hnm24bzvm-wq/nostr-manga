@@ -1,0 +1,8 @@
+{
+  "platform-integrations/local-library/device-list-name.ts": "9957bf7898a000738ad6d9c97a05b00b3e30914d9f54b01001b1fd6fbfb80fb1",
+  "platform-integrations/local-library/library.ts": "2c093421cbeeb368b681f09cd1ae7cb3319316979e4c3304ab3de8fabbd23c76",
+  "platform-integrations/local-library/LibraryManagementTools.svelte": "bafac3a723775ac38d641c935f8d0cfc20caa824cbfa65f1f7c21a398cdefde7",
+  "tests/ci/device-list-rename-fixture.mjs": "c1cb442c9c694f448b48d14d776e51942bbedc1b076d03af26162b1603693f5b",
+  "tests/ci/test_device_list_rename_idb.mjs": "68475247d724f9cb53713c762c2e02e952e3f9023ee631bbfebe5776d7859ccd",
+  "tests/ci/test_device_list_rename_dom.mjs": "8f81453cacf807a5db6925e53b054541f2fc942b72b481f2c93712df510255ab"
+}

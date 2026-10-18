@@ -1,16 +1,26 @@
 # MangaDex read compatibility and public UUID audit
 
-Audit date: 2026-10-17. Baseline: `8d963f3f`. This is a scoped audit of the
-18 public catalogue/infrastructure read operations below, not a claim that all
-113 upstream operations or every retained native API have been converted.
-The subsequent [request-authorized account-read batch](mangadex-private-account-reads.md)
-adds nine private directory/self/follow operations, with separate signed-HTTP
-acceptance and explicit native-account provenance.
-The accompanying [113-operation routing snapshot](mangadex-operation-compatibility-snapshot.json)
-records every upstream operation exactly once: audited core reads, existing
-separate modules, explicit protocol/auth exceptions, and remaining known-501
-gaps. It deliberately describes this worker's branch before concurrent feature
-commits are integrated; source classification is not runtime acceptance.
+Audit date: 2026-10-17. Final combined backend source:
+`ec1b2160b8a37bd53acac7edcc5bbb0bac24ff0f`.
+The [113-operation snapshot](mangadex-operation-compatibility-snapshot.json)
+now covers every pinned upstream operation exactly once. It identifies 90
+source-routed scoped operations, 12 explicit protocol/authentication 501
+exceptions, one operator-only template administration boundary, and 10
+unsupported plain-REST operations. **This is not full MangaDex compatibility.**
+The real unauthenticated routing probe passed all 113 paths/methods independently
+of the functional seam tests. An authentication or validation refusal establishes
+routing only; it cannot establish a working authorized command.
+
+Current-source lib and seven functional HTTP/PostgreSQL rerun outcomes, exact
+source/binary hashes, routing observations and fixture shutdown receipts belong
+in `test-evidence/final-combined-api-20261017/report.json`. That report is the
+acceptance record; older branch-only evidence is not combined acceptance.
+At this checkpoint138 lib tests pass (2 ignored), all seven functional HTTP
+seams pass, and all113 actual routing checks pass. The two reserve-held seams
+were completed after narrowly approved synthetic fixture cleanup.
+The read checklist below remains a bounded catalogue audit. Native account,
+original signed graph, source publication and device-local features have separate
+contracts and dedicated tests.
 
 ## Reference and compatibility boundary
 
@@ -44,7 +54,7 @@ recommendation; per-operation custom method handling is preserved.
 | `GET /manga/tag` | Complete bounded local taxonomy; no query parameters, UUID tag entities. Explicit 503 above 4096 rows. |
 | `GET /manga/{id}/feed` | Visible parent plus chapter filters; default limit 100, maximum 500, nonzero limit. Includes, language/rating/exclusions/dates and publish/external/empty/unavailable controls. |
 | `GET /manga/{id}/aggregate` | Language/group/unavailable filters; canonical chapter IDs, alternate IDs and real availability. Fixed missing `isUnavailable`; available duplicates take primary position. Explicit 503 above 10,000 rows. |
-| `GET /manga/{id}/relation` | Newly implemented real persisted outgoing relations, canonical directional edge IDs and target IDs; optional target manga attributes. Missing/invisible root 404, invisible targets excluded. No pagination controls upstream. |
+| `GET /manga/{id}/relation` | Newly implemented real persisted outgoing relations, canonical directional edge IDs and target IDs; optional target manga attributes. Missing/invisible root 404, invisible targets excluded. No pagination controls upstream; optional bounded application paging is documented separately. |
 | `GET /manga/{id}/recommendation` | Newly implemented persisted recommendations, score asc/desc, default ratings and explicit adult rating selection, optional manga attributes. At most 20 rows; truthful stored scores, no fabricated algorithm or empty fallback. |
 | `GET /chapter` | Collection with documented ID/title/group/uploader/parent/volume/chapter/language/rating/date/exclusion/toggle filters. Both the documented `includes` and common `includes[]` spelling work. |
 | `GET /chapter/{id}` | Canonical UUID entity, current parent/source visibility; chapter metadata and optional parent/group/uploader attributes. |
@@ -75,9 +85,14 @@ recommendation; per-operation custom method handling is preserved.
 - UTC dates are calendar-validated `YYYY-MM-DDTHH:MM:SS`. Malformed UUIDs,
   duplicate scalar controls, unknown parameters/enums/order fields and unsafe
   query sizes are rejected. Repeated bounded arrays are supported.
-- Relation reads are unpaginated and bounded at 4096 edges. Overflow fails 503
-  instead of silently omitting relations. Nested alias budgets can fail 503
-  sooner for unusually dense related projections.
+- Unpaged relation success shape remains available with explicit 4096-edge and
+  response-size budgets; refusals never silently omit edges. The separately
+  documented [bounded relation extension](mangadex-bounded-relation-pages.md)
+  opts in through limit/offset/ownerVersion/snapshot, returns at most 32 whole
+  full-metadata resources per page and uses visible-count snapshot continuity.
+  Complete envelopes stay within 1 MiB with truthful nextOffset; no public
+  persisted hidden-edge count is exposed. Manga aliases allow exactly 4097
+  identities (owner plus 4096 targets); other kinds remain bounded at 4096.
 - Recommendations report limit 20, offset 0 and the eligible persisted total.
   The upstream operation does not accept limit/offset; these are rejected.
 
@@ -117,12 +132,54 @@ revision or nonexistent independent edge version is invented. Recommendations
 are actual persisted local edge scores. A missing record is a real empty result,
 not a claim of a remote recommendation engine.
 
-Separate tests/modules cover drafts/editorial writes, upload sessions, signed
-library/read markers/lists/statuses, public profiles, reports and statistics.
-Those modules and remaining known-501 account/settings/client/follow operations
-must not be marked complete merely because these 18 read operations are mapped.
-The frontend's time-window popularity feature still needs a deliberately scoped
-implementation; it must not masquerade as latest-upload or total-follow ranking.
+## Remaining plain-REST coverage and supported journeys
+
+The ten unsupported plain-REST operations are explicit gaps in this API surface:
+
+- `POST /list`, `PUT /list/{id}`, `DELETE /list/{id}` and both membership commands
+  at `/manga/{id}/list/{listId}`: the application has persisted device-local list
+  creation/removal/membership and explicit client-signed original graph
+  publication (`library.ts`, `LibraryManagementTools.svelte`, `publication.ts`).
+  A natural list rename/edit-name form was not found, so complete list-update
+  UI coverage is not claimed. These
+  journeys do not authorize a server to invent a Nostr event or convert a public
+  protocol list into a native private list. These REST commands remain 501.
+- `POST /manga/{id}/status`: device-local status changes and explicit original
+  signed status publication are distinct domains. `local-library/MangaFollow.ts`
+  updates real device-local status through `library.ts` saveSeries. Bound native
+  AccountFollow changes membership only; a full native-account status editor
+  remains a genuine feature gap. The plain MangaDex
+  command remains 501; native account follow membership is not reading status.
+- `DELETE /user/{id}` and `POST /user/delete/{code}`: no public MangaDex-style
+  account deletion/verification-code command exists. Directory/profile/follow
+  reads do not grant deletion, moderation or signer ownership. A supported
+  self-account deletion journey is not claimed by this audit. The retained
+  `User.ts` has no User.Delete command; original kind5 metadata/social
+  withdrawal requests are not native account deletion.
+- `POST /legacy/mapping`: MangaDex numeric database identity has no manufactured
+  equivalent. The separate typed persisted `/legacy/resolve` extension resolves
+  real app mappings only; it does not implement numeric MangaDex mapping.
+- `POST /captcha/solve`: no remote MangaDex CAPTCHA authority is simulated.
+
+Template installation (`POST /settings/template`) is explicitly operator-only,
+not a missing user preference save. The app-owned schema and actual settings
+GET/POST are implemented, versioned and guarded by native-account binding.
+
+The 12 Nostr/auth exceptions remain documented separately: password login,
+logout, refresh, seven OAuth client/secret operations, plain read-marker mutation
+and MangaDex forum-thread creation. Native forum companion IDs and original
+signed read-marker commits are their own types and capabilities.
+
+Implemented operations are still scoped adapters. Title creation/edit accepts
+only the documented localized/UUID fields. Title request-review returns 202,
+including after a later grant gain; an explicit fresh moderator approve-hide may
+return 204. Neither mode requests original-source deletion.
+Chapter/cover/editorial/relation writes use real native permission/version cores;
+ratings persist actual user observations and aggregates; follows persist native
+membership revisions; settings preserve private unknown/unavailable values.
+Original source metadata is retained alongside trusted exact sort keys. None of
+these facts implies upstream OAuth, complete schema-field parity, MangaDex data,
+recommendation algorithms, or an unbounded projection budget.
 
 ## Verification
 

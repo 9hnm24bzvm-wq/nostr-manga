@@ -7,6 +7,8 @@ import { DeviceStore, PUBLIC_DEVICE_FORMAT_FENCE, type DeviceRecord, type Device
 import { request } from './protocol/indexeddb.js';
 import {uuidPattern} from '../public-api/validation';
 import { LocalLibrary } from './protocol/store.js';
+import type { DeviceListNameReview } from './device-list-name';
+export type { DeviceListNameReview } from './device-list-name';
 import { captureNativeAuthority, sameNativeReadAuthority } from '$platform/mutation-authority';
 export type Mode = 'device' | 'account';
 export type ScopeStatus = 'pending' | 'verified' | 'offline' | 'origin_only' | 'migration_required';
@@ -192,6 +194,8 @@ export async function createList(name: string) {
     await device.writeBatch([{ family: 'lists', key: id, id, name, updated_at: Math.floor(Date.now() / 1000) }]); return id;
   });
 }
+export async function previewListName(id: string, assertCurrent = () => {}) { assertCurrent(); await openLibrary(); assertCurrent(); const { previewDeviceListName } = await import('./device-list-name'); assertCurrent(); return previewDeviceListName(device, id, assertCurrent); }
+export async function renameList(review: DeviceListNameReview, name: string, assertCurrent = () => {}) { return localAction(async () => { const { renameDeviceList } = await import('./device-list-name'); assertCurrent(); return renameDeviceList(device, review, name, assertCurrent); }); }
 export async function saveListMember(list: string, series: string, position: number) {
   const row = normalizeDevice({ family: 'members', key: list + ':' + series, list, series, position, updated_at: Math.floor(Date.now() / 1000) });
   return localAction(() => device.mutate(async rows => {

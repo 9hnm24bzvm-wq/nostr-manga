@@ -187,6 +187,7 @@ async fn signed_chapter_metadata_claim_and_review_first_removal_preserve_authori
         let hidden:bool=db.query_one("SELECT deleted_at IS NOT NULL FROM platform.catalog_chapters WHERE id=$1",&[&native]).await.unwrap().get(0);assert_eq!(hidden,!stale);
     }
     captured_account_intent_refuses_eligible_rebind(&f).await;
+    chapter_removal_rechecks_authority_after_concurrent_claim(&f).await;
     captured_chapter_removal_effect_is_preserved(&f).await;
     signed_original_deletion_request_remains_review_only(&f).await;
     f.repository.set_account_admission(id(1),false).await.unwrap();
@@ -198,6 +199,53 @@ async fn signed_chapter_metadata_claim_and_review_first_removal_preserve_authori
 
 #[path="../../../manga-protocol-lab/server/tests/support/mod.rs"]
 mod original_fixture;
+
+// Both competing operations are actual signed HTTP requests. An owned,
+// target-specific advisory trigger only pauses the claim while it holds the
+// chapter row; it never fabricates the ownership/version transition itself.
+async fn chapter_removal_rechecks_authority_after_concurrent_claim(f:&Fixture) {
+    let db=f.state.db.client().await.unwrap();
+    db.batch_execute(r#"INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES('RaceGrp001','PublicUploadUser2','Fixture','Concurrent claim group');
+      INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader) VALUES('RaceGrp001','PublicUploadUser2','New owner',TRUE);
+      INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,language,title) VALUES('RaceOwn001','UploadMng1','PublicUploadUser1','Old owner','en','Concurrent removal authority');
+      INSERT INTO platform.catalog_chapter_groups(chapter_id,group_id) VALUES('RaceOwn001','RaceGrp001');
+      CREATE FUNCTION platform.chapter_removal_claim_barrier() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.id='RaceOwn001' AND NEW.uploader_id IS DISTINCT FROM OLD.uploader_id THEN PERFORM pg_advisory_xact_lock(766191018); END IF; RETURN NEW; END $$;
+      CREATE TRIGGER chapter_removal_claim_barrier BEFORE UPDATE OF uploader_id ON platform.catalog_chapters FOR EACH ROW EXECUTE FUNCTION platform.chapter_removal_claim_barrier();"#).await.unwrap();
+    let chapter=alias(f,ResourceKind::Chapter,"RaceOwn001").await;
+    alias(f,ResourceKind::Group,"RaceGrp001").await;
+    let old=alias(f,ResourceKind::User,"PublicUploadUser1").await;
+    let new=alias(f,ResourceKind::User,"PublicUploadUser2").await;
+    let before=db.query_one("SELECT (SELECT count(*) FROM platform.reports),(SELECT count(*) FROM platform.report_audit),(SELECT count(*) FROM platform.protocol_deletion_intents)",&[]).await.unwrap();
+    let mut holder=f.state.db.client().await.unwrap();let barrier=holder.transaction().await.unwrap();
+    let holder_pid:i32=barrier.query_one("SELECT pg_backend_pid(),pg_advisory_xact_lock(766191018)",&[]).await.unwrap().get(0);
+    let claim_url=format!("{}/api/v1/chapter/{chapter}/claim?expectedAccountId={new}",f.origin);
+    let token=proof(2,11,&claim_url,"POST",b"");let http=f.http.clone();
+    let claim=tokio::spawn(async move{http.post(claim_url).header("authorization",token).send().await.unwrap()});
+    let claim_pid=tokio::time::timeout(Duration::from_secs(3),async{loop{
+        if let Some(row)=db.query_opt("SELECT pid FROM pg_stat_activity WHERE datname=current_database() AND wait_event='advisory' AND query LIKE 'UPDATE platform.catalog_chapters SET uploader_id=%' AND $1=ANY(pg_blocking_pids(pid))",&[&holder_pid]).await.unwrap(){break row.get::<_,i32>(0);}
+        tokio::time::sleep(Duration::from_millis(5)).await;
+    }}).await.expect("Actual signed claim did not reach its owned advisory barrier");
+    let removal_url=format!("{}/api/v1/chapter/{chapter}?expectedAccountId={old}&removalMode=request-review",f.origin);
+    let token=proof(1,11,&removal_url,"DELETE",b"");let http=f.http.clone();
+    let removal=tokio::spawn(async move{http.delete(removal_url).header("authorization",token).send().await.unwrap()});
+    tokio::time::timeout(Duration::from_secs(3),async{loop{
+        let waiting:bool=db.query_one("SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE 'SELECT version FROM platform.catalog_chapters WHERE id=%' AND $1=ANY(pg_blocking_pids(pid)))",&[&claim_pid]).await.unwrap().get(0);
+        if waiting{break;}tokio::time::sleep(Duration::from_millis(5)).await;
+    }}).await.expect("Actual signed removal did not pass preflight and wait for the claimed chapter row");
+    barrier.commit().await.unwrap();
+    let response=claim.await.unwrap();assert_eq!(response.status().as_u16(),200);let claimed:Value=response.json().await.unwrap();assert_eq!(claimed["data"]["attributes"]["version"],2);
+    let response=removal.await.unwrap();assert_eq!(response.status().as_u16(),403,"The former owner must not queue removal for the newly claimed version");assert_eq!(response.headers()["cache-control"],"no-store");let refused:Value=response.json().await.unwrap();assert_eq!(refused["result"],"error");
+    db.batch_execute("DROP TRIGGER chapter_removal_claim_barrier ON platform.catalog_chapters;DROP FUNCTION platform.chapter_removal_claim_barrier();").await.unwrap();
+    let after=db.query_one("SELECT (SELECT count(*) FROM platform.reports),(SELECT count(*) FROM platform.report_audit),(SELECT count(*) FROM platform.protocol_deletion_intents)",&[]).await.unwrap();
+    for column in 0..3 {assert_eq!(after.get::<_,i64>(column),before.get::<_,i64>(column),"Refused stale-owner request must have no report/audit/source side effect");}
+    let row=db.query_one("SELECT uploader_id,version,deleted_at IS NULL,(SELECT count(*) FROM platform.catalog_audit WHERE entity_type='chapter' AND entity_id='RaceOwn001' AND operation='claim') FROM platform.catalog_chapters WHERE id='RaceOwn001'",&[]).await.unwrap();
+    assert_eq!(row.get::<_,String>(0),"PublicUploadUser2");assert_eq!(row.get::<_,i32>(1),2);assert!(row.get::<_,bool>(2));assert_eq!(row.get::<_,i64>(3),1);
+    let path=format!("/api/v1/chapter/{chapter}?expectedAccountId={new}&removalMode=request-review");
+    let pending=f.call(Some(2),"DELETE",&path,None,202).await;assert_eq!(pending["instanceRemoval"],"pending-moderation");
+    let report=f.native(ResourceKind::Report,pending["requestId"].as_str().unwrap()).await;
+    let row=db.query_one("SELECT submitter_id,target_version FROM platform.reports WHERE id=$1",&[&report]).await.unwrap();assert_eq!(row.get::<_,String>(0),"PublicUploadUser2");assert_eq!(row.get::<_,Option<i32>>(1),Some(2));
+    println!("CHAPTER_FINAL_LOCK_AUTHORITY_VERIFIED={}",json!({"concurrentSignedClaim":200,"formerOwnerReview":403,"newOwnerReview":202,"capturedTargetVersion":2,"refusalReportAuditSourceUnchanged":true}));
+}
 
 // These are actual proof/body captures followed by an eligible native-account
 // rebind, not simulated authorization failures. Missing extensions remain

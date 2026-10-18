@@ -1,0 +1,14 @@
+{
+  "status": "focused-passed-combined-build-pending",
+  "sourceCommit": "fa86b2b2da93265b20425401b8af18a4243f6382",
+  "regressionCases": 96,
+  "passed": 96,
+  "newActualIdbCases": 13,
+  "newCompiledDomCases": 7,
+  "helperStrictDiagnostics": 0,
+  "fullComposedStrict": "not run for this successor under disk reserve",
+  "viteBuild": "not run for this successor",
+  "genuineBrowser": "not established",
+  "canonicalFrontendUnchanged": true,
+  "defaultLibrary": "device-local; public publication remains explicit"
+}

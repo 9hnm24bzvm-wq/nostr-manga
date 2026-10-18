@@ -173,6 +173,7 @@ async fn signed_account_reads_scope_native_follows_and_never_disclose_other_priv
     let app=weebdex_platform::router::router(state.clone());
     let _server=Server(tokio::spawn(async move {axum::serve(listener,app).await.unwrap();}));
     let client=reqwest::Client::builder().no_proxy().timeout(Duration::from_secs(10)).build().unwrap();
+    exercise_inventory_routing(&client,&origin,&runtime).await;
     for path in ["/api/v1/user","/api/v1/user/me","/api/v1/user/history","/api/v1/settings","/api/v1/settings/template","/api/v1/user/follows/manga","/api/v1/user/follows/group","/api/v1/user/follows/user","/api/v1/user/follows/manga/feed"] {
         call(&client,&origin,"GET",path,None,None,401).await;
     }
@@ -408,6 +409,55 @@ async fn signed_account_reads_scope_native_follows_and_never_disclose_other_priv
     state.db.client().await.unwrap().execute("DELETE FROM platform.protocol_identity_bindings WHERE publisher=$1",&[&public(2)]).await.unwrap();
     call(&client,&origin,"GET","/api/v1/user/me",None,Some(2),403).await;
     call(&client,&origin,"GET",&rating_query,None,Some(2),403).await;
+}
+
+// This is a route-boundary check, not successful operation acceptance. No
+// request has a cookie, key or proof; mutation bodies are deliberately empty.
+async fn exercise_inventory_routing(client:&reqwest::Client,origin:&str,runtime:&std::path::Path) {
+    let inventory:Value=serde_json::from_str(include_str!("../../contracts/mangadex-5.13.1-inventory.json")).unwrap();
+    let snapshot:Value=serde_json::from_str(include_str!("../../docs/mangadex-operation-compatibility-snapshot.json")).unwrap();
+    assert_eq!(inventory["source_sha256"],snapshot["inventory_source_sha256"]);
+    let declared=snapshot["operations"].as_array().unwrap();
+    let unknown=client.get(format!("{origin}/api/v1/__inventory_probe_unknown")).send().await.unwrap();
+    assert_eq!(unknown.status(),404);
+    let unknown:Value=unknown.json().await.unwrap();
+    assert_eq!(unknown["errors"][0]["detail"],"Unknown public API endpoint");
+    let wrong_method=client.post(format!("{origin}/api/v1/ping")).send().await.unwrap();
+    assert_eq!(wrong_method.status(),405);
+    let mut seen=std::collections::BTreeSet::new();
+    let mut observations=Vec::new();
+    for operation in inventory["operations"].as_array().unwrap() {
+        let method=operation["method"].as_str().unwrap();
+        let pattern=operation["path"].as_str().unwrap();
+        assert!(seen.insert((method,pattern)),"duplicate inventory operation");
+        let row=declared.iter().find(|row|row["method"]==method&&row["path"]==pattern).expect("every operation classified");
+        let path=pattern.split('/').map(|part|if part.starts_with('{') {
+            if part=="{category}" {"manga"} else {"ffffffff-ffff-8fff-8fff-ffffffffffff"}
+        } else {part}).collect::<Vec<_>>().join("/");
+        let mut request=client.request(method.parse().unwrap(),format!("{origin}/api/v1{path}"));
+        if method!="GET" {request=request.header("content-type","application/json").body("{}");}
+        let response=request.send().await.unwrap();
+        let status=response.status().as_u16();
+        let bytes=response.bytes().await.unwrap();
+        assert!(bytes.len()<=1024*1024,"bounded response: {method} {pattern}");
+        let unsupported=row["status"].as_str().unwrap().contains("501");
+        assert_eq!(status==501,unsupported,"routing classification {method} {pattern}: {status} {}",String::from_utf8_lossy(&bytes));
+        if !unsupported {
+            assert!(status<500,"unexpected backend failure {method} {pattern}: {status}");
+            assert_ne!(status,405,"declared operation reached wrong-method fallback: {method} {pattern}");
+        }
+        if pattern=="/ping" {assert_eq!(bytes.as_ref(),b"pong");} else {
+            let json:Value=serde_json::from_slice(&bytes).unwrap_or_else(|_|panic!("non-JSON {method} {pattern}: {status}"));
+            if status>=400 {assert_eq!(json["result"],"error");assert!(json["errors"].is_array());}
+            assert!(!json["errors"].as_array().is_some_and(|errors|errors.iter().any(|error|error["detail"]=="Unknown public API endpoint")),"declared operation reached unknown-route fallback: {method} {pattern}");
+        }
+        observations.push(json!({"method":method,"path":pattern,"operation_id":operation["operation_id"],"classification":row["status"],"http_status":status,"response_bytes":bytes.len(),"response_sha256":auth::hash(&bytes)}));
+    }
+    assert_eq!(seen.len(),113);assert_eq!(declared.len(),113);
+    let result=json!({"source_baseline":snapshot["source_baseline"],"inventory_sha256":inventory["source_sha256"],"operation_count":113,"scope":"actual unauthenticated routing/auth/validation only; no successful mutation or full compatibility claim","fallback_controls":{"unknown_path":404,"wrong_method":405,"generic_unknown_route_detail_rejected":true},"observations":observations});
+    let bytes=serde_json::to_vec_pretty(&result).unwrap();
+    std::fs::write(runtime.join("mangadex-operation-routing-probe.json"),&bytes).unwrap();
+    println!("113-operation routing probe passed; sha256={}",auth::hash(&bytes));
 }
 
 async fn exercise_follow_writes(client:&reqwest::Client,origin:&str,state:&AppState,ids:&std::collections::BTreeMap<&str,weebdex_platform::public_api::PublicUuid>,alias:&weebdex_platform::public_api::PublicUuid,cookie:&str,client_token:&str) {
