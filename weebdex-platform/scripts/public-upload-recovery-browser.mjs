@@ -59,13 +59,17 @@ export function assertReplacementReadback(before, after, { fileId, image }) {
   return file;
 }
 export async function runPublicUploadRecovery(h) {
-  const { page, context, fixture, origin, report, step, save, insist, redactions } = h;
+  const { page, context, fixture, origin, report, step, save, insist, redactions, runnerStage } = h;
+  assert.equal(typeof runnerStage, 'function', 'Fixed runner-stage recorder required');
+  runnerStage('public-upload-fixture');
   const declaration = fixture.public_upload; assert.equal(declaration?.enabled, true); assert.equal(declaration.fixture_only, true); assert.equal(declaration.scenario, 'public-upload-v1');
   const sink = new URL(fixture.mail_origin); assert.equal(sink.protocol, 'http:'); assert.ok(['127.0.0.1', 'localhost'].includes(sink.hostname)); assert.ok(sink.port && !sink.username && !sink.password && sink.pathname === '/' && !sink.search && !sink.hash);
+  runnerStage('public-upload-signer');
   const schnorr = await verifiedSchnorr(insist); let secret = schnorr.utils.randomSecretKey(), secretHex = Buffer.from(secret).toString('hex');
   redactions.add(secretHex); const owner = Buffer.from(schnorr.getPublicKey(secret)).toString('hex');
   const verify = (signature, id, key) => schnorr.verify(Buffer.from(signature, 'hex'), Buffer.from(id, 'hex'), Buffer.from(key, 'hex'));
   const sign = async template => { assert.ok(secret); const id = uploadDigest(JSON.stringify([0, owner, template.created_at, template.kind, template.tags, template.content])); return { ...template, pubkey: owner, id, sig: Buffer.from(schnorr.sign(Buffer.from(id, 'hex'), secret)).toString('hex') }; };
+  runnerStage('public-upload-observers');
   const observer = observePublicUpload(page, { origin, owner, service: fixture.service_key, verify });
   const reader = createUploadIndependentReader({ origin, owner, service: fixture.service_key, sign });
   const result = report.public_upload = { scope: 'reconstructed-public-upload-replacement-v1', completed: false, supported_replacement: true, chapter_edit: 'unimplemented',
@@ -125,6 +129,7 @@ export async function runPublicUploadRecovery(h) {
   }
   async function attach(image, expected) { return snapshotStage(`attach-${image.name}`, { images: expected }, 2, async () => { const p = await panel(); const input = await unique(p.locator('input[type="file"][accept*="image/jpeg"]')); await input.setInputFiles({ name: image.name, mimeType: image.mimeType, buffer: image.buffer }); }); }
   try {
+    runnerStage('running-checks');
     await run('provision real bound synthetic upload publisher', async () => { account = await control('account', { pubkey: owner }); assert.equal(account.pubkey, owner); assert.equal(account.service_key, fixture.service_key); assert.equal(account.browser_operator_binding, false); assert.equal(account.browser_publisher_admission_granted, false); for (const kind of ['user','group','manga']) assert.match(account[kind].id, uuid); return { admission: true, original_group_role: account.original_group_role, native_permissions: account.native_permissions }; });
     await run('import actual session key through Public identity UI', async () => { const response = await page.goto(origin + pathname(), { waitUntil: 'domcontentloaded' }); assert.equal(response.status(), 200); await connectKey(); const accountRead = await reader.get('/api/v1/nostr/account-context'); assert.equal(accountRead.status, 200); assert.equal(accountRead.body.user.id, account.user.id); assert.equal(accountRead.body.nostr.pubkey, owner); assert.equal(accountRead.body.nostr.nativeSessionAuthority, false); return { imported_via_real_ui: true, cookies_required: false }; });
     await run('begin, language autosave and real image before cancellation', async () => { await chooseGroup(); await snapshotStage('begin-cancel', { images: [] }, 1, async () => { const start = observer.mutationCount(); await (await button(await panel(), 'Confirm')).click(); await until(() => observer.mutationCount(), n => n === start + 1, 'Begin dispatched'); await until(() => observer.settled(), Boolean, 'Begin browser terminal'); sessionId = await current(); lastVersion = 0; }); await snapshotStage('language-cancel', { images: [], draft: { language: 'en' } }, 1, english); await attach(cancelImage, [cancelImage]); await decoded([cancelImage]); return { session_id: sessionId, version: lastVersion }; });

@@ -107,8 +107,38 @@ test('current actor-follow runtime source has a separate exact association witho
   assert.equal(hash(currentWorkflow), currentSourceAssociation.current_runtime_sha256[workflow]);
   assert.equal(currentWorkflow.split(proxyStep).length - 1, 1);
   assert.equal(currentWorkflow.replace(proxyStep, ''), priorWorkflow.toString('utf8'));
+  const validator = 'scripts/ci/validate-ci-evidence.py';
+  let currentValidator = fs.readFileSync(new URL(validator, root), 'utf8');
+  // Exact diagnostic-only successor; preserve the immutable historical/runtime pins.
+  assert.equal(hash(currentValidator), "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77");
+  for (const [current, historical] of [
+    [
+        ", 'caught_stage', 'caught_category', 'browser_created', 'context_created', 'page_created'",
+        ""
+    ],
+    [
+        "    insist(type(value['caught_stage']) is str and value['caught_stage'] in runner_diagnostics.STAGES | {'none', 'unavailable'})\n    insist(type(value['caught_category']) is str and value['caught_category'] in runner_diagnostics.CAUGHT_CATEGORIES | {'unavailable'})\n    insist((value['caught_stage'] == 'unavailable') is (value['caught_category'] == 'unavailable'))\n    if value['caught_stage'] != 'unavailable':\n        insist(runner_diagnostics.caught_pair(value['caught_stage'], value['caught_category']))\n    created = [value[key] for key in ['browser_created', 'context_created', 'page_created']]\n    insist(all(item is None for item in created) or all(type(item) is bool for item in created))\n    if all(type(item) is bool for item in created):\n        insist(not value['context_created'] or value['browser_created'])\n        insist(not value['page_created'] or value['context_created'])\n",
+        ""
+    ],
+    [
+        "        insist(all(type(item) is bool for item in created))\n",
+        ""
+    ],
+    [
+        "'fatal_stage', 'caught_stage', 'caught_category'",
+        "'fatal_stage'"
+    ],
+    [
+        "        insist(runner_diagnostics.caught_pair(value['caught_stage'], value['caught_category']))\n",
+        ""
+    ]
+]) {
+    assert.equal(currentValidator.split(current).length - 1, 1);
+    currentValidator = currentValidator.replace(current, historical);
+  }
+  assert.equal(hash(currentValidator), currentSourceAssociation.current_runtime_sha256[validator]);
   for (const [file, digest] of Object.entries(currentSourceAssociation.current_runtime_sha256)) {
-    const bound = file === workflow ? currentWorkflow : fs.readFileSync(new URL(file, root));
+    const bound = file === workflow ? currentWorkflow : file === validator ? currentValidator : fs.readFileSync(new URL(file, root));
     assert.equal(hash(bound), digest, 'historical current association: ' + file);
   }
 });

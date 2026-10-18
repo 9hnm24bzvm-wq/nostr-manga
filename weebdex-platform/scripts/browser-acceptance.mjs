@@ -76,7 +76,7 @@ async function step(name, action) {
 	process.stdout.write(JSON.stringify({ phase, step: name, status: entry.status }) + "\n");
 }
 let browser, context;
-report.cleanup = { context_created: false, context_closed: false, browser_created: false, browser_closed: false, proxy_closed: false, failures: [] };
+report.cleanup = { context_created: false, context_closed: false, browser_created: false, browser_closed: false, page_created: false, proxy_closed: false, failures: [] };
 const { proxy, close: closeDenyProxy } = createBrowserDenyProxy(report, safeUrl, save);
 try {
 	await new Promise((resolve, reject) => { proxy.once('error', reject); proxy.listen(0, "127.0.0.1", () => { proxy.off('error', reject); resolve(); }); });
@@ -113,6 +113,7 @@ try {
 		}
 	});
 	const page = await context.newPage();
+	report.cleanup.page_created = true;
 	runnerStage("running-checks");
 	async function open(route) { const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" }); insist(response?.status() === 200, `Navigation returned ${response?.status()}`); if (phase === "startup" && route === "/title/SeedManga1") await waitForSeedTitleReady(page); else await page.waitForTimeout(1200); return response; }
 	async function screenshot(name) { const target = path.join(output, name + ".png"); await page.screenshot({ path: target, fullPage: true }); report.screenshots.push(path.relative(root, target)); }
@@ -152,9 +153,9 @@ try {
 			}
 			return results;
 		});
-	} else await (phase === publicUploadRecoveryPhase ? runPublicUploadRecovery : signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions });
+	} else await (phase === publicUploadRecoveryPhase ? runPublicUploadRecovery : signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions, runnerStage });
 	insist(report.page_errors.length === 0, "Application JavaScript page errors were observed during the journey");
-} catch (error) { report.harness_error = safeError(error); }
+} catch (error) { runnerStage.caught(error); report.harness_error = safeError(error); }
 finally {
 	const cleanupFailure = (stage, error) => { let detail; try { detail = safeError(error); } catch { detail = 'Owned cleanup error unavailable'; } report.cleanup.failures.push({ stage, error: detail }); };
 	const cleanupStage = stage => { try { runnerStage(stage); } catch (error) { cleanupFailure('evidence-' + stage, error); } };
