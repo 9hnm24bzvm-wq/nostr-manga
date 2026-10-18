@@ -62,6 +62,17 @@
       "verifiedUTC": "2026-10-18T05:52:02Z",
       "verifiedSourceEntries": 5267,
       "qualification": "Exact native-profile/title/operations successor: 2,016 platform Node cases, 146 platform Python cases, both strict and production-build profiles with actual CSS checks, 141 Rust units and four affected HTTP suites. Original migration dependency failure and other declared original-suite holds remain explicit. The full 19-case matrix remains historical at 0395; native browser, load, nginx runtime and real restore drill remain unqualified."
+    },
+    {
+      "localSourceCommit": "d3fc7f0c85dcd8c4aa6299290db2b88f75761f76",
+      "localSourceTree": "e0f11e3417c743700260e0a5f9d1e0d2d70e622f",
+      "remoteCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+      "remoteTree": "e0f11e3417c743700260e0a5f9d1e0d2d70e622f",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/19b646eb123c3a6323113716d3166bcea8030303",
+      "verifiedUTC": "2026-10-18T13:27:11Z",
+      "verifiedSourceEntries": 5356,
+      "qualification": "Exact recovery continuation: unchanged qualified frontend/backend application bytes; migration7/7,CLI38/38,purebench9/9,controlledbench47/49 with two missing-fixture errors,one ordinary Chromium startup permission failure,and synthetic PostgreSQL17 backup/restore mechanics. Reviewed nginx bootstrap source has six finite cases; installed nginx/parser/runtime was still pending in this historical snapshot."
     }
   ],
   "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"

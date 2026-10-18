@@ -9,19 +9,25 @@
     "private backup/restore tooling and bounded CI registration",
     "discovered CI portability and artifact-provenance repairs",
     "approved narrow original-migration Python dependency qualification",
-    "reviewed official nginx bootstrap version pin and check-mode path fence"
+    "reviewed official nginx bootstrap version pin and check-mode path fence",
+    "official nginx isolated parser and owned serving-supervisor lifecycle qualification",
+    "HTTP redirect access-log inheritance privacy fence"
   ],
   "qualifiedSources": {
     "frontendAndCiExecution": "15030c51a622d5303ff645c57e9665a8884aaf7d",
     "fullTreeVitePin": "34042537b23df594a0c7923773ea4f00c6e47b9c",
     "backendAndOriginalProtocol": "c0e82cb1032a972bc1234166518dcd979fe4868d",
-    "integratedEvidenceBeforeThisSummary": "01739dd48dca450941e32c5497b103a3cb01c0f7",
+    "integratedEvidenceBeforeThisSummary": "bb91de6f6c4d5077b468b64857dacb7eb8d21fda",
     "originalMigrationEvidence": "f662c3f11e79e32dd94e471fb96a39319aa3921c",
     "originalCliCodecEvidence": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
     "pureBenchEvidence": "f1bbb9fe7a7bff11fdee4ac1dc9eec72cd4b0aba",
     "controlledLoopbackBenchEvidence": "91e1381bcf004bfcfca70555299a0a50571bd031",
     "privateRecoveryMechanicsEvidence": "5909da54714faf61e23f2050d7ba263b29de4f8d",
-    "nginxBootstrapSource": "ad668c0f40d6d238770fbf97066c1a7349b268c7"
+    "nginxBootstrapSource": "ad668c0f40d6d238770fbf97066c1a7349b268c7",
+    "nginxRuntimeSource": "59c9c910b571fac5b97cbe78b2f01a694fadfa91",
+    "nginxRuntimeEvidence": "0b1c1edcbf9cce61712e7d4d192d580a5743b119",
+    "nginxRedirectSource": "4351752c3188aea9199383aa27b865e193f58ea7",
+    "nginxRedirectEvidence": "e6045016b3e1328777beb590f4675a149fa2d762"
   },
   "sourceAssociation": {
     "frontendToolingAndCiInputsEqualVitePin": false,
@@ -30,10 +36,13 @@
     "currentProductInputHashes": 922,
     "executionInputHashes": 1242,
     "frontendProductBuildInputsEqualVitePin": true,
-    "backendAndProtocolRuntimeEqualQualifiedSource": true,
+    "backendAndProtocolRuntimeEqualQualifiedSource": false,
     "unchangedCurrentProductInputHashes": 922,
-    "unchangedExistingExecutionInputHashes": 1241,
-    "knownExecutionSourceExceptions": "nginx-bootstrap-source-association-20261018.json"
+    "unchangedExistingExecutionInputHashes": 1240,
+    "knownExecutionSourceExceptions": "nginx-runtime-source-association-20261018.json",
+    "backendRustAndPublicApiEqualQualifiedSource": true,
+    "currentRecordedSourcePinUnionCount": 1247,
+    "environmentResetAfterHistoricalBaselineQualification": true
   },
   "platformCi": {
     "discoveredNodeFiles": 126,
@@ -48,10 +57,15 @@
     "pythonCasesPassed": 146,
     "executionSnapshot": "15030c51a622d5303ff645c57e9665a8884aaf7d",
     "postExecutionAddedNodeFiles": [
-      "weebdex-platform/tests/ci/test_nginx_bootstrap_pin.mjs"
+      "weebdex-platform/tests/ci/test_nginx_bootstrap_pin.mjs",
+      "weebdex-platform/tests/ci/test_serving_supervisor_paths.mjs"
     ],
-    "separatelyQualifiedAdditionalNodeCasesPassed": 6,
-    "currentDiscoveredNodeFiles": 127
+    "separatelyQualifiedAdditionalNodeCasesPassed": 8,
+    "currentDiscoveredNodeFiles": 128,
+    "postExecutionChangedExistingNodeFiles": [
+      "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs"
+    ],
+    "separatelyRequalifiedChangedExistingNodeCasesPassed": 12
   },
   "additionalOriginalTests": {
     "browserModelFiles": 20,
@@ -62,7 +76,7 @@
     "localMigrationCasesDependencyFailed": 0,
     "selectedBenchCasesPassed": 75,
     "selectedBenchOwnedPostgresSkips": 12,
-    "wholeAdditionalFilesHeld": 3,
+    "wholeAdditionalFilesHeld": 2,
     "classification": "current-repository-test-discovery-20261018.json",
     "migrationContinuationEvidence": "../frontend/approved-python-migration-20261018/status.json",
     "historicalMigrationDependencyFailure": {
@@ -93,7 +107,8 @@
     "controlledLoopbackBenchCasesPassed": 47,
     "controlledLoopbackBenchMissingFixtureErrors": 2,
     "pureBenchAdditionalFiles": 2,
-    "pureBenchAdditionalCasesPassed": 9
+    "pureBenchAdditionalCasesPassed": 9,
+    "servingSupervisorOriginalCasesPassed": 8
   },
   "strict": {
     "off": {
@@ -143,9 +158,9 @@
     }
   },
   "operations": {
-    "proxyFiniteCasesPassed": 11,
+    "proxyFiniteCasesPassed": 12,
     "privateRecoverySyntheticCasesPassed": 18,
-    "nginxParserExecuted": false,
+    "nginxParserExecuted": true,
     "realBackupRestoreDrillExecuted": true,
     "exactApprovedStoppedFixtureCleanupReceipt": "approved-nine-db-cleanup-20261018.json",
     "recoveryDrillScope": "Synthetic PostgreSQL17 mechanics with three tiny storage roots",
@@ -165,8 +180,43 @@
       "bashSyntaxPassed": true,
       "finiteCasesPassed": 6,
       "checkModeForeignPathExecutionRefused": true,
-      "compiledInstalledOrParserExecuted": false,
-      "evidence": "../deployment/nginx-bootstrap-security-20261018/review-correction.json"
+      "evidence": "../deployment/nginx-bootstrap-security-20261018/review-correction.json",
+      "historicalSourceReceiptCompiledInstalledOrParserExecuted": false,
+      "currentRuntimeQualificationEvidence": "../deployment/nginx-runtime-portability-20261018/result.json"
+    },
+    "nginxRuntime": {
+      "version": "1.30.6",
+      "officialBinarySha256": "87f23c1feefe552947dd9c9fae6da6eccac6c473d03b1d86e30ea08781d15052",
+      "sourceCommit": "59c9c910b571fac5b97cbe78b2f01a694fadfa91",
+      "historicalTestSourceUnchanged": true,
+      "explicitIsolatedBinaryOverride": true,
+      "actualLifecycleCasesPassed": 8,
+      "separateFiniteNodeCasesPassed": 2,
+      "mappedLoopbackParserPassed": true,
+      "negativeUnquotedBracesRejected": true,
+      "parserScope": "Private mapped copy: TLS paths, access logs and unprivileged loopback listen addresses; no deployment or production endpoint exercise",
+      "cumulativeGuardedSeconds": 26.051,
+      "maximumAllocatedBytesIncludingUnlinkedInode": 16789504,
+      "ownedBirthsClosed": 54,
+      "portsClosed": 10,
+      "packageRuntimeAndTlsPrivateKeyPublished": false,
+      "evidence": "../deployment/nginx-runtime-portability-20261018/result.json",
+      "lifecycleQualificationCumulativeSeconds": 25.758,
+      "redirectLoggingFollowup": {
+        "sourceCommit": "4351752c3188aea9199383aa27b865e193f58ea7",
+        "evidenceCommit": "e6045016b3e1328777beb590f4675a149fa2d762",
+        "port80AccessLogOff": true,
+        "existingProxySourceCasesPassed": 12,
+        "mappedParserAndNegativePassed": true,
+        "seconds": 0.293,
+        "inheritedCombinedLogFixture": true,
+        "liveRedirectLogRequestExercise": false,
+        "lifecycleMethodsRerun": false,
+        "maximumAllocatedBytes": 6062080,
+        "ownedBirthsClosed": 5,
+        "portsClosed": 2,
+        "evidence": "../deployment/nginx-runtime-portability-20261018/redirect-logging/result.json"
+      }
     }
   },
   "limits": {
@@ -187,7 +237,10 @@
     "controlledLoopbackBenches": "../frontend/controlled-bench-seams-final-20261018/status.json",
     "normalBrowserBlocker": "../frontend/normal-browser-capability-probe-20261018/result.json",
     "privateRecoveryMechanics": "../deployment/private-checkpoint-mechanics-20261018/result.json",
-    "nginxBootstrapSourceAssociation": "nginx-bootstrap-source-association-20261018.json"
+    "nginxBootstrapSourceAssociation": "nginx-bootstrap-source-association-20261018.json",
+    "nginxRuntime": "../deployment/nginx-runtime-portability-20261018/result.json",
+    "nginxRuntimeSourceAssociation": "nginx-runtime-source-association-20261018.json",
+    "nginxRedirectLoggingFollowup": "../deployment/nginx-runtime-portability-20261018/redirect-logging/result.json"
   },
   "browserCapabilityProbe": {
     "sourceEvidenceCommit": "7f1cacd54b2ef286010fa2505cc9d2016929ce77",

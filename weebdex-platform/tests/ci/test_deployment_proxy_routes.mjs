@@ -133,3 +133,14 @@ test('native root and restricted admin preserve the complete effective header se
     assert.ok(effective.every(x => !['Authorization','Cookie','Range','If-Range','If-None-Match','X-WeebDex-Upload-Version'].includes(x[1])));
   }
 });
+
+test('HTTP redirect disables inherited request logging while preserving exact redirect URI', () => {
+  const redirect = servers.find(row => values(directive(row, 'listen')).includes('80'));
+  assert.deepEqual(values(directive(redirect, 'access_log')), ['access_log', 'off']);
+  assert.deepEqual(values(directive(redirect, 'return')), ['return', '308', 'https://$host$request_uri']);
+  const parentCombined = ['access_log', '/var/log/nginx/access.log', 'combined'];
+  const effective = row => directive(row, 'access_log') ? values(directive(row, 'access_log')) : parentCombined;
+  assert.deepEqual(effective(redirect), ['access_log', 'off']);
+  const previous = { ...redirect, children: redirect.children.filter(row => row.args[0].value !== 'access_log') };
+  assert.deepEqual(effective(previous), parentCombined, 'omitted directive recreates sensitive default inheritance');
+});

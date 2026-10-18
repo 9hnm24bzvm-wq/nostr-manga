@@ -1,0 +1,505 @@
+{
+  "attempts": [
+    {
+      "attempt": "1329",
+      "cleanupSha256": "39a3b805b2e83f1631f08329b34122bdf8fe1d21c1c13484ad3e3ab76cd7e1a2",
+      "driverSha256": "949f834f65dc693d40e296f1344c866fa644d9ae7a6f2bc29b68f83eed8956ac",
+      "error": "unexpected command exit at official-nginx-parser",
+      "errorClass": "RuntimeError",
+      "physicalCleanup": {
+        "allObservedPortsClosed": true,
+        "error": null,
+        "forced": false,
+        "observedLoopbackPortCount": 0,
+        "ownedBirthCount": 6,
+        "remaining": [],
+        "sourcePackageLogsAndEvidenceRetained": true,
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawResultSha256": "1dd54535cc195604ac04adab407b404ff766aacf747e3b570c075bc4dbd85d52",
+      "scope": "parser wrapper lacked private default logs",
+      "seconds": 5.129,
+      "sourceCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+      "sourcePins": {
+        "manga-protocol-lab/src/serving_supervisor.py": "24689ab2bdfefef145c20a2ff307068c51f51bb6699e7bdcde29462190570a5e",
+        "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+        "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+        "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+        "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+      },
+      "steps": [
+        {
+          "exit": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "name": "official-package-download-verify",
+          "seconds": 4.83
+        },
+        {
+          "exit": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "name": "official-package-extract",
+          "seconds": 0.056
+        },
+        {
+          "exit": 0,
+          "logSha256": "3e2812f955aef1c49e640319059ad2e680be434116276ffdaea3bc67be4733c9",
+          "name": "actual-nginx-version",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "78d122a94c0aaf6392dd86445269167f29e506864e7a9fc7d003889518502195",
+          "name": "actual-nginx-dynamic-libraries",
+          "seconds": 0.067
+        },
+        {
+          "exit": 0,
+          "logSha256": "6a44b8ba562ac7239f59813798895e516ec6a94d5dccb7a8683463ab0aee75b9",
+          "name": "synthetic-parser-certificate",
+          "seconds": 0.058
+        },
+        {
+          "exit": 1,
+          "logSha256": "33ec9178186a42cac489cf99d4e253910a1fe2e4d6ca5303a5e9041e4a016678",
+          "name": "official-nginx-parser",
+          "seconds": 0.057
+        }
+      ],
+      "success": false,
+      "testLauncherSha256": "09b19c1607f5edaed83e4977f3006765c062f2727343e82451dfdc1c97b4f21e"
+    },
+    {
+      "attempt": "1332",
+      "cleanupSha256": "e83f0f4f1c30a3ac63d2b04651a508ebfa825457a6bad394a26188766bf4b78d",
+      "driverSha256": "34203cb7511136f18b46de6994ba887aec3dd8483713646a6ac44aa462111342",
+      "error": "unexpected command exit at official-nginx-parser",
+      "errorClass": "RuntimeError",
+      "physicalCleanup": {
+        "allObservedPortsClosed": true,
+        "error": null,
+        "forced": false,
+        "observedLoopbackPortCount": 0,
+        "ownedBirthCount": 4,
+        "remaining": [],
+        "sourcePackageLogsAndEvidenceRetained": true,
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawResultSha256": "96e6d2a46055023726ac7c57d15e335b3fd550739839af57e3ba19055217530e",
+      "scope": "literal privileged listener bind denied; no listener created",
+      "seconds": 0.288,
+      "sourceCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+      "sourcePins": {
+        "manga-protocol-lab/src/serving_supervisor.py": "24689ab2bdfefef145c20a2ff307068c51f51bb6699e7bdcde29462190570a5e",
+        "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+        "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+        "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+        "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+      },
+      "steps": [
+        {
+          "exit": 0,
+          "logSha256": "3e2812f955aef1c49e640319059ad2e680be434116276ffdaea3bc67be4733c9",
+          "name": "actual-nginx-version",
+          "seconds": 0.058
+        },
+        {
+          "exit": 0,
+          "logSha256": "9d5d8036f6fd173802f883d7f40cffaf594caf1013130abf9b9b84fca61c6fbe",
+          "name": "actual-nginx-dynamic-libraries",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "f6e06b9a16dd94e05b3664443414278f5610f45f563595340cd40745ae82e1d0",
+          "name": "synthetic-parser-certificate",
+          "seconds": 0.11
+        },
+        {
+          "exit": 1,
+          "logSha256": "3e623271bb37644d63227d66e420cbaa76cb0c41fb452b24186a36d35873cfc3",
+          "name": "official-nginx-parser",
+          "seconds": 0.057
+        }
+      ],
+      "success": false,
+      "testLauncherSha256": "1273ff9ff1cfcd53254902df021196931f010927a0c0569a42008b9c15178ae5"
+    },
+    {
+      "attempt": "1333",
+      "cleanupSha256": "09c143f90bb63f93ad69e6a66f67728206d8bc79386d5935edce76f8877cf6f5",
+      "driverSha256": "0a1ff4b44b404c4e4bbe166893caa4ea45af4feded6296dfbcb926540a2c4f80",
+      "error": "[Errno 13] Permission denied: '/proc/19/fd'",
+      "errorClass": "PermissionError",
+      "physicalCleanup": {
+        "allObservedPortsClosed": true,
+        "error": null,
+        "forced": false,
+        "observedLoopbackPortCount": 2,
+        "ownedBirthCount": 8,
+        "remaining": [],
+        "sourcePackageLogsAndEvidenceRetained": true,
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawResultSha256": "9163388586eb9f42744f101889aaa802064a1a19ce0071760377087bee9fe1ec",
+      "scope": "optional owned-child FD inventory unavailable; guard interrupted before first case completed",
+      "seconds": 5.573,
+      "sourceCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+      "sourcePins": {
+        "manga-protocol-lab/src/serving_supervisor.py": "24689ab2bdfefef145c20a2ff307068c51f51bb6699e7bdcde29462190570a5e",
+        "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+        "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+        "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+        "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+      },
+      "steps": [
+        {
+          "exit": 0,
+          "logSha256": "3e2812f955aef1c49e640319059ad2e680be434116276ffdaea3bc67be4733c9",
+          "name": "actual-nginx-version",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "6f1be7b8dcb8cf9aee75dccf45ab89616a5e8a341f48bd7d759fe688fc88d2f4",
+          "name": "actual-nginx-dynamic-libraries",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "801e6f04bfb19943a9532f50e6753b7648fa804586838bf880276569b78e0d8b",
+          "name": "synthetic-parser-certificate",
+          "seconds": 0.113
+        },
+        {
+          "exit": 0,
+          "logSha256": "87e44085cbb6ddbc55279fa3864fa1a80ca75090cbaf27e761ff3fdf3ccb1d6e",
+          "name": "official-nginx-parser",
+          "seconds": 0.058
+        },
+        {
+          "exit": 1,
+          "logSha256": "1b4ef6dd2f3d08a50a5d9d48da232c9ee54a3b296de0f15ab0ebe6055b78c9d9",
+          "name": "official-nginx-rejects-unquoted-braces",
+          "seconds": 0.059
+        }
+      ],
+      "success": false,
+      "testLauncherSha256": "1273ff9ff1cfcd53254902df021196931f010927a0c0569a42008b9c15178ae5"
+    },
+    {
+      "attempt": "1334",
+      "cleanupSha256": "821c8ade447ce90f817b06e0b0414a0a9b1106ac1a71a0037894b22b4fed890c",
+      "driverSha256": "a2f1a55c7de0b0d7aa82892cea1055b86aa83b31bd0813ab6674e31da7aa8240",
+      "error": "unexpected command exit at eight-loopback-lifecycle-cases",
+      "errorClass": "RuntimeError",
+      "physicalCleanup": {
+        "allObservedPortsClosed": true,
+        "error": null,
+        "forced": false,
+        "ownedBirthCount": 9,
+        "recordedLoopbackPortCount": 3,
+        "remaining": [],
+        "socketFdInventory": "not available for some owned children; exact source/argv port records and closed-port proofs used",
+        "sourcePackageLogsAndEvidenceRetained": true,
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawResultSha256": "5769ccdd6fc294112f46e28bc72d097294c80832bd24b2110b8280c893d6840c",
+      "scope": "actual unchanged supervisor startup deadline: one failed, seven not run",
+      "seconds": 5.572,
+      "sourceCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+      "sourcePins": {
+        "manga-protocol-lab/src/serving_supervisor.py": "24689ab2bdfefef145c20a2ff307068c51f51bb6699e7bdcde29462190570a5e",
+        "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+        "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+        "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+        "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+      },
+      "steps": [
+        {
+          "exit": 0,
+          "logSha256": "3e2812f955aef1c49e640319059ad2e680be434116276ffdaea3bc67be4733c9",
+          "name": "actual-nginx-version",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "1b99eb7b260268f774bd57cbe16b2018fc239d3795919d0b9b818c980f0c8c90",
+          "name": "actual-nginx-dynamic-libraries",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "4f58256f2245d93f0b8a7f491a646b515a4edb5ccfc719eabe3039beff7d0a7c",
+          "name": "synthetic-parser-certificate",
+          "seconds": 0.054
+        },
+        {
+          "exit": 0,
+          "logSha256": "31c65321e3c33882c450d35d4c745421b03ff4409b61420df932b50c0e7cf2a7",
+          "name": "official-nginx-parser",
+          "seconds": 0.056
+        },
+        {
+          "exit": 1,
+          "logSha256": "f51b535a25cbd3723fd8123b927070c2c0fc5847e5ed407b917ecc1615a6f63f",
+          "name": "official-nginx-rejects-unquoted-braces",
+          "seconds": 0.058
+        },
+        {
+          "exit": 1,
+          "logSha256": "186dd160801891d9c15de8efe9fe7c0ac5f66023419e33c061cb8cb7aacae2bd",
+          "name": "eight-loopback-lifecycle-cases",
+          "seconds": 5.281
+        }
+      ],
+      "success": false,
+      "testLauncherSha256": "96ef34f83414d87c70dac1f21dd57581cf47a66dc7f3f363dfd0d6fc550af8f2"
+    },
+    {
+      "attempt": "1336",
+      "cleanupSha256": "2d2bb86fec8c35ae47bb137b52e4dfffac8df615de7a019a9188bec1fa62a2c7",
+      "driverSha256": "16fdca96a76400a1744464f15975a2ec7b1cfad70ea647b643c252de3bd56175",
+      "error": "unexpected command exit at generated-supervisor-nginx-parser",
+      "errorClass": "RuntimeError",
+      "physicalCleanup": {
+        "allObservedPortsClosed": true,
+        "error": null,
+        "forced": false,
+        "ownedBirthCount": 7,
+        "recordedLoopbackPortCount": 2,
+        "remaining": [],
+        "socketFdInventory": "not available for some owned children; exact source/argv port records and closed-port proofs used",
+        "sourcePackageLogsAndEvidenceRetained": true,
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawResultSha256": "4a2ad28298aa145e79db50bd70e0f33d8a724310039f62841845f69f7e946d7c",
+      "scope": "direct unchanged supervisor generated-config diagnostic confirms compiled absolute cache path failure",
+      "seconds": 0.498,
+      "sourceCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+      "sourcePins": {
+        "manga-protocol-lab/src/serving_supervisor.py": "24689ab2bdfefef145c20a2ff307068c51f51bb6699e7bdcde29462190570a5e",
+        "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+        "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+        "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+        "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+      },
+      "steps": [
+        {
+          "exit": 0,
+          "logSha256": "3e2812f955aef1c49e640319059ad2e680be434116276ffdaea3bc67be4733c9",
+          "name": "actual-nginx-version",
+          "seconds": 0.056
+        },
+        {
+          "exit": 0,
+          "logSha256": "7815061f05df641a3ace379f0de4c829e7f2de8616d7d3bbd1691a0dbf648578",
+          "name": "actual-nginx-dynamic-libraries",
+          "seconds": 0.055
+        },
+        {
+          "exit": 0,
+          "logSha256": "f69c04d86900ad8dec4845d1049835c470b087a0495b016adabf0012a5f3cd62",
+          "name": "synthetic-parser-certificate",
+          "seconds": 0.107
+        },
+        {
+          "exit": 0,
+          "logSha256": "4533e8346faa714267a29b46203bad04b1a6e182d8a71482f8130aa6f3e9cffc",
+          "name": "official-nginx-parser",
+          "seconds": 0.056
+        },
+        {
+          "exit": 1,
+          "logSha256": "166e361d13645acbe1fd9c0a223c7430119edc162aa533c6b4e256cdf5cb225f",
+          "name": "official-nginx-rejects-unquoted-braces",
+          "seconds": 0.055
+        },
+        {
+          "exit": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "name": "generate-exact-supervisor-config",
+          "seconds": 0.109
+        },
+        {
+          "exit": 1,
+          "logSha256": "5317a05defaf10a2712ef882cf0d3f266f7d3702d1d758f30faeada1d18c2fe3",
+          "name": "generated-supervisor-nginx-parser",
+          "seconds": 0.055
+        }
+      ],
+      "success": false,
+      "testLauncherSha256": "96ef34f83414d87c70dac1f21dd57581cf47a66dc7f3f363dfd0d6fc550af8f2"
+    },
+    {
+      "attempt": "1339",
+      "cleanupSha256": "3206c165acfac1766a6099062c2ce42240187a6b35ba99deebbb5de9fd50183d",
+      "driverSha256": "fd67831828d97511b10fb7fcba0dd76202ca8c16e7aa7afd33ed27e1ac28ebd3",
+      "error": null,
+      "errorClass": null,
+      "physicalCleanup": {
+        "allObservedPortsClosed": true,
+        "error": null,
+        "forced": false,
+        "ownedBirthCount": 53,
+        "recordedLoopbackPortCount": 10,
+        "remaining": [],
+        "socketFdInventory": "not available for some owned children; exact source/argv port records and closed-port proofs used",
+        "sourcePackageLogsAndEvidenceRetained": true,
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawResultSha256": "5c5ec2b9f35ec28ddbff81c2553cd548221a68d5cc22fae5e34785afc53f7ec8",
+      "scope": "first same-source8/8pass, independently reviewed",
+      "seconds": 4.386,
+      "sourceCommit": "59c9c910b571fac5b97cbe78b2f01a694fadfa91",
+      "sourcePins": {
+        "manga-protocol-lab/src/serving_supervisor.py": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa",
+        "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+        "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+        "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+        "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+      },
+      "steps": [
+        {
+          "exit": 0,
+          "logSha256": "3e2812f955aef1c49e640319059ad2e680be434116276ffdaea3bc67be4733c9",
+          "name": "actual-nginx-version",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "6c2d902b35805430c90ce99ece55f5ec1548c3a49d73e02f281e795970a989b5",
+          "name": "actual-nginx-dynamic-libraries",
+          "seconds": 0.056
+        },
+        {
+          "exit": 0,
+          "logSha256": "f0387ea2a2f449c6e601c6040bae9bf799c7d6fb36d50cd40b7aae5b2800caf4",
+          "name": "synthetic-parser-certificate",
+          "seconds": 0.056
+        },
+        {
+          "exit": 0,
+          "logSha256": "f5c0e1c5685e024b5b20dac792474e3c5e8347708c5addcd7dea0883063dee62",
+          "name": "official-nginx-parser",
+          "seconds": 0.056
+        },
+        {
+          "exit": 1,
+          "logSha256": "72817f7f2c6cdf3b947fe76e905c04931e2b22ac5dd1c2be178b1bd598f3c9ff",
+          "name": "official-nginx-rejects-unquoted-braces",
+          "seconds": 0.056
+        },
+        {
+          "exit": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "name": "generate-exact-supervisor-config",
+          "seconds": 0.11
+        },
+        {
+          "exit": 0,
+          "logSha256": "89b4d03e669d25682ddfd34ab77e976ac2e41c68d8dc9e02d7e7673f27d4dd94",
+          "name": "portable-supervisor-nginx-parser",
+          "seconds": 0.061
+        },
+        {
+          "exit": 0,
+          "logSha256": "9a28e48546b361a2649eca9e3a5306591a8a6e5d728dc197e7efbba0241ff751",
+          "name": "eight-loopback-lifecycle-cases",
+          "seconds": 3.928
+        }
+      ],
+      "success": true,
+      "testLauncherSha256": "38c594c0fcbf02958d1ae129bc425747752def62651cb859b42ecb1a0ef39c46"
+    },
+    {
+      "attempt": "1342",
+      "cleanupSha256": "3c0fd8fa11ce5a82e10df9c8809529b6a2638669cd9cef618b6ec546234a0b84",
+      "driverSha256": "ceaedb40cb89ade87abd4d053606d96de8d032f55f65425296d075438878ef17",
+      "error": null,
+      "errorClass": null,
+      "physicalCleanup": {
+        "allObservedPortsClosed": true,
+        "error": null,
+        "forced": false,
+        "ownedBirthCount": 54,
+        "recordedLoopbackPortCount": 10,
+        "remaining": [],
+        "socketFdInventory": "not available for some owned children; exact source/argv port records and closed-port proofs used",
+        "sourcePackageLogsAndEvidenceRetained": true,
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawResultSha256": "11846b5776cb6fee9824ea1df9b3ee0a00352761e0d32ecf2312528a108320c6",
+      "scope": "resource-complete same-source8/8pass including measured deliberately unlinked inode blocks",
+      "seconds": 4.312,
+      "sourceCommit": "59c9c910b571fac5b97cbe78b2f01a694fadfa91",
+      "sourcePins": {
+        "manga-protocol-lab/src/serving_supervisor.py": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa",
+        "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+        "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+        "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+        "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+      },
+      "steps": [
+        {
+          "exit": 0,
+          "logSha256": "3e2812f955aef1c49e640319059ad2e680be434116276ffdaea3bc67be4733c9",
+          "name": "actual-nginx-version",
+          "seconds": 0.058
+        },
+        {
+          "exit": 0,
+          "logSha256": "f13bbbe384d32663df3f8b74ebcb05250eddb825e4d59c6cb79f2575e324c545",
+          "name": "actual-nginx-dynamic-libraries",
+          "seconds": 0.058
+        },
+        {
+          "exit": 0,
+          "logSha256": "63b1d01ea2ffb536ea034c6756182bd2321b5adc2622493d4360c17ffabd9a2f",
+          "name": "synthetic-parser-certificate",
+          "seconds": 0.057
+        },
+        {
+          "exit": 0,
+          "logSha256": "1e3e5ef1598fd88e79af5129952b5a20f186d6ff5ee4e2603b84f65683692b57",
+          "name": "official-nginx-parser",
+          "seconds": 0.056
+        },
+        {
+          "exit": 1,
+          "logSha256": "c5a1e8f8ed945786d068edb82def421dc47645583f0afa7d87f7226d0bcd4fc6",
+          "name": "official-nginx-rejects-unquoted-braces",
+          "seconds": 0.056
+        },
+        {
+          "exit": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "name": "generate-exact-supervisor-config",
+          "seconds": 0.113
+        },
+        {
+          "exit": 0,
+          "logSha256": "51a1712ac3cd371623b5c23fa06db7c3152c9058b866130640f46d7835caef3e",
+          "name": "portable-supervisor-nginx-parser",
+          "seconds": 0.058
+        },
+        {
+          "exit": 0,
+          "logSha256": "6b8d3bcc44755a10ec6f5dbf8548bc9917792654ed1941ee809e8d429aeff1b1",
+          "name": "eight-loopback-lifecycle-cases",
+          "seconds": 3.848
+        }
+      ],
+      "success": true,
+      "testLauncherSha256": "408d196f5f041f5c4efb73c30d8716885423a8a427071d606dc8a8bc0116fbe3"
+    }
+  ],
+  "cumulativeGuardedExecutionSeconds": 25.758,
+  "maximumCumulativeSeconds": 420
+}

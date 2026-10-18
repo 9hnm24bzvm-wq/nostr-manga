@@ -2,10 +2,10 @@
   "baselineEvidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
   "method": "Current continuation compiled from immutable prior phase records; original classifications and raw failures remain unchanged.",
   "priorWholeFileHolds": 16,
-  "newlyExercisedPriorHolds": 13,
+  "newlyExercisedPriorHolds": 14,
   "formerlyPartialMigrationNowPassed": true,
-  "currentExecutedFiles": 40,
-  "currentWholeFilesUnexecuted": 3,
+  "currentExecutedFiles": 41,
+  "currentWholeFilesUnexecuted": 2,
   "files": [
     {
       "path": "manga-protocol-lab/bench/library-node/test_compact.py",
@@ -365,20 +365,24 @@
       "path": "manga-protocol-lab/tests/test_serving_supervisor.py",
       "sha256": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
       "priorExecutionClassification": "held",
-      "current": "unexecuted-requires-pinned-nginx-runtime",
+      "current": "passed-official-nginx-owned-loopback-lifecycle",
       "unittestMethods": 8,
-      "reason": "Pinned nginx1.28.0 absent; requires real owned Linux/loopback process fixture"
+      "priorCurrentClassification": "unexecuted-requires-pinned-nginx-runtime",
+      "priorReason": "Pinned nginx1.28.0 absent; requires real owned Linux/loopback process fixture",
+      "casesPassed": 8,
+      "evidence": "../deployment/nginx-runtime-portability-20261018/eight-result.json",
+      "runtimeOverride": "Explicit module.NGINX selects isolated official1.30.6; historical source constant unchanged"
     }
   ],
   "noWholeRepositoryPassClaim": true,
-  "priorContinuationCommit": "f1bbb9fe7a7bff11fdee4ac1dc9eec72cd4b0aba",
-  "newlyExercisedPriorWholeHoldsThisPhase": 5,
+  "priorContinuationCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+  "newlyExercisedPriorWholeHoldsThisPhase": 1,
   "controlledLoopbackEvidenceCommit": "91e1381bcf004bfcfca70555299a0a50571bd031",
   "currentFileOutcomes": {
-    "fullyPassed": 37,
+    "fullyPassed": 38,
     "withMissingFixtureErrors": 2,
     "withExplicitPostgresSkips": 1,
-    "unexecuted": 3
+    "unexecuted": 2
   },
   "controlledLoopbackMethods": {
     "passed": 47,
@@ -386,7 +390,7 @@
     "skipped": 0
   },
   "initialWholeFileHolds": 16,
-  "immediatePriorWholeFileHolds": 8,
+  "immediatePriorWholeFileHolds": 3,
   "exercisedWholeHoldContinuations": [
     {
       "kind": "original CLI and codec",
@@ -402,6 +406,24 @@
       "kind": "controlled loopback benches",
       "files": 5,
       "evidenceCommit": "91e1381bcf004bfcfca70555299a0a50571bd031"
+    },
+    {
+      "kind": "original serving-supervisor lifecycle with isolated official nginx1.30.6",
+      "files": 1,
+      "evidenceCommit": "0b1c1edcbf9cce61712e7d4d192d580a5743b119"
     }
-  ]
+  ],
+  "priorCurrentPhaseRecord": {
+    "snapshotRemote": "19b646eb123c3a6323113716d3166bcea8030303",
+    "executedFiles": 40,
+    "wholeFilesUnexecuted": 3,
+    "newlyExercisedThisPhase": 5,
+    "currentFileOutcomes": {
+      "fullyPassed": 37,
+      "withMissingFixtureErrors": 2,
+      "withExplicitPostgresSkips": 1,
+      "unexecuted": 3
+    }
+  },
+  "nginxEvidenceCommit": "0b1c1edcbf9cce61712e7d4d192d580a5743b119"
 }
