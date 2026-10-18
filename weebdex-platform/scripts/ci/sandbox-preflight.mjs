@@ -2,26 +2,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { collectHostFacts, emptyDiagnostic, errorFacts } from './sandbox-launch-diagnostics.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const DATA_DOCUMENT = 'data:text/html;charset=utf-8,' + encodeURIComponent('<!doctype html><meta charset="utf-8"><title>Sandbox preflight</title><p id="preflight">sandbox-preflight-ok</p>');
-const SANDBOX_BANNERS = Object.freeze([
-  'No usable sandbox!',
-  'Failed to move to new namespace:',
-  'SUID sandbox helper binary',
-  'Running as root without --no-sandbox is not supported',
-]);
-
 export function initialRecord() {
-  return { schema: 1, stage: 'initializing', caught_stage: 'none', caught_category: 'none',
+  return { schema: 2, launch_diagnostic: emptyDiagnostic(), stage: 'initializing', caught_stage: 'none', caught_category: 'none',
     browser_created: false, context_created: false, page_created: false,
     script_verified: false, context_closed: false, browser_closed: false, completed: false };
 }
 export function classify(stage, error) {
   if (stage === 'launching-browser') {
-    let message;
-    try { message = error?.message; } catch {}
-    return typeof message === 'string' && SANDBOX_BANNERS.some(banner => message.includes(banner)) ? 'sandbox-refused' : 'launch-failed';
+    return errorFacts(stage, error).signatures.sandbox === true ? 'sandbox-refused' : 'launch-failed';
   }
   if (stage === 'browser-launched') return 'context-failed';
   if (stage === 'context-created') return 'page-failed';
@@ -34,15 +26,19 @@ export function supportedHost(release, platform, arch, uid) {
     && /^ID=(?:ubuntu|"ubuntu")$/m.test(release) && /^VERSION_ID=(?:22\.04|"22\.04")$/m.test(release)
     && platform === 'linux' && arch === 'x64' && Number.isSafeInteger(uid) && uid > 0;
 }
-export async function probe(runtime, persist = () => {}) {
+export async function probe(runtime, persist = () => {}, hostFacts = null) {
   const record = initialRecord();
+  if (hostFacts !== null) record.launch_diagnostic.host = hostFacts;
   let browser, context;
   const save = () => persist({ ...record });
   const transition = stage => { record.stage = stage; save(); };
   const caught = error => {
     if (record.caught_stage !== 'none') return;
     record.caught_stage = record.stage;
-    record.caught_category = classify(record.stage, error);
+    record.launch_diagnostic.error = errorFacts(record.stage, error);
+    record.caught_category = record.stage === 'launching-browser'
+      ? record.launch_diagnostic.error.signatures.sandbox === true ? 'sandbox-refused' : 'launch-failed'
+      : classify(record.stage, null);
     save();
   };
   save();
@@ -99,7 +95,7 @@ async function main() {
     if (fs.realpathSync(runtimePath) !== runtimePath || !fs.lstatSync(runtimePath).isFile() || fs.statSync(runtimePath).size > 2 * 1024 * 1024) throw Error('Explicit hosted runtime generation required');
     const { loadBrowserRuntime } = await import('./browser-runtime.mjs');
     const runtime = loadBrowserRuntime();
-    const record = await probe(runtime, persist);
+    const record = await probe(runtime, persist, collectHostFacts(runtime.executablePath, directory));
     process.exitCode = record.completed ? 0 : 1;
   } catch {
     const value = initialRecord(); value.caught_stage = 'initializing'; value.caught_category = 'worker-failed'; value.stage = 'complete'; persist(value); process.exitCode = 1;

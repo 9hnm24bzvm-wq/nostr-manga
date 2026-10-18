@@ -33,7 +33,7 @@ for (const [failure, category, stage] of [['launch', 'sandbox-refused', 'launchi
   const f = fixture(failure), value = await probe(f.runtime, f.persist);
   assert.equal(value.completed, false); assert.equal(value.stage, 'complete'); assert.equal(value.caught_stage, stage); assert.equal(value.caught_category, category);
   assert.doesNotMatch(JSON.stringify(f.snapshots), /PRIVATE-DETAIL|reviewed\/synthetic|data:text/);
-  assert.equal(Object.keys(value).length, 11);
+  assert.equal(Object.keys(value).length, 12);
 });
 test('classifier never leaks raw messages and reads a throwing/changing getter once', () => {
   let reads = 0;
@@ -69,4 +69,46 @@ test('application workflow remains exact and does not match the dedicated prefli
   assert.ok(profiles.has(digest(workflow)));
   assert.equal(profiles.has(digest(Buffer.concat([workflow, Buffer.from('\n# unreviewed\n')]))), false);
   assert.doesNotMatch(workflow.toString('utf8'), /ci\/browser-sandbox-preflight/);
+});
+
+// These are finite classifier/probe controls, not a real Chromium launch.
+test('official rewritten sandbox banner and all original banners stay stage-bound', () => {
+  for (const banner of ['Chromium sandboxing failed!', 'No usable sandbox!',
+    'Failed to move to new namespace:', 'SUID sandbox helper binary',
+    'Running as root without --no-sandbox is not supported']) {
+    assert.equal(classify('launching-browser', Error('Fixed wrapper\n' + banner + '\nPRIVATE-SUFFIX')), 'sandbox-refused');
+  }
+});
+test('rewrite classification refuses near-miss and untrusted message shapes', () => {
+  for (const message of ['chromium sandboxing failed!', 'Chromium sandboxing failed',
+    'Chromium sandbox failed!', 'Chromium sandboxing FAILED!', '', null, 1, true, {},
+    { toString() { throw Error('PRIVATE'); } }]) {
+    assert.equal(classify('launching-browser', { message }), 'launch-failed');
+  }
+  let reads = 0;
+  assert.equal(classify('launching-browser', { get message() { reads++; return reads === 1 ? 'Chromium sandboxing failed!' : 'PRIVATE'; } }), 'sandbox-refused');
+  assert.equal(reads, 1);
+  assert.equal(classify('launching-browser', { get message() { throw Error('PRIVATE'); } }), 'launch-failed');
+});
+test('rewrite classification never attributes a later failure to launch sandbox', () => {
+  for (const [stage, expected] of [['initializing', 'worker-failed'], ['browser-launched', 'context-failed'],
+    ['context-created', 'page-failed'], ['page-created', 'script-failed'],
+    ['closing-context', 'cleanup-failed'], ['closing-browser', 'cleanup-failed'],
+    ['complete', 'worker-failed'], ['unknown-private-stage', 'worker-failed']]) {
+    assert.equal(classify(stage, Error('Chromium sandboxing failed!')), expected);
+  }
+});
+test('official rewritten launch failure preserves closed catch facts through cleanup', async () => {
+  const f = fixture();
+  f.runtime.chromium.launch = async options => {
+    f.calls.push(['launch', options]);
+    throw Error('Failed to launch the browser process.\nBrowser logs:\nChromium sandboxing failed!\nPRIVATE-SUFFIX');
+  };
+  const value = await probe(f.runtime, f.persist);
+  assert.equal(value.stage, 'complete'); assert.equal(value.caught_stage, 'launching-browser');
+  assert.equal(value.caught_category, 'sandbox-refused'); assert.equal(value.completed, false);
+  for (const field of ['browser_created', 'context_created', 'page_created', 'script_verified', 'context_closed', 'browser_closed']) assert.equal(value[field], false);
+  assert.equal(f.calls.length, 1); assert.equal(f.calls[0][1].chromiumSandbox, true);
+  assert.equal(Object.keys(value).length, 12);
+  assert.doesNotMatch(JSON.stringify(f.snapshots), /PRIVATE-SUFFIX|Failed to launch|Browser logs|Chromium sandboxing/);
 });

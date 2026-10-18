@@ -7,6 +7,7 @@ The CLI admits only the adjacent fixed Node worker and explicit hosted runtime.
 import argparse
 import ctypes
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -16,6 +17,13 @@ import stat
 import subprocess
 import sys
 import time
+
+try:
+    _diagnostic_spec = importlib.util.spec_from_file_location('sandbox_closed_diagnostic', Path(__file__).with_name('sandbox_launch_diagnostics.py'))
+    diagnostic = importlib.util.module_from_spec(_diagnostic_spec)
+    _diagnostic_spec.loader.exec_module(diagnostic)
+except Exception:
+    raise SystemExit('Sandbox diagnostic module refused')
 
 ROOT = Path(__file__).resolve().parents[2]
 MAX_JSON = 65536
@@ -29,7 +37,7 @@ CATEGORIES = frozenset({'none', 'sandbox-refused', 'launch-failed', 'context-fai
                        'page-failed', 'script-failed', 'cleanup-failed', 'worker-failed'})
 FLAGS = ('browser_created', 'context_created', 'page_created', 'script_verified',
          'context_closed', 'browser_closed', 'completed')
-WORKER_KEYS = {'schema', 'stage', 'caught_stage', 'caught_category', *FLAGS}
+WORKER_KEYS = {'schema', 'stage', 'caught_stage', 'caught_category', 'launch_diagnostic', *FLAGS}
 OUTCOMES = frozenset({'complete', 'admission-refused', 'worker-failed', 'record-invalid',
                      'deadline', 'output-limit', 'interrupted', 'owner-error',
                      'cleanup-unverified'})
@@ -82,7 +90,7 @@ def terminal_outcome(outcome, worker, cleanup, output_overflow):
 def worker_valid(value):
     if type(value) is not dict or set(value) != WORKER_KEYS:
         return False
-    if type(value['schema']) is not int or value['schema'] != 1:
+    if type(value['schema']) is not int or value['schema'] != 2:
         return False
     if (type(value['stage']) is not str or value['stage'] not in STAGES or
             type(value['caught_stage']) is not str or value['caught_stage'] not in STAGES | {'none'} or
@@ -90,6 +98,10 @@ def worker_valid(value):
             any(type(value[key]) is not bool for key in FLAGS)):
         return False
     site, category = value['caught_stage'], value['caught_category']
+    if not diagnostic.worker_valid(value['launch_diagnostic'], site == 'launching-browser'):
+        return False
+    if site == 'launching-browser' and ((category == 'sandbox-refused') != (value['launch_diagnostic']['error']['signatures']['sandbox'] is True)):
+        return False
     expected = {'none': {'none'}, 'launching-browser': {'sandbox-refused', 'launch-failed'},
                 'browser-launched': {'context-failed'}, 'context-created': {'page-failed'},
                 'page-created': {'script-failed'}, 'closing-context': {'cleanup-failed'},
@@ -120,14 +132,17 @@ def worker_valid(value):
     return True
 
 
-def public_projection(worker, exit_code, cleanup, outcome, elapsed_ms, executable_sha256=None):
+def public_projection(worker, exit_code, cleanup, outcome, elapsed_ms, executable_sha256=None, launch_log=None):
     cleanup = cleanup if type(cleanup) is dict else {}
     valid = worker_valid(worker)
     code = exit_code if type(exit_code) is int and -64 <= exit_code <= 255 else None
     clean = (type(cleanup) is dict and cleanup.get('verified_stopped') is True and
              cleanup.get('forced') is False and all(type(cleanup.get(key)) is int and
              cleanup[key] == 0 for key in ('remaining_owned', 'unknown_births', 'tracking_errors')))
-    result = {'schema': 1, 'scope': 'sandbox-launch-preflight',
+    launch_log = launch_log if diagnostic.valid_log(launch_log) else diagnostic.empty_log()
+    worker_diagnostic = worker['launch_diagnostic'] if valid else diagnostic.empty_worker()
+    result = {'schema': 2, 'scope': 'sandbox-launch-preflight',
+              'launch_diagnostic': {**worker_diagnostic, **launch_log},
               'status': 'failed', 'parent_outcome': outcome if type(outcome) is str and outcome in OUTCOMES else 'owner-error',
               'worker_record_valid': valid, 'worker_exit_code': code,
               'elapsed_ms': elapsed_ms if type(elapsed_ms) is int and 0 <= elapsed_ms <= 120000 else None,
@@ -172,10 +187,16 @@ def validate_public(value):
     if cleanup['verified_stopped'] and any(cleanup[key] != 0 for key in
                                          ('remaining_owned', 'unknown_births', 'tracking_errors')):
         raise Refused('invalid-public-cleanup')
-    worker = {'schema': 1, **{key: value[key] for key in ('stage', 'caught_stage', 'caught_category', *FLAGS)}}
+    details = value['launch_diagnostic']
+    if type(details) is not dict or set(details) != {'error', 'host', 'process', 'log_signatures'}:
+        raise Refused('invalid-public-diagnostic')
+    launch_log = {key: details[key] for key in ('process', 'log_signatures')}
+    if not diagnostic.valid_log(launch_log):
+        raise Refused('invalid-public-diagnostic')
+    worker = {'schema': 2, 'launch_diagnostic': {key: details[key] for key in ('error', 'host')}, **{key: value[key] for key in ('stage', 'caught_stage', 'caught_category', *FLAGS)}}
     reconstructed = public_projection(worker if value['worker_record_valid'] else None,
                                       value['worker_exit_code'], cleanup, value['parent_outcome'],
-                                      value['elapsed_ms'], value['executable_sha256'])
+                                      value['elapsed_ms'], value['executable_sha256'], launch_log)
     if reconstructed != value:
         raise Refused('invalid-public-association')
     return value
@@ -413,7 +434,8 @@ def child_environment(source, private):
     names = ('PATH', 'HOME', 'LANG', 'LC_ALL', 'LC_CTYPE', 'SSL_CERT_FILE', 'SSL_CERT_DIR')
     value = {key: source[key] for key in names if key in source and type(source[key]) is str and
              '\0' not in source[key] and len(source[key]) <= 4096}
-    value.update(TMPDIR=str(private), NODE_OPTIONS='--max-old-space-size=512')
+    value.update(TMPDIR=str(private), NODE_OPTIONS='--max-old-space-size=512',
+                 DEBUG='pw:browser', DEBUG_COLORS='0', DEBUG_HIDE_DATE='1')
     return value
 
 
@@ -499,8 +521,12 @@ def main():
             worker = None
         # A buffered tail can first cross the log cap during terminal draining.
         outcome = terminal_outcome(outcome, worker, cleanup, bool(owner and owner.output_overflow))
+        try:
+            launch_log = diagnostic.parse_log(read_bytes(private / 'worker.log', MAX_LOG)) if owner and not owner.output_overflow and cleanup.get('stdout_eof') is True else diagnostic.empty_log('oversized' if owner and owner.output_overflow else 'unavailable')
+        except Exception:
+            launch_log = diagnostic.empty_log()
         result = public_projection(worker, code, cleanup, outcome,
-                                   int((time.monotonic() - started) * 1000), executable)
+                                   int((time.monotonic() - started) * 1000), executable, launch_log)
         validate_public(result)
         data = (json.dumps(result, sort_keys=True) + '\n').encode()
         if len(data) > MAX_JSON:

@@ -25,8 +25,17 @@ PRIVATE = 'https://synthetic-secret.invalid/private?token=never-export'
 
 
 def worker():
-    return dict(schema=1, stage='complete', caught_stage='none', caught_category='none',
+    return dict(schema=2, launch_diagnostic=module.diagnostic.empty_worker(), stage='complete', caught_stage='none', caught_category='none',
                 **dict.fromkeys(module.FLAGS, True))
+
+
+def launching(category='launch-failed'):
+    value = module.diagnostic.empty_worker()
+    sandbox = category == 'sandbox-refused'
+    value['error'] = dict(reason='sandbox-refused' if sandbox else 'unknown', code='none',
+        code_source='none', message_state='bounded', signatures=dict.fromkeys(module.diagnostic.SIGNATURES, False))
+    value['error']['signatures']['sandbox'] = sandbox
+    return value
 
 
 def cleanup():
@@ -75,8 +84,10 @@ class ClosedPreflightRecords(unittest.TestCase):
                     'script-verified': {'worker-failed'}, 'complete': {'worker-failed'}}
         for site, categories in expected.items():
             for category in module.CATEGORIES:
-                raw = dict(schema=1, stage='complete', caught_stage=site, caught_category=category,
+                raw = dict(schema=2, launch_diagnostic=module.diagnostic.empty_worker(), stage='complete', caught_stage=site, caught_category=category,
                            **dict.fromkeys(module.FLAGS, False))
+                if site == 'launching-browser':
+                    raw['launch_diagnostic'] = launching(category)
                 if site in ('browser-launched', 'context-created', 'page-created', 'script-verified',
                             'closing-context', 'closing-browser'):
                     raw['browser_created'] = True
@@ -102,7 +113,7 @@ class ClosedPreflightRecords(unittest.TestCase):
             raw[field] = False
             self.assertEqual(module.public_projection(raw, 0, cleanup(), 'complete', 1, HASH)['status'], 'failed')
         raw = dict(worker(), completed=False, caught_stage='launching-browser',
-                   caught_category='sandbox-refused', **dict.fromkeys(module.FLAGS[:-1], False))
+                   caught_category='sandbox-refused', launch_diagnostic=launching('sandbox-refused'), **dict.fromkeys(module.FLAGS[:-1], False))
         self.assertTrue(module.worker_valid(raw))
         value = module.public_projection(raw, 1, cleanup(), 'worker-failed', 100, HASH)
         self.assertEqual(value['caught_category'], 'sandbox-refused')
@@ -150,7 +161,7 @@ class ClosedPreflightRecords(unittest.TestCase):
             PYTHONPATH=PRIVATE, HTTPS_PROXY=PRIVATE), Path('/synthetic/private'))
         self.assertNotIn(PRIVATE, json.dumps(value))
         self.assertEqual(value['NODE_OPTIONS'], '--max-old-space-size=512')
-        self.assertEqual(set(value), {'PATH', 'HOME', 'LANG', 'TMPDIR', 'NODE_OPTIONS'})
+        self.assertEqual(set(value), {'PATH', 'HOME', 'LANG', 'TMPDIR', 'NODE_OPTIONS', 'DEBUG', 'DEBUG_COLORS', 'DEBUG_HIDE_DATE'})
 
     def test_output_validation_cli_does_not_require_node_or_launch(self):
         with tempfile.TemporaryDirectory(prefix='sandbox-validate-') as directory:
