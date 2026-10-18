@@ -22,6 +22,7 @@ jobs:
       CI: 'true'
       PYTHONDONTWRITEBYTECODE: '1'
       NODE_OPTIONS: --max-old-space-size=512
+      SEALED_RECIPIENT_SPKI_SHA256: 06656641d644eb4fe046a53c085a62a9a0d853d0f712f1a92295337f479cf9e7
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
@@ -29,6 +30,15 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24.19.0
+      - name: Stage the pinned public-only diagnostic recipient
+        timeout-minutes: 1
+        run: |
+          set -euo pipefail
+          recipient_dir=weebdex-platform/.build/sandbox-preflight-recipient
+          test ! -e "$recipient_dir" && test ! -L "$recipient_dir"
+          mkdir -p weebdex-platform/.build
+          mkdir -m 700 "$recipient_dir"
+          install -m 600 .ci/sandbox-preflight-recipient-public.pem "$recipient_dir/public.pem"
       - name: Install only the exact official browser tools and bundled Chromium
         timeout-minutes: 12
         run: |
@@ -67,3 +77,32 @@ jobs:
           if-no-files-found: error
           retention-days: 1
           include-hidden-files: false
+      - name: Seal the bounded private worker log for this invocation
+        id: sealed-log
+        if: always() && steps.preflight-validation.outcome == 'success' && steps.probe.outputs.evidence_sha256 != ''
+        timeout-minutes: 1
+        run: |
+          set +e
+          report="$(node weebdex-platform/scripts/ci/sealed-sandbox-log.mjs --expected-evidence-sha256 "${{ steps.probe.outputs.evidence_sha256 }}" --expected-recipient-sha256 "$SEALED_RECIPIENT_SPKI_SHA256")"
+          code=$?
+          set -e
+          current_hash="$(printf '%s\n' "$report" | grep -E '^sealed_sha256=[0-9a-f]{64}$' || true)"
+          if [[ "$current_hash" =~ ^sealed_sha256=[0-9a-f]{64}$ ]]; then
+            printf '%s\n' "$current_hash" >> "$GITHUB_OUTPUT"
+            printf '%s\n' "$current_hash"
+          fi
+          exit "$code"
+      - name: Validate the current encrypted envelope without opening it
+        id: sealed-validation
+        if: always() && steps.sealed-log.outputs.sealed_sha256 != ''
+        timeout-minutes: 1
+        run: node weebdex-platform/scripts/ci/sealed-sandbox-log.mjs --validate --expected-evidence-sha256 "${{ steps.probe.outputs.evidence_sha256 }}" --expected-recipient-sha256 "$SEALED_RECIPIENT_SPKI_SHA256" --expected-sealed-sha256 "${{ steps.sealed-log.outputs.sealed_sha256 }}"
+      - name: Upload only the current encrypted worker-log envelope
+        if: always() && steps.sealed-validation.outcome == 'success' && steps.sealed-log.outputs.sealed_sha256 != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hosted-sandbox-sealed-debug-${{ github.run_id }}-${{ github.run_attempt }}
+          path: weebdex-platform/.build/sandbox-preflight/sealed-worker-log.json
+          if-no-files-found: error
+          retention-days: 1
+          include-hidden-files: true

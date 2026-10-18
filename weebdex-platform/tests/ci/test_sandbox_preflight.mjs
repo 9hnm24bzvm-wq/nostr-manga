@@ -1,7 +1,7 @@
 // Finite source and injected-object controls only; no browser/network/install.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { createHash } from 'node:crypto';
+import { createHash, createPublicKey } from 'node:crypto';
 import test from 'node:test';
 import { classify, supportedHost, probe } from '../../scripts/ci/sandbox-preflight.mjs';
 
@@ -50,10 +50,10 @@ test('dedicated workflow never triggers application branches or installs app dep
   assert.match(workflow, /retention-days: 1/); assert.match(workflow, /ci-evidence\/sandbox-preflight\.json/);
   assert.match(workflow, /run-sandbox-preflight\.py --node "\$\(command -v node\)"/);
   assert.match(workflow, /--cache weebdex-platform\/\.cache\/sandbox-preflight-npm/);
-  assert.doesNotMatch(workflow, /mkdir[^\n]*\.build\/sandbox-preflight/);
+  assert.doesNotMatch(workflow, /mkdir[^\n]*\.build\/sandbox-preflight(?:[\s"']|$)/m);
   assert.match(workflow, /id: probe/);
   assert.match(workflow, /--validate --expected-sha256 "\$\{\{ steps\.probe\.outputs\.evidence_sha256 \}\}"/);
-  assert.equal(workflow.split("steps.probe.outputs.evidence_sha256 != ''").length - 1, 2);
+  assert.equal(workflow.split("steps.probe.outputs.evidence_sha256 != ''").length - 1, 3);
   assert.match(workflow, /\^evidence_sha256=\[0-9a-f\]\{64\}\$/);
   const executableWorkflow = workflow.split('\n').filter(line => !line.trimStart().startsWith('#')).join('\n');
   assert.doesNotMatch(executableWorkflow, /workflow_dispatch|prepare-hosted-browser\.sh|cargo |pip |yarn install|self-hosted|sysctl|apparmor|--no-sandbox/);
@@ -111,4 +111,34 @@ test('official rewritten launch failure preserves closed catch facts through cle
   assert.equal(f.calls.length, 1); assert.equal(f.calls[0][1].chromiumSandbox, true);
   assert.equal(Object.keys(value).length, 12);
   assert.doesNotMatch(JSON.stringify(f.snapshots), /PRIVATE-SUFFIX|Failed to launch|Browser logs|Chromium sandboxing/);
+});
+
+test('sealed debug export is fresh, recipient-bound and restricted to one encrypted file', () => {
+  const workflow = fs.readFileSync(new URL('../../../.github/workflows/hosted-sandbox-preflight.yml', import.meta.url), 'utf8');
+  const fingerprint = workflow.match(/^      SEALED_RECIPIENT_SPKI_SHA256: ([0-9a-f]{64})$/m)?.[1];
+  assert.ok(fingerprint);
+  const pem = fs.readFileSync(new URL('../../../.ci/sandbox-preflight-recipient-public.pem', import.meta.url));
+  const key = createPublicKey(pem);
+  assert.equal(key.asymmetricKeyType, 'rsa');
+  assert.equal(key.asymmetricKeyDetails.modulusLength, 3072);
+  assert.equal(key.asymmetricKeyDetails.publicExponent, 65537n);
+  assert.deepEqual(Buffer.from(key.export({ type: 'spki', format: 'pem' })), pem);
+  assert.equal(createHash('sha256').update(key.export({ type: 'spki', format: 'der' })).digest('hex'), fingerprint);
+  assert.doesNotMatch(pem.toString('ascii'), /PRIVATE KEY/);
+  assert.match(workflow, /install -m 600 \.ci\/sandbox-preflight-recipient-public\.pem "\$recipient_dir\/public\.pem"/);
+  const paths = Array.from(workflow.matchAll(/^          path: (.+)$/gm), match => match[1]);
+  assert.deepEqual(paths, ['weebdex-platform/ci-evidence/sandbox-preflight.json', 'weebdex-platform/.build/sandbox-preflight/sealed-worker-log.json']);
+  assert.equal(workflow.match(/retention-days: 1/g)?.length, 2);
+  assert.equal(workflow.match(/include-hidden-files: true/g)?.length, 1);
+  assert.match(workflow, /id: sealed-log/);
+  assert.match(workflow, /--expected-recipient-sha256 "\$SEALED_RECIPIENT_SPKI_SHA256"/);
+  assert.match(workflow, /--expected-sealed-sha256 "\$\{\{ steps\.sealed-log\.outputs\.sealed_sha256 \}\}"/);
+  assert.match(workflow, /steps\.sealed-validation\.outcome == 'success' && steps\.sealed-log\.outputs\.sealed_sha256 != ''/);
+  const sealStep = workflow.split('      - name: Seal the bounded private worker log for this invocation\n')[1]?.split('      - name: Validate the current encrypted envelope without opening it\n')[0];
+  assert.ok(sealStep);
+  assert.match(sealStep, /\^sealed_sha256=\[0-9a-f\]\{64\}\$/);
+  assert.doesNotMatch(sealStep, /printf[^\n]*"\$report"\s*$/m);
+  assert.doesNotMatch(paths.join('\n'), /worker\.log|owner\.json|seal-ready|private|\.pem|\*/);
+  assert.match(workflow, /timeout-minutes: 20/);
+  assert.match(workflow, /runs-on: ubuntu-22\.04/);
 });

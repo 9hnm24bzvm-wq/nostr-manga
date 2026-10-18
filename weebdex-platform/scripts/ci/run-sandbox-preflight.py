@@ -439,6 +439,20 @@ def child_environment(source, private):
     return value
 
 
+def seal_ready_receipt(public_bytes, log_bytes, cleanup, output_overflow):
+    """Private, post-EOF generation binding; never part of the public record."""
+    if (type(public_bytes) is not bytes or type(log_bytes) is not bytes or
+            len(public_bytes) > MAX_JSON or len(log_bytes) > MAX_LOG or
+            type(output_overflow) is not bool or output_overflow or type(cleanup) is not dict or
+            cleanup.get('verified_stopped') is not True or
+            cleanup.get('forced') is not False or cleanup.get('stdout_eof') is not True or
+            any(type(cleanup.get(key)) is not int or cleanup[key] != 0 for key in
+                ('remaining_owned', 'unknown_births', 'tracking_errors'))):
+        return None
+    return {'schema': 1, 'public_record_sha256': hashlib.sha256(public_bytes).hexdigest(),
+            'log_sha256': hashlib.sha256(log_bytes).hexdigest(), 'log_bytes': len(log_bytes)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--node', type=Path)
@@ -541,6 +555,16 @@ def main():
         if written != data:
             raise Refused('public-output-changed')
         validate_public(json.loads(written.decode('utf-8'), object_pairs_hook=unique_object))
+        # Optional sealing is a separate, still-unapproved execution step. Only
+        # this private receipt permits it to consume a normally closed full log.
+        if owner and cleanup.get('stdout_eof') is True and not owner.output_overflow:
+            receipt = seal_ready_receipt(written, read_bytes(private / 'worker.log', MAX_LOG),
+                                         cleanup, owner.output_overflow)
+            if receipt is not None:
+                with (private / 'seal-ready.json').open('xb') as output:
+                    output.write((json.dumps(receipt, sort_keys=True) + '\n').encode())
+                    output.flush()
+                    os.fsync(output.fileno())
         print('evidence_sha256=' + hashlib.sha256(written).hexdigest(), flush=True)
         print(json.dumps({'status': result['status'], 'parent_outcome': result['parent_outcome']}))
     return 0 if result['status'] == 'passed' else 1
