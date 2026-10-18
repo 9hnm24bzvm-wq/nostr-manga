@@ -1,0 +1,895 @@
+[
+  {
+    "case": "genuine_status_reads_preserve_signed_values_owner_visibility_and_no_follow_inference",
+    "target": "public_nostr_statuses",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 0,
+      "seconds": 1.58
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "848df738d405106ca820e667c20dbade8fb682bec3a124f5ff63cbc922dabdea",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5567549440,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "db5a12fe52b25c369ea05d805b225b0502a87f562765d5e1ecf3a859c89b105e",
+    "cleanupReceiptSha256": "49df7a0816909d87672713a1209eaa1179429dfeb3692642a1810ef0c548822a",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "ea02dd0076b37d413703d74c5433fe6431425692beb05389709f0d20858b8f17"
+  },
+  {
+    "case": "signed_chapter_metadata_claim_and_review_first_removal_preserve_authority",
+    "target": "public_chapter_writes",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 1,
+      "seconds": 1.53
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "981c84b6f88045e28342227b8bbbd47a30f0c30f3f21a3c68e63dd98525f2c74",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5513568256,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "4c891f1b1cdac31cb2fb277eb43890af779671ecb4d090df230bca88f15733de",
+    "cleanupReceiptSha256": "47b1fea631ffec7fbe148d1d3b6c0ba9db677a962840cb9118d4b8d9125742d5",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "e591b9bf911b7baf0bf32a9b2e2260e5634103e2be845be7e832712908c76acf"
+  },
+  {
+    "case": "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority",
+    "target": "public_manga_writes",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 1,
+      "seconds": 2.24
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "86d64fbe43026c02f22887bdb5d803d51a7c80e22ecaceb0fb8790d0fafbb6d5",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5457670144,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "45c15c6c8c6bc640f5b84e22f1993c900a6a68fdbe7f903f61e86e942e466ca2",
+    "cleanupReceiptSha256": "f6a319603d027abbfd20124501da7de010b6fec4e67bb498f760a9085fa07759",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "109e86ca44fb49cebfba03a7ec3f60127acbc9056c385029e6da5cc15a263b7b"
+  },
+  {
+    "case": "editorial_and_drafts_require_real_current_bound_authority_and_atomic_audit",
+    "target": "public_editorial_drafts",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 0,
+      "seconds": 0.84
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "3bf1e419daea69185751ed465596e3a6389d6d4a5c1b1e5c89aacffac04668b4",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5407432704,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "94cad8647fdbd4673c21b1d6ae1edf97705993bc46e3e61fbf1adcaa4bad363f",
+    "cleanupReceiptSha256": "e1d1db505066f6b918488fd39f715b8943788fd4c73bdbae69313a1881c52e6e",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "e6f25799c12ef65251b6dc585ca805162ad32a848fa3c75ae2e97ab861d128f7"
+  },
+  {
+    "case": "signed_group_claim_is_review_only_versioned_and_preserves_original_authority",
+    "target": "public_group_claims",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 0,
+      "seconds": 0.58
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "6103934517e8bf239f50a7733efee9566e73ab07b2210cd5cdd57e6734335af7",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5353500672,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "7507a81676a640dfb77b1e66a58ebd0dc02c5f408e47627c5a543eec3dada247",
+    "cleanupReceiptSha256": "bc6471ba5c4321f33bc863914de424e411f89688b7f8dea1ac898866f28e3ece",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "b22db874675f98bc23018f257a74d4db3e3ad48f7e2cae09220ab660c4f1399e"
+  },
+  {
+    "case": "reports_use_genuine_bound_authority_private_scope_and_native_audit",
+    "target": "public_reports",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 0,
+      "seconds": 1.01
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "1e0752d723f5872d475145496dc6df2327943491a5e0bd0897c12c0dc5adb55f",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5296939008,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "7d5c1f10062dfbb0728238fcb8a1e72d9473e1f720024c9498a658fbdfcf58e2",
+    "cleanupReceiptSha256": "10ed0a37493146d9b382ffcc005e704f871fa2f84f1e4ff52b5c4fac6f6e5891",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "778e626d32c3fc042342ed30dfb8b6a9172b130a38b6aeac56b9c2300473edbb"
+  },
+  {
+    "case": "signed_relations_preserve_directional_identity_owner_versions_and_original_source",
+    "target": "public_relation_writes",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 1,
+      "seconds": 47.86
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "cfedd67686e5f3e9d144203dce556d11e20214194ecf8cbda2faf630ece44027",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5216030720,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "1f39434ddc03dd308f3782a5256f519f51ddaaf89e39cf64c1425c30d48168d3",
+    "cleanupReceiptSha256": "83d2662258d9eb5cd6fa217e3c7af0151ebfa3af6a31a5ecd7a09f9c97f41abe",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "3fd2c9ced5dce62107b0fd3de73549ecd64706876d18451c738a1ddccb4f7d96"
+  },
+  {
+    "case": "public_relation_pages_recover_all_4096_with_full_metadata_and_snapshot_guards",
+    "target": "public_relation_pages",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 0,
+      "seconds": 81.49
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "21a3add21440b09902db16920068a29f7442be3d51cfb79ee3c4a74a1ba89e75",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5138743296,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "7f7f2eb7ee953dc5c789bd1f2007e4a5523e03c51d1f39317b2b1c2913533baa",
+    "cleanupReceiptSha256": "58ba472c98a78638747d1d78714547acd5d84f685cb60755a72596a0b54ea953",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "35bb09f4376719e656ec1663ae7c8721fafe64549443924584a6d17f4e8dedbf"
+  },
+  {
+    "case": "account_write_lock_allows_publication_fk_and_excludes_authority_changes",
+    "target": "public_uploads",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 3,
+      "seconds": 1.65
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "810bf64b4a4c84867270f09b0a3ff3fa2ed6ba9c17b9987be43966bff017eb9b",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5083754496,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "61ff9c1c7c3cf57be3290ccc00c87314125828056f265ef27c6199846f14e17f",
+    "cleanupReceiptSha256": "75f9963d21e300373da2ed5711fc4cb08956d9aabe8c5324cfa9029989c48632",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "e8014416a72241470d3c40f493712e1552fe7a41406acc2675d482b472f9102d"
+  },
+  {
+    "case": "exact_nostr_upload_contracts_ownership_validation_and_original_commit",
+    "target": "public_uploads",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 3,
+      "seconds": 1.75
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "810bf64b4a4c84867270f09b0a3ff3fa2ed6ba9c17b9987be43966bff017eb9b",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5027618816,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "d740f9e26c71c583d6bca7636b15bc2033545a796ddd319268a1b8a512c540c0",
+    "cleanupReceiptSha256": "8b471c6a5457a8566e19519aa6714cc07466486ff61d58fc099ca2efbd5dd62b",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "726bd492e64bf96aa89b71268e68bf4fdd6afa9efc26342bfad960855c9bf329"
+  },
+  {
+    "case": "exact_nostr_page_replacement_preserves_identity_order_and_authority_fences",
+    "target": "public_uploads",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 3,
+      "seconds": 6.51
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "810bf64b4a4c84867270f09b0a3ff3fa2ed6ba9c17b9987be43966bff017eb9b",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4908294144,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "dcbb368d39b0708b9882cd1cb25578c02fc4d916351ce7b7c57ad3c13179281c",
+    "cleanupReceiptSha256": "e89b568fa470305770b5e33e76955c12f3a84ede0ff5020663a658676c93a4ce",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "11255b93abc44d47df6c5192eb84dde829690e7b05da0f8c08d6e4d74cf7b0c6"
+  },
+  {
+    "case": "accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle",
+    "target": "protocol_bridge_http",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 0,
+      "seconds": 7.4
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "349a9aba64c7bd1213bdf8733d4b4aa11d0e50e1d2fdeda41ab9be34fd986ed3",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4876771328,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "e3692b20185717560a293c57b03c244984b3e0151f6466061e5a1c4de54e7f76",
+    "cleanupReceiptSha256": "8e440001440724e3583f4357a31bafe02cd0cfc1c6b4d3e7c00a790e3dea5e9f",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "354c1f1f61c8296eafeadf1f6e16ed851670c4225c6ee7ca139bc269df3558c9"
+  },
+  {
+    "case": "persisted_upload_commit_reader_originals_derivatives_and_retries",
+    "target": "upload_http",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 7,
+      "seconds": 1.0
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4830969856,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "c2ac43162376a94675e10f70497c9de3148d0d1dfca567b86f28e3213b54aa30",
+    "cleanupReceiptSha256": "44ff70a9da95e9c5877ae2ea8297e35569499598b1a4005419bfc7bb5e04353e",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "4e5b1c3e36206191847eb37506a808b14ff8061ea4854ecb8aa40ed89b0920db"
+  },
+  {
+    "case": "persisted_upload_validation_file_removal_cancel_and_body_bounds",
+    "target": "upload_http",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 7,
+      "seconds": 0.87
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4778958848,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "bb96a57414b67066fedf7026e22276ea44d4a06eaa1ef1829702350919b6e81d",
+    "cleanupReceiptSha256": "ecd85b9477d5ebca35e15609a41e0f9a052f7d9aa8469101cdac4c8487f95fa2",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "733f500792c1862f4bd4722021cb8c2fc4e674e9677a6b74fb6cc38a27636631"
+  },
+  {
+    "case": "persisted_cover_upload_draft_privacy_list_update_variants_and_delete",
+    "target": "upload_http",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 7,
+      "seconds": 0.53
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4727541760,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "865dfaab5d6988724b417850661a159e80956df94db77a73187a3c5922e7edcb",
+    "cleanupReceiptSha256": "f6976fc302a71494e36edc6f1a66fa07a06b41d13aa5184b3d41bc654823d6bb",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "306f225c174116adf303067f8bd1a1c134e371164ae30088bdc21a48ae51b4f0"
+  },
+  {
+    "case": "signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_stable",
+    "target": "upload_http",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 7,
+      "seconds": 0.85
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4666650624,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "22898a9266d84d7f76c2703811696db1da91071ab3ded0a2b4d7283918332f0a",
+    "cleanupReceiptSha256": "64e8990ddd8c438a39882487e860d6db3f7add047b05d9e78d96c1cc4894015f",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "58ecb5482e653c0df7ead61708533fc6d609ce0fc8cad446c4e3484309a1e4b0"
+  },
+  {
+    "case": "committed_signed_upload_becomes_readable_after_original_projection",
+    "target": "upload_http",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 7,
+      "seconds": 14.64
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4611629056,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "a59fda86e534b923703cc45eb1c441b8b6f911d5bc3ccd093f91fce080829bfa",
+    "cleanupReceiptSha256": "c5dfff9dc48aeb8999b621b51e2892d548e4048e5d7589c6f17ee1f6ff966735",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "b3b6f5baa12ddbc1c6f5d0ba0b143c97182497ab8f7c80ec505ede01ba955ed5"
+  },
+  {
+    "case": "atomic_page_replacement_expiry_reclamation_and_media_admission",
+    "target": "upload_http",
+    "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 7,
+      "seconds": 1.96
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4556185600,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "6f518ec4d40d3a2d3961a15b82522aeb3dd987674aee9e0715ab4f02dbad4f99",
+    "cleanupReceiptSha256": "c1fe97373c305716ac79208e7a29f5f828930097191b94986faf606eaca3d2fb",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "00c72c1ca729b4130d649e783301df70d3e880dbda8fd6d342693d6f9ef79f58"
+  },
+  {
+    "case": "restart_reconciliation_respects_journal_leases_references_and_proxy_streams",
+    "target": "upload_http",
+    "sourceCommit": "cab5fa9e55577f4fd0bc3120334889e5bf804151",
+    "passed": true,
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 7,
+      "seconds": 0.45
+    },
+    "sourceFileCount": 979,
+    "sourceManifestSha256": "2abec891dcc72013c11c3adf737f0e4bd52fe85c3ab6c31f749620a6f2db8f73",
+    "sourceChanged": [],
+    "executableSha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+    "executableUnchanged": true,
+    "runtimeInputs": {
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/manga-protocol-lab/vendor/strfry/strfry": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/debian-pg/root/usr/lib/postgresql/17/bin/postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+      "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+    },
+    "runtimeInputsChanged": [],
+    "diskGuard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 4562366464,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "diagnosticModesDisabled": true,
+    "logSha256": "4fb40b13968a7e06a6a884f0e93f3a0d3c517054b84baebc1e25f4162f1c1589",
+    "cleanupReceiptSha256": "10f051545e584308b26ee25448328a01eeec913e4b67911bba3374356d1a07bc",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "ownedRunReceiptSha256": "027a97ebe5be36db6eecc056590a9043d37b7e88c769dd7f8fb2093663719533"
+  }
+]

@@ -1,7 +1,8 @@
 # Bound native-account reading status
 
-Source-only successor of ec1b216, 2026-10-18. Rust and actual HTTP qualification
-are pending the shared warm-target lease. Existing ec1 qualification is separate.
+Qualified on 2026-10-18 against production backend53130b4 and the test-only
+runtime-prerequisite correction c96ead0. The exact compile/HTTP receipts are in
+`test-evidence/native-status-combined-api-20261018/report.json`.
 
 This adapter edits the real `platform.library_manga_follows.reading_status` for
 an already-followed title. It cannot create/delete membership, alter notification,
@@ -72,11 +73,21 @@ variation at the outer response boundary. The preview also uses the private-read
 admission class. The default device Save and original signed publication flows
 remain separate.
 
-## Pending qualification
+## Qualification
 
 `backend/tests/public_native_reading_status.rs` is the isolated actual TCP/
 PostgreSQL fixture covering migration baseline, account policy/isolation/rebind,
 canonical target capture, native cookie/import invalidation, same-clock status
 changes, remove/readd tombstones, stable no-op, preserved follow fields/counters,
-concurrent CAS, rollback, replay and original-library read separation. These are
-written regressions, not a passed-run claim until an exact binary receipt exists.
+concurrent CAS, rollback, replay and original-library read separation. Its actual
+TCP/PostgreSQL run passed1/1; the same frozen source passed139 library tests
+(2ignored), all seven baseline API HTTP groups and the113-operation routing probe.
+All eight database guards physically stopped with closed ports, no forced cleanup,
+survivors, unknown process births or cleanup errors.
+
+The first run exposed an incorrect test prerequisite: this native-only fixture
+does not attach an original PublicationRuntime. It now asserts the actual safe503
+original GET baseline both before and after native changes, never an invented
+empty signed graph. Genuine original signed-graph200 status reads require the
+separate `public_nostr_statuses` runtime fixture and its own final-source receipt.
+Other feature-lane runtime suites and browser/load qualification remain separate.

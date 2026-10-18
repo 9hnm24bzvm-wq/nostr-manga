@@ -1,0 +1,288 @@
+{
+  "sourceCommit": "29685fa7173b4551f67649b45a1a9110dfbce7fe",
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/cargo/bin/cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "weebdex-platform/backend/Cargo.toml",
+    "--test",
+    "upload_http",
+    "--test",
+    "public_uploads",
+    "--test",
+    "protocol_bridge_http",
+    "--test",
+    "public_chapter_writes",
+    "--test",
+    "public_manga_writes",
+    "--test",
+    "public_relation_writes",
+    "--test",
+    "public_relation_pages",
+    "--test",
+    "public_editorial_drafts",
+    "--test",
+    "public_group_claims",
+    "--test",
+    "public_reports",
+    "--test",
+    "public_nostr_statuses",
+    "--no-run",
+    "-j",
+    "1"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 124.662,
+  "minimumFreeBytes": 5568278528,
+  "floorBytes": 4294967296,
+  "cleanupReserveBytes": 134217728,
+  "maxOwnedRssBytes": 1206054912,
+  "minimumAvailableMemoryBytes": 7447728128,
+  "stopReason": null,
+  "sourceFiles": 979,
+  "sourceChanged": [],
+  "ownedProcessBirths": [
+    [
+      35,
+      8169216
+    ],
+    [
+      46,
+      8169232
+    ],
+    [
+      69,
+      8171146
+    ],
+    [
+      70,
+      8171147
+    ],
+    [
+      71,
+      8171148
+    ],
+    [
+      83,
+      8171214
+    ],
+    [
+      106,
+      8171382
+    ],
+    [
+      107,
+      8171383
+    ],
+    [
+      108,
+      8171383
+    ],
+    [
+      119,
+      8171431
+    ],
+    [
+      142,
+      8171562
+    ],
+    [
+      143,
+      8171563
+    ],
+    [
+      144,
+      8171563
+    ],
+    [
+      155,
+      8171612
+    ],
+    [
+      178,
+      8173409
+    ],
+    [
+      179,
+      8173410
+    ],
+    [
+      180,
+      8173410
+    ],
+    [
+      191,
+      8173472
+    ],
+    [
+      214,
+      8175275
+    ],
+    [
+      215,
+      8175276
+    ],
+    [
+      216,
+      8175276
+    ],
+    [
+      227,
+      8175342
+    ],
+    [
+      250,
+      8175471
+    ],
+    [
+      251,
+      8175472
+    ],
+    [
+      252,
+      8175472
+    ],
+    [
+      263,
+      8175516
+    ],
+    [
+      286,
+      8175755
+    ],
+    [
+      287,
+      8175756
+    ],
+    [
+      288,
+      8175756
+    ],
+    [
+      299,
+      8175803
+    ],
+    [
+      322,
+      8177715
+    ],
+    [
+      323,
+      8177716
+    ],
+    [
+      324,
+      8177717
+    ],
+    [
+      335,
+      8177775
+    ],
+    [
+      358,
+      8177969
+    ],
+    [
+      359,
+      8177969
+    ],
+    [
+      360,
+      8177970
+    ],
+    [
+      371,
+      8178013
+    ],
+    [
+      394,
+      8179794
+    ],
+    [
+      395,
+      8179795
+    ],
+    [
+      396,
+      8179795
+    ],
+    [
+      408,
+      8179862
+    ],
+    [
+      431,
+      8181610
+    ],
+    [
+      432,
+      8181611
+    ],
+    [
+      433,
+      8181611
+    ]
+  ],
+  "cleanupSignals": [],
+  "ownedSurvivors": [],
+  "executableFiles": {
+    "tests/protocol_bridge_http.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/protocol_bridge_http-3dc086697ebe3931",
+      "sha256": "349a9aba64c7bd1213bdf8733d4b4aa11d0e50e1d2fdeda41ab9be34fd986ed3",
+      "bytes": 84132480
+    },
+    "tests/public_chapter_writes.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_chapter_writes-c05f34738ef4361f",
+      "sha256": "981c84b6f88045e28342227b8bbbd47a30f0c30f3f21a3c68e63dd98525f2c74",
+      "bytes": 83935568
+    },
+    "tests/public_editorial_drafts.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_editorial_drafts-b2aa3aca51bbe926",
+      "sha256": "3bf1e419daea69185751ed465596e3a6389d6d4a5c1b1e5c89aacffac04668b4",
+      "bytes": 57963840
+    },
+    "tests/public_group_claims.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_group_claims-a68fb8e323ae5dd2",
+      "sha256": "6103934517e8bf239f50a7733efee9566e73ab07b2210cd5cdd57e6734335af7",
+      "bytes": 57424192
+    },
+    "tests/public_manga_writes.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_manga_writes-4dea7fe51a404b04",
+      "sha256": "86d64fbe43026c02f22887bdb5d803d51a7c80e22ecaceb0fb8790d0fafbb6d5",
+      "bytes": 83924528
+    },
+    "tests/public_nostr_statuses.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_nostr_statuses-32dad09e54d827ec",
+      "sha256": "848df738d405106ca820e667c20dbade8fb682bec3a124f5ff63cbc922dabdea",
+      "bytes": 83173096
+    },
+    "tests/public_relation_pages.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_relation_pages-8d460f0a1ddbed9c",
+      "sha256": "21a3add21440b09902db16920068a29f7442be3d51cfb79ee3c4a74a1ba89e75",
+      "bytes": 57499312
+    },
+    "tests/public_relation_writes.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_relation_writes-e7876dd719ed4b7e",
+      "sha256": "cfedd67686e5f3e9d144203dce556d11e20214194ecf8cbda2faf630ece44027",
+      "bytes": 84373320
+    },
+    "tests/public_reports.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_reports-b7906e967dbb1c6b",
+      "sha256": "1e0752d723f5872d475145496dc6df2327943491a5e0bd0897c12c0dc5adb55f",
+      "bytes": 57586616
+    },
+    "tests/public_uploads.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_uploads-d5a26fe70a9a071c",
+      "sha256": "810bf64b4a4c84867270f09b0a3ff3fa2ed6ba9c17b9987be43966bff017eb9b",
+      "bytes": 59216088
+    },
+    "tests/upload_http.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/upload_http-850cb5f1106a2dc7",
+      "sha256": "c59c5d05264f2446b9a7e2559f713e6a9ff4641971a78038f076b6496234ca3c",
+      "bytes": 84520800
+    }
+  },
+  "passed": true
+}

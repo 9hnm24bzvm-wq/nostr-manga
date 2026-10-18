@@ -1,0 +1,35 @@
+{
+  "schema": "independent-final-strict-vite-input-association-v1",
+  "viteEvidenceCommit": "a25457aa6b4c2642af0b80a8ebbab8fe9b8a54ff",
+  "viteTestedSource": "53130b47424b107d3b9d1b5ceb00959b62addaa5",
+  "strictEvidenceCommit": "e3d35297a4e1953c7abc23129e073701823eecdc",
+  "strictTestedSource": "8a1a54f6fe592116511a3328e33baad74b31cd6d",
+  "strictProductSourceMapSha256": "be0329df610a8afd2a10b9dc48c8358f8acea03614822f004b59a516d63e494a",
+  "strictProductInputFiles": 916,
+  "viteFrontendInputFiles": 914,
+  "allViteInputsPresentInStrictMap": true,
+  "allSharedSourceHashesEqual": true,
+  "strictAdditionalContractInputsIdenticalAtVitePin": {
+    "weebdex-platform/contracts/mangadex-5.13.1-inventory.json": "e5f8eac2185d0669dcf52da1f39907f8fa457b6dca8dcef655bebcab46f417cf",
+    "weebdex-platform/contracts/native-settings-template-v1.json": "d17707cc8a529e7fea1feebc647d2cf0c4072f1faa77cc0664dd59052e202c35"
+  },
+  "strictOutcome": {
+    "gate0": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "gate1": {
+      "errors": 0,
+      "warnings": 12
+    }
+  },
+  "separateFiniteOutcome": {
+    "files": 49,
+    "tests": 683,
+    "passed": 683,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browserExecuted": false,
+  "scope": "Independent exact input-map association only.683-case/strict execution belongs to the account owner; two actual Vite profiles belong to this lane. Full backend/native-browser/hosted/load acceptance is not inferred."
+}

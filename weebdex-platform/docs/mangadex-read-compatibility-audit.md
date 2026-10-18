@@ -1,21 +1,27 @@
 # MangaDex read compatibility and public UUID audit
 
-Audit dates: 2026-10-17/18. Current composed source (runtime pending):
-`717d88936cd654529a197ca9bcabc9af47cab6e9`.
+Audit dates: 2026-10-17/18. Current qualified production backend:
+`53130b47424b107d3b9d1b5ceb00959b62addaa5`, with test-only native fixture
+prerequisite correction `c96ead07654d38ead63bab9e6172328b79811ec9`.
 The [113-operation snapshot](mangadex-operation-compatibility-snapshot.json)
 now covers every pinned upstream operation exactly once. It identifies 91
 source-routed scoped operations, 12 explicit protocol/authentication 501
 exceptions, one operator-only template administration boundary, and 9
 unsupported plain-REST operations. **This is not full MangaDex compatibility.**
-The actual unauthenticated routing probe passed all 113 operations on the earlier
-ec1b216 baseline, independently of functional seam tests. A refusal establishes
+The actual unauthenticated routing probe passed all113 operations on this source,
+independently of functional seam tests. A refusal establishes
 handler/auth/validation routing only, never a working authorized command.
 
 The retained `test-evidence/final-combined-api-20261017/report.json` establishes
 138 lib tests (2 ignored), seven functional HTTP seams and 113 routing checks
-for **ec1b216 only**. The new native-status0102 and final chapter authority-lock
-source require fresh current-source runtime receipts. Source review, previous
-branch checks and composed frontend tests cannot replace that acceptance.
+for **ec1b216 only**. Current
+`test-evidence/native-status-combined-api-20261018/report.json` establishes139
+library tests (2ignored), all seven baseline HTTP groups, the new native-status
+HTTP journey and the113 routing checks against the current backend0102 source.
+The operation JSON remains the frozen pre-run source inventory at717d889; the
+current report records its exact hash and the actual compiled/run source. Fresh
+chapter/publication/relation and other feature-lane runtime receipts remain
+separate. Source review and older branch checks cannot replace that acceptance.
 The read checklist below remains a bounded catalogue audit. Native account,
 original signed graph, source publication and device-local features have separate
 contracts and dedicated tests.
@@ -167,8 +173,10 @@ observing native-session/import updates and removal/readd. It edits existing
 membership only, preserves flags/followtime/counters, and refuses null clear
 rather than silently unfollowing. Original GET status routes still project the
 signed library; device Save stays local by default. The secondary AccountFollow
-status editor and device list rename are composed source, pending fresh final
-backend/UI qualification. Native account deletion remains unsupported.
+status editor and device list rename are composed source. The native-status
+backend has the fresh qualification above; frontend gates and actual browser
+acceptance have separate receipts/boundaries. Native account deletion remains
+unsupported.
 
 Implemented operations are still scoped adapters. Title creation/edit accepts
 only the documented localized/UUID fields. Title request-review returns 202,

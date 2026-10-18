@@ -104,8 +104,13 @@
       "path": "source-before.json",
       "bytes": 174141,
       "sha256": "82860d2237cc332f9ab7f9f3eb4235e12acec93f715d261a131e8f1f0ffbf994"
+    },
+    {
+      "path": "strict-build-association.json",
+      "bytes": 1447,
+      "sha256": "cbc817f0ef2b612649ef875418d860f7027ba243219b919a7edeef8a4c11c86a"
     }
   ],
-  "fileCount": 21,
+  "fileCount": 22,
   "manifestExcludesItself": true
 }

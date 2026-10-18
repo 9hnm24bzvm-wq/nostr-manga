@@ -115,6 +115,24 @@ async fn native_status_has_independent_cas_binding_and_no_membership_side_effect
     let gone=resolver.preferred(ResourceKind::Manga,"StatusGone01").await.unwrap().unwrap();
     let aliases:i64=state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.public_resource_ids",&[]).await.unwrap().get(0);
     let app=weebdex_platform::router::router(state.clone());let _server=Server(tokio::spawn(async move{axum::serve(listener,app).await.unwrap();}));let client=reqwest::Client::builder().no_proxy().timeout(Duration::from_secs(10)).build().unwrap();
+    // This native-only fixture deliberately has no attached original publication
+    // runtime. Preserve its genuine unavailable response, rather than inventing
+    // an empty signed graph from account membership. Actual signed-graph success
+    // is exercised separately by public_nostr_statuses with its real runtime.
+    let old_url=format!("{origin}/api/v1/manga/status");
+    let original_read=async || {
+        let response=client.get(&old_url).header("authorization",proof(2,&old_url,"GET",b"")).send().await.unwrap();
+        let status=response.status().as_u16();
+        assert!(response.headers()["cache-control"].to_str().unwrap().contains("no-store"));
+        let mut value:Value=response.json().await.unwrap();
+        assert_eq!(status,503,"original runtime is deliberately absent: {value}");
+        let error_id=value["errors"][0].as_object_mut().unwrap().remove("id").unwrap();
+        assert!(PublicUuid::parse(error_id.as_str().unwrap()).is_ok());
+        assert_eq!(value,json!({"result":"error","errors":[{"status":503,"title":"Service Unavailable","detail":"Resource projection is unavailable"}]}),"no native observations may become signed-library state");
+        eprintln!("native-only fixture original status response: HTTP {status} {value}");
+        value
+    };
+    let original_before=original_read().await;
     let preview=format!("/api/v1/nostr/manga/{manga}/reading-status?expectedAccountId={owner}");let write=format!("/api/v1/manga/{alias}/status");
     let command=|status:&str,version:i32|json!({"status":status,"expectedAccountId":owner,"expectedMangaId":manga,"version":version});
     call(&client,&origin,"GET",&preview,None,None,401).await;for key in [3,5] {call(&client,&origin,"GET",&preview,None,Some(key),403).await;}
@@ -150,6 +168,6 @@ async fn native_status_has_independent_cas_binding_and_no_membership_side_effect
     let body=serde_json::to_vec(&command("reading",9)).unwrap();let authorization=proof(2,&url,"POST",&body);let response=client.post(&url).header("content-type","application/json").header("authorization",&authorization).body(body.clone()).send().await.unwrap();assert_eq!(response.status(),200);assert_eq!(client.post(&url).header("content-type","application/json").header("authorization",&authorization).body(body).send().await.unwrap().status(),401);
     let aliases_after:i64=state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.public_resource_ids",&[]).await.unwrap().get(0);assert_eq!(aliases_after,aliases,"status writes create no resource aliases");
     // Original signed-library reads are unaffected by these native observations.
-    let old_url=format!("{origin}/api/v1/manga/status");let old:Value=client.get(&old_url).header("authorization",proof(2,&old_url,"GET",b"")).send().await.unwrap().json().await.unwrap();assert_eq!(old["nostr"]["scope"],"signed_public_library");assert_eq!(old["statuses"],json!({}));
+    assert_eq!(original_read().await,original_before);
     assert_ne!(owner,other);
 }

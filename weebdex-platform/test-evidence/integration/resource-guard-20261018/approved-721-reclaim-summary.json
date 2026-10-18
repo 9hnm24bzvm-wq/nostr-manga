@@ -1,0 +1,20 @@
+{
+  "schema": "approved-exact721-cleanup-v1",
+  "startedAtUtc": "2026-10-18T01:45:55.131323+00:00",
+  "endedAtUtc": "2026-10-18T01:45:57.155750+00:00",
+  "manifestSha256": "23ce9693d660a94bcc608f15033b0378752da1959b16607244131373ed2f1e42",
+  "approvedCandidates": 721,
+  "approvedAllocatedBytes": 1950863360,
+  "protectedHashCount": 5086,
+  "activeReferencesBefore": [],
+  "unverifiedProcessChecks": [],
+  "freeBeforeBytes": 4751368192,
+  "freeAfterBytes": 6686285824,
+  "observedFreeDeltaBytes": 1934917632,
+  "removedAllocatedBytes": 1950863360,
+  "pass": true,
+  "originalReceiptSHA256": "97b13f86d758bbf3ea43d20986d6daa4fca30fef624d4fe49499c92c34eb5c85",
+  "protectedHashChanges": 0,
+  "scope": "719 reproducible intermediate .rlib/.rmeta files and two stopped synthetic PostgreSQL data directories; all executables/shared libraries, current leased target, source and evidence excluded.",
+  "concurrentGuardNote": "Observed free-space delta differs from removed allocated bytes because an independent API guard was writing during cleanup."
+}

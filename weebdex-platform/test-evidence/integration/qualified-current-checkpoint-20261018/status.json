@@ -1,0 +1,71 @@
+{
+  "sourceAssociationCommit": "285bc026dbe7d896a897707f404e3b29e07ed175",
+  "sourceAssociationTree": "91d4ce1600688b549f89258c34d5fcc60add0d9a",
+  "frontend": {
+    "finiteDOMIndexedDB": {
+      "passed": 683,
+      "failed": 0,
+      "files": 49
+    },
+    "strict": {
+      "default": {
+        "errors": 0,
+        "warnings": 15
+      },
+      "enabled": {
+        "errors": 0,
+        "warnings": 12
+      }
+    },
+    "actualViteProductionProfiles": 2,
+    "strictProductInputCount": 916,
+    "buildProductInputCount": 914,
+    "strictAndBuildIntersectionExact": true,
+    "canonicalFrontendFilesPreserved": 679,
+    "verifiedBuildDependencyEntries": 39226,
+    "sourceManifest": "../../frontend/final-rename-status-20261018/product-source-pins.json",
+    "buildEvidence": "../../frontend/status-rename-final-builds-20261018/result.json"
+  },
+  "backend": {
+    "productionBaseline": "53130b47424b107d3b9d1b5ceb00959b62addaa5",
+    "testBaseline": "c96ead07654d38ead63bab9e6172328b79811ec9",
+    "library": {
+      "passed": 139,
+      "ignored": 2
+    },
+    "actualApiHttp": {
+      "baselineGroupsPassed": 7,
+      "nativeReadingStatusPassed": 1,
+      "routeObservations": 113
+    },
+    "protocolMatrix": {
+      "passed": 19,
+      "required": 19,
+      "sourceAdapterPinsMatched": 979,
+      "frozenExecutables": 11,
+      "allPhysicalGuardsClean": true,
+      "evidence": "../final-backend-matrix-20261018/final-result.json"
+    },
+    "nativeAndOriginalStatusReadBoundary": "Native fixture preserves an actual unavailable503 before/after native writes. Separate genuine original signed-status200 fixture passed with its real publication runtime."
+  },
+  "compatibility": {
+    "inventoryOperations": 113,
+    "scopedHandlers": 91,
+    "protocolAuthExceptions": 12,
+    "operatorBoundary": 1,
+    "documentedRESTGaps": 9,
+    "nullReadingStatusClear": "explicit unsupported partial boundary"
+  },
+  "limitations": [
+    "Real native-browser/hosted acceptance and rendered visual parity have not been established.",
+    "Load/production-scale qualification has not been established.",
+    "Finite/DOM/IDB and loopback/PostgreSQL/original-strfry fixtures remain scoped to their documented boundaries.",
+    "Source preservation and source-associated qualification are not a deployment or a claim of complete upstream compatibility."
+  ],
+  "precedingVerifiedRemoteCheckpoint": {
+    "localSourceCommit": "ff19f8fea0f1358505f83ed418f8299757db2ecf",
+    "remoteCommit": "a7cc86eb7a8ba7131dacd7205d3c30fe4f3e3607",
+    "exactTree": "4efa11481b981877dd821c9566697540b50e4ec4",
+    "note": "Historical checkpoint association. The subsequent publication receipt is verified separately after tree/commit/ref creation."
+  }
+}

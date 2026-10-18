@@ -1,0 +1,17 @@
+
+running 1 test
+test native_status_has_independent_cas_binding_and_no_membership_side_effects ... 
+thread 'native_status_has_independent_cas_binding_and_no_membership_side_effects' panicked at tests/public_native_reading_status.rs:153:188:
+assertion `left == right` failed
+  left: Null
+ right: "signed_public_library"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    native_status_has_independent_cas_binding_and_no_membership_side_effects
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+

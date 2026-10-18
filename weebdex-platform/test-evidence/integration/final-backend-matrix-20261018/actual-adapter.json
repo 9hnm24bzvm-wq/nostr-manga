@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "kind": "actual-public-relation-adapter-loopback-probe",
+  "startedAt": "2026-10-18T01:56:47.176Z",
+  "status": "passed",
+  "scriptSha256": "a3c857eb5be4d1140b8e8ec8d71b7c2af874f39910edfeb681d2e1678b09dc66",
+  "sources": {
+    "client.ts": "def5055ee7d37bfb2dd01caa10b211163402885dddb5213c73835b22e94735d3",
+    "validation.ts": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+    "catalogue-edges.ts": "dab0693492d0f849d39515f4cc1a1b30bdb2ad55c7a4b0958e19596cc0ab6e1e",
+    "normalize.ts": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b"
+  },
+  "budget": {
+    "deadlineMs": 60000,
+    "pageNormalizedJsonBytes": 1048576,
+    "totalNormalizedJsonBytes": 16777216
+  },
+  "boundary": "Actual production adapter/client over fixture loopback HTTP; no native-browser/storage or production acceptance claim.",
+  "expectedRelations": 4096,
+  "httpStatus": 200,
+  "actualRelations": 4096,
+  "targetOrderSha256": "bc85e0578807fcef14f5e369b7eb862ca68b59bfca6fa47a7e8fcfea8f65baa9",
+  "edgeOrderSha256": "cf31ec418c9c9c4b9fe4f06e8c56a2f6c663430821cab716563e9c85d83f44a6",
+  "elapsedMs": 49112.091,
+  "relationPageRequests": 128,
+  "hydrationRequests": 128,
+  "rawResponseBytes": 7841019,
+  "requestCount": 256,
+  "maxOneRequestMs": 541.224,
+  "maxOneResponseBytes": 32784,
+  "rawProbeReceiptSha256": "4743b9c5fee6bcd8ce34c7d50f709f33995f8ef0e8a9a9389675765fc8bed82f",
+  "actualCurrentCheckout": true
+}

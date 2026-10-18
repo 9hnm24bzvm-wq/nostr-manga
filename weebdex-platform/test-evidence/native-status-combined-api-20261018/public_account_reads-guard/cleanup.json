@@ -1,0 +1,118 @@
+{
+  "postgres_cleanup": "verified_stopped",
+  "exit": 0,
+  "forced": false,
+  "closed_port": true,
+  "remaining_owned_processes": [],
+  "cleanup_errors": [],
+  "error": null,
+  "test_timeout_seconds": 180,
+  "captured_births": [
+    {
+      "pid": 194,
+      "start_ticks": 8157388,
+      "group": 194,
+      "session": 194
+    },
+    {
+      "pid": 203,
+      "start_ticks": 8157400,
+      "group": 194,
+      "session": 194
+    },
+    {
+      "pid": 204,
+      "start_ticks": 8157400,
+      "group": 194,
+      "session": 194
+    },
+    {
+      "pid": 205,
+      "start_ticks": 8157408,
+      "group": 194,
+      "session": 194
+    },
+    {
+      "pid": 207,
+      "start_ticks": 8157445,
+      "group": 207,
+      "session": 207
+    },
+    {
+      "pid": 208,
+      "start_ticks": 8157446,
+      "group": 208,
+      "session": 208
+    },
+    {
+      "pid": 209,
+      "start_ticks": 8157446,
+      "group": 209,
+      "session": 209
+    },
+    {
+      "pid": 211,
+      "start_ticks": 8157446,
+      "group": 211,
+      "session": 211
+    },
+    {
+      "pid": 212,
+      "start_ticks": 8157446,
+      "group": 212,
+      "session": 212
+    },
+    {
+      "pid": 213,
+      "start_ticks": 8157446,
+      "group": 213,
+      "session": 213
+    },
+    {
+      "pid": 214,
+      "start_ticks": 8157450,
+      "group": 214,
+      "session": 214
+    },
+    {
+      "pid": 216,
+      "start_ticks": 8157452,
+      "group": 216,
+      "session": 216
+    },
+    {
+      "pid": 218,
+      "start_ticks": 8157456,
+      "group": 218,
+      "session": 218
+    },
+    {
+      "pid": 224,
+      "start_ticks": 8157457,
+      "group": 224,
+      "session": 224
+    },
+    {
+      "pid": 225,
+      "start_ticks": 8157471,
+      "group": 225,
+      "session": 225
+    },
+    {
+      "pid": 226,
+      "start_ticks": 8157501,
+      "group": 226,
+      "session": 226
+    }
+  ],
+  "unconfirmed_births": [],
+  "unconfirmed_child_pids": [],
+  "test_returncode": 0,
+  "postgres_returncode": 0,
+  "startup_timeout_seconds": 10,
+  "cleanup_phase_seconds": [
+    15,
+    5,
+    5
+  ]
+}
