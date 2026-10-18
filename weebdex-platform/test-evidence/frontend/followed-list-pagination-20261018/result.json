@@ -1,0 +1,35 @@
+{
+  "sourceBase": "ccc70a1dd0d81dff66ec586274313d706acfae90",
+  "sourceSha256": {
+    "weebdex-platform/platform-integrations/public-api/FollowedLists.svelte": "dc26198c0904077b226742b874c4cea54decc17a8503fb18230ece3671b69d60",
+    "weebdex-platform/tests/ci/test_followed_lists_pagination.mjs": "09c01ce568b3cfb5ea65becda093fccce563ee16b41e6de057390e8eb904c3fc"
+  },
+  "baseline": {
+    "tests": 5,
+    "passed": 3,
+    "failed": 2,
+    "expectedExit": 1
+  },
+  "correctedListGroup": {
+    "files": 3,
+    "tests": 16,
+    "passed": 16,
+    "failed": 0,
+    "newTests": 5
+  },
+  "correctedReaderAndListGroup": {
+    "files": 6,
+    "tests": 102,
+    "passed": 102,
+    "failed": 0,
+    "newTests": 12
+  },
+  "rawLogSha256": {
+    "list-baseline.log": "936eb54e906d1dd844e1c44b17b674d463d6fdf9c31e44c58d1a4d4a90bd6ee6",
+    "list-corrected.log": "e8c955414d4068c796b26c8104874e7a4eda0609501495413d18b9577e1646de",
+    "combined-corrected.log": "cc21a28f3e6c178ead5749efad09a79ae183af2b1eecd3c0e56930eb10d0bcbd"
+  },
+  "rawLogsRetainedAsGzipWithoutByteChanges": true,
+  "canonicalFilesVerifiedUnchanged": 679,
+  "scope": "Actual component script and exact source pagination expressions with finite account/HTTP reads. Empty later pages preserve Previous; failed reads retain the captured reader and fence controls until explicit Refresh. No DOM/native-browser, whole-app strict or Vite qualification for this successor."
+}

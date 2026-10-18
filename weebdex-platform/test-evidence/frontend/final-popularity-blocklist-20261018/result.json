@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "testedSource": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9",
+  "testedTree": "ee48a2664a5ab89b4863b0bfa9440ffaf16afe7f",
+  "finite": {
+    "files": 56,
+    "tests": 755,
+    "passed": 755,
+    "failed": 0,
+    "skipped": 0
+  },
+  "strict": {
+    "gate0": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "gate1": {
+      "errors": 0,
+      "warnings": 12
+    }
+  },
+  "sourceFiles": 1055,
+  "productSourceFiles": 919,
+  "canonicalFiles": 679,
+  "sourcePinsPreserved": true,
+  "dependencyRootsPreserved": 4,
+  "cacheGuardReceipts": 68,
+  "protectedWriteAttempts": 0,
+  "productCanonicalJsonSha256": "7771f18335b5325dcfc4c764ab7cbcb8b9c096e84c849d85a235cc3cba774ab9",
+  "productPrettyFileSha256": "a461559d791638aa678e84e57d473699207c907d581aebe9ec43a84b0e4d5426",
+  "limitation": "Actual compiled Svelte/JSDOM and fake-indexeddb execute production adapters with declared transport/leaf boundaries; Vite, native browser and actual backend HTTP/probe acceptance have separate receipts."
+}

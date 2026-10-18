@@ -15,6 +15,7 @@ use axum::{
     routing::{get, post},
 };
 pub use repository::{CatalogPage, CatalogRepository, ChapterPublication, CoverPublication};
+pub(crate) use read::ranking_at;
 
 pub fn router() -> Router<AppState> {
     Router::new()

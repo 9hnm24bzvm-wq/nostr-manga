@@ -81,6 +81,9 @@ repair(keyboard, 'round6 reader recognizes control-owned keyboard paths',
 repair(keyboard, 'round6 reader does not steal native or already handled shortcuts',
   '\t\t\tev.target instanceof HTMLInputElement ||\n\t\t\tev.target instanceof HTMLTextAreaElement ||',
   '\t\t\tev.defaultPrevented ||\n\t\t\tcontrolOwnsEvent(ev) ||');
+repair(keyboard, 'reader yields system modifiers and active text composition',
+  '\t\t\tev.ctrlKey ||',
+  '\t\t\tev.ctrlKey ||\n\t\t\tev.altKey ||\n\t\t\tev.metaKey ||\n\t\t\tev.isComposing ||');
 repair(keyboard, 'round6 focused control terminates a held reader animation',
   '\t\t\tgetIsOpen()\n\t\t) {\n\t\t\treturn;',
   '\t\t\tgetIsOpen()\n\t\t) {\n\t\t\tonKeyUp();\n\t\t\treturn;');

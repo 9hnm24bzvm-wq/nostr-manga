@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "sourceAssociationCommit": "3414e87b0bdf7945f784545fa4b681f02e8348ca",
+  "frontendTestedCommit": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9",
+  "frontend": {
+    "finiteCompiledDomAndIndexedDb": {
+      "files": 56,
+      "passed": 755,
+      "failed": 0
+    },
+    "strict": {
+      "default": {
+        "errors": 0,
+        "warnings": 15
+      },
+      "publicEnabled": {
+        "errors": 0,
+        "warnings": 12
+      }
+    },
+    "productionBuilds": {
+      "default": {
+        "exit_code": 0,
+        "elapsed_seconds": 44.357,
+        "artifact_files": 449,
+        "artifact_bytes": 7266474,
+        "artifact_path": "/workspace/shared/nostr-manga-recovery-20261017/popularity-final-builds-evidence-20261018/artifact-default",
+        "artifact_manifest_sha256": "89dc4325d8b577d61f9f964a820f340eb3a9c7ae8cfcdd7ba84e5ecf41d600d1",
+        "index_sha256": "6b5cf00affc49fbbebb703fd5979e947ab79b572cec42e9e0ea08edc12afa07c",
+        "source_and_dependencies_unchanged": true,
+        "cleanup_verified": true,
+        "resource_stop": null,
+        "minimum_free_bytes": 5497298944,
+        "maximum_owned_rss_bytes": 2530476032,
+        "minimum_available_memory_bytes": 5780926464
+      },
+      "enabled": {
+        "exit_code": 0,
+        "elapsed_seconds": 46.363,
+        "artifact_files": 450,
+        "artifact_bytes": 7305886,
+        "artifact_path": "/workspace/shared/nostr-manga-recovery-20261017/popularity-final-builds-evidence-20261018/artifact-enabled",
+        "artifact_manifest_sha256": "689e4cd08315aa0be91e2259143250e50a5ed797c8bdf5ca3b0249de2c8827d5",
+        "index_sha256": "ec036eb16a62303162045939ef0cf68e63d7a084a27a52b4af4bfa0e010f51ed",
+        "source_and_dependencies_unchanged": true,
+        "cleanup_verified": true,
+        "resource_stop": null,
+        "minimum_free_bytes": 5464137728,
+        "maximum_owned_rss_bytes": 2571235328,
+        "minimum_available_memory_bytes": 5740625920
+      }
+    },
+    "productSourceFiles": 919,
+    "productSourceHashesMatch": true,
+    "canonicalFrontendFilesUnchanged": 679,
+    "nativeBrowserExecuted": false
+  },
+  "backend": {
+    "qualifiedProductionAndTestCommit": "a33db0633124c6f52ab86dd6baedcd1c7520e5c6",
+    "currentBackendAndProtocolBytesEqualQualifiedCommit": true,
+    "unitPassed": 140,
+    "preexistingIgnored": 2,
+    "affectedDatabaseSuitesPassed": [
+      "public_popularity",
+      "community_http",
+      "public_catalogue_reads",
+      "public_statistics"
+    ],
+    "actualCurrentProductionClientBridge": {
+      "requests": 22,
+      "observations": 18,
+      "elapsedMilliseconds": 252.578,
+      "bytes": 16978,
+      "mangaObservedViews": [
+        0,
+        1,
+        1
+      ],
+      "chapterObservedViews": [
+        3,
+        4,
+        4
+      ],
+      "windows": 3,
+      "receiptSHA256": "f3cf1885ee1be90bf0878f4351dcc36e834ff9a5654809087ee31bbbce0efc95",
+      "boundary": "Production Node clients against owned loopback HTTP/PostgreSQL fixture; declared minimal Node cookie storage, not browser cookie integration."
+    },
+    "priorFullMatrix": {
+      "sourceCommit": "0395fbc3f0191008d07c1cd8c9c6a5de8801d59b",
+      "casesPassed": 19,
+      "freshFullMatrixForThisSuccessor": false
+    }
+  },
+  "evidenceSHA256": {
+    "weebdex-platform/test-evidence/frontend/final-popularity-blocklist-20261018/result.json": "c5cbf67b379b2987c663edbea5f9bdf3b95dc1ced862e8356aa274e1485d3982",
+    "weebdex-platform/test-evidence/frontend/popularity-blocklist-final-builds-20261018/result.json": "1d42db4edabae674937cbef54ffcec5d0d216b9a591f967368647935bf37c8d9",
+    "weebdex-platform/test-evidence/public-popularity-client-bridge-20261018/actual-public-popularity-client.json": "f3cf1885ee1be90bf0878f4351dcc36e834ff9a5654809087ee31bbbce0efc95"
+  },
+  "remotePreservationAtDocumentationTime": {
+    "localSourceCommit": "58b9fc48b5e7bfc380e5a72c6edf111682507a1f",
+    "remoteCommit": "4f0ecce8c834fbc4b869ad0ee23320d6139589d3",
+    "tree": "20cb9cc0b30e80f7012d7d56957a9fe7c2bb0935",
+    "verifiedUTC": "2026-10-18T02:25:12Z"
+  },
+  "limitations": [
+    "The nineteen-case complete backend matrix remains tied to its exact prior baseline; this successor has scoped affected-backend qualification.",
+    "Actual native browser, hosted end-to-end, rendered visual parity and mixed/high-load qualification remain pending.",
+    "The pinned113-operation inventory retains9plainREST gaps,12protocol/auth exceptions and1operator-only boundary."
+  ]
+}

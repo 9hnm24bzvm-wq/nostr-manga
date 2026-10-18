@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "sourceCommit": "06963196aa4295e548e195a3cef78e3ed616e795",
+  "backendContract": "179dbae6749a19c4bc99a98cf7c0ed1b6c9fec29",
+  "focused": {
+    "tests": 120,
+    "passed": 120,
+    "failed": 0,
+    "skipped": 0,
+    "newClientFinite": 23,
+    "newAnalyticsCallerScriptFinite": 11,
+    "newCompiledSvelteJSDOM": 6,
+    "affectedExisting": 80
+  },
+  "sourceRegistry": {
+    "files": 46,
+    "availabilityPairs": 9,
+    "mediaExceptions": 3,
+    "featureExceptions": 10
+  },
+  "canonicalFrontendChanged": false,
+  "newDependenciesInstalledOrCopied": false,
+  "heavyBuildRun": false,
+  "independentSourceReview": "No concrete blocker; six production hashes plus sort[] fail-closed successor reviewed.",
+  "boundaries": [
+    "Actual production public client/query/normalization and composed page/window/chapter components execute.",
+    "HTTP, prefs store and leaf controls/cards are explicit finite stand-ins. Analytics caller lifecycles/dwell timers/storage are finite.",
+    "This does not establish native-browser persistence, whole-app behavior, real backend HTTP, final composed strict or Vite acceptance."
+  ]
+}

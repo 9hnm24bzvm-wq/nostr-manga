@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "tested_source_commit": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9",
+  "tested_source_tree": "ee48a2664a5ab89b4863b0bfa9440ffaf16afe7f",
+  "source_inputs": 1273,
+  "frontend_build_inputs": 917,
+  "canonical_frontend_files": 679,
+  "dependency_entries": 39226,
+  "source_before_sha256": "5af3a89acc99abe41716c65b51641fc5bd8d63bdaa438f2f50a10d8884d32938",
+  "source_after_sha256": "5af3a89acc99abe41716c65b51641fc5bd8d63bdaa438f2f50a10d8884d32938",
+  "frontend_inputs_sha256": "4d50331e734302c9bcfe30424645c80d4ea7dbc1141b119ba7a1d691e6c8eb1a",
+  "canonical_frontend_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+  "dependencies_manifest_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "profiles": {
+    "default": {
+      "exit_code": 0,
+      "elapsed_seconds": 44.357,
+      "artifact_files": 449,
+      "artifact_bytes": 7266474,
+      "artifact_path": "/workspace/shared/nostr-manga-recovery-20261017/popularity-final-builds-evidence-20261018/artifact-default",
+      "artifact_manifest_sha256": "89dc4325d8b577d61f9f964a820f340eb3a9c7ae8cfcdd7ba84e5ecf41d600d1",
+      "index_sha256": "6b5cf00affc49fbbebb703fd5979e947ab79b572cec42e9e0ea08edc12afa07c",
+      "source_and_dependencies_unchanged": true,
+      "cleanup_verified": true,
+      "resource_stop": null,
+      "minimum_free_bytes": 5497298944,
+      "maximum_owned_rss_bytes": 2530476032,
+      "minimum_available_memory_bytes": 5780926464
+    },
+    "enabled": {
+      "exit_code": 0,
+      "elapsed_seconds": 46.363,
+      "artifact_files": 450,
+      "artifact_bytes": 7305886,
+      "artifact_path": "/workspace/shared/nostr-manga-recovery-20261017/popularity-final-builds-evidence-20261018/artifact-enabled",
+      "artifact_manifest_sha256": "689e4cd08315aa0be91e2259143250e50a5ed797c8bdf5ca3b0249de2c8827d5",
+      "index_sha256": "ec036eb16a62303162045939ef0cf68e63d7a084a27a52b4af4bfa0e010f51ed",
+      "source_and_dependencies_unchanged": true,
+      "cleanup_verified": true,
+      "resource_stop": null,
+      "minimum_free_bytes": 5464137728,
+      "maximum_owned_rss_bytes": 2571235328,
+      "minimum_available_memory_bytes": 5740625920
+    }
+  },
+  "physical_artifact_files_independently_rehashed": 899,
+  "source_canonical_and_dependencies_unchanged": true,
+  "restored_historical_receipt_sha256": {
+    "weebdex-platform/test-evidence/frontend/build-integration.json": "74996cf455f5d00b6c06d92e28b9a04fd0a6fb76ee65e3910d41de2802aac2a7",
+    "weebdex-platform/test-evidence/frontend/integration-source-manifest.json": "ba3742b099aeea5ac873c41d22fb26afa0248f26823867c53b3a9d5031efb207"
+  },
+  "strict_association_file": "strict-build-association.json",
+  "no_dependency_install_or_copy": true,
+  "browser_executed": false,
+  "limitations": [
+    "These are actual production Vite builds with existing verified local dependencies, not rendered native-browser acceptance.",
+    "The755 finite/JSDOM/fake-IDB and both strict results have separate exact receipts, associated here only by matching all917 build inputs and two contract hashes.",
+    "The existing supported browser application-host/bootstrap blockage remains unresolved. No new browser launch, security/network workaround or tunnel was attempted.",
+    "Backend runtime suites retain their own qualified source pins; this evidence does not claim a fresh full backend matrix on the integration successor."
+  ],
+  "utc": "2026-10-18T02:33:20.351185+00:00"
+}

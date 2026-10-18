@@ -1,0 +1,132 @@
+{
+  "utc": "2026-10-18T02:34:32Z",
+  "composed_base": "d633690e6c220d3ad1baf00748d314c968cad1e8",
+  "qualified_hook_source": "f505bccdc6dfbd82bbf0bdee7a7b18ee9c360dff",
+  "production_backend_equivalent_to": "a23ac87a945ecff3d5e7daa07d428bb41efc4820",
+  "delta": "Only integration test hook; no production backend/protocol or frontend changes.",
+  "compile": {
+    "source_baseline": "f505bccdc6dfbd82bbf0bdee7a7b18ee9c360dff",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "weebdex-platform/backend/Cargo.toml",
+      "-j1",
+      "--no-run",
+      "--lib",
+      "--test",
+      "public_popularity"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 2.5014023010007804,
+    "minimum_free_bytes": 5445685248,
+    "floor_interrupted": false,
+    "source_pins_unchanged": true,
+    "log_sha256": "1367e684e7153832be9a90bbf3ed9d37ddf93255be4bc65dfb4fe24cba6841ef"
+  },
+  "frozen_input_count": 917,
+  "all_inputs_still_match": true,
+  "runs": [
+    {
+      "suite": "lib",
+      "utc": "2026-10-18T02:33:19Z",
+      "source_baseline": "f505bccdc6dfbd82bbf0bdee7a7b18ee9c360dff",
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/weebdex_platform-4adb5f241d38c865",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 2.0025209989980794,
+      "minimum_free_bytes": 5446221824,
+      "free_bytes_after": 5446209536,
+      "interrupted_at_disk_floor": false,
+      "binary_path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/weebdex_platform-4adb5f241d38c865",
+      "binary_sha256": "736c2092c63211a78af8d31b4c09e98745d43c95a7b51844ddbff05e3e2217ba",
+      "output_sha256": "3ecb84eb122f2c7011df305f7209930c818f5df224317f1f560e0cb3cefd7ba4",
+      "result": [
+        "test result: ok. 140 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.94s"
+      ],
+      "fixture": null,
+      "cleanup": null
+    },
+    {
+      "suite": "public_popularity",
+      "utc": "2026-10-18T02:33:21Z",
+      "source_baseline": "f505bccdc6dfbd82bbf0bdee7a7b18ee9c360dff",
+      "command": [
+        "bash",
+        "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+        "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_popularity-94e6cda94aa045d6",
+        "--ignored",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 1.75473019698984,
+      "minimum_free_bytes": 5397770240,
+      "free_bytes_after": 5393920000,
+      "interrupted_at_disk_floor": false,
+      "binary_path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_popularity-94e6cda94aa045d6",
+      "binary_sha256": "c22548ae9bcea9057eb943231b2ba0878267a618198ec6100cff064fcd1a9e0a",
+      "output_sha256": "3ac73667962f30837bad1ffc23731aa07d83141d0d1db5fa5d5f165867753b14",
+      "result": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.75s"
+      ],
+      "fixture": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-u6zhwwpv",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "closed_port": true,
+        "forced": false,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "test_returncode": 0
+      }
+    }
+  ],
+  "probe_selftests": {
+    "command": [
+      "node",
+      "--experimental-vm-modules",
+      "--test",
+      "weebdex-platform/tests/ci/test_public_popularity_probe.mjs"
+    ],
+    "passed": 3,
+    "failed": 0,
+    "source_sha256": "7db339a3a8254a14b75e71ecb280a25a68035a41b2be4e92a42e1572a2a5958f"
+  },
+  "actual_client_probe": {
+    "receipt_sha256": "f3cf1885ee1be90bf0878f4351dcc36e834ff9a5654809087ee31bbbce0efc95",
+    "script_sha256": "04c8d44ce06028d6775e70b18132ac07ee4c062a9c7b5b173173f338ffdd4653",
+    "source_sha256": {
+      "client.ts": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+      "validation.ts": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+      "popularity.ts": "5ebc5ae60c8aa71c120bd07349dd91dd7cad3ef2984022321074654e9ad6fa8b",
+      "query.ts": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193"
+    },
+    "http_requests": 22,
+    "observations": 18,
+    "elapsed_ms": 252.578,
+    "raw_response_bytes": 16978,
+    "cookie_policy": {
+      "nodeInMemoryJar": true,
+      "productionSameOriginCredentials": true,
+      "visitorCookieObserved": true,
+      "valuesRetained": false,
+      "path": "/api/v1/analytics",
+      "httpOnly": true,
+      "sameSite": "Lax",
+      "secure": false
+    },
+    "manga_all_windows": "0 -> 1 -> 1",
+    "chapter_all_windows": "3 -> 4 -> 4"
+  },
+  "boundaries": [
+    "This is the exact production TypeScript client/ranking adapter over actual owned loopback HTTP; the explicit Node in-memory cookie jar is not native-browser cookie acceptance.",
+    "No new production functionality was introduced after the a23 backend feature qualification. The earlier nineteen-case matrix stays associated with its baseline rather than inherited as a fresh full-matrix run.",
+    "Representative production load, proxy/TLS/mail, real browser/PWA and deployment acceptance remain separate."
+  ],
+  "free_bytes_after": 5388623872
+}

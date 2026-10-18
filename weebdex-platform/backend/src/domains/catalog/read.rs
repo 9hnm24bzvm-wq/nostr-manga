@@ -158,6 +158,11 @@ async fn manga_feed(
     Ok(Json(data))
 }
 fn ranking(q: &QueryParams, sql: &mut Sql, kind: &str, id: &str) -> ApiResult<String> {
+    ranking_at(q, sql, kind, id, "clock_timestamp()")
+}
+/// Shared persisted ranking expression. Every SQL identifier/clock is supplied
+/// by a trusted internal caller; request values remain bound parameters.
+pub(crate) fn ranking_at(q: &QueryParams, sql: &mut Sql, kind: &str, id: &str, clock: &str) -> ApiResult<String> {
     let rank = q.first("rank").unwrap_or("read");
     if kind == "manga" && matches!(rank, "follow" | "follows") {
         return Ok("COALESCE(s.follows,0)".to_owned());
@@ -168,7 +173,7 @@ fn ranking(q: &QueryParams, sql: &mut Sql, kind: &str, id: &str) -> ApiResult<St
     if let Some(seconds) = window_seconds(q)? {
         let p = sql.bind(seconds);
         Ok(format!(
-            "(SELECT count(*) FROM platform.catalog_view_events ve WHERE ve.entity_type='{kind}' AND ve.entity_id={id} AND ve.viewed_at>=clock_timestamp()-({p}::bigint * interval '1 second'))"
+            "(SELECT count(*) FROM platform.catalog_view_events ve WHERE ve.entity_type='{kind}' AND ve.entity_id={id} AND ve.viewed_at>={clock}-({p}::bigint * interval '1 second') AND ve.viewed_at<={clock})"
         ))
     } else {
         Ok("COALESCE(s.views,0)".to_owned())

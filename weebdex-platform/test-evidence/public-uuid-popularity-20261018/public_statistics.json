@@ -1,0 +1,33 @@
+{
+  "suite": "public_statistics",
+  "utc": "2026-10-18T02:24:27Z",
+  "source_baseline": "a23ac87a945ecff3d5e7daa07d428bb41efc4820",
+  "command": [
+    "bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_statistics-1f81e4a3753701df",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 1.5020412449957803,
+  "minimum_free_bytes": 5669117952,
+  "free_bytes_after": 5663956992,
+  "interrupted_at_disk_floor": false,
+  "binary_path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_statistics-1f81e4a3753701df",
+  "binary_sha256": "981147b28dea748c8337c461e95e95b4b1bb2a4788cfecaf5bfe4dd66e8b8d3f",
+  "output_sha256": "7bd52ac7d70e14c44cc5f4d030cb16e8629e5ec87052f3543b435d970b2936bb",
+  "result": [
+    "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s"
+  ],
+  "fixture": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-ctlso3vd",
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "closed_port": true,
+    "forced": false,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "test_returncode": 0
+  }
+}

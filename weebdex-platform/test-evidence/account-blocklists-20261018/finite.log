@@ -1,0 +1,63 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ explicit load uses one captured account and reads/hydrates actual saved UUIDs without writes (4.330964ms)
+✔ verified search choices produce only changed blocklist fields with captured account/version/time/template (2.665538ms)
+✔ arbitrary/native IDs, wrong kinds, stale candidate input and duplicate additions cannot create invalid references (4.347017ms)
+✔ snapshots and returned candidate rows cannot mutate internal selected IDs or captured version (1.104531ms)
+✔ wrong typed/duplicate/native/out-of-scope lookup resources fail closed and freeze edits (2.212417ms)
+✔ private directory cache and exact account provenance are mandatory (1.557362ms)
+✔ invalid search strings and unloaded/no-change state do not dispatch writes or directory requests (0.840384ms)
+✔ account rebind with colliding revision refuses captured save and requires explicit reread (0.989989ms)
+✔ refused or lost settings receipts never auto-retry and retain recheck fence (3.32531ms)
+✔ pending read/search/save serializes controller edits and discards signer-invalid completions (0.792692ms)
+✔ visible-reference limit is enforced without trimming existing account selections (1.580236ms)
+✔ actual retained layout prefix override preserves one delimiter for saved-ID hydration and both typed searches (2.982395ms)
+✔ anonymous device baseline has no blocklist action or account request (24.363549ms)
+✔ signed identity alone can open exact account blocklists without changing any native form (32.272131ms)
+✔ actual search/add/remove DOM requires deliberate confirmation and explicit account save (31.005527ms)
+✔ closing during delayed preview removes private account state and discards late completion (16.201044ms)
+✔ signer generation change during search clears results/account/counts and does not capture another account (24.774205ms)
+✔ new search text invalidates a delayed old result before it can become a selection (24.305151ms)
+✔ unknown save disables edits/replay until explicit current-account reread (25.625356ms)
+✔ route change before save refuses dispatch even before signer effects run (16.664811ms)
+(node:14) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ pinned frontend schema matches the real immutable backend template, without invented vocabulary/defaults (1.66944ms)
+✔ only changed known form fields are selected; unchanged/hidden/private settings are omitted (0.441694ms)
+✔ actual selected UUID references are translated from native form objects without fabricating unknown filters (0.487312ms)
+✔ changed invalid language/page-size/booleans, duplicate or legacy references never become account commands (1.59586ms)
+✔ actual account settings preserve omitted fields, version and unavailable count without defaults (1.129428ms)
+✔ explicit settings POST captures actual account/version/template/server timestamp and sends only selected patch (0.679482ms)
+✔ same-state merge retains real revision and preview timestamp (0.313822ms)
+✔ invalid/empty/unsupported patches and unloaded state never dispatch a write (0.71833ms)
+✔ settings preview rejects wrong bound account/template/source, unknown fields and malformed actual values (1.787989ms)
+✔ native account rebind with colliding preference version cannot redirect captured intent (0.481435ms)
+✔ authorization/CAS/overload refusals freeze account saves until a new read, without replay (0.852271ms)
+✔ lost or malformed successful receipts never claim account save and require explicit reread (1.067195ms)
+✔ caller mutations to a returned settings snapshot cannot change the captured command version/reference state (0.227513ms)
+✔ pending write cannot race another request and signer/view invalidation discards its completion (1.424412ms)
+(node:16) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ default preference editing never requests a signer/account; optional action is connected-only (6.033905ms)
+✔ intentional account preview contains only actual changed form fields and actual target username (2.887682ms)
+✔ confirmed save uses exact captured patch and does not apply response to device/native preferences or form baseline (2.841353ms)
+✔ closing during account preview discards late account/user state and pending indicator (2.341241ms)
+✔ signer generation change during save cannot install old-account confirmation or counts (2.219899ms)
+✔ form changes before Svelte effect flush cannot dispatch a stale account patch (4.63498ms)
+✔ form changes during save discard the old form/account result (1.708259ms)
+✔ unknown outcome requires explicit reload and cannot automatically repeat the command (1.687728ms)
+✔ invalid legacy filter or no supported form change never invokes an account request (3.21849ms)
+✔ real composed native form retains its original Save flow and adds only optional explicit account action (15.211315ms)
+✔ editing the form during a delayed account preview discards that preview before confirmation becomes available (1.992417ms)
+✔ post-save form edits clear prior success/account state and require a new exact changed-field preview (1.631804ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 970.253022

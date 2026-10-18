@@ -1,0 +1,48 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/popularity-final-build-worktree-20261018/weebdex-platform/scripts/build-frontend.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/popularity-final-build-worktree-20261018/weebdex-platform",
+  "deadline_seconds": 900,
+  "elapsed_seconds": 46.363,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "cleanup_verified": true,
+  "surviving_owned_process_ids": [],
+  "owned_process_births": [
+    [
+      5,
+      8401699
+    ],
+    [
+      12,
+      8401711
+    ],
+    [
+      20,
+      8401721
+    ],
+    [
+      37,
+      8401905
+    ],
+    [
+      56,
+      8403611
+    ],
+    [
+      72,
+      8406325
+    ]
+  ],
+  "cleanup_signals": [],
+  "stop_reason": null,
+  "minimum_free_bytes": 5464137728,
+  "cleanup_reserve_bytes": 134217728,
+  "floor_bytes": 4294967296,
+  "maximum_owned_rss_bytes": 2571235328,
+  "minimum_available_memory_bytes": 5740625920,
+  "terminal_receipt": true,
+  "identity": "verified process births and pidfd-owned descendants"
+}

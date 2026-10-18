@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "a317a97c9eeeba6069c5759df0c31fcc6f8d04c2",
+  "kind": "owned-loopback-popularity-probe-selftest",
+  "status": "passed",
+  "passed": 3,
+  "failed": 0,
+  "skipped": 0,
+  "actualBackendBridge": "pending-owned-fixture-hook",
+  "boundaries": [
+    "Exact current-checkout production public client and popularity adapter",
+    "Local HTTP stand-in assertions for harness success and fail-closed behavior",
+    "Explicit Node visitor jar and Origin; no native-browser cookie claim",
+    "No production/frontend source change"
+  ]
+}

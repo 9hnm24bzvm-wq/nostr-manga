@@ -21,6 +21,16 @@
       "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/a7cc86eb7a8ba7131dacd7205d3c30fe4f3e3607",
       "verifiedUTC": "2026-10-18T01:32:44Z",
       "qualification": "Preservation checkpoint; new full frontend strict/build association and remaining combined backend matrix qualification are pending."
+    },
+    {
+      "localSourceCommit": "58b9fc48b5e7bfc380e5a72c6edf111682507a1f",
+      "localSourceTree": "20cb9cc0b30e80f7012d7d56957a9fe7c2bb0935",
+      "remoteCommit": "4f0ecce8c834fbc4b869ad0ee23320d6139589d3",
+      "remoteTree": "20cb9cc0b30e80f7012d7d56957a9fe7c2bb0935",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/4f0ecce8c834fbc4b869ad0ee23320d6139589d3",
+      "verifiedUTC": "2026-10-18T02:25:12Z",
+      "qualification": "Preservation checkpoint with exact frontend finite/DOM/IDB, strict and production-build association. The broader backend matrix remains explicitly pending in this historical snapshot."
     }
   ],
   "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"

@@ -1,0 +1,8 @@
+{
+  "tests/ci/probe_public_popularity.mjs": "04c8d44ce06028d6775e70b18132ac07ee4c062a9c7b5b173173f338ffdd4653",
+  "tests/ci/test_public_popularity_probe.mjs": "7db339a3a8254a14b75e71ecb280a25a68035a41b2be4e92a42e1572a2a5958f",
+  "platform-integrations/public-api/client.ts": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+  "platform-integrations/public-api/popularity.ts": "5ebc5ae60c8aa71c120bd07349dd91dd7cad3ef2984022321074654e9ad6fa8b",
+  "platform-integrations/public-api/query.ts": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193",
+  "platform-integrations/public-api/validation.ts": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce"
+}

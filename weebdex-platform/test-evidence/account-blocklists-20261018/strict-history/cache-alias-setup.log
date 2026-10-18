@@ -1,0 +1,14 @@
+▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:12:
+      2 │   "extends": "./.svelte-kit/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+file:///workspace/shared/nostr-manga-recovery-20261017/account-blocklists-worktree-20261018/weebdex-platform/scripts/check-composed-frontend.mjs:218
+if (unresolvedGraphEdges.length) throw Error(`Projection graph has ${unresolvedGraphEdges.length} unresolved source edges: ${JSON.stringify(unresolvedGraphEdges)}`);
+                                       ^
+
+Error: Projection graph has 4 unresolved source edges: [{"importer":"platform-integrations/local-library/protocol/nostr.js","specifier":"@noble/curves/secp256k1.js","target":"/workspace/shared/nostr-manga-recovery-20261017/account-blocklists-worktree-20261018/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/curves/secp256k1.js","resolver":"unresolved-production-alias-or-relative"},{"importer":"platform-integrations/local-library/protocol/codec.js","specifier":"@noble/hashes/sha2.js","target":"/workspace/shared/nostr-manga-recovery-20261017/account-blocklists-worktree-20261018/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/hashes/sha2.js","resolver":"unresolved-production-alias-or-relative"},{"importer":"platform-integrations/local-library/local-signing-key.ts","specifier":"@noble/curves/secp256k1.js","target":"/workspace/shared/nostr-manga-recovery-20261017/account-blocklists-worktree-20261018/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/curves/secp256k1.js","resolver":"unresolved-production-alias-or-relative"},{"importer":"platform-integrations/local-library/local-signing-key.ts","specifier":"@scure/base","target":"/workspace/shared/nostr-manga-recovery-20261017/account-blocklists-worktree-20261018/weebdex-platform/.build/local-signing-base-2.0.0/node_modules/@scure/base","resolver":"unresolved-production-alias-or-relative"}]
+    at file:///workspace/shared/nostr-manga-recovery-20261017/account-blocklists-worktree-20261018/weebdex-platform/scripts/check-composed-frontend.mjs:218:40
+
+Node.js v24.19.0

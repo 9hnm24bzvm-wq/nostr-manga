@@ -1,0 +1,15 @@
+{
+  "weebdex-platform/platform-integrations/public-api/anchors.json": "b8bd5bdedc7122016f9985d72183a0cc88ee4636dd1e4f37afbd69239f8d0c6b",
+  "weebdex-platform/platform-integrations/public-api/client.ts": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+  "weebdex-platform/platform-integrations/public-api/overlays.mjs": "6f987f6fc2ab3ec4e8ea269ab49fd1c8f7e4b3b306eb509b6674f51121534a41",
+  "weebdex-platform/platform-integrations/public-api/popularity.ts": "5ebc5ae60c8aa71c120bd07349dd91dd7cad3ef2984022321074654e9ad6fa8b",
+  "weebdex-platform/platform-integrations/public-api/site-client.ts": "74533241f24ad64391cbe0d9bfb8cca002d0a90cd755261c4857a5c271f6e110",
+  "weebdex-platform/platform-integrations/public-api/source-hashes.json": "acb0576cbf70bb4e368195cbc3af003cadbb7b9a4083fa221a31e13504c771b8",
+  "weebdex-platform/tests/ci/popularity-fixture.mjs": "ae59fbfa392344e81e5851af047dd67486d3b1dd1af7f88d081607fb3725c7c8",
+  "weebdex-platform/tests/ci/public-api-recovery.test.mjs": "bf905919153e999a50353546ff1ae40a4a48463584a6973b644c815e1df2de06",
+  "weebdex-platform/tests/ci/test_account_title_composition.mjs": "c89685c7da80ab9977847b6ff9933546ed564d32157e13e2076ddd63b315c22e",
+  "weebdex-platform/tests/ci/test_popularity_analytics_callers.mjs": "e8209b73ddd8e19763ad1e5f783481b45bd5e5d6ba83a2931f78ed8012bd3ed5",
+  "weebdex-platform/tests/ci/test_popularity_dom.mjs": "1eec848d2b4f66464de05c26e6cfe9984a428993a705d28fbc39d0a92c72ec46",
+  "weebdex-platform/tests/ci/test_public_popularity.mjs": "52298ea4865ea9c8a63a3c577a2fe9d9aec48ca885d69eb79f4c10b6608301dc",
+  "weebdex-platform/tests/ci/test_public_rating_build_seam.mjs": "cc0ca7cece0863819e081ad3b33516299122970262a3236a98c872278e7ad873"
+}

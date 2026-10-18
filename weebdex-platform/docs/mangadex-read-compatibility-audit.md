@@ -1,6 +1,6 @@
 # MangaDex read compatibility and public UUID audit
 
-Audit dates: 2026-10-17/18. Current qualified production backend:
+Audit dates: 2026-10-17/18. Qualified 113-operation baseline backend:
 `53130b47424b107d3b9d1b5ceb00959b62addaa5`, with test-only native fixture
 prerequisite correction `c96ead07654d38ead63bab9e6172328b79811ec9`.
 The [113-operation snapshot](mangadex-operation-compatibility-snapshot.json)
@@ -8,7 +8,7 @@ now covers every pinned upstream operation exactly once. It identifies 91
 source-routed scoped operations, 12 explicit protocol/authentication 501
 exceptions, one operator-only template administration boundary, and 9
 unsupported plain-REST operations. **This is not full MangaDex compatibility.**
-The actual unauthenticated routing probe passed all113 operations on this source,
+The actual unauthenticated routing probe passed all113 operations on that source,
 independently of functional seam tests. A refusal establishes
 handler/auth/validation routing only, never a working authorized command.
 
@@ -25,6 +25,19 @@ separate. Source review and older branch checks cannot replace that acceptance.
 The read checklist below remains a bounded catalogue audit. Native account,
 original signed graph, source publication and device-local features have separate
 contracts and dedicated tests.
+
+The newer [genuine popularity/view extensions](public-uuid-popularity.md) are
+separately qualified at `a23ac87a945ecff3d5e7daa07d428bb41efc4820`, based on
+the final `0395fbc` baseline. They add GET `/manga/top`, GET `/chapter/top`,
+POST `/analytics/manga/{UUID}/views` and POST `/analytics/chapter/{UUID}/views`.
+These four app-owned extensions are outside the pinned MangaDex inventory;
+the 113 keys and 91/12/9/1 classification counts do not change. Their dedicated
+report, `test-evidence/public-uuid-popularity-20261018/report.json`, records
+140 library tests (2 ignored) and four current-source database suites, including
+the actual TCP popularity/view journey. The earlier nineteen-case full backend
+matrix remains associated with its baseline, not a fresh full-matrix pass for
+this successor. Frontend gates and actual browser/live-client qualification have
+their own source and acceptance boundaries.
 
 ## Reference and compatibility boundary
 
@@ -84,8 +97,10 @@ recommendation; per-operation custom method handling is preserved.
   keys last. Native IDs used internally for ties are not emitted as resource IDs.
 - Public discovery defaults to safe/suggestive/erotica. A known adult title
   detail is still readable. Recommendation rating filters apply to targets.
-- Native retained empty-rating sentinels and unsupported native time-window
-  popularity controls are not silently added to the upstream query vocabulary.
+- Native retained empty-rating sentinels are not silently added to the upstream
+  query vocabulary. Genuine time-window popularity uses only the explicit local
+  `/manga/top` and `/chapter/top` extensions; ordinary `/manga` and `/chapter`
+  searches do not silently reinterpret rank/time controls or substitute rankings.
 - UTC dates are calendar-validated `YYYY-MM-DDTHH:MM:SS`. Malformed UUIDs,
   duplicate scalar controls, unknown parameters/enums/order fields and unsafe
   query sizes are rejected. Repeated bounded arrays are supported.

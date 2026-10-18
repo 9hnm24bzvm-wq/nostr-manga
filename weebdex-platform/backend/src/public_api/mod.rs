@@ -25,6 +25,7 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(profiles::router())
         .merge(reports::router())
         .merge(statistics::router())
+        .merge(popularity::router())
         .merge(catalogue::router())
         .merge(catalogue_edges::router())
         .merge(account_reads::router())
@@ -61,6 +62,7 @@ pub mod profiles;
 pub mod reports;
 
 pub mod statistics;
+pub mod popularity;
 
 pub mod catalogue;
 pub mod catalogue_edges;
