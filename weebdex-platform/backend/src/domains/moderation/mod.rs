@@ -157,6 +157,17 @@ async fn review(
     };
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
+    // Title removal uses target-first locking, matching the dedicated DELETE
+    // path. A report's immutable target/reason is re-read under the report lock.
+    let title_target=if status=="accepted" {
+        if let Some(row)=tx.query_opt("SELECT entity_id,status,version FROM platform.reports WHERE id=$1 AND entity_type='manga' AND reason_id='manga_removal_request' AND deleted_at IS NULL",&[&id]).await? {
+            if row.get::<_,String>(1)!="waiting"||expected.is_some_and(|v|v!=row.get::<_,i32>(2)){return Err(ApiError::conflict("Report has already changed or been reviewed"));}
+            Some(row.get::<_,String>(0))
+        }else{None}
+    }else{None};
+    if let Some(target)=&title_target {
+        tx.query_opt("SELECT id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR UPDATE",&[&target]).await?.ok_or_else(||ApiError::not_found("Title removal target is unavailable"))?;
+    }
     let row=tx.query_opt("SELECT status,version,submitter_id,entity_type,entity_id,reason_id,target_version FROM platform.reports WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Report not found"))?;
     let old: String = row.get(0);
     let version: i32 = row.get(1);
@@ -208,6 +219,16 @@ async fn review(
         }
         crate::domains::catalog::CatalogRepository::delete_chapter(&tx, &chapter, &a).await?;
         effect = json!({"action":"instance_soft_hide", "chapter_id":chapter, "source_deletion":"independent_original_moderation"});
+    }
+    if status == "accepted" && row.get::<_,String>(5) == "manga_removal_request" {
+        a.require_permission("manga.delete")?;
+        let manga:String=row.get(4);
+        if title_target.as_deref()!=Some(manga.as_str()){return Err(ApiError::conflict("Removal request target changed"));}
+        let submitted:Option<i32>=row.get(6);
+        let current:i32=tx.query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&manga]).await?.get(0);
+        if submitted!=Some(current){return Err(ApiError::conflict("Title changed since this removal request; review its current state"));}
+        let next=crate::domains::catalog::mutations::manga_delete_in(&tx,&a,&manga,Some(current)).await?;
+        effect=json!({"action":"instance_soft_hide","manga_id":manga,"old_version":current,"new_version":next,"source_deletion":"not_requested","original_event_rewritten":false});
     }
     tx.execute("UPDATE platform.reports SET status=$2,notes=$3,reviewed_by=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&status,&notes,&a.user_id]).await?;
     tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version,notes,effect) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)",&[&id,&a.user_id,&operation,&old,&status,&version,&(version+1),&notes,&effect]).await?;

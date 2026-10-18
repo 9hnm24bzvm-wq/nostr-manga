@@ -270,6 +270,10 @@ pub(crate) async fn author_delete(
 ) -> ApiResult<()> {
     staff_permission(actor, "author.delete")?;
     v::id(id)?;
+    // Serialize soft deletion with title creator assignment. The reference
+    // check must run after this row lock, so a reference committed by an earlier
+    // holder cannot be missed while this deletion waits to update the author.
+    tx.query_opt("SELECT id FROM platform.catalog_authors WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Author not found"))?;
     let used:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_manga_creators mc JOIN platform.catalog_manga m ON m.id=mc.manga_id WHERE mc.author_id=$1 AND m.deleted_at IS NULL)",&[&id]).await?.get(0);
     if used {
         return Err(ApiError::conflict("Author is still referenced by a manga"));

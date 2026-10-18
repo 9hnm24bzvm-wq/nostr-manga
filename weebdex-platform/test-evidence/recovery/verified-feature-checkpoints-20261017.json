@@ -1,0 +1,104 @@
+{
+  "schema": "verified-public-recovery-checkpoints-v1",
+  "repository": "9hnm24bzvm-wq/nostr-manga",
+  "main_unchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768",
+  "checkpoint_count": 11,
+  "checkpoints": {
+    "pipeline": {
+      "local_commit": "94e121a054f83c20370eddbe09b83fb32c74271e",
+      "remote_commit": "48c8cc16b391ed6c0aeebc23064f87061aee072a",
+      "tree": "8e7c94d96378211af99b3d83ad9616d8a7f4bd1e",
+      "branch": "recovery/isolated-pipeline-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-pipeline-20261017",
+      "verified": true
+    },
+    "title": {
+      "local_commit": "674b93cde88abf7f9d2c9c0355f5330cf8bb343f",
+      "remote_commit": "b0cc6489befb8240496c839f76ee4451c0672e81",
+      "tree": "39d03325cbfd5bc31f8b5aba35907f2306bdd0f2",
+      "branch": "recovery/isolated-title-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-title-20261017",
+      "verified": true
+    },
+    "api": {
+      "local_commit": "03420bd36a4fafb8590a3e76e70ce056a773651b",
+      "remote_commit": "c26d06242d4604d680593da648b7c921fa7cf25d",
+      "tree": "bf2129c7852551ebe4cd7af4819a6cc27f832ed7",
+      "branch": "recovery/isolated-api-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-api-20261017",
+      "verified": true
+    },
+    "mapper": {
+      "local_commit": "b77de361646677211f92e1bfa4b89ea40d68b101",
+      "remote_commit": "183c01a5ffeef35ad705379c79b9a0bf54b40ec0",
+      "tree": "91f53bf1a3eccc1daf90c1a34e5094f388a14056",
+      "branch": "recovery/isolated-mapper-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-mapper-20261017",
+      "verified": true
+    },
+    "cover": {
+      "local_commit": "656da377be61f03a96a630bbba4b877878acaf40",
+      "remote_commit": "6dfddb21dd5de49a54270223a42026b73800db7f",
+      "tree": "c88bbf46097026ffacf1a0ef23e136982d4f9835",
+      "branch": "recovery/isolated-cover-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-cover-20261017",
+      "verified": true
+    },
+    "editorial": {
+      "local_commit": "13ff71d093c14d5d9a0a8f437f8a681f0237978b",
+      "remote_commit": "a895060380d3e1204853b43eabf2acda3b49475d",
+      "tree": "19c80b3fbc354cd80ec6bb043f0a172f1b8abb61",
+      "branch": "recovery/isolated-editorial-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-editorial-20261017",
+      "verified": true
+    },
+    "disposition": {
+      "local_commit": "938a659e41e7f32a21a7083989733bfdbb53b5bb",
+      "remote_commit": "55cb932334ede81f6b11c531871e805a80a6c21d",
+      "tree": "da599f1726920f3003bb034b645434d6fb401434",
+      "branch": "recovery/isolated-disposition-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-disposition-20261017",
+      "verified": true
+    },
+    "account": {
+      "local_commit": "282af61f8dbf121a8f7a7c33306a4f5f51ac8412",
+      "remote_commit": "6371cb57db2eeba3fc5beda6b7b4906989c6deec",
+      "tree": "4c24fd9b8f127df70bcf37d1ebd89326091f84a2",
+      "branch": "recovery/isolated-account-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-account-20261017",
+      "verified": true
+    },
+    "account_intent": {
+      "local_commit": "b22de61e695a427fcbceac1a0ccb2741f728bd58",
+      "remote_commit": "734d8293689020cc01e0a14b7f6b3db4332e8cb2",
+      "tree": "e805fba7885053887d57083fce702f26b3290041",
+      "branch": "recovery/isolated-account-intent-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-account-intent-20261017",
+      "verified": true
+    },
+    "private_relations": {
+      "local_commit": "fb703c62d2082a6313e2bacef594ae6eca654cc6",
+      "remote_commit": "b1f2ce5ba277d74f3a333217dac882d67a294c23",
+      "tree": "f20477e87cdbbfa47c62de46d668753d3e13895e",
+      "branch": "recovery/isolated-relations-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-relations-20261017",
+      "verified": true
+    },
+    "public_pages": {
+      "local_commit": "3e2240b08236ac5a1104562fe4f0762a41da6310",
+      "remote_commit": "2024d0f5d994bc3d4700a1118527a563691d8516",
+      "tree": "02b415d2ae9e3183a3ddc9a76a009fb3906b6bb0",
+      "branch": "recovery/isolated-public-pages-20261017",
+      "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/isolated-public-pages-20261017",
+      "verified": true
+    }
+  },
+  "qualification": "Isolated feature snapshots only. Final combined source/build/runtime/browser qualification is separate.",
+  "privacy_review": {
+    "guard_payload_count": 23,
+    "review_receipt_sha256": "be3ac26c130c3c9037f566df88d7181f975d741b9a5425f01c1feaa2044bf7fc",
+    "actual_credentials_private_keys_personal_data_runtime_databases": "excluded"
+  },
+  "verification": "Each remote branch ref and commit tree was fetched independently after publication. Checkpoint commit metadata differs from local development commits; every recorded source tree is exactly equal.",
+  "verified_at_utc": "2026-10-17T23:04:04.288452+00:00"
+}

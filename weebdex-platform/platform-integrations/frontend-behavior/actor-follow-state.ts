@@ -20,6 +20,7 @@ interface FollowOptions {
   target(): string;
   lifetime(): string;
   canMutate(): boolean;
+  canRead?(): boolean;
   read(target: string): Promise<HTTPResponse<unknown> | undefined>;
   write(target: string, followed: boolean, intent: MutationIntent): Promise<HTTPResponse<unknown> | undefined>;
   onError(error: unknown): void;
@@ -38,6 +39,7 @@ export function createActorFollowState(options: FollowOptions) {
 
   const refresh = async () => {
     if (disposed || !actor || selected === undefined || selected !== key() || state.updating) return;
+    if (options.canRead?.() === false) { publish(empty()); return; }
     // A read ahead of an unsettled write cannot establish actionable state for
     // that same actor/target, even after a Session refresh or route round trip.
     if (pendingWrite?.actor === actor && pendingWrite.target === options.target()) { publish({ ...empty(), loading: true }); return; }

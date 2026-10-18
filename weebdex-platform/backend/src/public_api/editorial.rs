@@ -13,7 +13,7 @@ use axum::{
     Json, Router,
     body::to_bytes,
     extract::{OriginalUri, Path, Request, State},
-    http::{HeaderMap, header},
+    http::{HeaderMap, StatusCode, header},
     routing::{post, put},
 };
 use serde_json::{Map, Value, json};
@@ -42,6 +42,7 @@ pub fn router() -> Router<AppState> {
         .route("/author/{p0}", put(author_update).delete(author_delete))
         .route("/group", post(group_create))
         .route("/group/{p0}", put(group_update).delete(group_delete))
+        .route("/group/{p0}/claim", post(group_claim))
 }
 impl core::sealed::Sealed for BoundAccountWrite {}
 impl core::CatalogMutationActor for BoundAccountWrite {
@@ -413,6 +414,20 @@ async fn native_id(tx: &Transaction<'_>, kind: ResourceKind, id: &str) -> Public
         .map(|v| v.native_id)
         .ok_or_else(PublicApiError::not_found)
 }
+/// Optional compatibility extension binding a captured command to the exact
+/// native account observed by the signer. Dedicated signed UIs always send it.
+/// Resolve the typed User UUID under the final bound-account transaction.
+pub(crate) async fn expected_account(tx: &Transaction<'_>, actor: &BoundAccountWrite, expected: Option<&Value>) -> PublicApiResult<()> {
+    if let Some(expected) = expected {
+        let id = expected.as_str().ok_or_else(||bad("expectedAccountId"))?;
+        let native = native_id(tx, ResourceKind::User, id).await?;
+        if native != actor.user_id() {return Err(PublicApiError::conflict("Signer account binding changed; reopen the intended account"));}
+    }
+    Ok(())
+}
+pub(crate) fn take_expected_account(input: &mut Value) -> PublicApiResult<Option<Value>> {
+    Ok(input.as_object_mut().ok_or_else(||bad("body"))?.remove("expectedAccountId"))
+}
 async fn member_ids(tx: &Transaction<'_>, value: &mut Value) -> PublicApiResult<()> {
     let mut ids = BTreeSet::new();
     if let Some(leader) = value.get("leader").and_then(Value::as_str) {
@@ -467,20 +482,24 @@ async fn mutate(
     kind: ResourceKind,
     id: Option<String>,
 ) -> PublicApiResult<Json<Value>> {
-    if uri.query().is_some() {
-        return Err(PublicApiError::bad_request(
-            "Editorial writes accept no query parameters",
-        ));
-    }
     let method = request.method().as_str().to_owned();
     let delete = method == "DELETE";
+    // DELETE retains its empty-body contract. Its exact signed URL may carry
+    // one account-intent UUID; all other and duplicate query fields reject.
+    let mut expected = None;
+    if let Some(query) = uri.query() {
+        let pairs = url::form_urlencoded::parse(query.as_bytes()).collect::<Vec<_>>();
+        if !delete || pairs.len()!=1 || pairs[0].0!="expectedAccountId" {return Err(PublicApiError::bad_request("Editorial query accepts only one DELETE expectedAccountId"));}
+        expected=Some(json!(PublicUuid::parse(&pairs[0].1)?.as_str()));
+    }
     let body = read_body(request, &headers, delete).await?;
     let cap = admitted_request(&state, &uri, &headers, &method, &body).await?;
     let payload = if delete {
         Value::Null
     } else {
-        let value = serde_json::from_slice(&body)
+        let mut value = serde_json::from_slice(&body)
             .map_err(|_| PublicApiError::bad_request("Invalid JSON body"))?;
+        expected=take_expected_account(&mut value)?;
         if kind == ResourceKind::Author {
             normalize_author(value, id.is_some())?
         } else {
@@ -490,6 +509,7 @@ async fn mutate(
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
     let actor = bound_account_write(&tx, &cap).await?;
+    expected_account(&tx,&actor,expected.as_ref()).await?;
     let native = if let Some(id) = id {
         Some(native_id(&tx, kind, &id).await?)
     } else {
@@ -572,6 +592,50 @@ async fn mutate(
     tx.commit().await?;
     Ok(Json(response))
 }
+/// An ownership claim is a private local moderation request, never immediate
+/// group leadership or original signing authority. Native moderator review owns
+/// the eventual version-checked local membership transition.
+async fn group_claim(
+    State(state): State<AppState>, Path(group): Path<String>, OriginalUri(uri): OriginalUri,
+    headers: HeaderMap, request: Request,
+) -> PublicApiResult<(StatusCode, Json<Value>)> {
+    let group = PublicUuid::parse(&group)?;
+    let (cap, body) = super::uploads::authorize(&state, &uri, &headers, request, 8 * 1024, false).await?;
+    let mut payload: Value = serde_json::from_slice(&body).map_err(|_|PublicApiError::bad_request("Invalid group claim body"))?;
+    let expected=take_expected_account(&mut payload)?;
+    crate::domains::catalog::validation::allowed(&payload, &["version", "details"])?;
+    let version = crate::domains::catalog::validation::version(&payload)?;
+    let details = crate::domains::catalog::validation::string(&payload, "details", 8000, true)?.unwrap();
+    let mut client = state.db.client().await?; let tx = client.transaction().await?;
+    let actor = bound_account_write(&tx, &cap).await?;
+    expected_account(&tx,&actor,expected.as_ref()).await?;
+    actor.require_permission("report.create")?;
+    let native = native_id(&tx, ResourceKind::Group, group.as_str()).await?;
+    let row = tx.query_opt("SELECT version,locked FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id)", &[&native]).await?.ok_or_else(PublicApiError::not_found)?;
+    if row.get::<_,i32>(0) != version {return Err(PublicApiError::conflict("Group changed; reload before requesting a claim"));}
+    if row.get::<_,bool>(1) {return Err(PublicApiError::forbidden("This group is locked"));}
+    // Do not lock the existing report after the claimant account row: native
+    // review locks report -> claimant. The account lock serializes creation;
+    // a concurrent accepted review may linearize immediately after this reply.
+    let existing = tx.query_opt("SELECT id,target_version,body FROM platform.reports WHERE submitter_id=$1 AND entity_type='scanlation_group' AND entity_id=$2 AND reason_id='scanlation_group_claim' AND status='waiting' AND deleted_at IS NULL", &[&actor.user_id(), &native]).await?;
+    let report = if let Some(row) = existing {
+        if row.get::<_,Option<i32>>(1) != Some(version) {return Err(PublicApiError::conflict("A claim for an older group version is already awaiting review"));}
+        if row.get::<_,String>(2) != details {return Err(PublicApiError::conflict("A claim with different evidence is already awaiting review"));}
+        row.get::<_,String>(0)
+    } else {
+        let report = crate::domains::moderation::create_report(&tx, &actor, "scanlation_group", &native, "scanlation_group_claim", &details).await?;
+        // The shared native report core holds the current target SHARE lock.
+        let actual:i32 = tx.query_one("SELECT version FROM platform.catalog_groups WHERE id=$1", &[&native]).await?.get(0);
+        if actual != version {return Err(PublicApiError::conflict("Group changed while submitting the claim; reload before retrying"));}
+        report
+    };
+    let request_id = super::uploads::preferred(&tx, ResourceKind::Report, &report).await?;
+    let group_id = super::uploads::preferred(&tx, ResourceKind::Group, &native).await?;
+    let response = json!({"result":"ok","status":"pending-moderation","requestId":request_id,
+        "groupId":group_id,"targetVersion":version,"scope":"instance-local","originalSigningAuthorityChanged":false});
+    tx.commit().await?; Ok((StatusCode::ACCEPTED, Json(response)))
+}
+
 macro_rules! create_handler {
     ($handler:ident,$kind:ident) => {
         async fn $handler(

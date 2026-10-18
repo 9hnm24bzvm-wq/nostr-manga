@@ -3893,6 +3893,15 @@ const patches = [
   "count": 1,
   "before": "\t\t\t\t!this.currentPage ||\r\n\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||",
   "after": "\t\t\t\t!this.currentPage ||\r\n\t\t\t\t!Number.isSafeInteger(idx) ||\r\n\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||"
+},
+{
+  "path": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+  "label": "user upload sort buttons preserve pathname and delimit encoded query",
+  "sha256": "28ffd1d4de746e4db28b466a0b1e2d5e85d77b8210aa0bb8f31845b7116b5cc4",
+  "count": 2,
+  "before": "const target = window.location.pathname + q.toString();",
+  "after": "const target = window.location.pathname + (q.size ? \"?\" + q.toString().replace(/^\\?/, \"\") : \"\");",
+  "approved_event_handler_exception": true
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -3921,7 +3930,7 @@ export function createFrontendOverlays(frontendRoot) {
 }
 export const frontendOverlayManifest = patches.map(({ before, after, ...metadata }) => metadata);
 
-// Exactly one parent-approved event-handler JavaScript body, never general markup.
+// Exact approved event-handler JavaScript expressions, never general markup.
 export const frontendApprovedEventHandlerExceptions = patches.filter(patch => patch.approved_event_handler_exception).map(({ path, sha256, count, before, after }) => ({ path, sha256, count, before, after }));
 
 export const frontendApprovedPanelExceptions = patches.filter(patch => patch.approved_ui_extension).map(({ path, sha256, count, before, after, approved_ui_extension }) => ({ path, sha256, count, before, after, approved_ui_extension }));

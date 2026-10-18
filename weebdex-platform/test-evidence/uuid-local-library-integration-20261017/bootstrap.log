@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "baseline_reproduction": {
+    "error_class": "TypeError",
+    "property": "LimitHeight",
+    "source": "frontend/src/lib/stores/prefs.ts"
+  },
+  "preferences_only_reproduction": {
+    "error_class": "ReferenceError",
+    "source": "platform-integrations/local-library/library.ts",
+    "binding": "Session"
+  },
+  "results": [
+    {
+      "entry": "frontend/src/lib/stores/index.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/API/index.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/stores/Session.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/index.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "platform-integrations/local-library/library.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "gate-on UUID local membership and account/native fallback fence",
+      "passed": true,
+      "storage_opened": false,
+      "native_requests": 0,
+      "records_preserved": true
+    }
+  ],
+  "package_browser_apis": "explicit stand-ins",
+  "browser_e2e": false,
+  "network": false,
+  "original_files_written": false
+}
+(node:6) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time

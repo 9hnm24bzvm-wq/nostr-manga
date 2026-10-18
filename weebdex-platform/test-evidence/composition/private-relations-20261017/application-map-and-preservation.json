@@ -1,0 +1,201 @@
+{
+  "schema": "private-relation-source-composition-v1",
+  "base": "8d112fe57fb83955e31d05e76aad9d0ab6b6df93",
+  "sourceHead": "78fba7e55d732965ed0077b06081ac46e9571f95",
+  "sourceOnly": true,
+  "appliedMap": [
+    {
+      "original": "f10958fa99631ef9cd2ed6e3c73b15e25d3dc3c4",
+      "applied": "e3f5db9892a11f6864daba0cc2ef0b09472060ae",
+      "subject": "feat: add signed directional title relation commands and controls"
+    },
+    {
+      "original": "f144c7a4421211db42d995ab08b57ec95ba74307",
+      "applied": "5ed2ea697ec6ab287426d072675ffc9020b30696",
+      "subject": "fix: reject ambiguous duplicate signed relation fields"
+    },
+    {
+      "original": "73fb77dd397ec5472852fd51ff990c99661b25b4",
+      "applied": "25737ea3410f9accc98d011a2ffaa52d26ae8d5f",
+      "subject": "Bound persisted title relation creation before collection overflow"
+    },
+    {
+      "original": "feb7a8f58dddc69e148df80286dfebf03cc0e039",
+      "applied": "5ce1751530ddb802ffb06d108282df0c9e1a997e",
+      "subject": "Freeze exposed relation account to preserve captured command intent"
+    },
+    {
+      "original": "de7d794bcd5a2183a2f4ff2c50e9031c55430a40",
+      "applied": "0b3bfc55558431283c7ca0b80225b997bfa976a2",
+      "subject": "Batch real relation boundary fixtures within default PostgreSQL lock budget"
+    },
+    {
+      "original": "db05adc326772c98d6ce4666f9a606d3b277d88b",
+      "applied": "c0379aa4e2edf8ea026490a3011a3b7820dfc35d",
+      "subject": "Batch private relation target projections in the authorized snapshot"
+    },
+    {
+      "original": "1b451ac7ee37f25074e228e36737f45887f1d7e4",
+      "applied": "017462ce16c93a04047208ffff83cae1163d29f3",
+      "subject": "Time real relation requests separately from synthetic boundary setup"
+    },
+    {
+      "original": "041edce9fedbc737bdc72372db97c37dd6560b48",
+      "applied": "f83f2385e7c2510c32f2a33f8afb84185645fc3a",
+      "subject": "Share bounded complete-resource relation page and snapshot helpers"
+    },
+    {
+      "original": "9c97ea6524739e6a901a80899a5ae15cd87b5c1b",
+      "applied": "8fce3e5dbe3d1d21f480b43419b7c25eddabc8fe",
+      "subject": "Page signed relation editing reads within exact snapshot and transport budgets"
+    },
+    {
+      "original": "8e525fab37a26ea4457b75ed536c4859a971dbe8",
+      "applied": "eac98f49377d6bf30e7b6192442c08a54ae02c89",
+      "subject": "Respect retained query serializer when signing relation page URLs"
+    },
+    {
+      "original": "70c4588cfdfb1654a934ebeec5335a23d3e5848b",
+      "applied": "8de320a985d6985cad07e4899b8efd06940f037b",
+      "subject": "Reject repeated directional targets within and across relation pages"
+    },
+    {
+      "original": "be14808eeacbc6a88c8095b9c6605bfd229ed2c2",
+      "applied": "6472fa34a56fa7fc675a9f1cb93c249079031ee6",
+      "subject": "Bound shared native relation mutation receipts to the selected edge"
+    },
+    {
+      "original": "aa6b4a702e3552f37360fd89af958b17efe37876",
+      "applied": "78fba7e55d732965ed0077b06081ac46e9571f95",
+      "subject": "Preserve private signed relation page headers through global middleware"
+    }
+  ],
+  "sharedHelper": "041edce9fedbc737bdc72372db97c37dd6560b48 applied once; equivalent33ffdec omitted",
+  "skippedDuplicatePrerequisites": [
+    "90f1f8e creator union already composed from80ac",
+    "a58aad9 removalMode/account title controller already present",
+    "all local adapted cover/disposition prerequisites"
+  ],
+  "baseTrackedPaths": 3719,
+  "byteIdenticalBasePaths": 3713,
+  "changedBasePaths": [
+    "weebdex-platform/backend/src/domains/catalog/mutations.rs",
+    "weebdex-platform/backend/src/public_api/mod.rs",
+    "weebdex-platform/backend/src/public_api/routes.rs",
+    "weebdex-platform/backend/src/router.rs",
+    "weebdex-platform/platform-integrations/public-api/PublicTitleEditor.svelte",
+    "weebdex-platform/scripts/prepare-frontend-integration.mjs"
+  ],
+  "removedBasePaths": [],
+  "criticalPreservationGitBlobs": {
+    "weebdex-platform/backend/migrations/0001_catalog_people.sql": "7a29eacb48d5f48953638900cbfcd05b50c1fc94",
+    "weebdex-platform/backend/migrations/0002_catalog_manga.sql": "bbb5143a450bfc793c2ee354fb0351e9983c2985",
+    "weebdex-platform/backend/migrations/0003_catalog_chapters.sql": "a09957b07b2b7a65bc68ae8ec32e0e2422a669e7",
+    "weebdex-platform/backend/migrations/0004_catalog_covers.sql": "029e155feb90bf000fe3bc4cb09af768ad3bb0ff",
+    "weebdex-platform/backend/migrations/0005_catalog_relations.sql": "f6819e541d2d595b12ddb3f1b3baf2357bfe18c4",
+    "weebdex-platform/backend/migrations/0006_catalog_discussions.sql": "5d4144b34d8cadbc4c55fb92fe6eca9b6db9543b",
+    "weebdex-platform/backend/migrations/0007_catalog_counters.sql": "0427f7afff761813ccd830ca52405fbadf9bb82b",
+    "weebdex-platform/backend/migrations/0008_catalog_audit.sql": "59b0e43f9dc92b07b17c721a725d0f19a68f4345",
+    "weebdex-platform/backend/migrations/0009_catalog_projections.sql": "093b25792617c5f6b2feca40a30562574ba255b9",
+    "weebdex-platform/backend/migrations/0010_native_auth.sql": "f90e82d9386b3f6ef3aa53bc1a2041925b63884e",
+    "weebdex-platform/backend/migrations/0011_api_clients.sql": "63d055b03501200f72461c60e2c619785b5f7a9f",
+    "weebdex-platform/backend/migrations/0012_email_tokens.sql": "3e4912256f5a9f5be9894a30f4ce545caea9c6ca",
+    "weebdex-platform/backend/migrations/0020_upload_sessions.sql": "fcbbd9c9d1c0393d1cf8277701d302a6c0524a86",
+    "weebdex-platform/backend/migrations/0021_upload_objects.sql": "e76a51f7e43a964003e25e27a552eeb7d5a79be0",
+    "weebdex-platform/backend/migrations/0022_chapter_media.sql": "58ceff32e6305971f49b207042837253d5414d50",
+    "weebdex-platform/backend/migrations/0023_chapter_derivatives.sql": "a7c2b39e21519dcf40997e3d0b6e365c1e1c2499",
+    "weebdex-platform/backend/migrations/0030_library.sql": "d203d2f06fea1d7f5323e0b6f28d5b9da1371260",
+    "weebdex-platform/backend/migrations/0040_community.sql": "5ef16e6363b42be01196764c365a5062c6adfc06",
+    "weebdex-platform/backend/migrations/0050_moderation.sql": "721e8d25d08b38c62f76e6624a4c3743aef11fee",
+    "weebdex-platform/backend/migrations/0060_analytics.sql": "7d441b228ab9570dbbcd580fa68797d764c5dbed",
+    "weebdex-platform/backend/migrations/0070_protocol_bridge.sql": "ef65c82ad6d102b45a18616008766ff3ecdd9c25",
+    "weebdex-platform/backend/migrations/0071_protocol_deletion_intents.sql": "94c7ca8cf7738d4c0e79315cc20af276eba4b62e",
+    "weebdex-platform/backend/migrations/0072_upload_resume.sql": "5de9d06808945162167036f0160b370420126888",
+    "weebdex-platform/backend/migrations/0073_catalogue_namespace.sql": "df2ebe0d9acc5a9ef1a300c6c1dcce9343b92d6c",
+    "weebdex-platform/backend/migrations/0074_protocol_command_inputs.sql": "9206c331eb3e8622ec5a6b4268fa47c3dff71949",
+    "weebdex-platform/backend/migrations/0080_announcements.sql": "a8cb34493240819f32970788aa5ff5a643df9482",
+    "weebdex-platform/backend/migrations/0081_community_visibility.sql": "cf5b7e3a2384d998c87fcd8c04159d491a04d490",
+    "weebdex-platform/backend/migrations/0082_catalog_projection_visibility.sql": "59ba4c1bb2b51b5ce45774a70ccb7c59239c0900",
+    "weebdex-platform/backend/migrations/0083_upload_maintenance_indexes.sql": "0318cab2cdaaf9085d1bf4d8c50877aca9920bb9",
+    "weebdex-platform/backend/migrations/0084_protocol_deletion_generations.sql": "3dec5c20c2402c757da21997288eadbe5174f288",
+    "weebdex-platform/backend/migrations/0085_cover_extension_contract.sql": "3002de35077a359f2b0e7684ffd7e55c4f4cb9a2",
+    "weebdex-platform/backend/migrations/0086_visibility_policy_preparation.sql": "4fa9df66a6ec8706ce153ee39cf4145dcfda8815",
+    "weebdex-platform/backend/migrations/0087_catalog_chapter_relationship_projection.sql": "f6bc1c8eeb5fd268139704477e370adb5c5ef748",
+    "weebdex-platform/backend/migrations/0088_catalog_correlated_visibility_lookups.sql": "9750d6185f3f6f68492b59dd293bfd8fec7406e8",
+    "weebdex-platform/backend/migrations/0089_public_resource_ids.sql": "1001f48ad35606b2702306f798bfc838606fa5db",
+    "weebdex-platform/backend/migrations/0090_public_manga_edge_ids.sql": "fe268ff39e481e1bdd3aa7346bf7913851f4804c",
+    "weebdex-platform/backend/migrations/0091_protocol_public_list_aliases.sql": "a2d841c273760d09a90badeeddc918d8f41c7626",
+    "weebdex-platform/backend/migrations/0092_public_report_reasons.sql": "b550700176b596168b702a9f546ebba0c290af1f",
+    "weebdex-platform/backend/migrations/0094_cached_parent_visibility.sql": "3c44ea9eb4836e537cc90cdf4ebb5ade899939ab",
+    "weebdex-platform/backend/migrations/0097_chapter_removal_review.sql": "be14d99ba7b87bce0fca5ea011938e94228e3fda",
+    "weebdex-platform/backend/migrations/0098_native_manga_ratings.sql": "aeae0a4bca8c2be9074d47d17ced6e532e47bf9d",
+    "weebdex-platform/backend/migrations/0099_native_public_list_follows.sql": "3a261d4072e152a8ff8fd332eed92ae4e9ed5b08",
+    "weebdex-platform/backend/migrations/0100_native_follow_revisions.sql": "bba9bd337d2732cd68a728044754d8d68acf2a53",
+    "weebdex-platform/backend/migrations/0101_title_removal_review.sql": "6f5de22f697719b550aeff66e46079f0f323f484",
+    "weebdex-platform/platform-integrations/local-library/ChapterHistory.ts": "23ea43a5af19ff36549d2093e5b66e11e4524046",
+    "weebdex-platform/platform-integrations/local-library/IdentitySetup.svelte": "f5940017b04f15d80f7cb63b0f146aa1294d5a80",
+    "weebdex-platform/platform-integrations/local-library/LibraryManagementTools.svelte": "897f3ea0f4775c167c555ee01bf1114662d3cce5",
+    "weebdex-platform/platform-integrations/local-library/LibraryProtected.svelte": "491481f3d38a9abf8e737502411abbe3dcc26049",
+    "weebdex-platform/platform-integrations/local-library/LibraryRuntime.svelte": "d637ab75c745b5019faaca37ea526426c4ddc8e3",
+    "weebdex-platform/platform-integrations/local-library/LocalLibraryPanel.svelte": "571fdf8a8150fd748a5f7ece278c2bcd36b0d3d2",
+    "weebdex-platform/platform-integrations/local-library/MangaDiscussion.svelte": "24a7e6f0ac5921f285450ad1812d9042eec9a860",
+    "weebdex-platform/platform-integrations/local-library/MangaFollow.ts": "4e85ced21606a7d7fb53754ecb22dc9c54b0853d",
+    "weebdex-platform/platform-integrations/local-library/ProtocolIdentityPanel.svelte": "1fd7cb0960d685f0f88fe7393eb92c82fab67f57",
+    "weebdex-platform/platform-integrations/local-library/PublicIdentitySettings.svelte": "405d1d8097b6f3696cfde761cef6f98579f0063b",
+    "weebdex-platform/platform-integrations/local-library/action-owner.ts": "b7175be59e51cadcbbd3d77fcf5a26a33c67f812",
+    "weebdex-platform/platform-integrations/local-library/catalog.ts": "51953c71eaded84d9f15e964471faf5237873cf4",
+    "weebdex-platform/platform-integrations/local-library/device-store.ts": "dbb7304884a16c1b5cd1bac705a777dbc9485d20",
+    "weebdex-platform/platform-integrations/local-library/enrollment-policy.ts": "affb1b1af46c3a5356802ff31d09f472debbfe77",
+    "weebdex-platform/platform-integrations/local-library/graph-transfer.ts": "3448cb8f6c36fd3ed73e83f6377c231b2b8988c1",
+    "weebdex-platform/platform-integrations/local-library/library-relay-support.ts": "ebc0e79995b8592f2d21199872b6310d9a300038",
+    "weebdex-platform/platform-integrations/local-library/library.ts": "e03c3af5a8dd8ef860c59d9ac3c36060967d23c5",
+    "weebdex-platform/platform-integrations/local-library/local-signing-key.ts": "5c39ddc0000a1b1459245572689483a533778016",
+    "weebdex-platform/platform-integrations/local-library/overlays.mjs": "ddb607c189723eb17d83b28f19a423a41b1cb0d9",
+    "weebdex-platform/platform-integrations/local-library/projection-worker.ts": "5f41ea2712d3ab054ad7ceab6904b99491e0e754",
+    "weebdex-platform/platform-integrations/local-library/protocol-identity.ts": "1f0c8934d68fdbb6fe954e49e69f96610e8af29d",
+    "weebdex-platform/platform-integrations/local-library/protocol-receipt.ts": "3a15e4aca2b65e9e03c7a78651e44680f7c24b7f",
+    "weebdex-platform/platform-integrations/local-library/protocol-scope.ts": "6158b2d7119ede31e08c1ef48289c063a2d1871d",
+    "weebdex-platform/platform-integrations/local-library/protocol-source-manifest.json": "c23d18471823e4e8ba64baebd1af6dbdc0caf9b7",
+    "weebdex-platform/platform-integrations/local-library/protocol/backup.js": "30201c1a5ebf167c801b79b21737e4050c89d003",
+    "weebdex-platform/platform-integrations/local-library/protocol/codec.js": "e737d87c845ebd01863ab6124eba245f564e704c",
+    "weebdex-platform/platform-integrations/local-library/protocol/indexeddb.js": "a2b66830760fcef66dadd9d88f8a741234132c36",
+    "weebdex-platform/platform-integrations/local-library/protocol/limits.js": "4ef1df73cefbb74c5863c733902d8397626c0767",
+    "weebdex-platform/platform-integrations/local-library/protocol/nostr.js": "34b7b90e797cec86708be2d062bc6956e662e465",
+    "weebdex-platform/platform-integrations/local-library/protocol/outbox.js": "a88b97b7794370e92c14ceeb368278f245734f86",
+    "weebdex-platform/platform-integrations/local-library/protocol/publishing.js": "e28aa405790ac492b21efdf15ba2c6eae488a421",
+    "weebdex-platform/platform-integrations/local-library/protocol/store.js": "e1f7eafe75cc7432318b2321c9f43f1cd40b8147",
+    "weebdex-platform/platform-integrations/local-library/protocol/types.d.ts": "72791adc0fd370be4d2f96040db107af5e1e8dcb",
+    "weebdex-platform/platform-integrations/local-library/protocol/worker.js": "b4c80f6c57cf0176dca366c78573a0a36614ee3d",
+    "weebdex-platform/platform-integrations/local-library/public-device-projection.ts": "1f7c1586124bcb946c693e69d654fbb25fe3468d",
+    "weebdex-platform/platform-integrations/local-library/publication.ts": "5d37b51840c3fc7aba52d9e024202e352062cb0f",
+    "weebdex-platform/platform-integrations/local-library/signing-dependencies/package-lock.json": "c1fb8f9a50c48712e2b17a98459b80a876facc8c",
+    "weebdex-platform/platform-integrations/local-library/signing-dependencies/package.json": "9bfe4d9d2c48ae497baca7ec4016d9949f8676e6",
+    "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte": "58e3c317d250af549473ae24935768201fecec1a",
+    "weebdex-platform/platform-integrations/public-api/PublicCoverEditor.svelte": "345bf9b4261a5560fdd4540f915960639e5c25b4",
+    "weebdex-platform/platform-integrations/public-api/PublicTitleDisposition.svelte": "74b359ca577103a2955dc4b51e0624f5fa6fb23e",
+    "weebdex-platform/platform-integrations/public-api/catalogue-edges.ts": "a6c6d276e96122163bb4fe46b957509f5ea290c3",
+    "weebdex-platform/platform-integrations/public-api/cover-client.ts": "d4a1acd090c1f07a65b81689b4ec63f2cc7c6cf8",
+    "weebdex-platform/platform-integrations/public-api/cover-multipart.ts": "a76b91bb418bd8ec227a528f03393e0f873cd704",
+    "weebdex-platform/platform-integrations/public-api/title-client.ts": "909a257c3aeed540b7c196f5c5cb4d56e4c1b646",
+    "weebdex-platform/platform-integrations/public-api/upload-client.ts": "9316cace2a886e5281ea53c29dc52fc0fa5472f8"
+  },
+  "nativeTitleCoverDispositionPrefixSha256": "0f55f28ca7f2cf7a7810154e373463d7af052473ba1ebff72f6caebd2e1d47ef",
+  "resolvedConflicts": [
+    "Additive public_api module and route unions preserve account/title/cover/disposition/resource mapper and relation registration.",
+    "PublicTitleEditor adds relation state/cross-child guards while retaining corrected cover eligibility without obsolete metadata canWrite coupling.",
+    "Preparation evidence keeps all exact account feature whitelist pairs and adds relation component/hash and scoped page description.",
+    "Global middleware adds private relation page detection while retaining cover, title lock/unlock and deletion private headers."
+  ],
+  "lightweightChecks": {
+    "sourceDiffCheck": "pass",
+    "focusedFiniteTests": 198,
+    "focusedFiniteFailures": 0,
+    "focusedFiniteLogSha256": "d95a263306558fba6d737c57b6f7c47788b717ad4525a7664ee0ab899eff587f",
+    "command": "node --experimental-vm-modules --test weebdex-platform/tests/ci/test_public_relation_commands.mjs weebdex-platform/tests/ci/public-api-recovery.test.mjs weebdex-platform/tests/ci/test_public_title_commands.mjs"
+  },
+  "pending": [
+    "Independent source review of composition.",
+    "Corrected isolated relation HTTP qualification and final public alias-budget successor.",
+    "Combined strict/build/Rust/HTTP/browser/load acceptance is not established by this preparation."
+  ]
+}

@@ -1,0 +1,93 @@
+(node:24) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ multipart preserves exact original bytes with first canonical parent version and four explicit fields (3.381894ms)
+✔ serializer rejects GIF before signing (0.52539ms)
+✔ serializer rejects filename mismatch before signing (0.157958ms)
+✔ serializer rejects unsafe filename before signing (0.208123ms)
+✔ serializer rejects wrong size before signing (0.833564ms)
+✔ serializer rejects extra metadata before signing (0.116275ms)
+✔ serializer rejects NUL metadata before signing (0.090366ms)
+✔ serializer rejects invalid locale before signing (0.133441ms)
+✔ serializer rejects oversized UTF-8 metadata before signing (1.11094ms)
+✔ metadata boundary collision rejects without corrupting the signed multipart (0.676517ms)
+✔ actual transport signs the same once-serialized multipart it dispatches with no cookies (8.1471ms)
+✔ update needs the exact list read, sends only changed metadata and preserves original provenance (2.619067ms)
+✔ moderator removal uses an exact version JSON proof and validates actual204 (2.249742ms)
+✔ account scope rejects changed pubkey (0.620202ms)
+✔ account scope rejects changed serviceKey (0.432811ms)
+✔ account scope rejects changed catalogNamespace (0.423417ms)
+✔ account scope rejects changed authentication (0.316936ms)
+✔ account scope rejects changed requestScoped (0.381364ms)
+✔ account scope rejects changed nativeSessionAuthority (0.517297ms)
+✔ account scope rejects changed catalogueScope (0.355705ms)
+✔ fresh changed account binding stops mutation before network dispatch and clears proven-unsent fence (1.29076ms)
+✔ captured identity fences new cover commands (0.548364ms)
+✔ captured route fences new cover commands (0.588855ms)
+✔ captured namespace fences new cover commands (0.819662ms)
+✔ captured parent fences new cover commands (0.380603ms)
+✔ captured accepted projection fences new cover commands (0.57191ms)
+✔ captured closed editor fences new cover commands (0.438299ms)
+✔ unconfirmed 503 stays durably fenced across reads and remount, with one dispatch (1.928119ms)
+✔ unconfirmed network stays durably fenced across reads and remount, with one dispatch (1.641077ms)
+✔ unconfirmed wrong parent stays durably fenced across reads and remount, with one dispatch (1.540917ms)
+✔ unconfirmed wrong version stays durably fenced across reads and remount, with one dispatch (2.660681ms)
+✔ unconfirmed wrong original stays durably fenced across reads and remount, with one dispatch (1.23713ms)
+✔ unconfirmed ignored metadata stays durably fenced across reads and remount, with one dispatch (1.422559ms)
+✔ known409 rejection clears the pending fence without automatic retry (1.148257ms)
+✔ exact signed original preview checks bytes, hash, MIME and private Authorization variation (1.39663ms)
+✔ preview refuses invalid hash evidence (1.072323ms)
+✔ preview refuses invalid mime evidence (0.837219ms)
+✔ preview refuses invalid private evidence (1.026564ms)
+✔ preview refuses invalid vary evidence (0.762988ms)
+✔ preview refuses invalid nosniff evidence (0.94469ms)
+✔ actual cover controls remain a dedicated original interface and title commands share pending guards (0.443477ms)
+✔ metadata uses the same native whitespace normalization before signing and receipt checks (0.138618ms)
+✔ caller metadata changes during original file loading cannot alter the captured command (1.160334ms)
+✔ unchanged metadata is refused before pending marker or mutation dispatch (0.694634ms)
+✔ unavailable pending-marker storage prevents any new cover signature or upload dispatch (0.529946ms)
+✔ frontend preparation explicitly declares rendered cover control and pins its controller and exact serializer (0.216576ms)
+✔ a missing or native-shaped account intent fails before original file access or signature (0.181492ms)
+✔ actual cover capability: published cover-only editor needs no manga.update (0.176355ms)
+✔ actual cover capability: title-metadata grant alone does not grant cover editing (0.066239ms)
+✔ actual cover capability: ordinary reader has no cover write capability (0.069294ms)
+✔ actual cover capability: moderator removal remains independent of metadata and cover-edit grants (0.151047ms)
+✔ actual cover capability: locked ordinary cover editor stays read-only (0.064617ms)
+✔ actual cover capability: locked moderator cover editor needs no title-metadata grant (0.044047ms)
+✔ actual cover capability: draft owner can edit covers with the native create grant (0.069484ms)
+✔ actual cover capability: another draft owner is not inferred from the create grant (0.039319ms)
+✔ actual cover capability: submitted owner retains the native cover-edit policy (0.084637ms)
+✔ actual cover capability: accepted original projection fences all cover commands (0.08635ms)
+✔ no captured account exposes no cover command capability (0.081984ms)
+✖ rendered cover controls use separate native capabilities and preserve shared command fences (4.867489ms)
+ℹ tests 59
+ℹ suites 0
+ℹ pass 58
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 214.887491
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_public_cover_commands.mjs:785:1
+✖ rendered cover controls use separate native capabilities and preserve shared command fences (4.867489ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(mount)
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/cover-write-worktree/weebdex-platform/tests/ci/test_public_cover_commands.mjs:795:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

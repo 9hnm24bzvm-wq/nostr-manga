@@ -1,0 +1,80 @@
+(node:16) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ manga follows bind exact resource/account and use genuine status/CAS without device-library payloads (7.123898ms)
+✔ group follows bind exact resource/account and use genuine status/CAS without device-library payloads (1.565353ms)
+✔ user follows bind exact resource/account and use genuine status/CAS without device-library payloads (0.518179ms)
+✔ same-state Follow preserves actual existing membership version rather than reapplying manga defaults (0.344538ms)
+✔ native self-follow and unsupported kinds reject before follow-status/write dispatch (0.639772ms)
+✔ only actual native public users expose bound-account follow control; protocol publishers never do (0.378749ms)
+✔ native rebind with matching version cannot redirect a captured follow command (0.526261ms)
+✔ wrong account/resource/kind/source/version or false active-status response cannot enable mutations (0.964519ms)
+✔ unconfirmed denied writes require a fresh read, without replay or optimistic membership (0.73198ms)
+✔ receipt loss or wrong successful target/account/version never confirms; explicit reread observes actual membership (0.733533ms)
+✔ known native target can remove hidden membership intent after404 without assuming tombstone version zero (0.249425ms)
+✔ pending account command cannot race and signer invalidation discards delayed completion (0.426712ms)
+✔ known CAS receipt cannot claim a contradictory changed flag even with self-consistent revision arithmetic (0.343126ms)
+(node:17) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ default anonymous title/profile viewing performs no account/signing work and account action is connected-only (57.689723ms)
+✔ intentional native follow dialog shows the actual bound account and confirmed follow/unfollow state (8.564373ms)
+✔ unproven alias or mismatched selected target cannot dispatch even a signed account lookup (4.902038ms)
+✔ closing or destruction during deferred status drops late account and follow state (3.635384ms)
+✔ signer generation change during command cannot install stale account success (2.094488ms)
+✔ unknown account-follow outcome requires explicit reload and cannot repeat automatically (2.636022ms)
+✔ exact production attachments retain default local manga controls and use native action rows with supported user domain (23.476867ms)
+✔ 404 unknown membership exposes explicit saved-follow removal without inventing version zero or hidden metadata (1.865554ms)
+(node:18) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ rating client proves service and reads a genuinely bound native account separate from pubkey (3.103595ms)
+✔ save/remove/recreate use exact score, expected account, CAS and tombstone versions (3.074021ms)
+✔ same rating and never-rated removal retain real no-op revision instead of invented increments (1.236669ms)
+✔ invalid scores, unverified state and concurrent requests never dispatch writes (1.344661ms)
+✔ rebound native account with colliding version refuses captured old-account intent (0.695696ms)
+✔ wrong account, wrong title, omitted version and fabricated zero rating fail closed (1.541937ms)
+✔ unconfirmed or wrong successful receipts freeze writes until explicit reload, without replay (1.617882ms)
+✔ authorization/CAS denials do not claim a save and require a fresh read (6.177214ms)
+✔ signer/view/service/catalogue changes stop deferred or next requests at captured scope (0.830298ms)
+✔ a pending rating command cannot race a second command for the same captured version (0.686943ms)
+✔ known rating CAS rejects a contradictory changed flag even when receipt version arithmetic matches that flag (0.710719ms)
+(node:24) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ public signed-list view preserves truthful source, canonical ownership and signed membership order (2.812387ms)
+✔ ambiguous/private/duplicate/out-of-order or mismatched source lists fail closed (0.79839ms)
+✔ anonymous list detail and manga hydration use public UUIDs, restore source order and recheck exact signed snapshot (1.774588ms)
+✔ detail rejects an unrelated valid list or unproven UUID alias before rendering/follow target installation (0.673402ms)
+✔ list hydration never installs partial or unrelated title rows (0.933373ms)
+✔ source changes during hydration fail before returning the old title set (1.832935ms)
+✔ empty signed lists still perform final source verification (0.404297ms)
+✔ publisher directory validates exact owner and snapshot, including a truthful empty unsigned graph (1.105111ms)
+✔ publisher pagination pins supplied head and rejects a changed snapshot (0.593823ms)
+✔ only verified protocol-publisher profiles expose the native Lists tab (0.513011ms)
+✔ bound access captures actual native-account UUID separately from signing identity and exact service proof (1.496619ms)
+✔ bound access refuses unbound/cookie-only, malformed account or wrong source proof (3.888175ms)
+✔ service/catalogue or signer changes stop the captured account before dispatch (1.358692ms)
+✔ bound request refuses off-origin, fragment, backslash and control-character targets (0.548134ms)
+✔ 404 follow status omits unknown tombstone version, POST captures actual head/account, DELETE never sends head (1.318933ms)
+✔ known follow revision and same-state no-op retain exact persisted clocks/version (0.311568ms)
+✔ withdrawn list removal works without an available source head and cannot be followed (0.418168ms)
+✔ a rebind with colliding follow versions cannot redirect captured old-account intent (0.337087ms)
+✔ stale source head, target or account observations never permit a follow (0.697619ms)
+✔ denied/uncertain list writes freeze controls until a fresh explicit read, without replay (0.944139ms)
+✔ wrong successful receipt account/list/head/version does not claim confirmation (0.59194ms)
+✔ pending command and stale identity cannot dispatch/complete another list mutation (0.269826ms)
+✔ followed-list collection consumes actual private account scope and unavailable count (0.607914ms)
+✔ followed-list response cannot substitute another account, duplicate rows or malformed provenance (0.527513ms)
+✔ a genuine typed persisted list-alias proof binds both source copies to the exact request and returned canonical entity (0.316176ms)
+✔ missing, wrong-kind/source/request/canonical, extra or inconsistent alias proof copies cannot retarget the list (1.087474ms)
+✔ canonical legacy responses remain exact-ID compatible, while malformed newly supplied proof fails closed (0.265779ms)
+✔ qualified alias view hydrates/rechecks the canonical list and binds follow intent to that canonical target (0.82452ms)
+✔ known list membership CAS also rejects an internally consistent but contradictory changed receipt (0.55906ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 61
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 215.894575

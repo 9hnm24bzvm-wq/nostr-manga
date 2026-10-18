@@ -13,6 +13,7 @@ import { createReaderOverlays } from '../platform-integrations/frontend-reader-o
 import { createPublicApiOverlays } from '../platform-integrations/public-api/overlays.mjs';
 import { createPublicUploadOverlays } from '../platform-integrations/public-api/upload-overlays.mjs';
 import { associateSupersededUploadRecipe } from './composed-upload-provenance.mjs';
+import { productionAliasName, resolveProductionAlias, describeProductionAlias } from './composed-production-aliases.mjs';
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -82,24 +83,23 @@ const relocate = absolute => absolute.startsWith(input + path.sep) ? path.join(p
 const productionId = file => file.startsWith(path.join(project, 'src') + path.sep) ? path.join(input, path.relative(project, file)) : file.startsWith(path.join(project, 'platform-integrations') + path.sep) ? path.join(root, path.relative(project, file)) : file;
 const aliasesForCheck = {};
 for (const { find, replacement } of aliases) {
-  if (typeof find !== 'string') throw Error('Unsupported non-string production alias');
-  const target = relocate(replacement);
-  aliasesForCheck[find] = [target];
-  if (find.startsWith('$') || find.startsWith('@noble/')) aliasesForCheck[find + '/*'] = [target + '/*'];
+  const name = productionAliasName(find), target = relocate(replacement);
+  aliasesForCheck[name] = [target];
+  if (typeof find === 'string' && (name.startsWith('$') || name.startsWith('@noble/'))) aliasesForCheck[name + '/*'] = [target + '/*'];
 }
 aliasesForCheck.$lib = [path.join(project, 'src/lib')];
 aliasesForCheck['$lib/*'] = [path.join(project, 'src/lib/*')];
 // Runtime aliases target JS entrypoints. Use each same package's exported
 // declaration entrypoint instead of treating its JS implementation as untyped.
 const packageTypeAliases = [];
-for (const name of ['svelte-sonner', 'axios', 'http-status-codes']) {
+for (const name of ['@lucide/svelte', 'svelte-sonner', 'axios', 'http-status-codes']) {
   const pkg = JSON.parse(fs.readFileSync(path.join(dependencies, name, 'package.json')));
-  const runtimeEntry = aliases.find(alias => alias.find === name)?.replacement;
+  const runtimeEntry = aliases.find(alias => productionAliasName(alias.find) === name)?.replacement;
   const siblingDeclaration = runtimeEntry?.replace(/\.js$/, '.d.ts');
   const typeEntry = pkg.types ?? pkg.typings ?? pkg.exports?.['.']?.types ?? (siblingDeclaration && fs.existsSync(siblingDeclaration) ? path.relative(path.join(dependencies, name), siblingDeclaration) : undefined);
   if (typeof typeEntry !== 'string') throw Error(`Production dependency has no declared types: ${name}`);
   aliasesForCheck[name] = [path.join(dependencies, name, typeEntry)];
-  packageTypeAliases.push({ name, production_entry: aliases.find(alias => alias.find === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
+  packageTypeAliases.push({ name, production_entry: aliases.find(alias => productionAliasName(alias.find) === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
 }
 const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input)];
 const manifest = [], rewrites = [], maps = new Map(), graph = [], reachable = new Set(), workerTypeBindings = [];
@@ -135,8 +135,9 @@ function sourceTarget(specifier, importer) {
     if (result) return { target: relocate(typeof result === 'string' ? result : result.id), resolver: resolver.name };
   }
   let target;
-  for (const alias of aliases) if (specifier === alias.find || specifier.startsWith(alias.find + '/')) {
-    target = relocate(alias.replacement + specifier.slice(alias.find.length)); break;
+  for (const alias of aliases) {
+    const resolved = resolveProductionAlias(alias, specifier);
+    if (resolved !== undefined) { target = relocate(resolved); break; }
   }
   if (!target && (specifier === '$lib' || specifier.startsWith('$lib/'))) target = path.join(project, 'src/lib', specifier.slice(5));
   if (!target && specifier.startsWith('.')) target = path.resolve(path.dirname(importer), specifier);
@@ -214,7 +215,7 @@ while (pending.length) {
   else manifest.push({ canonical: relative(path.join(root, path.relative(project, file))), original_sha256: hash(code), production_composed_sha256: hash(code), projection: path.relative(project, file), projection_sha256: hash(output), production_snapshot: path.relative(work, snapshot), stages: [], source_map: path.relative(work, mapPath), source_map_sha256: hash(fs.readFileSync(mapPath)) });
 }
 const unresolvedGraphEdges = graph.filter(edge => edge.resolver.startsWith('unresolved'));
-if (unresolvedGraphEdges.length) throw Error(`Projection graph has ${unresolvedGraphEdges.length} unresolved source edges`);
+if (unresolvedGraphEdges.length) throw Error(`Projection graph has ${unresolvedGraphEdges.length} unresolved source edges: ${JSON.stringify(unresolvedGraphEdges)}`);
 const mapValidation = manifest.filter(entry => entry.source_map).map(entry => {
   const mapPath = path.join(work, entry.source_map), map = JSON.parse(fs.readFileSync(mapPath));
   if (map.sources.length !== 1) throw Error(`Unexpected multi-source projection map: ${entry.source_map}`);
@@ -288,7 +289,7 @@ if (!completed || +completed[2] !== diagnostics.filter(item => item.severity ===
 const toolsUsed = ['typescript', 'svelte-check', 'svelte', '@sveltejs/kit', 'vite', 'magic-string', '@jridgewell/trace-mapping'].map(name => { const file = path.join(dependencies, name, 'package.json'), pkg = JSON.parse(fs.readFileSync(file)); return { package: name, version: pkg.version, package_sha256: hash(fs.readFileSync(file)) }; });
 const after = sourceInventory();
 if (JSON.stringify(before) !== JSON.stringify(after)) throw Error('Canonical frontend inventory changed');
-const summary = { status: checked.status === 0 && workerCheck.status === 0 ? 'passed' : 'failed', utc: new Date().toISOString(), base_commit: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim(), canonical_frontend_files: Object.keys(before).length, canonical_frontend_unchanged: true, runtime_browser_database_services_started: false, installed_dependencies: false, production_configuration_sha256: hash(fs.readFileSync(path.join(root, 'scripts/vite.platform.config.mjs'))), production_overlay_order: plugins.map(plugin => plugin.name), production_aliases: aliases, declaration_entrypoints_for_runtime_package_aliases: packageTypeAliases, worker_platform_type_bindings: workerTypeBindings, strict: tsconfig.compilerOptions.strict, checkJs: tsconfig.compilerOptions.checkJs, skipLibCheck: tsconfig.compilerOptions.skipLibCheck, skipLibCheck_inherited_from_original: true, source_diagnostic_suppressions_added: false, reachable_integration_files: integrationRoots.map(file => path.relative(project, file)).sort(), redirected_inactive_source_roots: [...redirected], fragments, resolver_rewrites: rewrites, errors: diagnostics.filter(item => item.severity === 'error').length, warnings: diagnostics.filter(item => item.severity === 'warning').length, svelte_check_receipt: checked.receipt, service_worker_receipt: workerCheck.receipt, limitation: 'Projection maps resolve to exact composed production snapshots, not falsely to pre-overlay source. Stage hashes preserve original → shared → reader → local provenance. No application behavior is changed; residual diagnostics are reported.' };
+const summary = { status: checked.status === 0 && workerCheck.status === 0 ? 'passed' : 'failed', utc: new Date().toISOString(), base_commit: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim(), canonical_frontend_files: Object.keys(before).length, canonical_frontend_unchanged: true, runtime_browser_database_services_started: false, installed_dependencies: false, production_configuration_sha256: hash(fs.readFileSync(path.join(root, 'scripts/vite.platform.config.mjs'))), production_overlay_order: plugins.map(plugin => plugin.name), production_aliases: aliases.map(describeProductionAlias), declaration_entrypoints_for_runtime_package_aliases: packageTypeAliases, worker_platform_type_bindings: workerTypeBindings, strict: tsconfig.compilerOptions.strict, checkJs: tsconfig.compilerOptions.checkJs, skipLibCheck: tsconfig.compilerOptions.skipLibCheck, skipLibCheck_inherited_from_original: true, source_diagnostic_suppressions_added: false, reachable_integration_files: integrationRoots.map(file => path.relative(project, file)).sort(), redirected_inactive_source_roots: [...redirected], fragments, resolver_rewrites: rewrites, errors: diagnostics.filter(item => item.severity === 'error').length, warnings: diagnostics.filter(item => item.severity === 'warning').length, svelte_check_receipt: checked.receipt, service_worker_receipt: workerCheck.receipt, limitation: 'Projection maps resolve to exact composed production snapshots, not falsely to pre-overlay source. Stage hashes preserve original → shared → reader → local provenance. No application behavior is changed; residual diagnostics are reported.' };
 writeJSON(path.join(evidence, 'cached-toolchain.json'), toolsUsed);
 writeJSON(path.join(evidence, 'source-map-validation.json'), { status: 'passed', validated_maps: mapValidation.length, maps: mapValidation });
 writeJSON(path.join(evidence, 'canonical-source-hashes.json'), before);

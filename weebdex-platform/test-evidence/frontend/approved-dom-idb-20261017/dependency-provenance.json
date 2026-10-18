@@ -1,0 +1,20 @@
+{
+  "approval": "User explicitly approved all pending actions; exact previous install argv and absolute local prefix were verified from its own npm logs before one retry",
+  "command": "npm install --ignore-scripts --no-audit --no-fund --prefix weebdex-platform/.build/browser-dom-dependencies --cache weebdex-platform/.build/npm-cache",
+  "result": "added 48 packages in 9 seconds; exit 0",
+  "scripts": "disabled",
+  "alternate_registry_or_cache_copy": false,
+  "root_package_sha256": "f2126d7e7995432c8cdb95c0123cbe1ee586fee160e73abad9d2d9294eb392da",
+  "lock_sha256": "ca7c856c149cceefdd9f623d12a1b2ce88b321453e1f11199e4680185b27a71c",
+  "jsdom": {
+    "version": "27.0.1",
+    "api_sha256": "b4feb8ae099e1683da79137cf484a0952915e54d239140f124ecd7df5439b033"
+  },
+  "fake-indexeddb": {
+    "version": "6.2.4",
+    "esm_index_sha256": "45791e33b9247a10f52e8aecb3358adef073505ea0abf3368e2dd1367b1df651"
+  },
+  "cleanup_owner_receipt_sha256": "f1d2a3810e71fac65d915ad94b6383364ce186e4b317146feca6f6026506bc17",
+  "available_bytes_before_install": 6731415552,
+  "no_credentials_config_copied": true
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "detail-statistics-target-audit-v1",
+  "source_base": "eca83392ae039487b2e3376c2fdee8f0961f2d8a",
+  "finite_tests": {
+    "total": 62,
+    "preexisting": 51,
+    "added": 11,
+    "before": {
+      "exit_code": 1,
+      "passed": 55,
+      "failed": 7,
+      "source_sha256": "17c7ac54f9fd36d4852a731139bbe444b1e1aa42cf1097a935e694312064d89a",
+      "method": "Same final finite suite with only VM-loaded site-client.ts replaced by git show HEAD source. Temporary test removed."
+    },
+    "after": {
+      "exit_code": 0,
+      "passed": 62,
+      "failed": 0
+    }
+  },
+  "strict": {
+    "initial_exit_code": 1,
+    "initial_failure": "Four unresolved production alias edges; two existing signing dependency roots not linked into this isolated worktree. No diagnostic suppression or source change.",
+    "final_exit_code": 0,
+    "errors": 0,
+    "warnings": 15,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true,
+    "dependencies_manifest_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+    "remedy": "Verified all existing dependency pins; added two local ignored .build alias symlinks to existing verified noble/base roots."
+  },
+  "files": {
+    "before.log": "7b54128f43eada2cbdc89973f45d037775f0986ccf3a9447b75d2f8c36650e21",
+    "after.log": "f8818db22bc2dbb240d68dc8f6a0057f6a4ca7880a65a3d8ef964f8d814e0a25",
+    "strict-initial.log": "27b450efa894645054e6ffc241db4e5e26fca33152978e86041fd90aea15ef18",
+    "strict-final.log": "fedc1625a22a055fc4e49e81f853154953fb74b82a7cc932827b2629570d4b6a"
+  },
+  "production_sources": {
+    "platform-integrations/public-api/site-client.ts": "55853bde2e237562437cc7aeb44eb0d051c140c93a6fc26a386dd9b1708f72d0"
+  },
+  "browser_executed": false,
+  "http_runtime_executed": false,
+  "external_state_changed": false,
+  "limitation": "Transport stand-ins prove target binding and alias-proof contract only; no browser or live HTTP success is inferred."
+}

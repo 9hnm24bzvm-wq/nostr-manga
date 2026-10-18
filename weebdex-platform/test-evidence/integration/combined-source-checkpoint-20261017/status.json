@@ -1,0 +1,46 @@
+{
+  "schema": "combined-source-preservation-checkpoint-v1",
+  "recordedAtUtc": "2026-10-17T23:06:10.671154+00:00",
+  "sourceAndEvidenceHead": "855d3b1d366b96b6c34dbbb200516d4d718b7c2f",
+  "checkpointPurpose": "Preserve composed project source, documentation and sanitized evidence while current combined backend qualification finishes.",
+  "backend": {
+    "frozenSource": "ec1b2160b8a37bd53acac7edcc5bbb0bac24ff0f",
+    "allBackendAndProtocolSourceAndTestsStillByteIdentical": true,
+    "combinedLibraryApiRoutingAndFullHttpMatrix": "pending",
+    "isolatedOwnedAndIndependentFeatureEvidence": "retained under each feature; does not substitute for current combined qualification"
+  },
+  "frontend": {
+    "finiteDomIndexedDbCases": 627,
+    "passed": 627,
+    "strictGate0": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "strictGate1": {
+      "errors": 0,
+      "warnings": 12
+    },
+    "actualViteGate0": "passed",
+    "actualViteGate1": "passed",
+    "productionSourcePinsCompared": 912,
+    "all912PinsMatchCurrentSourceAndBothBuildAndStrictManifests": true,
+    "canonicalFilesUnchanged": 679,
+    "buildManifestSha256": "361723fcf30b31e82ed9464278d27a650cc6a3cab0c7a5ee080ae79ac2d9788e",
+    "strictManifestSha256": "7edafca3f60f752eaefafea59f1faff8f19737a2fba585724ad2b726f1a7e0cf",
+    "strictAndCiSourceEquivalentTo": "5fec8044aa5ee2e3c009a61f84ddb7484726d586",
+    "sourceDiagnosticSuppressionsAdded": false,
+    "protectedDependencyWrites": 0
+  },
+  "recoveryIndex": "test-evidence/recovery/verified-feature-checkpoints-20261017.json",
+  "limitations": [
+    "Current combined backend matrix is pending.",
+    "Real browser, hosted deployment and production load qualification are not established."
+  ],
+  "excludedFromCheckpoint": [
+    "credentials",
+    "actual private keys",
+    "personal data",
+    "runtime databases"
+  ],
+  "testFixtures": "Declared deterministic synthetic fixtures are project source; generated runtime key/database files are excluded."
+}

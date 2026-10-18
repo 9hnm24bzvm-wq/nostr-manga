@@ -1,0 +1,11 @@
+{
+  "README.md": "a956e01510b46690a14e701b13b2a00e58e629bf8fdcef330c4c0f3b2408bc7d",
+  "check-generator-dry.mjs": "8f4a766e88bc684af261008fe6e90f94a67bdc576ad55552d08599a31f9a594c",
+  "composition-map-and-preservation.json": "ef963b734211f0630362828a932727435fa1e7b4db1417748256f7c2bdf6a89c",
+  "editorial-conflict-decisions.json": "d02336c695d2b8070e898d9accef9557b162d4fdca82d83ea249653adfd0b9b4",
+  "final-generator-association.log": "710cf84617795175f2b61433ab76757cd3fe15cdc0dfef4c09b33dc9c37fd575",
+  "final-generator-dry-stderr.log": "59a85f3a6f4f9d266cc830f59c3ecff2f2cd7abdacb54e2df325c728ea06e8f5",
+  "final-generator-dry.json": "8a6812cf18b050c6921fc86418e2ac94e2012f264a4ba791e4dae19c28d953ed",
+  "preserve-composition.py": "4502e7667bd37bd9ba1b336f7832061377deb563179181f707d209bf29f912eb",
+  "route-preservation.json": "31aae2b452ad174d4354de1214bc74b3e4fd966fda40724de8dfb4e0954996fe"
+}

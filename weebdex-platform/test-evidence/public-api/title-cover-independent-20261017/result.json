@@ -1,0 +1,62 @@
+{
+  "schema": "independent-title-cover-original-qualification-v1",
+  "started_at_utc": "2026-10-17T22:57:51.113567+00:00",
+  "source_commit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+  "command": [
+    "bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_manga_writes-8f8ef7422023f8f7",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "test_executable_sha256": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+  "pass": true,
+  "disk_guard": {
+    "floor_bytes": 4294967296,
+    "cleanup_reserve_bytes": 134217728,
+    "min_observed_free_bytes": 5578760192,
+    "signalled": false,
+    "identity": "pidfd-owned guard child"
+  },
+  "exit_code": 0,
+  "source_file_count": 1298,
+  "source_changed": [],
+  "test_executable_sha256_after": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+  "executable_unchanged": true,
+  "ended_at_utc": "2026-10-17T22:57:54.517850+00:00",
+  "log_sha256": "8d0ca11723db54c46a8e30502f690b39106f48514d09ba9f864b338a34427bbf",
+  "child_reaped": true,
+  "cleanup_receipt_sha256": "672781683ec2e0dde922dacb0145de8aa1996be0390328d0c6b4e5b859aaf0f2",
+  "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-1emb1xxe/cleanup.json",
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": []
+  },
+  "tests": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_out": 1,
+    "seconds": 2.26
+  },
+  "cases": [
+    "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority"
+  ],
+  "browserExecuted": false,
+  "combinedSourceQualification": false,
+  "review": {
+    "freshPublishRechecksOriginalLanguageCover": true,
+    "actualCapturedCoverSelectionMatchesEligibility": true,
+    "exactDurableRetryUsesPreparedOriginal": true,
+    "nativeAndUploadOriginalCoverPolicyExplicitlyRetained": true,
+    "sameAccountAndVersionAuthorityPreserved": true
+  },
+  "scope": "One actual signed title/cover/publication/disposition lifecycle on isolated407c source.1298source pins and binary unchanged. No browser or later combined-source acceptance is inferred."
+}

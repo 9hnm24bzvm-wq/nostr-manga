@@ -250,6 +250,8 @@ struct CreateReport {
     object_id: PublicUuid,
     #[serde(default)]
     details: String,
+    #[serde(default,deserialize_with="super::uploads::deserialize_optional_account")]
+    expected_account_id: Option<PublicUuid>,
 }
 impl core::sealed::Sealed for BoundAccountWrite {}
 impl core::ReportMutationActor for BoundAccountWrite {
@@ -296,6 +298,8 @@ async fn create(
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
     let actor = bound_account_write(&tx, &cap).await?;
+    let expected=payload.expected_account_id.as_ref().map(|id|json!(id));
+    super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
     actor.require_permission("report.create")?;
     let reason = PostgresPublicIdResolver::resolve_many_in(
         &*tx,
@@ -374,6 +378,12 @@ mod tests {
         assert_eq!(q.order[0].1, Direction::Asc);
         let valid = r#"{"category":"manga","reason":"11111111-1111-8111-8111-111111111111","objectId":"22222222-2222-8222-8222-222222222222"}"#;
         assert!(serde_json::from_str::<CreateReport>(valid).is_ok());
+        let captured=valid.replace('}',",\"expectedAccountId\":\"33333333-3333-8333-8333-333333333333\"}");
+        assert!(serde_json::from_str::<CreateReport>(&captured).unwrap().expected_account_id.is_some());
+        for field in ["null","false","[]","\"native\""] {
+            assert!(serde_json::from_str::<CreateReport>(&valid.replace('}',&format!(",\"expectedAccountId\":{field}}}"))).is_err());
+        }
+        assert!(serde_json::from_str::<CreateReport>(&captured.replace('}',",\"expectedAccountId\":\"33333333-3333-8333-8333-333333333333\"}")).is_err());
         for invalid in [
             valid.replace("\"manga\"", "null"),
             valid.replace(

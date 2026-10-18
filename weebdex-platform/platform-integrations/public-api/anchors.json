@@ -189,5 +189,332 @@
     "before": "hidden: !manga.relationships.relations?.length",
     "after": "hidden: !isPublished",
     "label": "Public Related tab reads actual persisted edge endpoint and can show native empty state"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/+page.svelte",
+    "sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
+    "count": 1,
+    "before": "{#if !$group.relationships?.members?.some(member => member.is_leader)}",
+    "after": "{#if retainedGroupCanClaim($group, !$group.relationships?.members?.some(member => member.is_leader))}",
+    "helper": "group-presentation",
+    "approved_public_availability_exception": "public_group_claim_requires_exact_review_adapter"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "{#if !$group.relationships?.members?.some(member => member.is_leader)}",
+    "after": "{#if retainedGroupCanClaim($group, !$group.relationships?.members?.some(member => member.is_leader))}",
+    "helper": "group-presentation",
+    "approved_public_availability_exception": "public_group_claim_requires_exact_review_adapter"
+  },
+  {
+    "path": "src/routes/(app)/create/+layout.svelte",
+    "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+    "count": 1,
+    "before": "import ProtectedVerified from \"$lib/components/ui/ProtectedVerified.svelte\";",
+    "after": "import ProtectedVerified from \"$publicApi/PublicCreateGate.svelte\";",
+    "label": "Public signed title alone bypasses native-cookie create wrapper; group creation stays native"
+  },
+  {
+    "path": "src/routes/(app)/create/title/+layout.svelte",
+    "sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
+    "count": 1,
+    "before": "import ProtectedVerified from \"$lib/components/ui/ProtectedVerified.svelte\";",
+    "after": "import ProtectedVerified from \"$publicApi/PublicTitleShell.svelte\";",
+    "label": "Public title create delegates actual signer/account authority to its dedicated component"
+  },
+  {
+    "path": "src/routes/(app)/create/title/+layout.svelte",
+    "sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
+    "count": 1,
+    "before": "import ProtectedCondition from \"$lib/components/ui/ProtectedCondition.svelte\";",
+    "after": "import ProtectedCondition from \"$publicApi/PublicTitleShell.svelte\";",
+    "label": "Public title create delegates actual signer/account authority to its dedicated component"
+  },
+  {
+    "path": "src/routes/(app)/create/title/+page.svelte",
+    "sha256": "cb557f50780fd4c5a146553ad154923b5e71594e89554d84750cca529f640f96",
+    "count": 1,
+    "before": "import MangaCreate from \"$lib/components/draft/manga/MangaCreate.svelte\";",
+    "after": "import MangaCreate from \"$publicApi/PublicTitleEditor.svelte\";",
+    "label": "Dedicated metadata-only signed title creation, no native cover/relation chain"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
+    "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
+    "count": 1,
+    "before": "import MangaEdit from \"$platform/MangaEditBoundary.svelte\";",
+    "after": "import MangaEdit from \"$publicApi/PublicTitleEditor.svelte\";",
+    "composed_before": true,
+    "label": "Public title editor replaces the shared native boundary with scoped signed metadata controls"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.ts",
+    "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
+    "count": 1,
+    "before": "import { API, Permission } from \"$lib\";",
+    "after": "import { publicTitleRead } from \"$publicApi/title-client\";\nimport { API, Permission } from \"$lib\";",
+    "label": "Signed title editor loader imports the exact bound-account reader"
+  },
+  {
+    "path": "src/routes/(app)/title/[id]/edit/+page.ts",
+    "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
+    "count": 1,
+    "before": "export const load = async ({ url, params }) => {",
+    "after": "export const load = async ({ url, params }) => {\n if (Boolean(true)) {\n  const response = await publicTitleRead(params.id);\n  if (response.status !== 200 || !response.body) error(response.status >= 400 ? response.status : 502);\n  return { id: params.id, manga: response.body as unknown as Manga };\n }\n",
+    "label": "Public editor requires genuine signed account read, without native cookie or invented manga placeholder"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/+layout.svelte",
+    "sha256": "624730ba5cdb267bb95116e49e1416c9108506543a75e449b358c935828869e7",
+    "count": 1,
+    "before": "import * as Comments from \"$lib/components/comments\";",
+    "after": "import * as Comments from \"$publicApi/native-forum\";"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/comments/+page.svelte",
+    "sha256": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
+    "count": 1,
+    "before": "import * as Comments from \"$lib/components/comments\";",
+    "after": "import * as Comments from \"$publicApi/native-forum\";"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "label": "public UUID profiles have no fabricated native-thread comments tab",
+    "before": "icon: MessagesSquare\r\n\t\t},",
+    "after": "icon: MessagesSquare,\r\n\t\t\thidden: !$user.relationships?.thread\r\n\t\t},"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "label": "public UUID profiles never expose native revision-based settings",
+    "before": "hidden: !$Session || !Permission.User.canUpdate($user)",
+    "after": "hidden: !$Session || !!$user.public_profile_readonly || !Permission.User.canUpdate($user)"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "label": "public profile read cannot inherit native account follow authority",
+    "before": "canMutate: () => !isBlocked && $user.id !== $Session?.identity.id,",
+    "after": "canRead: () => !$user.public_profile_readonly,\r\n\t\tcanMutate: () => !$user.public_profile_readonly && !isBlocked && $user.id !== $Session?.identity.id,"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "label": "public UUID profiles omit unsupported native social mutations",
+    "before": "{#if $Session && $user.id !== $Session.identity.id}",
+    "after": "{#if $Session && !$user.public_profile_readonly && $user.id !== $Session.identity.id}",
+    "approved_public_availability_exception": "public_uuid_user_native_actions_unavailable"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "import { goto } from \"$app/navigation\";",
+    "after": "import PersonalRating from \"$publicApi/PersonalRating.svelte\";\r\n\timport { goto } from \"$app/navigation\";",
+    "label": "Native title action imports exact instance-account rating control"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={() => {\r\n\t\t\tReportDialog.set(manga, Constants.EntityType.Manga);",
+    "after": "\t{#if isPublished}<PersonalRating mangaId={manga.id} onSaved={onRatingChanged}/>{/if}\r\n\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={() => {\r\n\t\t\tReportDialog.set(manga, Constants.EntityType.Manga);",
+    "label": "Intentional rating action stays in existing native title controls",
+    "approved_public_feature_exception": "public_uuid_bound_account_rating_action"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\tconst mutex = new Mutex();",
+    "after": "\tconst {onRatingChanged=async()=>{}}:{onRatingChanged?:()=>Promise<unknown>}=$props();\r\n\tconst mutex = new Mutex();",
+    "label": "Rating acknowledgement refreshes actual public title statistics"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "import { replaceState } from \"$app/navigation\";",
+    "after": "import {instanceRatingLabel} from \"$publicApi/rating-summary\";\r\n\timport { replaceState } from \"$app/navigation\";",
+    "label": "Title rating label accepts only actual instance observation provenance"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "<MangaActions />",
+    "after": "<MangaActions onRatingChanged={getMangaStats} />",
+    "label": "Native title action refreshes its existing statistics after a confirmed rating",
+    "approved_public_feature_exception": "public_uuid_rating_stats_refresh"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "\t\t\t<span class=\"flex items-center gap-1 opacity-50\">\r\n\t\t\t\t<Star size=\"20\" />\r\n\t\t\t\tN/A\r\n\t\t\t</span>",
+    "after": "\t\t\t<span class=\"flex items-center gap-1\" class:opacity-50={!instanceRatingLabel(mangaStats)} title=\"Average of account ratings on this instance\">\r\n\t\t\t\t<Star size=\"20\" />\r\n\t\t\t\t{instanceRatingLabel(mangaStats) ?? \"N/A\"}\r\n\t\t\t</span>",
+    "label": "Native rating placeholder displays a genuine instance average without inventing a global score",
+    "approved_public_feature_exception": "public_uuid_instance_rating_summary"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "\t\tuploads: {",
+    "after": "\t\tlists: {name: \"Lists\",icon: FilesIcon,hidden: !$user.public_lists_available},\r\n\t\tuploads: {",
+    "label": "Protocol-publisher lists use the existing native profile tabs"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "before": "<h2 class=\"text-xl font-medium\">My Library</h2>",
+    "after": "<div class=\"flex flex-wrap items-center justify-between gap-3\"><h2 class=\"text-xl font-medium\">My Library</h2><a class=\"text-sm underline\" href=\"/following/lists\">Followed lists</a></div>",
+    "approved_public_feature_exception": "public_uuid_followed_lists_library_link",
+    "label": "Account-followed public lists remain separate from the default device library"
+  },
+  {
+    "path": "src/routes/(app)/settings/preferences/+page.svelte",
+    "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+    "count": 1,
+    "before": "\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";",
+    "after": "\timport AccountPreferenceSave from \"$publicApi/AccountPreferenceSave.svelte\";\r\n\timport { PUBLIC_SITE_NAME } from \"$env/static/public\";",
+    "label": "Explicit bound-account settings action in native preference form"
+  },
+  {
+    "path": "src/routes/(app)/settings/preferences/+page.svelte",
+    "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+    "count": 1,
+    "before": "<div class=\"bg-background sticky bottom-0 flex items-center justify-end gap-1 py-1\">",
+    "after": "<div class=\"bg-background sticky bottom-0 flex flex-wrap items-center justify-end gap-1 py-1\">\r\n\t\t\t\t{#if draftBaseline}<AccountPreferenceSave {draft} baseline={draftBaseline} disabled={$mutex || !isChanged}/>{/if}",
+    "approved_public_feature_exception": "public_uuid_bound_account_preferences_action",
+    "label": "Optional account save uses changed native form fields without replacing local defaults"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "import { goto } from \"$app/navigation\";",
+    "after": "import AccountFollow from \"$publicApi/AccountFollow.svelte\";\r\n\timport { goto } from \"$app/navigation\";",
+    "label": "Native action row imports explicit request-bound account follow"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "import { page } from \"$app/state\";",
+    "after": "import AccountFollow from \"$publicApi/AccountFollow.svelte\";\r\n\timport { page } from \"$app/state\";",
+    "label": "Native action row imports explicit request-bound account follow"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "import { page } from \"$app/state\";",
+    "after": "import AccountFollow from \"$publicApi/AccountFollow.svelte\";\r\n\timport { page } from \"$app/state\";",
+    "label": "Native action row imports explicit request-bound account follow"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={() => {\r\n\t\t\tReportDialog.set(manga, Constants.EntityType.Manga);",
+    "after": "\t{#if isPublished}<AccountFollow kind=\"manga\" targetId={manga.id} requestedId={page.params.id??\"\"}/>{/if}\r\n\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={() => {\r\n\t\t\tReportDialog.set(manga, Constants.EntityType.Manga);",
+    "approved_public_feature_exception": "public_uuid_bound_account_manga_follow",
+    "label": "Manga account following remains secondary to anonymous device-library controls"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">",
+    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t{#if $user.public_account_follow_available}<AccountFollow kind=\"user\" targetId={$user.id} requestedId={page.params.id??\"\"}/>{/if}",
+    "approved_public_feature_exception": "public_uuid_bound_account_user_follow",
+    "label": "Supported user account following stays in the existing native action row"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">",
+    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t<AccountFollow kind=\"group\" targetId={$group.id} requestedId={page.params.id??\"\"}/>",
+    "approved_public_feature_exception": "public_uuid_bound_account_group_follow",
+    "label": "Supported group account following stays in the existing native action row"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "canMutate: () => !isBlocked,",
+    "after": "canRead: () => false,\r\n\t\tcanMutate: () => false,",
+    "label": "Public group follow never reads or mutates through cookie-only native social adapter"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "{#if $Session}",
+    "after": "{#if false}",
+    "approved_public_availability_exception": "public_uuid_group_cookie_social_actions_unavailable",
+    "label": "Public group actions use genuine bound-account follow, not native-cookie UUID fallback"
+  },
+  {
+    "path": "src/lib/components/UserSearch.svelte",
+    "sha256": "d89d59b462e22379cd4556cc11cbe1461984fc899764ba696fcf5de9a86e4f76",
+    "count": 1,
+    "label": "authenticated directory never reuses history-cache rows and clears on signer changes",
+    "before": "\tonMount(async () => {\r\n\t\tif ((page.state as any)?._$UserSearch_feed) {\r\n\t\t\tfeed = (page.state as any)._$UserSearch_feed as typeof feed;\r\n\t\t} else {\r\n\t\t\ttry {\r\n\t\t\t\tawait onSearch();\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) error = e;\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\terror = Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\tisMounted = true;\r\n\t});",
+    "after": "\tlet directoryEpoch = 0, directoryDisposed = false;\r\n\tonDestroy(() => { directoryDisposed = true; directoryEpoch++; });\r\n\t$effect(() => {\r\n\t\tconst owner = $signerIdentity.owner, generation = $signerIdentity.generation;\r\n\t\tconst revision = ++directoryEpoch;\r\n\t\tfeed = undefined; error = undefined; isMounted = false;\r\n\t\tif (!owner) {\r\n\t\t\terror = new Constants.Error.Error(\"Connect your public identity\", \"This instance's user directory requires a connected identity bound to an account. Manage your public identity in Settings, then search again.\");\r\n\t\t\tisMounted = true; return;\r\n\t\t}\r\n\t\tvoid (async () => {\r\n\t\t\ttry { await onSearch(); }\r\n\t\t\tcatch (cause) {\r\n\t\t\t\tif (directoryDisposed || revision !== directoryEpoch) return;\r\n\t\t\t\terror = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown;\r\n\t\t\t}\r\n\t\t\tif (!directoryDisposed && revision === directoryEpoch) isMounted = true;\r\n\t\t})();\r\n\t});"
+  },
+  {
+    "path": "src/lib/components/UserSearch.svelte",
+    "sha256": "d89d59b462e22379cd4556cc11cbe1461984fc899764ba696fcf5de9a86e4f76",
+    "count": 1,
+    "label": "directory lifecycle uses the selected signing identity",
+    "before": "\timport { onMount } from \"svelte\";",
+    "after": "\timport { onDestroy } from \"svelte\";\r\n\timport { signerIdentity } from \"$localLibrary/publication\";"
+  },
+  {
+    "path": "src/routes/(app)/users/+page.svelte",
+    "sha256": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
+    "count": 1,
+    "label": "authenticated user directory responses are not saved in browser history",
+    "before": "\t\t\treplaceState(window.location.href, {\r\n\t\t\t\t...page.state,\r\n\t\t\t\t_$UserSearch_feed: $state.snapshot(feed)\r\n\t\t\t});",
+    "after": ""
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "import GroupClaimDialog from \"./GroupClaimDialog.svelte\";",
+    "after": "import GroupClaimDialog from \"$publicApi/PublicGroupClaimDialog.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/author/[id]/Author.svelte",
+    "sha256": "607323da047e82b934677e2b70338b16e90b8916bb5b87dc1f9690353bc24b22",
+    "count": 1,
+    "before": "hidden: !$Session || !Permission.Author.canUpdate($author)",
+    "after": "hidden: false"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "hidden: !$Session || !Permission.Group.canUpdate($group)",
+    "after": "hidden: false"
+  },
+  {
+    "path": "src/lib/components/AppSidebar.svelte",
+    "sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
+    "count": 1,
+    "before": "{ name: \"Users\", url: \"/users\", icon: UserIcon }",
+    "after": "{ name: \"Users\", url: \"/users\", icon: UserIcon }, { name: \"Signed catalogue tools\", url: \"/catalogue-tools\", icon: SettingsIcon }"
   }
 ]

@@ -1,5 +1,5 @@
 use super::{
-    entity_mutations::{self, AuthorCreate, AuthorUpdate, GroupCreate, GroupUpdate},
+    entity_mutations::{self, AuthorCreate, AuthorUpdate, CatalogMutationActor, GroupCreate, GroupUpdate},
     repository::{audit, create_thread, require_manga_edit, require_mutable_manga},
     validation as v,
 };
@@ -196,6 +196,9 @@ fn manga_fields(payload: &Value, create: bool) -> ApiResult<MangaFields> {
         artists: v::ids(payload, "artists", create)?,
     })
 }
+fn merge_localized_metadata(fields: &mut MangaFields, extra: &Value) {
+    fields.metadata.as_object_mut().unwrap().extend(extra.as_object().unwrap().clone());
+}
 async fn set_manga_links(tx: &Transaction<'_>, id: &str, fields: &MangaFields) -> ApiResult<()> {
     if let Some(tags) = &fields.tags {
         let n: i64 = tx
@@ -223,8 +226,11 @@ async fn set_manga_links(tx: &Transaction<'_>, id: &str, fields: &MangaFields) -
     }
     for (role, people) in [("author", &fields.authors), ("artist", &fields.artists)] {
         if let Some(people) = people {
-            let n:i64=tx.query_one("SELECT count(*) FROM platform.catalog_authors WHERE id=ANY($1) AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id)",&[people]).await?.get(0);
-            if n as usize != people.len() {
+            // Keep visible author rows stable until this title's reference
+            // writes commit. Soft deletion holds the conflicting UPDATE lock
+            // before checking current live-title references.
+            let authors=tx.query("SELECT id FROM platform.catalog_authors WHERE id=ANY($1) AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) ORDER BY id FOR SHARE",&[people]).await?;
+            if authors.len() != people.len() {
                 return Err(ApiError::bad_request("Unknown author or artist"));
             }
             tx.execute(
@@ -245,22 +251,35 @@ pub async fn manga_create(
     Json(payload): Json<Value>,
 ) -> ApiResult<(StatusCode, Json<Value>)> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let data = manga_create_in(&tx, &actor, &payload, &json!({})).await?;
+    tx.commit().await?;
+    Ok((StatusCode::CREATED, Json(data)))
+}
+/// Shared native/public create core. Caller owns authentication and transaction.
+pub(crate) async fn manga_create_in(
+    tx: &Transaction<'_>, actor: &impl CatalogMutationActor, payload: &Value,
+    extra_metadata: &Value,
+) -> ApiResult<Value> {
     actor.require_permission("manga.create")?;
-    let f = manga_fields(&payload, true)?;
+    let mut f = manga_fields(payload, true)?;
+    let language = f.language.as_deref().unwrap();
+    f.metadata["localized_titles"] = json!({language:f.title});
+    if let Some(description) = payload.get("description") { f.metadata["localized_description"] = json!({language:description}); }
+    merge_localized_metadata(&mut f, extra_metadata);
     if payload.get("version").is_some() {
         return Err(ApiError::bad_request("Version is assigned by the server"));
     }
     let id = v::new_id("manga");
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    tx.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,year,language,demographic,publication_status,content_rating,metadata) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",&[&id,&actor.user_id,&actor.username,&f.title,&f.year.unwrap_or(0),&f.language,&f.demographic,&f.status,&f.rating,&f.metadata]).await?;
-    set_manga_links(&tx, &id, &f).await?;
+    tx.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,year,language,demographic,publication_status,content_rating,metadata) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",&[&id,&actor.user_id(),&actor.username(),&f.title,&f.year.unwrap_or(0),&f.language,&f.demographic,&f.status,&f.rating,&f.metadata]).await?;
+    set_manga_links(tx, &id, &f).await?;
     create_thread(
-        &tx,
+        tx,
         "manga",
         &id,
-        &actor.user_id,
-        &actor.username,
+        &actor.user_id(),
+        &actor.username(),
         f.title.as_deref().unwrap(),
     )
     .await?;
@@ -269,14 +288,14 @@ pub async fn manga_create(
         &[&id],
     )
     .await?;
-    audit(&tx, &actor.user_id, "manga", &id, "create", None, Some(1)).await?;
+    audit(tx, &actor.user_id(), "manga", &id, "create", None, Some(1)).await?;
     let data = tx
         .query_one("SELECT platform.catalog_manga_json($1)", &[&id])
         .await?
         .get(0);
-    tx.commit().await?;
-    Ok((StatusCode::CREATED, Json(data)))
+    Ok(data)
 }
+
 pub async fn manga_update(
     State(state): State<AppState>,
     Path(id): Path<String>,
@@ -284,12 +303,20 @@ pub async fn manga_update(
     Json(payload): Json<Value>,
 ) -> ApiResult<Json<Value>> {
     let actor = mutation_principal(&state, &headers).await?;
-    v::id(&id)?;
-    let version = v::version(&payload)?;
-    let f = manga_fields(&payload, false)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    require_manga_edit(&tx, &id, &actor, "manga.update").await?;
+    let data = manga_update_in(&tx, &actor, &id, &payload, &json!({})).await?;
+    tx.commit().await?;
+    Ok(Json(data))
+}
+pub(crate) async fn manga_update_in(
+    tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str, payload: &Value,
+    extra_metadata: &Value,
+) -> ApiResult<Value> {
+    v::id(&id)?;
+    let version = v::version(&payload)?;
+    let mut f = manga_fields(payload, false)?;
+    require_manga_edit(tx, &id, actor, "manga.update").await?;
     for (fields, perm) in [
         (&["title", "alt_titles"][..], "manga.title.edit"),
         (&["tags"][..], "manga.tag.edit"),
@@ -298,29 +325,39 @@ pub async fn manga_update(
         (&["links"][..], "manga.link.edit"),
     ] {
         if fields.iter().any(|key| payload.get(*key).is_some()) {
-            require_manga_edit(&tx, &id, &actor, perm).await?;
+            require_manga_edit(tx, &id, actor, perm).await?;
         }
     }
     let row = tx
         .query_one(
-            "SELECT version,protocol_series_id IS NOT NULL FROM platform.catalog_manga WHERE id=$1",
+            "SELECT version,protocol_series_id IS NOT NULL,language FROM platform.catalog_manga WHERE id=$1",
             &[&id],
         )
         .await?;
     let protocol_overlay: bool = row.get(1);
     check_version(row.get(0), version)?;
-    set_manga_links(&tx, &id, &f).await?;
+    // A native edit must not leave an older localized public value shadowing it.
+    let language = f.language.clone().unwrap_or_else(|| row.get(2));
+    if let Some(title) = &f.title { f.metadata["localized_titles"] = json!({language.clone():title}); }
+    if let Some(description) = payload.get("description") { f.metadata["localized_description"] = json!({language:description}); }
+    if let Some(alts) = payload["alt_titles"].as_object() {
+        let values:Vec<Value> = alts.iter().flat_map(|(lang,titles)|titles.as_array().into_iter().flatten().map(move |title|json!({lang:title}))).collect();
+        f.metadata["localized_alt_titles"] = json!(values);
+    }
+    merge_localized_metadata(&mut f, extra_metadata);
+    set_manga_links(tx, &id, &f).await?;
     tx.execute("UPDATE platform.catalog_manga SET title=COALESCE($2,title),year=COALESCE($3,year),language=COALESCE($4,language),demographic=COALESCE($5,demographic),publication_status=COALESCE($6,publication_status),content_rating=COALESCE($7,content_rating),metadata=metadata || $8,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&f.title,&f.year,&f.language,&f.demographic,&f.status,&f.rating,&f.metadata]).await?;
     if protocol_overlay {
         let mut overlay = payload.clone();
+        overlay.as_object_mut().unwrap().extend(extra_metadata.as_object().unwrap().clone());
         overlay.as_object_mut().unwrap().remove("version");
         overlay["scope"] = json!("instance-local");
-        overlay["updated_by"] = json!(actor.user_id);
+        overlay["updated_by"] = json!(actor.user_id());
         tx.execute("UPDATE platform.catalog_manga SET metadata=metadata||jsonb_build_object('instance_overlay',COALESCE(metadata->'instance_overlay','{}'::jsonb)||$2::jsonb) WHERE id=$1", &[&id,&overlay]).await?;
     }
     audit(
-        &tx,
-        &actor.user_id,
+        tx,
+        &actor.user_id(),
         "manga",
         &id,
         if protocol_overlay {
@@ -336,9 +373,9 @@ pub async fn manga_update(
         .query_one("SELECT platform.catalog_manga_json($1)", &[&id])
         .await?
         .get(0);
-    tx.commit().await?;
-    Ok(Json(data))
+    Ok(data)
 }
+
 pub async fn manga_commit(
     State(state): State<AppState>,
     Path(id): Path<String>,
@@ -371,11 +408,22 @@ async fn transition(
     next: &str,
 ) -> ApiResult<Json<Value>> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let data = manga_transition_in(&state, &tx, &actor, &id, &payload, next, false).await?;
+    tx.commit().await?;
+    Ok(Json(data))
+}
+pub(crate) async fn manga_transition_in(
+    state: &AppState, tx: &Transaction<'_>, actor: &impl CatalogMutationActor,
+    id: &str, payload: &Value, next: &str, require_original_cover: bool,
+) -> ApiResult<Value> {
+    if !["submitted", "published", "rejected"].contains(&next) {
+        return Err(ApiError::bad_request("Invalid title transition"));
+    }
     v::allowed(&payload, &["version"])?;
     v::id(&id)?;
     let version = v::version(&payload)?;
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
     let row=tx.query_opt("SELECT owner_id,locked,state,version FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Draft not found"))?;
     let current: String = row.get(2);
     let actual_version: i32 = row.get(3);
@@ -383,7 +431,7 @@ async fn transition(
         && current == "published"
         && version.checked_add(1) == Some(actual_version)
     {
-        tx.query_opt("SELECT 1 FROM platform.protocol_publication_commands WHERE command_id=$1 AND user_id=$2 AND catalog_id=$3 AND resource_kind='manga' AND state='materialized' AND native_commit_payload=$4", &[&format!("manga:{id}"),&actor.user_id,&id,&json!({"action":"publish_manga","manga_id":id,"submitted_version":version})]).await?.is_some()
+        tx.query_opt("SELECT 1 FROM platform.protocol_publication_commands WHERE command_id=$1 AND user_id=$2 AND catalog_id=$3 AND resource_kind='manga' AND state='materialized' AND native_commit_payload=$4", &[&format!("manga:{id}"),&actor.user_id(),&id,&json!({"action":"publish_manga","manga_id":id,"submitted_version":version})]).await?.is_some()
     } else {
         false
     };
@@ -392,7 +440,7 @@ async fn transition(
     }
     if next == "submitted" {
         actor.require_permission("manga.create")?;
-        if row.get::<_, String>(0) != actor.user_id && !actor.is_moderator() {
+        if row.get::<_, String>(0) != actor.user_id() && !actor.is_moderator() {
             return Err(ApiError::forbidden("Only the draft owner can submit it"));
         }
         if row.get::<_, bool>(1) && !actor.is_moderator() {
@@ -404,16 +452,28 @@ async fn transition(
             ));
         }
     } else {
-        staff_permission(&actor, "manga.state.update")?;
+        staff_permission(actor, "manga.state.update")?;
         if current != "submitted" && !replay {
             return Err(ApiError::conflict("Only submitted titles can be reviewed"));
         }
     }
     if next != "published" {
-        require_mutable_manga(&tx, &id).await?;
+        require_mutable_manga(tx, &id).await?;
     }
+    if require_original_cover && matches!(next, "submitted" | "published") {
+        // A fresh review must still have the original required at submission:
+        // cover removal is separately versioned and can occur after submit.
+        // An exact durable command already captured its immutable original and
+        // must retry that snapshot rather than depend on mutable cover rows.
+        let captured = next == "published" && tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE command_id=$1 AND user_id=$2 AND catalog_id=$3 AND resource_kind='manga' AND group_id IS NULL AND upload_session_id IS NULL AND native_commit_hash IS NULL AND native_commit_payload=$4 AND source_manifest IS NOT NULL)",&[&format!("manga:{id}"),&actor.user_id(),&id,&json!({"action":"publish_manga","manga_id":id,"submitted_version":version})]).await?.get::<_,bool>(0);
+        if !captured {
+            let cover:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_manga m JOIN platform.catalog_covers c ON c.manga_id=m.id AND c.language=m.language JOIN platform.cover_media cm ON cm.cover_id=c.id AND cm.variant='original' JOIN platform.media_objects o ON o.id=cm.object_id WHERE m.id=$1 AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND o.bytes>0)",&[&id]).await?.get(0);
+            if !cover {return Err(ApiError::bad_request("Title submission or publication requires an original-language cover"));}
+        }
+    }
+    let previous: Option<Value> = tx.query_one("SELECT platform.catalog_manga_json($1)", &[&id]).await?.get(0);
     let receipt = if next == "published" {
-        crate::protocol::publication::publish_native_manga(&state, &tx, &actor, &id, version)
+        crate::protocol::publication::publish_native_manga_with_cover_requirement(state, tx, actor, &id, version, require_original_cover)
             .await?
     } else {
         None
@@ -421,8 +481,8 @@ async fn transition(
     if !replay {
         tx.execute("UPDATE platform.catalog_manga SET state=$2,published_at=CASE WHEN $2='published' THEN clock_timestamp() ELSE published_at END,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&next]).await?;
         audit(
-            &tx,
-            &actor.user_id,
+            tx,
+            &actor.user_id(),
             "manga",
             &id,
             next,
@@ -443,12 +503,15 @@ async fn transition(
                     &[&id],
                 )
                 .await?;
-            data = Some(
-                json!({"id":id,"title":row.get::<_,String>(0),"version":row.get::<_,i32>(1),"state":"published","is_unavailable":true}),
-            );
+            let mut pending = previous.unwrap_or_else(||json!({"id":id,"title":row.get::<_,String>(0)}));
+            pending["version"] = json!(row.get::<_,i32>(1));
+            pending["state"] = json!("published");
+            pending["is_unavailable"] = json!(true);
+            data = Some(pending);
         }
         let value = data.as_mut().ok_or_else(ApiError::unavailable)?;
         value["protocol_event_id"] = json!(receipt.event.id);
+        value["protocol_publisher"] = json!(receipt.event.pubkey);
         value["publication_scope"] = json!("original-protocol");
         value["publication_status"] = json!(receipt.state);
     } else if next == "published" {
@@ -465,9 +528,9 @@ async fn transition(
         .await?;
     }
     let data = data.ok_or_else(ApiError::unavailable)?;
-    tx.commit().await?;
-    Ok(Json(data))
+    Ok(data)
 }
+
 pub async fn manga_lock(
     State(state): State<AppState>,
     Path(id): Path<String>,
@@ -483,64 +546,62 @@ pub async fn manga_unlock(
     lock(state, id, headers, false).await
 }
 async fn lock(
-    state: AppState,
-    id: String,
-    headers: HeaderMap,
-    locked: bool,
+    state: AppState, id: String, headers: HeaderMap, locked: bool,
 ) -> ApiResult<Json<Value>> {
     let actor = mutation_principal(&state, &headers).await?;
-    staff_permission(&actor, "manga.lock.update")?;
-    v::id(&id)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    if tx.query_opt("SELECT id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR UPDATE", &[&id]).await?.is_none() {
-        return Err(ApiError::not_found("Manga not found"));
-    }
-    require_mutable_manga(&tx, &id).await?;
-    if tx.execute("UPDATE platform.catalog_manga SET locked=$2,version=version+1,updated_at=clock_timestamp() WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)",&[&id,&locked]).await?==0{return Err(ApiError::not_found("Manga not found"));}
-    audit(
-        &tx,
-        &actor.user_id,
-        "manga",
-        &id,
-        if locked { "lock" } else { "unlock" },
-        None,
-        None,
-    )
-    .await?;
-    let data = tx
-        .query_one("SELECT platform.catalog_manga_json($1)", &[&id])
-        .await?
-        .get(0);
+    let data = manga_lock_in(&tx, &actor, &id, locked, None).await?;
     tx.commit().await?;
     Ok(Json(data))
 }
+/// Native wrappers retain their existing unversioned transport. Signed public
+/// callers require an exact version in their authenticated body.
+pub(crate) async fn manga_lock_in(
+    tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str,
+    locked: bool, expected: Option<i32>,
+) -> ApiResult<Value> {
+    staff_permission(actor, "manga.lock.update")?;
+    v::id(id)?;
+    let actual: i32 = tx.query_opt("SELECT version FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR UPDATE", &[&id]).await?.ok_or_else(||ApiError::not_found("Manga not found"))?.get(0);
+    if let Some(expected) = expected { check_version(actual, expected)?; }
+    require_mutable_manga(tx, id).await?;
+    tx.execute("UPDATE platform.catalog_manga SET locked=$2,metadata=CASE WHEN protocol_series_id IS NULL THEN metadata ELSE metadata||jsonb_build_object('instance_overlay',COALESCE(metadata->'instance_overlay','{}'::jsonb)||jsonb_build_object('scope','instance-local','locked',$2::boolean,'updated_by',$3::text)) END,version=version+1,updated_at=clock_timestamp() WHERE id=$1", &[&id,&locked,&actor.user_id()]).await?;
+    audit(tx, actor.user_id(), "manga", id, if locked { "lock" } else { "unlock" }, Some(actual), Some(actual+1)).await?;
+    Ok(tx.query_one("SELECT platform.catalog_manga_json($1)", &[&id]).await?.get(0))
+}
 pub async fn manga_delete(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-    headers: HeaderMap,
+    State(state): State<AppState>, Path(id): Path<String>, headers: HeaderMap,
 ) -> ApiResult<StatusCode> {
     let actor = mutation_principal(&state, &headers).await?;
-    v::id(&id)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let row=tx.query_opt("SELECT owner_id,state,locked FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Manga not found"))?;
-    if !(actor.is_moderator() && actor.has_perm("manga.delete")) {
-        actor.require_permission("manga.create")?;
-        if row.get::<_, String>(0) != actor.user_id
-            || row.get::<_, String>(1) == "published"
-            || row.get::<_, bool>(2)
-        {
-            return Err(ApiError::forbidden(
-                "This title cannot be deleted by this account",
-            ));
-        }
-    }
-    require_mutable_manga(&tx, &id).await?;
-    tx.execute("UPDATE platform.catalog_manga SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1",&[&id]).await?;
-    audit(&tx, &actor.user_id, "manga", &id, "remove", None, None).await?;
+    manga_delete_in(&tx, &actor, &id, None).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
+}
+/// Shared local soft-hide only. Public adapters and report acceptance also
+/// require current source visibility under this same target row lock. The
+/// legacy native draft-owner authorization remains unchanged.
+pub(crate) async fn manga_delete_in(
+    tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str,
+    expected: Option<i32>,
+) -> ApiResult<i32> {
+    v::id(id)?;
+    let row=tx.query_opt("SELECT owner_id,state,locked,version FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Manga not found"))?;
+    if !(actor.is_moderator() && actor.has_perm("manga.delete")) {
+        actor.require_permission("manga.create")?;
+        if row.get::<_, String>(0) != actor.user_id()
+            || row.get::<_, String>(1) == "published" || row.get::<_, bool>(2) {
+            return Err(ApiError::forbidden("This title cannot be deleted by this account"));
+        }
+    }
+    let actual:i32=row.get(3);
+    if let Some(expected)=expected {check_version(actual,expected)?;}
+    require_mutable_manga(tx,id).await?;
+    tx.execute("UPDATE platform.catalog_manga SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1",&[&id]).await?;
+    audit(tx,actor.user_id(),"manga",id,"remove",Some(actual),Some(actual+1)).await?;
+    Ok(actual+1)
 }
 pub async fn relation_create(
     State(state): State<AppState>,
@@ -549,21 +610,34 @@ pub async fn relation_create(
     Json(payload): Json<Value>,
 ) -> ApiResult<(StatusCode, Json<Value>)> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let data = relation_create_in(&tx,&actor,&id,&payload).await?;
+    tx.commit().await?;
+    Ok((StatusCode::CREATED, Json(data)))
+}
+
+pub(crate) async fn relation_create_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<Value> {
     v::id(&id)?;
     let (related, kind, expected) = relation_fields(&payload, false)?;
     if id == related {
         return Err(ApiError::bad_request("A manga cannot relate to itself"));
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    require_manga_edit(&tx, &id, &actor, "manga.relation.edit").await?;
-    let version = relation_owner_version(&tx, &id, expected).await?;
-    require_related_title(&tx, &related).await?;
-    if tx.execute("INSERT INTO platform.catalog_relations(manga_id,related_id,relation_type,created_by) VALUES($1,$2,$3,$4) ON CONFLICT(manga_id,related_id) DO NOTHING",&[&id,&related,&kind,&actor.user_id]).await?==0{return Err(ApiError::conflict("Relation already exists"));}
+    require_manga_edit(tx, &id, actor, "manga.relation.edit").await?;
+    let version = relation_owner_version(tx, &id, expected).await?;
+    require_related_title(tx, &related).await?;
+    // The owner row lock above serializes every relation command. Count all
+    // persisted edges, including currently invisible targets, so a successful
+    // insert cannot make the bounded public/private collection unreadable.
+    let count: i64 = tx.query_one("SELECT count(*) FROM platform.catalog_relations WHERE manga_id=$1", &[&id]).await?.get(0);
+    if count >= 4096 {
+        return Err(ApiError::conflict("Relation limit reached; remove an existing relation first"));
+    }
+    if tx.execute("INSERT INTO platform.catalog_relations(manga_id,related_id,relation_type,created_by) VALUES($1,$2,$3,$4) ON CONFLICT(manga_id,related_id) DO NOTHING",&[&id,&related,&kind,&actor.user_id()]).await?==0{return Err(ApiError::conflict("Relation already exists"));}
     tx.execute("UPDATE platform.catalog_manga SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
     audit(
-        &tx,
-        &actor.user_id,
+        tx,
+        &actor.user_id(),
         "manga",
         &id,
         "relation_create",
@@ -571,9 +645,8 @@ pub async fn relation_create(
         Some(version + 1),
     )
     .await?;
-    let data = relation_response(&tx, &id, &related, version + 1).await?;
-    tx.commit().await?;
-    Ok((StatusCode::CREATED, Json(data)))
+    let data = relation_response(tx, &id, &related, version + 1).await?;
+    Ok(data)
 }
 
 /// An explicit instance-local edit, distinct from duplicate-conflicting POST.
@@ -585,24 +658,30 @@ pub async fn relation_update(
     Json(payload): Json<Value>,
 ) -> ApiResult<Json<Value>> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let data = relation_update_in(&tx,&actor,&id,&payload).await?;
+    tx.commit().await?;
+    Ok(Json(data))
+}
+
+pub(crate) async fn relation_update_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<Value> {
     v::id(&id)?;
     let (related, kind, expected) = relation_fields(&payload, true)?;
     if id == related {
         return Err(ApiError::bad_request("A manga cannot relate to itself"));
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    require_manga_edit(&tx, &id, &actor, "manga.relation.edit").await?;
-    let version = relation_owner_version(&tx, &id, expected).await?;
-    require_related_title(&tx, &related).await?;
+    require_manga_edit(tx, &id, actor, "manga.relation.edit").await?;
+    let version = relation_owner_version(tx, &id, expected).await?;
+    require_related_title(tx, &related).await?;
     let row=tx.query_opt("SELECT relation_type FROM platform.catalog_relations WHERE manga_id=$1 AND related_id=$2 FOR UPDATE",&[&id,&related]).await?.ok_or_else(||ApiError::not_found("Relation not found"))?;
     let changed = row.get::<_, String>(0) != kind;
     let new_version = if changed {
         tx.execute("UPDATE platform.catalog_relations SET relation_type=$3 WHERE manga_id=$1 AND related_id=$2",&[&id,&related,&kind]).await?;
         tx.execute("UPDATE platform.catalog_manga SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
         audit(
-            &tx,
-            &actor.user_id,
+            tx,
+            &actor.user_id(),
             "manga",
             &id,
             "relation_update",
@@ -614,9 +693,8 @@ pub async fn relation_update(
     } else {
         version
     };
-    let data = relation_response(&tx, &id, &related, new_version).await?;
-    tx.commit().await?;
-    Ok(Json(data))
+    let data = relation_response(tx, &id, &related, new_version).await?;
+    Ok(data)
 }
 
 fn relation_fields(
@@ -687,28 +765,28 @@ async fn relation_response(
     related: &str,
     owner_version: i32,
 ) -> ApiResult<Value> {
-    let relations: Value = tx
-        .query_one("SELECT platform.catalog_relations_json($1)", &[&id])
-        .await?
-        .get(0);
-    let mut data = relations
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|r| r["id"] == related)
-        .cloned()
-        .ok_or_else(|| ApiError::not_found("Related manga is unavailable"))?;
+    // Preserve the exact native relation shape, but project only the selected
+    // directional edge. Aggregating every owner edge merely to find one would
+    // make successful writes at the supported capacity depend on list size.
+    let mut data: Value = tx.query_opt("SELECT platform.catalog_manga_base(m.id) || jsonb_build_object('type',r.relation_type,'relationships',jsonb_strip_nulls(jsonb_build_object('tags',platform.catalog_manga_tags_json(m.id),'cover',(SELECT platform.catalog_cover_json(c.id) FROM platform.catalog_covers c WHERE c.manga_id=m.id AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) ORDER BY c.is_main DESC,c.created_at DESC,c.id LIMIT 1)))) FROM platform.catalog_relations r JOIN platform.catalog_manga m ON m.id=r.related_id WHERE r.manga_id=$1 AND r.related_id=$2 AND EXISTS(SELECT 1 FROM platform.catalog_manga root WHERE root.id=$1 AND root.deleted_at IS NULL AND root.protocol_source_visible AND platform.protocol_source_is_visible(root.protocol_series_id)) AND m.state='published' AND m.deleted_at IS NULL AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)",&[&id,&related]).await?
+        .and_then(|row|row.get::<_,Option<Value>>(0))
+        .ok_or_else(||ApiError::not_found("Related manga is unavailable"))?;
     data["manga_version"] = json!(owner_version);
     data["relation_scope"] = json!("instance-local");
     Ok(data)
 }
 pub async fn relation_delete(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-    headers: HeaderMap,
-    Json(payload): Json<Value>,
+    State(state): State<AppState>, Path(id): Path<String>, headers: HeaderMap, Json(payload): Json<Value>,
 ) -> ApiResult<Response> {
     let actor = mutation_principal(&state, &headers).await?;
+    let mut client = state.db.client().await?;let tx=client.transaction().await?;
+    let version=relation_delete_in(&tx,&actor,&id,&payload).await?;tx.commit().await?;
+    let mut response=StatusCode::NO_CONTENT.into_response();
+    response.headers_mut().insert("x-weebdex-manga-version",HeaderValue::from_str(&version.to_string()).map_err(|_|ApiError::unavailable())?);
+    Ok(response)
+}
+
+pub(crate) async fn relation_delete_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<i32> {
     v::id(&id)?;
     v::allowed(&payload, &["related_id", "version"])?;
     let related = v::string(&payload, "related_id", 128, true)?.unwrap();
@@ -718,10 +796,8 @@ pub async fn relation_delete(
     } else {
         None
     };
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    require_manga_edit(&tx, &id, &actor, "manga.relation.edit").await?;
-    let version = relation_owner_version(&tx, &id, expected).await?;
+    require_manga_edit(tx, &id, actor, "manga.relation.edit").await?;
+    let version = relation_owner_version(tx, &id, expected).await?;
     if tx
         .execute(
             "DELETE FROM platform.catalog_relations WHERE manga_id=$1 AND related_id=$2",
@@ -734,8 +810,8 @@ pub async fn relation_delete(
     }
     tx.execute("UPDATE platform.catalog_manga SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
     audit(
-        &tx,
-        &actor.user_id,
+        tx,
+        &actor.user_id(),
         "manga",
         &id,
         "relation_delete",
@@ -743,15 +819,9 @@ pub async fn relation_delete(
         Some(version + 1),
     )
     .await?;
-    tx.commit().await?;
-    let mut response = StatusCode::NO_CONTENT.into_response();
-    response.headers_mut().insert(
-        "x-weebdex-manga-version",
-        HeaderValue::from_str(&(version + 1).to_string()).map_err(|_| ApiError::unavailable())?,
-    );
-    Ok(response)
+    Ok(version+1)
 }
-fn staff_permission(actor: &SessionPrincipal, perm: &str) -> ApiResult<()> {
+fn staff_permission(actor: &impl CatalogMutationActor, perm: &str) -> ApiResult<()> {
     if !actor.is_moderator() {
         return Err(ApiError::forbidden("Staff permission required"));
     }

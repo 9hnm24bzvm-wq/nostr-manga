@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "df4adab27bfdc6fbc5e327d5d1dd33b7186a34da",
+  "finite": {
+    "passed": 224,
+    "adapterCases": 68,
+    "preservedAdapterCases": 64,
+    "newEffectCases": 4,
+    "browserHttpSqlProof": false
+  },
+  "componentSyntax": {
+    "warnings": 0,
+    "rendered": false
+  },
+  "strict": "held-unexecuted for this successor; predecessor31396b4 strict evidence is separately retained",
+  "rustCompile": "held-unexecuted",
+  "actualHttpRegression": "staged-unexecuted",
+  "sourceFinding": "Same-account grant gain can upgrade a role-inferred chapter review to immediate hide. Real legacy-effect capture is staged alongside explicit review/approval/loss checks.",
+  "compatibility": "External API omission retains legacy role-inferred effect; first-party client always requires/signs explicit removalMode.",
+  "blocker": "4GiB shared disk floor plus guarded start/cleanup reserve; additional cleanup approval pending with parent, none performed.",
+  "failureHistory": [
+    {
+      "phase": "first combined finite run",
+      "passed": 223,
+      "failed": 1,
+      "cause": "Preserved production association expected confirmation wording to directly use approvesHide. Updated to assert stored removalChoice capture, identical distinct labels, submission of the stored choice and removalMode payload; behavioral adapter cases already passed."
+    }
+  ]
+}

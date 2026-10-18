@@ -1,0 +1,36 @@
+(node:15) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✖ group detail requests actual leader/member includes and preserves both in retained display (5.249454ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.427748
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/.group-prefixed-repro-20261017.test.mjs:155:1
+✖ group detail requests actual leader/member includes and preserves both in retained display (5.249454ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'leader',
+  -   'member'
+  - ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/browser-completeness-audit-worktree-20261017/weebdex-platform/tests/ci/.group-prefixed-repro-20261017.test.mjs:155:513)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'leader', 'member' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

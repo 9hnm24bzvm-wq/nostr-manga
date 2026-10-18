@@ -1,0 +1,34 @@
+{
+  "utc": "2026-10-17T17:50:19.524678+00:00",
+  "prior_commit": "244f87fec5f54788c025daa91493804f8da9dfcc",
+  "scope": "GET/user/history over real owner-scoped native history.read_at. Upstream5.13.1 ratings array preserved. No timestamps inferred from signed original read markers.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 115 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.04s",
+      "output_sha256": "8520a7daa072925e0c832d77877a8e6c6e0597fb8085176ef20aea6bfe39106f"
+    },
+    {
+      "name": "signed_account_and_history_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s",
+      "output_sha256": "81d4cca992e9a7e1a7e0d7b3693244f813ec4a97b27ff6cfa1fa6aa8aef4fdd4"
+    }
+  ],
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "closed_port": true,
+    "forced": false,
+    "remaining_owned_processes": []
+  },
+  "source_sha256": {
+    "weebdex-platform/backend/src/public_api/account_reads.rs": "cd0f6958264240132b7978c1dcebc564dba5e71d717e884b316b6adde6dab93f",
+    "weebdex-platform/backend/src/public_api/routes.rs": "35a5450b1d8901d55a63b8246d83b733966e9659900efa218c4355f80e1ba9b3",
+    "weebdex-platform/backend/tests/public_account_reads.rs": "c64a27900e39ee8f8da1c7c12d4a8c0321e59b52627b2a853269c74c0dbfe425"
+  },
+  "limits": [
+    "Does not convert original signed marker history into timestamped native history.",
+    "Global operation matrix is reconciled on integration; this patch intentionally does not overwrite the exact992993be snapshot.",
+    "No browser/load/production readiness claim."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "tests": 315,
+  "passed": 315,
+  "failed": 0,
+  "dedicated_settings_client_tests": 14,
+  "dedicated_settings_component_tests": 12,
+  "backend_dependency": "203b01d36c79401ae84d35a397628c8950125e30",
+  "canonical_frontend_files": 679,
+  "canonical_frontend_unchanged": true,
+  "installed_dependencies": false,
+  "browser_runtime": "unrun",
+  "real_accounts_used": false,
+  "network_publication": false,
+  "schema_artifact": "contracts/native-settings-template-v1.json",
+  "strict_node_modules": "weebdex-platform/.build/frontend-restore3/node_modules",
+  "sources": {
+    "settings-client.ts": "80700a8571f114fcb300ac4f6025a668a7e297d706f711fa4621d2efeb9f4030",
+    "settings-schema.ts": "a50907bc5c9e0d1f810a39773d2c1d98740bed49d0eb2592ab6e616ee5bf121b",
+    "AccountPreferenceSave.svelte": "8bf7f1bc907710830334be92ba49aead554b14ad1e11ec328a78a04e1d1f13d4"
+  }
+}

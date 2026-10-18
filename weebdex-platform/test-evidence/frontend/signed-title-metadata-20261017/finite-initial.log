@@ -1,0 +1,48 @@
+(node:14) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ metadata maps localized fields, exact typed UUID arrays, null clears and actual booleans once (2.472077ms)
+✔ unsupported covers rejects before a title mutation (1.457171ms)
+✔ unsupported relations rejects before a title mutation (0.366491ms)
+✔ unsupported officialLinks rejects before a title mutation (0.408494ms)
+✔ unsupported primaryCover rejects before a title mutation (0.368965ms)
+✔ unsupported native_id rejects before a title mutation (0.373942ms)
+✔ invalid title metadata rejects native relationship (0.569576ms)
+✔ invalid title metadata rejects duplicate relationship (0.21933ms)
+✔ invalid title metadata rejects oversize body (0.350126ms)
+✔ invalid title metadata rejects invalid enum (0.460773ms)
+✔ invalid title metadata rejects missing title (0.27937ms)
+✔ create uses exact signed public POST and validates positive draft version without native chains (1.000345ms)
+✔ update requires the actual canonical read and exact current optimistic version (0.854555ms)
+✔ exact submit receipt keeps actual wire status and advances one captured version (0.543027ms)
+✔ exact publish receipt keeps actual wire status and advances one captured version (0.262295ms)
+✔ exact reject receipt keeps actual wire status and advances one captured version (0.26622ms)
+✔ private draft is read only after public404, using real signed GET and no cookie/native fallback (0.506602ms)
+✔ a genuine alias needs exact typed resolver proof before it becomes a write target (0.709837ms)
+✔ another returned title without alias proof cannot become the write target (0.516126ms)
+✔ bound account rejects mismatched pubkey (0.169776ms)
+✔ bound account rejects mismatched serviceKey (0.088423ms)
+✔ bound account rejects mismatched catalogNamespace (0.177637ms)
+✔ bound account rejects mismatched authentication (0.159339ms)
+✔ bound account rejects mismatched requestScoped (0.083686ms)
+✔ bound account rejects mismatched nativeSessionAuthority (0.101433ms)
+✔ bound account rejects mismatched catalogueScope (0.09281ms)
+✔ service proof mismatch stops before any signed account request (0.133871ms)
+✔ scope or signer changes and disposed route owners stop before mutation dispatch (0.459952ms)
+✔ known400 refusal is retained and can be reviewed without an uncertain fence (0.33248ms)
+✔ unconfirmed network preserves the recovery fence and never auto-replays (0.58506ms)
+✔ unconfirmed server503 preserves the recovery fence and never auto-replays (0.356035ms)
+✔ unconfirmed wrong UUID preserves the recovery fence and never auto-replays (0.511349ms)
+✔ unconfirmed wrong version preserves the recovery fence and never auto-replays (0.40595ms)
+✔ unconfirmed wrong state preserves the recovery fence and never auto-replays (0.400412ms)
+✔ transport-proven unsent request clears only its own pending fence (0.320211ms)
+✔ fence storage failure prevents signing/dispatch and concurrent commands cannot both write (0.470828ms)
+✔ accepted pending source publication remains explicit actual provenance rather than invented readability (0.509847ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 178.136228

@@ -1,0 +1,15 @@
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ actual following DOM is anonymous until connected and retains the existing four native-style tabs (37.174195ms)
+✔ actual following DOM renders real typed server rows and passes captured account, never resource version, to management (32.988937ms)
+✔ actual later-page account rebind clears DOM rows and disables pagination until explicit Refresh captures the new account (39.924029ms)
+✔ actual directory DOM never mounts cached history rows anonymously and clears fresh rows on disconnect (16.754056ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 955.740457

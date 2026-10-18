@@ -1,0 +1,28 @@
+{
+  "status": "corrected-whole-fixture-passed",
+  "backendSourceAndEvidenceCommit": "3e2240b08236ac5a1104562fe4f0762a41da6310",
+  "retainedBackendProbe": "test-evidence/public-relation-pages-20261017/actual-frontend-adapter.json",
+  "probeSha256": "480faa5baca461933552deeaa934dd25f25e8aca52a67c306a6f2547c95ea71c",
+  "frontendSourceCommit": "32e5987cd0ae968384e9b273e474aab0e273aa32",
+  "sources": {
+    "client.ts": "def5055ee7d37bfb2dd01caa10b211163402885dddb5213c73835b22e94735d3",
+    "validation.ts": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+    "catalogue-edges.ts": "dab0693492d0f849d39515f4cc1a1b30bdb2ad55c7a4b0958e19596cc0ab6e1e",
+    "normalize.ts": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b"
+  },
+  "scriptSha256": "a3c857eb5be4d1140b8e8ec8d71b7c2af874f39910edfeb681d2e1678b09dc66",
+  "actualRelations": 4096,
+  "relationPageRequests": 128,
+  "hydrationRequests": 128,
+  "elapsedMs": 49371.695,
+  "rawResponseBytes": 7841019,
+  "wholeFixtureOwnerReportedChecks": [
+    "Owner Manga GET at4096:200",
+    "One-over owner alias budget:503",
+    "Complete metadata32KiB prefix",
+    "Version and visibility continuity failures",
+    "Read-only projection does not write aliases",
+    "Both PG guards closed and zero survivors"
+  ],
+  "boundary": "Synthetic owned live HTTP/PostgreSQL fixture through exact production adapter. No rendered browser or production capacity claim."
+}

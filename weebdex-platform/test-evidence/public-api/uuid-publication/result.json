@@ -1,0 +1,29 @@
+{
+  "finite_tests": 57,
+  "finite_failed": 0,
+  "strict_enabled": {
+    "errors": 0,
+    "warnings": 15
+  },
+  "strict_default": {
+    "errors": 0,
+    "warnings": 15
+  },
+  "canonical_frontend_files_unchanged": 679,
+  "real_browser": false,
+  "real_indexeddb": false,
+  "external_relay_broadcast": false,
+  "real_key_used": false,
+  "original_codec_executed": true,
+  "legacy_database_automatically_migrated": false,
+  "limitations": [
+    "fake-indexeddb absent after prior denied install; no alternative fetch attempted",
+    "existing real-IDB lifecycle fixture updated but not rerun",
+    "finite publication transport/outbox boundaries do not prove real relay acceptance"
+  ],
+  "review_regressions": [
+    "old-key validated HTTP receipt persists through completion-only job owner handle",
+    "key-generation/epoch UI refresh and canonical counts do not cross keys",
+    "mixed v2 adoption never sends unresolved native IDs to public catalogue reads"
+  ]
+}

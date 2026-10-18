@@ -1,0 +1,71 @@
+{
+  "sourceCommit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/cargo/bin/cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "weebdex-platform/backend/Cargo.toml",
+    "--lib",
+    "--test",
+    "public_manga_writes",
+    "--test",
+    "protocol_bridge_http",
+    "--no-run",
+    "-j",
+    "1"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 21.427,
+  "minimumFreeBytes": 5795655680,
+  "floorBytes": 4294967296,
+  "cleanupReserveBytes": 134217728,
+  "maxOwnedRssBytes": 1191510016,
+  "minimumAvailableMemoryBytes": 5674610688,
+  "stopReason": null,
+  "sourceFiles": 1298,
+  "sourceChanged": [],
+  "ownedProcessBirths": [
+    [
+      41,
+      7118350
+    ],
+    [
+      52,
+      7118363
+    ],
+    [
+      75,
+      7120419
+    ],
+    [
+      76,
+      7120421
+    ],
+    [
+      77,
+      7120421
+    ]
+  ],
+  "cleanupSignals": [],
+  "ownedSurvivors": [],
+  "executableFiles": {
+    "unittests src/lib.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/weebdex_platform-8b2321f0632da96a",
+      "sha256": "3024655cc7d34911331c713f334c3ff0feaffbd5dd4b46c5d152863f18c32d5e",
+      "bytes": 46649280
+    },
+    "tests/protocol_bridge_http.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/protocol_bridge_http-1f5ba0e84b091e49",
+      "sha256": "368e0b5730133d99ed2541a792f52b82ed37ae2ae0991d59ff152d0f54c018bb",
+      "bytes": 83434592
+    },
+    "tests/public_manga_writes.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_manga_writes-8f8ef7422023f8f7",
+      "sha256": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+      "bytes": 83230792
+    }
+  },
+  "passed": true
+}

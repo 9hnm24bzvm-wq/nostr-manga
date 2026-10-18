@@ -1,0 +1,47 @@
+{
+  "sourceCommit": "b359adfed00c12f657147683c3d2884125c79765",
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/cargo/bin/cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "weebdex-platform/backend/Cargo.toml",
+    "--lib",
+    "--test",
+    "public_manga_writes",
+    "--test",
+    "protocol_bridge_http",
+    "--no-run",
+    "-j",
+    "1"
+  ],
+  "exitCode": 101,
+  "elapsedSeconds": 24.441,
+  "minimumFreeBytes": 6665179136,
+  "floorBytes": 4294967296,
+  "cleanupReserveBytes": 134217728,
+  "maxOwnedRssBytes": 1103667200,
+  "minimumAvailableMemoryBytes": 7235039232,
+  "stopReason": null,
+  "sourceFiles": 1298,
+  "sourceChanged": [],
+  "ownedProcessBirths": [
+    [
+      7,
+      7080711
+    ],
+    [
+      18,
+      7080725
+    ],
+    [
+      41,
+      7082134
+    ]
+  ],
+  "cleanupSignals": [],
+  "ownedSurvivors": [],
+  "executableFiles": {},
+  "passed": false
+}

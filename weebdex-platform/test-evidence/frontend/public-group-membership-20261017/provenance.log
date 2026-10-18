@@ -1,0 +1,20 @@
+✔ all legacy recipes retain honest production ancestry, public uploads disabled (215.208422ms)
+✔ all legacy recipes retain honest production ancestry, public uploads enabled (302.968775ms)
+✔ exact replacement supersession is explicitly inactive and retains both real source stages (4.43053ms)
+✔ supersession rejects wrong fragment bytes (0.490998ms)
+✔ supersession rejects wrong target (0.215624ms)
+✔ supersession rejects duplicate public stage (0.175163ms)
+✔ supersession rejects stale prior hash (0.202344ms)
+✔ supersession rejects wrong final hash (0.194051ms)
+✔ supersession rejects escaped snapshot (0.272229ms)
+✔ supersession rejects tampered snapshot bytes (0.299911ms)
+✔ unrelated recipes cannot borrow the inactive replacement record (0.255333ms)
+✔ global final-source fragment threshold and source-map hash checks remain unchanged (0.252279ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 636.800386

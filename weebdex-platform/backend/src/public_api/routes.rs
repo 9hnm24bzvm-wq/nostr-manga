@@ -26,7 +26,16 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
         serde_json::from_str(INVENTORY).expect("checked-in derived API inventory");
     let mut paths = BTreeMap::<String, MethodRouter<S>>::new();
     for operation in inventory.operations {
+        if (operation.method == "POST" && matches!(operation.path.as_str(), "/manga" | "/manga/draft/{id}/commit"))
+            || (matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/manga/{id}") { continue; }
         if matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/chapter/{id}" { continue; }
+        if operation.method=="POST" && operation.path=="/settings" {continue;}
+        if matches!(operation.method.as_str(),"POST"|"DELETE") && matches!(operation.path.as_str(),"/manga/{id}/follow"|"/group/{id}/follow") {continue;}
+        if (operation.method == "GET" && matches!(operation.path.as_str(),"/user/follows/list"|"/user/follows/list/{id}"))
+            || (matches!(operation.method.as_str(),"POST"|"DELETE") && operation.path=="/list/{id}/follow") {continue;}
+        if (operation.method == "GET" && operation.path == "/rating")
+            || (matches!(operation.method.as_str(), "POST" | "DELETE") && operation.path == "/rating/{mangaId}") { continue; }
+        if (operation.method=="POST" && operation.path=="/manga/{mangaId}/relation") || (operation.method=="DELETE" && operation.path=="/manga/{mangaId}/relation/{id}") {continue;}
         if operation.path == "/upload" || operation.path.starts_with("/upload/") { continue; }
         if operation.method == "GET"
             && matches!(
@@ -59,9 +68,9 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                 "/manga/draft" | "/manga/draft/{id}"
             ))
             || (operation.method == "POST"
-                && matches!(operation.path.as_str(), "/author" | "/group"))
+                && matches!(operation.path.as_str(), "/author" | "/group" | "/cover/{mangaOrCoverId}"))
             || (matches!(operation.method.as_str(), "PUT" | "DELETE")
-                && matches!(operation.path.as_str(), "/author/{id}" | "/group/{id}"))
+                && matches!(operation.path.as_str(), "/author/{id}" | "/group/{id}" | "/cover/{mangaOrCoverId}"))
         {
             continue;
         }
@@ -92,6 +101,10 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
                     | "/user/{id}"
                     | "/user"
                     | "/user/me"
+                    | "/user/history"
+                    | "/settings"
+                    | "/settings/template"
+                    | "/settings/template/{version}"
                     | "/user/follows/manga"
                     | "/user/follows/manga/{id}"
                     | "/user/follows/manga/feed"
@@ -166,10 +179,10 @@ mod tests {
     async fn inventory_is_bounded_and_fallbacks_are_honest_json() {
         let app = Router::<()>::new().nest("/api/v1", router());
         for (method, path, status) in [
-            ("GET", "/api/v1/user/history", 501),
+            ("POST", "/api/v1/settings/template", 501),
             ("POST", "/api/v1/auth/login", 501),
             ("GET", "/api/v1/unknown", 404),
-            ("PATCH", "/api/v1/manga", 405),
+            ("PATCH", "/api/v1/auth/login", 405),
         ] {
             let response = app
                 .clone()

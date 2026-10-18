@@ -1,0 +1,173 @@
+{
+  "base": "c77f502a2e2b39c15e6fa6a1932a223ab681ad03",
+  "applied": [
+    {
+      "source": "2a79d3c2d76a186f5a71268aae0bee21d2696ee7",
+      "applied": "84d567ecd3f956bbcf2a3e3d1df29688abf67655",
+      "conflicts": []
+    },
+    {
+      "source": "af83aeb7472c9ed60a8d99b616e51ae3564b8238",
+      "applied": "e59a55102e26b502bf49454ce9a584af0c49f949",
+      "conflicts": []
+    },
+    {
+      "source": "94e121a054f83c20370eddbe09b83fb32c74271e",
+      "applied": "9efa0481030336a21f3409ff1d0fa6e0c5b87d0f",
+      "conflicts": []
+    },
+    {
+      "source": "0efe0a862578689d9df546bd26def7317d4f3182",
+      "applied": "26d3320255194108be2857d60d8dff899dda9f05",
+      "conflicts": []
+    },
+    {
+      "source": "4e08e9bbb224dda699f3b306db6ca56756712e3d",
+      "applied": "c27d452e19aa8fa5148bf908f92cfba41696e5eb",
+      "conflicts": []
+    },
+    {
+      "source": "76f9b0cedaa728ce5ad8a6b8caefdb2e613cd6f4",
+      "applied": "9060e843c1f704673928bec7bf181fddc7f29b2e",
+      "conflicts": []
+    },
+    {
+      "source": "17dba0827c8e87a815c8bdc88b47008f3bb0eea3",
+      "applied": "3f84f766b0f25f36901a990000fca98e29f676b3",
+      "conflicts": []
+    },
+    {
+      "source": "674b93cde88abf7f9d2c9c0355f5330cf8bb343f",
+      "applied": "31b8101c1de0ff5b3397dccc9ba52ae8666781e6",
+      "conflicts": []
+    },
+    {
+      "source": "6d7063ebf72b29833157ac7db4597b2e4bcdc1c7",
+      "applied": "a9df19b0e1fa16bf0a3430893707c89002bae39e",
+      "conflicts": []
+    },
+    {
+      "source": "98a8a8c66df7f4d2033c37d495c90edc31976820",
+      "applied": "38aad8a6f6e366e9531bbb8c80b1eb0022e30bd2",
+      "conflicts": []
+    },
+    {
+      "source": "481857bf021a67080249b9d47b43c9cad6948d6d",
+      "applied": "61ab496ecc197bf4f69d3b79d208f344abccc2d6",
+      "conflicts": []
+    },
+    {
+      "source": "c56bb6c4fe0a4086c2a6d434f17552b8432ab319",
+      "applied": "9fa8ca36b7d4c8042acdb3eddf375b05284d245b",
+      "conflicts": []
+    },
+    {
+      "source": "42424932f62c9c4a3becaa9d68d79fee31c39426",
+      "applied": "1df9cf3776a1f95a51f18057b71dc7d2ca865830",
+      "conflicts": []
+    },
+    {
+      "source": "449a30983c8db118d27906d8f0b027851a9aa354",
+      "applied": "725413acb34457203d43a308cde7e0337dcc5e4c",
+      "conflicts": [
+        {
+          "path": "weebdex-platform/docs/verification/signed-title-metadata-frontend-20261017.md",
+          "decision": "Preserved canonical424 document and appended only449 pending-projection guard delta; omitted unselected earlier-build context rather than reference evidence absent from requested chain."
+        }
+      ]
+    },
+    {
+      "source": "ed3a2448b8c9017a030135b66bd3585c8f5233b4",
+      "applied": "fab52a1012d8422b6ce21adc78fa6decbfec8b76",
+      "conflicts": []
+    },
+    {
+      "source": "710a92395956dd519e3a946ddaaf07eb1c8a23ca",
+      "applied": "34791a6f4acf17893389019efd76cb50355dadc4",
+      "conflicts": []
+    },
+    {
+      "source": "a7a0186b7d7d2df1766574509ea7eec30f3e28a6",
+      "applied": "53d0fb5271ce36cf41aa766fc686040fd988adc2",
+      "conflicts": []
+    },
+    {
+      "source": "656da377be61f03a96a630bbba4b877878acaf40",
+      "applied": "27f5c1c4ccdeb92338c345cfb944ce8eb30a0f78",
+      "conflicts": []
+    },
+    {
+      "source": "5c1b23197ded9d41c00b3fad7dd46d0c8ab3e49c",
+      "applied": "ca33e875e8b86a18a557ad1b87c9313e0ec4b047",
+      "conflicts": []
+    },
+    {
+      "source": "47424fe56c238bf32742fa5d139424c08914932b",
+      "applied": "8a372ae062697d10b16f39119b241d66b68dc204",
+      "conflicts": [
+        {
+          "path": "weebdex-platform/backend/src/domains/mod.rs",
+          "decision": "Retained0098/0099/0100 API migrations and appended additive0101 in ascending order; preserved0097."
+        }
+      ]
+    },
+    {
+      "source": "6f62f892c6523fd5d5533ae4677369e0b2ea85df",
+      "applied": "62b43f303864edc377c4d02c0f6457ab849c031c",
+      "conflicts": []
+    },
+    {
+      "source": "1c3242ac483e9aaa2da85ea1d57b80e03d4e2a10",
+      "applied": "a50adb862266aea39c700e19c9c86d7b058f212b",
+      "conflicts": []
+    },
+    {
+      "source": "0efefa5ff903100b0a4091e07e9047eb6cbf962e",
+      "applied": "d7f39297a0e18969890dfd123c7136846b0f7935",
+      "conflicts": []
+    },
+    {
+      "source": "80ac1b2cfea5a52697e04f51ca1421c9fb965cc2",
+      "applied": "8657e66c5fa338fc2c570c6ff15e3963346837df",
+      "conflicts": [
+        {
+          "path": "weebdex-platform/platform-integrations/public-api/types.ts",
+          "decision": "Added actual creator relationship while retaining leader/member/custom_list and all existing resource kinds."
+        }
+      ]
+    },
+    {
+      "source": "0815c11cdd7856e5a5dab01142820a5556247302",
+      "applied": "9b33c6a2c077281807ba9b41d23a40b8b35aec33",
+      "conflicts": []
+    },
+    {
+      "source": "82c76ea61e04f6ba5bc60acac8dbcb1ccac71ecc",
+      "applied": "693d3d224725e20fd7d1123de68c652cc490bb86",
+      "conflicts": []
+    },
+    {
+      "source": "f7bdac07163fd43b04b797223b5aecf0ad6413a7",
+      "applied": "46050d96a68ca9209e8466d9d6c918044e7032be",
+      "conflicts": []
+    },
+    {
+      "source": "938a659e41e7f32a21a7083989733bfdbb53b5bb",
+      "applied": "c6c1e7a4541f5465ff39c6b5955974a405bbd13c",
+      "conflicts": []
+    },
+    {
+      "source": "a15ae9c570d0b4674080ba69ce7bbe1bc533c9bf",
+      "applied": "6710328428646845c0ebd6c89299e0214888cb0e",
+      "conflicts": []
+    }
+  ],
+  "current_head": "6710328428646845c0ebd6c89299e0214888cb0e",
+  "decisions": [
+    {
+      "source": "42424932f62c9c4a3becaa9d68d79fee31c39426",
+      "action": "aborted pending cherry-pick only; saved pre-UI head preserved",
+      "reason": "canonical group/statistics prereqs provided by integrator; retain all valid recipes and exact scope"
+    }
+  ]
+}

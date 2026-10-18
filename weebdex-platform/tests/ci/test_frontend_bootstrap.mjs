@@ -213,23 +213,27 @@ for (const entry of entries) {
   assert.ok(graph.requests.every(request => request.method === 'GET' && request.url === '/api/auth/check' && request.withCredentials));
   results.push({ entry, composed_modules_evaluated: graph.evaluated.length, passed: true });
 }
-// Real composed library/API exports reject the staged UUID view before any
-// device open, native request, or mutation. Existing rows remain inspectable.
+// Real gate-on module bootstrap exposes only UUID local membership, preserves
+// unresolved native rows, and still fences cookie-account/native API fallbacks.
+// Durable positive commands are exercised in test_uuid_library_orchestration.
 const preview = await composedGraph(entries[1], { publicCatalogue: '1' });
 const previewStore = preview.modules.get('svelte/store').namespace;
 const previewLibrary = preview.read('platform-integrations/local-library/library.ts');
 const preserved = { family: 'series', id: 'SeedManga1', status: 'reading', notification: true };
-previewLibrary.localLibraryState.update(state => ({ ...state, ready: true, scopeStatus: 'verified', records: [preserved] }));
-assert.equal(previewStore.get(previewLibrary.libraryIdentity).canUse, false);
-assert.equal(Object.keys(previewStore.get(previewLibrary.libraryIdentity).follows).length, 0);
+const publicId = '11111111-1111-8111-8111-111111111111';
+previewLibrary.localLibraryState.update(state => ({ ...state, ready: true, scopeStatus: 'verified', records: [preserved,{...preserved,id:publicId}] }));
+assert.equal(previewStore.get(previewLibrary.libraryIdentity).canUse, true);
+assert.deepEqual(Object.keys(previewStore.get(previewLibrary.libraryIdentity).follows),[publicId]);
 const requestsBefore = preview.requests.length;
-const unavailable = error => error.code === 501 && /Saved-library changes are unavailable/.test(error.error);
-for (const [name,args] of [['assertCatalogueScope',[]],['apiRead',['/manga',new URLSearchParams()]],['localAction',[()=>{throw Error('A staged mutation must not run');}]],['saveSeries',['11111111-1111-8111-8111-111111111111','reading']],['removeSeries',['11111111-1111-8111-8111-111111111111',()=>{}]],['updateChapters',['11111111-1111-8111-8111-111111111111',[],[],()=>{}]],['saveProgress',['11111111-1111-8111-8111-111111111111','22222222-2222-8222-8222-222222222222',1,false,()=>{}]]]) await assert.rejects(() => previewLibrary[name](...args),unavailable);
-for (const family of ['MangaFollow','ChapterHistory']) {
- const api = preview.read('platform-integrations/local-library/'+family+'.ts');
- for (const name of Object.keys(api)) if(typeof api[name]==='function') await assert.rejects(() => api[name](new URLSearchParams(),{}),unavailable);
-}
+const unavailable = error => error.code === 501;
+await assert.rejects(() => previewLibrary.apiRead('/manga',new URLSearchParams()),unavailable);
+await assert.rejects(() => previewLibrary.apiRead('/user/follows/manga',undefined,true),unavailable);
+await assert.rejects(() => previewLibrary.accountRequest('/user/follows/manga/'+publicId,'POST',{}),unavailable);
+await assert.rejects(() => previewLibrary.useMode('account'),unavailable);
+previewLibrary.localLibraryState.update(state => ({...state,mode:'account'}));
+assert.equal(previewStore.get(previewLibrary.libraryIdentity).canUse,false);
+assert.equal(Object.keys(previewStore.get(previewLibrary.libraryIdentity).follows).length,0);
 assert.equal(preview.requests.length,requestsBefore);
 assert.equal(previewStore.get(previewLibrary.localLibraryState).records[0].id,'SeedManga1');
-results.push({entry:'gate-on library preview',passed:true,storage_opened:false,native_requests:0,records_preserved:true});
+results.push({entry:'gate-on UUID local membership and account/native fallback fence',passed:true,storage_opened:false,native_requests:0,records_preserved:true});
 console.log(JSON.stringify({ schema: 1, baseline_reproduction: { error_class: baselineError.name, property: 'LimitHeight', source: 'frontend/src/lib/stores/prefs.ts' }, preferences_only_reproduction: { error_class: sessionFirstError.name, source: 'platform-integrations/local-library/library.ts', binding: 'Session' }, results, package_browser_apis: 'explicit stand-ins', browser_e2e: false, network: false, original_files_written: false }, null, 2));

@@ -1,6 +1,6 @@
 # Request-authorized account and follow reads
 
-This additive batch implements nine more upstream read operations under
+This additive batch implements ten more upstream read operations under
 `/api/v1`. They expose actual instance-account data and preserve the default
 local-first library, signed-library mutation fence, native cookie sessions and
 original protocol publication boundaries.
@@ -34,6 +34,7 @@ the one-time authorization proof to prevent replay.
 | --- | --- |
 | `GET /user` | Authenticated native-user directory; limit 0–100/default 10, row offset, UUID `ids[]`, username substring, `order[username]`. Disabled users are excluded. No protocol-publisher profile is invented from a native account. |
 | `GET /user/me` | Entity for the exact bound native account; no query. The top-level nostr extension declares `scope:instance-account` and `identity:explicitly-bound-native-account`. |
+| `GET /user/history` | Actual owner-only persisted native chapter history with canonical chapter UUIDs and stored read timestamps. No query; current chapter/parent/source visibility applies, including known adult titles. The upstream5.13.1 history array is named `ratings`; this exact field is preserved. A separate nostr extension identifies native-account history and stored-native-read-time semantics. No timestamps are inferred from original signed read markers. Explicit503 above10,000 rows instead of truncation. |
 | `GET /user/follows/manga` | Actual owner-only persisted followed manga. Includes published known adult titles because this operation has no discovery rating filter. Hidden/deleted/source-revoked titles are excluded. Manga reference expansions are supported. |
 | `GET /user/follows/group` | Actual owner-only persisted group follows with current group visibility and optional leader/member expansion. |
 | `GET /user/follows/user` | Actual owner-only persisted user follows; disabled targets are excluded. No user attributes beyond the public profile projection. |
@@ -69,7 +70,7 @@ checks, chapter-feed rating/exclusions, replay, wrong URI, cookie insufficiency,
 alias noncreation and subsequent admission/binding revocation. Existing read
 HTTP tests are rerun because the shared collection path changed.
 
-List-follow persistence, history, ratings, settings/templates and API-client
+List-follow persistence, ratings, settings/templates and API-client
 compatibility are separate remaining operations. MangaDex OAuth/client secrets
 must not be fabricated from original Nostr keys. This batch neither removes
 their explicit unavailable behavior nor claims full API compatibility.

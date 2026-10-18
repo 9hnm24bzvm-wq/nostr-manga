@@ -64,7 +64,7 @@ export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } 
     navigator: { locks: { request: async (_name, options, callback) => (callback ?? options)({ mode: 'exclusive' }) } },
     Worker: class {
       terminate() {}
-      postMessage() { calls.worker++; void (async () => { if (gateAt === 'worker') { entered.resolve(); await gate.promise; } this.onmessage({ data: { mappingProof: 'same' } }); })(); }
+      postMessage(data) { calls.worker++; void (async () => { if (gateAt === 'worker') { entered.resolve(); await gate.promise; } this.onmessage({ data: data.fingerprintOnly ? { mappingProof: 'same' } : { mappingProof: 'same', deviceRevision: await device.revision(), protocolRevision: (await protocol.counts()).revision, graph, excluded: [] } }); })(); }
     },
     fetch: async () => { calls.posts++; throw Error('Synthetic transport boundary reached'); },
   });
@@ -74,7 +74,7 @@ export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } 
     modules.set(name, module); return module;
   }
   synthetic('svelte/store', { writable, get });
-  synthetic('$env/static/public', { PUBLIC_API_URL: '/api' });
+  synthetic('$env/static/public', { PUBLIC_API_URL: '/api', PUBLIC_MANGADEX_CATALOGUE: '0' });
   synthetic('@noble/curves/secp256k1.js', curves);
   synthetic('@noble/hashes/sha2.js', hashes);
   for (const [name, values] of Object.entries(moduleAdapters)) synthetic(name, values);
@@ -90,12 +90,14 @@ export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } 
     const module = new vm.SourceTextModule(source, { context, identifier: file, initializeImportMeta(meta) { meta.url = pathToFileURL(file).href; } });
     modules.set(file, module); return module;
   }
+  const relaySupport = synthetic('supported-library-relay-adapter', { verifyLibraryRelay: async () => {} });
   let nostrAdapter;
   function resolve(specifier, importer) {
     if (modules.has(specifier)) return modules.get(specifier);
     const target = path.resolve(path.dirname(importer.identifier), specifier);
     if (target === path.join(sourceRoot, 'library')) return modules.get('library-adapter');
     if (target === path.join(sourceRoot, 'catalog')) return modules.get('catalog-adapter');
+    if (target === path.join(sourceRoot, 'library-relay-support')) return relaySupport;
     if (nostrAdapter && target === path.join(sourceRoot, 'protocol/nostr.js')) return nostrAdapter;
     return moduleFor(fs.existsSync(target) ? target : target + '.ts');
   }
@@ -111,6 +113,12 @@ export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } 
   const publication = await load('publication.ts');
   if (gateAt !== 'connect') await publication.connectSigner(assertCurrent);
   const identity = get(publication.signerIdentity);
+  if (identity.owner) {
+    const { canonicalProtocolDatabase } = await load('protocol-scope.ts');
+    const name = canonicalProtocolDatabase({ origin: scope.origin, owner: identity.owner, generation: identity.generation });
+    protocol.close(); protocol = await LocalLibrary.open(name); await protocol.setRelays([recipient], 0);
+    const realOpen = LocalLibrary.open.bind(LocalLibrary), realClose = protocol.close.bind(protocol); let fixtureProtocolClosed = false; protocol.close = () => { fixtureProtocolClosed = true; realClose(); }; LocalLibrary.open = async requested => requested === name && !fixtureProtocolClosed ? protocol : realOpen(requested);
+  }
   const review = { mappingProof: 'same', deviceRevision: 0, protocolRevision: 0, relayRevision: 1, owner, generation: identity.generation, recipients: [recipient], graph, excluded: [], sourceOrigin: recipient.origin, serviceKey: recipient.serviceKey };
   // Hold the real cancellation read used by signedRequest's final beforeSend,
   // after the exact event is durable and the HTTP authentication proof is signed.

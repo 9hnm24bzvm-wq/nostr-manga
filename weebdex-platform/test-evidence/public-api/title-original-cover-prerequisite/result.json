@@ -1,0 +1,279 @@
+{
+  "schema": "fresh-title-original-cover-qualification-v1",
+  "utc": "2026-10-17T22:58:41.705945+00:00",
+  "source_commit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+  "base_composition": "fa375e5106000a664731a37261e9379b93bb80f3",
+  "owner_runtime_qualified": true,
+  "independent_runtime_pending": false,
+  "combined_source_acceptance": false,
+  "compile": {
+    "sourceCommit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+    "command": [
+      "/workspace/shared/nostr-manga-recovery-20261017/toolchains/cargo/bin/cargo",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "weebdex-platform/backend/Cargo.toml",
+      "--lib",
+      "--test",
+      "public_manga_writes",
+      "--test",
+      "protocol_bridge_http",
+      "--no-run",
+      "-j",
+      "1"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 21.427,
+    "minimumFreeBytes": 5795655680,
+    "floorBytes": 4294967296,
+    "cleanupReserveBytes": 134217728,
+    "maxOwnedRssBytes": 1191510016,
+    "minimumAvailableMemoryBytes": 5674610688,
+    "stopReason": null,
+    "sourceFiles": 1298,
+    "sourceChanged": [],
+    "ownedProcessBirths": [
+      [
+        41,
+        7118350
+      ],
+      [
+        52,
+        7118363
+      ],
+      [
+        75,
+        7120419
+      ],
+      [
+        76,
+        7120421
+      ],
+      [
+        77,
+        7120421
+      ]
+    ],
+    "cleanupSignals": [],
+    "ownedSurvivors": [],
+    "executableFiles": {
+      "unittests src/lib.rs": {
+        "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/weebdex_platform-8b2321f0632da96a",
+        "sha256": "3024655cc7d34911331c713f334c3ff0feaffbd5dd4b46c5d152863f18c32d5e",
+        "bytes": 46649280
+      },
+      "tests/protocol_bridge_http.rs": {
+        "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/protocol_bridge_http-1f5ba0e84b091e49",
+        "sha256": "368e0b5730133d99ed2541a792f52b82ed37ae2ae0991d59ff152d0f54c018bb",
+        "bytes": 83434592
+      },
+      "tests/public_manga_writes.rs": {
+        "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_manga_writes-8f8ef7422023f8f7",
+        "sha256": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+        "bytes": 83230792
+      }
+    },
+    "passed": true
+  },
+  "units": {
+    "passed": 132,
+    "ignored": 2,
+    "log_sha256": "354110857bf071ff22760d36c69470dc100c253ecb17bc8b83979a84c392d1b6",
+    "production_binary_unchanged_since_unit_run": true
+  },
+  "http": {
+    "title-cover-prerequisite-http-02": {
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-17T22:56:48.332663+00:00",
+      "source_commit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+      "command": [
+        "bash",
+        "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+        "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_manga_writes-8f8ef7422023f8f7",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "test_executable_sha256": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+      "pass": true,
+      "diagnostic_previous_query": false,
+      "runner_sha256": "28371da73b6610785dbfdad683544a46c18cba9d09e17ea8deae3b2fd73ece43",
+      "disk_guard": {
+        "floor_bytes": 4294967296,
+        "cleanup_reserve_bytes": 134217728,
+        "min_observed_free_bytes": 5791313920,
+        "signalled": false,
+        "identity": "pidfd-owned guard child"
+      },
+      "exit_code": 0,
+      "test_executable_sha256_after": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-17T22:56:52.330303+00:00",
+      "log_sha256": "9c748f0016c2d26256766ae4fcfcfc5e981b06a51c04f1696582ea4f2c0f2f10",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "833f17000aaeb47731369e8dfd8505ffccc0eb2fefeddb27b9af523bf91beb40",
+      "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-2_o95vby/cleanup.json",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 2.89
+      },
+      "cases": [
+        "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority"
+      ]
+    },
+    "native-original-compatibility-http-01": {
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-17T22:56:52.360443+00:00",
+      "source_commit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+      "command": [
+        "bash",
+        "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+        "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/protocol_bridge_http-1f5ba0e84b091e49",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "test_executable_sha256": "368e0b5730133d99ed2541a792f52b82ed37ae2ae0991d59ff152d0f54c018bb",
+      "pass": true,
+      "diagnostic_previous_query": false,
+      "runner_sha256": "28371da73b6610785dbfdad683544a46c18cba9d09e17ea8deae3b2fd73ece43",
+      "disk_guard": {
+        "floor_bytes": 4294967296,
+        "cleanup_reserve_bytes": 134217728,
+        "min_observed_free_bytes": 5692739584,
+        "signalled": false,
+        "identity": "pidfd-owned guard child"
+      },
+      "exit_code": 0,
+      "test_executable_sha256_after": "368e0b5730133d99ed2541a792f52b82ed37ae2ae0991d59ff152d0f54c018bb",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-17T22:57:02.567022+00:00",
+      "log_sha256": "d185fa10e9c59fb00f81741e3751acca85b50cdda575a0149702868ad7abda13",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "711db9aef73be3c9356cf3c450c093fb68576e8c18e3dece4b7737cf4dd43f95",
+      "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-rx_qq3ur/cleanup.json",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 0,
+        "seconds": 9.13
+      },
+      "cases": [
+        "accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle"
+      ]
+    }
+  },
+  "source_files": 1298,
+  "source_manifest_sha256": "7469394ff1bd3817e2efbbbbd1a33c3583534315fcdace8bebeefaf2e50d3543",
+  "source_after_runtime_sha256": "7469394ff1bd3817e2efbbbbd1a33c3583534315fcdace8bebeefaf2e50d3543",
+  "source_changed": [],
+  "history": {
+    "initial_compile": "cover-prerequisite-compile-01.json",
+    "initial_compile_exit": 101,
+    "initial_compile_diagnosis": "New private selector policy flag required explicit native false at upload-driven automatic series caller; fixedf178c1f. Public native wrapper remains5args.",
+    "initial_http": "title-cover-prerequisite-http-01.json",
+    "initial_http_diagnosis": "Test wrongly expected source import to resurrect explicitly tombstoned local covers. Core refusal, exact eligible hash and durable retry assertions had passed;407c3e0 adds actual signed cover intake before inherited annotation/removal checks.",
+    "initial_http_log_sha256": "1a5aa87487333aa44653a518dc2524bdde50c181c37912d25700d66b70047406",
+    "initial_http_cleanup_sha256": "9174712386e0c8bff81b784654493e2889c5ba66f7d955b6b18948755eee27c7"
+  },
+  "actual_signed_http_seams": [
+    "last-cover removal after submit, fresh publish refuses400 with unchanged title version/state/audit and no durablecommand",
+    "exact eligible same-language cover hash selected despite newer other-language main",
+    "immutable sourceaccepted command preserves exact eventID/manifest after associationfault and labeledSQLcover tombstone; actualAPIcoverdelete remains409fenced",
+    "materialized exactreceipt replay after actualsigned localcover removal",
+    "unchangedoriginalevent and metadata under instance annotation",
+    "existing native upload rollback/media/source revocation/embedded ownership lifecycle"
+  ],
+  "labeled_fixture_seams": [
+    "Real signed cover-source publication followed by ownedSQLsource statewithdrawing tests original visibility without sending/approvingkind5.",
+    "SQL associationfault and subsequentSQLcover tombstone exercise immutable capturedinput after durable source acceptance; not an authorizedAPIdeletion journey."
+  ],
+  "scope_exclusions": [
+    "No external publication, production identities/data, browser runtime or frontend transition change.",
+    "Native false compatibility and original key/group authority remain inherited."
+  ],
+  "isolated_source_acceptance": true,
+  "independent_http": {
+    "schema": "owned-integrated-pipeline-http-run-v1",
+    "started_at_utc": "2026-10-17T22:57:51.113567+00:00",
+    "source_commit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+    "command": [
+      "bash",
+      "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+      "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_manga_writes-8f8ef7422023f8f7",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "test_executable_sha256": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+    "pass": true,
+    "disk_guard": {
+      "floor_bytes": 4294967296,
+      "cleanup_reserve_bytes": 134217728,
+      "min_observed_free_bytes": 5578760192,
+      "signalled": false,
+      "identity": "pidfd-owned guard child"
+    },
+    "exit_code": 0,
+    "source_file_count": 1298,
+    "source_changed": [],
+    "test_executable_sha256_after": "10849179420b398c027b374738e2c0f63f77f8569ee01c5e887c4cef582771ad",
+    "executable_unchanged": true,
+    "ended_at_utc": "2026-10-17T22:57:54.517850+00:00",
+    "log_sha256": "8d0ca11723db54c46a8e30502f690b39106f48514d09ba9f864b338a34427bbf",
+    "child_reaped": true,
+    "cleanup_receipt_sha256": "672781683ec2e0dde922dacb0145de8aa1996be0390328d0c6b4e5b859aaf0f2",
+    "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-1emb1xxe/cleanup.json",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": []
+    },
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 1,
+      "seconds": 2.26
+    },
+    "cases": [
+      "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority"
+    ]
+  },
+  "unit_executable_sha256": "3024655cc7d34911331c713f334c3ff0feaffbd5dd4b46c5d152863f18c32d5e",
+  "source_review": {
+    "exact_b359_review_sha256": "652488104b3dd8f7ad2d8e53811abfc1b31696fc800d56c4694a39a0409f68fd",
+    "later_changes": "Native upload false argument, test-only visible probe and real signed cover restoration; independent reviewer also reviewed exact407c source."
+  }
+}

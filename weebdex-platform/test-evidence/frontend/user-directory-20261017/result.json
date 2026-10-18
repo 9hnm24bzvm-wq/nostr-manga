@@ -1,0 +1,40 @@
+{
+  "status": "finite-passed",
+  "source_parent_commit": "32db8e38cca4d7e5d99fba9ac494f0dfd3d4c94d",
+  "finite_tests": 393,
+  "passed": 393,
+  "failed": 0,
+  "new_directory_adapter_cases": 12,
+  "new_directory_component_cases": 6,
+  "retained_layout_prefix_regressions": 6,
+  "production_prepare_gates": [
+    "0",
+    "1"
+  ],
+  "canonical_frontend_files": 679,
+  "canonical_frontend_unchanged": true,
+  "backend_directory_contract": "244f87fec5f54788c025daa91493804f8da9dfcc",
+  "source_pins": {
+    "platform-integrations/public-api/user-directory.ts": "6923607545d250d1d5ef7c2d1c5a8c25a8095bae78fbac53250593821ae06002",
+    "platform-integrations/public-api/account-following-reader.ts": "84454befe1d3c3726f486e308d134e266db8edd478adc92a7ecb63c6de28fabc",
+    "platform-integrations/public-api/site-client.ts": "d5e28842ec38720b31cbae17102bb0c51d2342100c433fee7b1e401c82e5563e",
+    "platform-integrations/public-api/overlays.mjs": "10bafc1671deb527a72464227e10b36ab4343a0863d05700f307e828ca6035e7",
+    "platform-integrations/public-api/anchors.json": "f6bd6b11407e7f545829fb43500b26a3457a9a5f2631f759e8527e0c2cfb85ee",
+    "platform-integrations/public-api/source-hashes.json": "48288719135bae23a741c6c0bead9124b6ac0593a7af616fc2ec2f63ae9065df",
+    "platform-integrations/frontend-overlays.mjs": "fbb077b5751f50d08e114c1e80a9fe28c42aeebf6ab464a35bbd63ed338fb169"
+  },
+  "pre_correction_strict": {
+    "gate": "1",
+    "errors": 0,
+    "existing_warnings": 15,
+    "qualified_before": "Final directory/following/upload delimiter normalization; not a final-source full strict receipt"
+  },
+  "final_source_full_strict": "Not rerun; bounded finite-only qualification requested near disk floor",
+  "installed_dependencies": false,
+  "copied_dependency_caches": false,
+  "cleanup_performed": false,
+  "runtime_browser_database_started": false,
+  "browser_qa": "Not run; separate browser/IndexedDB approval still pending",
+  "integration_and_checkpoint_holds": "Unchanged",
+  "independent_source_review": "API owner checked frozen user-directory SHA2566923607545d250d1d5ef7c2d1c5a8c25a8095bae78fbac53250593821ae06002 against account_reads.rs: authority/provenance, typed filters, paging/order, strict public projection, native fallback fence, history bypass and retained query prefix match; no concrete privacy/contract blocker. Read-only; no DB/build rerun."
+}

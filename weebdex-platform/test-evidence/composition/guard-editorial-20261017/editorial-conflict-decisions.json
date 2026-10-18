@@ -1,0 +1,29 @@
+[
+  {
+    "file": "weebdex-platform/platform-integrations/frontend-route-additions.mjs",
+    "resolution": "Union retained following/list routes with additive editorial routes."
+  },
+  {
+    "file": "weebdex-platform/platform-integrations/public-api/anchors.json",
+    "resolution": "Apply only exact editorial delta against parent; retain every independent account/library/feature patch.",
+    "baseEntries": 60,
+    "mergedEntries": 64
+  },
+  {
+    "file": "weebdex-platform/platform-integrations/public-api/source-hashes.json",
+    "resolution": "Exact canonical input hash union; all overlaps equal.",
+    "mergedPaths": 42
+  },
+  {
+    "file": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+    "resolution": "Keep full8 exact availability pairs and8 feature pairs; rename only two group claim pairs to qualified review adapter."
+  },
+  {
+    "file": "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+    "resolution": "Keep cover/disposition components, all8 feature exceptions and truthful title-family qualification; add two editorial components."
+  },
+  {
+    "file": "weebdex-platform/tests/ci/public-api-recovery.test.mjs",
+    "resolution": "Preserve33 non-editorial input associations; explicitly associate Sidebar+Author inputs with added editorial wiring and42 total. Other behavior assertions untouched."
+  }
+]

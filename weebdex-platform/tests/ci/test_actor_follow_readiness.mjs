@@ -11,10 +11,11 @@ import { stripTypeScriptTypes } from 'node:module';
 import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
+import { createPublicApiOverlays } from '../../platform-integrations/public-api/overlays.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), frontend = path.join(root, 'frontend');
 const plugins = [createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend)];
-const compose = relative => { const file = path.join(frontend, relative); let code = fs.readFileSync(file, 'utf8'); for (const plugin of plugins) code = plugin.transform.handler(code, file)?.code ?? code; return code; };
+const compose = (relative, publicProfile = false) => { const file = path.join(frontend, relative); let code = fs.readFileSync(file, 'utf8'); for (const plugin of plugins) code = plugin.transform.handler(code, file)?.code ?? code; if (publicProfile) code = createPublicApiOverlays(frontend, { enabled: true }).transform.handler(code, file)?.code ?? code; return code; };
 const stripImports = code => code.replace(/^\s*import[^;]+;\s*$/gm, '');
 const transform = code => stripTypeScriptTypes(code, { mode: 'transform' });
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
@@ -28,7 +29,7 @@ function writable(value) {
 function get(store) { let value; const off = store.subscribe(next => { value = next; }); off(); return value; }
 const account = id => ({ identity: { id, username: id }, roles: [], permissions: [] });
 
-async function component(kind, { blocked = false, target = 'target' } = {}) {
+async function component(kind, { blocked = false, target = 'target', publicProfile = false } = {}) {
   const entity = kind.toLowerCase(), mounts = [], destroys = [], effects = [], reads = [], writes = [], settingsWrites = [], errors = [], auth = [];
   const prefs = Object.assign(writable({ groups: [], uploaders: [], items_per_page: '20', version: 1 }), { applyMangaPreferences() {}, applyChapterPreferences() {} });
   if (blocked) prefs.set({ ...get(prefs), [kind === 'Group' ? 'groups' : 'uploaders']: [{ id: target }] });
@@ -41,7 +42,7 @@ async function component(kind, { blocked = false, target = 'target' } = {}) {
     onDestroy: callback => destroys.push(callback), onMount: callback => mounts.push(callback),
     $state: Object.assign(value => value, { snapshot: structuredClone }), $derived: value => value,
     $effect: Object.assign(callback => effects.push(callback), { pre: callback => effects.push(callback) }),
-    $props: () => ({ data: { id: target, name: target, version: 1 }, children() {} }),
+    $props: () => ({ data: { id: target, name: target, version: 1, ...(publicProfile ? { public_profile_readonly: true } : {}) }, children() {} }),
     useComments: () => ({ stats: {} }), setGroup() {}, setUser() {}, setChaptersCount() {},
     Permission: { [kind]: { canUpdate: () => false } }, InfoIcon: {}, FilesIcon: {}, MessagesSquare: {}, SettingsIcon: {},
     toast: { error: (...args) => errors.push(args) },
@@ -60,7 +61,7 @@ async function component(kind, { blocked = false, target = 'target' } = {}) {
   API.Settings = { Update(payload, intent) { const gate = deferred(); settingsWrites.push({ payload, intent, actor: get(context.Session)?.identity.id, gate }); return gate.promise; } };
   const boundary = (collection, method) => (id, intent) => { const gate = deferred(); collection.push({ actor: get(context.Session)?.identity.id, id, method, intent, gate }); return gate.promise; };
   API[kind] = { GetFollowStatus: boundary(reads, 'GET'), Follow: boundary(writes, 'POST'), Unfollow: boundary(writes, 'DELETE') };
-  let source = compose(`src/routes/(app)/${entity}/[id]/${kind}.svelte`).match(/<script lang="ts">([\s\S]*?)<\/script>/)[1];
+  let source = compose(`src/routes/(app)/${entity}/[id]/${kind}.svelte`, publicProfile).match(/<script lang="ts">([\s\S]*?)<\/script>/)[1];
   source = stripImports(source);
   // Model the compiler's live auto-store reads and this derived value. The
   // controller, event handler, subscriptions and pre-effect remain actual code.
@@ -215,4 +216,11 @@ test('exact composed Follow control preserves permitted visibility, classes, ico
     if (kind === 'User') assert.ok(source.includes('{#if $Session && $user.id !== $Session.identity.id}'));
     else assert.ok(source.includes('{#if $Session}'));
   }
+});
+
+test('public UUID profile never borrows a native Session for follow status or writes', async () => {
+  const value = await component('User', { publicProfile: true }); await value.login();
+  assert.equal(value.reads.length, 0); assert.equal(value.writes.length, 0); assert.equal(value.errors.length, 0);
+  await value.api.activate(); assert.equal(value.reads.length, 0); assert.equal(value.writes.length, 0);
+  assert.equal(value.api.snapshot().ready, false); assert.equal(value.api.snapshot().followed, false); value.destroy();
 });

@@ -1,0 +1,14 @@
+▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:12:
+      2 │   "extends": "./.svelte-kit/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+file:///workspace/shared/nostr-manga-recovery-20261017/browser-completeness-audit-worktree-20261017/weebdex-platform/scripts/check-composed-frontend.mjs:217
+if (unresolvedGraphEdges.length) throw Error(`Projection graph has ${unresolvedGraphEdges.length} unresolved source edges`);
+                                       ^
+
+Error: Projection graph has 4 unresolved source edges
+    at file:///workspace/shared/nostr-manga-recovery-20261017/browser-completeness-audit-worktree-20261017/weebdex-platform/scripts/check-composed-frontend.mjs:217:40
+
+Node.js v24.19.0

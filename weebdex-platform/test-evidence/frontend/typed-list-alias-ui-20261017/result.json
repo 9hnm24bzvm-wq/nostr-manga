@@ -1,0 +1,14 @@
+{
+  "tests": 319,
+  "passed": 319,
+  "failed": 0,
+  "dedicated_list_client_tests": 28,
+  "dedicated_list_component_tests": 11,
+  "backend_dependency": "cad7441bbd129799a188984c7585ba138c059154",
+  "canonical_frontend_files": 679,
+  "canonical_frontend_unchanged": true,
+  "installed_dependencies": false,
+  "browser_runtime": "unrun",
+  "real_accounts_used": false,
+  "source_sha256": "124dd5d5835f1423c4279c20622dc1e0b7734897330f8b96d993bf23b1dfd0cb"
+}

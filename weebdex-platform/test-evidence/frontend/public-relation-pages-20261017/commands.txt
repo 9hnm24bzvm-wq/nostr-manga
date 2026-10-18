@@ -1,0 +1,13 @@
+# Working directory: public-relation-ui-worktree, isolated from integration.
+node --experimental-vm-modules --test weebdex-platform/tests/ci/public-api-recovery.test.mjs weebdex-platform/tests/ci/test_account_title_composition.mjs weebdex-platform/tests/ci/test_public_relation_pages.mjs weebdex-platform/tests/ci/test_public_relation_probe.mjs
+WEEBDEX_TYPESCRIPT_ROOT=/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/typescript node weebdex-platform/test-evidence/frontend/public-relation-pages-20261017/typecheck-command.cjs
+git diff --check
+
+# Both full strict gates, run from weebdex-platform after headroom approval.
+# Reuse existing dependencies via symlinks .build/local-library-noble-2.0.1
+# and .build/local-signing-base-2.0.0; no cache/dependency copies.
+for gate in 0 1; do
+ free=$(df -B1 /workspace/shared | awk 'NR==2{print $4}'); [ "$free" -ge 4399824896 ] || exit 3
+ WEEBDEX_SEMANTIC_NODE_MODULES=/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules WEEBDEX_SEMANTIC_OUTPUT="$PWD/.build/public-relation-strict-$gate-20261017-2238" PUBLIC_MANGADEX_CATALOGUE=$gate node scripts/check-composed-frontend.mjs
+done
+# Fresh generation paths are required for future reruns; never overwrite receipts.

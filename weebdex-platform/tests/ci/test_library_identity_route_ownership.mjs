@@ -88,7 +88,7 @@ const Controller = await compiled('Controller', `<script>import Identity from '.
 
 function deferred() { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
 const recipient = { origin: 'http://127.0.0.1:2', serviceKey: 'a'.repeat(64), selected: true };
-function environment({ missingThread = false, scopeStatus = 'verified' } = {}) {
+function environment({ missingThread = false, scopeStatus = 'verified', publicAccountLibraryUnavailable = false } = {}) {
   const calls = { opened: 0, toasts: [], mappings: [], social: [], reviews: [] };
   const records = [{ family: 'series', key: 'TitleOne01', id: 'TitleOne01', status: 'reading', notification: true }];
   const state = writable({ ready: true, mode: 'device', records, revision: 3, scopeStatus });
@@ -98,7 +98,7 @@ function environment({ missingThread = false, scopeStatus = 'verified' } = {}) {
   const nativeComments = () => { if (missingThread) throw Error('Native comments mounted without a native thread'); return Generic(...arguments); };
   const env = {
     Button, Input, Textarea, ProtocolIdentityPanel: Identity, LibraryManagementTools: LibraryTools, Dialog: {Root: DialogRoot, Content: Generic, Header: Generic, Title: Generic, Description: Generic}, Panel: ReaderPanel, LastPage,
-    localLibraryState: state, libraryIdentity: writable({ canUse: scopeStatus === 'verified' }), signerIdentity,
+    publicAccountLibraryUnavailable, localLibraryState: state, libraryIdentity: writable({ canUse: scopeStatus === 'verified' }), signerIdentity,
     message: cause => cause instanceof Error ? cause.message : String(cause),
     openLibrary: async () => { calls.opened++; }, toast: { error: (...args) => calls.toasts.push(args) },
     relayPreferences: async () => ({ relays: [recipient], revision: 1 }), publicActionRecords: async () => [], publicationJobs: async () => [],
@@ -182,6 +182,14 @@ test('storage open failure never hides the mode, backup or recovery page', async
   const {env}=environment();env.openLibrary=async()=>{throw Error('Device storage unavailable')};
   const view=await render(Library,env);assert.match(view.target.querySelector('[role=alert]').textContent,/Device storage unavailable/);
   for(const name of ['Export device backup','Use account library','Library recovery']) assert.equal(button(view.target,name).disabled,false);
+  await view.close();
+});
+
+test('UUID storage failure preserves backup/recovery while unsupported native account mode stays absent', async () => {
+  const {env}=environment({publicAccountLibraryUnavailable:true});env.openLibrary=async()=>{throw Error('Device storage unavailable')};
+  const view=await render(Library,env);assert.match(view.target.querySelector('[role=alert]').textContent,/Device storage unavailable/);
+  for(const name of ['Export device backup','Library recovery'])assert.equal(button(view.target,name).disabled,false);
+  assert.equal([...view.target.querySelectorAll('button')].some(row=>row.textContent.trim()==='Use account library'),false);
   await view.close();
 });
 

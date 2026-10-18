@@ -1,6 +1,6 @@
 // Reconstructed from retained complete wire/view declarations; unverified.
 export type PublicUuid = string & { readonly __publicUuid: unique symbol };
-export type ResourceType = 'manga_relation' | 'manga_recommendation' | 'manga' | 'chapter' | 'cover_art' | 'author' | 'artist' | 'scanlation_group' | 'tag' | 'user' | 'custom_list';
+export type ResourceType = 'manga_relation' | 'manga_recommendation' | 'manga' | 'chapter' | 'cover_art' | 'author' | 'artist' | 'scanlation_group' | 'tag' | 'user' | 'creator' | 'leader' | 'member' | 'custom_list';
 export interface Relationship { id: PublicUuid; type: ResourceType; related?: string; attributes?: Record<string, unknown>; }
 export interface Resource<A extends Record<string, unknown> = Record<string, unknown>> extends Relationship { attributes: A; relationships: Relationship[]; }
 export interface Entity<A extends Record<string, unknown> = Record<string, unknown>> { result: 'ok'; response: 'entity'; data: Resource<A>; }
@@ -22,3 +22,6 @@ export interface TagView { id: PublicUuid; name: string; group: string; public_a
 export interface MangaView { id: PublicUuid; title: string; alt_titles: Record<string, string[]>; description?: string; year: number | null; language: string; demographic: string | null; status: string; content_rating: string; last_volume: string | null; last_chapter: string | null; state: string; locked: boolean; version: number; created_at?: string; updated_at?: string; public_api: ViewProvenance; relationships: { cover?: CoverView; tags: TagView[]; authors: NamedView[]; artists: NamedView[]; links: Record<string, string>; available_languages?: string[]; relations?: MangaView[]; [key: string]: unknown; }; }
 export interface ChapterView { id: PublicUuid; title: string | null; volume: string | null; chapter: string | null; language: string; version: number; created_at?: string; updated_at?: string; published_at?: string; is_unavailable: boolean; external_url: string | null; node?: string; data?: PublicPage[]; data_optimized?: PublicPage[]; public_api: ViewProvenance; relationships: { manga: MangaView; groups: NamedView[]; uploader?: NamedView; [key: string]: unknown; }; }
 export interface ViewFeed<T> { total: number; limit: number; page: number; offset: number; data: T[]; map?: { manga: Record<string, MangaView> }; }
+
+export interface GroupMemberView { id: PublicUuid; name: string; is_leader: boolean; version?: number; public_api: { relationship: Relationship }; }
+export interface GroupView extends NamedView { relationships: { members: GroupMemberView[]; [key: string]: unknown }; }

@@ -1,0 +1,15 @@
+
+running 1 test
+test public_relation_pages_recover_all_4096_with_full_metadata_and_snapshot_guards ... 
+thread 'public_relation_pages_recover_all_4096_with_full_metadata_and_snapshot_guards' panicked at tests/public_relation_pages.rs:36:15:
+called `Result::unwrap()` on an `Err` value: Error { kind: Db, cause: Some(DbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E53200), message: "out of shared memory", detail: None, hint: Some("You might need to increase \"max_locks_per_transaction\"."), position: None, where_: Some("SQL statement \"INSERT INTO platform.public_resource_ids(kind,public_id,native_id,preferred,origin,principal_type)\n VALUES(resource_kind,alias,resource_native,NOT EXISTS(SELECT 1 FROM platform.public_resource_ids WHERE kind=resource_kind AND native_id=resource_native AND preferred),alias_origin,alias_principal)\n ON CONFLICT(kind,public_id) DO NOTHING\"\nPL/pgSQL function platform.public_register_id(text,text,uuid,text,text) line 5 at SQL statement\nPL/pgSQL function platform.public_ensure_resource_id(text,text) line 15 at RETURN\nSQL statement \"SELECT platform.public_ensure_resource_id(TG_ARGV[0],NEW.id)\"\nPL/pgSQL function platform.public_create_native_alias() line 3 at PERFORM"), schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("lock.c"), line: Some(1020), routine: Some("LockAcquireExtended") }) }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    public_relation_pages_recover_all_4096_with_full_metadata_and_snapshot_guards
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.84s
+

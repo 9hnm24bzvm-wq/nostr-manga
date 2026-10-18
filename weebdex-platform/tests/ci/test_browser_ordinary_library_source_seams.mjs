@@ -160,11 +160,12 @@ test('account recovery and ordinary follow still use shared controls and durable
 function signerModule(window) {
   const publication = read('platform-integrations/local-library/publication.ts');
   const operation = publication.slice(publication.indexOf('export async function connectSigner('), publication.indexOf('\nexport function disconnectSigner'));
+  const clear = publication.slice(publication.indexOf('function clearSelectedSigner()'), publication.indexOf('\n// The draft owns its key'));
   assert(operation.startsWith('export async function connectSigner('));
   const request = read('platform-integrations/local-library/protocol/nostr.js').match(/export async function signerRequest\(operation\) \{[\s\S]*?\n\}/)[0];
   const identity = { value: { owner: null, generation: 0 }, set(value) { this.value = value; } };
   const context = vm.createContext({ window, signerIdentity: identity, get: value => value.value, performance, setTimeout, clearTimeout });
-  vm.runInContext(stripTypeScriptTypes('let signer = null;\n' + request.replace('export ', '') + '\n' + operation.replace('export ', '') + '\n globalThis.connectSigner = connectSigner;'), context);
+  vm.runInContext(stripTypeScriptTypes('let signer = null, clearLocalSigner = null;\n' + clear + '\n' + request.replace('export ', '') + '\n' + operation.replace('export ', '') + '\n globalThis.connectSigner = connectSigner;'), context);
   return { context, identity };
 }
 
@@ -187,7 +188,7 @@ test('ordinary dismissal binding reaches the actual signer prompt without author
 test('former incomplete binding is rejected before the prompt, proving harness cause', async () => {
   let prompts = 0;
   const module = signerModule({ nostr: { async getPublicKey() { prompts++; throw Error('Synthetic signer prompt dismissed'); } } });
-  await assert.rejects(module.context.connectSigner(), /compatible NIP-07 browser signer is required/);
+  await assert.rejects(module.context.connectSigner(), /No compatible NIP-07 browser signer was found\. Create or import a key/);
   assert.equal(prompts, 0); assert.equal(module.identity.value.generation, 0);
 });
 

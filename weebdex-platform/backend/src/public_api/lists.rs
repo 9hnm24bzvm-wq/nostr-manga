@@ -184,7 +184,7 @@ async fn listing(
         json!({"result":"ok","response":"collection","data":data,"limit":q.limit,"offset":q.offset,"total":snapshot.total,"nostr":metadata(&snapshot)}),
     ))
 }
-async fn target(state: &AppState, value: &str) -> PublicApiResult<(Id, [u8; 16])> {
+async fn target(state: &AppState, value: &str) -> PublicApiResult<(Id, [u8; 16], PublicUuid)> {
     let resolver = PostgresPublicIdResolver::new(state.db.clone());
     let target = resolver
         .resolve(ResourceKind::List, &PublicUuid::parse(value)?)
@@ -197,7 +197,7 @@ async fn target(state: &AppState, value: &str) -> PublicApiResult<(Id, [u8; 16])
         .ok()
         .and_then(|v| v.try_into().ok())
         .ok_or_else(unavailable)?;
-    Ok((id(&owner)?, list))
+    Ok((id(&owner)?, list, target.preferred_id))
 }
 async fn one(
     State(state): State<AppState>,
@@ -205,25 +205,50 @@ async fn one(
     RawQuery(raw): RawQuery,
 ) -> PublicApiResult<Json<Value>> {
     let q = query(raw.as_deref(), false)?;
-    let (owner, list) = target(&state, &value).await?;
+    let requested = PublicUuid::parse(&value)?;
+    let (owner, list, canonical) = target(&state, &value).await?;
     let snapshot = snapshot(&state, owner, q.first("head"), 0, 1, Some(list)).await?;
     if snapshot.lists.is_empty() {
         return Err(PublicApiError::not_found());
     }
     projected(&state, &snapshot).await?;
-    let data = entities(&state, &snapshot)
+    let mut data = entities(&state, &snapshot)
         .await?
         .into_iter()
         .next()
         .ok_or_else(unavailable)?;
+    if data["id"].as_str() != Some(canonical.as_str()) { return Err(unavailable()); }
+    // A trusted, typed alias binding, never publisher metadata or a grant of
+    // follow/ownership authority. Permit consumers to reject unrelated rows.
+    let identity = json!({"kind":"list","requestedId":requested,"canonicalId":canonical,"source":"persisted-public-resource-ids"});
+    data["nostr"]["identity"] = identity.clone();
+    let mut provenance = metadata(&snapshot);
+    provenance["identity"] = identity;
     state
         .protocol
         .verify_public_list_snapshot(&snapshot, None)
         .await
         .map_err(error)?;
     Ok(Json(
-        json!({"result":"ok","response":"entity","data":data,"nostr":metadata(&snapshot)}),
+        json!({"result":"ok","response":"entity","data":data,"nostr":provenance}),
     ))
+}
+/// Reuse original signed visibility and existing truthful DTO projection for a
+/// native-account follow. Never treat a native private list as a protocol list.
+pub(super) async fn followed_snapshot(
+    state: &AppState, value: &PublicUuid, expected_head: Option<&str>,
+) -> PublicApiResult<Option<(PublicListSnapshot,Value)>> {
+    let (owner,list,canonical)=target(state,value.as_str()).await?;
+    let snapshot=snapshot(state,owner,expected_head,0,1,Some(list)).await?;
+    if snapshot.lists.is_empty() {return Ok(None);}
+    projected(state,&snapshot).await?;
+    let entity=entities(state,&snapshot).await?.into_iter().next().ok_or_else(unavailable)?;
+    if entity["id"].as_str()!=Some(canonical.as_str()) {return Err(unavailable());}
+    state.protocol.verify_public_list_snapshot(&snapshot,None).await.map_err(error)?;
+    Ok(Some((snapshot,entity)))
+}
+pub(super) async fn verify_follow_snapshot(state:&AppState,snapshot:&PublicListSnapshot)->PublicApiResult<()> {
+    state.protocol.verify_public_list_snapshot(snapshot,None).await.map_err(error)
 }
 /// Bounded native/canonical scope for actual original-visible member identities.
 async fn manga(
@@ -341,7 +366,7 @@ async fn feed(
     RawQuery(raw): RawQuery,
 ) -> PublicApiResult<Json<Value>> {
     let (head, query) = feed_query(raw)?;
-    let (owner, list) = target(&state, &value).await?;
+    let (owner, list, _) = target(&state, &value).await?;
     let snapshot = snapshot(&state, owner, head.as_deref(), 0, 1, Some(list)).await?;
     if snapshot.lists.is_empty() {
         return Err(PublicApiError::not_found());

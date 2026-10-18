@@ -1,0 +1,38 @@
+{
+  "sourceCommit": "31396b44e0abbb4d9fc3689545a5cd2425b8879b",
+  "backendCompile": "held-unexecuted",
+  "backendRuntime": "held-unexecuted",
+  "blocker": "Shared free4472119296 bytes, less than4GiB+256MiB guarded start reserve; relation final warm target remains reserved. No further cleanup authorized.",
+  "adapterFinite": {
+    "passed": 64,
+    "preserved": 61,
+    "newCapturedAccountCases": 3
+  },
+  "combinedFinite": {
+    "passed": 220,
+    "includesAdapter": true,
+    "browserHttpSqlProof": false
+  },
+  "strict": {
+    "enabled": {
+      "errors": 0,
+      "warnings": 12
+    },
+    "default": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "canonicalFilesUnchanged": 679
+  },
+  "failureHistory": [
+    {
+      "phase": "first new finite discovery assertion",
+      "passed": 63,
+      "failed": 1,
+      "cause": "VisibleError is an object with body, not Error.toString; corrected test checks the actual exact body without weakening the no-dispatch assertions."
+    }
+  ],
+  "baselineAcceptanceInvariant": "preserved failing7/7 atad6c76b",
+  "sourceFiles": 439,
+  "coverage": "Isolated first-party transport and semantic qualification only. Rust/runtime, combined integration, production bundle and browser remain unqualified."
+}

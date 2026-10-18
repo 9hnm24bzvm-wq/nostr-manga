@@ -36,7 +36,7 @@ for (const gateAt of ['proof', 'final-read']) test('dismissal blocks POST after 
   const f = await fixture({ gateAt });
   try {
     const sending = f.publication.publishReviewed(f.review, true, f.assertCurrent);
-    await Promise.race([f.entered, sending.then(() => { throw Error('Operation ended before the selected deferred boundary'); })]); f.close(); f.release(); await sending;
+    await Promise.race([f.entered, sending.then(() => { throw Error('Operation ended before the selected deferred boundary'); })]); f.close(); f.release(); await assert.rejects(sending, /Management closed/);
     const jobs = await f.protocol.jobs(); assert.equal(jobs.length, 1); assert(f.nostr.verifyEvent(jobs[0].event));
     assert.equal(jobs[0].recipients[0].state, 'retryable'); assert.equal(f.calls.posts, 0);
     assert.deepEqual(f.calls.kinds, [11999, 27235]);

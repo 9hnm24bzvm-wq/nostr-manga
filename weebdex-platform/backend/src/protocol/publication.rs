@@ -870,6 +870,7 @@ async fn native_series_input(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
     manga: &str,
+    require_original_cover: bool,
 ) -> ApiResult<PublicationInput> {
     let row=tx.query_one("SELECT title,metadata,language,publication_status,content_rating,demographic,year FROM platform.catalog_manga WHERE id=$1",&[&manga]).await?;
     let metadata: serde_json::Value = row.get(1);
@@ -877,6 +878,9 @@ async fn native_series_input(
     let title: String = row.get(0);
     let mut titles = BTreeMap::new();
     titles.insert(lang.clone(), title);
+    if let Some(localized) = metadata["localized_titles"].as_object() {
+        titles = localized.iter().filter_map(|(lang,title)|title.as_str().map(|title|(lang.clone(),title.to_owned()))).collect();
+    }
     let mut alternatives = Vec::new();
     if let Some(localized) = metadata["alt_titles"].as_object() {
         for (lang, names) in localized {
@@ -891,14 +895,22 @@ async fn native_series_input(
     for credit in tx.query("SELECT mc.role,a.name FROM platform.catalog_manga_creators mc JOIN platform.catalog_authors a ON a.id=mc.author_id WHERE mc.manga_id=$1 AND a.deleted_at IS NULL ORDER BY mc.role,a.id",&[&manga]).await?{credits.push(manga_node::series_metadata::Credit{role:credit.get(0),name:credit.get(1)});}
     let categories=tx.query("SELECT t.name FROM platform.catalog_manga_tags mt JOIN platform.catalog_tags t ON t.id=mt.tag_id WHERE mt.manga_id=$1 ORDER BY t.id",&[&manga]).await?.into_iter().map(|r|r.get::<_,String>(0)).collect();
     let mut originals = BTreeMap::new();
-    let cover=if let Some(cover)=tx.query_opt("SELECT o.digest,o.mime,o.bytes,o.width,o.height,o.storage_key FROM platform.catalog_covers c JOIN platform.cover_media cm ON cm.cover_id=c.id AND cm.variant='original' JOIN platform.media_objects o ON o.id=cm.object_id WHERE c.manga_id=$1 AND c.deleted_at IS NULL ORDER BY c.is_main DESC,c.created_at DESC,c.id LIMIT 1",&[&manga]).await? {
+    let cover=if let Some(cover)=tx.query_opt("SELECT o.digest,o.mime,o.bytes,o.width,o.height,o.storage_key FROM platform.catalog_covers c JOIN platform.cover_media cm ON cm.cover_id=c.id AND cm.variant='original' JOIN platform.media_objects o ON o.id=cm.object_id WHERE c.manga_id=$1 AND c.deleted_at IS NULL AND (NOT $2::bool OR (c.language=$3 AND platform.protocol_source_is_visible(c.protocol_event_id) AND o.bytes>0)) ORDER BY c.is_main DESC,c.created_at DESC,c.id LIMIT 1",&[&manga,&require_original_cover,&lang]).await? {
   let file=NativeOriginal{hash:cover.get(0),mime:cover.get(1),bytes:cover.get::<_,i64>(2) as u64,width:cover.get::<_,i32>(3) as u32,height:cover.get::<_,i32>(4) as u32,storage_key:cover.get(5)};
   originals.insert(file.hash.clone(),read_native_original(state,&file).await?);Some(manga_node::manifest::Page{hash:file.hash,size:file.bytes,mime:file.mime,width:file.width,height:file.height})
- }else{None};
-    let description = metadata["description"]
+ }else{
+     if require_original_cover {return Err(ApiError::bad_request("Original publication requires an original-language cover"));}
+     None
+ };
+    if let Some(alts) = metadata["localized_alt_titles"].as_array() {
+        alternatives = alts.iter().filter_map(|alt|alt.as_object().map(|m|m.iter().filter_map(|(lang,title)|title.as_str().map(|title|(lang.clone(),title.to_owned()))).collect())).collect();
+    }
+    let description = metadata["localized_description"].as_object()
+        .map(|m|m.iter().filter_map(|(lang,text)|text.as_str().map(|text|(lang.clone(),text.to_owned()))).collect())
+        .or_else(|| metadata["description"]
         .as_str()
         .filter(|s| !s.is_empty())
-        .map(|s| BTreeMap::from([(lang.clone(), s.to_owned())]));
+        .map(|s| BTreeMap::from([(lang.clone(), s.to_owned())])));
     let source = manga_node::series_metadata::SeriesMetadata {
         titles,
         alt_titles: Some(alternatives),
@@ -931,6 +943,18 @@ pub async fn publish_native_manga(
     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
     manga: &str,
     submitted_version: i32,
+) -> ApiResult<Option<PublicationReceipt>> {
+    publish_native_manga_with_cover_requirement(state, tx, actor, manga, submitted_version, false).await
+}
+/// Public title review requires a qualifying original only for fresh input.
+/// Exact durable retries keep the original input captured by prepared_input.
+pub(crate) async fn publish_native_manga_with_cover_requirement(
+    state: &crate::state::AppState,
+    tx: &tokio_postgres::Transaction<'_>,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+    manga: &str,
+    submitted_version: i32,
+    require_original_cover: bool,
 ) -> ApiResult<Option<PublicationReceipt>> {
     let command = format!("manga:{manga}");
     if state.config.protocol_publication.is_none() {
@@ -984,7 +1008,7 @@ pub async fn publish_native_manga(
     .await?
     {
         Some(input) => input,
-        None => native_series_input(state, tx, manga).await?,
+        None => native_series_input(state, tx, manga, require_original_cover).await?,
     };
     let mut alias = manga.to_owned();
     let receipt = command_publish(
@@ -1133,7 +1157,7 @@ pub async fn publish_native_upload(
         .await?
         {
             Some(input) => input,
-            None => native_series_input(state, tx, &record.manga_id).await?,
+            None => native_series_input(state, tx, &record.manga_id, false).await?,
         };
         let mut alias = record.manga_id.clone();
         let receipt = command_publish(

@@ -1,0 +1,13 @@
+{
+  "reviewedSource": "80ac1b2cfea5a52697e04f51ca1421c9fb965cc2",
+  "actualHttpCases": 1,
+  "notCombinedSourceAcceptance": true,
+  "sourceReview": [
+    "Mandatory typed expectedAccountId and title version are compared inside the final bound-account transaction.",
+    "Explicit signed request-review and approve-hide modes preserve the removal effect confirmed before a same-account grant change.",
+    "Target-first report locking and target-version checks preserve rollback and native moderator approval authority.",
+    "Soft local hide never deletes or signs deletion of immutable original source bytes/events."
+  ],
+  "confirmedFinding": "Original role-inferred removal could upgrade captured owner review into moderator hide after grant gain; corrected mandatory removalMode and actual HTTP grant-gain/refusal cases are in the qualified source.",
+  "coverageBoundary": "Source review and real local PostgreSQL/NIP-98/native listener HTTP lifecycle; no browser or integrated-source claim."
+}

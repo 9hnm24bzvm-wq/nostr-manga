@@ -1,0 +1,317 @@
+{
+  "schema": "guard-editorial-source-composition-v1",
+  "base": "b4feb0b02350ac5332a59a47a308540fe9c4cdf7",
+  "sourceHead": "b72c91d08bb105ed8f9be74002579b1fc9fa9764",
+  "sourceOnly": true,
+  "appliedMap": [
+    {
+      "applied": "8095c1f6b2b794ff29ae4030c3650dcbdb9a3b72",
+      "original": "c056047d95f5d5b91c10db155cff1636e6dcd28b",
+      "subject": "feat: expose signer-bound author and group editorial tools",
+      "compositionOnly": false
+    },
+    {
+      "applied": "fd5dfef68c248b94c87526d0c4e8e93a299c2c2a",
+      "original": null,
+      "subject": "Preserve qualified account recipes in editorial reconstruction tooling",
+      "compositionOnly": true
+    },
+    {
+      "applied": "3d7933d56bc809513112028329bee55809917312",
+      "original": "e47b33aeb371dc08f4486ca86217e52cde7e1227",
+      "subject": "fix: bind signed title and editorial commands to captured account",
+      "compositionOnly": false
+    },
+    {
+      "applied": "0289a1c9ba47cb54ff1855d70f414797e63b768f",
+      "original": "13ff71d093c14d5d9a0a8f437f8a681f0237978b",
+      "subject": "test: pin signed editorial and account-intent qualification",
+      "compositionOnly": false
+    },
+    {
+      "applied": "dc06c2ac0a4235a356f4b43ff692279e5430f24a",
+      "original": "c40e813a5b2e7342e1a6ac9a6eb6a32457f812c3",
+      "subject": "Scope pending account-intent routes and preserve uncompiled repro",
+      "compositionOnly": false
+    },
+    {
+      "applied": "c1f5d007e0f3ef050ba27c3e19ad2dd517472cfa",
+      "original": "ad6c76bf0b39cd96b432e69eb79f41280f0d48eb",
+      "subject": "Reproduce captured account drift in seven signed HTTP sequences",
+      "compositionOnly": false
+    },
+    {
+      "applied": "1b040d45136c9d23a3711f012518cb07a1a03b4e",
+      "original": "93ff312704d2f750cbd166e9c20984f6cf7bf04d",
+      "subject": "test: independently qualify explicit title removal effect",
+      "compositionOnly": false
+    },
+    {
+      "applied": "d1c825c34b5d767131794e6dd6272ff14e0bf2ad",
+      "original": "31396b44e0abbb4d9fc3689545a5cd2425b8879b",
+      "subject": "Bind chapter upload and report commands to captured account intent",
+      "compositionOnly": false
+    },
+    {
+      "applied": "a1cde7c41a084c72fc78b71672858cf39bd2075d",
+      "original": "db5964cffda71e89a95395b1a03346b02dced04e",
+      "subject": "Record finite account-intent candidate and held native qualification",
+      "compositionOnly": false
+    },
+    {
+      "applied": "800b2378aae8fe83e14eb7405577891e06ef2265",
+      "original": "0cf2b60bb08c00bb3090bbbc519c57466b74cf74",
+      "subject": "Include compressed semantic driver logs in candidate evidence",
+      "compositionOnly": false
+    },
+    {
+      "applied": "bea502cb3d80a1e5a7f251483e5ec48bf400bd6e",
+      "original": "df4adab27bfdc6fbc5e327d5d1dd33b7186a34da",
+      "subject": "Preserve explicitly confirmed chapter removal effect across grant changes",
+      "compositionOnly": false
+    },
+    {
+      "applied": "ed9641c48d2177990f8dc5b9253df4aa16569a8a",
+      "original": "ed4935dceaa8140825bed1c5c3a6a9a32cf0a796",
+      "subject": "Record finite removal-mode proof and staged native regression boundary",
+      "compositionOnly": false
+    },
+    {
+      "applied": "ad53a8fae505e58da63eb4ee485ce2495dee57f8",
+      "original": "0e978d36c57d935f830650248a442fa20a923387",
+      "subject": "Require scalar chapter removal mode before signed dispatch",
+      "compositionOnly": false
+    },
+    {
+      "applied": "904cf0da2a9fc3966e8d262065de571e6df79301",
+      "original": "ecd842cc53ed2b42a17f0fd279a8ba328d139d44",
+      "subject": "Pin final scalar-mode finite validation",
+      "compositionOnly": false
+    },
+    {
+      "applied": "4e7f74a8094cbe1bec02b1e569878de7df589889",
+      "original": "729ce95873a1d5594f5629a908f9c247fc4727b6",
+      "subject": "Assert actual privacy-preserving foreign upload-session refusal",
+      "compositionOnly": false
+    },
+    {
+      "applied": "c4088f6f0592b688f551432506a626a537a4a774",
+      "original": "b76308ad1e42650c2acbb31ba443445e0004e328",
+      "subject": "Exercise real chapter confirmation lifecycle in pinned Svelte DOM",
+      "compositionOnly": false
+    },
+    {
+      "applied": "6bbeb443fe1ad6e64676e77e2b9eff79c396f14e",
+      "original": "b22de61e695a427fcbceac1a0ccb2741f728bd58",
+      "subject": "Qualify captured account and chapter effect with real signed HTTP evidence",
+      "compositionOnly": false
+    },
+    {
+      "applied": "cef6cbdc7ae790adb8dee8fcd7476c3cccabe09d",
+      "original": "1f5059d48c7745c77ae2982833f0c21617a845af",
+      "subject": "Verify live supported browser and unresolved local service namespace",
+      "compositionOnly": false
+    },
+    {
+      "applied": "b72c91d08bb105ed8f9be74002579b1fc9fa9764",
+      "original": null,
+      "subject": "Preserve historical editorial preparation without replacing shared receipt",
+      "compositionOnly": true
+    }
+  ],
+  "baseTrackedFiles": 3574,
+  "unchangedBaseFiles": 3548,
+  "changedBaseFiles": [
+    "weebdex-platform/backend/src/domains/catalog/entity_mutations.rs",
+    "weebdex-platform/backend/src/domains/catalog/mutations.rs",
+    "weebdex-platform/backend/src/public_api/chapter_writes.rs",
+    "weebdex-platform/backend/src/public_api/editorial.rs",
+    "weebdex-platform/backend/src/public_api/manga_writes.rs",
+    "weebdex-platform/backend/src/public_api/reports.rs",
+    "weebdex-platform/backend/src/public_api/uploads.rs",
+    "weebdex-platform/backend/tests/public_chapter_writes.rs",
+    "weebdex-platform/backend/tests/public_editorial_drafts.rs",
+    "weebdex-platform/backend/tests/public_manga_writes.rs",
+    "weebdex-platform/docs/signed-title-writes.md",
+    "weebdex-platform/platform-integrations/frontend-route-additions.mjs",
+    "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte",
+    "weebdex-platform/platform-integrations/public-api/anchors.json",
+    "weebdex-platform/platform-integrations/public-api/group-presentation.ts",
+    "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+    "weebdex-platform/platform-integrations/public-api/source-hashes.json",
+    "weebdex-platform/platform-integrations/public-api/title-client.ts",
+    "weebdex-platform/platform-integrations/public-api/upload-client.ts",
+    "weebdex-platform/scripts/check-composed-frontend.mjs",
+    "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+    "weebdex-platform/scripts/reconstruct-public-api-anchors.mjs",
+    "weebdex-platform/tests/ci/public-api-recovery.test.mjs",
+    "weebdex-platform/tests/ci/test_public_title_commands.mjs",
+    "weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs",
+    "weebdex-platform/tests/ci/test_public_upload_overlay_recovery.mjs"
+  ],
+  "removedBaseFiles": [],
+  "criticalByteIdenticalFiles": {
+    "weebdex-platform/backend/migrations/0001_catalog_people.sql": "fb66216c11e429467d3a9960d305a1417aea42ed8c1d7380848fb168a8718ef1",
+    "weebdex-platform/backend/migrations/0002_catalog_manga.sql": "12b6ceb79cf548e158c66cd5aed8d882aae3f8da7df94696692564924cd2ea22",
+    "weebdex-platform/backend/migrations/0003_catalog_chapters.sql": "91ba37f24187714b928e846e22c6685152a066172df6ea636b499d74e0dff0e2",
+    "weebdex-platform/backend/migrations/0004_catalog_covers.sql": "0800ab9619464e554010f0fe274481d72cf3cd8f1f4ce99fbca723804bac9990",
+    "weebdex-platform/backend/migrations/0005_catalog_relations.sql": "b0481b596d495f91e71f755f36a58c5cbea61edf9b4f5feb6ebdd5963bfbf7ee",
+    "weebdex-platform/backend/migrations/0006_catalog_discussions.sql": "733399aec7b6a70b5351d848ebdf2d4d4d535468233a67106cd3fce33c4a3452",
+    "weebdex-platform/backend/migrations/0007_catalog_counters.sql": "3221d36356dafd8e7a33a78a0a51fd0a3a3dba9daccbbdf814239e88ead60f66",
+    "weebdex-platform/backend/migrations/0008_catalog_audit.sql": "05333362e8649652c80be982d6a1dc6024f213dce8350c985b89fa251cc9f9b7",
+    "weebdex-platform/backend/migrations/0009_catalog_projections.sql": "2188d3e721359f5e13e35b90dab46b2f219772b747a6bc4b992ff9296fc7ce54",
+    "weebdex-platform/backend/migrations/0010_native_auth.sql": "2df4dde3f3d7b6b7dcd048dfb7dd898fb5866e3bbe5fafb580c2e13e2aed4446",
+    "weebdex-platform/backend/migrations/0011_api_clients.sql": "ceeff26fc284a31e68003c505e0a94e1cb2bf69f5ee4c8d4530558fa37dadf11",
+    "weebdex-platform/backend/migrations/0012_email_tokens.sql": "749d4ca8278b46b4b9473bdba2ad7c4c1ad68655c6c1fa130ba83d7205223895",
+    "weebdex-platform/backend/migrations/0020_upload_sessions.sql": "693534f6341d9a3b09c9b6a27d1e34f49527fc4ad6dc1203219979513c93e8ed",
+    "weebdex-platform/backend/migrations/0021_upload_objects.sql": "27ce82dbb4ed2fe14a512b76c81e754c8ec13cbee71a4043627cc034fe5054b3",
+    "weebdex-platform/backend/migrations/0022_chapter_media.sql": "ee5a7f22ccf1a0458b34f59892769b1535f23166446bade5adcfd8c3ece98816",
+    "weebdex-platform/backend/migrations/0023_chapter_derivatives.sql": "d73178c87be4f181acc444d787f79b6989056ecc0375e27d716cc2f2fd2cd76c",
+    "weebdex-platform/backend/migrations/0030_library.sql": "d01e80b9c05f259f8f7dc0dcecccd8a3260b4d3cee3c0c16b2ae148f8b5706ab",
+    "weebdex-platform/backend/migrations/0040_community.sql": "a822c7fc03c8e192f47f3db5b68109a9ebeef44ec17b89bb5341485a4c3679ee",
+    "weebdex-platform/backend/migrations/0050_moderation.sql": "faa28f65dec55782132d7a21ce9f5ce4675c9a79a97707ed98f54aa3a729ad15",
+    "weebdex-platform/backend/migrations/0060_analytics.sql": "c553dec670f040d5cc3fa510a4bee090b7031aaeda54f7c4a742727e393ca9d5",
+    "weebdex-platform/backend/migrations/0070_protocol_bridge.sql": "764d31aaab0ad62693f70d903ac3619eb5a7c1f9031a7b68486a838baa26b99d",
+    "weebdex-platform/backend/migrations/0071_protocol_deletion_intents.sql": "41e5488c6d03eca6a037941fd956456ca472f797465756db4470ce335551d519",
+    "weebdex-platform/backend/migrations/0072_upload_resume.sql": "41455245a11e44a1827c6723c69107a96f9390bff97d932d94fdd5ecf8b75ea0",
+    "weebdex-platform/backend/migrations/0073_catalogue_namespace.sql": "a5b5827408b866fe8b2b62fad3f7652c4e751ce6d88b3a35e0209c2b2f9a5779",
+    "weebdex-platform/backend/migrations/0074_protocol_command_inputs.sql": "21384b2d8849c106a17d7385a10fa62cffe1793ae1a7b5715ffdc8660770cd4a",
+    "weebdex-platform/backend/migrations/0080_announcements.sql": "71dca11a76eae09f185ed11c36616a3e19fa0fc7da774450b815355ebb55e27b",
+    "weebdex-platform/backend/migrations/0081_community_visibility.sql": "8304d5c7c99b4fd6377e7bccbf8398314b8b0eb8e0f6e7000d25e22bbbc58991",
+    "weebdex-platform/backend/migrations/0082_catalog_projection_visibility.sql": "6ccdfff20e55b4a4b8e5c050ce0dbc589209e1ad79b538c80388744b79ac7403",
+    "weebdex-platform/backend/migrations/0083_upload_maintenance_indexes.sql": "fd84fd8900f80d5056e558c95cee5aac7bd4a182d1fa08ed3131aabc3a1c38ce",
+    "weebdex-platform/backend/migrations/0084_protocol_deletion_generations.sql": "27c3f91051888ab577dc2db91e41f47970b67578825331249e9712d1b9dd1033",
+    "weebdex-platform/backend/migrations/0085_cover_extension_contract.sql": "3668bf28a8032cd4b2d4f485cca06625502aaf173fc3d6d7546f512765cae692",
+    "weebdex-platform/backend/migrations/0086_visibility_policy_preparation.sql": "04d617d8836d47d7ab572c03ac7dc2e3a5b362415bffe34f99d94d3ed07b87b6",
+    "weebdex-platform/backend/migrations/0087_catalog_chapter_relationship_projection.sql": "027147bc5043fc8d1337fafb7dd9810b90eef7f7ef4a963f819a1a92c669102e",
+    "weebdex-platform/backend/migrations/0088_catalog_correlated_visibility_lookups.sql": "033688ecb3cc8a81a449af56c85f133ba056c3a29c5994e15051ffaabc58cbf4",
+    "weebdex-platform/backend/migrations/0089_public_resource_ids.sql": "006b525c995f5c0dd8968168fe275603d93ec5c324233b48b0c1377a53d49f93",
+    "weebdex-platform/backend/migrations/0090_public_manga_edge_ids.sql": "ed7ba2329184ab00abcbdb0b83f54095ecffb4cdbcd5b08af710c7f2c6a2b4cc",
+    "weebdex-platform/backend/migrations/0091_protocol_public_list_aliases.sql": "0dc0fa4923b79065468fc86100c7c136b8af29156a985d79a19627f20d980719",
+    "weebdex-platform/backend/migrations/0092_public_report_reasons.sql": "e2702fa0bcf855fbac0d3a6983b45a804c02aeacccaa2fc3099f240dc66f0e9b",
+    "weebdex-platform/backend/migrations/0094_cached_parent_visibility.sql": "573c64d15da4c999db61dd9bbf09ec2623b5d2f67b0922095ba1d42eff18bf52",
+    "weebdex-platform/backend/migrations/0097_chapter_removal_review.sql": "6342cc670af52ae980e3d4553ce283e24f47278aaeecdc547786c182f3f266ff",
+    "weebdex-platform/backend/migrations/0098_native_manga_ratings.sql": "11968c5c818f6c15d9e21e88ca0f652c60fd858d4c01ffe5db80f831af4531e2",
+    "weebdex-platform/backend/migrations/0099_native_public_list_follows.sql": "2fd2753eaf86d7ac2968641fdfc6896426d91ec7a1da8652a47d2cd6e9e91d1c",
+    "weebdex-platform/backend/migrations/0100_native_follow_revisions.sql": "7d4d06493dbabda521e80d85d1296d738e639f4f659b2d5bb04b7999bc9a360c",
+    "weebdex-platform/backend/migrations/0101_title_removal_review.sql": "e514a04fd91cb6da2a321fccf7ad97588a63560c5c53e61f910453ab13372b43",
+    "weebdex-platform/backend/src/public_api/cover_writes.rs": "a374fa246751d500013606760b7d52b1ae676b96a44ee4df6b583eefe0e52963",
+    "weebdex-platform/platform-integrations/local-library/ChapterHistory.ts": "99fef1dedee26c196350aafe23496480512d75704f4a25bc3f72e22a1f4b78bf",
+    "weebdex-platform/platform-integrations/local-library/IdentitySetup.svelte": "ecc6fee5e72755fd257e57783c00a379eadb592ee16c7b50fdfacf6996868c73",
+    "weebdex-platform/platform-integrations/local-library/LibraryManagementTools.svelte": "608b95f21855a658f38eedb42120e9e2180e2d16555921dd478547774dcf1b30",
+    "weebdex-platform/platform-integrations/local-library/LibraryProtected.svelte": "ff0e89c9c5605cec1ab5fe3a4b7865ad3b45bcba46b2a5e2086f8b2db6b70409",
+    "weebdex-platform/platform-integrations/local-library/LibraryRuntime.svelte": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8",
+    "weebdex-platform/platform-integrations/local-library/LocalLibraryPanel.svelte": "61216a341f11ad5c2ea854e014a9c704c82eb39ff121ceb9e51062cd96945877",
+    "weebdex-platform/platform-integrations/local-library/MangaDiscussion.svelte": "d10df4f2632f11b4f08305a1694eb59e7fd4310329b9f2e43f51b344674b54a3",
+    "weebdex-platform/platform-integrations/local-library/MangaFollow.ts": "c6b26e09d33ce9ef0dbc77593bfa9d87e27d6a24b2f5949452ce1f73e304e89a",
+    "weebdex-platform/platform-integrations/local-library/ProtocolIdentityPanel.svelte": "16a0f9c5a209d8e3063efaa6d1ccf502b7038f7eb030876f4e5e61eade70dffa",
+    "weebdex-platform/platform-integrations/local-library/PublicIdentitySettings.svelte": "c813d66dae44a64fe8bca82eb2c492c7e9b4ea62d784c62d0638068b26875012",
+    "weebdex-platform/platform-integrations/local-library/action-owner.ts": "c623b27a489eb45dd92f46e47e95622d2c015c07254375fd74ca37b4b9a5fd3d",
+    "weebdex-platform/platform-integrations/local-library/catalog.ts": "c43467046ba3010af1fefb56e7cc0661d2468fc62882f0c8725e3af627445676",
+    "weebdex-platform/platform-integrations/local-library/device-store.ts": "4b9f9ab7eb4d01dd1c903cfae86168fb2c81cf391d1731a9bbaf2217e2a1d210",
+    "weebdex-platform/platform-integrations/local-library/enrollment-policy.ts": "f0584a3f16aed5c3f312902a9dc71418ccddf77d6fc5e8f0af581e0f7ac5fa4a",
+    "weebdex-platform/platform-integrations/local-library/graph-transfer.ts": "0cbee4047d8bc0d1c3d6c7632e27ef98b2ce18bdc869dccb4df11d669275f669",
+    "weebdex-platform/platform-integrations/local-library/library-relay-support.ts": "1b7ca0e4492c5bd86df8e331a38ed22aec1214442ffc0e420e0e852bb020278a",
+    "weebdex-platform/platform-integrations/local-library/library.ts": "b46a5e347b37aa355e0cb9739e6b0944a4107956f81928eba3764c0afc14f8c8",
+    "weebdex-platform/platform-integrations/local-library/local-signing-key.ts": "f9ea32185d0085ac808d134848a7042d11a35a4bc5c6a8d83ca321d0ce48b6ef",
+    "weebdex-platform/platform-integrations/local-library/overlays.mjs": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d",
+    "weebdex-platform/platform-integrations/local-library/projection-worker.ts": "e291ffd92eb7ae4c75f43dd848ecbc029056e3a280ba63dee11ec6bfe18118dc",
+    "weebdex-platform/platform-integrations/local-library/protocol-identity.ts": "b393c5fbda503b5cc434f297709dae721afe5c48290854436a71bc8993518f85",
+    "weebdex-platform/platform-integrations/local-library/protocol-receipt.ts": "881cd529c16654606ecdae475efa35f75c7782a8dd0892189ed39c62e497b0a0",
+    "weebdex-platform/platform-integrations/local-library/protocol-scope.ts": "9cdb35a9cebc111a17856f8133908552af345da0746b71231f17bd85fd4db998",
+    "weebdex-platform/platform-integrations/local-library/protocol-source-manifest.json": "690956655601d6d52fa1acc1355f399864747e7554f871ded7be9a216ea116e4",
+    "weebdex-platform/platform-integrations/local-library/protocol/backup.js": "77e6e9626557dd7b87134d518beab3e8cdb7d8f2e0c9c7c051e9a7f03a792c53",
+    "weebdex-platform/platform-integrations/local-library/protocol/codec.js": "b899dc54a81099038cbed3ccbec7eaa2ddef38c7cf5cee4a2355d5a31f04a9c5",
+    "weebdex-platform/platform-integrations/local-library/protocol/indexeddb.js": "2383b25505953ce79e8c204ba482b2eee2268f3b66ddb420de87e40d60025908",
+    "weebdex-platform/platform-integrations/local-library/protocol/limits.js": "c23e71d1e01380f25f450963bd531d38c817196a2decc748d7256e10f5c8e540",
+    "weebdex-platform/platform-integrations/local-library/protocol/nostr.js": "1e71954b97415c36cb42b432148bfa32129be521d57e6ba125b2bce736c63603",
+    "weebdex-platform/platform-integrations/local-library/protocol/outbox.js": "97c272cf60023915686347cc19d3a4ba655f02fc2fb96f151cbf831efdb46902",
+    "weebdex-platform/platform-integrations/local-library/protocol/publishing.js": "2d261514ea23d215d8cf201c49c7eb3b2910727af4f54b6516951b2845e73cb4",
+    "weebdex-platform/platform-integrations/local-library/protocol/store.js": "1aa41728148c566b84716937385fc5daf05b8c61c0f14ba0a383b8792120ccf7",
+    "weebdex-platform/platform-integrations/local-library/protocol/types.d.ts": "cf4ffcfd7cc7f2173d3cbb7855f0c3b0d0287600fd0bf855302f52bf8118eaca",
+    "weebdex-platform/platform-integrations/local-library/protocol/worker.js": "fa2e0a9f8f34b508469932421c9364aafd905f30ae99b6b6ed53334ef5a9046c",
+    "weebdex-platform/platform-integrations/local-library/public-device-projection.ts": "e2585b394cc430e8b4718c4b3eca585d08481f6c8554cd4419fbe084f271b9e7",
+    "weebdex-platform/platform-integrations/local-library/publication.ts": "d59cccb7b6f298824e7ad430b9186cb474af497c4bd9e2738b38f21a9777ad65",
+    "weebdex-platform/platform-integrations/local-library/signing-dependencies/package-lock.json": "dc5d74f233da82060765b02d329cdb630b5327708b8d5b853512bbbf13cfaf3a",
+    "weebdex-platform/platform-integrations/local-library/signing-dependencies/package.json": "8012fc7f414a87dec5fcfec55c5d167a1d33141acdd63722c28031b87788c8cb",
+    "weebdex-platform/platform-integrations/public-api/AccountFollow.svelte": "85c209062ff98f00bf537728493dedb2deba10b742cd5605f01f55bd15922860",
+    "weebdex-platform/platform-integrations/public-api/AccountPreferenceSave.svelte": "8bf7f1bc907710830334be92ba49aead554b14ad1e11ec328a78a04e1d1f13d4",
+    "weebdex-platform/platform-integrations/public-api/PublicCoverEditor.svelte": "07726d31a705a0b5ed79693f0205a0be3d3455dacf301bae8f9f8f24f8e4b65a",
+    "weebdex-platform/platform-integrations/public-api/PublicTitleDisposition.svelte": "6987809d22e5a985f2242f0eac49f35cbc6b006c362629a3e0fec58c71b4e413",
+    "weebdex-platform/platform-integrations/public-api/PublicTitleEditor.svelte": "b9b62d7fa86478781e61dff78ed5d5234866d10013b7757c5dcb2b708f0a3175",
+    "weebdex-platform/platform-integrations/public-api/account-follow-client.ts": "bd410d4df7e32f76a3e252dceaa3d78711471480e09f1e8f63cd6c7b2cb4a380",
+    "weebdex-platform/platform-integrations/public-api/cover-client.ts": "c55b57227a9df9a59c880e18612de435e1b81039a52860164f224278f1906b99",
+    "weebdex-platform/platform-integrations/public-api/library-catalogue.ts": "8127da1de74382e0a701f408917de951a47bf32b7be88d5b1e638bdb30de258b",
+    "weebdex-platform/platform-integrations/public-api/list-follow-client.ts": "67185bd5132bc0001907b41218e1b53b2cecbac392c9f122ffa757d94856f748",
+    "weebdex-platform/platform-integrations/public-api/public-lists.ts": "124dd5d5835f1423c4279c20622dc1e0b7734897330f8b96d993bf23b1dfd0cb",
+    "weebdex-platform/platform-integrations/public-api/settings-client.ts": "80700a8571f114fcb300ac4f6025a668a7e297d706f711fa4621d2efeb9f4030",
+    "weebdex-platform/platform-integrations/public-api/settings-schema.ts": "a50907bc5c9e0d1f810a39773d2c1d98740bed49d0eb2592ab6e616ee5bf121b"
+  },
+  "allExistingAccountLibraryMigrationsAndCoverDispositionControlsPreserved": true,
+  "canonicalInputPins": {
+    "before": 40,
+    "after": 42,
+    "allExistingExact": true
+  },
+  "anchors": {
+    "before": 60,
+    "after": 64,
+    "retainedBaseRecipes": 60,
+    "deliberateLabelOnlyChanges": [
+      24,
+      25
+    ],
+    "newEditorialRecipes": 4
+  },
+  "titleTestNamesPreserved": 41,
+  "sourceDiffCheck": "passed excluding exact historical baseline-probe.patch bytes",
+  "carriedHistoricalPatchWhitespace": {
+    "path": "weebdex-platform/test-evidence/public-api/account-intent-audit-20261017/uncompiled-baseline-probe.patch",
+    "line": 6,
+    "sha256": "272d7586bc58b23d0fec9a12d85b3f17fc7355cb5751d09cff2ff0524aadc07e",
+    "reason": "Immutable pre-fix diagnostic patch retained verbatim; its context blank line has one space."
+  },
+  "newCombinedQualification": {
+    "strict": false,
+    "rust": false,
+    "http": false,
+    "productionBuild": false,
+    "browser": false
+  },
+  "generatorParity": {
+    "sourceOnly": true,
+    "writesIntercepted": true,
+    "results": [
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/source-hashes.json",
+        "matched": true,
+        "entries": 42
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/anchors.json",
+        "matched": true,
+        "entries": 64
+      }
+    ]
+  },
+  "historicalManifestScope": {
+    "schema": "historical-preparation-scope-preservation-v1",
+    "restoredSharedReceipt": {
+      "path": "weebdex-platform/test-evidence/frontend/integration-source-manifest.json",
+      "source": "b4feb0b02350ac5332a59a47a308540fe9c4cdf7",
+      "sha256": "ba3742b099aeea5ac873c41d22fb26afa0248f26823867c53b3a9d5031efb207",
+      "scope": "Inherited earlier preparation receipt; not qualification of this new composition."
+    },
+    "preservedEditorialReceipt": {
+      "path": "weebdex-platform/test-evidence/public-api/editorial-tools/historical-frontend-integration-source-manifest.json",
+      "source": "13ff71d093c14d5d9a0a8f437f8a681f0237978b",
+      "sha256": "66158aab0d6998eb2ca32b4af5db1669c8a3fb5a979524f4090f52873952f427",
+      "scope": "Exact historical editorial preparation bytes moved out of the shared receipt path. Not current combined qualification."
+    }
+  },
+  "generatorFirstAttemptFailure": {
+    "observed": true,
+    "rawLogRetained": false,
+    "detail": "Retaining existing composed User.svelte recipe with raw-source-only uniqueness check failed. Production stage-aware validation now checks actual preceding native/reader/library stages and preceding public patches; exact recipes unchanged."
+  }
+}

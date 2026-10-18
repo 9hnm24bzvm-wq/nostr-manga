@@ -1,0 +1,17 @@
+{
+  "status": "adapter-boundary-passed-owner-detail-journey-blocked",
+  "receiptSha256": "d44cdbf152c5fe2f7fc4ea76acad1ab2b80b34c825d4e55435dc76b0cf178ff8",
+  "fixtureReceiptOrigin": "../public-relation-pages-worktree/weebdex-platform/test-runtime/auth-7ogb1c04/actual-public-relation-adapter.json",
+  "frontendSourceCommit": "32e5987cd0ae968384e9b273e474aab0e273aa32",
+  "backendCandidateReportedByOwner": "292b219",
+  "backendOwner": "audit_mdex_api_compatibility",
+  "relations": 4096,
+  "relationPageRequests": 128,
+  "hydrationRequests": 128,
+  "elapsedMs": 48970.248,
+  "rawResponseBytes": 7841019,
+  "maximumRelationPageBytes": 32784,
+  "maximumHydrationBytes": 28561,
+  "wholeFixtureOutcome": "Owner manga GET at4096 returned503 after this successful adapter probe; backend owner is repairing that separate measured issue. No complete rendered journey or final backend qualification is claimed.",
+  "cleanup": "Backend owner reported fixture guard closed, stopped and zero survivors."
+}

@@ -1823,7 +1823,7 @@ async fn persisted_cover_upload_draft_privacy_list_update_variants_and_delete() 
 #[tokio::test]
 #[ignore = "Requires the explicitly isolated PostgreSQL runner after implementation freeze"]
 async fn signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_stable() {
-    let _ = signed_upload_projection_journey(false, None).await;
+    let _ = signed_upload_projection_journey(false, None, None).await;
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
@@ -1835,15 +1835,23 @@ async fn committed_signed_upload_becomes_readable_after_original_projection() {
         let secret = hex::encode(rand::random::<[u8; 32]>());
         if manga_node::auth::sign(&secret, 1, vec![], String::new()).is_ok() { break secret; }
     });
-    for _ in 0..64 {
-        if signed_upload_projection_journey(true, Some(&secret)).await { return; }
+    // Original SQL binds both service identity and one physical projection
+    // target. Keep that owned backend directory across the fixture attempts.
+    let runtime = std::env::var("PLATFORM_TEST_RUNTIME_DIR").unwrap();
+    let projection = tempfile::Builder::new().prefix("upload-ordering-projection-").tempdir_in(runtime).unwrap();
+    let mut child_first_observed = false;
+    for attempt in 0..64 {
+        child_first_observed |= signed_upload_projection_journey(true, Some(&secret), Some(projection.path())).await;
+        // At least two journeys also exercise genuine same-instance projector
+        // restart continuity rather than passing only a lucky first hash draw.
+        if attempt > 0 && child_first_observed { return; }
     }
     panic!("Could not obtain child-before-parent source fixture ordering");
 }
 
 /// Exercise both an intentionally paused source and its real eventual delivery.
 /// No test writes source visibility, catalogue metadata, or outbox completion.
-async fn signed_upload_projection_journey(materialize: bool, shared_signer: Option<&str>) -> bool {
+async fn signed_upload_projection_journey(materialize: bool, shared_signer: Option<&str>, shared_projection: Option<&std::path::Path>) -> bool {
     use manga_node::{
         auth,
         db::{DbConfig, Repository},
@@ -1912,7 +1920,7 @@ async fn signed_upload_projection_journey(materialize: bool, shared_signer: Opti
                 "database_plaintext_local":true, "read_policy":"public",
                 "cors_origins":[ORIGIN], "sync_worker_enabled":false,
                 "auto_approve_publication_deletions":false,
-                "backend":{"binary":binary,"data_dir":f._storage.path().join("real-projection"),
+                "backend":{"binary":binary,"data_dir":shared_projection.map(std::path::Path::to_path_buf).unwrap_or_else(|| f._storage.path().join("real-projection")),
                     "map_bytes":64*1024*1024,"timeout_seconds":5}
             }))
         } else { None },

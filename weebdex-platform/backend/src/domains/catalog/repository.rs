@@ -395,11 +395,7 @@ impl CatalogRepository {
         if tx.query_opt("SELECT id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&record.manga_id]).await?.is_none(){return Err(ApiError::not_found("Manga not found"));}
         require_mutable_manga(tx, &record.manga_id).await?;
         if record.main {
-            tx.execute(
-                "UPDATE platform.catalog_covers SET is_main=FALSE WHERE manga_id=$1",
-                &[&record.manga_id],
-            )
-            .await?;
+            clear_other_main_covers(tx, &record.manga_id, &record.id, &record.uploader_id).await?;
         }
         tx.execute("INSERT INTO platform.catalog_covers(id,manga_id,uploader_id,uploader_name,ext,dimensions,volume,language,description,is_main) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",&[&record.id,&record.manga_id,&record.uploader_id,&record.uploader_name,&record.ext,&&record.dimensions[..],&record.volume,&record.language,&record.description,&record.main]).await?;
         audit(
@@ -451,11 +447,7 @@ impl CatalogRepository {
         }
         let main = v::boolean(patch, "main")?;
         if main == Some(true) {
-            tx.execute(
-                "UPDATE platform.catalog_covers SET is_main=FALSE WHERE manga_id=$1",
-                &[&row.get::<_, String>(0)],
-            )
-            .await?;
+            clear_other_main_covers(tx, &parent, id, &actor.user_id()).await?;
         }
         tx.execute("UPDATE platform.catalog_covers SET is_main=COALESCE($5,is_main),volume=COALESCE($2,volume),description=COALESCE($3,description),language=COALESCE($4,language),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&volume,&description,&language,&main]).await?;
         audit(
@@ -503,6 +495,22 @@ impl CatalogRepository {
         audit(tx, &actor.user_id(), "cover", id, "remove", None, None).await?;
         Ok(())
     }
+}
+// The parent is already locked by every cover writer. Demotion is a real
+// metadata change: preserve per-cover CAS and an attributable audit record.
+async fn clear_other_main_covers(
+    tx: &Transaction<'_>, manga: &str, except: &str, actor: &str,
+) -> ApiResult<()> {
+    let changed = tx.query(
+        "UPDATE platform.catalog_covers SET is_main=FALSE,version=version+1,updated_at=clock_timestamp() WHERE manga_id=$1 AND id<>$2 AND deleted_at IS NULL AND is_main=TRUE RETURNING id,version",
+        &[&manga, &except],
+    ).await?;
+    for row in changed {
+        let id: String = row.get(0);
+        let version: i32 = row.get(1);
+        audit(tx, actor, "cover", &id, "main-clear", Some(version-1), Some(version)).await?;
+    }
+    Ok(())
 }
 pub async fn require_manga_edit(
     tx: &Transaction<'_>,

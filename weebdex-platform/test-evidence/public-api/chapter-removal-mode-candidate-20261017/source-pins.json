@@ -1,0 +1,12 @@
+{
+  "sourceCommit": "df4adab27bfdc6fbc5e327d5d1dd33b7186a34da",
+  "files": {
+    "backend/src/public_api/uploads.rs": "3c2a58867fe7f0eff958eed2b28a34bd85dad3b40a0a005bd9e06cc1da55f330",
+    "backend/src/public_api/chapter_writes.rs": "a11d4a3bcfaf6fd7ccf930d0e908b9bf517e1c46cf67e744bb352362516c4694",
+    "backend/tests/public_chapter_writes.rs": "2084ab87676ae86231edff216c766784291c6665ba0e2fceff3bc29786db8f77",
+    "platform-integrations/public-api/upload-client.ts": "768f1227cfbee48bbfbe4dcc15f6c6d6a240d4dd15638475e140e44b45dde457",
+    "platform-integrations/public-api/PublicChapterEditor.svelte": "77245d8bf59c4b6288a3a3a4097326782a245eb368134d81c610a8e085923f5c",
+    "tests/ci/test_public_upload_adapter_recovery.mjs": "2d3a501d73fb737f5005c346f09b4d365503228d56b5b360e128100fd1f73b68",
+    "tests/ci/test_public_upload_overlay_recovery.mjs": "7258d1ec105b04c67cf456d895cb1da220187dc6fe7b6fc543e62daacbc0a929"
+  }
+}

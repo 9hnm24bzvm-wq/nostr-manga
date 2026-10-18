@@ -1,0 +1,191 @@
+{
+  "schema": "integrated-frontend-production-qualification-v1",
+  "sourceBase": "a4817ce2d1017cb3828e8095704b935ae4ed996f",
+  "qualifiedSource": "56d5e20a29574b21999b0b8d4f0f470f14db2a35",
+  "sourceTree": "00c0f8074ce45ab3b1e978a076491c607d24f38a",
+  "corrections": [
+    {
+      "commit": "c3945444eba7a2656f9ed9287eee6293d9d50bc4",
+      "scope": "Resolve cached Lucide root package for external components; later refined by exact root matching."
+    },
+    {
+      "commit": "e426015abebfd58e396811d5ecc1d44201f023e4",
+      "scope": "Match only root export; canonical icon subpaths use actual package exports."
+    },
+    {
+      "original": "beb80207b5ec03658055fee578ccc9ca55286688",
+      "applied": "c8642f536185e0d00fe3ead99aac630189c9ef7c",
+      "scope": "Associate real published package declarations."
+    },
+    {
+      "original": "c68b41a77888a8dba97beb34203df1765682d962",
+      "applied": "b4931731b2531903250a926866a955cc900e255a",
+      "scope": "Mirror only reviewed exact regex in strict graph and evidence."
+    },
+    {
+      "original": "5fec8044aa5ee2e3c009a61f84ddb7484726d586",
+      "applied": "56d5e20a29574b21999b0b8d4f0f470f14db2a35",
+      "scope": "Test exact root and four canonical icon runtime/type exports."
+    }
+  ],
+  "frontendGitSubtrees": {
+    "frontend": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+    "platform-integrations": "495e979090416b4ba8dadfe91de469e97d3de471",
+    "scripts": "fb8c70c24c26ae1afc323ff1599e8cedaa4581a3"
+  },
+  "sourceFiles": 1261,
+  "frontendInputFiles": 912,
+  "canonicalFiles": 679,
+  "dependencyEntries": 39226,
+  "nodeBinarySha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+  "dependencyManifestSha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "profiles": {
+    "default": {
+      "source_commit": "56d5e20a29574b21999b0b8d4f0f470f14db2a35",
+      "exit_code": 0,
+      "source_map_sha256": "d181c3265fa4a087ede578e13a5f6e53384830d4e834ca2d43baea059edb042a",
+      "frontend_inputs_sha256": "361723fcf30b31e82ed9464278d27a650cc6a3cab0c7a5ee080ae79ac2d9788e",
+      "canonical_manifest_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+      "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+      "artifact_files": 448,
+      "artifact_bytes": 7253097,
+      "artifact_manifest_sha256": "9f4d41a7af7c3d582574a8f8f16894d93ae3996ff5490f15154b50078b23c857",
+      "index_sha256": "e6e19efe3dc0e93c2f8754d1b90db6c1ba7ddd5f9edf786a72d5056410b570b3",
+      "build_log_sha256": "35a45c9f9eaba3927d33c45068b181653e9cd44c9b84e811947d515e2dc3ac06",
+      "source_unchanged": true,
+      "dependencies_unchanged": true,
+      "canonical_frontend_679_files_preserved": true,
+      "pass": true,
+      "limitsAndCleanup": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+          "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/scripts/build-frontend.mjs"
+        ],
+        "cwd": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform",
+        "deadline_seconds": 900,
+        "elapsed_seconds": 46.168,
+        "process_exit_code": 0,
+        "deadline_exceeded": false,
+        "cleanup_verified": true,
+        "surviving_owned_process_ids": [],
+        "owned_process_births": [
+          [
+            10,
+            7145314
+          ],
+          [
+            17,
+            7145323
+          ],
+          [
+            25,
+            7145333
+          ],
+          [
+            42,
+            7145513
+          ],
+          [
+            61,
+            7147253
+          ]
+        ],
+        "cleanup_signals": [],
+        "stop_reason": null,
+        "minimum_free_bytes": 5515038720,
+        "cleanup_reserve_bytes": 134217728,
+        "floor_bytes": 4294967296,
+        "maximum_owned_rss_bytes": 2547646464,
+        "minimum_available_memory_bytes": 5657440256,
+        "terminal_receipt": true,
+        "identity": "verified process births and pidfd-owned descendants"
+      },
+      "artifactPath": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation03-evidence-20261017/artifact-default",
+      "markupParityAfterExactApprovedExceptions": {
+        "transformedSources": 118,
+        "allVerified": true,
+        "canonicalOriginalFilesWritten": false,
+        "renderedVisualParityAsserted": false
+      }
+    },
+    "enabled": {
+      "source_commit": "56d5e20a29574b21999b0b8d4f0f470f14db2a35",
+      "exit_code": 0,
+      "source_map_sha256": "d181c3265fa4a087ede578e13a5f6e53384830d4e834ca2d43baea059edb042a",
+      "frontend_inputs_sha256": "361723fcf30b31e82ed9464278d27a650cc6a3cab0c7a5ee080ae79ac2d9788e",
+      "canonical_manifest_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+      "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+      "artifact_files": 447,
+      "artifact_bytes": 7271363,
+      "artifact_manifest_sha256": "466ea0791d2de2ae58d2fcf6fb49b44c0cf94f04147f1f7de47be80ed10f6191",
+      "index_sha256": "3b0472d7f7d533095f801589ee015d0504d56ad9cbccbb93089e49cd2ec766db",
+      "build_log_sha256": "9ac6e469cff65389ae4f56393dc64ab72bbccbff669d2dce00a738f5649f3dd5",
+      "source_unchanged": true,
+      "dependencies_unchanged": true,
+      "canonical_frontend_679_files_preserved": true,
+      "pass": true,
+      "limitsAndCleanup": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+          "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/scripts/build-frontend.mjs"
+        ],
+        "cwd": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform",
+        "deadline_seconds": 900,
+        "elapsed_seconds": 46.913,
+        "process_exit_code": 0,
+        "deadline_exceeded": false,
+        "cleanup_verified": true,
+        "surviving_owned_process_ids": [],
+        "owned_process_births": [
+          [
+            84,
+            7150257
+          ],
+          [
+            91,
+            7150266
+          ],
+          [
+            99,
+            7150275
+          ],
+          [
+            116,
+            7150463
+          ],
+          [
+            135,
+            7152222
+          ]
+        ],
+        "cleanup_signals": [],
+        "stop_reason": null,
+        "minimum_free_bytes": 5469343744,
+        "cleanup_reserve_bytes": 134217728,
+        "floor_bytes": 4294967296,
+        "maximum_owned_rss_bytes": 2541207552,
+        "minimum_available_memory_bytes": 4430909440,
+        "terminal_receipt": true,
+        "identity": "verified process births and pidfd-owned descendants"
+      },
+      "artifactPath": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation03-evidence-20261017/artifact-enabled",
+      "markupParityAfterExactApprovedExceptions": {
+        "transformedSources": 140,
+        "allVerified": true,
+        "canonicalOriginalFilesWritten": false,
+        "renderedVisualParityAsserted": false
+      }
+    }
+  },
+  "allSourceInputsUnchanged": true,
+  "allDependencyInputsUnchanged": true,
+  "canonicalFrontendUnchanged": true,
+  "browserExecuted": false,
+  "networkInstallOrDownload": false,
+  "history": {
+    "initialA481Failure": "Actual gate-off Rollup resolution failure for external AccountFollow.svelte @lucide/svelte import. Exact raw log and owned terminal receipt preserved.",
+    "intermediateC394": "Both actual Vite profiles passed; strict graph then found the root string alias also captured four unused canonical icon subpaths. Those builds remain historical.",
+    "associationHarness": "First focused test invocation omitted its documented dependency-stage environment and failed setup; corrected invocation then exposed an outdated string-alias source assertion. The final test-only successor retains all declaration/no-stub assertions, adds four real subpath runtime/type resolutions and passes seven focused cases. Those two exploratory outputs exist only in tool transcript, not raw log files."
+  },
+  "scope": "Actual production builds and artifact integrity only. Combined backend/live browser acceptance is not inferred. Future backend-only commits may associate these builds only by verifying the complete frontend input map and dependency/canonical hashes."
+}

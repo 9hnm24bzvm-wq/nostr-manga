@@ -193,6 +193,53 @@ async fn read_compatibility_edges_uuid_expansion_paging_and_revocation() {
     let after: i64 = state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.public_resource_ids", &[]).await.unwrap().get(0);
     assert_eq!(before, after, "reads must not manufacture aliases");
 
+    // Exact comparison keys support a device library hydrated in several API
+    // batches. Metadata cannot spoof them; PG NUMERIC/BIGINT never pass through
+    // a lossy JSON number, and equal keys use canonical public UUID order.
+    state.db.client().await.unwrap().batch_execute(r#"
+        SELECT platform.public_register_id('manga','CompatSortA','ffffffff-ffff-8fff-8fff-fffffffffff1','protocol');
+        SELECT platform.public_register_id('manga','CompatSortB','00000000-0000-8000-8000-000000000002','protocol');
+        INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,year,language,publication_status,content_rating,state,created_at,updated_at,metadata) VALUES
+        ('CompatSortA','CompatUser','Fixture','Éclair',2026,'en','ongoing','safe','published','2026-10-17T01:02:03.000001Z','2026-10-17T01:02:03.000002Z','{"nostr":{"sortKeys":{"rating":"999"}},"_sort_keys":{"rating":"999"}}'),
+        ('CompatSortB','CompatUser','Fixture','Zulu',0,'en','ongoing','safe','published','2026-10-17T01:02:03.000001Z','2026-10-17T01:02:03.000003Z','{}');
+        INSERT INTO platform.catalog_manga_counters(manga_id,follows,rating) VALUES
+        ('CompatSortA',9007199254740993,7.50000000000000000000001),('CompatSortB',9007199254740993,7.50000000000000000000001);
+        INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,language,published_at) VALUES
+        ('CompatSortC','CompatSortA','CompatUser','Fixture','en','2026-10-17T01:02:03.000004Z'),
+        ('CompatSortD','CompatSortA','CompatUser','Fixture','en','2026-10-17T01:02:03.000009Z');
+        UPDATE platform.catalog_chapters SET protocol_event_id=repeat('f',64) WHERE id='CompatSortD';
+    "#).await.unwrap();
+    let sort_a = "ffffffff-ffff-8fff-8fff-fffffffffff1";
+    let sort_b = "00000000-0000-8000-8000-000000000002";
+    let sort = get(&client, &base, &format!("/manga/{sort_a}"), 200).await;
+    assert_eq!(sort["data"]["attributes"]["nostr"]["sortKeySemantics"], "postgresql-exact-v1");
+    let keys = &sort["data"]["attributes"]["nostr"]["sortKeys"];
+    assert_eq!(keys, &json!({
+        "title":"c389636c616972", "year":"2026", "createdAt":"2026-10-17T01:02:03.000001Z",
+        "updatedAt":"2026-10-17T01:02:03.000002Z", "latestUploadedChapter":"2026-10-17T01:02:03.000004Z",
+        "followedCount":"9007199254740993", "rating":"7.50000000000000000000001", "tieBreak":sort_a
+    }));
+    let other = get(&client, &base, &format!("/manga/{sort_b}"), 200).await;
+    assert!(other["data"]["attributes"]["nostr"]["sortKeys"]["latestUploadedChapter"].is_null());
+    assert!(other["data"]["attributes"]["nostr"]["sortKeys"]["year"].is_null());
+    for field in ["followedCount", "rating", "createdAt"] {
+        for direction in ["asc", "desc"] {
+            let page = get(&client, &base, &format!("/manga?ids[]={sort_a}&ids[]={sort_b}&order[{field}]={direction}&limit=1"), 200).await;
+            assert_eq!(page["data"][0]["id"], sort_b, "canonical UUID always breaks ties ascending");
+            let second = get(&client, &base, &format!("/manga?ids[]={sort_a}&ids[]={sort_b}&order[{field}]={direction}&limit=1&offset=1"), 200).await;
+            assert_eq!(second["data"][0]["id"], sort_a);
+            assert_eq!(second["data"][0]["attributes"]["nostr"]["sortKeys"], *keys);
+        }
+    }
+    assert_eq!(get(&client, &base, &format!("/manga?ids[]={sort_a}&ids[]={sort_b}&order[title]=asc"), 200).await["data"][0]["id"], sort_b, "byte title order");
+    assert_eq!(get(&client, &base, &format!("/manga?ids[]={sort_a}&ids[]={sort_b}&order[updatedAt]=asc"), 200).await["data"][0]["id"], sort_a, "exact microsecond timestamp order");
+    assert_eq!(get(&client, &base, &format!("/manga?ids[]={sort_a}&ids[]={sort_b}&order[latestUploadedChapter]=desc"), 200).await["data"][0]["id"], sort_a);
+    state.db.client().await.unwrap().execute("UPDATE platform.catalog_manga_counters SET rating='NaN' WHERE manga_id='CompatSortA'", &[]).await.unwrap();
+    get(&client, &base, &format!("/manga/{sort_a}"), 503).await;
+    state.db.client().await.unwrap().execute("UPDATE platform.catalog_manga_counters SET rating=$1::text::numeric WHERE manga_id='CompatSortA'", &[&"1".repeat(257)]).await.unwrap();
+    get(&client, &base, &format!("/manga?ids[]={sort_a}"), 503).await;
+    state.db.client().await.unwrap().batch_execute("DELETE FROM platform.catalog_chapters WHERE manga_id IN ('CompatSortA','CompatSortB'); DELETE FROM platform.catalog_manga_counters WHERE manga_id IN ('CompatSortA','CompatSortB'); DELETE FROM platform.catalog_manga WHERE id IN ('CompatSortA','CompatSortB');").await.unwrap();
+
     // The official recommendation operation has a hard 20-row response cap,
     // while its total remains the real number of eligible persisted edges.
     state.db.client().await.unwrap().batch_execute(r#"

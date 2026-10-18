@@ -56,6 +56,34 @@ pub(super) async fn authorize(
     request: Request, maximum: usize, empty: bool,
 ) -> PublicApiResult<(AdmittedHttpCapability, Vec<u8>)> {
     no_query(uri)?;
+    authorize_body(state, uri, headers, request, maximum, empty).await
+}
+// Only the explicitly opted-in empty-body operations accept this signed URL
+// extension. Ordinary upload/cover JSON and multipart queries remain closed.
+pub(super) async fn authorize_account_query(
+    state: &AppState, uri: &axum::http::Uri, headers: &HeaderMap, request: Request,
+) -> PublicApiResult<(AdmittedHttpCapability, Option<Value>)> {
+    let expected = account_query(uri)?;
+    let (cap, _)=authorize_body(state,uri,headers,request,1,true).await?;
+    Ok((cap,expected))
+}
+fn account_query(uri: &axum::http::Uri) -> PublicApiResult<Option<Value>> {
+    let expected = match uri.query() {
+        None => None,
+        Some(query) => {
+            let fields=url::form_urlencoded::parse(query.as_bytes()).collect::<Vec<_>>();
+            if fields.len()!=1 || fields[0].0!="expectedAccountId" {
+                return Err(PublicApiError::bad_request("Only one signed expectedAccountId query is supported"));
+            }
+            Some(json!(PublicUuid::parse(&fields[0].1)?))
+        }
+    };
+    Ok(expected)
+}
+pub(super) async fn authorize_body(
+    state: &AppState, uri: &axum::http::Uri, headers: &HeaderMap,
+    request: Request, maximum: usize, empty: bool,
+) -> PublicApiResult<(AdmittedHttpCapability, Vec<u8>)> {
     if !empty { content_type(headers)?; }
     let method = request.method().as_str().to_owned();
     let body = tokio::time::timeout(Duration::from_secs(5), to_bytes(request.into_body(), maximum))
@@ -66,6 +94,10 @@ pub(super) async fn authorize(
     }
     let cap = admitted_request(state, uri, headers, &method, &body).await?;
     Ok((cap, body.to_vec()))
+}
+// Missing remains compatible; an explicitly present null is not an account UUID.
+pub(super) fn deserialize_optional_account<'de,D:serde::Deserializer<'de>>(input:D)->Result<Option<PublicUuid>,D::Error> {
+    PublicUuid::deserialize(input).map(Some)
 }
 pub(super) fn parse<T: DeserializeOwned>(body: &[u8]) -> PublicApiResult<T> {
     serde_json::from_slice(body).map_err(|_| PublicApiError::bad_request("Invalid upload request body"))
@@ -140,9 +172,13 @@ pub(super) async fn optional_chapter_resource(tx: &Transaction<'_>, native: &Val
 
 async fn get_current(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
     headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
-    let (cap, _) = authorize(&state,&uri,&headers,request,1,true).await?;
+    let (cap, expected) = authorize_account_query(&state,&uri,&headers,request).await?;
     let mut client=state.db.client().await?; let tx=client.transaction().await?;
     let actor=bound_account_read(&tx,&cap).await?;
+    if let Some(expected)=expected {
+        let id=PublicUuid::parse(expected.as_str().ok_or_else(PublicApiError::unavailable)?)?;
+        if resolve(&tx,ResourceKind::User,&id).await?!=actor.user_id(){return Err(PublicApiError::conflict("Upload account binding changed; reload the intended account"));}
+    }
     let row=tx.query_opt("SELECT id FROM platform.upload_sessions s WHERE owner_id=$1 AND ((state='open' AND (expires_at>clock_timestamp() OR EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.state IN ('prepared','source_accepted')))) OR (state='committed' AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND EXISTS(SELECT 1 FROM platform.catalog_chapters c WHERE c.id=s.committed_chapter_id AND c.deleted_at IS NULL))) ORDER BY (state='open') DESC,updated_at DESC,id LIMIT 1", &[&actor.user_id()]).await?
         .ok_or_else(PublicApiError::not_found)?;
     let native=core::session_json(&tx,&row.get::<_,String>(0)).await?;
@@ -152,7 +188,7 @@ async fn get_current(State(state): State<AppState>, OriginalUri(uri): OriginalUr
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct Begin { manga: PublicUuid, groups: Vec<PublicUuid> }
+struct Begin { manga: PublicUuid, groups: Vec<PublicUuid>, #[serde(default,rename="expectedAccountId",deserialize_with="deserialize_optional_account")] expected_account_id:Option<PublicUuid> }
 async fn begin(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
     headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
     let (cap,body)=authorize(&state,&uri,&headers,request,4*1024,false).await?;
@@ -162,6 +198,8 @@ async fn begin(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
     }
     let mut client=state.db.client().await?; let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;
+    let expected=payload.expected_account_id.as_ref().map(|id|json!(id));
+    super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
     let manga=resolve(&tx,ResourceKind::Manga,&payload.manga).await?;
     let mut groups=Vec::new(); for group in &payload.groups { groups.push(resolve(&tx,ResourceKind::Group,group).await?); }
     let native=core::begin_in(&tx,&actor,&core::Begin{manga,groups}).await?;
@@ -170,7 +208,7 @@ async fn begin(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct Edit { version:i32 }
+struct Edit { version:i32, #[serde(default,rename="expectedAccountId",deserialize_with="deserialize_optional_account")] expected_account_id:Option<PublicUuid> }
 async fn begin_edit(State(state): State<AppState>, Path(chapter): Path<String>,
     OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
     let chapter=PublicUuid::parse(&chapter)?;
@@ -179,6 +217,8 @@ async fn begin_edit(State(state): State<AppState>, Path(chapter): Path<String>,
     if payload.version<1 { return Err(PublicApiError::bad_request("Invalid chapter version")); }
     let mut client=state.db.client().await?; let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;
+    let expected=payload.expected_account_id.as_ref().map(|id|json!(id));
+    super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
     let chapter=resolve(&tx,ResourceKind::Chapter,&chapter).await?;
     let native=core::begin_edit_in(&tx,&actor,&chapter,&core::Edit{version:payload.version,replace:false}).await?;
     let result=session_resource(&tx,&native).await?;
@@ -379,6 +419,21 @@ mod tests {
         assert!(pending_manga_relationship(&native,None).is_none());
         assert!(pending_manga_relationship(&native,Some(("UploadMng1",None))).is_none());
         assert!(pending_manga_relationship(&native,Some(("UploadMng1",Some("not-a-public-uuid")))).is_none());
+    }
+    #[test]
+    fn captured_account_extensions_are_optional_but_strict_when_present() {
+        let id="11111111-1111-8111-8111-111111111111";
+        assert!(account_query(&"/upload".parse().unwrap()).unwrap().is_none());
+        assert_eq!(account_query(&format!("/upload?expectedAccountId={id}").parse().unwrap()).unwrap(),Some(json!(id)));
+        for query in ["", "unknown=1", "expectedAccountId=native", "expectedAccountId=", "expectedAccountId=bad&expectedAccountId=bad"] {
+            assert!(account_query(&format!("/upload?{query}").parse().unwrap()).is_err());
+        }
+        for raw in [format!(r#"{{"manga":"{id}","groups":[]}}"#),format!(r#"{{"manga":"{id}","groups":[],"expectedAccountId":"{id}"}}"#)] {assert!(parse::<Begin>(raw.as_bytes()).is_ok());}
+        for field in ["null", "false", "[]", "\"native\""] {
+            assert!(parse::<Begin>(format!(r#"{{"manga":"{id}","groups":[],"expectedAccountId":{field}}}"#).as_bytes()).is_err());
+            assert!(parse::<Edit>(format!(r#"{{"version":1,"expectedAccountId":{field}}}"#).as_bytes()).is_err());
+        }
+        assert!(parse::<Edit>(format!(r#"{{"version":1,"expectedAccountId":"{id}","expectedAccountId":"{id}"}}"#).as_bytes()).is_err());
     }
     #[test]
     fn exact_transport_names_and_unsupported_features_are_explicit() {

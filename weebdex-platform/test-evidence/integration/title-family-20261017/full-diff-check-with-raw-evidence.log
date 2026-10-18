@@ -1,0 +1,196 @@
+weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/before.log:80: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/before.log:82: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/before.log:97: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/before.log:99: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/before.log:114: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/before.log:116: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/public-group-membership-20261017/before.log:20: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/public-group-membership-20261017/before.log:26: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/api-manifest-initial.log:88: trailing whitespace.
++  
+weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/api-manifest-initial.log:90: trailing whitespace.
++  
+weebdex-platform/test-evidence/public-signed-covers-20261017/independent-runtime.log:6: new blank line at EOF.
+weebdex-platform/test-evidence/public-signed-covers-20261017/owned-http.log:6: new blank line at EOF.
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:20: trailing whitespace.
++45: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:21: trailing whitespace.
++46:   const mutex = new Mutex();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:22: trailing whitespace.
++47:   const group = writable<ScanlationGroup>(data);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:24: trailing whitespace.
++48:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:25: trailing whitespace.
++49:   const comments = useComments();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:28: trailing whitespace.
++43: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:29: trailing whitespace.
++44:   const mutex = new Mutex();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:30: trailing whitespace.
++45:   const user = writable<User>(data);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:32: trailing whitespace.
++46:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:33: trailing whitespace.
++47:   const comments = useComments();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:36: trailing whitespace.
++32:   } = $props();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:37: trailing whitespace.
++33:   const mutex = new Mutex();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:38: trailing whitespace.
++34:   const owner = targetOwner(() => manga.id, user);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:40: trailing whitespace.
++35:   setUploadOwner(owner);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:41: trailing whitespace.
++36: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:134: trailing whitespace.
++ 5: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:135: trailing whitespace.
++ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:136: trailing whitespace.
++ 7:   const title = Utils.chapterHeadline(chapter);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:138: trailing whitespace.
++ 8:   const role = chapter.relationships?.uploader?.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:139: trailing whitespace.
++ 9:     ? chapter.relationships.uploader.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:142: trailing whitespace.
++ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:143: trailing whitespace.
++ 7:   const title = Utils.chapterHeadline(chapter);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:144: trailing whitespace.
++ 8:   const role = chapter.relationships?.uploader?.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:146: trailing whitespace.
++ 9:     ? chapter.relationships.uploader.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:147: trailing whitespace.
++10:         .slice()
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:150: trailing whitespace.
++ 7:   const title = Utils.chapterHeadline(chapter);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:151: trailing whitespace.
++ 8:   const role = chapter.relationships?.uploader?.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:152: trailing whitespace.
++ 9:     ? chapter.relationships.uploader.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:154: trailing whitespace.
++10:         .slice()
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:155: trailing whitespace.
++11:         .sort((a, b) => Constants.User.RoleOrder.indexOf(a) - Constants.User.RoleOrder.indexOf(b))[0]
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:158: trailing whitespace.
++16: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:159: trailing whitespace.
++17:   const manga = $derived(getManga()());
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:160: trailing whitespace.
++18:   let relations = $state<Relation[] | undefined>(manga.relationships.relations);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:162: trailing whitespace.
++19:   const filteredRelations = $derived(
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:163: trailing whitespace.
++20:     relations?.filter(
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:166: trailing whitespace.
++30:   });
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:167: trailing whitespace.
++31:   let initialSearch = $state.raw<ListChaptersRequest>(readAppliedSearch());
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:168: trailing whitespace.
++32:   let search = $state<ListChaptersRequest>(structuredClone(initialSearch));
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:170: trailing whitespace.
++33:   // Actual navigation changes the applied baseline. Editing the draft alone
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:171: trailing whitespace.
++34:   // never resets it; Apply compares against the current URL, not mount time.
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:175: trailing whitespace.
++[plugin vite:reporter] 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:182: trailing whitespace.
++45: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:183: trailing whitespace.
++46:   const mutex = new Mutex();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:184: trailing whitespace.
++47:   const group = writable<ScanlationGroup>(data);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:186: trailing whitespace.
++48:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:187: trailing whitespace.
++49:   const comments = useComments();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:190: trailing whitespace.
++43: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:191: trailing whitespace.
++44:   const mutex = new Mutex();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:192: trailing whitespace.
++45:   const user = writable<User>(data);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:194: trailing whitespace.
++46:   const preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:195: trailing whitespace.
++47:   const comments = useComments();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:198: trailing whitespace.
++32:   } = $props();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:199: trailing whitespace.
++33:   const mutex = new Mutex();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:200: trailing whitespace.
++34:   const owner = targetOwner(() => manga.id, user);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:202: trailing whitespace.
++35:   setUploadOwner(owner);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:203: trailing whitespace.
++36: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:296: trailing whitespace.
++ 5: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:297: trailing whitespace.
++ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:298: trailing whitespace.
++ 7:   const title = Utils.chapterHeadline(chapter);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:300: trailing whitespace.
++ 8:   const role = chapter.relationships?.uploader?.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:301: trailing whitespace.
++ 9:     ? chapter.relationships.uploader.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:304: trailing whitespace.
++ 6:   const { class: className, chapter }: { class?: string; chapter: Chapter } = $props();
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:305: trailing whitespace.
++ 7:   const title = Utils.chapterHeadline(chapter);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:306: trailing whitespace.
++ 8:   const role = chapter.relationships?.uploader?.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:308: trailing whitespace.
++ 9:     ? chapter.relationships.uploader.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:309: trailing whitespace.
++10:         .slice()
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:312: trailing whitespace.
++ 7:   const title = Utils.chapterHeadline(chapter);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:313: trailing whitespace.
++ 8:   const role = chapter.relationships?.uploader?.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:314: trailing whitespace.
++ 9:     ? chapter.relationships.uploader.roles
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:316: trailing whitespace.
++10:         .slice()
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:317: trailing whitespace.
++11:         .sort((a, b) => Constants.User.RoleOrder.indexOf(a) - Constants.User.RoleOrder.indexOf(b))[0]
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:320: trailing whitespace.
++16: 
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:321: trailing whitespace.
++17:   const manga = $derived(getManga()());
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:322: trailing whitespace.
++18:   let relations = $state<Relation[] | undefined>(manga.relationships.relations);
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:324: trailing whitespace.
++19:   const filteredRelations = $derived(
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:325: trailing whitespace.
++20:     relations?.filter(
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:328: trailing whitespace.
++30:   });
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:329: trailing whitespace.
++31:   let initialSearch = $state.raw<ListChaptersRequest>(readAppliedSearch());
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:330: trailing whitespace.
++32:   let search = $state<ListChaptersRequest>(structuredClone(initialSearch));
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:332: trailing whitespace.
++33:   // Actual navigation changes the applied baseline. Editing the draft alone
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:333: trailing whitespace.
++34:   // never resets it; Apply compares against the current URL, not mount time.
+weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log:336: trailing whitespace.
++[plugin vite:reporter] 
+weebdex-platform/test-evidence/public-signed-covers-20261017/rust.log:638: new blank line at EOF.
+weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-initial-failure.log:3: trailing whitespace.
++test compact_feed_postgres_projection_parity_visibility_and_pagination ... 
+weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-initial-failure.log:15: new blank line at EOF.
+weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-qualified-compile.log:271: new blank line at EOF.
+weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-qualified-runtime.log:7: new blank line at EOF.
+weebdex-platform/test-evidence/title-disposition-20261017/independent-review/runtime.log:6: new blank line at EOF.
+weebdex-platform/test-evidence/title-disposition-20261017/owned-http.log:6: new blank line at EOF.
+weebdex-platform/test-evidence/title-disposition-20261017/rust-final.log:647: new blank line at EOF.
+weebdex-platform/test-evidence/title-disposition-20261017/rust-pre-effect.log:647: new blank line at EOF.

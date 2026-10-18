@@ -1,4 +1,7 @@
 import { apiRead, params, assertCatalogueScope } from './library';
+import {PUBLIC_MANGADEX_CATALOGUE} from '$env/static/public';
+import {publicLibraryCandidates} from '../public-api/library-catalogue';
+import {compareDecimal} from '../public-api/exact-order';
 // Retrieve every filtered candidate before a single global sort/page. Each request
 // has <=100 IDs and <=100 results. Empty sets never become a global catalogue query.
 export async function filteredCatalog<T extends { id: string }>(path: string, key: string, ids: string[], query: URLSearchParams): Promise<T[]> {
@@ -10,6 +13,7 @@ export async function filteredCatalog<T extends { id: string }>(path: string, ke
 // never silently applied to existing native records. Caller verifies live epoch.
 export async function scopedCatalogCandidates<T extends { id: string }>(path: string, key: string, ids: string[], query: URLSearchParams): Promise<T[]> {
   if (!ids.length) return [];
+  if (PUBLIC_MANGADEX_CATALOGUE === '1') return publicLibraryCandidates<T>(path, key, ids, query);
   const base = params(query); base.delete('page'); base.delete('limit'); base.delete(key);
   const unique = [...new Set(ids)], results = new Map<string, T>();
   for (let start = 0; start < unique.length; start += 100) {
@@ -39,9 +43,10 @@ export function compareValue(a: unknown, b: unknown) {
   return left < right ? -1 : left > right ? 1 : 0;
 }
 
-export function compareCatalogueRows(a: { id: string; _sort_value?: unknown; _sort_text?: string }, b: { id: string; _sort_value?: unknown; _sort_text?: string }, direction: number) {
+export function compareCatalogueRows(a: { id: string; _sort_value?: unknown; _sort_text?: string; _sort_decimal?: boolean }, b: { id: string; _sort_value?: unknown; _sort_text?: string; _sort_decimal?: boolean }, direction: number) {
   if (a._sort_value === null || a._sort_value === undefined) { if (b._sort_value !== null && b._sort_value !== undefined) return 1; }
   else if (b._sort_value === null || b._sort_value === undefined) return -1;
-  const primary = direction * compareValue(a._sort_value, b._sort_value);
+  if (!!a._sort_decimal !== !!b._sort_decimal) throw Error('Catalogue comparison key types changed while loading');
+  const primary = a._sort_value == null && b._sort_value == null ? 0 : direction * (a._sort_decimal ? compareDecimal(a._sort_value,b._sort_value) : compareValue(a._sort_value, b._sort_value));
   return primary || direction * compareValue(a._sort_text, b._sort_text) || compareValue(a.id, b.id);
 }

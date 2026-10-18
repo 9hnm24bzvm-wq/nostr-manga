@@ -1,0 +1,7 @@
+
+running 1 test
+test compact_feed_postgres_projection_parity_visibility_and_pagination ... {"all_505_ids_reached":true,"baseline_ms":5001,"baseline_outcome":"query-canceled","batched_first_page_ms":273,"bilingual506_preserved":true,"canonical_sample_parity":true,"scenario":"compact-feed505-plus10000-metadata","statement_timeout_unchanged":true,"visibility_withdrawals_verified":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 20.82s
+

@@ -1,11 +1,12 @@
 //! Public read-only relations and recommendations over persisted catalogue edges.
 //! Source/target visibility is rechecked in SQL; aliases never confer authority.
 use super::{
-    PostgresPublicIdResolver, PublicApiError, PublicApiResult, PublicIdResolver, ResourceKind,
+    PostgresPublicIdResolver, PublicApiError, PublicApiResult, PublicIdResolver, PublicIdTarget, PublicUuid, ResourceKind,
     catalogue::{MANGA_VISIBLE, resolve},
     catalogue_dto::AliasIndex,
     dto::{CollectionResponse, Relationship, Resource, ResourceType},
     query::{PublicQuery, QuerySchema, SortDirection},
+    relation_paging::{self, RelationPageMeta, RelationPageRequest},
 };
 use crate::{AppState, domains::catalog::query::Sql};
 use axum::{
@@ -13,8 +14,8 @@ use axum::{
     extract::{Path, RawQuery, State},
     routing::get,
 };
-use serde_json::Value;
-use std::collections::BTreeSet;
+use serde_json::{Value, json};
+use std::collections::{BTreeMap, BTreeSet};
 
 const MAX_RELATIONS: usize = 4096;
 const MAX_RECOMMENDATIONS: usize = 20;
@@ -59,7 +60,71 @@ async fn relations(
     Path(id): Path<String>,
     RawQuery(raw): RawQuery,
 ) -> PublicApiResult<Json<CollectionResponse<Resource>>> {
-    edges(state, &id, raw.as_deref(), false).await
+    let q = PublicQuery::parse_unchecked(raw.as_deref())?;
+    if ["limit", "offset", "ownerVersion", "snapshot"].iter().any(|key| q.first(key).is_some()) {
+        return relation_page(state, &id, raw.as_deref()).await;
+    }
+    let result = edges(state, &id, raw.as_deref(), false).await?;
+    if serde_json::to_vec(&result.0).map_err(|_| PublicApiError::unavailable())?.len() > relation_paging::MAX_RESPONSE_BYTES {
+        return Err(PublicApiError::new(axum::http::StatusCode::SERVICE_UNAVAILABLE, "Relation response exceeds transport budget", "Use the explicit bounded relation pagination extension; no result has been silently truncated"));
+    }
+    Ok(result)
+}
+
+/// Optional application extension. Upstream's no-pagination response remains
+/// unchanged; callers opt in to bounded complete-resource pages explicitly.
+async fn relation_page(state: AppState, public: &str, raw: Option<&str>) -> PublicApiResult<Json<CollectionResponse<Resource>>> {
+    let (q, page) = RelationPageRequest::parse(raw, false, &["includes[]"])?;
+    let includes = q.includes(&["manga"])?;
+    let requested = PublicUuid::parse(public)?;
+    let mut client = state.db.client().await?;
+    let tx = client.build_transaction().isolation_level(tokio_postgres::IsolationLevel::RepeatableRead).read_only(true).start().await?;
+    let source = PostgresPublicIdResolver::resolve_many_in(&*tx, ResourceKind::Manga, std::slice::from_ref(&requested)).await?
+        .remove(&requested).filter(|row| row.target == PublicIdTarget::NativeResource).ok_or_else(PublicApiError::not_found)?;
+    let owner_version: i32 = tx.query_opt(&format!("SELECT m.version FROM platform.catalog_manga m WHERE m.id=$1 AND {MANGA_VISIBLE}"), &[&source.native_id]).await?
+        .ok_or_else(PublicApiError::not_found)?.get(0);
+    let persisted_total: i64 = tx.query_one("SELECT count(*) FROM platform.catalog_relations WHERE manga_id=$1", &[&source.native_id]).await?.get(0);
+    if !(0..=MAX_RELATIONS as i64).contains(&persisted_total) { return Err(PublicApiError::unavailable()); }
+    // The complete lightweight ordered eligibility set binds every page. Only
+    // selected targets execute the full native metadata projection.
+    let rows = tx.query(&format!("SELECT platform.public_manga_edge_key(r.manga_id,r.related_id),r.relation_type,m.id,m.version,a.public_id::text,t.public_id::text FROM platform.catalog_relations r JOIN platform.catalog_manga m ON m.id=r.related_id LEFT JOIN platform.public_resource_ids a ON a.kind='manga_relation' AND a.native_id=platform.public_manga_edge_key(r.manga_id,r.related_id) AND a.preferred LEFT JOIN platform.public_resource_ids t ON t.kind='manga' AND t.native_id=m.id AND t.preferred WHERE r.manga_id=$1 AND {MANGA_VISIBLE} ORDER BY r.created_at ASC,m.id ASC LIMIT 4097"), &[&source.native_id]).await?;
+    if rows.len() > MAX_RELATIONS { return Err(PublicApiError::unavailable()); }
+    let snapshot_rows = rows.iter().map(|row| (row.get::<_,String>(0),row.get::<_,String>(1),row.get::<_,String>(2),row.get::<_,i32>(3))).collect::<Vec<_>>();
+    // A small hidden-count range can be brute-forced from a hash. Public page
+    // continuity therefore binds the visible count only; physical edge counts
+    // remain an internal resource budget, never public token input.
+    let snapshot = relation_paging::snapshot(&source.native_id, owner_version, rows.len() as u64, &snapshot_rows)?;
+    page.check(owner_version, &snapshot)?;
+    let selected = rows.iter().skip(page.offset as usize).take(page.limit as usize).collect::<Vec<_>>();
+    let mut projected = BTreeMap::<String,Value>::new();
+    if includes.contains("manga") && !selected.is_empty() {
+        let targets = selected.iter().map(|row| row.get::<_,String>(2)).collect::<Vec<_>>();
+        for row in tx.query("SELECT id,platform.catalog_manga_json(id) FROM platform.catalog_manga WHERE id=ANY($1::text[])", &[&targets]).await? {
+            projected.insert(row.get(0), row.get::<_,Option<Value>>(1).ok_or_else(PublicApiError::unavailable)?);
+        }
+    }
+    let resources = projected.values().cloned().map(|value| (ResourceKind::Manga,value)).collect::<Vec<_>>();
+    let aliases = AliasIndex::load_in(&tx, &resources).await?;
+    let data = selected.iter().map(|row| {
+        let native: String = row.get(2);
+        let target_id = PublicUuid::parse(row.get::<_,Option<&str>>(5).ok_or_else(PublicApiError::unavailable)?).map_err(|_|PublicApiError::unavailable())?;
+        let attributes = if includes.contains("manga") {
+            let target = aliases.resource(ResourceKind::Manga, projected.get(&native).ok_or_else(PublicApiError::unavailable)?, &BTreeSet::new())?;
+            if target.id != target_id { return Err(PublicApiError::unavailable()); }
+            Some(target.attributes)
+        } else { None };
+        Ok(Resource {
+            id:PublicUuid::parse(row.get::<_,Option<&str>>(4).ok_or_else(PublicApiError::unavailable)?).map_err(|_|PublicApiError::unavailable())?,
+            resource_type:ResourceType::MangaRelation,
+            attributes:json!({"relation":row.get::<_,String>(1),"version":owner_version,"nostr":{"scope":"instance-local","versionScope":"owner_manga"}}),
+            relationships:vec![Relationship{id:target_id,resource_type:ResourceType::Manga,related:None,attributes}],
+        })
+    }).collect::<PublicApiResult<Vec<_>>>()?;
+    let mut extensions = serde_json::Map::new();
+    extensions.insert("nostr".into(),json!({"scope":"instance-local","versionScope":"owner_manga","pagination":"bounded-relations-v1","identity":{"kind":"manga","requestedId":requested,"canonicalId":source.preferred_id,"source":"persisted-public-resource-ids"}}));
+    let response = relation_paging::response(data, &page, RelationPageMeta { owner_id:source.preferred_id,owner_version,snapshot,total:rows.len() as u64,persisted_total:None,version_alias:false,extensions })?;
+    tx.commit().await?;
+    Ok(Json(response))
 }
 
 async fn recommendations(

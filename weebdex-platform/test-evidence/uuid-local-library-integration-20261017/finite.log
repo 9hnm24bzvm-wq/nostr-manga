@@ -1,0 +1,269 @@
+(node:68) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ public UUIDs preserve custom UUID version and reject native IDs (12.018463ms)
+✔ query maps arrays, page offsets and ordered sort without dropping controls (1.326434ms)
+✔ query rejects unknown, unsupported translated exclusions and duplicate scalar controls (22.05823ms)
+✔ DTO chapter volume/chapter/title remain null and raw UUID resources are retained (0.769186ms)
+✔ cover UUID is distinct from filename and original/optimized URLs use opaque media tokens (0.526491ms)
+✔ at-home returns actual original/data-saver paths and originalsOnly remains explicit (0.352811ms)
+✔ typed client preserves non-2xx errors and rejects wrong resource kind (0.436947ms)
+✔ typed client sends exact UUID query arrays and cancellation signal (0.376506ms)
+✔ native forum response retains real native thread identity and rejects invented coverage (0.491689ms)
+✔ site title availability comes from actual public feed and absent forum context stays null (1.31007ms)
+✔ site legacy shortlinks use server namespace resolver and never guess UUIDs (0.510187ms)
+✔ site analytics is honestly unavailable and no transport mutation occurs (0.340042ms)
+✔ migration resolver accounts exactly for mapped and unresolved legacy references (0.586331ms)
+✔ migration resolver rejects changed service before request (0.241623ms)
+✔ migration resolver rejects changed service after asynchronous request (0.207632ms)
+✔ adult-parent chapter migration visibility and parent proof request all content ratings (2.335682ms)
+✔ migration visibility rejects wrong-kind and truncated responses (0.38631ms)
+✔ both product gates are off by default and original API source stays immutable (1.393035ms)
+✔ actual composed API Search forwards its signal and cannot fall through to native HTTP on failure (25.118813ms)
+✔ retained random/advanced/count query controls map faithfully to public controls (0.357597ms)
+✔ author uploads compose actual manga feeds with global publication ordering and correct parent-only filters (1.286425ms)
+✔ author chapter count sums actual scoped totals without materializing fake resources (0.409606ms)
+✔ author composition rejects ignored creator filters and honest view budgets (0.548154ms)
+✔ search/upload ordering and title chapter ordering stay distinct; group count limit0 is preserved (0.581375ms)
+✔ named resources preserve the standard locked field without inventing an extension (0.244648ms)
+✔ operation schemas preserve scalar UUIDs, bare repeatable uploader, cover arrays and unknown year (0.223966ms)
+✔ operation schemas reject cross-family controls, ambiguous scalar parents and feed-only bounds (0.343807ms)
+✔ title positive group filtering uses exact /chapter manga scope instead of unsupported feed groups (0.374524ms)
+✔ aggregate group selector expands actual /chapter resources and never forwards groups to feed (0.874856ms)
+✔ aggregate retained exclusions compose only supported chapter reads and are not dropped (0.318219ms)
+✔ retained random available-chapter/language filters use bounded uniform actual collection selection (0.366171ms)
+✔ standard random calls stay standard and bounded random failure never falls back (0.34585ms)
+✔ chapter update tag preferences compose public parent filters before scoped actual feeds (0.342485ms)
+✔ typed resolver requires exact requested native or UUID input proof for every canonical mapping (0.481804ms)
+✔ visibility never accepts a preferred UUID in place of an unproved requested alias (0.328854ms)
+✔ composed chapter/volume ordering matches numeric SQL keys with nonnumeric values always last (1.683021ms)
+✔ native forum network or malformed-context failure leaves title content readable and cancellation still aborts (2.059577ms)
+✔ original and optimized page pixel dimensions remain independent actual metadata (0.179129ms)
+✔ recommendations use persisted edge UUID/score and hydrated target covers/creators (0.880444ms)
+✔ relations use singular endpoint and preserve actual label, owner version and edge identity (0.322445ms)
+✔ empty persisted edge collections stay actually empty without a hydration or native substitute (0.199169ms)
+✔ recommendation documented filters are preserved while invented pagination is rejected before transport (0.482556ms)
+✔ unavailable edge roots return exact error without any target hydration (0.144578ms)
+✔ wrong-kind, duplicate-edge, duplicate-target and self edges fail before hydration (0.41221ms)
+✔ recommendation scores are exact integers, never invented or rounded (0.425269ms)
+✔ edge hydration rejects missing, duplicate and out-of-scope title rows (0.449245ms)
+✔ relation provenance must describe the real owner-manga version domain (0.424689ms)
+✔ public title script exposes the native Related tab and immutable markup is retained (13.068071ms)
+✔ hydration order cannot reorder the persisted recommendation ranking (0.666802ms)
+✔ truncated, shifted and over-cap edge collections are explicit errors (0.396776ms)
+✔ relation targets hydrate in exact 100-ID batches without duplicate source IDs (4.091683ms)
+✔ public user UUID profile preserves real native version and never fabricates protocol-publisher revision (0.423887ms)
+✔ public user malformed presentation and unavailable profile never become invented accounts (0.419151ms)
+✔ public user API is explicit UUID read-only, with no native mutation fallback (15.492667ms)
+✔ public user layout uses absent-thread context and hides unbacked native account actions (25.107616ms)
+(node:69) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ anonymous namespace-only UUID series, list/member and page progress save without transport or signer (3.288354ms)
+✔ new legacy IDs and credentials fail atomically while unresolved legacy rows stay intact (2.036372ms)
+✔ stale revision, changed owner/scope and durable migration fences reject before mutation (1.634428ms)
+✔ chapter parent cannot be rebound and membership requires an existing list (10.201231ms)
+✔ root removal cascades local membership with exact archives, issues and monotonic tombstones (4.585786ms)
+✔ same-clock updates advance monotonically and forbidden clear/cursor or owner mutation rolls back (5.84526ms)
+✔ context generation change rolls back records, revision and every sidecar (0.470097ms)
+✔ explicit service adoption updates owner marker atomically and preserves truthful origin-only archives (2.141751ms)
+✔ anonymous full-v2 export and reviewed restore retain owner/provenance and deletion fences (7.869534ms)
+✔ reviewed restore refuses parent rebinding, foreign scopes, fabricated review and stale CAS (2.573149ms)
+✔ actual DeviceStore v2 facade writes, snapshots and confirms offline saved scope; legacy opener stays fenced (6.354716ms)
+✔ namespace mismatch persists a cross-tab write fence and missing live identity cannot clear it (2.209593ms)
+(node:70) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:70) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ versioned read-only mapper preserves requested aliases, exact source and parent provenance (17.612024ms)
+✔ unmapped local-only UUID remains explicit and empty references never fetch (1.692725ms)
+✔ wrong service, namespace, kind, missing parent, invented or incomplete resources fail closed (15.452267ms)
+✔ legacy IDs, duplicate input, invalid origins and oversize input fail before network (0.863268ms)
+✔ captured scope cannot be rebound during fetch; caller scope generation is checked (1.346124ms)
+✔ bounded response rejects HTML, non-JSON, HTTP refusal and oversized bodies (10.642104ms)
+(node:71) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ browsing, login and shared layouts never mount the account-creation guide (12.928232ms)
+✔ opening signup leaves the familiar form and does not show a welcome or write anything (149.81119ms)
+✔ existing account visiting signup bypasses creation and the welcome (49.936172ms)
+✔ resuming an unsubmitted registration flow never counts as new-account success (25.185883ms)
+✔ accepted new-account submission shows welcome only after authoritative refresh and Continue navigates once (22.554286ms)
+✔ unaccepted registration response never opens the guide: Synthetic registration rejection {"error":{"reason":"That email or username is unavailable"}} (23.70746ms)
+✔ unaccepted registration response never opens the guide: {"status":200,"data":{"error":{"reason":"Try another username"}}} (26.65267ms)
+✔ unaccepted registration response never opens the guide: {"status":200,"data":null} (24.632582ms)
+✔ unaccepted registration response never opens the guide: {"status":202,"data":{"session":{"active":true,"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}},"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}}} (20.472987ms)
+✔ unaccepted registration response never opens the guide: Synthetic registration rejection {"session":{"active":true,"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}},"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}} (21.061803ms)
+✔ a same-flow validation error stays on the editable registration form (10.783856ms)
+✔ leaving signup while its request is pending suppresses late welcome: back (10.062452ms)
+✔ leaving signup during session refresh suppresses late welcome: back (9.225438ms)
+✔ a detached welcome Continue cannot override newer navigation: back (9.960929ms)
+✔ leaving signup while its request is pending suppresses late welcome: navigation-start (7.204795ms)
+✔ leaving signup during session refresh suppresses late welcome: navigation-start (7.632518ms)
+✔ a detached welcome Continue cannot override newer navigation: navigation-start (8.497478ms)
+✔ leaving signup while its request is pending suppresses late welcome: destroy (7.258956ms)
+✔ leaving signup during session refresh suppresses late welcome: destroy (7.977266ms)
+✔ a detached welcome Continue cannot override newer navigation: destroy (7.00279ms)
+✔ failed session refresh never announces a newly usable account (7.734802ms)
+✔ signup and Continue preserve only safe browsing targets: local path (6.66959ms)
+✔ signup and Continue preserve only safe browsing targets: same-origin absolute path (7.038966ms)
+✔ signup and Continue preserve only safe browsing targets: foreign origin (9.694248ms)
+✔ signup and Continue preserve only safe browsing targets: protocol-relative foreign origin (8.315675ms)
+✔ signup and Continue preserve only safe browsing targets: auth loop (6.752434ms)
+✔ signup and Continue preserve only safe browsing targets: login loop (6.863711ms)
+✔ signup and Continue preserve only safe browsing targets: backslash authority (6.707286ms)
+✔ refreshing successful signup bypasses the ephemeral guide without replaying the consumed flow (14.369188ms)
+✔ logout or account switching changes welcome authority and disables the captured Continue (7.116372ms)
+✔ email verification is optional and driven by accepted account data: false (8.182454ms)
+✔ email verification is optional and driven by accepted account data: true (7.542222ms)
+✔ welcome mounts the explicit identity wizard and preserves native focus and optional site links (8.983559ms)
+✔ verification and session-recovery links retain the browsing target under the real app query-prefix behavior (2.451757ms)
+✔ guide login link is consumed once and retains literal percent/query/hash: /library?title=100%25&literal=%252F#reading (7.979289ms)
+✔ guide login link is consumed once and retains literal percent/query/hash: /search?title=100%&literal=%2F#reading (9.111763ms)
+✔ login redirect consumer rejects a foreign target and never mounts a signup welcome (7.131153ms)
+✔ guide verification link is consumed once and retains literal percent/query/hash: /library?title=100%25&literal=%252F#reading (9.879256ms)
+✔ guide verification link is consumed once and retains literal percent/query/hash: /search?title=100%&literal=%2F#reading (7.892239ms)
+✔ verification redirect consumer rejects a foreign target and never mounts a signup welcome (6.872665ms)
+✔ Continue recovers from a navigation failure without resubmitting account creation (9.647157ms)
+✔ creating an account preserves existing library mode and saved manga: device (6.627907ms)
+✔ creating an account preserves existing library mode and saved manga: account (7.126977ms)
+✔ abandoning signup during initial form loading cannot reveal a late welcome: back (6.814897ms)
+✔ abandoning signup during initial form loading cannot reveal a late welcome: navigation-start (6.830282ms)
+✔ abandoning signup during initial form loading cannot reveal a late welcome: destroy (6.933787ms)
+✔ all-read device and account history continue at latest completed chapter (1.348357ms)
+✔ no history still starts at oldest chapter (0.187461ms)
+✔ partially read history still chooses oldest unread chapter (0.140471ms)
+✔ alternate edition completion and native volume/chapter ordering are preserved (1.031321ms)
+✔ only the all-read fallback changes and existing authority fences remain (0.470918ms)
+✔ an empty current aggregate clears earlier targets and never opens a stale chapter (0.639842ms)
+✔ single completed visible chapter is the only Continue target (0.408885ms)
+✔ deleted last-read IDs never become routes or count as a current visible completion (0.371418ms)
+✔ visible aggregate order is preserved across volume and decimal chapter labels (2.481712ms)
+✔ an explicit chapter language/group selection overrides device language preferences exactly (0.37922ms)
+✔ a late aggregate cannot navigate after a language or title selection changes (0.518009ms)
+{
+  "schema": 1,
+  "baseline_reproduction": {
+    "error_class": "TypeError",
+    "property": "LimitHeight",
+    "source": "frontend/src/lib/stores/prefs.ts"
+  },
+  "preferences_only_reproduction": {
+    "error_class": "ReferenceError",
+    "source": "platform-integrations/local-library/library.ts",
+    "binding": "Session"
+  },
+  "results": [
+    {
+      "entry": "frontend/src/lib/stores/index.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/API/index.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/stores/Session.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "frontend/src/lib/index.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "platform-integrations/local-library/library.ts",
+      "composed_modules_evaluated": 103,
+      "passed": true
+    },
+    {
+      "entry": "gate-on UUID local membership and account/native fallback fence",
+      "passed": true,
+      "storage_opened": false,
+      "native_requests": 0,
+      "records_preserved": true
+    }
+  ],
+  "package_browser_apis": "explicit stand-ins",
+  "browser_e2e": false,
+  "network": false,
+  "original_files_written": false
+}
+(node:83) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:83) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ weebdex-platform/tests/ci/test_frontend_bootstrap.mjs (785.507619ms)
+(node:89) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ MAL native IDs require explicit typed namespace-bound UUID proof before local import (2.998949ms)
+✔ not-public native import IDs remain missing rather than guessed UUIDs (0.461795ms)
+✔ invented, omitted, duplicate and UUID-shaped native MAL rows fail before resolver transport (21.411298ms)
+✔ wrong resource proof, unavailable mapping and switched selection never import (3.489748ms)
+(node:90) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ empty saved sets never become a public discovery request (3.080412ms)
+✔ manga IDs use exact 100-ID batches with caller page removed and private membership untouched (4.725295ms)
+✔ not-visible saved records remain absent instead of fabricated placeholders (0.620453ms)
+✔ parent-scoped updates use one actual UUID parent per request and paginate every chapter (2.626319ms)
+✔ history hydrates only saved chapter UUIDs and readAt sort is applied by local history owner (0.679883ms)
+✔ numeric chapter/volume sort derives real values and leaves specials null with actual text (1.452074ms)
+✔ actual dates are timestamp keys and unavailable metadata stays null (0.549116ms)
+✔ unsupported catalogue sorts reject before any request (0.969498ms)
+✔ legacy IDs, unknown scope and ambiguous order reject before public transport (0.520773ms)
+✔ wrong IDs, duplicate identities and wrong-parent chapters fail closed (0.822817ms)
+✔ shifted, truncated, oversized and malformed pages never substitute partial saved libraries (3.892193ms)
+✔ changing totals and duplicate second pages require a retry (2.303264ms)
+✔ public failures retain status and never invoke native HTTP (0.485941ms)
+✔ exact source bridge is enabled only in public gate without altering native path (0.497347ms)
+✔ actual catalogue orchestrator selects public transport only with gate on and verifies scope first (20.526326ms)
+✔ exact persisted decimal ordering retains BIGINT and NUMERIC precision (0.494894ms)
+✔ actual timestamp ordering retains microseconds and normalizes equivalent UTC offsets (0.315455ms)
+✔ saved-library popularity and upload controls consume exact trusted persisted Manga keys (0.833674ms)
+✔ missing, spoofed, rounded and malformed persisted Manga keys never become fabricated sort values (1.671233ms)
+(node:132) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:132) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ UUID source discussion reads versioned exact original provenance without signing or native lookup (152.379652ms)
+✔ native gate-off source lookup preserves existing ten-character path (14.29067ms)
+✔ public source resolver rejects native-shaped IDs before any source transport (8.987856ms)
+✔ unresolved original, mismatched proof and changed catalogue never enable a discussion action (37.109223ms)
+✔ discussion-context changes stop before mapping and invalidate returned mapping (51.958493ms)
+(node:140) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ malformed and non-finite page URLs show a real first page (1.172944ms)
+✔ valid page, clamp bounds, decimal coercion and history-state priority remain coherent (0.221763ms)
+✔ Last page control leaves end card even when selected raw index is unchanged (0.324789ms)
+✔ ordinary same-page no-op and invalid index guards are retained (0.27212ms)
+✔ a deleted or filtered-out current chapter has no accidental adjacent chapter index (0.173902ms)
+✔ chapter chooser ignores noninteger positions and empty aggregate rows (0.23274ms)
+✔ chapter chooser preserves real language and matching scanlation group metadata (0.873914ms)
+✔ absent current chapter cannot trigger Previous or Next chapter navigation (0.269025ms)
+(node:146) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:146) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ anonymous default opens the compatible UUID store and needs no Session or signer (104.211665ms)
+✔ local title/list/chapter/progress commands retain owner-sidecars without public writes (15.328891ms)
+✔ native-shaped populated library remains review-fenced without conversion (10.79931ms)
+✔ followed title and custom-list views hydrate actual UUID resources through public reads (20.901049ms)
+✔ read history uses actual saved completion/read dates and scoped public chapter hydration (14.461076ms)
+✔ cached reader progress survives offline recheck only in the same previously verified scope (10.296233ms)
+✔ local UUID saves retain a pinned service identity when the live optional service is unavailable (7.249611ms)
+✔ stored account selection is preserved, fenced and requires explicit device selection (7.419467ms)
+✔ public library cannot fall through to native catalogue HTTP (8.087642ms)
+✔ reviewed CSV row merge preserves all backup metadata and checks scope/revision/context (19.246382ms)
+✔ signing in cannot silently switch anonymous local library destination (6.640957ms)
+✔ offline progress admission matrix excludes unknown, mismatched, account and unopened scopes (16.922557ms)
+✔ MAL import obtains typed UUID proof and merges only reviewed local reading state (15.635682ms)
+✔ unresolved legacy rows are preserved but never sent to UUID library or history reads (16.662767ms)
+✔ actual composed reader-history effect admits cached offline pages without new transport (40.065639ms)
+ℹ tests 182
+ℹ suites 0
+ℹ pass 182
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 851.982666

@@ -195,7 +195,11 @@ async fn exercise(f: &Fixture) -> Result<()> {
         all["data"]
     );
     let detail = format!("{}/api/v1/list/{preserved}", f.origin);
-    assert_eq!(get(&f.c, &detail, None, 200).await?["data"], all["data"][2]);
+    let mut detail_response=get(&f.c,&detail,None,200).await?;
+    let canonical_proof=json!({"kind":"list","requestedId":preserved,"canonicalId":preserved,"source":"persisted-public-resource-ids"});
+    assert_eq!(detail_response["nostr"]["identity"],canonical_proof);
+    assert_eq!(detail_response["data"]["nostr"].as_object_mut().unwrap().remove("identity"),Some(canonical_proof));
+    assert_eq!(detail_response["data"],all["data"][2]);
     assert_eq!(
         get(
             &f.c,
@@ -206,6 +210,10 @@ async fn exercise(f: &Fixture) -> Result<()> {
         .await?["data"]["id"],
         preserved
     );
+    let alias_response=get(&f.c,&format!("{}/api/v1/list/{}",f.origin,original_main.to_ascii_uppercase()),None,200).await?;
+    let alias_proof=json!({"kind":"list","requestedId":original_main,"canonicalId":preserved,"source":"persisted-public-resource-ids"});
+    assert_eq!(alias_response["nostr"]["identity"],alias_proof);
+    assert_eq!(alias_response["data"]["nostr"]["identity"],alias_proof);
     for url in [
         format!("{mine}?privacy=private"),
         format!("{mine}?includes[]=user"),

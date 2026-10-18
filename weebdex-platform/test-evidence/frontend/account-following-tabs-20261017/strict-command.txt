@@ -1,0 +1,6 @@
+# Run from weebdex-platform; existing warm dependency inputs only.
+# Before each run: require df -B1 available >=4399824896 (4GiB floor +100MiB margin).
+for gate in 0 1; do
+ WEEBDEX_SEMANTIC_NODE_MODULES="$PWD/.build/frontend-restore3/node_modules" WEEBDEX_SEMANTIC_OUTPUT="$PWD/.build/account-following-tabs-final2-strict-$gate-20261017-2010" PUBLIC_MANGADEX_CATALOGUE=$gate node scripts/check-composed-frontend.mjs
+done
+# Outputs must be fresh on a rerun; source checker refuses replacing these receipts.

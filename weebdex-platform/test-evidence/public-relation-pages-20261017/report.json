@@ -1,0 +1,130 @@
+{
+  "utc": "2026-10-17T22:52:36Z",
+  "status": "qualified-isolated-public-page-and-owner-budget-repair",
+  "source_parent": "292b219a698d8609a325130cc4d02b523e7cc668",
+  "qualified_source": "This evidence successor commits the exact backend/test source hashes captured before compilation/runtime; parent292b219 alone lacks the owner-budget correction.",
+  "shared_helper": "041edce9fedbc737bdc72372db97c37dd6560b48",
+  "checks": [
+    {
+      "name": "platform-library",
+      "result": "128 passed,0 failed,2 ignored",
+      "seconds": 1.86
+    },
+    {
+      "name": "actual-public-relation-capacity-HTTP",
+      "result": "1 passed,0 failed",
+      "seconds": 83.31
+    },
+    {
+      "name": "existing-catalogue-compatibility-HTTP",
+      "result": "1 passed,0 failed",
+      "seconds": 0.61
+    },
+    {
+      "name": "exact-frontend-adapter-over-actual-loopback-HTTP",
+      "result": "passed",
+      "edges": 4096,
+      "milliseconds": 49371.695,
+      "relation_pages": 128,
+      "hydration_batches": 128,
+      "raw_bytes": 7841019,
+      "script_sha256": "a3c857eb5be4d1140b8e8ec8d71b7c2af874f39910edfeb681d2e1678b09dc66",
+      "source_sha256": {
+        "client.ts": "def5055ee7d37bfb2dd01caa10b211163402885dddb5213c73835b22e94735d3",
+        "validation.ts": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+        "catalogue-edges.ts": "dab0693492d0f849d39515f4cc1a1b30bdb2ad55c7a4b0958e19596cc0ab6e1e",
+        "normalize.ts": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b"
+      },
+      "whole_request_budget_ms": 60000,
+      "page_response_bytes": 1048576,
+      "aggregate_normalized_json_bytes": 16777216
+    },
+    {
+      "name": "source-stability",
+      "result": "all5 source hashes identical before and after both HTTP guards"
+    },
+    {
+      "name": "diff-check",
+      "result": "passed"
+    }
+  ],
+  "covered": [
+    "4096 actual persisted directional edges recovered in exact order across128 pages with complete target metadata",
+    "Actual production adapter/client/normalizer recovered4096 through128 pages and128 real32-ID hydration requests under unchanged budgets",
+    "Owner Manga detail200 at4096 related targets, physical one-over page503 and4098-Manga-identity detail503",
+    "Typed uppercase alias proof, no read alias creation, private physical count omitted from public token and response",
+    "Equal-count eligibility swap, target catalogue version drift and owner revision drift reject continuation409",
+    "Legal32KiB target metadata causes truthful whole-item shortened-prefix continuation; a single oversized stored resource fails503",
+    "Legacy small relation response metadata unchanged, recommendation/filter/pagination regression retained",
+    "Current root withdrawal returns404 and no partial list is returned on a failed page"
+  ],
+  "diagnosis": {
+    "initial_setup_failure": "SQLSTATE53200 from4096 alias advisory locks in one transaction; fixture-only128-row transactions fixed it without changing PostgreSQL configuration",
+    "measured_owner_failure": "Actual native projection4097 Manga IDs succeeded568ms; alias loader refused37ms; no PostgreSQL timeout. Manga-only4097 bound now accounts for one owner plus4096 targets; other kinds remain4096 and4098 is rejected."
+  },
+  "fixture_cleanup": [
+    {
+      "utc": "2026-10-17T22:50:44Z",
+      "suite": "public_relation_pages",
+      "returncode": 0,
+      "elapsed_seconds": 84.53680735299713,
+      "minimum_free_bytes": 6642487296,
+      "free_bytes_after": 6640443392,
+      "interrupted_at_disk_floor": false,
+      "binary_sha256": "cf2568883733caf8f282641e1e20fab05eb7ca851f117efacffdff71644094c0",
+      "output_sha256": "89708bbc5d437d8272561a2ba5d6ef2dff42f7d7510aa91323644c8f287e9d86",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "closed_port": true,
+        "forced": false,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "test_returncode": 0
+      }
+    },
+    {
+      "utc": "2026-10-17T22:50:46Z",
+      "suite": "public_catalogue_compatibility",
+      "returncode": 0,
+      "elapsed_seconds": 1.5013922689977335,
+      "minimum_free_bytes": 6594314240,
+      "free_bytes_after": 6588129280,
+      "interrupted_at_disk_floor": false,
+      "binary_sha256": "1a833c7a0ba626775dd92c94b8e19ba109263bd9a580aa8180183b5e83c9138a",
+      "output_sha256": "03e73e55a01fe47bec011f758a242621ca65d9a23a276b2141fe1a6f12abff51",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "closed_port": true,
+        "forced": false,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "test_returncode": 0
+      }
+    }
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/src/public_api/catalogue_edges.rs": "66c89729fee505bf1bb750a890ab79daddb9c9750362192b87389652aecf66af",
+    "weebdex-platform/backend/src/public_api/relation_paging.rs": "7ad390ee9c6f62a56aa034869cafa79514aca724fc2ee7b6908fc5d6e0b9f848",
+    "weebdex-platform/backend/src/public_api/catalogue_dto.rs": "8fe48441ea01924912da4862ff1b616964906f0745cdf5ecd23bbf2dc2c85db6",
+    "weebdex-platform/backend/tests/public_relation_pages.rs": "51d09060765573181281a332c73808e4fead1a17c464cfbcd100463b871e462a",
+    "weebdex-platform/docs/mangadex-bounded-relation-pages.md": "0d658e551e5ac617333b5b233a4b0f8b41f00715e5d6d956939f664bf64a2883"
+  },
+  "artifact_sha256": {
+    "final-library.log": "629382347183b7739c2be678fbb839826f0e62c87141ea1ee7d5616951e46d83",
+    "final-compile.log": "75b3433a294cbf9fbcb0d9e016be7681762b7617699f4215af450cde7d0ff9a4",
+    "final-public-http.log": "89708bbc5d437d8272561a2ba5d6ef2dff42f7d7510aa91323644c8f287e9d86",
+    "final-catalogue-http.log": "03e73e55a01fe47bec011f758a242621ca65d9a23a276b2141fe1a6f12abff51",
+    "owner-budget-diagnostic.log": "593b7d141745e53f6a45de4541703d42a1c83c533785861a546d40972b1963e1",
+    "initial-setup-failure.log": "f68c670f460399fdff7838e68fa84a34eedd65a2f86490859f2f26ba1f3d5b3c",
+    "final-source.sha256": "c963806363947f5c842b183d51fe64f1e6a06618a26d7ae468203868d3892e93",
+    "actual-frontend-adapter.json": "480faa5baca461933552deeaa934dd25f25e8aca52a67c306a6f2547c95ea71c"
+  },
+  "limits": [
+    "Exact isolated public repair source, not the final combined integration. Final API inventory/current-source seams must be reconciled after the integrator freezes all lanes.",
+    "The capacity fixture uses synthetic native published targets and real persisted UUIDs; it is not a browser, native storage, arbitrary dense graph, load or production-capacity claim.",
+    "The optional Node bridge was invoked using its frozen isolated frontend worktree; all four imported production module hashes are recorded and must match any composed-source claim.",
+    "Unpaged upstream shape is retained without silent truncation; unusually large unpaged responses may truthfully fail503. Pagination is an explicit application extension, not full MangaDex compatibility.",
+    "Existing compiler warnings remain; no rustfmt executable was available.",
+    "No source signing, authority expansion, dependency install, external publication or additional cleanup performed by this repair."
+  ]
+}

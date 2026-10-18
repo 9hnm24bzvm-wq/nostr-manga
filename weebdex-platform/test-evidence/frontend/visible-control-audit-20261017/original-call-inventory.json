@@ -1,0 +1,1042 @@
+{
+  "method": "textual original frontend API.Family.Method call-site inventory; no endpoint-count claim",
+  "gate_default": 0,
+  "device_conversion_enabled": false,
+  "call_sites": 143,
+  "families": {
+    "ChapterHistory": 6,
+    "Chapter": 19,
+    "MangaFollow": 10,
+    "Manga": 30,
+    "Report": 9,
+    "Author": 6,
+    "Group": 9,
+    "Thread": 13,
+    "Statistics": 2,
+    "Cover": 6,
+    "Analytics": 2,
+    "UploadSession": 14,
+    "Auth": 1,
+    "Tag": 1,
+    "User": 8,
+    "Settings": 3,
+    "Client": 4
+  },
+  "classifications": {
+    "separate_module_requires_uuid_and_permission_review": 68,
+    "staged_public_read": 40,
+    "explicit_unavailable_adapter": 3,
+    "separate_identity_or_forum_module": 1,
+    "guarded_unavailable_catalogue_command": 29,
+    "explicit_unavailable_no_native_mutation": 2
+  },
+  "calls": [
+    {
+      "path": "frontend/src/lib/components/ChapterFeed.svelte",
+      "line": 112,
+      "family": "ChapterHistory",
+      "method": "Search",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/ChapterFeedChapterEntry.svelte",
+      "line": 42,
+      "family": "ChapterHistory",
+      "method": "UpdateBatch",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/ChapterListEntry.svelte",
+      "line": 44,
+      "family": "ChapterHistory",
+      "method": "UpdateBatch",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/LatestUpdatesGrid.svelte",
+      "line": 60,
+      "family": "Chapter",
+      "method": "LatestUpdates",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/LatestUpdatesSection.svelte",
+      "line": 70,
+      "family": "Chapter",
+      "method": "LatestFeed",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/MangaSearchEntryCard.svelte",
+      "line": 44,
+      "family": "MangaFollow",
+      "method": "Update",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/MangaSearchEntryCard.svelte",
+      "line": 63,
+      "family": "MangaFollow",
+      "method": "Unfollow",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/MostReadCarousel.svelte",
+      "line": 30,
+      "family": "Manga",
+      "method": "Trending",
+      "classification": "explicit_unavailable_adapter"
+    },
+    {
+      "path": "frontend/src/lib/components/MyUpdatesCarousel.svelte",
+      "line": 32,
+      "family": "MangaFollow",
+      "method": "LatestUpdates",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/RecentlyAddedCarousel.svelte",
+      "line": 27,
+      "family": "Manga",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/ReportDialog.svelte",
+      "line": 69,
+      "family": "Report",
+      "method": "Reasons",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/ReportDialog.svelte",
+      "line": 103,
+      "family": "Report",
+      "method": "Create",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/ReportSearchEntry.svelte",
+      "line": 58,
+      "family": "Report",
+      "method": "Delete",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/ReportSearchEntry.svelte",
+      "line": 90,
+      "family": "Report",
+      "method": "Reject",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/ReportSearchEntry.svelte",
+      "line": 91,
+      "family": "Report",
+      "method": "Accept",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/ReportSearchFilter.svelte",
+      "line": 49,
+      "family": "Report",
+      "method": "Reasons",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/SearchDialog.svelte",
+      "line": 33,
+      "family": "Manga",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/SearchDialog.svelte",
+      "line": 48,
+      "family": "Author",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/SearchDialog.svelte",
+      "line": 63,
+      "family": "Group",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-create.svelte",
+      "line": 92,
+      "family": "Thread",
+      "method": "CreateReply",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-edit-dialog.svelte",
+      "line": 74,
+      "family": "Thread",
+      "method": "UpdateReply",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-entry.svelte",
+      "line": 86,
+      "family": "Thread",
+      "method": "VoteReply",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-entry.svelte",
+      "line": 119,
+      "family": "Thread",
+      "method": "UnvoteReply",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-entry.svelte",
+      "line": 153,
+      "family": "Thread",
+      "method": "RemoveReply",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-entry.svelte",
+      "line": 183,
+      "family": "Thread",
+      "method": "DeleteReply",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-feed.svelte",
+      "line": 32,
+      "family": "Thread",
+      "method": "Replies",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-votes.svelte",
+      "line": 24,
+      "family": "Thread",
+      "method": "GetThreadVote",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-votes.svelte",
+      "line": 59,
+      "family": "Thread",
+      "method": "VoteThread",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments-votes.svelte",
+      "line": 96,
+      "family": "Thread",
+      "method": "UnvoteThread",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/comments/comments.svelte",
+      "line": 30,
+      "family": "Statistics",
+      "method": "Thread",
+      "classification": "separate_identity_or_forum_module"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/AuthorCreateDialog.svelte",
+      "line": 33,
+      "family": "Author",
+      "method": "Create",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/DraftSearchEntry.svelte",
+      "line": 25,
+      "family": "Manga",
+      "method": "Commit",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/DraftSearchEntry.svelte",
+      "line": 51,
+      "family": "Manga",
+      "method": "Delete",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaCreate.svelte",
+      "line": 170,
+      "family": "Manga",
+      "method": "Create",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaCreate.svelte",
+      "line": 202,
+      "family": "Cover",
+      "method": "Upload",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaCreate.svelte",
+      "line": 230,
+      "family": "Manga",
+      "method": "CreateRelation",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 253,
+      "family": "Manga",
+      "method": "Update",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 289,
+      "family": "Cover",
+      "method": "Upload",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 309,
+      "family": "Cover",
+      "method": "Delete",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 345,
+      "family": "Cover",
+      "method": "Update",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 377,
+      "family": "Manga",
+      "method": "DeleteRelation",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 401,
+      "family": "Manga",
+      "method": "CreateRelation",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 424,
+      "family": "Manga",
+      "method": "Commit",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 455,
+      "family": "Manga",
+      "method": "Publish",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 486,
+      "family": "Manga",
+      "method": "Reject",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+      "line": 538,
+      "family": "Manga",
+      "method": "Delete",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/MetadataSection.svelte",
+      "line": 41,
+      "family": "Author",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+      "line": 46,
+      "family": "Manga",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/reader/reader-analytics.svelte",
+      "line": 21,
+      "family": "Analytics",
+      "method": "Chapter",
+      "classification": "explicit_unavailable_no_native_mutation"
+    },
+    {
+      "path": "frontend/src/lib/components/reader/reader-history.svelte",
+      "line": 10,
+      "family": "ChapterHistory",
+      "method": "UpdateBatch",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/reader/reader-provider.svelte",
+      "line": 78,
+      "family": "Chapter",
+      "method": "Aggregate",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+      "line": 64,
+      "family": "UploadSession",
+      "method": "Begin",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+      "line": 110,
+      "family": "UploadSession",
+      "method": "Commit",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+      "line": 155,
+      "family": "UploadSession",
+      "method": "CheckApprovalRequired",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 98,
+      "family": "Chapter",
+      "method": "Update",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 131,
+      "family": "Chapter",
+      "method": "Claim",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 160,
+      "family": "Chapter",
+      "method": "Delete",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 201,
+      "family": "UploadSession",
+      "method": "BeginEdit",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 248,
+      "family": "UploadSession",
+      "method": "Commit",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 281,
+      "family": "UploadSession",
+      "method": "Get",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 283,
+      "family": "UploadSession",
+      "method": "Delete",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 299,
+      "family": "UploadSession",
+      "method": "Delete",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterGroups.svelte",
+      "line": 30,
+      "family": "Group",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterPages.svelte",
+      "line": 231,
+      "family": "UploadSession",
+      "method": "DeleteFile",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterPages.svelte",
+      "line": 385,
+      "family": "UploadSession",
+      "method": "DeleteFiles",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterPages.svelte",
+      "line": 432,
+      "family": "UploadSession",
+      "method": "DeleteFiles",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "line": 51,
+      "family": "UploadSession",
+      "method": "DeleteFile",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/stores/Session.ts",
+      "line": 12,
+      "family": "Auth",
+      "method": "Check",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/lib/stores/global.ts",
+      "line": 13,
+      "family": "Tag",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/author/[id]/+layout.ts",
+      "line": 6,
+      "family": "Author",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/author/[id]/+page.svelte",
+      "line": 51,
+      "family": "Manga",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/author/[id]/Author.svelte",
+      "line": 71,
+      "family": "Chapter",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/author/[id]/settings/+page.svelte",
+      "line": 97,
+      "family": "Author",
+      "method": "Update",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/author/[id]/settings/+page.svelte",
+      "line": 133,
+      "family": "Author",
+      "method": "Delete",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/author/[id]/uploads/+page.svelte",
+      "line": 70,
+      "family": "Chapter",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/chapter/[id]/+page.ts",
+      "line": 6,
+      "family": "Chapter",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/chapter/[id]/[page]/+page.ts",
+      "line": 6,
+      "family": "Chapter",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "line": 35,
+      "family": "User",
+      "method": "Get",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/chapter/[id]/edit/+page.ts",
+      "line": 12,
+      "family": "Chapter",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/create/group/+page.svelte",
+      "line": 54,
+      "family": "Group",
+      "method": "Create",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/drafts/title/+page.svelte",
+      "line": 19,
+      "family": "Manga",
+      "method": "SearchDrafts",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/forums/threads/[id]/+page.ts",
+      "line": 6,
+      "family": "Thread",
+      "method": "Get",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/forums/threads/[id]/[postId]/+page.ts",
+      "line": 7,
+      "family": "Thread",
+      "method": "Get",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/forums/threads/[id]/[postId]/+page.ts",
+      "line": 13,
+      "family": "Thread",
+      "method": "GetReply",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/+layout.ts",
+      "line": 6,
+      "family": "Group",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/+page.svelte",
+      "line": 52,
+      "family": "Manga",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+      "line": 102,
+      "family": "Group",
+      "method": "GetFollowStatus",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+      "line": 113,
+      "family": "Chapter",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/Group.svelte",
+      "line": 167,
+      "family": "Settings",
+      "method": "Update",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+      "line": 46,
+      "family": "Report",
+      "method": "Reasons",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+      "line": 70,
+      "family": "Report",
+      "method": "Create",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/settings/+page.svelte",
+      "line": 137,
+      "family": "Group",
+      "method": "Update",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/settings/+page.svelte",
+      "line": 173,
+      "family": "Group",
+      "method": "Delete",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/settings/+page.svelte",
+      "line": 195,
+      "family": "User",
+      "method": "Search",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/group/[id]/uploads/+page.svelte",
+      "line": 70,
+      "family": "Chapter",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/groups/+page.svelte",
+      "line": 23,
+      "family": "Group",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/history/+page.svelte",
+      "line": 25,
+      "family": "ChapterHistory",
+      "method": "Feed",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/library/+page.svelte",
+      "line": 23,
+      "family": "MangaFollow",
+      "method": "Search",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/library/updates/+page.svelte",
+      "line": 25,
+      "family": "MangaFollow",
+      "method": "LatestFeed",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/my/reports/+page.svelte",
+      "line": 18,
+      "family": "Report",
+      "method": "Search",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/popular/MostReadChapter.svelte",
+      "line": 46,
+      "family": "Chapter",
+      "method": "Trending",
+      "classification": "explicit_unavailable_adapter"
+    },
+    {
+      "path": "frontend/src/routes/(app)/popular/MostReadGrid.svelte",
+      "line": 43,
+      "family": "Manga",
+      "method": "Trending",
+      "classification": "explicit_unavailable_adapter"
+    },
+    {
+      "path": "frontend/src/routes/(app)/search/+page.svelte",
+      "line": 24,
+      "family": "Manga",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/client/+page.svelte",
+      "line": 24,
+      "family": "Client",
+      "method": "List",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "line": 31,
+      "family": "Client",
+      "method": "Create",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/client/ClientEntry.svelte",
+      "line": 32,
+      "family": "Client",
+      "method": "RegenerateSecret",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/client/ClientEntry.svelte",
+      "line": 62,
+      "family": "Client",
+      "method": "Delete",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/library/+page.svelte",
+      "line": 59,
+      "family": "MangaFollow",
+      "method": "Import",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/library/+page.svelte",
+      "line": 117,
+      "family": "MangaFollow",
+      "method": "Import",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/preferences/+page.svelte",
+      "line": 72,
+      "family": "Settings",
+      "method": "Update",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/preferences/+page.svelte",
+      "line": 349,
+      "family": "User",
+      "method": "Search",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/settings/preferences/+page.svelte",
+      "line": 412,
+      "family": "Group",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/Analytics.svelte",
+      "line": 21,
+      "family": "Analytics",
+      "method": "Manga",
+      "classification": "explicit_unavailable_no_native_mutation"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/Manga.svelte",
+      "line": 133,
+      "family": "ChapterHistory",
+      "method": "List",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/Manga.svelte",
+      "line": 141,
+      "family": "Statistics",
+      "method": "Manga",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaActions.svelte",
+      "line": 59,
+      "family": "MangaFollow",
+      "method": "Update",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaActions.svelte",
+      "line": 99,
+      "family": "MangaFollow",
+      "method": "Update",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaActions.svelte",
+      "line": 137,
+      "family": "MangaFollow",
+      "method": "Unfollow",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaActions.svelte",
+      "line": 182,
+      "family": "Chapter",
+      "method": "Aggregate",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaChapterListSection.svelte",
+      "line": 33,
+      "family": "Chapter",
+      "method": "List",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaCoversSection.svelte",
+      "line": 34,
+      "family": "Cover",
+      "method": "List",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaRecommendationsSection.svelte",
+      "line": 29,
+      "family": "Manga",
+      "method": "Recommendations",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/MangaRelatedSection.svelte",
+      "line": 42,
+      "family": "Manga",
+      "method": "Relations",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/+page.ts",
+      "line": 12,
+      "family": "Manga",
+      "method": "GetDraft",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/+page.ts",
+      "line": 12,
+      "family": "Manga",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/[slug]/+page.ts",
+      "line": 12,
+      "family": "Manga",
+      "method": "GetDraft",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/[slug]/+page.ts",
+      "line": 12,
+      "family": "Manga",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/edit/+page.svelte",
+      "line": 39,
+      "family": "Cover",
+      "method": "List",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/edit/+page.ts",
+      "line": 12,
+      "family": "Manga",
+      "method": "GetDraft",
+      "classification": "guarded_unavailable_catalogue_command"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/edit/+page.ts",
+      "line": 13,
+      "family": "Manga",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/upload/+page.svelte",
+      "line": 34,
+      "family": "User",
+      "method": "Get",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/upload/+page.svelte",
+      "line": 43,
+      "family": "UploadSession",
+      "method": "Get",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/upload/+page.svelte",
+      "line": 45,
+      "family": "UploadSession",
+      "method": "Delete",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/upload/+page.ts",
+      "line": 6,
+      "family": "Manga",
+      "method": "Get",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/random/+page.ts",
+      "line": 11,
+      "family": "Manga",
+      "method": "Random",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/updates/+page.svelte",
+      "line": 25,
+      "family": "Chapter",
+      "method": "LatestFeed",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/user/[id]/+layout.ts",
+      "line": 6,
+      "family": "User",
+      "method": "Get",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+      "line": 96,
+      "family": "User",
+      "method": "GetFollowStatus",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+      "line": 111,
+      "family": "Chapter",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/user/[id]/User.svelte",
+      "line": 168,
+      "family": "Settings",
+      "method": "Update",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/user/[id]/settings/+page.svelte",
+      "line": 86,
+      "family": "User",
+      "method": "Update",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    },
+    {
+      "path": "frontend/src/routes/(app)/user/[id]/uploads/+page.svelte",
+      "line": 71,
+      "family": "Chapter",
+      "method": "Search",
+      "classification": "staged_public_read"
+    },
+    {
+      "path": "frontend/src/routes/(app)/users/+page.svelte",
+      "line": 23,
+      "family": "User",
+      "method": "Search",
+      "classification": "separate_module_requires_uuid_and_permission_review"
+    }
+  ],
+  "limitations": [
+    "This classifies original API dispatch only. A later overlay may replace the entire visible control; raw call counts do not prove current feature availability.",
+    "Computed access, direct imports and calls introduced by earlier overlays require additional semantic review.",
+    "Separate native identity/forum module calls are not automatically UUID-compatible.",
+    "No browser, backend, user-data migration or mutation availability proof is inferred."
+  ]
+}

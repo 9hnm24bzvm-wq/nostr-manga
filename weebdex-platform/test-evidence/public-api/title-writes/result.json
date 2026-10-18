@@ -1,0 +1,253 @@
+{
+  "schema": "signed-title-and-native-pipeline-qualification-v1",
+  "verified_at_utc": "2026-10-17T18:19:28.868565+00:00",
+  "qualified_source_commit": "17dba0827c8e87a815c8bdc88b47008f3bb0eea3",
+  "qualified_source_tree": "55bad39b954056c272465d9bd37a56bd3b396a0c",
+  "production_commits": [
+    "0efe0a8",
+    "76f9b0c",
+    "17dba08"
+  ],
+  "test_only_successor": "4e08e9b",
+  "tracked_backend_original_server_inputs": 436,
+  "source_inputs_unchanged_during_qualification": true,
+  "source_manifest_sha256": "944acfa7d6c79b181e81ce9de8a220e452d72d86d47bdae4e0c804e164b652ed",
+  "pass": true,
+  "http_cases_passed": 10,
+  "runs": [
+    {
+      "source_commit": "17dba0827c8e87a815c8bdc88b47008f3bb0eea3",
+      "started_at_utc": "2026-10-17T18:17:00.028667+00:00",
+      "ended_at_utc": "2026-10-17T18:17:02.600909+00:00",
+      "test_executable_sha256": "adc141166f039b1e54b8c059a6e6a73dc58e5bdc210684c97f1ea15839246e31",
+      "test_executable_sha256_after": "adc141166f039b1e54b8c059a6e6a73dc58e5bdc210684c97f1ea15839246e31",
+      "executable_unchanged": true,
+      "pass": true,
+      "exit_code": 0,
+      "child_reaped": true,
+      "log_sha256": "19e65292d7a90233d9650f4bce8032ccb02facdf477b424ad22450ba150face1",
+      "cleanup_receipt_sha256": "9beacbae6a1b7a06736f95be821fac61220ffcd558808a38224d673157370268",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 1.38
+      },
+      "cases": [
+        "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority"
+      ],
+      "command": [
+        "bash",
+        "scripts/run-auth-tests.sh",
+        "public_manga_writes-192664ed4641db50",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ]
+    },
+    {
+      "source_commit": "17dba0827c8e87a815c8bdc88b47008f3bb0eea3",
+      "started_at_utc": "2026-10-17T18:17:02.630805+00:00",
+      "ended_at_utc": "2026-10-17T18:17:11.477751+00:00",
+      "test_executable_sha256": "9b43fae11fd991ba5f19b81ce2a76f5ba07050c97ebe6633ccbf82646f5c3ed8",
+      "test_executable_sha256_after": "9b43fae11fd991ba5f19b81ce2a76f5ba07050c97ebe6633ccbf82646f5c3ed8",
+      "executable_unchanged": true,
+      "pass": true,
+      "exit_code": 0,
+      "child_reaped": true,
+      "log_sha256": "47347f201f17294013f799a5807e3c525a3096a726d79476f4a20d54517501f6",
+      "cleanup_receipt_sha256": "5e3b1af0e5745b1ade243c1b87c50feb3e163a35f3eeab73866f352fdf9dbc15",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 0,
+        "seconds": 7.7
+      },
+      "cases": [
+        "accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle"
+      ],
+      "command": [
+        "bash",
+        "scripts/run-auth-tests.sh",
+        "protocol_bridge_http-7d94aa422e62d3c9",
+        "--ignored",
+        "accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ]
+    },
+    {
+      "source_commit": "17dba0827c8e87a815c8bdc88b47008f3bb0eea3",
+      "started_at_utc": "2026-10-17T18:17:11.514598+00:00",
+      "ended_at_utc": "2026-10-17T18:17:20.064098+00:00",
+      "test_executable_sha256": "8ede61c3797fb920fed2cfdd4e5b4615696ab13ec79e0290c6a76eef8d8b4291",
+      "test_executable_sha256_after": "8ede61c3797fb920fed2cfdd4e5b4615696ab13ec79e0290c6a76eef8d8b4291",
+      "executable_unchanged": true,
+      "pass": true,
+      "exit_code": 0,
+      "child_reaped": true,
+      "log_sha256": "3743d999d82ff7985a79a33202752f3a81697f5706e55619cf48c558773909ce",
+      "cleanup_receipt_sha256": "74895430cad7f9c8cc4e5742ee891a903462ac9825ea3a4b477b65b5bb454416",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 7.37
+      },
+      "cases": [
+        "atomic_page_replacement_expiry_reclamation_and_media_admission",
+        "committed_signed_upload_becomes_readable_after_original_projection",
+        "persisted_cover_upload_draft_privacy_list_update_variants_and_delete",
+        "persisted_upload_commit_reader_originals_derivatives_and_retries",
+        "persisted_upload_validation_file_removal_cancel_and_body_bounds",
+        "restart_reconciliation_respects_journal_leases_references_and_proxy_streams",
+        "signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_stable"
+      ],
+      "command": [
+        "bash",
+        "scripts/run-auth-tests.sh",
+        "upload_http-54c38f1ba1f80921",
+        "--ignored",
+        "--skip",
+        "licensed_ubunchu",
+        "--nocapture",
+        "--test-threads=1"
+      ]
+    },
+    {
+      "source_commit": "17dba0827c8e87a815c8bdc88b47008f3bb0eea3",
+      "started_at_utc": "2026-10-17T18:17:20.093357+00:00",
+      "ended_at_utc": "2026-10-17T18:17:22.554710+00:00",
+      "test_executable_sha256": "cd39e8f2f5f4a515edf9f4633d2d2e482c67b2f8945310d9e81e098696db3ad8",
+      "test_executable_sha256_after": "cd39e8f2f5f4a515edf9f4633d2d2e482c67b2f8945310d9e81e098696db3ad8",
+      "executable_unchanged": true,
+      "pass": true,
+      "exit_code": 0,
+      "child_reaped": true,
+      "log_sha256": "ebdec4c8378c8771f3fdaee3425228189e904b0df3b09fbdcca07cf2f4f1e95c",
+      "cleanup_receipt_sha256": "892bfc8dce0848d186c1f77569f788cc24b2f7212c6fbe9aec6b6cd18fa984a6",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 1.29
+      },
+      "cases": [
+        "signed_chapter_metadata_claim_and_review_first_removal_preserve_authority"
+      ],
+      "command": [
+        "bash",
+        "scripts/run-auth-tests.sh",
+        "public_chapter_writes-171a16c0d968c422",
+        "--ignored",
+        "signed_chapter_metadata_claim_and_review_first_removal_preserve_authority",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ]
+    }
+  ],
+  "rust_unit": {
+    "passed": 118,
+    "failed": 0,
+    "ignored": 2,
+    "seconds": 1.89,
+    "log_sha256": "e647ce291a6604fa1c4fdeec6c1f5d6c23f002367eae5c2ff47951b192377c70",
+    "executable_sha256": "e2aafce7c53ae2f181ce3f49a259f2c49f263822acf4daed288a74e721a6577b"
+  },
+  "tooling": {
+    "cargo": "1.90.0",
+    "rustc": "1.90.0",
+    "postgres": "17.11",
+    "strfry_sha256": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+    "runtime_guard_sha256": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "owned_receipt_wrapper_sha256": "0116c00fe6517917ede189201c7cd742597c2072a7b5cf6b84e392289941d021",
+    "build_log_sha256": "d9ec28fa0cc0312a077b4f6e002da06ab3694dba122c0884c3298beaf9ba4d0d",
+    "chapter_build_log_sha256": "ddf4af2c7fea6fadf05a7111584ccc2efab0df928c33574609f41709d5d5da34"
+  },
+  "new_title_assertions": [
+    "private native draft, canonical UUID authors/artists/tags and exact localized maps",
+    "partial edit/null clears, foreign draft, typed-ID and stale-version failures",
+    "cookie alone refused; exact NIP-98 method/target/service/body and nonce replay verified",
+    "actual native original-language cover then review-only submit/reject/resubmit",
+    "moderator without configured original signer rejected without durable command",
+    "actual original kind1002, canonical multilingual manifest and readable same public UUID",
+    "current original publisher admission required even for exact command replay",
+    "native-created AND independently imported source annotations disclose instance-local scope",
+    "original signed event and canonical metadata remain exact after local annotation",
+    "account revocation and current-grant revocation while HTTP waits on locked authority row"
+  ],
+  "provisional_history": {
+    "fixture_setup_failure": {
+      "kind": "owned author fixture missing required owner column, fixed before passing integration",
+      "log_sha256": "110759bc5dbdcad712ad2a627d50aa8dc59654e094123acb958337bec6eb5c64",
+      "cleanup_sha256": "13c84f58df29332002ee272a5d8b76f18d74b6bd7399aaa8c0ca60b5747daf2b"
+    },
+    "unit_expectation_failure": {
+      "kind": "unsupported-only router no longer owns /manga; method seam moved to an inventory-owned route in test-only successor",
+      "log_sha256": "1559876074bf8555b70f9addc6bd1ebbfb531189f31c685f81b8aa1b91cf3a7a"
+    },
+    "discarded_in_progress_build_run": "title-http-final was started before relinking completed and its executable changed; excluded from all qualified counts. Final frozen runs verify unchanged executable hashes."
+  },
+  "limitations": [
+    "real-browser E2E remains blocked by previously verified execution bootstrap; no duplicate browser attempt",
+    "licensed Ubunchu image fixture filtered because verified source cache is absent; generated-image regressions only",
+    "public title cover upload, relation mutations, delete, lock/unlock, officialLinks and primaryCover remain explicitly unsupported",
+    "native cover interface is used separately for the real public draft submission prerequisite",
+    "118 library tests passed; two pre-existing ignored tests remain ignored",
+    "existing private-bound/dependency/helper warnings remain; no claim of warning-free build",
+    "no external publication, real keys, production data, load run or real-browser/IndexedDB claim"
+  ],
+  "checkpoint_excludes": [
+    "runtime databases",
+    "generated signer files",
+    "raw owned fixture logs",
+    "private keys or credentials",
+    "personal data"
+  ]
+}

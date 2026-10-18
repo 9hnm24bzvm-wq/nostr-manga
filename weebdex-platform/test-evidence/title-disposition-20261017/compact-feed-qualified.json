@@ -1,0 +1,20 @@
+{
+  "schema": "owned-native-feed-regression-v1",
+  "utc": "2026-10-17T22:14:48.768641+00:00",
+  "source_commit": "f7bdac07163fd43b04b797223b5aecf0ad6413a7",
+  "test_correction_commit": "0815c11cdd7856e5a5dab01142820a5556247302",
+  "command": [
+    "bash",
+    "weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/chapter-cargo-target/debug/deps/catalog_feed_projection-362baa3acc15dcd0",
+    "--ignored",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "executable_sha256": "0b4727f1329f2e45e4719c57faf8b5aa687ae729a9a932380131378c356e1ddf",
+  "exit_code": 0,
+  "duration_seconds": 21.877,
+  "minimum_free_bytes": 6512775168,
+  "floor_bytes": 4294967296,
+  "abort": null
+}

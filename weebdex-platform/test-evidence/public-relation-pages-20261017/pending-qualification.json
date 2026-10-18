@@ -1,0 +1,42 @@
+{
+  "utc": "2026-10-17T22:35:34Z",
+  "status": "source-frozen-awaiting-current-source-HTTP-qualification",
+  "base": "c77f502a2e2b39c15e6fa6a1932a223ab681ad03",
+  "shared_helper": "041edce9fedbc737bdc72372db97c37dd6560b48",
+  "checks_completed": [
+    {
+      "name": "shared-helper-finite",
+      "result": "3 passed,126 filtered",
+      "scope": "helper041edce and initial public page implementation before visible-count privacy successor"
+    },
+    {
+      "name": "platform-library",
+      "result": "127 passed,2 ignored",
+      "scope": "same initial page implementation; not claimed as final successor qualification"
+    },
+    {
+      "name": "HTTP binaries",
+      "result": "public_relation_pages and public_catalogue_compatibility compile",
+      "scope": "before visible-count privacy correction and final owner-at-cap/32KiB assertions"
+    }
+  ],
+  "source_review": "Independent frontend owner reviewed typed alias proof, repeatable-read owner/eligibility/version, continuation guards, whole-resource byte prefix and visible-only public count; no remaining source-contract blocker.",
+  "held_checks": [
+    "Recompile current source with CARGO_INCREMENTAL=0 and rerun platform library.",
+    "Run actual public4096 all-pages full-metadata fixture with existing60s per-request and1MiB response caps, including owner detail at capacity.",
+    "Run existing catalogue compatibility HTTP regression."
+  ],
+  "known_boundaries": [
+    "AliasIndex owner+4096 target UUID budget appears off by one; actual intended200 regression must establish runtime outcome before proposing a narrow correction.",
+    "Legacy unpaged relation shape is retained; oversized responses fail503 without silent truncation.",
+    "Public tokens bind visible count only; authorized editor tokens may bind actual persisted count.",
+    "No combined-source, browser, load or production-readiness claim.",
+    "No cleanup, dependency install, remote or publication action performed by this candidate."
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/src/public_api/catalogue_edges.rs": "66c89729fee505bf1bb750a890ab79daddb9c9750362192b87389652aecf66af",
+    "weebdex-platform/backend/src/public_api/relation_paging.rs": "7ad390ee9c6f62a56aa034869cafa79514aca724fc2ee7b6908fc5d6e0b9f848",
+    "weebdex-platform/backend/tests/public_relation_pages.rs": "201c29dfe55deeab9db5fa2c363ca69941489a5e7b84cbc5087f83c51936edb3",
+    "weebdex-platform/docs/mangadex-bounded-relation-pages.md": "71de8886c6611e8e531001664e1d77c7d258dcf171ea596d5d9ebfe136a38a41"
+  }
+}

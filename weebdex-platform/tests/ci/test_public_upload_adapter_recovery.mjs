@@ -124,7 +124,7 @@ test('unknown attachment is recovered only from one exact new matching original 
 test('absence after unknown attachment is never refusal and cannot cause POST replay', async () => { const f = await ready({ request: async (request, next) => { if (request.method === 'POST' && request.url === `${PUBLIC}/api/v1/upload/${SESSION}`) throw Object.assign(Error('Explicit fake uncertain dispatch'), { outcome: 'uncertain' }); return next(request); } }), page = localPage(); await assert.rejects(() => f.api.runUploadBatch(f.current, [page], f.owner)); assert.equal(page.upload_recovery.state, 'unknown'); await assert.rejects(() => f.api.resolveUploadPage(f.current, page, f.owner)); const count = mutations(f).length; await assert.rejects(() => f.api.runUploadBatch(f.current, [page], f.owner)); assert.equal(mutations(f).length, count); });
 test('definitive per-image rejection stays rejected and later images stay unsent', async () => { const f = await ready({ request: async (request, next) => request.method === 'POST' && request.url === `${PUBLIC}/api/v1/upload/${SESSION}` ? response({ result: 'error', data: [], errors: [{ status: 400, detail: 'Invalid image fixture', context: { originalFileName: 'page.png' } }] }) : next(request) }), pages = [localPage(), localPage('second.png')]; await assert.rejects(() => f.api.runUploadBatch(f.current, pages, f.owner)); assert.equal(pages[0].upload_recovery.state, 'rejected'); assert.equal(pages[1].upload_recovery.state, 'unsent'); assert.equal(f.requests.filter(row => row.url === `${PUBLIC}/api/v1/upload/${SESSION}` && row.method === 'POST').length, 1); });
 test('an explicitly unsent attachment stays unsent and the batch guard blocks late dispatch', async () => { const f = await ready({ request: async (request, next) => { if (request.method === 'POST' && request.url === `${PUBLIC}/api/v1/upload/${SESSION}`) throw Object.assign(Error('Explicit fake signer refusal'), { outcome: 'unsent' }); return next(request); } }), page = localPage(); await assert.rejects(() => f.api.runUploadBatch(f.current, [page], f.owner)); assert.equal(page.upload_recovery.state, 'unsent'); let allowed = true; const g = await ready({ dependencies: { digest: async bytes => { allowed = false; return digest(bytes); } } }), other = localPage(); await assert.rejects(() => g.api.runUploadBatch(g.current, [other], g.owner, undefined, () => { if (!allowed) throw Error('Page view changed'); })); assert.equal(other.upload_recovery.state, 'unsent'); assert.equal(g.state.attachCount, 0); });
-test('unknown commit survives a new owner and only explicit exact receipt reconciliation unlocks', async () => { const f = await ready({ request: async (request, next) => { const result = await next(request); return request.url.endsWith('/commit') ? response({ malformed: true }) : result; } }), { payload } = await stagedCommit(f); await assert.rejects(() => f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload)); assert.equal(f.owner.commitState(), 'uncertain'); assert.equal(f.owner.pendingCommitSession(), SESSION); assert.equal(f.storage.size, 1); const reopenedUser = await f.api.loadUploadAccount(), reopened = f.api.publicUploadOwner(() => MANGA, reopenedUser); assert.equal(reopened.pendingCommitSession(), SESSION); const previous = f.requests.length; const restored = await f.api.currentUpload(reopened); assert.equal(restored.is_committed, true); assert.equal(restored.can_mutate, false); assert.equal(restored.receipt, undefined); assert.equal(f.requests.slice(previous).some(row => row.url === `${PUBLIC}/api/v1/upload`), false); await assert.rejects(() => f.begin(reopened)); const reconciled = await f.api.reconcileUploadReceipt(reopened, SESSION); assert.equal(reconciled.receipt.id, CHAPTER); assert.equal(reopened.commitState(), undefined); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 1); });
+test('unknown commit survives a new owner and only explicit exact receipt reconciliation unlocks', async () => { const f = await ready({ request: async (request, next) => { const result = await next(request); return request.url.endsWith('/commit') ? response({ malformed: true }) : result; } }), { payload } = await stagedCommit(f); await assert.rejects(() => f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload)); assert.equal(f.owner.commitState(), 'uncertain'); assert.equal(f.owner.pendingCommitSession(), SESSION); assert.equal(f.storage.size, 1); const reopenedUser = await f.api.loadUploadAccount(), reopened = f.api.publicUploadOwner(() => MANGA, reopenedUser); assert.equal(reopened.pendingCommitSession(), SESSION); const previous = f.requests.length; const restored = await f.api.currentUpload(reopened); assert.equal(restored.is_committed, true); assert.equal(restored.can_mutate, false); assert.equal(restored.receipt, undefined); assert.equal(f.requests.slice(previous).some(row => row.url === `${PUBLIC}/api/v1/upload?expectedAccountId=${USER}`), false); await assert.rejects(() => f.begin(reopened)); const reconciled = await f.api.reconcileUploadReceipt(reopened, SESSION); assert.equal(reconciled.receipt.id, CHAPTER); assert.equal(reopened.commitState(), undefined); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 1); });
 test('known 202 is accepted-unavailable without inventing a readable chapter or receipt', async () => { const f = await ready({ request: async (request, next) => request.url.endsWith('/commit') ? response({ deliberatelyMalformed: true }, 202) : next(request) }), { payload } = await stagedCommit(f), result = await f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload); assert.equal(result.status, 202); assert.equal(result.accepted, true); assert.equal(result.body, undefined); assert.equal(result.receipt, undefined); assert.equal(f.owner.commitState(), 'accepted-unavailable'); f.state.sessions.delete(SESSION); await assert.rejects(() => f.api.currentUpload(f.owner)); await assert.rejects(() => f.api.reconcileUploadReceipt(f.owner, SESSION)); assert.equal(f.owner.commitState(), 'accepted-unavailable'); assert.equal(f.storage.size, 1); });
 test('actual accepted pending response has no readable chapter and stays read-only', async () => { const f = await ready({ request: async (request, next, state) => { const result = await next(request); if (!request.url.endsWith('/commit')) return result; const receipt = chapterResource(2, true); Object.assign(state.sessions.get(SESSION), { receipt, publicationStatus: 'accepted_pending_projection' }); return response(receipt); } }), { payload } = await stagedCommit(f), result = await f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload); assert.equal(result.status, 200); assert.equal(result.accepted, true); assert.equal(result.body, undefined); assert.equal(f.owner.commitState(), 'accepted-unavailable'); const saved = f.state.sessions.get(SESSION); Object.assign(saved, { chapterId: null, receipt: null, receiptStatus: 'unavailable' }); const restored = await f.api.currentUpload(f.owner); assert.equal(restored.is_committed, true); assert.equal(restored.can_cancel, false); assert.equal(restored.receipt, undefined); await assert.rejects(() => f.api.reconcileUploadReceipt(f.owner, SESSION)); await assert.rejects(() => f.owner.request(`/upload/${SESSION}`, 'DELETE')); });
 test('failed or stale presentation cannot revive prior chapter fields after accepted 200', async () => { for (const catalogue of [() => { throw Error('Explicit fake presentation unavailable'); }, () => response(chapterView(chapterResource(1))), () => response({ ...chapterView(), id: MANGA })]) { const f = await ready({ catalogue }), { payload } = await stagedCommit(f); await assert.rejects(() => f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload)); assert.equal(f.owner.commitState(), 'accepted-unavailable'); const restored = await f.api.currentUpload(f.owner); assert.equal(restored.receipt, undefined); assert.equal(restored.committed_result, undefined); assert.equal(restored.can_retry_commit, false); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 1); } });
@@ -139,7 +139,7 @@ test('known 202 body-unavailable transport error retains accepted-unavailable st
 test('same-account discovery for a foreign target stays readable only for redirect', async () => { for (const target of ['manga', 'chapter']) { const f = await ready(); const stored = f.state.sessions.get(SESSION); if (target === 'manga') stored.mangaId = SECOND_SESSION; else stored.chapterId = CHAPTER; const visible = await f.api.currentUpload(f.owner); assert.equal(visible.id, SESSION); const before = mutations(f).length; await assert.rejects(() => f.owner.request(`/upload/${SESSION}`, 'DELETE')); await assert.rejects(() => f.owner.request(`/upload/${SESSION}`, 'PATCH', { version: stored.version, draft: {}, page_order: [] })); await assert.rejects(() => f.api.runUploadBatch(visible, [localPage()], f.owner)); assert.equal(mutations(f).length, before); } });
 test('owner A queued DELETE cannot dispatch after owner B has an unresolved commit', { timeout: 2000 }, async () => { let entered, release; const queued = new Promise(resolve => entered = resolve), gate = new Promise(resolve => release = resolve); const f = await ready({ capabilities: async state => { if (state.queueDelete && state.preparing?.method === 'DELETE') { entered(); await gate; } }, request: async (request, next) => { const result = await next(request); if (request.url.endsWith('/commit')) throw Object.assign(Error('Explicit fake uncertain commit'), { outcome: 'uncertain' }); return result; } }), { payload } = await stagedCommit(f), secondUser = await f.api.loadUploadAccount(), secondOwner = f.api.publicUploadOwner(() => MANGA, secondUser); await f.api.currentUpload(secondOwner); f.state.queueDelete = true; const deletion = f.owner.request(`/upload/${SESSION}`, 'DELETE'); await queued; await assert.rejects(() => secondOwner.request(`/upload/${SESSION}/commit`, 'POST', payload)); release(); await assert.rejects(() => deletion); assert.equal(f.requests.filter(row => row.method === 'DELETE').length, 0); assert.equal(secondOwner.commitState(), 'uncertain'); });
 test('simultaneous commit attempts dispatch exactly one natural commit', { timeout: 2000 }, async () => { let reads = 0, release; const gate = new Promise(resolve => release = resolve); const f = await ready({ request: async (request, next, state) => { const result = await next(request); if (state.race && request.method === 'GET' && request.url === `${PUBLIC}/api/v1/nostr/uploads/${SESSION}`) { if (++reads === 2) release(); await gate; } if (request.url.endsWith('/commit')) throw Object.assign(Error('Explicit fake uncertain commit'), { outcome: 'uncertain' }); return result; } }), { payload } = await stagedCommit(f), secondUser = await f.api.loadUploadAccount(), secondOwner = f.api.publicUploadOwner(() => MANGA, secondUser); await f.api.currentUpload(secondOwner); f.state.race = true; const results = await Promise.allSettled([f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload), secondOwner.request(`/upload/${SESSION}/commit`, 'POST', payload)]); assert.equal(results.every(result => result.status === 'rejected'), true); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 1); });
-test('queued ambiguous current discovery never dispatches after another owner commit fence', { timeout: 2000 }, async () => { let entered, release; const queued = new Promise(resolve => entered = resolve), gate = new Promise(resolve => release = resolve); const f = await ready({ capabilities: async state => { if (state.queueCurrent && state.preparing?.url === `${PUBLIC}/api/v1/upload`) { entered(); await gate; } }, request: async (request, next) => { const result = await next(request); if (request.url.endsWith('/commit')) throw Object.assign(Error('Explicit fake uncertain commit'), { outcome: 'uncertain' }); return result; } }), { payload } = await stagedCommit(f), newUser = await f.api.loadUploadAccount(), newOwner = f.api.publicUploadOwner(() => MANGA, newUser); f.state.queueCurrent = true; const discovery = f.api.currentUpload(newOwner); await queued; await assert.rejects(() => f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload)); release(); await assert.rejects(() => discovery); assert.equal(f.requests.filter(row => row.url === `${PUBLIC}/api/v1/upload`).length, 0); });
+test('queued ambiguous current discovery never dispatches after another owner commit fence', { timeout: 2000 }, async () => { let entered, release; const queued = new Promise(resolve => entered = resolve), gate = new Promise(resolve => release = resolve); const f = await ready({ capabilities: async state => { if (state.queueCurrent && state.preparing?.url === `${PUBLIC}/api/v1/upload?expectedAccountId=${USER}`) { entered(); await gate; } }, request: async (request, next) => { const result = await next(request); if (request.url.endsWith('/commit')) throw Object.assign(Error('Explicit fake uncertain commit'), { outcome: 'uncertain' }); return result; } }), { payload } = await stagedCommit(f), newUser = await f.api.loadUploadAccount(), newOwner = f.api.publicUploadOwner(() => MANGA, newUser); f.state.queueCurrent = true; const discovery = f.api.currentUpload(newOwner); await queued; await assert.rejects(() => f.owner.request(`/upload/${SESSION}/commit`, 'POST', payload)); release(); await assert.rejects(() => discovery); assert.equal(f.requests.filter(row => row.url === `${PUBLIC}/api/v1/upload?expectedAccountId=${USER}`).length, 0); });
 test('preview requires actual private no-store Authorization-vary and nosniff response headers', async () => { for (const change of [headers => { delete headers['cache-control']; }, headers => headers['cache-control'] = 'public, max-age=3600', headers => headers['cache-control'] = 'private', headers => headers.vary = 'Accept-Encoding', headers => { delete headers.vary; }, headers => headers['x-content-type-options'] = 'sniff', headers => { delete headers['x-content-type-options']; }]) { const f = await ready({ request: async (request, next) => { const result = await next(request); if (request.url.endsWith('/preview')) change(result.headers); return result; } }), page = await attach(f); await assert.rejects(() => f.api.uploadPreview(f.owner, f.current, page), /privacy headers/); } });
 
 // Replacement cases below use finite request/store/image-format seams only.
@@ -245,7 +245,7 @@ test('replacement fence persists across a fresh adapter and account reload, stor
   const stored = f.storage.get(replacementStorageKey); assert(stored); assert(stored.length < 320 * 1024); assert.doesNotMatch(stored, /blob:|arrayBuffer|thumbnail|privateKey|secret|authorization/);
   const g = fixture({ storage: f.storage, state: f.state }), { owner } = await g.owner();
   assert.equal(owner.pendingReplacement().sessionId, SESSION); const current = await g.api.currentUpload(owner);
-  assert.equal(current.can_mutate, false); assert.equal(g.requests.some(request => request.url === `${PUBLIC}/api/v1/upload`), false);
+  assert.equal(current.can_mutate, false); assert.equal(g.requests.some(request => request.url === `${PUBLIC}/api/v1/upload?expectedAccountId=${USER}`), false);
   await assert.rejects(() => owner.request(`/upload/${SESSION}`, 'DELETE'));
   const result = await g.api.reconcileUploadReplacement(owner); assert.equal(result.file.id, FILE); assert.equal(result.session.can_mutate, true); assert.equal(owner.pendingReplacement(), undefined);
   assert.equal(replacementRequests(g).length, 0);
@@ -391,6 +391,56 @@ test('busy bounded lock admission prevents install, while busy clear retains an 
 });
 
 const GROUP = uuid('9');
+test('begin and edit-begin bind generated JSON to the captured native account, never caller overrides', async () => {
+  const f = fixture(), { owner } = await f.owner();
+  await owner.request('/upload/begin', 'POST', { manga: MANGA, groups: [], expectedAccountId: SECOND_SESSION });
+  const begin = f.requests.find(row => row.url.endsWith('/upload/begin'));
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(begin.body)), { manga: MANGA, groups: [], expectedAccountId: USER });
+  const g = fixture({ request: (request, next, state) => {
+    if (new URL(request.url).pathname === '/api/v1/upload/begin/' + CHAPTER) {
+      const current = session(); current.chapterId = CHAPTER; state.sessions.set(SESSION, current); state.current = SESSION;
+      return response({ id: SESSION, type: 'upload_session', attributes: { version: 1, isCommitted: false, isProcessed: false, isDeleted: false } });
+    }
+    return next(request);
+  } });
+  const user = await g.api.loadUploadAccount(), edit = g.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+  await edit.request('/upload/begin/' + CHAPTER, 'POST', { version: 2, expectedAccountId: SECOND_SESSION });
+  const sent = g.requests.find(row => row.url.endsWith('/upload/begin/' + CHAPTER));
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(sent.body)), { version: 2, expectedAccountId: USER });
+});
+test('stale captured-account discovery sends its exact signed query and cannot adopt a foreign session after409', async () => {
+  const f = fixture({ request: (request, next) => {
+    const url = new URL(request.url);
+    if (url.pathname === '/api/v1/upload' && request.method === 'GET') {
+      assert.equal(url.search, '?expectedAccountId=' + USER); assert.equal(request.body, undefined);
+      return refusal(409, 'Actual eligible native-account binding changed');
+    }
+    return next(request);
+  } });
+  const { owner } = await f.owner(); f.account.user.id = SECOND_SESSION;
+  const foreign = session(SECOND_SESSION); f.state.sessions.set(SECOND_SESSION, foreign); f.state.current = SECOND_SESSION;
+  await assert.rejects(() => f.api.currentUpload(owner), error => error.body === 'Actual eligible native-account binding changed');
+  await assert.rejects(() => owner.request('/upload/' + SECOND_SESSION, 'DELETE'));
+  assert.equal(mutations(f).length, 0); assert.equal(foreign.state, 'open');
+  assert.equal(f.requests.filter(row => row.method === 'GET' && new URL(row.url).pathname.includes('/nostr/uploads/')).length, 0);
+});
+test('stale captured-account chapter and begin commands retain captured intent on a definitive409 without replay', async () => {
+  for (const operation of ['begin', 'metadata', 'claim', 'remove']) {
+    const f = fixture({ account: value => value.user.permissions.push('self.chapter.remove'), request: (request, next) => {
+      if (request.method === 'GET') return next(request);
+      const url = new URL(request.url);
+      if (request.body) assert.equal(JSON.parse(new TextDecoder().decode(request.body)).expectedAccountId, USER);
+      else assert.equal(url.search, '?expectedAccountId=' + USER + (operation === 'remove' ? '&removalMode=request-review' : ''));
+      return refusal(409, 'Actual eligible native-account binding changed');
+    } });
+    const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => operation === 'begin' ? MANGA : CHAPTER, user, operation === 'begin' ? 'manga' : 'chapter');
+    f.account.user.id = SECOND_SESSION;
+    const result = operation === 'begin' ? await owner.request('/upload/begin', 'POST', { manga: MANGA, groups: [] })
+      : operation === 'metadata' ? await owner.request('/chapter/' + CHAPTER, 'PUT', { version: 2, title: 'Captured A' })
+      : await owner.request('/chapter/' + CHAPTER + (operation === 'claim' ? '/claim' : ''), operation === 'claim' ? 'POST' : 'DELETE', operation === 'claim' ? undefined : { removalMode: 'request-review' });
+    assert.equal(result.status, 409); assert.equal(mutations(f).length, 1); assert.equal(f.state.sessions.size, 0);
+  }
+});
 test('chapter metadata uses exact signed target and official fields, never upload/native fallback', async () => {
   const wire = chapterResource(3);
   const f = fixture({ request: (request, next) => request.url.endsWith('/chapter/' + CHAPTER)
@@ -399,20 +449,65 @@ test('chapter metadata uses exact signed target and official fields, never uploa
   const updated = await owner.request('/chapter/' + CHAPTER, 'PUT', { version: 2, title: '', language: 'es', groups: [GROUP] });
   assert.equal(updated.status, 200); assert.equal(updated.body.data.id, CHAPTER);
   const sent = f.requests.at(-1); assert.equal(sent.method, 'PUT'); assert.equal(sent.url, PUBLIC + '/api/v1/chapter/' + CHAPTER);
-  assert.deepEqual(JSON.parse(new TextDecoder().decode(sent.body)), { version: 2, title: '', translatedLanguage: 'es', groups: [GROUP] });
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(sent.body)), { version: 2, expectedAccountId: USER, title: '', translatedLanguage: 'es', groups: [GROUP] });
   const count = mutations(f).length;
   for (const [route, method, payload] of [['/chapter/' + SECOND_SESSION, 'PUT', { version: 2 }], ['/chapter/' + CHAPTER + '?x=1', 'DELETE'], ['/chapter/' + CHAPTER, 'POST'], ['/chapter/' + CHAPTER + '/claim', 'DELETE'], ['/chapter/' + CHAPTER, 'PUT', { version: 2, data: [] }], ['/chapter/' + CHAPTER, 'PUT', { version: 2, groups: [GROUP, GROUP] }], ['/chapter/' + CHAPTER + '/claim', 'POST', {}]]) await assert.rejects(() => owner.request(route, method, payload));
   assert.equal(mutations(f).length, count);
 });
 test('chapter claims have no body and ordinary removal keeps actual durable moderation receipt', async () => {
   const f = fixture({ account: account => account.user.permissions.push('self.chapter.remove'), request: (request, next) => {
-    if (request.url.endsWith('/chapter/' + CHAPTER + '/claim')) return response({ result: 'ok', response: 'entity', data: chapterResource(3) });
-    if (request.url.endsWith('/chapter/' + CHAPTER)) { const result = response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202); result.headers['x-weebdex-instance-removal'] = 'pending-moderation'; result.headers['x-weebdex-source-deletion-status'] = 'instance-local-only'; return result; }
+    if (new URL(request.url).pathname.endsWith('/chapter/' + CHAPTER + '/claim')) return response({ result: 'ok', response: 'entity', data: chapterResource(3) });
+    if (new URL(request.url).pathname.endsWith('/chapter/' + CHAPTER)) { const result = response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202); result.headers['x-weebdex-instance-removal'] = 'pending-moderation'; result.headers['x-weebdex-source-deletion-status'] = 'instance-local-only'; return result; }
     return next(request);
   } });
   const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
-  await owner.request('/chapter/' + CHAPTER + '/claim', 'POST'); assert.equal(f.requests.at(-1).body, undefined);
-  const pending = await owner.request('/chapter/' + CHAPTER, 'DELETE'); assert.equal(pending.status, 202); assert.equal(pending.body.instanceRemoval, 'pending-moderation'); assert.equal(pending.body.requestId, SECOND_SESSION); assert.equal(f.requests.at(-1).body, undefined);
+  await owner.request('/chapter/' + CHAPTER + '/claim', 'POST'); assert.equal(f.requests.at(-1).body, undefined); assert.equal(f.requests.at(-1).url, PUBLIC + '/api/v1/chapter/' + CHAPTER + '/claim?expectedAccountId=' + USER);
+  const pending = await owner.request('/chapter/' + CHAPTER, 'DELETE', { removalMode: 'request-review' }); assert.equal(pending.status, 202); assert.equal(pending.body.instanceRemoval, 'pending-moderation'); assert.equal(pending.body.requestId, SECOND_SESSION); assert.equal(f.requests.at(-1).body, undefined); assert.equal(f.requests.at(-1).url, PUBLIC + '/api/v1/chapter/' + CHAPTER + '?expectedAccountId=' + USER + '&removalMode=request-review');
+});
+test('chapter removal requires a closed explicit effect and refuses ordinary approval before dispatch', async () => {
+  const f = fixture({ account: value => value.user.permissions.push('self.chapter.remove') });
+  const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+  for (const payload of [undefined, {}, { removalMode: null }, { removalMode: false }, { removalMode: ['request-review'] }, { removalMode: { toString: () => 'request-review' } }, { removalMode: 'delete' }, { removalMode: 'approve-hide' }, { removalMode: 'request-review', expectedAccountId: SECOND_SESSION }]) {
+    await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'DELETE', payload));
+  }
+  await assert.rejects(() => owner.request('/chapter/' + CHAPTER + '/claim', 'POST', { removalMode: 'request-review' }));
+  await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'PUT', { version: 2, removalMode: 'request-review' }));
+  assert.equal(mutations(f).length, 0);
+});
+test('captured chapter review stays an empty-body signed review when the same server account gains moderator grants', async () => {
+  const f = fixture({ account: value => value.user.permissions.push('self.chapter.remove'), request: (request, next) => {
+    if (request.method === 'GET') return next(request);
+    assert.equal(request.url, PUBLIC + '/api/v1/chapter/' + CHAPTER + '?expectedAccountId=' + USER + '&removalMode=request-review');
+    assert.equal(request.body, undefined);
+    const result = response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202);
+    result.headers['x-weebdex-instance-removal'] = 'pending-moderation'; result.headers['x-weebdex-source-deletion-status'] = 'instance-local-only'; return result;
+  } });
+  const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+  f.account.user.roles = ['moderator']; f.account.user.permissions.push('chapter.remove');
+  const result = await owner.request('/chapter/' + CHAPTER, 'DELETE', { removalMode: 'request-review' });
+  assert.equal(result.status, 202); assert.equal(mutations(f).length, 1);
+});
+test('chapter removal refuses a different202 or204 effect even with valid actual receipt headers', async () => {
+  for (const mode of ['request-review', 'approve-hide']) {
+    const f = fixture({ account: value => { value.user.roles = ['moderator']; value.user.permissions.push('chapter.remove'); }, request: (request, next) => {
+      if (request.method === 'GET') return next(request);
+      const result = mode === 'request-review' ? response(undefined, 204) : response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202);
+      result.headers['x-weebdex-instance-removal'] = mode === 'request-review' ? 'soft-hidden' : 'pending-moderation'; result.headers['x-weebdex-source-deletion-status'] = 'instance-local-only'; return result;
+    } });
+    const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+    await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'DELETE', { removalMode: mode }));
+    assert.equal(mutations(f).length, 1); assert.equal(f.requests.at(-1).body, undefined);
+  }
+});
+test('captured moderator approval signs only its explicit effect and confirms exact204 headers', async () => {
+  const f = fixture({ account: value => { value.user.roles = ['moderator']; value.user.permissions.push('chapter.remove'); }, request: (request, next) => {
+    if (request.method === 'GET') return next(request);
+    assert.equal(request.url, PUBLIC + '/api/v1/chapter/' + CHAPTER + '?expectedAccountId=' + USER + '&removalMode=approve-hide');
+    const result = response(undefined, 204); result.headers['x-weebdex-instance-removal'] = 'soft-hidden'; result.headers['x-weebdex-source-deletion-status'] = 'instance-local-only'; return result;
+  } });
+  const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
+  const result = await owner.request('/chapter/' + CHAPTER, 'DELETE', { removalMode: 'approve-hide' });
+  assert.equal(result.status, 204); assert.equal(f.requests.at(-1).body, undefined); assert.equal(mutations(f).length, 1);
 });
 test('chapter write results are exact-target, identity-fenced and never automatically replayed', async () => {
   for (const change of ['wrong-id', 'wrong-envelope', 'unavailable-body', 'scope', 'disposed']) {
@@ -427,6 +522,6 @@ test('chapter removal cannot invent pending moderation or successful hide from s
   for (const result of [response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202), response(undefined, 204)]) {
     const f = fixture({ account: account => account.user.permissions.push('self.chapter.remove'), request: (request, next) => request.url.includes('/chapter/') ? result : next(request) });
     const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
-    await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'DELETE')); assert.equal(mutations(f).length, 1);
+    await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'DELETE', { removalMode: 'request-review' })); assert.equal(mutations(f).length, 1);
   }
 });

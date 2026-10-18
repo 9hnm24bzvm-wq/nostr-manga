@@ -28,6 +28,9 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(catalogue::router())
         .merge(catalogue_edges::router())
         .merge(account_reads::router())
+        .merge(ratings::router())
+        .merge(list_follows::router())
+        .merge(follow_writes::router())
         .merge(media::router())
         .merge(native_forum::router())
         .merge(legacy::router())
@@ -37,6 +40,11 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(uploads::router())
         .merge(upload_extensions::router())
         .merge(chapter_writes::router())
+        .merge(manga_writes::router())
+        .merge(cover_writes::router())
+        .merge(title_disposition::router())
+        .merge(resource_mappings::router())
+        .merge(relation_writes::router())
         .method_not_allowed_fallback(routes::wrong_method)
 }
 
@@ -56,6 +64,11 @@ pub mod statistics;
 pub mod catalogue;
 pub mod catalogue_edges;
 pub mod account_reads;
+pub mod account_settings;
+pub mod settings_writes;
+pub mod ratings;
+pub mod list_follows;
+pub mod follow_writes;
 
 pub mod media;
 
@@ -72,3 +85,12 @@ pub mod upload_extensions;
 mod uploads_body;
 
 pub mod chapter_writes;
+
+pub mod manga_writes;
+
+pub mod cover_writes;
+
+pub mod title_disposition;
+pub mod resource_mappings;
+pub mod relation_writes;
+pub(crate) mod relation_paging;

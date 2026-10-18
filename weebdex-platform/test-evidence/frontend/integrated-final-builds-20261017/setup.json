@@ -1,0 +1,15 @@
+{
+  "source_commit": "56d5e20a29574b21999b0b8d4f0f470f14db2a35",
+  "source_tree": "00c0f8074ce45ab3b1e978a076491c607d24f38a",
+  "source_map_sha256": "d181c3265fa4a087ede578e13a5f6e53384830d4e834ca2d43baea059edb042a",
+  "dependencies_manifest_path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/dependencies-before.json",
+  "dependencies_manifest_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "verified_dependency_entries": 39226,
+  "canonical_frontend_files": 679,
+  "all_inputs_unchanged": true,
+  "frontend_inputs_sha256": "361723fcf30b31e82ed9464278d27a650cc6a3cab0c7a5ee080ae79ac2d9788e",
+  "frontend_inputs": 912,
+  "canonical_manifest_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+  "no_dependency_install_or_download": true,
+  "at_utc": "2026-10-17T23:00:41.106556+00:00"
+}

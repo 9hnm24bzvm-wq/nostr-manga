@@ -1,0 +1,41 @@
+{
+  "status": "finite-and-strict-passed",
+  "utc": "2026-10-17T17:49:32.134974+00:00",
+  "finite": {
+    "passed": 120,
+    "failed": 0,
+    "command": "node --experimental-vm-modules --test weebdex-platform/tests/ci/public-api-recovery.test.mjs weebdex-platform/tests/ci/test_actor_follow_readiness.mjs weebdex-platform/tests/ci/test_public_upload_provenance_recovery.mjs",
+    "limits": "Finite composed module/controller/transport stand-ins only. No new browser/HTTP acceptance."
+  },
+  "strict": {
+    "default": {
+      "errors": 0,
+      "warnings": 15,
+      "integration_files": 69
+    },
+    "enabled": {
+      "errors": 0,
+      "warnings": 15,
+      "integration_files": 86
+    },
+    "canonical_frontend_unchanged": true,
+    "canonical_frontend_files": 679
+  },
+  "sources": {
+    "platform-integrations/public-api/user-profile.ts": "29d84539f34e7d1a8e42d2df7f31c7339a46d4a9d90a56a4ab77c7b250ffda4a",
+    "platform-integrations/public-api/site-client.ts": "6716336dca3a2c9c689193c26833c6e6314a3159233a6f60c63361b3dd6ee37c",
+    "platform-integrations/public-api/overlays.mjs": "a7201e1ac6c547f8e4f37f590a679f75020e1f56fc3f372bab2560b2c96c2e89",
+    "platform-integrations/public-api/anchors.json": "8b07b68b80d816cc111b793fe16cbed8c2147c5dbd613b59ced62a78a4a8160c",
+    "platform-integrations/public-api/source-hashes.json": "8d39d2c7df31fe71f4fa0b831c23944502ab1d832ff1e5fce4b5f67af984da97",
+    "platform-integrations/frontend-behavior/actor-follow-state.ts": "c6394effe721edebd0279ded403894e1175be7ba1bb82073fc56c55d5aae74b6",
+    "tests/ci/public-api-recovery.test.mjs": "7785ada494ab25f0c2155df588a943d50d4aab497dd82138561b4c0356cfb484",
+    "tests/ci/test_actor_follow_readiness.mjs": "15153d4bef544155ace3b8edf505c13c75ed962401b589fd08de227db8d8e760"
+  },
+  "scope": "Public /user/{UUID} GET presentation in existing Overview/Uploads; absent native thread handled without invented counters; native account mutations hidden/blocked for public profiles",
+  "remaining_gaps": [
+    "Authenticated user directory/own-follow read UI not added: no existing Following route consumes retained follow API methods",
+    "Public UUID profile mutation requires an explicit supported signed command adapter",
+    "No fabricated version for protocol-publisher profiles",
+    "No browser or physical layout acceptance claimed"
+  ]
+}

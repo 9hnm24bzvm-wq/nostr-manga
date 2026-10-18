@@ -1,0 +1,52 @@
+{
+  "schema": "owned-integrated-pipeline-http-run-v1",
+  "started_at_utc": "2026-10-17T22:56:52.360443+00:00",
+  "source_commit": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+  "command": [
+    "bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/protocol_bridge_http-1f5ba0e84b091e49",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "test_executable_sha256": "368e0b5730133d99ed2541a792f52b82ed37ae2ae0991d59ff152d0f54c018bb",
+  "pass": true,
+  "diagnostic_previous_query": false,
+  "runner_sha256": "28371da73b6610785dbfdad683544a46c18cba9d09e17ea8deae3b2fd73ece43",
+  "disk_guard": {
+    "floor_bytes": 4294967296,
+    "cleanup_reserve_bytes": 134217728,
+    "min_observed_free_bytes": 5692739584,
+    "signalled": false,
+    "identity": "pidfd-owned guard child"
+  },
+  "exit_code": 0,
+  "test_executable_sha256_after": "368e0b5730133d99ed2541a792f52b82ed37ae2ae0991d59ff152d0f54c018bb",
+  "executable_unchanged": true,
+  "ended_at_utc": "2026-10-17T22:57:02.567022+00:00",
+  "log_sha256": "d185fa10e9c59fb00f81741e3751acca85b50cdda575a0149702868ad7abda13",
+  "child_reaped": true,
+  "cleanup_receipt_sha256": "711db9aef73be3c9356cf3c450c093fb68576e8c18e3dece4b7737cf4dd43f95",
+  "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-rx_qq3ur/cleanup.json",
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": []
+  },
+  "tests": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_out": 0,
+    "seconds": 9.13
+  },
+  "cases": [
+    "accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle"
+  ]
+}

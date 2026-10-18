@@ -1,0 +1,15 @@
+{
+  "schema": "historical-preparation-scope-preservation-v1",
+  "restoredSharedReceipt": {
+    "path": "weebdex-platform/test-evidence/frontend/integration-source-manifest.json",
+    "source": "b4feb0b02350ac5332a59a47a308540fe9c4cdf7",
+    "sha256": "ba3742b099aeea5ac873c41d22fb26afa0248f26823867c53b3a9d5031efb207",
+    "scope": "Inherited earlier preparation receipt; not qualification of this new composition."
+  },
+  "preservedEditorialReceipt": {
+    "path": "weebdex-platform/test-evidence/public-api/editorial-tools/historical-frontend-integration-source-manifest.json",
+    "source": "13ff71d093c14d5d9a0a8f437f8a681f0237978b",
+    "sha256": "66158aab0d6998eb2ca32b4af5db1669c8a3fb5a979524f4090f52873952f427",
+    "scope": "Exact historical editorial preparation bytes moved out of the shared receipt path. Not current combined qualification."
+  }
+}

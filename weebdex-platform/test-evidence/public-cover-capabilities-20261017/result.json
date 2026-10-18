@@ -1,0 +1,31 @@
+{
+  "schema": "separate-cover-control-authority-v1",
+  "utc": "2026-10-17T22:24:34.660837+00:00",
+  "qualified_source_commit": "a15ae9c570d0b4674080ba69ce7bbe1bc533c9bf",
+  "source_sha256": {
+    "platform-integrations/public-api/cover-client.ts": "c55b57227a9df9a59c880e18612de435e1b81039a52860164f224278f1906b99",
+    "platform-integrations/public-api/PublicCoverEditor.svelte": "07726d31a705a0b5ed79693f0205a0be3d3455dacf301bae8f9f8f24f8e4b65a",
+    "platform-integrations/public-api/PublicTitleEditor.svelte": "b9b62d7fa86478781e61dff78ed5d5234866d10013b7757c5dcb2b708f0a3175",
+    "tests/ci/test_public_cover_commands.mjs": "757364f5d6e1e88e2c4b3d8dc29f5625e7900bccd09fc10a6ffba8cb4559c4da"
+  },
+  "candidate_source_files_identical": true,
+  "behavior": "Published cover editors use manga.cover.edit independently of manga.update; moderator cover.delete can remove without metadata or cover-edit grants. Ordinary locked/nonowner draft edits remain disabled. Accepted source projection and every shared busy/pending/dirty fence remain.",
+  "finite": {
+    "cover": 59,
+    "new_capability_and_wiring": 12,
+    "combined_title_cover_transport": 157
+  },
+  "strict_enabled": {
+    "errors": 0,
+    "warnings": 12
+  },
+  "strict_default": {
+    "errors": 0,
+    "warnings": 15
+  },
+  "canonical_frontend_preserved": 679,
+  "initial_finite_failure": "Only the new source-scraper regex rejected an arrow-containing Svelte mount; its extraction was corrected without dropping assertions. Original58 passes/1 failure log retained.",
+  "backend_changed": false,
+  "actual_browser_or_combined_candidate_check": false,
+  "boundary": "These passing focused checks ran on a15ae9c, not the new API/group/statistics-composed candidate. Matching source bytes do not replace combined strict/runtime qualification."
+}

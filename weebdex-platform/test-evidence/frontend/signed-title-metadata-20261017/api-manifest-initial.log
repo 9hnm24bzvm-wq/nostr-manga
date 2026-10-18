@@ -1,0 +1,104 @@
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ public UUIDs preserve custom UUID version and reject native IDs (3.495637ms)
+✔ query maps arrays, page offsets and ordered sort without dropping controls (1.681429ms)
+✔ query rejects unknown, unsupported translated exclusions and duplicate scalar controls (0.623097ms)
+✔ DTO chapter volume/chapter/title remain null and raw UUID resources are retained (0.757379ms)
+✔ cover UUID is distinct from filename and original/optimized URLs use opaque media tokens (0.586903ms)
+✔ at-home returns actual original/data-saver paths and originalsOnly remains explicit (0.529606ms)
+✔ typed client preserves non-2xx errors and rejects wrong resource kind (0.529736ms)
+✔ typed client sends exact UUID query arrays and cancellation signal (0.466852ms)
+✔ native forum response retains real native thread identity and rejects invented coverage (0.712151ms)
+✔ site title availability comes from actual public feed and absent forum context stays null (1.859346ms)
+✔ site legacy shortlinks use server namespace resolver and never guess UUIDs (0.85076ms)
+✔ site analytics is honestly unavailable and no transport mutation occurs (0.35941ms)
+✔ migration resolver accounts exactly for mapped and unresolved legacy references (0.622816ms)
+✔ migration resolver rejects changed service before request (0.238108ms)
+✔ migration resolver rejects changed service after asynchronous request (0.218198ms)
+✔ adult-parent chapter migration visibility and parent proof request all content ratings (1.294356ms)
+✔ migration visibility rejects wrong-kind and truncated responses (0.421043ms)
+✖ both product gates are off by default and original API source stays immutable (2.73978ms)
+✔ actual composed API Search forwards its signal and cannot fall through to native HTTP on failure (34.851912ms)
+✔ retained random/advanced/count query controls map faithfully to public controls (0.486532ms)
+✔ author uploads compose actual manga feeds with global publication ordering and correct parent-only filters (1.612815ms)
+✔ author chapter count sums actual scoped totals without materializing fake resources (0.569286ms)
+✔ author composition rejects ignored creator filters and honest view budgets (0.70502ms)
+✔ search/upload ordering and title chapter ordering stay distinct; group count limit0 is preserved (0.617789ms)
+✔ named resources preserve the standard locked field without inventing an extension (0.189916ms)
+✔ operation schemas preserve scalar UUIDs, bare repeatable uploader, cover arrays and unknown year (0.185899ms)
+✔ operation schemas reject cross-family controls, ambiguous scalar parents and feed-only bounds (0.403457ms)
+✔ title positive group filtering uses exact /chapter manga scope instead of unsupported feed groups (0.280211ms)
+✔ aggregate group selector expands actual /chapter resources and never forwards groups to feed (0.878872ms)
+✔ aggregate retained exclusions compose only supported chapter reads and are not dropped (0.282105ms)
+✔ retained random available-chapter/language filters use bounded uniform actual collection selection (0.388203ms)
+✔ standard random calls stay standard and bounded random failure never falls back (0.336315ms)
+✔ chapter update tag preferences compose public parent filters before scoped actual feeds (0.315023ms)
+✔ typed resolver requires exact requested native or UUID input proof for every canonical mapping (0.581244ms)
+✔ visibility never accepts a preferred UUID in place of an unproved requested alias (0.341373ms)
+✔ composed chapter/volume ordering matches numeric SQL keys with nonnumeric values always last (2.207109ms)
+✔ native forum network or malformed-context failure leaves title content readable and cancellation still aborts (0.609026ms)
+✔ original and optimized page pixel dimensions remain independent actual metadata (0.159079ms)
+✔ recommendations use persisted edge UUID/score and hydrated target covers/creators (1.18325ms)
+✔ relations use singular endpoint and preserve actual label, owner version and edge identity (0.379501ms)
+✔ empty persisted edge collections stay actually empty without a hydration or native substitute (0.225859ms)
+✔ recommendation documented filters are preserved while invented pagination is rejected before transport (0.521614ms)
+✔ unavailable edge roots return exact error without any target hydration (0.142654ms)
+✔ wrong-kind, duplicate-edge, duplicate-target and self edges fail before hydration (0.45231ms)
+✔ recommendation scores are exact integers, never invented or rounded (0.398279ms)
+✔ edge hydration rejects missing, duplicate and out-of-scope title rows (0.579631ms)
+✔ relation provenance must describe the real owner-manga version domain (0.344478ms)
+✔ public title script exposes the native Related tab and immutable markup is retained (18.707023ms)
+✔ hydration order cannot reorder the persisted recommendation ranking (0.530568ms)
+✔ truncated, shifted and over-cap edge collections are explicit errors (0.499641ms)
+✔ relation targets hydrate in exact 100-ID batches without duplicate source IDs (4.655291ms)
+✔ detail manga statistics keep an exact canonical target without extra resolver calls (0.464509ms)
+✔ detail chapter statistics keep an exact canonical target without extra resolver calls (0.118388ms)
+✔ detail group statistics keep an exact canonical target without extra resolver calls (0.093891ms)
+✔ detail manga statistics accept a different preferred UUID only with exact alias proof (0.407262ms)
+✔ detail chapter statistics accept a different preferred UUID only with exact alias proof (0.15976ms)
+✔ detail group statistics accept a different preferred UUID only with exact alias proof (0.144317ms)
+✔ statistics cannot attach another resource through different preferred UUID (0.390637ms)
+✔ statistics cannot attach another resource through unresolved alias (0.211528ms)
+✔ statistics cannot attach another resource through resolver refusal (0.162784ms)
+✔ statistics cannot attach another resource through wrong kind (0.188543ms)
+✔ failed statistics responses preserve actual status and never resolve or retry (0.299991ms)
+✔ group detail requests actual leader/member includes and preserves both in retained display (0.53251ms)
+✔ empty or unincluded memberships do not synthesize accounts or role versions (2.627892ms)
+✔ protocol-publisher membership keeps the actual public-key name and absent native version (0.19957ms)
+✔ duplicate group identities and malformed included usernames fail closed (0.306341ms)
+✔ group role comes only from the relationship role, not untrusted attribute flags (0.122124ms)
+✔ group errors preserve the real response without forum calls or native retries (0.212129ms)
+✔ public groups never expose native Claim or infer unclaimed status from missing members (1.13744ms)
+✔ exact gate-on group Claim guards compose without changing canonical source; native gate stays untouched (20.415332ms)
+ℹ tests 70
+ℹ suites 0
+ℹ pass 69
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 313.255067
+
+✖ failing tests:
+
+test at tests/ci/public-api-recovery.test.mjs:43:1
+✖ both product gates are off by default and original API source stays immutable (2.73978ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  30 !== 25
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/browser-completeness-audit-worktree-20261017/weebdex-platform/tests/ci/public-api-recovery.test.mjs:43:870)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 30,
+    expected: 25,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

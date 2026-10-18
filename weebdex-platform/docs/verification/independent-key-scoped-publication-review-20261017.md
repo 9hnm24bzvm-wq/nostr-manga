@@ -1,0 +1,10 @@
+# Independent key-scoped publication review
+
+Reviewed `ea0cab9` through `31f0f04` and `3862f4f` with the anonymous UUID library/social integration. No remaining source-level authority blocker was found after the follow-ons.
+
+- Canonical databases are additive per public API origin and signing public key. Unsigned destination preferences and anonymous device records are separate. Returning to a key reopens only that key's canonical records. Old global canonical data is not silently imported or reattributed; its local export is explicitly labelled.
+- Canonical read/mutation/import/recovery/export paths retain the captured key and signer generation. Original device rows are reviewed projections, not silently persisted as canonical recovery data. A key change cannot route the old snapshot into the new key's store. The bounded immutable-job receipt exception retains exact old-key outcomes without permitting ordinary old-key library writes.
+- Review found stale counts/async destination refresh UI state; `31f0f04` clears counts and fences every refresh/result assignment by key, generation and epoch. Mixed migrated v2 adoption now hydrates only typed UUID references while retaining unresolved legacy rows as unavailable.
+- Review found an outer import-review result-install interval after the inner proxy's final check. `3862f4f` guards import/publication/recovery review installation again and checks the captured key immediately before backup download.
+
+Independent rerun: 19/19 production-function/proxy/publication/receipt seams pass, including stale preferences/jobs/counts, key reconnect, result installation, export, exact old-key completion, unsupported recipients and mixed legacy adoption. Earlier combined library/social/publication strict checks passed in both modes with 0 errors and 15 retained warnings; each follow-on also has its worker-owned strict receipt. These are finite source/contract checks. Genuine browser, real IndexedDB/cross-tab/reload, extension prompt and production delivery timing remain unverified.

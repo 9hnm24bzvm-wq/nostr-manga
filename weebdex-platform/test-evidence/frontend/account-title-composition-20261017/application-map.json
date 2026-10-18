@@ -1,0 +1,224 @@
+{
+  "base_title_family_commit": "eaf5effe0f0dfb20846f497ed9b594c79287a1b8",
+  "composed_source_tip": "f85698f0902680715733c102d87190f1ca7e3991",
+  "branch": "recovery/compose-account-title-20261017",
+  "worktree": "composed-account-title-worktree-20261017",
+  "applied": [
+    {
+      "original": "b77de361646677211f92e1bfa4b89ea40d68b101",
+      "account_candidate_source": "30ac9a5b0b41cf90c7c2ddd97601310f6aeb7743",
+      "applied": "cb95bb40d469fd0eb934bfe3fca9bd2ebfa4dfdc",
+      "subject": "Expose verified versioned public UUID original-resource mapping"
+    },
+    {
+      "original": "be1589c23a22adcedf4753e965fb0b55d10ee6cd",
+      "account_candidate_source": "44e7a62b31bb7ae09eb034131e4252c87fe9bbce",
+      "applied": "c811b1c79f7d0d8af21c570cbea208ed17f79883",
+      "subject": "Render supported public user UUID profiles in native account views"
+    },
+    {
+      "original": "9d548e08727a71da1e3a026547f25cd9205dbb2a",
+      "account_candidate_source": "6ac4ed668dfbc7a6b50c7bc5c97a6806c930ff59",
+      "applied": "133a561c80baf19c0ef713ac28a9740701b9974b",
+      "subject": "Hydrate saved UUID library resources through exact public catalogue scopes"
+    },
+    {
+      "original": "59009572c794a2e90e71a92f2122d2bad0cad4db",
+      "account_candidate_source": "f6fcfb295bdda73c46c14cae5f798dce8a1f8623",
+      "applied": "34fa8dad0bd5f4cab9f1e3b116f572b71498bf82",
+      "subject": "Enable owner-scoped anonymous UUID device library mutations"
+    },
+    {
+      "original": "9f7585cd4f9e79827b2fa2108a7fe5b3619445f6",
+      "account_candidate_source": "a62116eca2473592e0cf4b26734ccab6a3f7f90a",
+      "applied": "dff0221a5896da5c6e936e5d428959ba6b822445",
+      "subject": "Resolve public UUID source discussions through verified original provenance"
+    },
+    {
+      "original": "3b2717c163c14ee4101324cc165eca4ee7e9b3e6",
+      "account_candidate_source": "62f85d649bb73097dc48b810f1b13f29fb0e889e",
+      "applied": "a7cacf3521b6a4e4bcdd18fa15af0850ee41067a",
+      "subject": "Enable anonymous UUID device library controls and exact scoped imports"
+    },
+    {
+      "original": "da5daf631b8860eb305ca28f499118c488a7fcb7",
+      "account_candidate_source": "0761e4ef2575a86c0019a471c1a6273dcad98e5f",
+      "applied": "3b9fb2436bc9462f8e3990f285e40d7b2f836ee5",
+      "subject": "Project verified UUID libraries into explicit key-scoped publication"
+    },
+    {
+      "original": "bfe65984634f268352d807d0038f8a79f0b633b6",
+      "account_candidate_source": "d3c4e2a59106435cd2ed170411341376e5e520ec",
+      "applied": "cac12421908a1175448c3ac08d617085ff4b6f2b",
+      "subject": "Clarify local UUID command versus full migration browser readiness"
+    },
+    {
+      "original": "bcde04e037bf72d871d3dd840ab62c55bd68c13b",
+      "account_candidate_source": "155e1c9f9d357839c476104a0a0336bc4aa85556",
+      "applied": "1f1f214094410f1e9682196d76a6987fd8f41eff",
+      "subject": "Retain exact library receipts and fence stale key-scoped UI continuations"
+    },
+    {
+      "original": "e807da875da2f4dd158effa92da51f19cf0f21a1",
+      "account_candidate_source": "e54fd9cfff1b181e10daf19cbdff007e7a1e759e",
+      "applied": "931f51d92f1840a16c73d2e542837776f20bf7d5",
+      "subject": "Add genuine bound-account ratings to native title controls"
+    },
+    {
+      "original": "3b5162a623409b4a6050e17449b5ecdc40c11000",
+      "account_candidate_source": "6d2a524a1200901d2ef2528c9c5c31a416944561",
+      "applied": "b92ff64279315ffc78d9f77fa4f9d6e13f3f4e3f",
+      "subject": "Guard outer key-scoped review installation and backup download"
+    },
+    {
+      "original": "e060354b19e0b732777fae8f8b94fb66b69f285a",
+      "account_candidate_source": "1a3355ef09831d83ab6dc59375a9bdb344c6ff27",
+      "applied": "779619368192e6a9730368f5d3428b9ebb0851a9",
+      "subject": "Verify rating UI exceptions in the real production preparation seam"
+    },
+    {
+      "original": "0bbb4c00431c5b71f1d18151d4db6b13452076c8",
+      "account_candidate_source": "c76a749e1978ffc6c80f744cd4195a9a8c252cfd",
+      "applied": "d389260e0bfaba688cac396abcbcd14b08f15d92",
+      "subject": "Record independent key-scoped publication review and rerun"
+    },
+    {
+      "original": "07e1dc6481af56b63e3d791e2b63d165cc40da0a",
+      "account_candidate_source": "8ab7c5f2f9c65232e3d4ed39bd32a4728b798e5f",
+      "applied": "e48232c4f87178ec64eafcf331763f1aa4567011",
+      "subject": "Preserve exact chapter and volume decimal library ordering"
+    },
+    {
+      "original": "45e788803c34c992881c9da955107bfc134ee1d3",
+      "account_candidate_source": "4ff6287d0d279cb78c78c8cf2fc6318bec2d38ce",
+      "applied": "04ea441ff735d3a610d34ed863f512c80eb9e044",
+      "subject": "Add canonical published-list discovery and bound-account following"
+    },
+    {
+      "original": "7185a56b9c4b30bb6750cceade27ae29ec2fd84e",
+      "account_candidate_source": "3abb73d71d6a10934e6a00f2e4a6a06aad6a694f",
+      "applied": "53fb734eb9e96d12c26b9e2a9d90f30a759ceb0d",
+      "subject": "Keep profile upload sort parameters in the query string"
+    },
+    {
+      "original": "b6c4e553452a5b82a2235e16907c4bdd736906c8",
+      "account_candidate_source": "7202595a868cc3794c1b3481992f4a91cf22951f",
+      "applied": "a18641030bb3776d7d8ca33d28a9d6cea91281f1",
+      "subject": "Save explicit changed preferences through bound-account settings CAS"
+    },
+    {
+      "original": "44da079567647e238a16916317ab2e2a90b4de02",
+      "account_candidate_source": "3294027c6ac238bbc9b5188baea52e25e326a594",
+      "applied": "00957f10d32cd26a32734ec9a42afe240fa66471",
+      "subject": "Accept public-list aliases only with matching typed persisted proofs"
+    },
+    {
+      "original": "f6ecdb560f0be5dd767698003ee52a08d42f5531",
+      "account_candidate_source": "1050ff502b29b569835548b3a4ae92fe5f949c06",
+      "applied": "030846bb76fe2b49debf8b17e626559a5c02deed",
+      "subject": "Add explicit bound-account follows and reject inconsistent CAS receipts"
+    },
+    {
+      "original": "8bdf5997f0302ab228f1a39ceb271dcae5d658b0",
+      "account_candidate_source": "eac185d499ab8033f8925be9178b218fa933b00c",
+      "applied": "7d6141177715b5056b8377e1e9ac5c1a9b528016",
+      "subject": "Qualify corrected account follow controls on both composed strict gates"
+    },
+    {
+      "original": "32db8e38cca4d7e5d99fba9ac494f0dfd3d4c94d",
+      "account_candidate_source": "7b2ce48fe57b4c89e5f96fdd06b3c14f6719c44e",
+      "applied": "1b5dc57a5f2a47dab0f1600abfcb0cb42ee0d02a",
+      "subject": "Add bound-account following collection tabs with explicit rebind refresh"
+    },
+    {
+      "original": "0d0ad1e8b896b1fbbb4bff109142ab6ea9063f75",
+      "account_candidate_source": "89cc777a8d5d7982a0168e7067275b418d902596",
+      "applied": "fa401566181039e473d6618954cde95cff2d2976",
+      "subject": "Wire authenticated user directory and preserve retained query serialization"
+    },
+    {
+      "original": "282af61f8dbf121a8f7a7c33306a4f5f51ac8412",
+      "account_candidate_source": "071c1e8b17255fa429935090cc0f8936ddcd41dc",
+      "applied": "f85698f0902680715733c102d87190f1ca7e3991",
+      "subject": "Qualify frozen account library source with approved DOM and IndexedDB suites"
+    }
+  ],
+  "manual_resolutions": {
+    "backend/src/public_api/mod.rs": "Keep title/cover/disposition registrations and add mapper route/module",
+    "public-api/anchors.json": "Three-way structured additive union, rejecting same-key different edits; every original title-family entry preserved exactly",
+    "public-api/source-hashes.json": "Three-way key union; every title-family source digest unchanged",
+    "public-api/overlays.mjs": "Keep title group-presentation helper; add User reads/account features; exact static8 path/exception pairs preserve both group-claim and UUID-cookie fences",
+    "scripts/prepare-frontend-integration.mjs": "Keep all five title-family external extensions and signed cover/title qualification metadata, add exact account-feature evidence",
+    "tests/ci/public-api-recovery.test.mjs": "Retain both title/group/statistics and account profile tests; update exact combined manifest40/subset33 counts"
+  },
+  "preserved_source_sha256": {
+    "weebdex-platform/backend/migrations/0097_chapter_removal_review.sql": "6342cc670af52ae980e3d4553ce283e24f47278aaeecdc547786c182f3f266ff",
+    "weebdex-platform/backend/migrations/0098_native_manga_ratings.sql": "11968c5c818f6c15d9e21e88ca0f652c60fd858d4c01ffe5db80f831af4531e2",
+    "weebdex-platform/backend/migrations/0099_native_public_list_follows.sql": "2fd2753eaf86d7ac2968641fdfc6896426d91ec7a1da8652a47d2cd6e9e91d1c",
+    "weebdex-platform/backend/migrations/0100_native_follow_revisions.sql": "7d4d06493dbabda521e80d85d1296d738e639f4f659b2d5bb04b7999bc9a360c",
+    "weebdex-platform/backend/migrations/0101_title_removal_review.sql": "e514a04fd91cb6da2a321fccf7ad97588a63560c5c53e61f910453ab13372b43",
+    "weebdex-platform/backend/src/public_api/account_reads.rs": "0137ee7b6925715b873e1881db421e522886599601eb6d098372c54eb7c49ad8",
+    "weebdex-platform/backend/src/public_api/account_settings.rs": "30e986308ed40a6532b84b57245202413c05d3b774f87678fc169318f8c6eb55",
+    "weebdex-platform/backend/src/public_api/chapter_writes.rs": "b1ab2860f3b85d4a4967e4b1517ec86bc6b0d6c491f6399bdfdd0a15aacd11e4",
+    "weebdex-platform/backend/src/public_api/cover_writes.rs": "a374fa246751d500013606760b7d52b1ae676b96a44ee4df6b583eefe0e52963",
+    "weebdex-platform/backend/src/public_api/follow_writes.rs": "17b163658fd325c9a2e204032019648e4a3beaa783701ba61d7c11f35214f7df",
+    "weebdex-platform/backend/src/public_api/list_follows.rs": "a607da76ef18fd05e47a3305bb331a64aab815aa8d4600ef9ded5157efb725f3",
+    "weebdex-platform/backend/src/public_api/manga_writes.rs": "3c00219dca2514e4df041ca6696bd48f5f292d487586127392c949613a01bece",
+    "weebdex-platform/backend/src/public_api/ratings.rs": "f4a3a57171f5c521d1b9bcb7dbbdf3f111937a4ae31f13afbb5294fff38ae605",
+    "weebdex-platform/backend/src/public_api/settings_writes.rs": "5fecbfb26655b4105c64b8624bc3e0aac7760a7355ecd27d0fd44d91a415d0bb",
+    "weebdex-platform/backend/src/public_api/title_disposition.rs": "5f6dff3cc81b9a3694c49fb80b159e533feb89bdc206419697a7b4741de1e5b7",
+    "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs": "70ec02db52c0867872f1545ff20667a9b7e0f7e747261de8b5a57f62285c9505",
+    "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte": "6a6eabfa648fac52a49af964c253c8894880a165e1696e99d96cbb256ce9d11e",
+    "weebdex-platform/platform-integrations/public-api/PublicCoverEditor.svelte": "07726d31a705a0b5ed79693f0205a0be3d3455dacf301bae8f9f8f24f8e4b65a",
+    "weebdex-platform/platform-integrations/public-api/PublicCreateGate.svelte": "4f4ef18bd7c7407939d2f2541e6c03f9ec48c575ee17d39bd537720b3ed29009",
+    "weebdex-platform/platform-integrations/public-api/PublicTitleDisposition.svelte": "6987809d22e5a985f2242f0eac49f35cbc6b006c362629a3e0fec58c71b4e413",
+    "weebdex-platform/platform-integrations/public-api/PublicTitleEditor.svelte": "b9b62d7fa86478781e61dff78ed5d5234866d10013b7757c5dcb2b708f0a3175",
+    "weebdex-platform/platform-integrations/public-api/PublicTitleShell.svelte": "2312e11adce6f9ade8c27c23f4df47ac826d9b0ff7ad652280894a31c382605e",
+    "weebdex-platform/platform-integrations/public-api/cover-client.ts": "c55b57227a9df9a59c880e18612de435e1b81039a52860164f224278f1906b99",
+    "weebdex-platform/platform-integrations/public-api/cover-multipart.ts": "6c73d14a4654bd3630d5928c5e2d3788f07afc9ae1873c0dadf183207ee95c21",
+    "weebdex-platform/platform-integrations/public-api/group-presentation.ts": "2a5b5e1ceb510f15d4d6ebb7670ecef15387f7ecd4a5a00f65dc01c3605fd27d",
+    "weebdex-platform/platform-integrations/public-api/normalize.ts": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b",
+    "weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts": "9418845c867fd7fd0706756197900221e3cd73cd87a48133d5ed3ff6ef0d3056",
+    "weebdex-platform/platform-integrations/public-api/title-client.ts": "35b27ef697a0bad965c5efbcc7fdcb6c3616cc5d7d175a51eb112f50363bcfd0",
+    "weebdex-platform/platform-integrations/public-api/upload-anchors.json": "9d01e42a445cdd67ed4536a64e57fae20afb1cf7a25b31f81adc1380f249fb26",
+    "weebdex-platform/platform-integrations/public-api/upload-client.ts": "e8a0d062f6cbc56e5f169bacac394b2f0d7a82ca7715b3d2efa09667824e2ce3"
+  },
+  "base_anchor_entries_preserved": 33,
+  "all_base_anchors_retained_exactly": true,
+  "all_base_source_hashes_retained_exactly": true,
+  "canonical_frontend_files": 679,
+  "canonical_frontend_tree": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+  "canonical_frontend_unchanged": true,
+  "actual_counts": {
+    "public_api_source_files": 40,
+    "availability_pairs": 8,
+    "media_exceptions": 3,
+    "account_feature_exceptions": 8,
+    "title_family_external_components": 5
+  },
+  "checks": {
+    "lightweight_source_preparation_cases": 80,
+    "passed": 80,
+    "failed": 0,
+    "real_preparation_gates": [
+      "0",
+      "1"
+    ],
+    "diff": {
+      "source": {
+        "exit": 0,
+        "diagnostics": []
+      },
+      "whole_range": {
+        "exit": 2,
+        "diagnostics": [
+          "weebdex-platform/test-evidence/public-api/resource-mapping-v2/owned-http.txt:6: new blank line at EOF.",
+          "weebdex-platform/test-evidence/public-api/resource-mapping-v2/rust.txt:635: new blank line at EOF."
+        ]
+      }
+    }
+  },
+  "no_heavy_build_runtime_database_or_remote_action": true,
+  "remaining_acceptance": "Full combined strict/runtime/browser gates belong to the frozen integration after editorial/account-intent and relation-cap successor composition; prior own-lane482 cases are historical inputs, not acceptance for this new candidate",
+  "integration_authorization_hold": "Main/integration fast-forward and publication remain held per root22:29; only this already-assigned isolated candidate was prepared"
+}
