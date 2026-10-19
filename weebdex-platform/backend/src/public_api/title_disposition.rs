@@ -9,6 +9,7 @@ use crate::{AppState, domains::catalog::{mutations as core, repository, validati
 use axum::{Json, Router, extract::{OriginalUri, Path, Request, State},
     http::{HeaderMap, HeaderValue, StatusCode}, middleware,
     response::{IntoResponse, Response}, routing::{delete, post}};
+use serde::Deserialize;
 use serde_json::{Value, json};
 use tokio_postgres::Transaction;
 
@@ -20,14 +21,36 @@ pub fn router() -> Router<AppState> {
         .route("/manga/{p0}/unlock", post(unlock))
         .layer(middleware::map_response(super::upload_extensions::private_response))
 }
-#[derive(Clone,Copy,PartialEq,Eq)]
+#[derive(Clone,Copy,PartialEq,Eq,Deserialize)]
+#[serde(rename_all="kebab-case")]
 enum RemovalMode { RequestReview, ApproveHide }
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields,rename_all="camelCase")]
+struct LockInput {
+    version:i32,
+    expected_account_id:PublicUuid,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields,rename_all="camelCase")]
+struct RemovalInput {
+    version:i32,
+    expected_account_id:PublicUuid,
+    removal_mode:RemovalMode,
+}
 fn input(body: &[u8],removal:bool) -> PublicApiResult<(i32, PublicUuid,Option<RemovalMode>)> {
-    let body:Value=serde_json::from_slice(body).map_err(|_|PublicApiError::bad_request("Expected signed title version/account intent"))?;
-    v::allowed(&body,if removal {&["version","expectedAccountId","removalMode"]}else{&["version","expectedAccountId"]})?;
-    let version=v::version(&body)?;
-    let account=PublicUuid::parse(body["expectedAccountId"].as_str().ok_or_else(||PublicApiError::bad_request("Signed expectedAccountId is required"))?)?;
-    let mode=if removal {Some(match body["removalMode"].as_str(){Some("request-review")=>RemovalMode::RequestReview,Some("approve-hide")=>RemovalMode::ApproveHide,_=>return Err(PublicApiError::bad_request("Signed removalMode must be request-review or approve-hide"))})}else{None};
+    let invalid=||PublicApiError::bad_request("Expected one unambiguous signed title version/account/effect object");
+    // Deserialize directly from the signed bytes: an intermediate Value would
+    // collapse duplicate account/version/effect keys before validating intent.
+    // Derived structs also accept JSON sequences, so retain the object contract.
+    if body.iter().find(|byte|!byte.is_ascii_whitespace())!=Some(&b'{') {return Err(invalid());}
+    let (version,account,mode)=if removal {
+        let command:RemovalInput=serde_json::from_slice(body).map_err(|_|invalid())?;
+        (command.version,command.expected_account_id,Some(command.removal_mode))
+    }else{
+        let command:LockInput=serde_json::from_slice(body).map_err(|_|invalid())?;
+        (command.version,command.expected_account_id,None)
+    };
+    if version<=0 {return Err(PublicApiError::bad_request("A positive integer version is required"));}
     Ok((version,account,mode))
 }
 async fn account_intent(tx:&Transaction<'_>,actor:&BoundAccountWrite,expected:&PublicUuid)->PublicApiResult<()> {
@@ -107,3 +130,56 @@ async fn remove(State(state):State<AppState>,Path(manga):Path<String>,OriginalUr
     Ok(response)
 }
 #[cfg(test)]mod tests{use super::*;#[test]fn disposition_requires_exact_version_account_and_removal_effect(){let id="11111111-1111-8111-8111-111111111111";let parse=|value:Value,remove|input(serde_json::to_string(&value).unwrap().as_bytes(),remove);assert_eq!(parse(json!({"version":3,"expectedAccountId":id}),false).unwrap().0,3);assert!(parse(json!({"version":3,"expectedAccountId":id,"removalMode":"request-review"}),true).unwrap().2==Some(RemovalMode::RequestReview));assert!(parse(json!({"version":3,"expectedAccountId":id,"removalMode":"approve-hide"}),true).unwrap().2==Some(RemovalMode::ApproveHide));for value in[json!({"version":3}),json!({"version":0,"expectedAccountId":id}),json!({"version":3,"expectedAccountId":"NativeUser"}),json!({"version":3,"expectedAccountId":id,"originalDelete":true})]{assert!(parse(value,false).is_err());}assert!(parse(json!({"version":3,"expectedAccountId":id}),true).is_err());assert!(parse(json!({"version":3,"expectedAccountId":id,"removalMode":"automatic"}),true).is_err());}}
+
+
+#[cfg(test)]
+mod raw_command_tests {
+    use super::*;
+
+    #[test]
+    fn signed_disposition_rejects_duplicate_authority_and_effect_keys() {
+        let id="11111111-1111-8111-8111-111111111111";
+        let other="22222222-2222-8222-8222-222222222222";
+        for fields in [
+            format!(r#""version":2,"version":3,"expectedAccountId":"{id}""#),
+            format!(r#""version":3,"version":3,"expectedAccountId":"{id}""#),
+            format!(r#""version":3,"expectedAccountId":"{other}","expectedAccountId":"{id}""#),
+            format!(r#""version":3,"expectedAccountId":"{id}","expectedAccountId":"{id}""#),
+            format!(r#""version":3,"expectedAccountId":"{other}","expectedAccount\u0049d":"{id}""#),
+        ] {
+            let lock=format!("{{{fields}}}");
+            assert!(input(lock.as_bytes(),false).is_err(),"{lock}");
+            let removal=format!(r#"{{{fields},"removalMode":"approve-hide"}}"#);
+            assert!(input(removal.as_bytes(),true).is_err(),"{removal}");
+        }
+        for effects in [
+            r#""removalMode":"request-review","removalMode":"approve-hide""#,
+            r#""removalMode":"approve-hide","removalMode":"request-review""#,
+            r#""removalMode":"request-review","removalMode":"request-review""#,
+            r#""removalMode":null,"removalMode":"approve-hide""#,
+            r#""removalMode":"request-review","removal\u004dode":"approve-hide""#,
+        ] {
+            let raw=format!(r#"{{"version":3,"expectedAccountId":"{id}",{effects}}}"#);
+            assert!(input(raw.as_bytes(),true).is_err(),"{raw}");
+        }
+    }
+
+    #[test]
+    fn signed_disposition_keeps_closed_object_and_scalar_contracts() {
+        let id="11111111-1111-8111-8111-111111111111";
+        for (raw,removal) in [
+            (format!(r#"[3,"{id}"]"#),false),
+            (format!(r#"[3,"{id}","approve-hide"]"#),true),
+            (format!(r#"{{"version":3,"expectedAccountId":"{id}","removalMode":null}}"#),false),
+            (format!(r#"{{"version":3,"expectedAccountId":"{id}","removalMode":null}}"#),true),
+            (format!(r#"{{"version":3.0,"expectedAccountId":"{id}"}}"#),false),
+            (format!(r#"{{"version":2147483648,"expectedAccountId":"{id}"}}"#),false),
+            (format!(r#"{{"version":3,"expectedAccountId":{{"id":"{id}"}}}}"#),false),
+            (format!(r#"{{"version":3,"expectedAccountId":"{id}","removalMode":{{"effect":"approve-hide"}}}}"#),true),
+        ] {
+            assert!(input(raw.as_bytes(),removal).is_err(),"{raw}");
+        }
+        let raw=format!(" \r\n{{\"version\":3,\"expectedAccountId\":\"{id}\"}} \t");
+        assert_eq!(input(raw.as_bytes(),false).unwrap().0,3);
+    }
+}

@@ -1,0 +1,107 @@
+{
+  "schema": "public-title-command-duplicate-evidence-v1",
+  "recorded_utc": "2026-10-19T01:29:24.961680+00:00",
+  "baseline_commit": "e494290",
+  "source_commit": "b00f86368300a6c7a8307e107f9d6019fb406c2b",
+  "finding": {
+    "classification": "signed command intent/input-validation correctness; not an authentication or permission bypass",
+    "source_trace": "Previous input() parsed raw signed JSON through serde_json::Value; duplicate decoded object keys selected their last value before account/version/removal-mode validation. A currently authorized moderator could submit request-review followed by approve-hide and enter immediate instance-hide code. This acceptance is established by source review, not a fresh pre-fix Rust/HTTP execution.",
+    "example_body": "{\"version\":3,\"expectedAccountId\":\"11111111-1111-8111-8111-111111111111\",\"removalMode\":\"request-review\",\"removalMode\":\"approve-hide\"}",
+    "expected_contract": "Exactly one signed scalar version, account and operation effect. Refuse ambiguity before database mutation, including identical duplicates and JSON-escaped spellings."
+  },
+  "scope": {
+    "operations": [
+      "POST /api/v1/manga/{uuid}/lock",
+      "POST /api/v1/manga/{uuid}/unlock",
+      "DELETE /api/v1/manga/{uuid}"
+    ],
+    "implementation": "Separate typed deny_unknown_fields LockInput/RemovalInput deserialize original signed bytes; root-object check preserves object-only contract. No changes to permissions, ownership, removal policy, signature admission or Nostr authority.",
+    "nested_fields": "These commands permit scalar fields only; arrays or nested account/effect objects remain invalid. Other public JSON mutation adapters are outside this small change.",
+    "upstream_inventory": "No operation additions or classification changes: existing 113 total/91 scoped and nine documented REST gaps remain. No decision on account-closure policy.",
+    "frozen_ci": "No frozen CI source/workflow files edited."
+  },
+  "source_files": [
+    {
+      "path": "weebdex-platform/backend/src/public_api/title_disposition.rs",
+      "bytes": 13879,
+      "sha256": "859adf8f7eea76ab3f6f71686c83c17a1bf34e52afc0c73e5878d1392eb334e0"
+    },
+    {
+      "path": "weebdex-platform/backend/tests/public_manga_writes.rs",
+      "bytes": 69515,
+      "sha256": "c78673bfbe0008231f9d82a72a82f9d271f875b6319329bd05732b6e3acb6022"
+    }
+  ],
+  "checks": [
+    {
+      "name": "existing-finite-title-client-baseline",
+      "status": "passed",
+      "exit_code": 0,
+      "tests": 75,
+      "passed": 75,
+      "command": "node --experimental-vm-modules --test weebdex-platform/tests/ci/test_public_title_commands.mjs",
+      "coverage": "JavaScript controller/transport stand-ins only; not a backend parser test"
+    },
+    {
+      "name": "existing-finite-title-client-successor",
+      "status": "passed",
+      "exit_code": 0,
+      "tests": 75,
+      "passed": 75,
+      "command": "node --experimental-vm-modules --test weebdex-platform/tests/ci/test_public_title_commands.mjs",
+      "coverage": "JavaScript controller/transport stand-ins only; not a backend parser test"
+    },
+    {
+      "name": "git-diff-check",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "name": "new-raw-rust-unit-regressions",
+      "status": "authored-unexecuted",
+      "reason": "rustc/cargo unavailable; no toolchain install or dependency build attempted",
+      "new_test_functions": 2,
+      "cases": "duplicate version/account/effect, identical duplicates, escaped duplicate keys, arrays, nested objects, null, float/overflow and valid surrounding whitespace"
+    },
+    {
+      "name": "new-signed-http-regressions",
+      "status": "authored-unexecuted",
+      "reason": "No runnable Rust, PostgreSQL or pinned strfry in this task environment",
+      "new_negative_cases": 7,
+      "assertions": "Each exact-body signed request must return JSON400; complete title row plus catalogue/report audit counts, report count, kind5 count and object count remain unchanged."
+    }
+  ],
+  "independent_review": {
+    "reviewer": "independent source reviewer",
+    "status": "source-review-clear-uncompiled",
+    "report": "Source review found duplicate decoded account, version and effect fields rejected before database mutation, including escaped key spellings. Closed-object shape, positive i32 versions, UUID normalization and exact removal-mode values remain preserved. The signed HTTP negative cases assert unchanged title, report, audit and source effects. No source-level syntax or type issue was identified. This review did not compile or execute Rust or HTTP tests and does not establish an authentication bypass."
+  },
+  "limits": [
+    "New Rust parser has not been compiled or executed.",
+    "Existing finite client suite does not test server-side JSON duplicate rejection.",
+    "New signed HTTP/PostgreSQL cases have not run.",
+    "No browser, production build or full backend gate was run.",
+    "Historical runtime evidence is not upgraded to this successor."
+  ],
+  "raw_evidence": [
+    {
+      "path": "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/title-client-baseline.txt",
+      "bytes": 7300,
+      "sha256": "495a50480277987114053717065fd8ff3bc755d81d7aaaab5a7dea77395428db"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/title-client-successor.txt",
+      "bytes": 7302,
+      "sha256": "6873966ef36c09056eb20b07b52bf5382c8ba955626661eb5af831d1f13e21c9"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/toolchain-probe.json",
+      "bytes": 253,
+      "sha256": "8b1e815658e7081dda87f55b8354eb49b5b348c0372e81d6e6842760c1d422ca"
+    }
+  ],
+  "next_verification": [
+    "cargo test --offline --lib public_api::title_disposition on an authorized restored Rust/dependency host",
+    "Run public_manga_writes signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority via scripts/run-auth-tests.sh against its disposable loopback PostgreSQL and verified pinned strfry."
+  ]
+}

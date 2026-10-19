@@ -9,13 +9,51 @@ FLAGS = {'record_valid', 'completed', 'context_closed', 'replacement_verified',
 COUNTS = {'signed_requests': 128, 'mutations': 32, 'independent_reads': 96, 'fixture_controls': 28}
 
 
+KEY_IMPORT_SUBSTEPS = ['open-settings', 'settings-route', 'public-identity', 'identity-panel',
+    'key-dialog', 'import-form', 'import-key', 'backup-ack', 'recipient-review',
+    'session-connect', 'session-ready', 'done', 'upload-return', 'upload-ready']
+KEY_IMPORT_CATEGORIES = {'none', 'readiness-timeout', 'duplicate-control', 'browser-timeout', 'assertion', 'unexpected'}
+KEY_IMPORT_FIELDS = {'attempt', 'substep', 'completed_substeps', 'status', 'caught_category'}
+
+
+def key_import_row_valid(row, attempt):
+    if (type(row) is not dict or set(row) != KEY_IMPORT_FIELDS or type(row.get('attempt')) is not int or row['attempt'] != attempt or
+            type(row.get('substep')) is not str or row['substep'] not in KEY_IMPORT_SUBSTEPS or
+            type(row.get('completed_substeps')) is not int or not 0 <= row['completed_substeps'] <= len(KEY_IMPORT_SUBSTEPS) or
+            type(row.get('status')) is not str or row['status'] not in {'running', 'passed', 'failed'} or
+            type(row.get('caught_category')) is not str or row['caught_category'] not in KEY_IMPORT_CATEGORIES):
+        return False
+    if row['status'] == 'passed':
+        return row['substep'] == KEY_IMPORT_SUBSTEPS[-1] and row['completed_substeps'] == len(KEY_IMPORT_SUBSTEPS) and row['caught_category'] == 'none'
+    if row['completed_substeps'] >= len(KEY_IMPORT_SUBSTEPS) or row['substep'] != KEY_IMPORT_SUBSTEPS[row['completed_substeps']]:
+        return False
+    return (row['caught_category'] == 'none') is (row['status'] == 'running')
+
+
+def project_key_import(raw):
+    valid = type(raw) is list and len(raw) <= 2
+    rows = []
+    for index, row in enumerate(raw[:2] if type(raw) is list else []):
+        if not key_import_row_valid(row, index + 1) or index and rows[-1]['status'] != 'passed':
+            valid = False
+            break
+        rows.append({key: row[key] for key in sorted(KEY_IMPORT_FIELDS)})
+    return {'schema': 1, 'record_valid': bool(valid), 'attempts': rows if valid else []}
+
+
+def key_import_passed(value):
+    return (value['record_valid'] is True and len(value['attempts']) == 2 and
+            all(row['status'] == 'passed' for row in value['attempts']))
+
+
 def digest(value):
     return type(value) is str and re.fullmatch('[0-9a-f]{64}', value) is not None
 
 
 def project(acceptance):
     value = {'schema': 1, **{key: False for key in FLAGS}, **{key: 0 for key in COUNTS},
-             'private_values_omitted': True, 'raw_messages_exported': False}
+             'private_values_omitted': True, 'raw_messages_exported': False,
+             'key_import_diagnostics': project_key_import(acceptance.get('public_upload', {}).get('key_import') if type(acceptance.get('public_upload')) is dict else None)}
     try:
         raw = acceptance['public_upload']
         browser, independent = raw['browser_http'], raw['independent_http']
@@ -68,13 +106,23 @@ def project(acceptance):
 
 
 def passed(value):
-    return all(value.get(key) is True for key in FLAGS)
+    return all(value.get(key) is True for key in FLAGS) and key_import_passed(value['key_import_diagnostics'])
 
 
 def validate(value):
-    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported'} or type(value['schema']) is not int or value['schema'] != 1:
+    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics'} or type(value['schema']) is not int or value['schema'] != 1:
         raise ValueError('Invalid public upload diagnostics schema')
     if any(type(value[key]) is not bool for key in FLAGS) or any(type(value[key]) is not int or not 0 <= value[key] <= cap for key, cap in COUNTS.items()) or value['private_values_omitted'] is not True or value['raw_messages_exported'] is not False:
         raise ValueError('Invalid public upload diagnostic facts')
     if value['exact_mutation_count'] and value['mutations'] != 21:
         raise ValueError('Mutation-count facts disagree')
+
+    imported = value['key_import_diagnostics']
+    if (type(imported) is not dict or set(imported) != {'schema', 'record_valid', 'attempts'} or
+            type(imported.get('schema')) is not int or imported['schema'] != 1 or type(imported.get('record_valid')) is not bool or
+            type(imported.get('attempts')) is not list or len(imported['attempts']) > 2 or
+            not imported['record_valid'] and imported['attempts']):
+        raise ValueError('Invalid key import diagnostics schema')
+    for index, row in enumerate(imported['attempts']):
+        if not key_import_row_valid(row, index + 1) or index and imported['attempts'][index - 1]['status'] != 'passed':
+            raise ValueError('Invalid key import diagnostics facts')

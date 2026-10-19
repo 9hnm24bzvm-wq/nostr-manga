@@ -55,6 +55,16 @@ def digest(value):
     insist(type(value) is str and re.fullmatch('[0-9a-f]{64}', value))
 
 
+def title_artifact_hashes(prep, source):
+    title = prep['native_feed_regression']['title_disposition']
+    if title['artifacts_verified']:
+        # Hash-shaped text is admitted only for the actual current Cargo-selected
+        # artifact, never arbitrary/private 64-hex with the right syntax.
+        plan = runner.read(ROOT / '.build/hosted-browser/plan.json')
+        executables = native_feed.title.verify_artifacts(plan.get('native_title_tests'), ROOT, prep['source_snapshot_sha256'])
+        insist(title['executable_sha256'] == {kind: source.sha(path) for kind, path in executables.items()})
+
+
 def phase_list(value):
     insist(type(value) is list and len(value) <= len(runner.ALL_PHASES) and len(set(value)) == len(value) and all(type(item) is str and item in runner.ALL_PHASES for item in value))
 
@@ -362,6 +372,7 @@ def validate(directory, canonical=None):
         expected = {'normal_binary_sha256': ROOT / '.build/hosted-native/debug/weebdex-platform', 'provisioner_sha256': ROOT / '.build/hosted-native/debug/examples/browser_fixture_provisioner', 'frontend_manifest_sha256': ROOT / 'test-evidence/frontend/artifact-manifest.json', 'frontend_index_sha256': ROOT / 'artifacts/frontend/index.html'}
         for key, path in expected.items():
             insist(not path.is_symlink() and path.is_file() and prep[key] == source.sha(path))
+        title_artifact_hashes(prep, source)
         if any(row['phase'] == runner.PUBLIC_UPLOAD_PHASE for row in values.get('phases.json', {}).get('phases', [])):
             runner.public_upload_profile(runner.read(ROOT / '.build/hosted-browser/plan.json'))
         runtime = runner.read(ROOT / '.build/hosted-browser/runtime.json')

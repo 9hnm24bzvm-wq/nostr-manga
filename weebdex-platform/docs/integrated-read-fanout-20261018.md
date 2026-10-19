@@ -1,6 +1,6 @@
 # Integrated reader/search/library request recipes
 
-Source: recovery 5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4. The [machine-readable plan](fixtures/integrated-read-fanout-v1.json) has 13 explicit finite scenarios and 35 pinned source inputs. It is not dispatch-ready and contains no rates, user distribution, capacity target or constant API-calls-per-page assumption. No app/browser/load run was performed.
+Source: recovery 5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4. The [machine-readable plan](fixtures/integrated-read-fanout-v1.json) has 13 explicit finite scenarios and 36 pinned source inputs. It is not dispatch-ready and contains no rates, user distribution, capacity target or constant API-calls-per-page assumption. No app/browser/load run was performed. The 2026-10-19 source-pin update records the e494290-based exact reader aggregate ordering repair and its helper; it does not alter request recipes or their counts.
 
 ## What the mounted source actually calls
 

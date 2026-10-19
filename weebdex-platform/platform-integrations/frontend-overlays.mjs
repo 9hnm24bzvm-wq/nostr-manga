@@ -3902,6 +3902,38 @@ const patches = [
   "before": "const target = window.location.pathname + q.toString();",
   "after": "const target = window.location.pathname + (q.size ? \"?\" + q.toString().replace(/^\\?/, \"\") : \"\");",
   "approved_event_handler_exception": true
+},
+{
+  "path": "src/lib/components/reader/reader-pages.svelte",
+  "label": "reader page history preserves query/hash and yields to newer page or navigation",
+  "sha256": "b9afbee090ec3e6d6b17b77718add83310833ba7ea8ac610228e420d021a5012",
+  "count": 1,
+  "before": "<script lang=\"ts\">\r\n\timport { replaceState } from \"$app/navigation\";\r\n\timport { page } from \"$app/state\";\r\n\timport { onMount, tick } from \"svelte\";\r\n\timport { useReader } from \"./context.svelte\";\r\n\timport ReaderPagesDouble from \"./reader-pages-double.svelte\";\r\n\timport ReaderPagesSingle from \"./reader-pages-single.svelte\";\r\n\r\n\tconst reader = useReader();\r\n\tconst readerPrefs = reader.prefs;\r\n\tlet isMounted = $state(false);\r\n\r\n\tonMount(async () => {\r\n\t\tawait tick();\r\n\t\tisMounted = true;\r\n\t});\r\n\r\n\t$effect(() => {\r\n\t\tif (isMounted && reader.currentPage) {\r\n\t\t\tconst q = new URLSearchParams(window.location.search);\r\n\t\t\tconst path = `/chapter/${reader.chapter.id}/${reader.currentPage.index + 1}${q.toString()}${window.location.hash}`;\r\n\t\t\ttick().then(() => {\r\n\t\t\t\treplaceState(path, {\r\n\t\t\t\t\t...page.state,\r\n\t\t\t\t\tpage: reader.currentPage!.index + 1\r\n\t\t\t\t});\r\n\t\t\t});\r\n\t\t}\r\n\t});\r\n</script>",
+  "after": "<script lang=\"ts\">\r\n\timport { replaceState } from \"$app/navigation\";\r\n\timport { page } from \"$app/state\";\r\n\timport { onMount, tick } from \"svelte\";\r\n\timport { createSafeReadOwner } from \"$platform/safe-read-owner\";\r\n\timport { useReader } from \"./context.svelte\";\r\n\timport ReaderPagesDouble from \"./reader-pages-double.svelte\";\r\n\timport ReaderPagesSingle from \"./reader-pages-single.svelte\";\r\n\r\n\tconst reader = useReader();\r\n\tconst readerPrefs = reader.prefs;\r\n\tconst historyOwner = createSafeReadOwner();\r\n\tlet isMounted = $state(false);\r\n\r\n\tonMount(() => {\r\n\t\tconst intent = historyOwner.capture();\r\n\t\tvoid tick().then(() => { if (intent.alive()) isMounted = true; });\r\n\t});\r\n\r\n\t$effect(() => {\r\n\t\tconst selected = reader.currentPage;\r\n\t\tif (!isMounted || !selected) return;\r\n\t\tconst chapterId = reader.chapter.id, pageNumber = selected.index + 1;\r\n\t\tconst intent = historyOwner.capture(() => reader.chapter.id === chapterId && reader.currentPage === selected);\r\n\t\tconst target = new URL(window.location.href);\r\n\t\ttarget.pathname = `/chapter/${chapterId}/${pageNumber}`;\r\n\t\tvoid tick().then(() => {\r\n\t\t\tif (!intent.alive()) return;\r\n\t\t\treplaceState(target.pathname + target.search + target.hash, { ...page.state, page: pageNumber });\r\n\t\t});\r\n\t});\r\n</script>"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader edition preference compares actual current group records",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\tconst currentGroups = this.chapter.relationships.groups?.map(e => e.name) ?? [\"No Group\"];",
+  "after": "\t\t\tconst currentGroups = this.chapter.relationships.groups ?? [];"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader edition preference resolves group identity before presentation name",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\tconst groups = entry.groups.map(idx => this.aggregated?.groups[idx].name);",
+  "after": "\t\t\t\tconst groups = entry.groups.map(idx => this.aggregated?.groups[idx]);"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader edition preference keeps name fallback only for missing legacy group IDs",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\tconst score = groups.filter(e => currentGroups.includes(e ?? \"\")).length;",
+  "after": "\t\t\t\tconst score = groups.filter(group => group && currentGroups.some(current => group.id && current.id ? group.id === current.id : group.name === current.name)).length;"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');

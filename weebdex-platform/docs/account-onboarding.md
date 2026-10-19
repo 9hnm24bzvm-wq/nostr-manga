@@ -26,15 +26,25 @@ route and does not claim or request an email automatically.
    The UI warns that clipboard history/sync may keep a copy, the browser forgets
    the session on reload/lock, and site-password recovery cannot restore a lost
    key. A required acknowledgment neither creates nor verifies a backup.
+   **Use this key for this session** explicitly selects the acknowledged key
+   without network discovery, admission or publication. This local-only path
+   remains available when the instance is offline or its protocol bridge is
+   unavailable. It reports only session connection, never account acceptance.
 3. **Review.** Read-only capabilities, allowed-origin policy and service proof
    identify the intended recipient. The public npub and verified origin are
    shown before a separate **Join this instance** action.
-4. **Join.** Only that explicit action installs the selected local session signer
-   and invokes the existing signed enrollment/admission mechanism. It performs a
+4. **Join.** Only that explicit action invokes the existing signed
+   enrollment/admission mechanism. It installs the selected local session signer
+   if it has not already been connected locally. It performs a
    fresh service proof and checks the UI lifetime, key owner and signer generation
    before signing/submission. Only a successful accepted admission presents the
    public identity as ready. Uncertain errors never claim the request failed
    remotely; retry is explicit and uses the same selected key.
+
+The connected-session step offers **Review joining this instance** to perform
+fresh recipient and enrollment-policy discovery later. Admission, public writes
+and publication retain their existing verified-recipient and signed-authority
+checks; offline local connection does not bypass them.
 
 **Finish later** discards an unfinished draft and follows the original safe
 return destination. Closing, navigating away, switching accounts, or changing

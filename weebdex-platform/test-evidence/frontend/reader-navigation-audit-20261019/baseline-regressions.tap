@@ -1,0 +1,642 @@
+(node:17) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✖ actual aggregate uses exact volume/chapter order despite a later upload of an older chapter (5.860567ms)
+✖ exact volume decimals also survive Number collisions before chapter comparison (0.782518ms)
+✖ all pages are gathered before aggregate ordering, including a newest position on page two (3.37722ms)
+✔ sorting preserves real alternate editions, language/group indexes and query/signal constraints (0.797941ms)
+✔ empty aggregates remain empty, and exact numeric ties retain labels with specials/null last (0.875015ms)
+✖ actual Continue Reading selects the last completed aggregate position after old-edition uploads (0.68218ms)
+✖ actual Continue Reading selects the next unread decimal position and starts at oldest with no history (0.673728ms)
+(node:18) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ native page history preserves encoded query, repeated filters, hash and existing state (73.86677ms)
+✖ native newer selected page owns matching path and state while old tick is dropped (18.649161ms)
+✖ native pending reader history yields when navigation starts (17.116281ms)
+✖ native pending reader history yields when route commits (12.330005ms)
+✖ native pending reader history yields when hash changes (13.242906ms)
+✖ native pending reader history yields when chapter changes (12.045112ms)
+✖ native pending reader history yields when page changes (14.763948ms)
+✖ native pending reader history yields when destroyed (11.892287ms)
+✖ native a destroyed mount tick cannot admit later reader history (14.714689ms)
+✔ native composition preserves every canonical reader byte and all markup (10.197758ms)
+✖ public page history preserves encoded query, repeated filters, hash and existing state (12.528468ms)
+✖ public newer selected page owns matching path and state while old tick is dropped (10.849984ms)
+✖ public pending reader history yields when navigation starts (9.799849ms)
+✖ public pending reader history yields when route commits (11.779891ms)
+✖ public pending reader history yields when hash changes (11.331327ms)
+✖ public pending reader history yields when chapter changes (14.297778ms)
+✖ public pending reader history yields when page changes (10.330785ms)
+✖ public pending reader history yields when destroyed (11.282193ms)
+✖ public a destroyed mount tick cannot admit later reader history (9.519543ms)
+✔ public composition preserves every canonical reader byte and all markup (8.586151ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 4
+ℹ fail 23
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 419.150802
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:53:1
+✖ actual aggregate uses exact volume/chapter order despite a later upload of an older chapter (5.860567ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     '1',
+        '2',
+  +   ],
+  +   [
+        '1',
+  +     '9.99999999999999999999'
+      ],
+      [
+        '1',
+        '10'
+      ],
+      [
+  +     '2',
+        '1',
+  -     '9.99999999999999999999'
+      ],
+      [
+        '1',
+        '2.5'
+      ],
+  -   [
+  -     '1',
+  -     '2'
+  -   ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:56:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ '1', '2' ], [ '1', '9.99999999999999999999' ], [ '1', '10' ], [ '2', '1' ], [ '1', '2.5' ] ],
+    expected: [ [ '2', '1' ], [ '1', '10' ], [ '1', '9.99999999999999999999' ], [ '1', '2.5' ], [ '1', '2' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:58:1
+✖ exact volume decimals also survive Number collisions before chapter comparison (0.782518ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     '9.99999999999999999999',
+  +     '999'
+  +   ],
+  +   [
+        '10',
+        '1'
+      ],
+  -   [
+  -     '9.99999999999999999999',
+  -     '999'
+  -   ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:60:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ '9.99999999999999999999', '999' ], [ '10', '1' ] ],
+    expected: [ [ '10', '1' ], [ '9.99999999999999999999', '999' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:62:1
+✖ all pages are gathered before aggregate ordering, including a newest position on page two (3.37722ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        '1',
+  +     '1'
+  -     '101'
+      ],
+      [
+        '1',
+  +     '2'
+  -     '100'
+      ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:65:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ '1', '1' ], [ '1', '2' ] ],
+    expected: [ [ '1', '101' ], [ '1', '100' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:83:1
+✖ actual Continue Reading selects the last completed aggregate position after old-edition uploads (0.68218ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '00000000-0000-8000-8000-000000000101'
+  -   '00000000-0000-8000-8000-000000000103'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:86:69)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '00000000-0000-8000-8000-000000000101' ],
+    expected: [ '00000000-0000-8000-8000-000000000103' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:88:1
+✖ actual Continue Reading selects the next unread decimal position and starts at oldest with no history (0.673728ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '00000000-0000-8000-8000-000000000102'
+  -   '00000000-0000-8000-8000-000000000101'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs:92:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '00000000-0000-8000-8000-000000000102' ],
+    expected: [ '00000000-0000-8000-8000-000000000101' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:42:3
+✖ native page history preserves encoded query, repeated filters, hash and existing state (73.86677ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '/chapter/current/2tlang=en&filter=a%2Fb&filter=two#image-2'
+  -   '/chapter/current/2?tlang=en&filter=a%2Fb&filter=two#image-2'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:44:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '/chapter/current/2tlang=en&filter=a%2Fb&filter=two#image-2' ],
+    expected: [ '/chapter/current/2?tlang=en&filter=a%2Fb&filter=two#image-2' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:47:3
+✖ native newer selected page owns matching path and state while old tick is dropped (18.649161ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:49:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ native pending reader history yields when navigation starts (17.116281ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ native pending reader history yields when route commits (12.330005ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ native pending reader history yields when hash changes (13.242906ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ native pending reader history yields when chapter changes (12.045112ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ native pending reader history yields when page changes (14.763948ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 3,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ native pending reader history yields when destroyed (11.892287ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:61:3
+✖ native a destroyed mount tick cannot admit later reader history (14.714689ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:62:121)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:42:3
+✖ public page history preserves encoded query, repeated filters, hash and existing state (12.528468ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '/chapter/current/2tlang=en&filter=a%2Fb&filter=two#image-2'
+  -   '/chapter/current/2?tlang=en&filter=a%2Fb&filter=two#image-2'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:44:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '/chapter/current/2tlang=en&filter=a%2Fb&filter=two#image-2' ],
+    expected: [ '/chapter/current/2?tlang=en&filter=a%2Fb&filter=two#image-2' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:47:3
+✖ public newer selected page owns matching path and state while old tick is dropped (10.849984ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:49:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ public pending reader history yields when navigation starts (9.799849ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ public pending reader history yields when route commits (11.779891ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ public pending reader history yields when hash changes (11.331327ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ public pending reader history yields when chapter changes (14.297778ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ public pending reader history yields when page changes (10.330785ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 3,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:51:128
+✖ public pending reader history yields when destroyed (11.282193ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:59:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_history_ownership.mjs:61:3
+✖ public a destroyed mount tick cannot admit later reader history (9.519543ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2',
+  +     state: {
+  +       page: 1,
+  +       retained: 'state'
+  +     }
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-navigation-audit-worktree/weebdex-platform/tests/ci/test_reader_history_ownership.mjs:62:121)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '/chapter/current/1tlang=en&filter=a%2Fb&filter=two#image-2', state: [Object] } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

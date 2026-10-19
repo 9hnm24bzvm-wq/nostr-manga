@@ -1,13 +1,19 @@
 """Closed native-feed result contract; no raw messages, DSNs, paths or SQL."""
 import json
 import re
+import importlib.util
+from pathlib import Path
+
+spec = importlib.util.spec_from_file_location('native_title_closed_contract', Path(__file__).with_name('native-title-diagnostics.py'))
+title = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(title)
 
 
 FLAGS = {'all_505_ids_reached', 'bilingual506_preserved', 'canonical_sample_parity',
          'visibility_withdrawals_verified', 'statement_timeout_unchanged'}
 MEASUREMENT_FIELDS = FLAGS | {'scenario', 'baseline_outcome', 'baseline_ms', 'batched_first_page_ms'}
 RESULT_FIELDS = {'schema', 'status', 'process_started', 'process_exit_code', 'deadline_exceeded',
-                 'owned_terminal', 'cleanup_verified', 'fixture_cleanup_verified', 'measurement'}
+                 'owned_terminal', 'cleanup_verified', 'fixture_cleanup_verified', 'measurement', 'title_disposition'}
 FIXTURE_FIELDS = {'postgres_cleanup', 'exit', 'forced', 'closed_port', 'remaining_owned_processes',
                   'cleanup_errors', 'error', 'test_timeout_seconds', 'captured_births',
                   'unconfirmed_births', 'unconfirmed_child_pids', 'test_returncode',
@@ -31,7 +37,7 @@ def unique_object(pairs):
 def not_run():
     return {'schema': 1, 'status': 'not-run', 'process_started': False, 'process_exit_code': None,
             'deadline_exceeded': False, 'owned_terminal': False, 'cleanup_verified': False,
-            'fixture_cleanup_verified': False, 'measurement': None}
+            'fixture_cleanup_verified': False, 'measurement': None, 'title_disposition': title.not_run()}
 
 
 def measurement(value):
@@ -54,11 +60,13 @@ def validate(value):
     insist(code is None or type(code) is int and -128 <= code <= 255)
     if value['measurement'] is not None:
         measurement(value['measurement'])
+    title.validate(value['title_disposition'])
     if value['status'] == 'not-run':
         insist(value == not_run())
     passed = (value['process_started'] and code == 0 and value['owned_terminal']
               and not value['deadline_exceeded'] and value['cleanup_verified']
-              and value['fixture_cleanup_verified'] and value['measurement'] is not None)
+              and value['fixture_cleanup_verified'] and value['measurement'] is not None
+              and value['title_disposition']['status'] == 'passed')
     insist((value['status'] == 'passed') == passed)
 
 
@@ -122,9 +130,12 @@ def fixture_cleanup_verified(value):
     return True
 
 
-def project(owned, observed, fixture):
+def project(owned, observed, fixture, title_disposition=None):
     value = not_run()
     value['status'] = 'failed'
+    if title_disposition is not None:
+        title.validate(title_disposition)
+        value['title_disposition'] = title_disposition
     if type(owned) is dict:
         # Absence or malformed false-like text must never become evidence that
         # the owned command stayed inside its deadline.
@@ -145,7 +156,8 @@ def project(owned, observed, fixture):
         value['measurement'] = observed
     if (value['process_started'] and value['process_exit_code'] == 0 and value['owned_terminal']
             and not value['deadline_exceeded'] and value['cleanup_verified']
-            and value['fixture_cleanup_verified'] and value['measurement'] is not None):
+            and value['fixture_cleanup_verified'] and value['measurement'] is not None
+            and value['title_disposition']['status'] == 'passed'):
         value['status'] = 'passed'
     validate(value)
     return value

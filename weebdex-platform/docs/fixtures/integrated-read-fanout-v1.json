@@ -548,7 +548,7 @@
     }
   ],
   "sourcePins": {
-    "weebdex-platform/platform-integrations/public-api/site-client.ts": "74533241f24ad64391cbe0d9bfb8cca002d0a90cd755261c4857a5c271f6e110",
+    "weebdex-platform/platform-integrations/public-api/site-client.ts": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9",
     "weebdex-platform/platform-integrations/public-api/client.ts": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad",
     "weebdex-platform/platform-integrations/public-api/query.ts": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193",
     "weebdex-platform/platform-integrations/public-api/normalize.ts": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b",
@@ -559,7 +559,7 @@
     "weebdex-platform/platform-integrations/public-api/anchors.json": "e6dd74da63dbb23a571aa775a65f0709d6fb638d0737f3bdd92193e543f9f1c2",
     "weebdex-platform/platform-integrations/public-api/source-hashes.json": "822477b547f98e0241d439cce91a817f0a4d7186031a12fd99d13e70b4a87f33",
     "weebdex-platform/platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
-    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "fbb077b5751f50d08e114c1e80a9fe28c42aeebf6ab464a35bbd63ed338fb169",
+    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836",
     "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801",
     "weebdex-platform/platform-integrations/local-library/overlays.mjs": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d",
     "weebdex-platform/platform-integrations/local-library/library.ts": "2c093421cbeeb368b681f09cd1ae7cb3319316979e4c3304ab3de8fabbd23c76",
@@ -582,6 +582,39 @@
     "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/[page]/+page@.svelte": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
     "weebdex-platform/frontend/src/lib/components/reader/context.svelte.ts": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
     "weebdex-platform/platform-integrations/frontend-behavior/reader-navigation.ts": "58120d8cc91c0c80344b933db97e8e30cd412e1583db59c2f5cc427ea1e8967f",
-    "weebdex-platform/scripts/build-frontend.mjs": "631dda7e5764001c599d28faa3351fc8852356d4bc02375d7f2679f2c0dc8a7e"
-  }
+    "weebdex-platform/scripts/build-frontend.mjs": "631dda7e5764001c599d28faa3351fc8852356d4bc02375d7f2679f2c0dc8a7e",
+    "weebdex-platform/platform-integrations/public-api/reader-order.ts": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279"
+  },
+  "sourceUpdates": [
+    {
+      "date": "2026-10-19",
+      "baseline_commit": "e494290",
+      "reason": "Reader page-history ownership/query preservation and aggregate volume/chapter exact-decimal ordering repairs. No extra HTTP request or recipe count changes. No application/browser/load measurement is inferred.",
+      "pins": {
+        "weebdex-platform/platform-integrations/public-api/site-client.ts": {
+          "before_sha256": "74533241f24ad64391cbe0d9bfb8cca002d0a90cd755261c4857a5c271f6e110",
+          "after_sha256": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9"
+        },
+        "weebdex-platform/platform-integrations/public-api/reader-order.ts": {
+          "before_sha256": null,
+          "after_sha256": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279"
+        },
+        "weebdex-platform/platform-integrations/frontend-overlays.mjs": {
+          "before_sha256": "fbb077b5751f50d08e114c1e80a9fe28c42aeebf6ab464a35bbd63ed338fb169",
+          "after_sha256": "86484b47c2beace9ee55032503256f8d1abac99dab8c02cd7979c522a5ec1a78"
+        }
+      }
+    },
+    {
+      "date": "2026-10-19",
+      "baseline_commit": "13d82606ae5d764d59d58c4a820693062a0fcaac",
+      "reason": "Reader edition scoring matches existing group IDs before display names; legacy records missing IDs retain name fallback. No additional requests, no recipe count changes and no browser/load measurement.",
+      "pins": {
+        "weebdex-platform/platform-integrations/frontend-overlays.mjs": {
+          "before_sha256": "86484b47c2beace9ee55032503256f8d1abac99dab8c02cd7979c522a5ec1a78",
+          "after_sha256": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836"
+        }
+      }
+    }
+  ]
 }

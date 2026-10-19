@@ -46,6 +46,7 @@ def accepted_report():
         'browser_http': {'closed': True, 'failures': [], 'rows': rows},
         'independent_http': {'closed': True, 'pending': 0, 'rows': [{'event_id': 'e' * 64, 'method': 'GET', 'complete': True, 'status': 200}]},
         'replacement': {'session_id': session, 'file_id': file, 'mutation_event_id': rows[0]['event_id'], 'version_before': 9, 'version_after': 10, 'old_sha256': old, 'new_sha256': new, 'stored_original_bytes': 100, 'stable_file_id': True, 'native_position_preserved': True, 'stored_order_preserved': True, 'neighbours_unchanged': True},
+        'key_import': [{'attempt': index, 'substep': diagnostics.KEY_IMPORT_SUBSTEPS[-1], 'completed_substeps': len(diagnostics.KEY_IMPORT_SUBSTEPS), 'status': 'passed', 'caught_category': 'none'} for index in [1, 2]],
         'durable': [{'label': 'committed', 'fixture_only': True, 'scenario': 'public-upload-v1', 'session': {'state': 'committed'},
                      'publication': {'event_id': event, 'original_event': {'id': event, 'kind': 1001, 'verified': True}},
                      'chapter': {'event_id': event, 'pages': [{'file_hash': item, 'storage_sha256': item, 'storage_bytes': 100, 'fresh_original_read': True} for item in [neighbour, new]]}}]}

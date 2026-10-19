@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { deflateSync } from 'node:zlib';
 import { verifiedSchnorr } from './browser-signed-journeys.mjs';
 import { createPublicUploadRecoveryControls } from './public-upload-recovery-controls.mjs';
+import { connectPublicUploadKey, createKeyImportStep, uniqueUploadControl } from './public-upload-key-import.mjs';
 import { createUploadIndependentReader, observePublicUpload, uploadDigest } from './public-upload-recovery-observer.mjs';
 export const publicUploadRecoveryPhase = 'public-upload-recovery';
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -73,15 +74,15 @@ export async function runPublicUploadRecovery(h) {
   const observer = observePublicUpload(page, { origin, owner, service: fixture.service_key, verify });
   const reader = createUploadIndependentReader({ origin, owner, service: fixture.service_key, sign });
   const result = report.public_upload = { scope: 'reconstructed-public-upload-replacement-v1', completed: false, supported_replacement: true, chapter_edit: 'unimplemented',
-    fixture_control_calls: 0, durable: [], replacement: null, preview_decodes: [], browser_http: null, independent_http: null, ui_controls: [], actual_context_closed: false,
+    fixture_control_calls: 0, key_import: [], durable: [], replacement: null, preview_decodes: [], browser_http: null, independent_http: null, ui_controls: [], actual_context_closed: false,
     limitations: ['Immediate image decode can use an acknowledged local File; signed-preview proof requires hard reload and real key reimport.', 'Publication acceptance and readable catalogue projection are checked separately.', 'No full40 or lost-source equivalence claim.'] };
   let account, sessionId, lastVersion = 0;
   const images = [tinyUploadPng('01-first.png',24,32,[71,111,153]),tinyUploadPng('02-remove.png',26,34,[157,69,83]),tinyUploadPng('03-last.png',28,36,[63,147,91])];
   const cancelImage = tinyUploadPng('cancel.png',22,30,[120,87,143]);
   const replacementImage = tinyUploadPng('04-replacement.png',30,38,[91,58,173]);
   const healthy = () => { observer.assertHealthy(); assert.equal(report.page_errors.length, 0, 'Application page error'); };
-  async function until(read, valid, label, milliseconds = 15000) { const deadline = Date.now() + milliseconds; for (;;) { healthy(); assert.ok(Date.now() < deadline, label); const value = await read(); healthy(); assert.ok(Date.now() < deadline, label); if (valid(value)) return value; await page.waitForTimeout(100); } }
-  const unique = async locator => { assert.equal(await locator.count(), 1); return locator; };
+  async function until(read, valid, label, milliseconds = 15000) { const deadline = Date.now() + milliseconds; for (;;) { healthy(); if (Date.now() >= deadline) throw Object.assign(Error(label), { code: 'UPLOAD_UI_READINESS_TIMEOUT' }); const value = await read(); healthy(); if (Date.now() >= deadline) throw Object.assign(Error(label), { code: 'UPLOAD_UI_READINESS_TIMEOUT' }); if (valid(value)) return value; await page.waitForTimeout(100); } }
+  const unique = locator => uniqueUploadControl(locator, until);
   const button = async (scope, name) => { const target = await unique(scope.getByRole('button', { name, exact: true })); await until(() => target.isEnabled(), Boolean, `Enabled ${name}`); return target; };
   const pathname = () => `/title/${account.manga.id}/upload`;
   const assertUploadRoute = () => { assertUploadRecoveryRoute(page.url(), origin, pathname()); healthy(); };
@@ -97,22 +98,9 @@ export async function runPublicUploadRecovery(h) {
   async function snapshotStage(label, expected, count, action) { const start = observer.mutationCount(); await action(); await completeWrites(start, count); const fresh = await exact(); const value = await durable(label, { ...expected, order: fresh.pageOrder }); assert.equal(value.session.version, fresh.version); assert.deepEqual(fresh.draft, value.session.draft); return value; }
   async function chooseGroup() { const p = await panel(), search = p.getByRole('button', { name: 'Search...', exact: true }); await (await unique(search)).click(); const dialog = await unique(page.getByRole('dialog')); await dialog.getByPlaceholder('Search...', { exact: true }).fill('Synthetic signed upload group'); const match = dialog.locator('button[title="Synthetic signed upload group"]'); await (await button(dialog, 'Synthetic signed upload group')).click(); assert.equal(await match.count(), 1); await page.keyboard.press('Escape'); await until(() => page.getByRole('dialog').count(), n => n === 0, 'Group dialog closed'); }
   async function connectKey() {
-    const before = await page.evaluate(() => performance.timeOrigin);
-    await (await unique(page.getByRole('link', { name: 'Open Settings', exact: true }))).click();
-    await until(() => new URL(page.url()).pathname, path => path === '/settings/preferences', 'Settings replacement navigation settled');
-    await (await unique(page.getByRole('link', { name: 'Public identity', exact: true }))).click();
-    const identity = page.locator('[data-protocol-identity-panel]'); await (await button(identity, 'Create or paste a key')).click();
-    const setup = page.locator('[data-identity-setup]'); await (await button(setup, 'Paste an existing key')).click();
-    const input = await unique(setup.getByLabel('Private key (nsec or hex)', { exact: true })); assert.equal(await input.getAttribute('type'), 'password');
-    await input.fill(secretHex); await (await button(setup, 'Use this key')).click();
-    await setup.getByRole('checkbox', { name: 'I have saved my private key somewhere safe.', exact: true }).check();
-    await (await button(setup, 'Review public identity')).click(); await (await button(setup, 'Join this instance')).click(); await (await button(setup, 'Done')).click();
-    await until(async () => await identity.getByText(/^Session private key connected\./).count() === 1 && await identity.getByRole('button', { name: 'Lock private key', exact: true }).isEnabled(), Boolean, 'Actual imported identity ready');
-    assert.equal(new URL(page.url()).pathname, '/settings/identity');
-    await page.goBack({ waitUntil: 'domcontentloaded' }); await page.goBack({ waitUntil: 'domcontentloaded' });
-    assertUploadRoute(); assert.equal(await page.evaluate(() => performance.timeOrigin), before, 'Expected same-document Settings navigation');
-    await until(() => page.getByRole('heading', { name: 'Upload Chapter', exact: true }).count(), n => n === 1, 'Bound upload editor ready');
+    await connectPublicUploadKey({ page, unique, button, until, assertUploadRoute, secretHex, importStep: createKeyImportStep(result.key_import, save) });
   }
+
   async function english() { const p = await panel(), trigger = p.locator('button[data-slot="select-trigger"]').filter({ hasText: 'Select Language' }); await (await unique(trigger)).click(); const list = await unique(page.locator('[data-slot="select-content"][role="listbox"]:visible')); const option = await unique(list.locator('[data-slot="select-item"][data-value="en"][role="option"]')); assert.equal((await option.innerText()).trim().replace(/\s+/g, ' '), 'English'); assert.equal(await option.isEnabled(), true); await option.click(); }
   async function decoded(expected, sourceBasis = 'acknowledged-local-or-signed-preview') { const c = controls(); await c.readSettledOrder(expected.map(image => image.name)); const rows = [];
     for (const image of expected) { const card = await c.card(image.name), img = await unique(card.locator('img')); const value = await img.evaluate(async (node) => { const source = node.currentSrc; if (!source.startsWith('blob:')) throw Error('Expected private preview Blob URL'); await node.decode(); if (node.currentSrc !== source || !node.complete || !node.naturalWidth || !node.naturalHeight) throw Error('Preview changed during decode'); return { decoded: true, width: node.naturalWidth, height: node.naturalHeight, blob_source: true }; }); assert.equal(value.width, image.width); assert.equal(value.height, image.height); rows.push({ filename: image.name, ...value }); }

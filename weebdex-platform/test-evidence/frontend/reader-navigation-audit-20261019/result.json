@@ -1,0 +1,51 @@
+{
+  "status": "finite-source-seams-passed",
+  "baseline_commit": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+  "commands": [
+    "node --experimental-vm-modules --test weebdex-platform/tests/ci/test_reader_history_ownership.mjs weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs weebdex-platform/tests/ci/test_reader_navigation_edges.mjs weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs weebdex-platform/tests/ci/test_reader_accessible_controls.mjs weebdex-platform/tests/ci/test_continue_reading_last_completed.mjs weebdex-platform/tests/ci/public-api-recovery.test.mjs weebdex-platform/tests/ci/test_public_library_catalogue.mjs weebdex-platform/tests/ci/test_integrated_read_fanout_plan.mjs"
+  ],
+  "baseline_regressions": {
+    "tests": 27,
+    "passed": 4,
+    "failed": 23,
+    "exit_code": 1,
+    "qualification": "New source-bound behavioral regressions against baseline shared overlay/site client; new test-only comparator module remains present. Failures include malformed query URL, stale callback ownership and publication-ordered aggregate."
+  },
+  "pre_pin_refresh": {
+    "tests": 164,
+    "passed": 163,
+    "failed": 1,
+    "exit_code": 1,
+    "qualification": "Historical request recipe source pin detected modified overlay. Pin provenance refreshed without changing recipes or execution/capacity status."
+  },
+  "final_regressions": {
+    "tests": 164,
+    "passed": 164,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "source_sha256": {
+    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "86484b47c2beace9ee55032503256f8d1abac99dab8c02cd7979c522a5ec1a78",
+    "weebdex-platform/platform-integrations/public-api/site-client.ts": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9",
+    "weebdex-platform/platform-integrations/public-api/reader-order.ts": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279",
+    "weebdex-platform/tests/ci/test_reader_history_ownership.mjs": "3a6da7cf016e39941d23a2a407ecb412c4c1c11974b4635e20c24c6a0f0d6e29",
+    "weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs": "12b69a137d2172fac764a0c5c0c0cad4ac9ec3b4432b4603bfe981128f8239f2",
+    "weebdex-platform/docs/fixtures/integrated-read-fanout-v1.json": "3a75314a21bc08760451e4cd35b97920380eddb14f3f04883f30f161f42e7ef1"
+  },
+  "artifacts_sha256": {
+    "baseline-regressions.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "baseline-regressions.tap": "b86747d3da0b010d9b0e6057c397345814a5cd3f4086284bf75efee397290358",
+    "final-regressions.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final-regressions.tap": "d5ecee379bdaa24630a01e9ee640f824b7bd765bd8ee268fbf0552bc9fa3214b",
+    "pre-pin-refresh-regressions.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "pre-pin-refresh-regressions.tap": "2e58a0ce11ea1c9d52a09de0b88cbee82609817befc1c945b97f8c8d0c2078b1",
+    "source-preparation.json": "9a308b6df6c537e6d6c058617f69e79bce9023f0ac11dc3b9d7004890bafb45f"
+  },
+  "limits": [
+    "No browser/application/native build/database/service/network/hosted execution.",
+    "Supplied frontend files unchanged; script repair uses exact hash-fenced overlay.",
+    "Real browser Back/Forward, keyboard/touch and visual acceptance remain unexecuted.",
+    "Frozen CI proposal/evidence worktrees untouched."
+  ]
+}

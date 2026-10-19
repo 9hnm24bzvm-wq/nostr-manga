@@ -1,0 +1,48 @@
+{
+  "base_commit": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+  "scope": "Explicit session-only key activation is available after backup acknowledgement without instance discovery. Enrollment and public write/publication authority are unchanged.",
+  "node_version": "v24.19.0",
+  "validation": [
+    {
+      "command": "WEEBDEX_IDENTITY_SETUP_SOURCE=<git-show-e494290-IdentitySetup.svelte> node --test weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs",
+      "exit_code": 1,
+      "passed": 4,
+      "failed": 5,
+      "receipt": "baseline-negative.txt",
+      "meaning": "The five new offline-connection regressions fail against the unchanged baseline component; no production file was modified for this control."
+    },
+    {
+      "command": "node --test weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs weebdex-platform/tests/ci/test_enrollment_policy.mjs weebdex-platform/tests/ci/test_account_onboarding_seams.mjs weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs",
+      "exit_code": 0,
+      "passed": 97,
+      "failed": 0,
+      "receipt": "focused-tests.txt"
+    },
+    {
+      "command": "python3 weebdex-platform/scripts/verify-frontend-parity.py",
+      "exit_code": 0,
+      "files_checked": 676,
+      "receipt": "attachment-parity.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "changed_input_sha256": {
+    "weebdex-platform/platform-integrations/local-library/IdentitySetup.svelte": "1adede24df8b99cafafe7af39ee85fac300934bce31674e62ed530cd13c7e0cc",
+    "weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs": "283b18b3e52976259b254adafb557b272caaee3f1505220c084b819ccaceab27",
+    "weebdex-platform/docs/account-onboarding.md": "32eceb9183400e8ba0e2d469ebe38d85a8dcd6d13a0c016e2d0fb4e4b0ef3abd"
+  },
+  "receipt_sha256": {
+    "focused-tests.txt": "1f646b2e51f9c21bad78e173938978630eef2f462bc64a1a6dc595eb07d1b72e",
+    "baseline-negative.txt": "322f734328cd6e2bba0831f750fcf5f0d7c815b4fe9f36fd56978e77921fdf22",
+    "attachment-parity.json": "f222f2b3bb57e3aab334e503970a172cef004bd7703e4af619f1475a74135583"
+  },
+  "limits": [
+    "Finite wizard tests execute production TypeScript with explicit synthetic draft/registry, lifecycle, clipboard and service stand-ins.",
+    "Composed signup and native source ownership/signing-journey helpers are finite seam tests, not browser execution.",
+    "No dependency install, real key generation, real account, network mutation, database, browser, Svelte compilation, semantic typecheck or frontend production build was performed.",
+    "Real cryptography/registry and browser acceptance require their separately pinned dependency roots and applicable gates."
+  ]
+}

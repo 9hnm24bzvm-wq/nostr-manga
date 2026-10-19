@@ -141,6 +141,29 @@ test('current actor-follow runtime source has a separate exact association witho
   assert.equal(currentWorkflow.replace(proxyStep, ''), priorWorkflow.toString('utf8'));
   const validator = 'scripts/ci/validate-ci-evidence.py';
   let currentValidator = fs.readFileSync(new URL(validator, root), 'utf8');
+  // Independently reviewed native-title hash publication is a later successor.
+  // Reverse only its two exact blocks before applying historical diagnostic pins.
+  const priorDiagnosticValidatorSha = '0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77';
+  const nativeTitleValidatorSha = '29f59b60e44e2b8d5d396c993b5c33f8d9b12abd815195ee3819b859bc472969';
+  const nativeTitleValidatorBlocks = [
+    "def title_artifact_hashes(prep, source):\n    title = prep['native_feed_regression']['title_disposition']\n    if title['artifacts_verified']:\n        # Hash-shaped text is admitted only for the actual current Cargo-selected\n        # artifact, never arbitrary/private 64-hex with the right syntax.\n        plan = runner.read(ROOT / '.build/hosted-browser/plan.json')\n        executables = native_feed.title.verify_artifacts(plan.get('native_title_tests'), ROOT, prep['source_snapshot_sha256'])\n        insist(title['executable_sha256'] == {kind: source.sha(path) for kind, path in executables.items()})\n\n\n",
+    '        title_artifact_hashes(prep, source)\n',
+  ];
+  const normalizeNativeTitleValidator = input => {
+    const digest = hash(input);
+    assert([priorDiagnosticValidatorSha, nativeTitleValidatorSha].includes(digest), 'Unknown native-title evidence validator');
+    let value = input;
+    if (digest === nativeTitleValidatorSha) for (const block of nativeTitleValidatorBlocks) {
+      assert.equal(value.split(block).length - 1, 1);
+      value = value.replace(block, '');
+    }
+    assert.equal(hash(value), priorDiagnosticValidatorSha);
+    return value;
+  };
+  const nativeTitleValidator = currentValidator;
+  currentValidator = normalizeNativeTitleValidator(currentValidator);
+  assert.equal(normalizeNativeTitleValidator(currentValidator), currentValidator);
+  assert.throws(() => normalizeNativeTitleValidator(nativeTitleValidator.replace('def phase_list(value):', 'def phase_list_changed(value):')), /Unknown native-title evidence validator/);
   // Exact diagnostic-only successor; preserve the immutable historical/runtime pins.
   assert.equal(hash(currentValidator), "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77");
   for (const [current, historical] of [
