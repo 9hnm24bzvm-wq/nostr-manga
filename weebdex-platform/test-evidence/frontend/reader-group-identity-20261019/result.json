@@ -1,0 +1,36 @@
+{
+  "status": "finite-source-seams-passed",
+  "baseline_commit": "13d82606ae5d764d59d58c4a820693062a0fcaac",
+  "command": "node --experimental-vm-modules --test weebdex-platform/tests/ci/test_reader_group_identity.mjs weebdex-platform/tests/ci/test_reader_navigation_edges.mjs weebdex-platform/tests/ci/test_reader_history_ownership.mjs weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs weebdex-platform/tests/ci/test_continue_reading_last_completed.mjs weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs weebdex-platform/tests/ci/test_reader_accessible_controls.mjs weebdex-platform/tests/ci/test_integrated_read_fanout_plan.mjs",
+  "baseline_regressions": {
+    "tests": 9,
+    "passed": 5,
+    "failed": 4,
+    "exit_code": 1
+  },
+  "final_regressions": {
+    "tests": 74,
+    "passed": 74,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "source_sha256": {
+    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836",
+    "weebdex-platform/tests/ci/test_reader_group_identity.mjs": "c83c5c27d57fe17daa5242f89d4a9d3c95b907951327d5548f77bf70d1fab23d",
+    "weebdex-platform/docs/fixtures/integrated-read-fanout-v1.json": "b778c74e7872606997cfaaa0bff89c5f2870047a5e905368aa9f59d0b71566e1"
+  },
+  "artifacts_sha256": {
+    "baseline-regressions.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "baseline-regressions.tap": "9877d5c397a9c32ff7a54b1477449a9f4e3af1114ba3872baaab04aaea65d334",
+    "final-regressions.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final-regressions.tap": "7dd00c1cfc9b168a56b6c1b9c8ae6cbe02a8c772243402f88edf63e3a6ed64d1",
+    "source-preparation.json": "e3ba39cd98aadeb3fad2ca70ae03ce69ee7723965898e7238bbc57f9acbe90af"
+  },
+  "semantics": "Prefer matching actual group IDs when both candidate and current group have them; retain name fallback only for legacy missing-ID metadata. Returned display names, languages, equal-score ordering and no-group behavior are unchanged.",
+  "limits": [
+    "No build/browser/application/database/network/install/external run.",
+    "Original frontend context bytes and markup/styles remain frozen.",
+    "Parent reader history/aggregate fixes stay in separate frozen worktree13d8260."
+  ]
+}

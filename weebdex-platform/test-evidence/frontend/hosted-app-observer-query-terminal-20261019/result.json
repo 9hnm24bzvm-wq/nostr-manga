@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "runId": 39244148320,
+  "attempt": 1,
+  "source": {
+    "localCommit": "17d26d0c7338ff32a6233207dc93905b226fe053",
+    "remoteCommit": "ba88ca0596c00d09f9fc95d68e254e216bcc5598",
+    "tree": "2bbae3bf49e0d749b1da99a7811879154013b43f"
+  },
+  "terminal": "failure",
+  "selection": "public-upload",
+  "timing": {
+    "jobStarted": "2026-10-19T11:22:22Z",
+    "jobCompleted": "2026-10-19T11:36:16Z",
+    "preparationSeconds": 741,
+    "nativeGateSeconds": 30,
+    "browserStepSeconds": 46
+  },
+  "nativeTitle": {
+    "unitsPassed": 3,
+    "unitsFailed": 0,
+    "unitsIgnored": 0,
+    "httpPassed": 1,
+    "httpFailed": 0,
+    "httpIgnored": 0,
+    "negativeRequestsVerified": 7,
+    "sourceAndArtifactsVerified": true,
+    "unitAndHttpOwnedCleanupVerified": true,
+    "httpFixtureCleanupVerified": true,
+    "budgetExhausted": false,
+    "scope": "Reported by validated hosted gate; unavailable hosted binaries were not independently rehashed locally"
+  },
+  "nativeFeed": {
+    "status": "passed",
+    "baselineMs": 5001,
+    "baselineOutcome": "query-canceled",
+    "batchedFirstPageMs": 209,
+    "allMeasurementFlagsTrue": true,
+    "ownedAndFixtureCleanupVerified": true
+  },
+  "browser": {
+    "created": true,
+    "contextCreated": true,
+    "pageCreated": true,
+    "actualSteps": 3,
+    "failedCheck": {
+      "source": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "zeroBasedIndex": 2,
+      "name": "begin, language autosave and real image before cancellation",
+      "priorCheck": "import actual session key through Public identity UI",
+      "priorStatus": "passed",
+      "closedImportAttempt": 1,
+      "closedImportSubstepsCompleted": 14,
+      "closedImportStatus": "passed",
+      "innerSubstepOrAssertion": "Not disclosed by admitted closed reports"
+    },
+    "caughtStage": "running-checks",
+    "caughtCategory": "journey-failed",
+    "pageErrors": 0,
+    "proxyConnectDenials": 24,
+    "proxyDenialsEstablishCause": false
+  },
+  "observer": {
+    "fixtureControls": 1,
+    "signedRequests": 2,
+    "mutations": 0,
+    "independentReads": 1,
+    "browserObserverClosedVerified": true,
+    "independentReaderClosed": true,
+    "retainedFailureLabels": {
+      "recordValid": true,
+      "signedRequestInvalid": 0,
+      "duplicateNativeTerminal": 0,
+      "signedNativeFailed": 0
+    },
+    "counterScope": "Allowlisted upload/account-context paths and at most16retained failure labels; cannot infer global traffic or exact failure cause"
+  },
+  "cleanup": {
+    "fixturePhysicalTeardownVerified": true,
+    "outerPhysicalTeardownVerified": true,
+    "forced": false,
+    "remainingOwnedProcesses": 0,
+    "supervisorTerminal": true,
+    "supervisorExitZero": false,
+    "lifecycleClean": false
+  },
+  "acceptance": {
+    "selectedScopePassed": false,
+    "fullSuitePassed": false,
+    "pendingOtherPhases": 39,
+    "pixelParityEstablished": false,
+    "currentFreshBuildRecorded": true,
+    "currentStrictTypecheckEstablished": false,
+    "hostedCompiledArtifactLocallyReverified": false,
+    "causeEstablished": false
+  },
+  "independentArtifactReview": {
+    "reviewer": "ops",
+    "status": "Clear for exact hashes, schemas, source, privacy and scoped terminal facts; no new runtime or download"
+  },
+  "rawLogsKeysPrivatePayloadExported": false,
+  "newRunTriggered": false
+}

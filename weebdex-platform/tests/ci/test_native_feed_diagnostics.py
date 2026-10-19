@@ -23,6 +23,22 @@ contract = load('native_feed_seam', ROOT / 'scripts/ci/native-feed-diagnostics.p
 
 
 class NativeFeedDiagnostics(unittest.TestCase):
+    def title(self):
+        # Explicit finite title-gate stand-in; no native unit/HTTP execution.
+        value = contract.title.not_run()
+        observation = lambda count: {'passed_tests': count, 'failed_tests': 0,
+            'ignored_tests': 0, 'exact_tests_verified': True}
+        value.update(status='passed', source_verified=True, artifacts_verified=True,
+            executable_sha256={'library': '1' * 64, 'http': '2' * 64},
+            units=contract.title.project_stage(self.owned(), observation(3)),
+            http=contract.title.project_stage(self.owned(), observation(1), True),
+            negative_requests_verified=7)
+        contract.title.validate(value)
+        return value
+
+    def project(self, owned, observed, fixture):
+        return contract.project(owned, observed, fixture, self.title())
+
     def measurement(self):
         return {'scenario': 'compact-feed505-plus10000-metadata', 'baseline_outcome': 'query-canceled',
                 'baseline_ms': 5001, 'batched_first_page_ms': 42,
@@ -45,7 +61,7 @@ class NativeFeedDiagnostics(unittest.TestCase):
         fixture = self.fixture()
         self.assertEqual(set(fixture), contract.FIXTURE_FIELDS)
         self.assertTrue(contract.fixture_cleanup_verified(fixture))
-        value = contract.project(self.owned(), self.measurement(), fixture)
+        value = self.project(self.owned(), self.measurement(), fixture)
         self.assertEqual(value['status'], 'passed')
         self.assertEqual(set(value), contract.RESULT_FIELDS)
         for private in ['captured_births', 'postgres_returncode', 'cleanup_errors', 'start_ticks']:
@@ -74,7 +90,7 @@ class NativeFeedDiagnostics(unittest.TestCase):
                 missing = dict(fixture)
                 del missing[field]
                 self.assertFalse(contract.fixture_cleanup_verified(missing))
-                self.assertEqual(contract.project(self.owned(), self.measurement(), missing)['status'], 'failed')
+                self.assertEqual(self.project(self.owned(), self.measurement(), missing)['status'], 'failed')
         for malformed in [None, [], '', 0, True, {'postgres_cleanup': 'verified_stopped', 'exit': 0},
                           dict(fixture, raw='private')]:
             with self.subTest(malformed=malformed):
@@ -99,7 +115,7 @@ class NativeFeedDiagnostics(unittest.TestCase):
                 with self.subTest(field=field, replacement=replacement):
                     fixture = dict(self.fixture(), **{field: replacement})
                     self.assertFalse(contract.fixture_cleanup_verified(fixture))
-                    self.assertEqual(contract.project(self.owned(), self.measurement(), fixture)['status'], 'failed')
+                    self.assertEqual(self.project(self.owned(), self.measurement(), fixture)['status'], 'failed')
 
     def test_fixture_requires_bounded_exact_unique_owned_birth_identities(self):
         first = self.fixture()['captured_births'][0]
@@ -125,22 +141,22 @@ class NativeFeedDiagnostics(unittest.TestCase):
         for owned, observed, fixture in [(None, None, None), (self.owned(), None, self.fixture()),
                                           (self.owned(), self.measurement(), None)]:
             with self.subTest(owned=owned, observed=observed, fixture=fixture):
-                value = contract.project(owned, observed, fixture)
+                value = self.project(owned, observed, fixture)
                 self.assertEqual(value['status'], 'failed')
                 contract.validate(value)
 
     def test_pass_needs_actual_exit_terminal_cleanup_fixture_and_measurement(self):
-        value = contract.project(self.owned(), self.measurement(), self.fixture())
+        value = self.project(self.owned(), self.measurement(), self.fixture())
         self.assertEqual(value['status'], 'passed')
         for key, replacement in [('process_exit_code', 1), ('deadline_exceeded', True),
                                   ('terminal_receipt', False), ('cleanup_verified', False),
                                   ('surviving_owned_process_ids', [123]), ('cleanup_signals', ['SIGKILL']),
                                   ('prior_or_unrelated_processes_touched', True)]:
             with self.subTest(key=key):
-                self.assertEqual(contract.project(dict(self.owned(), **{key: replacement}), self.measurement(), self.fixture())['status'], 'failed')
+                self.assertEqual(self.project(dict(self.owned(), **{key: replacement}), self.measurement(), self.fixture())['status'], 'failed')
         for fixture in [{'postgres_cleanup': 'failed', 'exit': 0}, {'postgres_cleanup': 'verified_stopped', 'exit': 1},
                         {'postgres_cleanup': 'verified_stopped', 'exit': False}, dict(self.fixture(), raw='private')]:
-            self.assertEqual(contract.project(self.owned(), self.measurement(), fixture)['status'], 'failed')
+            self.assertEqual(self.project(self.owned(), self.measurement(), fixture)['status'], 'failed')
 
     def test_parser_admits_one_exact_retained_rust_record_only(self):
         row = self.measurement()
@@ -158,16 +174,16 @@ class NativeFeedDiagnostics(unittest.TestCase):
         cases = [missing, *[dict(self.owned(), deadline_exceeded=value) for value in [None, 0, 1, '', 'private', [], {}]]]
         for owned in cases:
             with self.subTest(owned=owned), self.assertRaises(ValueError):
-                contract.project(owned, self.measurement(), self.fixture())
-        self.assertEqual(contract.project(dict(self.owned(), deadline_exceeded=True), self.measurement(), self.fixture())['status'], 'failed')
-        self.assertEqual(contract.project(dict(self.owned(), deadline_exceeded=False), self.measurement(), self.fixture())['status'], 'passed')
+                self.project(owned, self.measurement(), self.fixture())
+        self.assertEqual(self.project(dict(self.owned(), deadline_exceeded=True), self.measurement(), self.fixture())['status'], 'failed')
+        self.assertEqual(self.project(dict(self.owned(), deadline_exceeded=False), self.measurement(), self.fixture())['status'], 'passed')
 
     def test_measurement_and_result_reject_unbounded_or_private_values(self):
         for key, value in [('baseline_outcome', 'private'), ('scenario', 'private'), ('baseline_ms', True),
                            ('baseline_ms', -1), ('batched_first_page_ms', 180001), ('all_505_ids_reached', False)]:
             with self.subTest(key=key), self.assertRaises(ValueError):
                 contract.measurement(dict(self.measurement(), **{key: value}))
-        baseline = contract.project(self.owned(), self.measurement(), self.fixture())
+        baseline = self.project(self.owned(), self.measurement(), self.fixture())
         cases = [dict(baseline, raw_log='never-export'), dict(baseline, process_exit_code=True),
                  dict(baseline, status='not-run'), dict(baseline, status='failed'),
                  dict(baseline, process_started=False), dict(baseline, measurement=None),
@@ -176,7 +192,7 @@ class NativeFeedDiagnostics(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 contract.validate(value)
         private = dict(self.owned(), command=['token=private'], cwd='private', raw='private')
-        encoded = json.dumps(contract.project(private, self.measurement(), self.fixture()))
+        encoded = json.dumps(self.project(private, self.measurement(), self.fixture()))
         self.assertNotIn('private', encoded)
         self.assertNotIn('command', encoded)
 
@@ -190,7 +206,7 @@ class NativeFeedDiagnostics(unittest.TestCase):
                 'print("private stand-in log"); print(' + repr(json.dumps(self.measurement())) + ')'],
                 capture_output=True, text=True, timeout=10)
             self.assertEqual(result.returncode, 0)
-            value = contract.project(json.loads(receipt.read_text()), contract.parse_measurement(log.read_text()), self.fixture())
+            value = self.project(json.loads(receipt.read_text()), contract.parse_measurement(log.read_text()), self.fixture())
             self.assertEqual(value['status'], 'passed')
             self.assertNotIn('private', json.dumps(value))
 
@@ -201,7 +217,8 @@ class NativeFeedDiagnostics(unittest.TestCase):
         self.assertLess(native, workflow.index('Run genuine browser batches'))
         self.assertIn('timeout-minutes: 12', workflow)
         source = (ROOT / 'scripts/ci/run-hosted-feed-regression.py').read_text()
-        self.assertIn("'--deadline', '600'", source)
+        self.assertIn("SHARED_SECONDS = 600", source)
+        self.assertIn("'--deadline', '300'", source)
         self.assertIn("'bash', str(ROOT / 'scripts/run-feed-projection-tests.sh')", source)
         self.assertIn("RUSTUP_TOOLCHAIN='1.90.0'", source)
         self.assertIn("os.environ.get('GITHUB_ACTIONS') != 'true'", source)
@@ -222,7 +239,7 @@ class NativeFeedDiagnostics(unittest.TestCase):
                     **{key: '0' * 64 for key in ['source_snapshot_sha256', 'frontend_manifest_sha256',
                         'frontend_index_sha256', 'normal_binary_sha256', 'provisioner_sha256', 'chromium_binary_sha256']}}
         validator.preparation(baseline)
-        validator.preparation(dict(baseline, native_feed_regression=contract.project(self.owned(), self.measurement(), self.fixture())))
+        validator.preparation(dict(baseline, native_feed_regression=self.project(self.owned(), self.measurement(), self.fixture())))
         for value in [None, {}, dict(contract.not_run(), raw='private'), dict(contract.not_run(), status='passed')]:
             with self.subTest(value=value), self.assertRaises(ValueError):
                 validator.preparation(dict(baseline, native_feed_regression=value))

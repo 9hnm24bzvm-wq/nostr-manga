@@ -97,6 +97,7 @@ test('current actor-follow runtime source has a separate exact association witho
   const recoveryWorkflowSha = 'df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27';
   const publicUploadWorkflowSha = '19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1';
   assert.equal(currentSourceAssociation.current_runtime_sha256[workflow], recoveryWorkflowSha);
+  const currentApplicationWorkflowSha = '876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1';
   const workflowChanges = [
     ["inputs.batch || 'public-upload'", "inputs.batch || 'all'", 2],
     ['timeout-minutes: 140', 'timeout-minutes: 345', 1],
@@ -105,9 +106,19 @@ test('current actor-follow runtime source has a separate exact association witho
   ];
   const normalizeWorkflow = input => {
     const digest = hash(input);
-    assert([recoveryWorkflowSha, publicUploadWorkflowSha].includes(digest), 'Unknown workflow source profile');
+    assert([recoveryWorkflowSha, publicUploadWorkflowSha, currentApplicationWorkflowSha].includes(digest), 'Unknown workflow source profile');
     let value = input;
-    if (digest === publicUploadWorkflowSha) for (const [current, historical, count] of workflowChanges) {
+    if (digest === currentApplicationWorkflowSha) {
+      const setupPython = "      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0\n        with:\n          python-version: '3.12.15'\n          architecture: x64\n          check-latest: false\n";
+      assert.equal(value.split(setupPython).length - 1, 1);
+      value = value.replace(setupPython, '');
+      assert.equal(value.split('runs-on: ubuntu-22.04').length - 1, 1);
+      value = value.replace('runs-on: ubuntu-22.04', 'runs-on: ubuntu-24.04');
+      assert.equal(value.split('default: public-upload').length - 1, 1);
+      value = value.replace('default: public-upload', 'default: all');
+      assert.equal(hash(value), publicUploadWorkflowSha);
+    }
+    if ([publicUploadWorkflowSha, currentApplicationWorkflowSha].includes(digest)) for (const [current, historical, count] of workflowChanges) {
       assert.equal(value.split(current).length - 1, count);
       value = value.replaceAll(current, historical);
     }
@@ -130,6 +141,29 @@ test('current actor-follow runtime source has a separate exact association witho
   assert.equal(currentWorkflow.replace(proxyStep, ''), priorWorkflow.toString('utf8'));
   const validator = 'scripts/ci/validate-ci-evidence.py';
   let currentValidator = fs.readFileSync(new URL(validator, root), 'utf8');
+  // Independently reviewed native-title hash publication is a later successor.
+  // Reverse only its two exact blocks before applying historical diagnostic pins.
+  const priorDiagnosticValidatorSha = '0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77';
+  const nativeTitleValidatorSha = '29f59b60e44e2b8d5d396c993b5c33f8d9b12abd815195ee3819b859bc472969';
+  const nativeTitleValidatorBlocks = [
+    "def title_artifact_hashes(prep, source):\n    title = prep['native_feed_regression']['title_disposition']\n    if title['artifacts_verified']:\n        # Hash-shaped text is admitted only for the actual current Cargo-selected\n        # artifact, never arbitrary/private 64-hex with the right syntax.\n        plan = runner.read(ROOT / '.build/hosted-browser/plan.json')\n        executables = native_feed.title.verify_artifacts(plan.get('native_title_tests'), ROOT, prep['source_snapshot_sha256'])\n        insist(title['executable_sha256'] == {kind: source.sha(path) for kind, path in executables.items()})\n\n\n",
+    '        title_artifact_hashes(prep, source)\n',
+  ];
+  const normalizeNativeTitleValidator = input => {
+    const digest = hash(input);
+    assert([priorDiagnosticValidatorSha, nativeTitleValidatorSha].includes(digest), 'Unknown native-title evidence validator');
+    let value = input;
+    if (digest === nativeTitleValidatorSha) for (const block of nativeTitleValidatorBlocks) {
+      assert.equal(value.split(block).length - 1, 1);
+      value = value.replace(block, '');
+    }
+    assert.equal(hash(value), priorDiagnosticValidatorSha);
+    return value;
+  };
+  const nativeTitleValidator = currentValidator;
+  currentValidator = normalizeNativeTitleValidator(currentValidator);
+  assert.equal(normalizeNativeTitleValidator(currentValidator), currentValidator);
+  assert.throws(() => normalizeNativeTitleValidator(nativeTitleValidator.replace('def phase_list(value):', 'def phase_list_changed(value):')), /Unknown native-title evidence validator/);
   // Exact diagnostic-only successor; preserve the immutable historical/runtime pins.
   assert.equal(hash(currentValidator), "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77");
   for (const [current, historical] of [
@@ -158,8 +192,53 @@ test('current actor-follow runtime source has a separate exact association witho
     currentValidator = currentValidator.replace(current, historical);
   }
   assert.equal(hash(currentValidator), currentSourceAssociation.current_runtime_sha256[validator]);
+  const runner = 'scripts/ci/run-hosted-browser.py';
+  const runnerChanges = [
+  [
+    "import stat\n",
+    ""
+  ],
+  [
+    "_temp_spec = importlib.util.spec_from_file_location('owned_browser_temp', Path(__file__).with_name('browser-temp.py'))\nbrowser_temp = importlib.util.module_from_spec(_temp_spec)\n_temp_spec.loader.exec_module(browser_temp)\n",
+    ""
+  ],
+  [
+    "BROWSER_TMP_CLEANUP_SECONDS = 5\n\n\ndef persist_browser_temp(owner, *, process_tree_stopped=False, cleanup_verified=False):\n    \"\"\"Private bounded journal held open from admission through final cleanup.\"\"\"\n    output = owner.browser_temp_record\n    held = os.fstat(output.fileno())\n    named = os.stat(owner.browser_temp_record_path, follow_symlinks=False)\n    if (not stat.S_ISREG(held.st_mode) or not stat.S_ISREG(named.st_mode) or\n            (held.st_dev, held.st_ino) != (named.st_dev, named.st_ino) or\n            held.st_nlink != 1 or held.st_uid != os.geteuid() or\n            stat.S_IMODE(held.st_mode) != 0o600):\n        raise RuntimeError('Owned browser temp journal changed')\n    value = dict(schema=1, **owner.browser_temp.journal(),\n                 process_tree_stopped=process_tree_stopped, cleanup_verified=cleanup_verified)\n    data = json.dumps(value, sort_keys=True) + '\\n'\n    if len(data.encode('utf-8')) > 4096:\n        raise RuntimeError('Owned browser temp journal exceeded its bound')\n    output.seek(0)\n    output.truncate()\n    output.write(data)\n    output.flush()\n    os.fsync(output.fileno())\n\n\ndef prepare_browser_temp(owner, name):\n    \"\"\"Register a fresh exact root and persist its admission before any child.\"\"\"\n    owner.browser_temp = browser_temp.BrowserTemp()\n    owner.browser_temp_record = None\n    owner.browser_temp_record_path = STAGE / ('browser-temp-' + name + '.json')\n    owner.browser_temp.create()\n    descriptor = os.open(owner.browser_temp_record_path,\n                         os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)\n    owner.browser_temp_record = os.fdopen(descriptor, 'w')\n    persist_browser_temp(owner)\n\n\ndef finish_browser_temp(owner, process, batch, deadline):\n    \"\"\"Never remove temporary bytes until the complete owned tree is stopped.\"\"\"\n    temp = getattr(owner, 'browser_temp', None)\n    output = getattr(owner, 'browser_temp_record', None)\n    stopped = clean = False\n    def uncertain():\n        batch['cleanup_error_class'] = 'RuntimeError'\n        batch['cleanup']['verified_stopped'] = False\n        batch.setdefault('outer_cleanup', dict(forced=False,\n            verified_stopped=False, remaining_owned_process_count=0))['verified_stopped'] = False\n    try:\n        if temp is None:\n            if process is not None:\n                raise RuntimeError('Owned browser temp registration unavailable')\n            return\n        if process is not None:\n            if (process.poll() is None or batch.get('supervisor_terminal') is not True or\n                    batch.get('outer_cleanup', {}).get('verified_stopped') is not True):\n                raise RuntimeError('Owned browser temp process closure unverified')\n        elif owner.process_roots:\n            raise RuntimeError('Owned browser temp child admission unverified')\n        if owner.process_members(None) or owner.process_tracking_errors:\n            raise RuntimeError('Owned browser temp process closure unverified')\n        stopped = True\n        temp.cleanup(deadline)\n        clean = not temp.created or temp.removed\n        if temp.created and output is None:\n            raise RuntimeError('Owned browser temp journal unavailable')\n    except Exception:\n        uncertain()\n    finally:\n        try:\n            if output is not None:\n                persist_browser_temp(owner, process_tree_stopped=stopped,\n                                     cleanup_verified=clean and 'cleanup_error_class' not in batch)\n        except Exception:\n            uncertain()\n        finally:\n            try:\n                if temp is not None:\n                    temp.close()\n            except Exception:\n                uncertain()\n            finally:\n                if output is not None:\n                    try:\n                        output.close()\n                    except Exception:\n                        uncertain()\n\n\n",
+    ""
+  ],
+  [
+    "            prepare_browser_temp(owner, name)\n            # The fixture forwards this allowlisted override to Node/Chromium.\n            # No caller-supplied TMPDIR/TMP/TEMP can select the browser root.\n            env['TMPDIR'] = str(owner.browser_temp.path)\n",
+    ""
+  ],
+  [
+    "                owner.browser_temp.check()\n                if not owner.browser_temp.admitted or env.get('TMPDIR') != str(owner.browser_temp.path):\n                    raise RuntimeError('Owned browser temp environment refused')\n",
+    ""
+  ],
+  [
+    "            batch['error_class'] = 'RuntimeError' if isinstance(error, browser_temp.Refused) else type(error).__name__\n",
+    "            batch['error_class'] = type(error).__name__\n"
+  ],
+  [
+    "            # Use the existing 600-second teardown envelope; temp cleanup gets\n            # at most five seconds of the remaining reserve, never a new one.\n            cleanup_deadline = time.monotonic() + 600\n            try:\n                if process:\n                    finish_supervisor(owner, process, fixture, batch)\n            finally:\n                finish_browser_temp(owner, process, batch,\n                    min(cleanup_deadline, time.monotonic() + BROWSER_TMP_CLEANUP_SECONDS))\n",
+    "            if process:\n                finish_supervisor(owner, process, fixture, batch)\n"
+  ]
+];
+  function normalizeApplicationRunner(input) {
+    const digest = hash(input);
+    assert(['a904994f8ab19164174dc62f17df48ed926de0567603340f080b39415e00c0a6', '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b'].includes(digest), 'Unknown owned-temp application runner');
+    let value = input.toString();
+    if (digest === '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b') for (const [current, previous] of runnerChanges) {
+      assert.equal(value.split(current).length - 1, 1);
+      value = value.replace(current, previous);
+    }
+    assert.equal(hash(value), currentSourceAssociation.current_runtime_sha256[runner]);
+    return value;
+  }
+  const applicationRunner = fs.readFileSync(new URL(runner, root), 'utf8');
+  const historicalRunner = normalizeApplicationRunner(applicationRunner);
+  assert.throws(() => normalizeApplicationRunner(applicationRunner + '\n# unexpected source\n'), /Unknown owned-temp application runner/);
   for (const [file, digest] of Object.entries(currentSourceAssociation.current_runtime_sha256)) {
-    const bound = file === workflow ? currentWorkflow : file === validator ? currentValidator : fs.readFileSync(new URL(file, root));
+    const bound = file === workflow ? currentWorkflow : file === validator ? currentValidator : file === runner ? historicalRunner : fs.readFileSync(new URL(file, root));
     assert.equal(hash(bound), digest, 'historical current association: ' + file);
   }
 });

@@ -58,6 +58,18 @@ export class PublicUploadRequestError extends Error {
     this.status = status;
   }
 }
+export const uploadRequestRefusalStages = Object.freeze([
+  'checkpoint', 'fetch', 'response-header', 'response-media', 'declared-size',
+  'body-read', 'body-budget', 'decode', 'other',
+] as const);
+export type UploadRequestRefusalStage = typeof uploadRequestRefusalStages[number];
+// Only the exact error created by this transport's catch owns a code. Looking
+// up an unknown/forged/proxied error must never inspect its properties/getters.
+const requestRefusals = new WeakMap<object, UploadRequestRefusalStage>();
+export function uploadRequestRefusalStage(error: unknown): UploadRequestRefusalStage | 'unavailable' {
+  return error !== null && (typeof error === 'object' || typeof error === 'function')
+    ? requestRefusals.get(error) ?? 'unavailable' : 'unavailable';
+}
 type AuthTemplate = { kind: number; created_at: number; content: string; tags: string[][] };
 export interface UploadRequestPrimitives {
   signExact(signer: UploadRequestIdentity['signer'], owner: string, event: AuthTemplate): Promise<unknown>;
@@ -110,6 +122,7 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
     let dispatched = false, status: number | undefined, response: Response | undefined;
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
     let bodyFinished = false, finished = false, completed = false;
+    let refusalStage: UploadRequestRefusalStage = 'other';
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let rejectAbort: (reason: Error) => void = () => {};
@@ -125,11 +138,13 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
     void aborted.catch(() => {});
     let deadline = started;
     function checkpoint(): void {
+      const previous = refusalStage; refusalStage = 'checkpoint';
       if (finished || controller.signal.aborted || primitives.clock() >= deadline) throw Error('Upload request cancelled or deadline exceeded');
       identityCheck();
       if (selected.owner !== owner || selected.generation !== generation || selected.signer !== signer) throw Error('Upload signer selection changed');
       assertCurrent();
       if (controller.signal.aborted || primitives.clock() >= deadline) throw Error('Upload request cancelled or deadline exceeded');
+      refusalStage = previous;
     }
     async function guarded<T>(operation: () => T | PromiseLike<T>): Promise<T> {
       checkpoint();
@@ -174,6 +189,7 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       const headers: Record<string, string> = { authorization, accept: responseType === 'image' ? 'image/*, application/json' : 'application/json' };
       if (contentType !== undefined) headers['content-type'] = contentType;
       if (beforeSend) await guarded(() => beforeSend(controller.signal));
+      refusalStage = 'fetch';
       response = await guarded(() => {
         // Nothing asynchronous occurs between this fence and the only dispatch.
         checkpoint();
@@ -182,6 +198,7 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
           method, headers, body: method === 'GET' ? undefined : bytes,
           credentials: 'omit', redirect: 'error', cache: 'no-store', signal: controller.signal,
         }).then(result => {
+          refusalStage = 'response-header';
           if (finished) { discard(result); throw Error('Late upload response discarded'); }
           response = result;
           if (Number.isInteger(result.status) && result.status >= 200 && result.status <= 599) status = result.status;
@@ -209,28 +226,34 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
         'x-weebdex-source-deletion-status': safeHeader('x-weebdex-source-deletion-status'),
         'x-weebdex-source-deletion-request': safeHeader('x-weebdex-source-deletion-request'),
       };
+      refusalStage = 'response-media';
       const mediaType = receivedHeaders['content-type']?.split(';', 1)[0].trim().toLowerCase();
       const image = responseType === 'image' && status >= 200 && status < 300;
       if (image ? !/^image\/(?:png|jpeg|webp|gif|avif)$/.test(mediaType ?? '') :
           ![204, 205].includes(status) && mediaType !== 'application/json') throw Error('Unexpected upload response content type');
       const limit = image ? responseLimit : Math.min(responseLimit, JSON_RESPONSE_LIMIT);
+      refusalStage = 'declared-size';
       const declaredSize = responseHeaders.get('content-length');
       if (declaredSize !== null && /^\d+$/.test(declaredSize) && Number(declaredSize) > limit) throw Error('Upload response exceeds budget');
-      reader = receivedResponse.body?.getReader();
+      refusalStage = 'body-read'; reader = receivedResponse.body?.getReader();
       const chunks: Uint8Array[] = [];
       let size = 0;
       if (reader) for (;;) {
+        refusalStage = 'body-read';
         const part = await guarded(() => reader!.read());
         if (part.done) break;
+        refusalStage = 'body-budget';
         if (!(part.value instanceof Uint8Array) || part.value.byteLength > limit - size) throw Error('Upload response exceeds budget');
         size += part.value.byteLength;
         chunks.push(new Uint8Array(part.value));
       }
       bodyFinished = true;
+      refusalStage = 'body-budget';
       const received = new Uint8Array(size);
       let offset = 0;
       for (const chunk of chunks) { received.set(chunk, offset); offset += chunk.length; }
       let body: unknown;
+      refusalStage = 'decode';
       if (image) body = received;
       else if ([204, 205].includes(status) && !received.length) body = undefined;
       else body = JSON.parse(decoder.decode(received));
@@ -243,8 +266,9 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       // never automatically replayed. A known status remains known even if
       // cancellation or malformed JSON makes its body unavailable.
       const outcome = status !== undefined ? 'response' : dispatched ? 'uncertain' : 'unsent';
-      throw new PublicUploadRequestError(status !== undefined ? `Upload response body unavailable (HTTP ${status})` :
+      const error = new PublicUploadRequestError(status !== undefined ? `Upload response body unavailable (HTTP ${status})` :
         dispatched ? 'Upload request outcome is unknown; reconcile before retrying' : 'Upload request was not sent', outcome, status);
+      requestRefusals.set(error, refusalStage); throw error;
     } finally {
       finished = true;
       if (timer !== undefined) primitives.clearTimer(timer);

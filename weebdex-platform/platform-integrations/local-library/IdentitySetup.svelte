@@ -100,7 +100,7 @@
     return selected;
   }
   async function connectSession() {
-    if (pending || !identity || !relay || !backupAcknowledged) return;
+    if (pending || !identity || !backupAcknowledged) return;
     const epoch = generation; pending = true; error = ''; notice = ''; revealedSecret = '';
     try { await activateReviewedKey(epoch); assertActive(epoch); stage = 'connected'; void focusStep(); }
     catch { if (!disposed && epoch === generation) error = 'This key could not be connected. Start again or import your saved key.'; }
@@ -165,6 +165,8 @@
     </div>
     <label class="flex items-start gap-3 text-sm"><input class="mt-1 size-4 shrink-0" type="checkbox" bind:checked={backupAcknowledged} disabled={pending} /> <span>{identity.source === 'external' ? 'I manage my private-key backup in my signer.' : 'I have saved my private key somewhere safe.'}</span></label>
     <p class="text-muted-foreground text-xs">This acknowledgement does not create or verify a backup for you.</p>
+    <Button class="min-h-11 w-full" variant="outline" disabled={pending || !backupAcknowledged} onclick={connectSession}>Use this key for this session</Button>
+    <p class="text-muted-foreground text-xs">Connecting locally does not request admission or publish anything. Instance discovery can wait until you choose a public action.</p>
     <Button class="min-h-11 w-full" disabled={pending || !backupAcknowledged} onclick={reviewInstance}>Review public identity</Button>
     <Button class="min-h-11 w-full" variant="ghost" disabled={pending} onclick={startAgain}>Discard setup and go back</Button>
   {:else if stage === 'review' && identity && relay}
@@ -191,7 +193,7 @@
     <Input aria-label="Your public key" value={identity.npub} readonly spellcheck={false} class="font-mono text-xs" />
     <Button class="min-h-11" variant="outline" onclick={copyPublic}>Copy public key</Button>
     <p class="text-muted-foreground text-sm">Your site login stays separate. Nothing was published. {identity.source === 'external' ? 'Your browser signer keeps the private key.' : 'After reloading or locking, paste your saved private key to reconnect.'}</p>
-    {#if enrollmentOpen}<Button class="min-h-11 w-full" variant="outline" onclick={() => { stage = 'review'; void focusStep(); }}>Review joining this instance</Button>{/if}
+    <Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={reviewInstance}>Review joining this instance</Button>
     <Button class="min-h-11 w-full" onclick={onfinish}>{finishLabel}</Button>
   {:else if stage === 'done' && identity && relay}
     <p class="text-sm">Your public key was accepted by <span class="break-all">{relay.origin}</span>. Your saved manga and reading history were not published during setup.</p>

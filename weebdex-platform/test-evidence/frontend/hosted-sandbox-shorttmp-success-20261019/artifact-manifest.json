@@ -1,0 +1,45 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1903,
+      "path": "README.md",
+      "sha256": "dd991c2527d613eb80fe31df31240bb1d6d88c4a6b36468a33418a995dd1a9d3"
+    },
+    {
+      "bytes": 1032,
+      "path": "artifacts.json",
+      "sha256": "50d1442f1f67f6eee26dfac428aef3e233eb075f7405e374e8656c95e62a7c18"
+    },
+    {
+      "bytes": 998,
+      "path": "download-receipt.json",
+      "sha256": "e56f03aac9dcbfae7e04a19cb4298c3034c1f6edc32c5902adac182a702a804b"
+    },
+    {
+      "bytes": 1335,
+      "path": "inspection.json",
+      "sha256": "1221797775d67e3d01f1950d35c74dd56642e423b947ec65d26c556089c77ec5"
+    },
+    {
+      "bytes": 2801,
+      "path": "jobs.json",
+      "sha256": "a51673fb59f4af395262affc015aec040a706d1dcc74d7f1cbc2dea36feb39ca"
+    },
+    {
+      "bytes": 2751,
+      "path": "result.json",
+      "sha256": "5e029d11ce888359125a664eccf1b861c78157037fa0abf0b8efbea8755dcbc2"
+    },
+    {
+      "bytes": 1480,
+      "path": "sandbox-preflight.json",
+      "sha256": "e0c3e46954124604abaefd9303dcfc9f8ce959d45f8291401940de6a924b0837"
+    },
+    {
+      "bytes": 2774,
+      "path": "source-pins.json",
+      "sha256": "7cac3e3228567cc13e89c6977ddd4cd7d0601c66a099f3a2039bdae2aecec607"
+    }
+  ],
+  "schema": 1
+}

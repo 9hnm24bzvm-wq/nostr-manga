@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "runId": 39191081822,
+  "attempt": 1,
+  "source": {
+    "localCommit": "95944fab9ee9714bc556a9c9115167d9b8178542",
+    "remoteCommit": "4a27b3a106e903a48115b3642624565510ddd75e",
+    "tree": "8cc4f916513aebfd715459950d4a53f5978f14c0"
+  },
+  "terminal": "failure",
+  "selection": "public-upload",
+  "timing": {
+    "jobStarted": "2026-10-19T02:40:39Z",
+    "jobCompleted": "2026-10-19T02:53:45Z",
+    "preparationSeconds": 712,
+    "nativeGateSeconds": 29,
+    "browserStepSeconds": 29
+  },
+  "nativeTitle": {
+    "unitsPassed": 3,
+    "unitsFailed": 0,
+    "unitsIgnored": 0,
+    "httpPassed": 1,
+    "httpFailed": 0,
+    "httpIgnored": 0,
+    "negativeRequestsVerified": 7,
+    "sourceAndArtifactsVerified": true,
+    "unitAndHttpOwnedCleanupVerified": true,
+    "httpFixtureCleanupVerified": true,
+    "budgetExhausted": false
+  },
+  "nativeFeed": {
+    "status": "passed",
+    "baselineMs": 5001,
+    "baselineOutcome": "query-canceled",
+    "batchedFirstPageMs": 198,
+    "allMeasurementFlagsTrue": true,
+    "ownedAndFixtureCleanupVerified": true
+  },
+  "browser": {
+    "created": true,
+    "contextCreated": true,
+    "pageCreated": true,
+    "actualSteps": 2,
+    "failedCheck": {
+      "source": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "zeroBasedIndex": 1,
+      "name": "import actual session key through Public identity UI",
+      "previousCheck": "provision real bound synthetic upload publisher",
+      "previousStatus": "passed",
+      "closedImportAttempt": 1,
+      "closedImportSubstep": "upload-ready",
+      "completedSubsteps": 13,
+      "caughtCategory": "assertion",
+      "assertionOrCause": "Not disclosed by admitted reports; until also checks observer health"
+    },
+    "caughtStage": "running-checks",
+    "caughtCategory": "journey-failed",
+    "pageErrors": 0,
+    "proxyConnectDenials": 17,
+    "proxyDenialsEstablishCause": false
+  },
+  "observer": {
+    "fixtureControls": 1,
+    "signedRequests": 1,
+    "mutations": 0,
+    "independentReads": 0,
+    "browserObserverClosedVerified": false,
+    "independentReaderClosed": true,
+    "counterScope": "Allowlisted upload/account-context observer paths only; cannot infer global traffic or cause"
+  },
+  "cleanup": {
+    "fixturePhysicalTeardownVerified": true,
+    "outerPhysicalTeardownVerified": true,
+    "forced": false,
+    "remainingOwnedProcesses": 0,
+    "supervisorTerminal": true,
+    "supervisorExitZero": false,
+    "lifecycleClean": false
+  },
+  "acceptance": {
+    "selectedScopePassed": false,
+    "fullSuitePassed": false,
+    "pendingOtherPhases": 39,
+    "pixelParityEstablished": false,
+    "currentFreshBuildRecorded": true,
+    "currentStrictTypecheckEstablished": false,
+    "hostedCompiledArtifactLocallyReverified": false,
+    "causeEstablished": false
+  },
+  "rawLogsKeysPrivatePayloadExported": false,
+  "newRunTriggered": false
+}

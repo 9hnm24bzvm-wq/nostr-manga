@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "scope": "finite current-recovery application CI proposal source-contract and owned temporary-directory seams",
+  "source": "5c9a0ce76ff509412205004148938077c96aa8af",
+  "tree": "703bc812b4efdda9124f6e571c9f81dadb06e6fb",
+  "base": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+  "source_path_count": 9,
+  "source_bytes": 174678,
+  "final": {
+    "python": {
+      "collected": 70,
+      "passed": 69,
+      "skipped": 1,
+      "failed": 0,
+      "seconds": 7.102,
+      "log": "final-python.log",
+      "skip": "Permission denied at AF_UNIX socket creation before bind; specific EPERM/EACCES not distinguished."
+    },
+    "node": {
+      "passed": 18,
+      "failed": 0,
+      "log": "final-node.log"
+    },
+    "actor_source_association": {
+      "passed": 1,
+      "failed": 0,
+      "log": "final-actor-association.log"
+    }
+  },
+  "prior_broad_node_attempt": {
+    "source": "081aa74e46ea3da9c84981f103af70aed8aa4e21",
+    "collected": 52,
+    "passed": 51,
+    "failed": 1,
+    "log": "node.log",
+    "failure": "Missing WEEBDEX_FRONTEND_ROOT exact-lock TypeScript dependency after execution environment reset. No installation or test assertion relaxation performed."
+  },
+  "intermediate_workflow_checks": {
+    "source": "a657884764f0ef77ea11be27f555e6e38a728612",
+    "logs": [
+      "workflow-current-node.log",
+      "workflow-actor-association.log",
+      "workflow-hosted-python.log",
+      "workflow-public-profile-python.log",
+      "workflow-native-python.log"
+    ],
+    "overlap_with_final": true
+  },
+  "hosted_run_started": false,
+  "application_browser_executed": false,
+  "actual_af_unix_bind_established": false,
+  "whole_actor_ast_suite_passed": false,
+  "whole_current_suite_passed": false,
+  "external_dependency_install_performed": false,
+  "outer_os_birth_or_physical_closure_receipt_retained_for_this_local_command": false,
+  "source_after_matches_frozen_git_blobs": true,
+  "known_reuse_boundary": "Focused tests include synthetic controls and owned Python stand-ins; they do not establish a real application browser result."
+}

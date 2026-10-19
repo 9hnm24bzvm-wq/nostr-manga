@@ -1,0 +1,90 @@
+{
+  "files": [
+    {
+      "bytes": 1874,
+      "path": "README.md",
+      "sha256": "80670b9902e8e15873b442240da2fa2195f9deb23a21806ef7dbe23579ea0e46"
+    },
+    {
+      "bytes": 2,
+      "path": "actor.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 239,
+      "path": "actor.log",
+      "sha256": "cb3d3dd9970dc04d96f1234b5e80a0cf27920548060989728450c72aa210c939"
+    },
+    {
+      "bytes": 187029,
+      "path": "after.json",
+      "sha256": "30c2340a250dad0037fe86d7586fab53a39934ca25ea1bf9f750e083b27b248c"
+    },
+    {
+      "bytes": 30420,
+      "path": "baseline-5c9-browser.mjs",
+      "sha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb"
+    },
+    {
+      "bytes": 7967,
+      "path": "baseline-959-observer.mjs",
+      "sha256": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71"
+    },
+    {
+      "bytes": 6284,
+      "path": "baseline-aca-driver.mjs",
+      "sha256": "d0db904c9961e41e66e708ddf9d8672073d90b965dbe81c1a930f8d9808a694b"
+    },
+    {
+      "bytes": 5859,
+      "path": "baseline-d6-driver.mjs",
+      "sha256": "2607cbd87ea2969cb030ea068e342045427f68483a3338be3039977c3faff84e"
+    },
+    {
+      "bytes": 187029,
+      "path": "before.json",
+      "sha256": "30c2340a250dad0037fe86d7586fab53a39934ca25ea1bf9f750e083b27b248c"
+    },
+    {
+      "bytes": 180165,
+      "path": "build-source-snapshot.json",
+      "sha256": "f51a9bf3a7f5fe5150d4aa3dece16a7fbbc0741d40dfc6b611bcd1ceaf3cebb1"
+    },
+    {
+      "bytes": 1410,
+      "path": "node.args",
+      "sha256": "ab64e4936f28dd49892c74f55e389381eced5d77e5f47b8228c33a8ec2ebcf21"
+    },
+    {
+      "bytes": 2,
+      "path": "node.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 54590,
+      "path": "node.log",
+      "sha256": "08ec6d37ba2285a2e03a821de667374f2adddb9515d8e1ed2fe06be5dfc7c89e"
+    },
+    {
+      "bytes": 240,
+      "path": "python.args",
+      "sha256": "2e059c654e9e92bb9b4a09ad57ce9fe54aadc4c9ba3242c73e7461837a1e540a"
+    },
+    {
+      "bytes": 2,
+      "path": "python.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 21276,
+      "path": "python.log",
+      "sha256": "12957e62d4846933efd9e5120c560b197aa86f4d2aeb7af2ecf15a9da38be66d"
+    },
+    {
+      "bytes": 4569,
+      "path": "result.json",
+      "sha256": "fa54db4d44cc946e0d7fb9e0995e52778f7f1dcf227b87997ed7c02fcd678dbc"
+    }
+  ],
+  "schema": 1
+}

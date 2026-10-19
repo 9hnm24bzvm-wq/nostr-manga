@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "scope": "deduplicated finite account, reader, catalogue and title-client post-merge union",
+  "source": "e34845688bdc279e9f0393ff57b39738b9c40a95",
+  "source_tree": "10051cb8114bfeb2a6b08bb4912fa099d370c8ae",
+  "later_metadata_source": "aaf24da0d4c9dd227226cfe72abc99a35ec5d0dd",
+  "later_metadata_only_changed_paths": [
+    "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/report.json"
+  ],
+  "selected_files": 16,
+  "selected_cases": 345,
+  "passed": 345,
+  "failed": 0,
+  "skipped": 0,
+  "duration_ms": 2175.811199,
+  "command": "NODE_OPTIONS=--max-old-space-size=256 timeout45s node --experimental-vm-modules --test --test-concurrency=2 <16 exact selected.args paths>",
+  "pinned_inputs": 48,
+  "all_execution_time_pins_unchanged": true,
+  "current_production_and_test_inputs_match_executed_source": true,
+  "pure_source_composition": "119 gate-off /148 gate-on; retained markup after exact exceptions and all supplied styles preserved; full temporary manifests remain local with size/hash only retained here",
+  "limits": [
+    "Finite execution uses controlled stand-ins; no actual browser, application service, database, network installation or hosted execution.",
+    "No independent outer OS-birth/physical-closure receipt is claimed for this finite command.",
+    "Backend duplicate-command parser: two new Rust test functions and seven signedHTTP negative cases remain uncompiled and unexecuted; existing75title-client cases are not backend proof.",
+    "Historical97account/164reader/74group suites overlap this345union and must not be summed.",
+    "No fresh semantic TypeScript/Svelte check, production frontend build, complete backend suite, whole-current-suite or browser acceptance for these changed production bytes.",
+    "Active hosted application run39185261973 uses separate frozen1f19d4f0 source, excluding these new audit fixes."
+  ]
+}

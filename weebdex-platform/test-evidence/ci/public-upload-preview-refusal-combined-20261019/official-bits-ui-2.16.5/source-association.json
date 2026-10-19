@@ -1,0 +1,34 @@
+{
+  "annotatedTagObject": "ae23954758b6711ef5bb9985b00f8e1e8179389e",
+  "commit": "f4fc53225721afa9a798eb21501c9f40bf2e375b",
+  "files": [
+    {
+      "bytes": 13014,
+      "path": "dialog.svelte.ts",
+      "sha256": "a68947871a8e0b8b2471a77158359d62841a216e9c19170634131d15ec2299b9"
+    },
+    {
+      "bytes": 817,
+      "path": "dialog-trigger.svelte",
+      "sha256": "eecde0ffeea2523e75cd318a65bf4c66577e8d9481163717a892b112c36dc8f3"
+    },
+    {
+      "bytes": 1603,
+      "path": "package.json",
+      "sha256": "369df73c2a4b32c95392df69a92d7b408b1c1635bd8fa6bb23d167fc38f84f4d"
+    }
+  ],
+  "finding": "DialogTriggerState.props adds no role; child receives merged props directly, and only default non-child branch creates a native button. Local InputGroup child keeps its div role=group. getByRole(button,Search...) is a static harness mismatch; hosted first failing subcall remains unknown.",
+  "packageVersionVerified": true,
+  "repository": "huntabyte/bits-ui",
+  "schema": 1,
+  "scope": "Read-only exact official version-tag and immutable-commit source; no dependency installation, execution or hosted cause proof",
+  "tag": "bits-ui@2.16.5",
+  "tagAndCommitSourceBytesMatch": true,
+  "tagSignatureVerified": false,
+  "urls": [
+    "https://github.com/huntabyte/bits-ui/blob/f4fc53225721afa9a798eb21501c9f40bf2e375b/packages/bits-ui/src/lib/bits/dialog/dialog.svelte.ts",
+    "https://github.com/huntabyte/bits-ui/blob/f4fc53225721afa9a798eb21501c9f40bf2e375b/packages/bits-ui/src/lib/bits/dialog/components/dialog-trigger.svelte"
+  ],
+  "version": "2.16.5"
+}

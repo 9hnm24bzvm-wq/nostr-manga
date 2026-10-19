@@ -1,0 +1,9 @@
+# Account-bound discovery observer: final finite continuation
+
+The six-file source freeze is `17d26d0c7338ff32a6233207dc93905b226fe053`, tree `2bbae3bf49e0d749b1da99a7811879154013b43f`, based on `95944fab`. The observer binds the verified fixture user once before navigation. Only the exact canonical signed GET discovery query for that user gains admission; the original full URL remains in the event digest/signature and u-tag checks. Foreign, duplicate, unknown and malformed queries, replay, cookies, body, request caps and native abort refusal stay enforced.
+
+The public projection exports only three fixed retained-failure counts. Unknown/malformed input becomes unverified zero counts and cannot satisfy observer closure or success. The real finite observer arrays reach Python projection and the outer validator. The first sixteen labels are retained observations, not a total-failure claim.
+
+The deduplicated final union passes 554 Node cases in 23 files, 111 of 112 Python methods with one permission-denied socket-creation skip, and one separate exact actor source association. The 1,325 execution inputs match the frozen Git blobs and remain unchanged. All four baseline fixtures are verbatim public historical Git source, retained for explicit counterfactuals. An earlier incomplete pre-composition probe had six passes and one missing-Node-fixture error; its raw file receipt was not archived and it is not presented as final-source qualification.
+
+No new application build, strict check, browser, native test, DB, service, dependency install, publication or hosted retry was performed. Existing source-owner scopes overlap this union. The preceding hosted failure remains an upload-ready assertion with an unknown first observer family; the static client/observer incompatibility is independently established without retrospectively proving that first cause.

@@ -1,0 +1,31 @@
+{
+  "artifacts": [
+    {
+      "archiveMembers": 1,
+      "artifactId": 12153259088,
+      "member": "sandbox-preflight.json",
+      "memberBytes": 1540,
+      "memberSha256": "ddb7c5b57ffba0769b6b6e8047c99788c758c775c56797d252adac22f1fa1242",
+      "zipBytes": 825,
+      "zipSha256": "f9c51a0c23bda99e7b99a563c26f6fec3c34467219669a43d3646213600a3778"
+    },
+    {
+      "archiveMembers": 1,
+      "artifactId": 12153059851,
+      "member": "sealed-worker-log.json",
+      "memberBytes": 9234,
+      "memberSha256": "2379b9988834b25e725e225f0e87393a9195e3bd83176fc70a1176c84d2c549f",
+      "zipBytes": 7163,
+      "zipSha256": "5d0d55e3d6eb03e2fa420a82d4d1a12f22c5dd1eff65ffcc83ce96660824904a"
+    }
+  ],
+  "attempt": 1,
+  "encryptedPayloadCommitted": false,
+  "privateKeyAccess": false,
+  "privateKeyAuthenticationPerformed": false,
+  "rawLogsCommitted": false,
+  "runId": 39175207688,
+  "schema": 1,
+  "scope": "sole exact terminal artifact download; private bytes retained outside Git",
+  "zipBytesCommitted": false
+}

@@ -1,0 +1,144 @@
+{
+  "actorSourceAssociation": {
+    "milliseconds": 102.353251,
+    "passed": 1
+  },
+  "baseline": "553c34825a52714d4c7f9a1b34b526c8f2ac57fd",
+  "buildInputSnapshot": {
+    "buildExecuted": false,
+    "count": 1293,
+    "originalFrontend676Plus3Verified": true,
+    "sha256": "7927de71300d42dc1986ee5d15d2670c4a1f7f286f7a41eb263f4e1f1ba8d07e"
+  },
+  "closedProjection": {
+    "earlyIncompleteJourneyFactsRetained": true,
+    "field": "preview_transport_refusals",
+    "keys": [
+      "record_valid",
+      "truncated",
+      "codes"
+    ],
+    "originalNativeHttp200Exact21MutationDurableCleanupGatesPreserved": true,
+    "validEmptyNontruncatedRequiredForSuccess": true
+  },
+  "externalBaselineAndOfficialInputs": 10,
+  "externalInputsUnchanged": true,
+  "fullTreeFiles": 7207,
+  "limits": [
+    "Finite explicit stand-ins and source callbacks; no new genuine browser, native test, HTTP service, database, build, strict check, install or hosted execution.",
+    "WeakMap and preview error attribute improve bounded diagnostics; no underlying product defect or repair is claimed.",
+    "Current UI codes are not automatically correlated with a particular nativefailed request and may be absent or stale.",
+    "A status200 header is not completedbody or acceptedwrite evidence; existing failure/abort/native200 gates remain mandatory.",
+    "Local AF_UNIX permission skip establishes no bind witness.",
+    "No independent outer OS-birth/physical-process-closure receipt was collected for these finite commands.",
+    "Historical hosted receipts remain bound to their actual source and do not qualify this successor."
+  ],
+  "node": {
+    "cases": 723,
+    "failed": 0,
+    "files": 29,
+    "milliseconds": 4142.977388,
+    "passed": 723,
+    "skipped": 0
+  },
+  "overlap": {
+    "collectorExploratory": "An earlier6Node/26Python focused pass predates the final producer-vocabulary binding. Its tool receipts were not archived as separate raw files and are not added.",
+    "nonunionSourceTraces": "Independent generator/transport microcontrols support bounded diagnosis only; they are not included as additional qualification cases.",
+    "ownerConsumption": "13 focused controls are a subset of37, then included in the final54-case request file.",
+    "ownerProducer": "54 request plus70media/overlay adjacent cases are included once in this final723-case union."
+  },
+  "passiveCapture": {
+    "bridgeValuesReadMaximum": 17,
+    "countLimitIsHardDomSelectionAllocationCap": false,
+    "countValidityMaximum": 500,
+    "historicalFailureCompletenessEstablished": false,
+    "maximumMilliseconds": 1000,
+    "missingMalformedPrivateTimeout": "Unverified empty nontruncated facts; no raw value echo.",
+    "perRequestCorrelationEstablished": false,
+    "retainedMaximum": 16,
+    "selector": "p[role=\"status\"][data-public-upload-preview-refusal]",
+    "snapshot": "One snapshot of currently rendered attributes in current DOM order.",
+    "staleOrAbsentUiSnapshotPossible": true
+  },
+  "previousHostedRun": {
+    "abortCauseKnown": false,
+    "acceptedWriteOrCompleted200BodyProven": false,
+    "browser": "Checks0-1/key14passed; check2mutation-count/assertion. One preview-read GET observedstatus200/nativeaborted;3observedmutations/12signedrequests/4independentreads.",
+    "id": 39265783479,
+    "lifecycleClean": false,
+    "native": "Validated report3units+1signedHTTP/all7negatives+feed104ms versus4448ms successful baseline passed; hosted binaries not independently rehashed locally.",
+    "physicalCleanup": true,
+    "result": "failed",
+    "source": "553c34825a52714d4c7f9a1b34b526c8f2ac57fd"
+  },
+  "producer": {
+    "actualTransportLeaseComposedCallbackControls": true,
+    "globalHooksAdded": false,
+    "previewSurface": "Existing natural-wording status paragraph gains only data-public-upload-preview-refusal.",
+    "realBrowserCryptoNetworkImageDecodeClaimed": false,
+    "requestSignatureOutcomeStatusAbortTimerLimitsChanged": false,
+    "source": "279448e92c529e53f2b660861c305489fc266533",
+    "stageMeans": "Execution/refusal boundary; not necessarily the originating cancellation or failure cause.",
+    "stages": [
+      "checkpoint",
+      "fetch",
+      "response-header",
+      "response-media",
+      "declared-size",
+      "body-read",
+      "body-budget",
+      "decode",
+      "other"
+    ],
+    "storage": "Module-private WeakMap keyed only by exact catch-created transport errors; accessor reads no arbitrary error property or prototype.",
+    "unknownCode": "unavailable",
+    "visibleTextChanged": false
+  },
+  "proposedHostedScope": {
+    "batch": "public-upload",
+    "branch": "ci/browser-failure-diagnostics",
+    "eachReportMaximumBytes": 2097152,
+    "feedParityRequired": true,
+    "hardMaximumMinutes": 140,
+    "mandatoryNativeUnits": 3,
+    "newRunTriggered": false,
+    "publicationPerformed": false,
+    "reports": 3,
+    "retentionDays": 1,
+    "signed400Negatives": 7,
+    "signedHttpScenarios": 1
+  },
+  "python": {
+    "collected": 136,
+    "failed": 0,
+    "modules": 11,
+    "passed": 135,
+    "seconds": 13.054,
+    "skip": "Permission denied at AF_UNIX socket creation before bind; EPERM versus EACCES is not distinguished.",
+    "skipped": 1
+  },
+  "schema": 1,
+  "scope": "Fresh deduplicated finite qualification of operational closed transport-refusal stages and passive current-preview-error capture; no product repair or hosted cause is established.",
+  "source": "917f3ec99af059230372f0b4bf317c3105772dc2",
+  "sourceBytes": 183824,
+  "sourceDeltaPaths": 9,
+  "sourcePins": 1339,
+  "sourcePinsEqualFrozenGitBlobs": true,
+  "sourcePinsUnchanged": true,
+  "tree": "cbab02abaab10db8d0c3f9945536f348c9740438",
+  "unchangedGitObjects": {
+    ".ci/browser/package-lock.json": "e402db674ff05f9d7dc7d69c6524dcb6cfc03584",
+    ".github/workflows/hosted-browser-e2e.yml": "742d3970dcdfc60b4ba310803b1b6a9f6e6090c4",
+    "manga-protocol-lab/server/src": "7474a634125cfc176664d3986b0346ca76c574dd",
+    "weebdex-platform/backend": "3923ca6ee350522edf7d6bda73bbe531853ba615",
+    "weebdex-platform/frontend": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+    "weebdex-platform/platform-integrations/public-api/upload-client.ts": "9316cace2a886e5281ea53c29dc52fc0fa5472f8",
+    "weebdex-platform/platform-integrations/public-api/upload-preview.ts": "36ae292d4741d445e834f04473bdf541c3cde25f",
+    "weebdex-platform/scripts/browser-acceptance.mjs": "a40ec5afd730de203daf3593544e3a08bf44fee4",
+    "weebdex-platform/scripts/ci/run-hosted-browser.py": "dcafa3c134e2586140d20146f9885ebb1a4fea09",
+    "weebdex-platform/scripts/ci/run-hosted-title-regression.py": "7f3ccac983249722a6f6c3881de9212b26799bdc",
+    "weebdex-platform/scripts/ci/validate-ci-evidence.py": "f4832cb201b113a463303a5fead4788b00be3a07",
+    "weebdex-platform/scripts/public-upload-recovery-observer.mjs": "44a0b43ea1b544666eb749692d3869d7b3f4c8c7",
+    "weebdex-platform/tests/runtime/auth_fixture_guard.py": "397b25e6eea97d67838e9b1ce70d97786f169068"
+  }
+}

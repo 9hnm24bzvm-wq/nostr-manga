@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "runId": 39265783479,
+  "attempt": 1,
+  "source": {
+    "localCommit": "553c34825a52714d4c7f9a1b34b526c8f2ac57fd",
+    "remoteCommit": "4829648f76df5df2a198387bd662d8bea36b95d1",
+    "tree": "9874bda18135f22712e5e41946629cf41502e9e2"
+  },
+  "terminal": "failure",
+  "selection": "public-upload",
+  "timing": {
+    "jobStarted": "2026-10-19T14:05:19Z",
+    "jobCompleted": "2026-10-19T14:14:35Z",
+    "preparationSeconds": 495,
+    "nativeGateSeconds": 18,
+    "browserStepSeconds": 26
+  },
+  "nativeTitle": {
+    "unitsPassed": 3,
+    "unitsFailed": 0,
+    "unitsIgnored": 0,
+    "httpPassed": 1,
+    "httpFailed": 0,
+    "httpIgnored": 0,
+    "negativeRequestsVerified": 7,
+    "sourceAndArtifactsVerified": true,
+    "unitAndHttpOwnedCleanupVerified": true,
+    "httpFixtureCleanupVerified": true,
+    "budgetExhausted": false,
+    "scope": "Validated hosted gate report facts; unavailable hosted binaries were not independently rehashed locally"
+  },
+  "nativeFeed": {
+    "status": "passed",
+    "baselineMs": 4448,
+    "baselineOutcome": "success",
+    "batchedFirstPageMs": 104,
+    "allMeasurementFlagsTrue": true,
+    "ownedAndFixtureCleanupVerified": true
+  },
+  "browser": {
+    "created": true,
+    "contextCreated": true,
+    "pageCreated": true,
+    "actualSteps": 3,
+    "failedCheck": {
+      "source": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "zeroBasedIndex": 2,
+      "name": "begin, language autosave and real image before cancellation",
+      "fixedSubstep": "mutation-count",
+      "caughtCategory": "assertion",
+      "priorChecksPassed": [
+        0,
+        1
+      ],
+      "closedImportAttempt": 1,
+      "closedImportSubstepsCompleted": 14,
+      "closedImportStatus": "passed",
+      "exactAssertion": "Not disclosed by admitted closed reports",
+      "countMismatchEstablished": false,
+      "sourceBoundary": "completeWrites marks mutation-count then calls until; until checks observer health before and after the count read"
+    },
+    "caughtStage": "running-checks",
+    "caughtCategory": "journey-failed",
+    "pageErrors": 0,
+    "proxyConnectDenials": 23,
+    "expectedConnectResets": 1,
+    "proxyObservationsEstablishCause": false
+  },
+  "observer": {
+    "fixtureControls": 3,
+    "signedRequests": 12,
+    "mutations": 3,
+    "independentReads": 4,
+    "recordValid": false,
+    "browserObserverClosedVerified": false,
+    "independentReaderClosed": true,
+    "retainedFailureLabels": {
+      "recordValid": true,
+      "signedRequestInvalid": 0,
+      "duplicateNativeTerminal": 0,
+      "signedNativeFailed": 1
+    },
+    "nativeFailureDiagnostics": {
+      "record_valid": true,
+      "requests": [
+        {
+          "error_family": "aborted",
+          "method": "GET",
+          "operation": "preview-read",
+          "status": 200
+        }
+      ],
+      "truncated": false
+    },
+    "nativeFailureScope": "A watched signed preview GET recorded response status200 and native abort. This does not establish successful body completion, accepted write or why the abort occurred. Details retain original request order, not failure chronology.",
+    "counterScope": "Allowlisted upload/account-context paths and at most16retained failure labels; cannot infer global browser traffic",
+    "closureFlagScope": "The public browser_observer_closed flag also requires zero failures and all rows finished; false alone does not prove listeners remained open"
+  },
+  "cleanup": {
+    "fixturePhysicalTeardownVerified": true,
+    "outerPhysicalTeardownVerified": true,
+    "forced": false,
+    "remainingOwnedProcesses": 0,
+    "supervisorTerminal": true,
+    "supervisorExitZero": false,
+    "lifecycleClean": false
+  },
+  "acceptance": {
+    "selectedScopePassed": false,
+    "fullSuitePassed": false,
+    "pendingOtherPhases": 39,
+    "pixelParityEstablished": false,
+    "currentFreshBuildRecorded": true,
+    "currentStrictTypecheckEstablished": false,
+    "hostedCompiledArtifactLocallyReverified": false,
+    "causeEstablished": false
+  },
+  "independentArtifactReview": {
+    "reviewer": "ops",
+    "status": "Clear for exact hashes, schemas, source, privacy and scoped terminal facts; no new runtime or download"
+  },
+  "rawLogsKeysPrivatePayloadExported": false,
+  "newRunTriggered": false
+}

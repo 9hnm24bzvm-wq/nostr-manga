@@ -1,0 +1,80 @@
+✔ actor-follow enrollment is fixed, complete, ordered and frozen (1.76294ms)
+✔ supplemental source plan binds its frozen source without changing historical baseline scope (1.01934ms)
+✔ current actor-follow runtime source has a separate exact association without relabeling historical evidence (1.771042ms)
+✔ request counter observes exact browser target methods/settings only and removes its listener (0.356458ms)
+✔ actual outer phase wiring retains checkpoint failures: complete (2.657114ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-account (0.702ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-group-initial-readiness (0.479971ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-group-read-retry (0.543655ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-group-unblock-loading (0.926201ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-group-unblock-error (0.7632ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-group-pending-ack (0.393713ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-group-pending-lost (0.434864ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-group-pending-disposed (0.354866ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-user-initial-readiness (0.379281ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-user-read-retry (0.417108ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-user-unblock-loading (0.354305ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-user-unblock-error (0.559788ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-user-pending-ack (0.424789ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-user-pending-lost (0.415836ms)
+✔ actual outer phase wiring retains checkpoint failures: actor-follow-user-pending-disposed (0.397569ms)
+✔ actual account prerequisite rejects unverified, missing, wrong-status and self principals (0.629462ms)
+✔ actual initial-readiness rejects bad-auth-status and closes all owned gates/listeners (1.472721ms)
+✔ actual initial-readiness rejects bad-read-status and closes all owned gates/listeners (0.986451ms)
+✔ actual read-retry rejects bad-read-status and closes all owned gates/listeners (0.410147ms)
+✔ actual pending-ack rejects uncommitted-write and closes all owned gates/listeners (0.497737ms)
+✔ actual pending-ack rejects actionable-pending and closes all owned gates/listeners (0.329918ms)
+✔ initial pending failure remains exact and records the owned pre-cleanup view: follow-visible (1.324962ms)
+✔ initial pending failure remains exact and records the owned pre-cleanup view: follow-disabled (0.39148ms)
+✔ initial pending failure remains exact and records the owned pre-cleanup view: block-hidden (0.323328ms)
+✔ initial pending failure remains exact and records the owned pre-cleanup view: no-writes (0.33778ms)
+✖ all31 original assertions and ordered3 polls/5 stability conditions retain exact AST fingerprints (0.35816ms)
+✔ snapshot classifies only the first held request actor without publishing headers: prerequisite-actor (0.398009ms)
+✔ snapshot classifies only the first held request actor without publishing headers: other-actor (0.241818ms)
+✔ snapshot classifies only the first held request actor without publishing headers: anonymous (0.333023ms)
+✔ current application profile is an exact bounded successor of immutable recovery workflow (2.562454ms)
+✔ one admitted branch push selects precisely public-upload in both preparation and execution (0.288557ms)
+✔ known supported host and exact Python ABI are explicitly provisioned before preparation (0.410658ms)
+✔ hard limits admit the complete single-fixture reservation without widening phase deadlines (0.180167ms)
+✔ native gate and sandboxed network-fenced application launcher remain prerequisites (0.294726ms)
+✔ only three closed sanitized JSON reports can be uploaded for one day with read-only permissions (0.831221ms)
+✔ supported host is exact Ubuntu22.04 Linuxx64 nonroot (1.082283ms)
+✔ launch is explicitly sandboxed and data-only with normal context/browser closure (1.044607ms)
+✔ first caught failure stays closed: launch (0.408675ms)
+✔ first caught failure stays closed: context (0.134419ms)
+✔ first caught failure stays closed: page (0.141249ms)
+✔ first caught failure stays closed: goto (0.287495ms)
+✔ first caught failure stays closed: text (0.159987ms)
+✔ first caught failure stays closed: context-close (0.169621ms)
+✔ first caught failure stays closed: browser-close (0.144614ms)
+✔ classifier never leaks raw messages and reads a throwing/changing getter once (0.231383ms)
+✔ dedicated workflow never triggers application branches or installs app dependencies (0.53318ms)
+✔ application workflow remains exact and does not match the dedicated preflight branch (0.622782ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 51
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.610082
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs:292:1
+✖ all31 original assertions and ordered3 polls/5 stability conditions retain exact AST fingerprints (0.35816ms)
+  AssertionError [ERR_ASSERTION]: Use the verified exact-lock dependency root
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/application-current-ci-proposal-worktree/weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs:293:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,15 @@
+Command: git diff --check && git diff --exit-code 76bfc2d9b4d978412613e6d4721adf4ff004d13a -- .github/workflows/hosted-sandbox-preflight.yml .github/workflows/hosted-browser-e2e.yml .ci/browser/package-lock.json weebdex-platform/scripts/ci/sandbox-preflight.mjs weebdex-platform/scripts/ci/browser-runtime.mjs weebdex-platform/scripts/ci/sealed-sandbox-log.mjs weebdex-platform/scripts/ci/run-hosted-browser.py weebdex-platform/tests/runtime/browser_fixture.py weebdex-platform/scripts/browser-acceptance.mjs && PYTHONDONTWRITEBYTECODE=1 python3 -c "import ast,pathlib; files=['weebdex-platform/scripts/ci/run-sandbox-preflight.py','weebdex-platform/tests/ci/test_sandbox_browser_tmp.py','weebdex-platform/tests/ci/test_sandbox_seal_ready.py']; [ast.parse(pathlib.Path(p).read_text()) for p in files]; print('Python source AST parse: passed (3 changed files)')" && printf 'Unchanged workflow/runtime/worker/sealer/application files: passed\n' && git status --short && sha256sum weebdex-platform/scripts/ci/run-sandbox-preflight.py weebdex-platform/tests/ci/test_sandbox_browser_tmp.py weebdex-platform/tests/ci/test_sandbox_seal_ready.py && node --version && python3 --version && git rev-parse HEAD HEAD^{tree} && git diff-tree --no-commit-id --name-only -r HEAD
+Exit code: 0
+
+Python source AST parse: passed (3 changed files)
+Unchanged workflow/runtime/worker/sealer/application files: passed
+3eaafff0ef5754f39b2d34af5096496770da705a717c2c3dae5b395955ddc2a5  weebdex-platform/scripts/ci/run-sandbox-preflight.py
+f7400c3f0fe8857f37a6b5287d8b0de7c2b82e9ad5a1999e483ab1d7cee4b222  weebdex-platform/tests/ci/test_sandbox_browser_tmp.py
+fca6205183061920c27e457a7679e85081acd1b839e5504b4940f6ceba71cd16  weebdex-platform/tests/ci/test_sandbox_seal_ready.py
+v24.19.0
+Python 3.12.14
+c1a5793883c4ee523884f18010c29b6a89842c9e
+c75586bee4cdaaa41826736b5d0475b9a3ee373f
+weebdex-platform/scripts/ci/run-sandbox-preflight.py
+weebdex-platform/tests/ci/test_sandbox_browser_tmp.py
+weebdex-platform/tests/ci/test_sandbox_seal_ready.py

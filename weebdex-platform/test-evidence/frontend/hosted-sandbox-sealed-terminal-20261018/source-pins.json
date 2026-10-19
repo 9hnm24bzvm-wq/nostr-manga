@@ -1,0 +1,69 @@
+{
+  "localCommit": "76bfc2d9b4d978412613e6d4721adf4ff004d13a",
+  "pins": [
+    {
+      "bytes": 5657,
+      "gitBlob": "e30701f413532a01e8f61e845b92457c9785bdfc",
+      "path": ".github/workflows/hosted-sandbox-preflight.yml",
+      "sha256": "208e91dc097594967ad5596c8c58641a48292ff4fdee0562465e12330e8a69fc"
+    },
+    {
+      "bytes": 271,
+      "gitBlob": "f8211099133b019ad67233c601f2fc546e096409",
+      "path": ".ci/browser/package.json",
+      "sha256": "df01a6927293a82d018723c3d9932ac584bf16ce3559b80004d137d8affc82fc"
+    },
+    {
+      "bytes": 2198,
+      "gitBlob": "e402db674ff05f9d7dc7d69c6524dcb6cfc03584",
+      "path": ".ci/browser/package-lock.json",
+      "sha256": "b117dbd1c52f362161dfd20bb6bae12145db37b2ebf0c63004dc738363738d7d"
+    },
+    {
+      "bytes": 625,
+      "gitBlob": "66c75d9a4bc507aa2d36194b329d3b9e668c9424",
+      "path": ".ci/sandbox-preflight-recipient-public.pem",
+      "sha256": "b18b94a960a0e77cba3eeb09dd9776db740b90521d0e011055cc31dca1acbfdd"
+    },
+    {
+      "bytes": 5201,
+      "gitBlob": "66f3ddcd6a5c9e360dc74f9532cce3038e333db7",
+      "path": "weebdex-platform/scripts/ci/browser-runtime.mjs",
+      "sha256": "061be4487096eda05f3411d2a584cd5971cd62629173ae748a38c0e0e9cd279d"
+    },
+    {
+      "bytes": 5799,
+      "gitBlob": "e891764cb5cfd22437f8f8693f5487ab6b8555f9",
+      "path": "weebdex-platform/scripts/ci/sandbox-preflight.mjs",
+      "sha256": "647ff38cf2aa646d9d9e4c2668ec993461c56436d3c04628ce581d95d8dec95a"
+    },
+    {
+      "bytes": 6102,
+      "gitBlob": "d464e66545aa05541e46260574f543f7a4faa745",
+      "path": "weebdex-platform/scripts/ci/sandbox-launch-diagnostics.mjs",
+      "sha256": "8c254d28423f85c6314388e973413b71c16516e073d13ffaf27a58d569d95c59"
+    },
+    {
+      "bytes": 28874,
+      "gitBlob": "f9e1e25663d892013d9a0e09d38099bf52992306",
+      "path": "weebdex-platform/scripts/ci/run-sandbox-preflight.py",
+      "sha256": "848ff5b9b53bc055bfafc551475c2b7aeb4fabf35a74d258fff654d5a899f945"
+    },
+    {
+      "bytes": 9048,
+      "gitBlob": "96aa450bb2b4c40a72194b0dbfda14818d61fae6",
+      "path": "weebdex-platform/scripts/ci/sandbox_launch_diagnostics.py",
+      "sha256": "d362fc6e86d0c1e2caf1a72fdd9c9ca9975fbe1ba5b0536f67906f46a66a375c"
+    },
+    {
+      "bytes": 12110,
+      "gitBlob": "565782721a53c37c90a0e169f60a6d9d3d6a36ed",
+      "path": "weebdex-platform/scripts/ci/sealed-sandbox-log.mjs",
+      "sha256": "988974a96dc40b050e42c872426eb6f8aec8ae2cb6617cdb4c8c8a52fd3f5554"
+    }
+  ],
+  "remoteCommit": "1502e1174877f3ba37bda69692b23b59d184919b",
+  "schema": 1,
+  "scope": "10 inspected runtime/workflow/tool-declaration source pins; not a complete repository qualification",
+  "tree": "6e29ce41014db3938d87eb44d62f1f32626e46ff"
+}

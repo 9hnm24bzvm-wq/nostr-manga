@@ -64,7 +64,7 @@ class HostedBrowserSeams(unittest.TestCase):
         routes += [prefix + ids[kind] for kind, prefix in [('manga', '/title/'), ('group', '/group/'), ('chapter', '/chapter/')]]
         self.assertEqual(diagnostics.ROUTES, ['/', *routes])
         self.assertEqual(diagnostics.CHECK_NAMES, ['homepage bootstraps under exact generated CSP', *['fresh deep link ' + route for route in routes], 'missing built/static assets produce real 404'])
-        self.assertIn("inputs.batch || 'all'", (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text())
+        self.assertIn("inputs.batch || 'public-upload'", (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text())
 
     def test_startup_projection_serializes_only_closed_diagnostics_and_passes_real_gate(self):
         diagnostics, validator, acceptance, owned, private = self.diagnostic_inputs()
@@ -328,7 +328,7 @@ class HostedBrowserSeams(unittest.TestCase):
         self.assertIn("github.ref == 'refs/heads/ci/hosted-browser-e2e'", workflow)
         self.assertIn("github.ref == 'refs/heads/ci/browser-failure-diagnostics'", workflow)
         self.assertIn('contents: read', workflow)
-        self.assertIn('runs-on: ubuntu-24.04', workflow)
+        self.assertIn('runs-on: ubuntu-22.04', workflow)
         self.assertIn('persist-credentials: false', workflow)
         self.assertNotIn('pull_request_target', workflow)
         self.assertNotIn('secrets.', workflow)

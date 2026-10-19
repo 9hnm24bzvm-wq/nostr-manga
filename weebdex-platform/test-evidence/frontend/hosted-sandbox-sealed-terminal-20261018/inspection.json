@@ -1,0 +1,34 @@
+{
+  "context": {
+    "public_record_sha256": "ddb7c5b57ffba0769b6b6e8047c99788c758c775c56797d252adac22f1fa1242",
+    "recipient_spki_sha256": "06656641d644eb4fe046a53c085a62a9a0d853d0f712f1a92295337f479cf9e7",
+    "repository": "9hnm24bzvm-wq/nostr-manga",
+    "run_attempt": "1",
+    "run_id": "39175207688",
+    "scope": "sandbox-preflight-worker-log",
+    "source_commit": "1502e1174877f3ba37bda69692b23b59d184919b"
+  },
+  "currentMarkers": {
+    "public": {
+      "count": 1,
+      "sha256": "ddb7c5b57ffba0769b6b6e8047c99788c758c775c56797d252adac22f1fa1242"
+    },
+    "sealed": {
+      "count": 1,
+      "sha256": "2379b9988834b25e725e225f0e87393a9195e3bd83176fc70a1176c84d2c549f"
+    }
+  },
+  "envelopeCanonicalContextAccepted": true,
+  "jobLog": {
+    "bytes": 47661,
+    "retention": "private local receipt only; no raw job/native log in Git",
+    "sha256": "2feaf25d838b1258ec87fe78983ef3b32047e216b8552b83be12507529803c33"
+  },
+  "plaintextInspected": false,
+  "privateKeyAuthenticationPerformed": false,
+  "publicSchemaAccepted": true,
+  "schema": 1,
+  "scope": "exact-source pure schema/canonical-context validation only",
+  "sourceHelperSha256": "988974a96dc40b050e42c872426eb6f8aec8ae2cb6617cdb4c8c8a52fd3f5554",
+  "sourceOwnerSha256": "848ff5b9b53bc055bfafc551475c2b7aeb4fabf35a74d258fff654d5a899f945"
+}

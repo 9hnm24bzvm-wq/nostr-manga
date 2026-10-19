@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "runId": 39185261973,
+  "attempt": 1,
+  "source": {
+    "localCommit": "5c9a0ce76ff509412205004148938077c96aa8af",
+    "remoteCommit": "1f19d4f0cba7ce7d58491221d2dbca5cf9c28e5a",
+    "tree": "703bc812b4efdda9124f6e571c9f81dadb06e6fb"
+  },
+  "terminal": "failure",
+  "selectedScope": "public-upload",
+  "timing": {
+    "jobStarted": "2026-10-19T01:25:13Z",
+    "jobCompleted": "2026-10-19T01:38:06Z",
+    "preparationSeconds": 704,
+    "nativeGateSeconds": 24,
+    "browserStepSeconds": 27
+  },
+  "nativeGate": {
+    "status": "passed",
+    "baselineMs": 5001,
+    "baselineOutcome": "query-canceled",
+    "batchedFirstPageMs": 206,
+    "allMeasurementFlagsTrue": true
+  },
+  "browser": {
+    "created": true,
+    "contextCreated": true,
+    "pageCreated": true,
+    "actualSteps": 2,
+    "failedCheck": {
+      "source": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "zeroBasedIndex": 1,
+      "name": "import actual session key through Public identity UI",
+      "previousCheck": "provision real bound synthetic upload publisher",
+      "previousStatus": "passed",
+      "innerFailure": "not disclosed by admitted reports"
+    },
+    "caughtStage": "running-checks",
+    "caughtCategory": "journey-failed",
+    "innerSubstepOrAssertion": "Unknown from admitted closed reports",
+    "proxyConnectDenials": 7,
+    "proxyDenialsEstablishCause": false
+  },
+  "observer": {
+    "fixtureControls": 1,
+    "signedRequests": 0,
+    "mutations": 0,
+    "independentReads": 0,
+    "counterScope": "Allowlisted upload/account-context observer paths only; no inference about all identity-enrollment traffic"
+  },
+  "cleanup": {
+    "fixturePhysicalTeardownVerified": true,
+    "outerPhysicalTeardownVerified": true,
+    "forced": false,
+    "remainingOwnedProcesses": 0,
+    "supervisorTerminal": true,
+    "supervisorExitZero": false,
+    "lifecycleClean": false
+  },
+  "acceptance": {
+    "selectedScopePassed": false,
+    "fullSuitePassed": false,
+    "pendingOtherPhases": 39,
+    "pixelParityEstablished": false,
+    "hostedCompiledArtifactLocallyReverified": false,
+    "causeEstablished": false
+  },
+  "independentArtifactReview": {
+    "reviewer": "ops",
+    "status": "Clear for exact hashes, schemas, source, scope and privacy; no new runtime or download"
+  },
+  "rawLogsKeysPrivatePayloadExported": false,
+  "newRunTriggered": false
+}

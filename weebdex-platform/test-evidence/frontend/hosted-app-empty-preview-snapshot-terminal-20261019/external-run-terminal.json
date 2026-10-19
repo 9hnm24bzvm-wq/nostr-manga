@@ -1,0 +1,25 @@
+{
+  "artifactRedownloaded": false,
+  "attempt": 1,
+  "earlierPendingObservationPreserved": true,
+  "job": {
+    "completedAt": "2026-10-19T15:55:36Z",
+    "conclusion": "failure",
+    "id": 118152227203,
+    "status": "completed"
+  },
+  "localSource": "917f3ec99af059230372f0b4bf317c3105772dc2",
+  "newRunTriggered": false,
+  "observedAt": "2026-10-19T16:21:35Z",
+  "remoteHead": "5abf0dee104a80edbda51f6853966802bbf5f7f6",
+  "repository": "9hnm24bzvm-wq/nostr-manga",
+  "run": {
+    "conclusion": "failure",
+    "status": "completed",
+    "updatedAt": "2026-10-19T16:20:04Z"
+  },
+  "runId": 39279984569,
+  "schema": 1,
+  "scope": "Later read-only top-level run terminal metadata; exact immutable reports/artifact/source and physical cleanup facts unchanged; no additional diagnostic or cause acceptance",
+  "sourceTree": "cbab02abaab10db8d0c3f9945536f348c9740438"
+}

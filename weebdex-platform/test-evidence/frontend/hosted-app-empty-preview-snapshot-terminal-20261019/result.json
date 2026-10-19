@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "runId": 39279984569,
+  "attempt": 1,
+  "source": {
+    "localCommit": "917f3ec99af059230372f0b4bf317c3105772dc2",
+    "remoteCommit": "5abf0dee104a80edbda51f6853966802bbf5f7f6",
+    "tree": "cbab02abaab10db8d0c3f9945536f348c9740438"
+  },
+  "applicationPhase": "failure",
+  "terminalJob": "failure",
+  "externalRunAtInspection": {
+    "observedAt": "2026-10-19T16:17:43Z",
+    "status": "in_progress",
+    "conclusion": null,
+    "updatedAt": "2026-10-19T16:09:04Z"
+  },
+  "selection": "public-upload",
+  "timing": {
+    "jobStarted": "2026-10-19T15:42:12Z",
+    "jobCompleted": "2026-10-19T15:55:36Z",
+    "preparationSeconds": 726,
+    "nativeGateSeconds": 29,
+    "browserStepSeconds": 32,
+    "source": "Later backfilled GitHub step timestamps; earlier queued/empty-step observations did not establish actual queue duration"
+  },
+  "metadataPresentation": {
+    "initialObservation": {
+      "status": "queued",
+      "steps": [],
+      "runnerAssigned": false
+    },
+    "laterBackfilledJobTerminal": true,
+    "actualQueueDurationEstablished": false,
+    "topLevelRunTerminalEstablished": false,
+    "individualQueueOrReportingDelayCauseEstablished": false
+  },
+  "nativeTitle": {
+    "unitsPassed": 3,
+    "unitsFailed": 0,
+    "unitsIgnored": 0,
+    "httpPassed": 1,
+    "httpFailed": 0,
+    "httpIgnored": 0,
+    "negativeRequestsVerified": 7,
+    "sourceAndArtifactsVerified": true,
+    "unitAndHttpOwnedCleanupVerified": true,
+    "httpFixtureCleanupVerified": true,
+    "budgetExhausted": false,
+    "scope": "Validated hosted gate report facts; unavailable hosted binaries were not independently rehashed locally"
+  },
+  "nativeFeed": {
+    "status": "passed",
+    "baselineMs": 5001,
+    "baselineOutcome": "query-canceled",
+    "batchedFirstPageMs": 208,
+    "allMeasurementFlagsTrue": true,
+    "ownedAndFixtureCleanupVerified": true
+  },
+  "browser": {
+    "created": true,
+    "contextCreated": true,
+    "pageCreated": true,
+    "actualSteps": 3,
+    "failedCheck": {
+      "source": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "zeroBasedIndex": 2,
+      "name": "begin, language autosave and real image before cancellation",
+      "fixedSubstep": "mutation-count",
+      "caughtCategory": "assertion",
+      "priorChecksPassed": [
+        0,
+        1
+      ],
+      "closedImportAttempt": 1,
+      "closedImportSubstepsCompleted": 14,
+      "closedImportStatus": "passed",
+      "exactAssertion": "Not disclosed by admitted closed reports",
+      "countMismatchEstablished": false,
+      "sourceBoundary": "completeWrites marks mutation-count then calls until; until checks observer health before and after the count read"
+    },
+    "caughtStage": "running-checks",
+    "caughtCategory": "journey-failed",
+    "pageErrors": 0,
+    "proxyConnectDenials": 24,
+    "expectedConnectResets": 0,
+    "proxyObservationsEstablishCause": false
+  },
+  "observer": {
+    "fixtureControls": 3,
+    "signedRequests": 12,
+    "mutations": 3,
+    "independentReads": 4,
+    "recordValid": false,
+    "browserObserverClosedVerified": false,
+    "independentReaderClosed": true,
+    "retainedFailureLabels": {
+      "recordValid": true,
+      "signedRequestInvalid": 0,
+      "duplicateNativeTerminal": 0,
+      "signedNativeFailed": 1
+    },
+    "nativeFailureDiagnostics": {
+      "record_valid": true,
+      "requests": [
+        {
+          "error_family": "aborted",
+          "method": "GET",
+          "operation": "preview-read",
+          "status": 200
+        }
+      ],
+      "truncated": false
+    },
+    "currentUiRefusalSnapshot": {
+      "codes": [],
+      "record_valid": true,
+      "truncated": false
+    },
+    "nativeFailureScope": "A watched signed preview GET recorded response status200 and native abort; not successful body completion, accepted write or abort cause. Failed details retain original request order, not failure chronology.",
+    "uiSnapshotScope": "One current DOM snapshot was valid and empty. It does not identify or exclude a transport refusal stage, correlate to a request or establish an underlying cause.",
+    "counterScope": "Allowlisted upload/account-context paths and at most16retained failure labels; cannot infer global browser traffic",
+    "closureFlagScope": "browser_observer_closed also requires zero failures and all rows finished; false alone does not prove listeners remained open"
+  },
+  "cleanup": {
+    "fixturePhysicalTeardownVerified": true,
+    "outerPhysicalTeardownVerified": true,
+    "forced": false,
+    "remainingOwnedProcesses": 0,
+    "supervisorTerminal": true,
+    "supervisorExitZero": false,
+    "lifecycleClean": false
+  },
+  "acceptance": {
+    "selectedScopePassed": false,
+    "fullSuitePassed": false,
+    "pendingOtherPhases": 39,
+    "pixelParityEstablished": false,
+    "currentFreshBuildRecorded": true,
+    "currentStrictTypecheckEstablished": false,
+    "hostedCompiledArtifactLocallyReverified": false,
+    "causeEstablished": false
+  },
+  "independentArtifactReview": {
+    "reviewer": "ops",
+    "status": "Clear for exact immutable artifact hashes, schemas, source, privacy and scoped terminal phase facts; external metadata lag separate; no new runtime/download"
+  },
+  "rawLogsKeysPrivatePayloadExported": false,
+  "newRunTriggered": false
+}

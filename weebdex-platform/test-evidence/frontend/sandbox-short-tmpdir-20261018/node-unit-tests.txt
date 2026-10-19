@@ -1,0 +1,50 @@
+Command: node --test weebdex-platform/tests/ci/test_sandbox_preflight.mjs weebdex-platform/tests/ci/test_sandbox_launch_diagnostics.mjs weebdex-platform/tests/ci/test_sealed_sandbox_log.mjs
+Exit code: 0
+
+✔ schema2 adds mandatory closed diagnostics without raw values (1.452361ms)
+✔ known launch error families remain fixed and combined evidence stays visible (0.942415ms)
+✔ code and message getters are captured once including the actual probe catch (0.441734ms)
+✔ hostile getters, nonstrings and near-miss codes never stringify or leak (0.233226ms)
+✔ scanned messages are capped by actual UTF8 bytes including astral text (0.543334ms)
+✔ timeout identity and unknown facts are explicit instead of fabricated causes (0.146958ms)
+✔ fixed host reads export only closed facts and preserve unavailable (2.752565ms)
+✔ bounded host reader refuses symlinks nonregular and oversize data (0.717753ms)
+✔ supported host is exact Ubuntu22.04 Linuxx64 nonroot (1.362287ms)
+✔ launch is explicitly sandboxed and data-only with normal context/browser closure (1.421775ms)
+✔ first caught failure stays closed: launch (0.888946ms)
+✔ first caught failure stays closed: context (0.279454ms)
+✔ first caught failure stays closed: page (0.307805ms)
+✔ first caught failure stays closed: goto (0.201218ms)
+✔ first caught failure stays closed: text (0.2502ms)
+✔ first caught failure stays closed: context-close (0.238092ms)
+✔ first caught failure stays closed: browser-close (0.300085ms)
+✔ classifier never leaks raw messages and reads a throwing/changing getter once (0.511327ms)
+✔ dedicated workflow never triggers application branches or installs app dependencies (1.636452ms)
+✔ application workflow remains exact and does not match the dedicated preflight branch (0.65502ms)
+✔ official rewritten sandbox banner and all original banners stay stage-bound (0.282439ms)
+✔ rewrite classification refuses near-miss and untrusted message shapes (0.28366ms)
+✔ rewrite classification never attributes a later failure to launch sandbox (0.20222ms)
+✔ official rewritten launch failure preserves closed catch facts through cleanup (0.328507ms)
+✔ sealed debug export is fresh, recipient-bound and restricted to one encrypted file (2.452501ms)
+✔ exact binary plaintext roundtrips only after authentication; no plaintext appears in envelope (6.69327ms)
+✔ fresh encryption differs for the same plaintext/context (1.02017ms)
+✔ every independently expected context component is mandatory and exact (2.05985ms)
+✔ editing embedded and expected valid run/source/public hash together still fails authentication (5.723604ms)
+✔ wrapped key, nonce, ciphertext and tag modifications never return partial plaintext (4.78223ms)
+✔ wrong recipient/private key, non-RSA and wrong RSA size fail closed (76.653087ms)
+✔ unknown envelope fields/algorithms/schema and malformed canonical encodings refuse (1.74274ms)
+✔ context accessors/prototype/symbols/unknown keys and hostile coercion are refused (0.606367ms)
+✔ strict scalar types and decimal/hash ranges refuse without coercion (1.101661ms)
+✔ the FULL base64 JSON artifact is bounded; maximum representable body passes and +1 refuses (92.353111ms)
+✔ recorded-log path binds exact closed producer bytes and exclusively creates a private envelope (7.999865ms)
+✔ upload validation needs the current exact sealed hash, full context and unchanged public bytes (2.449577ms)
+✔ stale public hash, changed log, bad receipt and wrong approved recipient produce no artifact (5.125919ms)
+✔ symlinked or hardlinked log input and existing output are never adopted or overwritten (3.268669ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 594.417816

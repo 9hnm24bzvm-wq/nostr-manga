@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "scope": "Pure exact-source public schema/canonical/cross-summary/frontend/source association; hosted executable bytes are unavailable locally and were not rehashed",
+  "publicSchemasAccepted": true,
+  "canonicalBytesAccepted": true,
+  "crossSummaryAccepted": true,
+  "frontendOriginalBytesAccepted": true,
+  "sourceSnapshotFiles": 1293,
+  "sourceSnapshotSha256": "66f80e915e964033a66e6e8cb0588ec32759fab172bb3efff58b2e1c2d540183"
+}

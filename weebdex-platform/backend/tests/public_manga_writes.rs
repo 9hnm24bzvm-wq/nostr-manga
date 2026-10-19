@@ -469,6 +469,27 @@ async fn title_disposition_lifecycle(f:&Fixture,native:&str,source_id:&str){
     let moderator=resolver.preferred(ResourceKind::User,"PublicUploadUser8").await.unwrap().unwrap().to_string();
     let path=format!("/api/v1/manga/{public}");let lock=format!("{path}/lock");let unlock=format!("{path}/unlock");
     let version:i32=db.query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&native]).await.unwrap().get(0);
+    // Sign the exact ambiguous bytes. Every duplicate must fail before any
+    // catalogue/report effect, even with a genuine moderator's current grants.
+    // Value-based parsing previously selected the last account/version/effect;
+    // review followed by approve-hide could immediately hide this title.
+    let unchanged_sql="SELECT jsonb_build_object('title',to_jsonb(m),'catalogAudit',(SELECT count(*) FROM platform.catalog_audit WHERE entity_type='manga' AND entity_id=$1),'reports',(SELECT count(*) FROM platform.reports WHERE entity_type='manga' AND entity_id=$1),'reportAudit',(SELECT count(*) FROM platform.report_audit a JOIN platform.reports r ON r.id=a.report_id WHERE r.entity_type='manga' AND r.entity_id=$1),'sourceDeletions',(SELECT count(*) FROM events WHERE kind=5)) FROM platform.catalog_manga m WHERE m.id=$1";
+    let before:Value=db.query_one(unchanged_sql,&[&native]).await.unwrap().get(0);
+    for (method,target,body) in [
+        ("POST",&lock,format!(r#"{{"version":{},"version":{version},"expectedAccountId":"{moderator}"}}"#,version-1)),
+        ("POST",&unlock,format!(r#"{{"version":{version},"version":{version},"expectedAccountId":"{moderator}"}}"#)),
+        ("POST",&lock,format!(r#"{{"version":{version},"expectedAccountId":"{owner}","expectedAccountId":"{moderator}"}}"#)),
+        ("POST",&lock,format!(r#"{{"version":{version},"expectedAccountId":"{owner}","expectedAccount\u0049d":"{moderator}"}}"#)),
+        ("DELETE",&path,format!(r#"{{"version":{version},"expectedAccountId":"{moderator}","removalMode":"request-review","removalMode":"approve-hide"}}"#)),
+        ("DELETE",&path,format!(r#"{{"version":{version},"expectedAccountId":"{moderator}","removalMode":"approve-hide","removalMode":"request-review"}}"#)),
+        ("DELETE",&path,format!(r#"{{"version":{version},"expectedAccountId":"{moderator}","removalMode":"request-review","removal\u004dode":"approve-hide"}}"#)),
+    ] {
+        let body=body.into_bytes();
+        let authorization=proof(8,11,&format!("{}{target}",f.origin),method,&body);
+        f.raw(method,target,body,"application/json",Some(authorization),400).await;
+        assert_eq!(db.query_one(unchanged_sql,&[&native]).await.unwrap().get::<_,Value>(0),before,"Rejected {method} {target} changed disposition state");
+    }
+    assert_eq!(object_files(&f.state.config.uploads_dir.join("objects")),object_count);
     f.call(None,"POST",&lock,Some(json!({"version":version})),401).await;
     f.call(Some(1),"POST",&lock,Some(json!({"version":version})),403).await;
     f.call(Some(8),"GET",&lock,None,405).await;

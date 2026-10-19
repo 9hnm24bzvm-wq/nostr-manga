@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "artifacts": [
+    {
+      "id": 12160561624,
+      "name": "hosted-browser-evidence-39191081822-1",
+      "size_in_bytes": 2657,
+      "digest": "sha256:964a6ad52c488d9d0c6e47a44e95bdf323d0900e9410d799292519ce003885f8",
+      "created_at": "2026-10-19T02:53:42Z",
+      "expires_at": "2026-10-20T02:53:41Z",
+      "expired": false,
+      "headSha": "4a27b3a106e903a48115b3642624565510ddd75e",
+      "runId": 39191081822
+    }
+  ]
+}

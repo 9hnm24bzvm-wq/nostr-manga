@@ -1,0 +1,125 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2215,
+      "path": "README.md",
+      "sha256": "2071586821e868f87c4fe459d5279cb963613dca7b9cbd1b2b9b9ba03179adc9"
+    },
+    {
+      "bytes": 2,
+      "path": "actor.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 240,
+      "path": "actor.log",
+      "sha256": "d4e16dba77173ed67696e8c5ee8d54adbef728c08172167baf1b92790e74d8ad"
+    },
+    {
+      "bytes": 189056,
+      "path": "after.json",
+      "sha256": "534023d4e4a91967cce010dd865837156e9e34aa0f3dec0a24ce2c36ef4d88e7"
+    },
+    {
+      "bytes": 28944,
+      "path": "baseline-17d-browser.mjs",
+      "sha256": "f32c89481ee6cfedddcda1ee1b1a692dbeb89a2e74d209ce06597b99f16146f1"
+    },
+    {
+      "bytes": 30420,
+      "path": "baseline-5c9-browser.mjs",
+      "sha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb"
+    },
+    {
+      "bytes": 7967,
+      "path": "baseline-959-observer.mjs",
+      "sha256": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71"
+    },
+    {
+      "bytes": 6284,
+      "path": "baseline-aca-driver.mjs",
+      "sha256": "d0db904c9961e41e66e708ddf9d8672073d90b965dbe81c1a930f8d9808a694b"
+    },
+    {
+      "bytes": 5859,
+      "path": "baseline-d6-driver.mjs",
+      "sha256": "2607cbd87ea2969cb030ea068e342045427f68483a3338be3039977c3faff84e"
+    },
+    {
+      "bytes": 189056,
+      "path": "before.json",
+      "sha256": "534023d4e4a91967cce010dd865837156e9e34aa0f3dec0a24ce2c36ef4d88e7"
+    },
+    {
+      "bytes": 180152,
+      "path": "build-source-snapshot.json",
+      "sha256": "7a81545e8c24b2f5850998a3e3cf2f0a7a2df1a3e224070fca509edfcc3554e1"
+    },
+    {
+      "bytes": 2615,
+      "path": "commands.json",
+      "sha256": "a3ccdce1711b3eb8c9277e20e4d2c28bb2517273245240e311a0f1fe84494ba6"
+    },
+    {
+      "bytes": 1540,
+      "path": "node.args",
+      "sha256": "70b7ed8b8cade99f99d2dd93edc710e3e3bfb5b230a806f1cd79ba22d2d5e9a1"
+    },
+    {
+      "bytes": 2,
+      "path": "node.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 57907,
+      "path": "node.log",
+      "sha256": "386f4e55db715cec8a831d7bd6555df8d2ea42ae9d9a4877069874048fc4a3b1"
+    },
+    {
+      "bytes": 817,
+      "path": "official-bits-ui-2.16.5/dialog-trigger.svelte",
+      "sha256": "eecde0ffeea2523e75cd318a65bf4c66577e8d9481163717a892b112c36dc8f3"
+    },
+    {
+      "bytes": 13014,
+      "path": "official-bits-ui-2.16.5/dialog.svelte.ts",
+      "sha256": "a68947871a8e0b8b2471a77158359d62841a216e9c19170634131d15ec2299b9"
+    },
+    {
+      "bytes": 1603,
+      "path": "official-bits-ui-2.16.5/package.json",
+      "sha256": "369df73c2a4b32c95392df69a92d7b408b1c1635bd8fa6bb23d167fc38f84f4d"
+    },
+    {
+      "bytes": 1572,
+      "path": "official-bits-ui-2.16.5/source-association.json",
+      "sha256": "3919fa778679d188f4e7ece76671289323d080b4a344b766cfdfc6b1755647c2"
+    },
+    {
+      "bytes": 323,
+      "path": "python.args",
+      "sha256": "4b2c18049466aba3848cfbd687726d5979d8a4c60ec2919bcbad2fa0e75ac28a"
+    },
+    {
+      "bytes": 2,
+      "path": "python.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 25419,
+      "path": "python.log",
+      "sha256": "70553ed1a3cdf344c6716fd30709ff5b0ba72c6c8ef1abfeefca62e4c21ab861"
+    },
+    {
+      "bytes": 3338,
+      "path": "qualify.py",
+      "sha256": "d168b001ae5261d274f755638b49185d6de933d9f206c5136f42a39a21021211"
+    },
+    {
+      "bytes": 5592,
+      "path": "result.json",
+      "sha256": "48aeb00052f4bfb2cc9a07f3da29ab2ac015f37abd1b5615bf03eb27b5f336bc"
+    }
+  ],
+  "schema": 1
+}

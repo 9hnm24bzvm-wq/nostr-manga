@@ -1,0 +1,26 @@
+✔ current application profile is an exact bounded successor of immutable recovery workflow (2.386683ms)
+✔ one admitted branch push selects precisely public-upload in both preparation and execution (0.232554ms)
+✔ known supported host and exact Python ABI are explicitly provisioned before preparation (0.266404ms)
+✔ hard limits admit the complete single-fixture reservation without widening phase deadlines (0.138185ms)
+✔ native gate and sandboxed network-fenced application launcher remain prerequisites (0.251121ms)
+✔ only three closed sanitized JSON reports can be uploaded for one day with read-only permissions (0.704833ms)
+✔ supported host is exact Ubuntu22.04 Linuxx64 nonroot (0.973621ms)
+✔ launch is explicitly sandboxed and data-only with normal context/browser closure (1.197383ms)
+✔ first caught failure stays closed: launch (0.404179ms)
+✔ first caught failure stays closed: context (0.133748ms)
+✔ first caught failure stays closed: page (0.144494ms)
+✔ first caught failure stays closed: goto (0.156992ms)
+✔ first caught failure stays closed: text (0.164043ms)
+✔ first caught failure stays closed: context-close (0.186436ms)
+✔ first caught failure stays closed: browser-close (0.166407ms)
+✔ classifier never leaks raw messages and reads a throwing/changing getter once (0.27679ms)
+✔ dedicated workflow never triggers application branches or installs app dependencies (0.428244ms)
+✔ application workflow remains exact and does not match the dedicated preflight branch (0.559869ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.370988

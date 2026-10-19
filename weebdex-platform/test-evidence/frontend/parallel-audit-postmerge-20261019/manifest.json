@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "files": {
+    "README.md": {
+      "bytes": 1310,
+      "sha256": "23af8e3aff70124047c69c608cb86468c90f1cc6668614e82fa9fcba3e2edeff"
+    },
+    "actual.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "actual.log": {
+      "bytes": 35950,
+      "sha256": "53f6d9b5fdcc474436b2e1591b4ed0c1eaafe39c7e2be968ba6788868f1ee245"
+    },
+    "after.json": {
+      "bytes": 9495,
+      "sha256": "be001b3d07602c57b55862718b1114867613843c97340aa4a15f8d8eb6e9da71"
+    },
+    "before.json": {
+      "bytes": 10579,
+      "sha256": "1e313e1b3006f3b82333ce34441384860fb2e001e0f6ad82f28fe8fa0ecfc276"
+    },
+    "result.json": {
+      "bytes": 1904,
+      "sha256": "fbf20a5afdc0fb81f0b3f8319662136cdcfad698ff3e50955152e27a93695c6f"
+    },
+    "selected.args": {
+      "bytes": 972,
+      "sha256": "3731703fd435c79ba2b789230a50190bce644000788bc2b67fb3caf6227352a2"
+    },
+    "source-preparation.json": {
+      "bytes": 728,
+      "sha256": "034c4bf0c9aa69abb1ae74cc2ec450f5b0d6c06ddd8ad08273f194d12e015eba"
+    }
+  }
+}

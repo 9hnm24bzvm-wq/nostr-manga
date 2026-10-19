@@ -1,0 +1,16 @@
+Command: git diff --check && git diff --exit-code e4942906d31acd3ec2ea5cc2006e00f58f2103ba -- .github/workflows weebdex-platform/tests/runtime/browser_fixture.py weebdex-platform/scripts/ci/owned-fixture-cleanup.py weebdex-platform/scripts/browser-acceptance.mjs weebdex-platform/scripts/ci/run-sandbox-preflight.py weebdex-platform/scripts/ci/sealed-sandbox-log.mjs .ci/browser && PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
+import ast, pathlib, subprocess
+root=pathlib.Path('.')
+paths=['weebdex-platform/scripts/ci/browser-temp.py','weebdex-platform/scripts/ci/run-hosted-browser.py','weebdex-platform/tests/ci/test_application_browser_temp.py']
+for path in paths: ast.parse((root/path).read_text())
+old=subprocess.check_output(['git','show','c1a5793883c4ee523884f18010c29b6a89842c9e:weebdex-platform/scripts/ci/run-sandbox-preflight.py']).decode()
+body=old[old.index('# Reserve 64 bytes for Chromium'):old.index('\nclass Owner:\n')].rstrip()
+new=(root/paths[0]).read_text()
+assert new[new.index('# Reserve 64 bytes for Chromium'):].rstrip()==body
+print('Three changed Python files parse; BrowserTemp/constants match c1 byte-for-byte.')
+print('Fixture/process owner/browser worker/preflight/sealer/workflows/runtime pins unchanged.')
+PY
+Exit code: 0
+
+Three changed Python files parse; BrowserTemp/constants match c1 byte-for-byte.
+Fixture/process owner/browser worker/preflight/sealer/workflows/runtime pins unchanged.

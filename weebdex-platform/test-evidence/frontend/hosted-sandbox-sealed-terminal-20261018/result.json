@@ -1,0 +1,70 @@
+{
+  "envelope": {
+    "bytes": 9234,
+    "context": {
+      "public_record_sha256": "ddb7c5b57ffba0769b6b6e8047c99788c758c775c56797d252adac22f1fa1242",
+      "recipient_spki_sha256": "06656641d644eb4fe046a53c085a62a9a0d853d0f712f1a92295337f479cf9e7",
+      "repository": "9hnm24bzvm-wq/nostr-manga",
+      "run_attempt": "1",
+      "run_id": "39175207688",
+      "scope": "sandbox-preflight-worker-log",
+      "source_commit": "1502e1174877f3ba37bda69692b23b59d184919b"
+    },
+    "privateKeyAuthentication": "not performed by this package",
+    "retentionDays": 1,
+    "sha256": "2379b9988834b25e725e225f0e87393a9195e3bd83176fc70a1176c84d2c549f",
+    "structuralContextValidation": true,
+    "totalBytesLimit": 4194304
+  },
+  "historicalBoundary": "New terminal evidence from run39175207688. This package does not reconstruct lost ad2/e32 file serialization or inherit original35e finite byte equality.",
+  "limits": {
+    "applicationJourneyQualified": false,
+    "browserCapabilityQualified": false,
+    "loadQualified": false,
+    "privateKeyAccess": false,
+    "privatePlaintextCommitted": false,
+    "rerunTriggered": false,
+    "runtimeSecurityPolicyProven": false
+  },
+  "outcome": {
+    "category": "launch-failed",
+    "cleanup": {
+      "forced": false,
+      "remaining_owned": 0,
+      "tracking_errors": 0,
+      "unknown_births": 0,
+      "verified_stopped": true
+    },
+    "elapsedMs": 678,
+    "ownedWorkerLog": {
+      "exitEvents": 1,
+      "exitSignal": "SIGABRT",
+      "launches": 1,
+      "state": "complete",
+      "witness": "owned-worker-log; not an independent OS birth observation"
+    },
+    "reason": "launch-closed-before-ready",
+    "returnedBrowser": false,
+    "returnedContext": false,
+    "returnedPage": false,
+    "scriptVerified": false,
+    "stage": "launching-browser",
+    "underlyingCause": "unknown from this sanitized public report"
+  },
+  "run": {
+    "attempt": 1,
+    "conclusion": "failure",
+    "id": 39175207688,
+    "jobId": 117816333687,
+    "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/39175207688"
+  },
+  "schema": 1,
+  "scope": "one approved sandboxed data-document capability preflight plus bounded encrypted diagnostic export",
+  "source": {
+    "fullRemoteTreeAssociation": "Integrator independently verified 5390 files/5958 recursive entries and ref; monitor validates artifact head and local exact tree/runtime pins",
+    "localCommit": "76bfc2d9b4d978412613e6d4721adf4ff004d13a",
+    "parentRemoteCommit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+    "remoteCommit": "1502e1174877f3ba37bda69692b23b59d184919b",
+    "tree": "6e29ce41014db3938d87eb44d62f1f32626e46ff"
+  }
+}

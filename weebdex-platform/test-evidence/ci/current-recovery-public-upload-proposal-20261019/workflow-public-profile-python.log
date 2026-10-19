@@ -1,0 +1,15 @@
+test_adverse_or_missing_receipts_never_promote_report_passed (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_adverse_or_missing_receipts_never_promote_report_passed) ... ok
+test_build_and_record_failures_restore_native_artifact_and_receipts (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_build_and_record_failures_restore_native_artifact_and_receipts) ... ok
+test_closed_projection_passes_only_complete_positive_outcome (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_closed_projection_passes_only_complete_positive_outcome) ... ok
+test_exact_scope_is_forty_current_phases_not_historical_equivalence (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_exact_scope_is_forty_current_phases_not_historical_equivalence) ... ok
+test_missing_and_gate_off_profiles_cannot_allocate_a_browser_fixture (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_missing_and_gate_off_profiles_cannot_allocate_a_browser_fixture) ... ok
+test_operational_gate_requires_current_complete_early_response_receipt (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_operational_gate_requires_current_complete_early_response_receipt) ... ok
+test_previous_scope_or_one_profile_cannot_claim_current_full_suite (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_previous_scope_or_one_profile_cannot_claim_current_full_suite) ... ok
+test_profile_rejects_gate_off_receipt_changed_membership_and_unsafe_manifest (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_profile_rejects_gate_off_receipt_changed_membership_and_unsafe_manifest) ... ok
+test_public_schema_rejects_private_and_inconsistent_fields (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_public_schema_rejects_private_and_inconsistent_fields) ... ok
+test_second_build_is_gate_on_and_native_generation_is_restored_exactly (test_public_upload_hosted_profile.PublicUploadHostedProfile.test_second_build_is_gate_on_and_native_generation_is_restored_exactly) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.127s
+
+OK

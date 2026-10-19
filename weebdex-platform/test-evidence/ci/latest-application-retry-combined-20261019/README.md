@@ -1,0 +1,7 @@
+# Latest application retry finite qualification
+
+The frozen combined source d658ff14 passed 461 Node cases in 21 files, 103 of 104 Python methods with one permission-denied AF_UNIX-creation skip, and one exact historical actor-source association case. All 1,322 selected build/test source hashes remained unchanged and equal Git blobs. Minimal CI source 95944fab retains the exact qualified execution inputs and excludes only 22 newly generated evidence/doc paths from the larger local recovery composition.
+
+No real Rust, PostgreSQL, service or application/browser execution is inferred. The proposed mandatory gate will require exactly three actual title units and one real signed scenario reaching seven new negative requests, then compact-feed parity before the upload/replacement journey. That future run needs approval. The previous actual hosted failure remains an inner-assertion-unknown key-import failure; the corrected fixture path, readiness and diagnostic controls are finite source/stand-in evidence.
+
+The first metadata import emitted one ignored owned bytecode cache. Its first green Node result and exact pins remain historical; after hash-matched removal of that generated cache, bytecode-disabled metadata and Node execution were repeated. Counts overlap and are not summed. Baseline source files are exact project-code fixtures, with no actual key material. No whole-command OS physical-closure receipt is claimed.

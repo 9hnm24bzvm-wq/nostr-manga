@@ -1,0 +1,75 @@
+{
+  "envelope": {
+    "bytes": 9406,
+    "context": {
+      "public_record_sha256": "e0c3e46954124604abaefd9303dcfc9f8ce959d45f8291401940de6a924b0837",
+      "recipient_spki_sha256": "06656641d644eb4fe046a53c085a62a9a0d853d0f712f1a92295337f479cf9e7",
+      "repository": "9hnm24bzvm-wq/nostr-manga",
+      "run_attempt": "1",
+      "run_id": "39181802530",
+      "scope": "sandbox-preflight-worker-log",
+      "source_commit": "2a01e78c55fa9dd4520c4b3017f08d37b85b5602"
+    },
+    "privateKeyAuthentication": "not performed by this package",
+    "retentionDays": 1,
+    "sha256": "93ebafb51b8d99d173476879df23e4f773347647138f16a61aa6ded1a7439246",
+    "structuralContextValidation": true,
+    "totalBytesLimit": 4194304
+  },
+  "historicalBoundary": "This successful run is separate from prior failures and local finite qualification. It does not retrospectively establish the causes of other runs or qualify application/browser journeys.",
+  "limits": {
+    "applicationJourneyQualified": false,
+    "effectiveChromiumPolicyProven": false,
+    "extraRunTriggered": false,
+    "loadQualified": false,
+    "privateKeyAccess": false,
+    "privatePayloadCommitted": false,
+    "standaloneSandboxCapabilityQualified": true
+  },
+  "outcome": {
+    "browserClosed": true,
+    "browserCreated": true,
+    "caughtCategory": "none",
+    "caughtStage": "none",
+    "cleanup": {
+      "forced": false,
+      "remaining_owned": 0,
+      "tracking_errors": 0,
+      "unknown_births": 0,
+      "verified_stopped": true
+    },
+    "completed": true,
+    "contextClosed": true,
+    "contextCreated": true,
+    "elapsedMs": 3226,
+    "ownedWorkerLog": {
+      "exitCode": 0,
+      "exitEvents": 1,
+      "exitSignal": "none",
+      "launches": 1,
+      "state": "complete",
+      "witness": "owned-worker-log; not an independent OS birth observation"
+    },
+    "pageCreated": true,
+    "sandboxRequested": true,
+    "scriptVerified": true,
+    "status": "passed",
+    "workerExitCode": 0
+  },
+  "run": {
+    "attempt": 1,
+    "conclusion": "success",
+    "id": 39181802530,
+    "jobId": 117835941893,
+    "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/39181802530"
+  },
+  "schema": 1,
+  "scope": "one approved sandboxed data-document capability preflight after short-owned-TMPDIR repair",
+  "source": {
+    "association": "Integrator independently verified all 5391 non-directory identities and ref. Monitor checks artifact head, pinned local Git tree and exact inspected runtime closure.",
+    "localCommit": "c1a5793883c4ee523884f18010c29b6a89842c9e",
+    "parentRemoteCommit": "1502e1174877f3ba37bda69692b23b59d184919b",
+    "remoteCommit": "2a01e78c55fa9dd4520c4b3017f08d37b85b5602",
+    "tree": "c75586bee4cdaaa41826736b5d0475b9a3ee373f"
+  }
+}

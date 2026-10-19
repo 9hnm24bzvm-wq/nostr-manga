@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "scope": "Allowlisted public GitHub jobs API metadata; no logs",
+  "jobs": [
+    {
+      "id": 118031853809,
+      "run_id": 39244148320,
+      "run_attempt": 1,
+      "head_sha": "ba88ca0596c00d09f9fc95d68e254e216bcc5598",
+      "head_branch": "ci/browser-failure-diagnostics",
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-19T11:22:22Z",
+      "completed_at": "2026-10-19T11:36:16Z",
+      "html_url": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/39244148320/job/118031853809",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-19T11:22:23Z",
+          "completed_at": "2026-10-19T11:22:24Z"
+        },
+        {
+          "name": "Run actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-19T11:22:24Z",
+          "completed_at": "2026-10-19T11:22:29Z"
+        },
+        {
+          "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-19T11:22:29Z",
+          "completed_at": "2026-10-19T11:22:34Z"
+        },
+        {
+          "name": "Run actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-19T11:22:34Z",
+          "completed_at": "2026-10-19T11:22:34Z"
+        },
+        {
+          "name": "Check finite deployment proxy route and header contracts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-19T11:22:34Z",
+          "completed_at": "2026-10-19T11:22:34Z"
+        },
+        {
+          "name": "Prepare pinned dependencies and frozen-source builds",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-19T11:22:34Z",
+          "completed_at": "2026-10-19T11:34:55Z"
+        },
+        {
+          "name": "Prove native compact-feed PostgreSQL parity before browser execution",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-19T11:34:55Z",
+          "completed_at": "2026-10-19T11:35:25Z"
+        },
+        {
+          "name": "Run genuine browser batches under the owned fixture supervisor",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 8,
+          "started_at": "2026-10-19T11:35:25Z",
+          "completed_at": "2026-10-19T11:36:11Z"
+        },
+        {
+          "name": "Validate the closed public evidence schemas",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-19T11:36:11Z",
+          "completed_at": "2026-10-19T11:36:12Z"
+        },
+        {
+          "name": "Upload allowlisted sanitized evidence only",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-19T11:36:12Z",
+          "completed_at": "2026-10-19T11:36:13Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18,
+          "started_at": "2026-10-19T11:36:13Z",
+          "completed_at": "2026-10-19T11:36:13Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19,
+          "started_at": "2026-10-19T11:36:13Z",
+          "completed_at": "2026-10-19T11:36:13Z"
+        },
+        {
+          "name": "Post Run actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-10-19T11:36:13Z",
+          "completed_at": "2026-10-19T11:36:14Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-10-19T11:36:14Z",
+          "completed_at": "2026-10-19T11:36:14Z"
+        }
+      ]
+    }
+  ]
+}

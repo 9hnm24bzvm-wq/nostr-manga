@@ -64,6 +64,7 @@ test('application workflow remains exact and does not match the dedicated prefli
   const profiles = new Set([
     '19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1', // bounded CI
     'df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27', // recovery c6
+    '876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1', // current-recovery application CI proposal
   ]);
   const digest = bytes => createHash('sha256').update(bytes).digest('hex');
   assert.ok(profiles.has(digest(workflow)));

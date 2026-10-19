@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "issue": "Initial source-snapshot import emitted one owned ignored bytecode cache; first Node461 result is retained separately. No tracked source changed. Removed only the exact freshly emitted cache after matching its recorded hash; fresh metadata uses bytecode-disabled Python.",
+  "ownedCacheRelativePath": "weebdex-platform/scripts/ci/__pycache__/prepare-hosted-browser.cpython-312.pyc",
+  "bytes": 16411,
+  "sha256": "5a50a6257a1ba6278be4f4852d9152b6e60c33507838c2ade870c3e76f20ce6e"
+}

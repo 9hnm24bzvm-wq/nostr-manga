@@ -1,0 +1,16 @@
+{
+  "source": "95944fab9ee9714bc556a9c9115167d9b8178542",
+  "tree": "8cc4f916513aebfd715459950d4a53f5978f14c0",
+  "base": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+  "pathCount": 68,
+  "pathBytes": 1245183,
+  "fullTreeFiles": 7194,
+  "qualifiedPins": 1322,
+  "allRuntimeInputsMatchQualifiedSource": true,
+  "buildSourceInputs": 1292,
+  "rawBytes": 2714587,
+  "rawSha256": "c03461cd3c2068d4448566b9d87d46f015aba04753ecb5a5527bb5d9eeb2c005",
+  "base64Bytes": 658272,
+  "base64Sha256": "9cd8e55a72d228b6615d4fb42c70c649ba2b71fd461d850d03a0feb8f936cee0",
+  "chunks": 42
+}

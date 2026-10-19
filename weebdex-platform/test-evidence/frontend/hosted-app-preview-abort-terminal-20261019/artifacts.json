@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "repository": "9hnm24bzvm-wq/nostr-manga",
+  "runId": 39265783479,
+  "attempt": 1,
+  "artifacts": [
+    {
+      "id": 12192813958,
+      "name": "hosted-browser-evidence-39265783479-1",
+      "bytes": 2815,
+      "expired": false,
+      "created": "2026-10-19T14:14:29Z",
+      "expires": "2026-10-20T14:14:28Z",
+      "sha256": "c19e1e51a26c4868298d88d5b51d4fe66b0129b7f062d360f49b2ae12985df6c",
+      "remoteHead": "4829648f76df5df2a198387bd662d8bea36b95d1"
+    }
+  ]
+}

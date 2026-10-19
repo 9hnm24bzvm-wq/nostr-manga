@@ -1,0 +1,51 @@
+{
+  "actual_application_fixture_started": false,
+  "actual_bind_witness_observed": false,
+  "actual_browser_started": false,
+  "base_commit": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+  "base_tree": "d7cb8076302bc27ec2e58586412dc7919cd0b966",
+  "evidence_files": [
+    {
+      "bytes": 3947,
+      "path": "README.md",
+      "sha256": "9c2ae482bdc86d058d63ad7e53151cd687ed289e6c7b31a40d8307666cf3d0a8"
+    },
+    {
+      "bytes": 4619,
+      "path": "python-focused-tests.txt",
+      "sha256": "48885cc2b25aaa3512d968612652bc40b951600b74863126eaad99b112ca93f5"
+    },
+    {
+      "bytes": 1420,
+      "path": "source-parity.txt",
+      "sha256": "7988539da30d692b53e68f51b859c1873bcc3c8f4879673ae0573cbd542a1c07"
+    }
+  ],
+  "python_tests": {
+    "collected": 23,
+    "failed": 0,
+    "passed": 22,
+    "skipped": 1
+  },
+  "schema": 1,
+  "scope": "finite-application-browser-temp-source-proposal",
+  "source_commit": "4f7d80c93d29f706f403104d15755a710b906094",
+  "source_files": [
+    {
+      "bytes": 7156,
+      "path": "weebdex-platform/scripts/ci/browser-temp.py",
+      "sha256": "a6b6d7084227e5e9bcfd797912d57921a3fbc3f9a3d0ea719e26420390dcb542"
+    },
+    {
+      "bytes": 32163,
+      "path": "weebdex-platform/scripts/ci/run-hosted-browser.py",
+      "sha256": "6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b"
+    },
+    {
+      "bytes": 33422,
+      "path": "weebdex-platform/tests/ci/test_application_browser_temp.py",
+      "sha256": "887ba68fe046756c2481c723bd8592c8c3f5a656b8a4e02d35bca5b336d4b529"
+    }
+  ],
+  "source_tree": "7c56a3bcc04b6b4361ff7ca466dc993f39f53c53"
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "source": "5c9a0ce76ff509412205004148938077c96aa8af",
+  "tree": "703bc812b4efdda9124f6e571c9f81dadb06e6fb",
+  "base": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+  "files": {
+    ".github/workflows/hosted-browser-e2e.yml": {
+      "bytes": 3733,
+      "sha256": "876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1"
+    },
+    "weebdex-platform/scripts/ci/browser-temp.py": {
+      "bytes": 7156,
+      "sha256": "a6b6d7084227e5e9bcfd797912d57921a3fbc3f9a3d0ea719e26420390dcb542"
+    },
+    "weebdex-platform/scripts/ci/run-hosted-browser.py": {
+      "bytes": 32163,
+      "sha256": "6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b"
+    },
+    "weebdex-platform/tests/ci/test_application_browser_temp.py": {
+      "bytes": 33422,
+      "sha256": "887ba68fe046756c2481c723bd8592c8c3f5a656b8a4e02d35bca5b336d4b529"
+    },
+    "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs": {
+      "bytes": 32540,
+      "sha256": "da80b6fe2f00d3d966c3afbdc5cb97dfecd49db11f5d1f109d7b2c51277bc68c"
+    },
+    "weebdex-platform/tests/ci/test_current_application_ci_profile.mjs": {
+      "bytes": 5075,
+      "sha256": "6b5b0e6d1dd0e760920147396a953f963229d1121fff14214cc1aacd83a7f91e"
+    },
+    "weebdex-platform/tests/ci/test_hosted_browser.py": {
+      "bytes": 35464,
+      "sha256": "e9f95e1f2cc53b8681cf45ca21c8747bedebe7e45db4cf5eff2525e54b12d7b9"
+    },
+    "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py": {
+      "bytes": 18601,
+      "sha256": "67d7478cfc5f39d4150f7a3c3026d86208225612081e5a0578a3ac1c8b9a5f50"
+    },
+    "weebdex-platform/tests/ci/test_sandbox_preflight.mjs": {
+      "bytes": 6524,
+      "sha256": "eeb43186eb85a32c8fe56c153c5d5ad6f25d3ec020e1192ec4f61bedcd849c84"
+    }
+  }
+}

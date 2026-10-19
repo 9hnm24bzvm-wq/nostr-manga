@@ -1,0 +1,32 @@
+{
+  "artifacts": [
+    {
+      "created_at": "2026-10-18T23:08:27Z",
+      "digest": "sha256:f9c51a0c23bda99e7b99a563c26f6fec3c34467219669a43d3646213600a3778",
+      "expired": false,
+      "expires_at": "2026-10-19T23:08:26Z",
+      "id": 12153259088,
+      "name": "hosted-sandbox-preflight-39175207688-1",
+      "size_in_bytes": 825,
+      "workflow_run": {
+        "head_branch": "ci/browser-sandbox-preflight",
+        "head_sha": "1502e1174877f3ba37bda69692b23b59d184919b",
+        "id": 39175207688
+      }
+    },
+    {
+      "created_at": "2026-10-18T23:08:28Z",
+      "digest": "sha256:5d0d55e3d6eb03e2fa420a82d4d1a12f22c5dd1eff65ffcc83ce96660824904a",
+      "expired": false,
+      "expires_at": "2026-10-19T23:08:27Z",
+      "id": 12153059851,
+      "name": "hosted-sandbox-sealed-debug-39175207688-1",
+      "size_in_bytes": 7163,
+      "workflow_run": {
+        "head_branch": "ci/browser-sandbox-preflight",
+        "head_sha": "1502e1174877f3ba37bda69692b23b59d184919b",
+        "id": 39175207688
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[2]
 REPO = ROOT.parent
@@ -26,7 +27,7 @@ def source_snapshot():
     directories = [ROOT / name for name in ['frontend', 'platform-integrations', 'scripts', 'backend/src', 'backend/examples', 'backend/migrations', 'backend/tests']]
     directories += [REPO / 'manga-protocol-lab/server/src', REPO / 'manga-protocol-lab/server/migrations', ROOT / 'tests/runtime']
     paths = [path for directory in directories for path in directory.rglob('*') if path.is_file()]
-    paths += [ROOT / 'backend/Cargo.toml', ROOT / 'backend/Cargo.lock', REPO / 'manga-protocol-lab/server/Cargo.toml', REPO / 'manga-protocol-lab/server/Cargo.lock', REPO / 'manga-protocol-lab/browser-client/package-lock.json', REPO / '.ci/browser/package.json', REPO / '.ci/browser/package-lock.json']
+    paths += [ROOT / 'backend/Cargo.toml', ROOT / 'backend/Cargo.lock', REPO / 'manga-protocol-lab/server/Cargo.toml', REPO / 'manga-protocol-lab/server/Cargo.lock', REPO / 'manga-protocol-lab/browser-client/package-lock.json', REPO / '.ci/browser/package.json', REPO / '.ci/browser/package-lock.json', REPO / '.github/workflows/hosted-browser-e2e.yml']
     if any(path.is_symlink() for path in paths):
         raise RuntimeError('Source input links are not allowed')
     return {str(path.relative_to(REPO)): sha(path) for path in sorted(set(paths))}
@@ -52,7 +53,7 @@ def run(label, argv, cwd, seconds):
     command = [sys.executable, str(ROOT / 'scripts/run-bounded.py'), '--cwd', str(cwd), '--deadline', str(seconds), '--receipt', str(receipt), '--log', str(STAGE / (label + '.log')), '--', *map(str, argv)]
     result = subprocess.run(command)
     value = json.loads(receipt.read_text()) if receipt.is_file() else {}
-    if result.returncode or value.get('process_exit_code') != 0 or value.get('deadline_exceeded') is not False or value.get('cleanup_verified') is not True or value.get('surviving_owned_process_ids') != []:
+    if result.returncode or value.get('process_exit_code') != 0 or value.get('deadline_exceeded') is not False or value.get('terminal_receipt') is not True or value.get('cleanup_verified') is not True or value.get('surviving_owned_process_ids') != [] or value.get('cleanup_signals') != [] or value.get('prior_or_unrelated_processes_touched') is not False:
         raise RuntimeError('Owned preparation stage failed: ' + label)
     return value
 
@@ -81,10 +82,31 @@ def main():
             ('frontend-dependencies', ['node', REPO / '.ci/browser/node_modules/yarn/bin/yarn.js', 'install', '--frozen-lockfile', '--ignore-scripts', '--non-interactive', '--cache-folder', ROOT / '.cache/hosted-yarn'], frontend_stage, 600),
             ('frontend-build', ['node', ROOT / 'scripts/build-frontend.mjs'], ROOT, 900),
         ]
+        native_title_tests = None
         for label, argv, cwd, seconds in stages:
             public['stage'] = label
             write(PUBLIC / 'preparation.json', public)
+            started = time.monotonic()
             receipt = run(label, argv, cwd, seconds)
+            if label == 'native-build':
+                # Reuse the same target cache and the existing 2100s native
+                # build envelope. Offline failure never triggers dependency
+                # fetching or an extra preparation/run allowance.
+                remaining = seconds - (time.monotonic() - started)
+                if remaining <= 0:
+                    raise RuntimeError('Native test build has no remaining preparation budget')
+                run('native-title-test-build', ['cargo', 'test', '--offline', '--locked',
+                    '--manifest-path', ROOT / 'backend/Cargo.toml', '--lib', '--test',
+                    'public_manga_writes', '--no-run', '--message-format=json', '-j2'], REPO, remaining)
+                import importlib.util
+                spec = importlib.util.spec_from_file_location('prepared_native_title_contract', ROOT / 'scripts/ci/native-title-diagnostics.py')
+                native_title = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(native_title)
+                log = STAGE / 'native-title-test-build.log'
+                if log.is_symlink() or not log.is_file() or log.stat().st_size > 16 * 1024 * 1024:
+                    raise RuntimeError('Unavailable native test artifact output')
+                source_hash = hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest()
+                native_title_tests = native_title.artifacts(log.read_text(), ROOT, source_hash)
             if source_snapshot() != before:
                 raise RuntimeError('Frozen source changed during preparation')
             if label == 'frontend-build':
@@ -118,6 +140,9 @@ def main():
         provisioner = ROOT / '.build/hosted-native/debug/examples/browser_fixture_provisioner'
         runtime = json.loads((STAGE / 'runtime.json').read_text())
         plan = {'schema': 1, 'normal_binary': str(normal), 'normal_sha256': sha(normal), 'provisioner': str(provisioner), 'provisioner_sha256': sha(provisioner), 'frontend_manifest': str(manifest), 'frontend_manifest_sha256': sha(manifest), 'frontend_index_sha256': sha(ROOT / 'artifacts/frontend/index.html'), 'node': subprocess.check_output(['node', '-p', 'process.execPath'], text=True).strip(), 'runtime_sha256': sha(STAGE / 'runtime.json')}
+        if native_title_tests is None:
+            raise RuntimeError('Fresh native title test artifacts are required')
+        plan['native_title_tests'] = native_title_tests
         if public_upload_profile is not None:
             plan['public_upload_recovery'] = public_upload_profile
         write(STAGE / 'plan.json', plan)

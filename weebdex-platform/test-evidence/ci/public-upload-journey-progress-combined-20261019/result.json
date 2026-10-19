@@ -1,0 +1,115 @@
+{
+  "actorSourceAssociation": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 NODE_OPTIONS=--max-old-space-size=256 timeout 10s node --test --test-name-pattern=\"current actor-follow runtime source\" weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs",
+    "milliseconds": 127.801612,
+    "passed": 1
+  },
+  "baseline": "17d26d0c7338ff32a6233207dc93905b226fe053",
+  "buildInputSnapshot": {
+    "buildExecuted": false,
+    "count": 1293,
+    "originalFrontend676Plus3Verified": true,
+    "sha256": "006ea9ebc319c32216281c0de17a3960534b814fd23f22a4101ced08eb84f5d6"
+  },
+  "diagnosticContract": {
+    "actualJsSavedFramesAndSourceExtractedGroupFramesReachPythonAndOuterValidator": true,
+    "allChecksPassedRequiredForCompletion": true,
+    "categories": 6,
+    "checks": 14,
+    "firstActionOrPersistenceErrorPreserved": true,
+    "fixedFields": [
+      "check_index",
+      "substep",
+      "status",
+      "caught_category"
+    ],
+    "fixedStages": 44,
+    "privateValuesExported": false,
+    "runnerUsableStages": 42
+  },
+  "externalBaselineAndOfficialInputs": 9,
+  "externalInputsUnchanged": true,
+  "fullTreeFiles": 7202,
+  "limits": [
+    "Finite fakes/source seams only; no new browser, native test, HTTP service, database, build, strict check, install or hosted execution.",
+    "Permission denied at local AF_UNIX creation does not establish a bind witness.",
+    "No independent outer OS birth/physical-process-closure receipt was collected for these finite commands.",
+    "Source-owner and exploratory helper/projection suites overlap the final union and are not added as distinct cases.",
+    "Official dependency source is version/hash-bound read-only source, not an installed or executed browser dependency.",
+    "Prior native/browser evidence remains bound to its actual source, with no whole-application acceptance inferred for this successor."
+  ],
+  "node": {
+    "cases": 592,
+    "commandTemplate": "PYTHONDONTWRITEBYTECODE=1 NODE_OPTIONS=--max-old-space-size=256 WEEBDEX_PUBLIC_UPLOAD_BASELINE_SOURCE=<baseline-5c9-browser.mjs> WEEBDEX_KEY_IMPORT_DRIVER_BASELINE_SOURCE=<baseline-d6-driver.mjs> WEEBDEX_UPLOAD_OBSERVER_BASELINE_SOURCE=<baseline-959-observer.mjs> WEEBDEX_BITS_DIALOG_SOURCE_DIR=<official-bits-ui-2.16.5> WEEBDEX_UPLOAD_GROUP_BASELINE_SOURCE=<baseline-17d-browser.mjs> timeout 45s node --experimental-vm-modules --test --test-concurrency=2 <node.args>",
+    "failed": 0,
+    "files": 25,
+    "milliseconds": 2955.141088,
+    "passed": 592,
+    "skipped": 0
+  },
+  "packagingContinuation": {
+    "metadataOnlyPathTypo": "An initial Git-object inventory used a nonexistent scripts/ci/auth_fixture_guard.py path. Raw files were retained; metadata generation resumed with the actual tests/runtime/auth_fixture_guard.py path. No source, assertion, test receipt or execution changed."
+  },
+  "previousHostedRun": {
+    "id": 39244148320,
+    "result": "failed",
+    "scope": "Key import and observer boundary passed; composite check2 failed with unknown first inner call. Those historical reports do not qualify the new source.",
+    "source": "17d26d0c7338ff32a6233207dc93905b226fe053"
+  },
+  "proposedHostedScope": {
+    "batch": "public-upload",
+    "branch": "ci/browser-failure-diagnostics",
+    "eachReportMaximumBytes": 2097152,
+    "feedParityRequired": true,
+    "hardMaximumMinutes": 140,
+    "mandatoryNativeUnits": 3,
+    "newRunTriggered": false,
+    "newSigned400Negatives": 7,
+    "publicationPerformed": false,
+    "reports": 3,
+    "retentionDays": 1,
+    "signedHttpScenarios": 1
+  },
+  "python": {
+    "collected": 120,
+    "commandTemplate": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=weebdex-platform/tests/ci NODE_OPTIONS=--max-old-space-size=256 WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE=<baseline-aca-driver.mjs> timeout 45s python3 -B -m unittest -v <python.args>",
+    "failed": 0,
+    "modules": 9,
+    "passed": 119,
+    "seconds": 11.257,
+    "skip": "Permission denied at AF_UNIX socket creation before bind; exact errno is not distinguished.",
+    "skipped": 1
+  },
+  "runtime": {
+    "hostedPythonRemains": "3.12.15",
+    "node": "24.19.0",
+    "python": "3.12.14"
+  },
+  "schema": 1,
+  "scope": "Fresh deduplicated finite source qualification: exact group-search trigger and fixed substeps across the existing fourteen-check upload journey.",
+  "source": "2e118bb666b5b155a644f7b289971b233be17d9d",
+  "sourceDeltaPaths": 9,
+  "sourceDiagnosis": {
+    "correction": "Bounded unique exact Search... text locator with ordinary click; no forced click, DOM mutation, synthetic selection or application source change.",
+    "dependency": "bits-ui2.16.5",
+    "historicalFirstHostedInnerCallProven": false,
+    "immutableCommit": "f4fc53225721afa9a798eb21501c9f40bf2e375b",
+    "staticMismatch": "Dialog.Trigger child receives no role override; local InputGroup.Root is a div/group. The old runner asks for a button named Search...."
+  },
+  "sourcePins": 1330,
+  "sourcePinsEqualFrozenGitBlobs": true,
+  "sourcePinsUnchanged": true,
+  "tree": "9bcba723dc5c7f60a7177132c6e9cf990de45b00",
+  "unchangedGitObjects": {
+    ".ci/browser/package-lock.json": "e402db674ff05f9d7dc7d69c6524dcb6cfc03584",
+    ".github/workflows/hosted-browser-e2e.yml": "742d3970dcdfc60b4ba310803b1b6a9f6e6090c4",
+    "manga-protocol-lab/server/src": "7474a634125cfc176664d3986b0346ca76c574dd",
+    "weebdex-platform/backend": "3923ca6ee350522edf7d6bda73bbe531853ba615",
+    "weebdex-platform/frontend": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+    "weebdex-platform/platform-integrations": "a6a437ada0b0cef1a220ff36f292eebe84b160e1",
+    "weebdex-platform/scripts/browser-acceptance.mjs": "a40ec5afd730de203daf3593544e3a08bf44fee4",
+    "weebdex-platform/scripts/ci/run-hosted-title-regression.py": "7f3ccac983249722a6f6c3881de9212b26799bdc",
+    "weebdex-platform/scripts/public-upload-recovery-observer.mjs": "44a0b43ea1b544666eb749692d3869d7b3f4c8c7",
+    "weebdex-platform/tests/runtime/auth_fixture_guard.py": "397b25e6eea97d67838e9b1ce70d97786f169068"
+  }
+}

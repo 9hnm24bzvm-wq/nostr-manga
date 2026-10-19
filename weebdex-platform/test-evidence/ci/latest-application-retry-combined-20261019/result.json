@@ -1,0 +1,83 @@
+{
+  "actorExactSourceAssociation": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 NODE_OPTIONS=--max-old-space-size=256 timeout10s node --test --test-name-pattern=current-actor-source-association <test_browser_actor_follow_journeys.mjs>",
+    "milliseconds": 97.493365,
+    "passed": 1
+  },
+  "executedSource": "d658ff142da7285f4c8c10d09d0f38fbed025dec",
+  "executedTree": "1a26164ca27deb9ae0e58ef5b8e5591254fe772e",
+  "hostedProposal": {
+    "batch": "public-upload",
+    "branch": "ci/browser-failure-diagnostics",
+    "eachReportMaximumBytes": 2097152,
+    "maximumMinutes": 140,
+    "newPublicationPerformed": false,
+    "newRunTriggered": false,
+    "reports": 3,
+    "retentionDays": 1
+  },
+  "initialMetadataAttempt": {
+    "countedAsAdditionalDistinctCases": false,
+    "issue": "First metadata import emitted one ignored bytecode cache before source pinning; that exact owned cache was hash-matched and removed, then bytecode-disabled metadata and Node qualification were repeated. All original logs/pins remain retained. No tracked source changed.",
+    "nodeCasesPassed": 461,
+    "overlapsFinalNodeScope": true
+  },
+  "limits": [
+    "No Rust compilation, native/PostgreSQL/service test, genuine browser, application journey, dependency installation or frontend strict/Vite build was executed by this finite package.",
+    "The three actual Rust methods and one real signed HTTP scenario/seven negative requests remain pending prospective hosted approval.",
+    "Actual prior hosted failure remains at the composite key-import check; the first inner failed assertion is unknown. Static harness defects and finite counterfactuals do not establish that first observed failure.",
+    "Existing account/reader/title finite scopes overlap this union; counts are not additive across historical packages.",
+    "The full actor AST suite remains unqualified after the earlier missing exact-lock TypeScript dependency; only the separately selected exact source-association case ran here.",
+    "No independent OS-birth or whole-command physical-closure receipt was retained for these outer local timeout commands.",
+    "Historical negative TAP trailing whitespace remains lossless; no whole-delta clean whitespace claim."
+  ],
+  "minimalCiInputBytesEquivalent": true,
+  "minimalCiSource": "95944fab9ee9714bc556a9c9115167d9b8178542",
+  "minimalCiTree": "8cc4f916513aebfd715459950d4a53f5978f14c0",
+  "minimalPublication": {
+    "allQualifiedRuntimeInputsMatch": true,
+    "base": "3d94500e42fb83566a6d5c39aeed34d9a308552f",
+    "fullTreeFiles": 7194,
+    "newEvidenceDocPathsExcludedFromCi": 22,
+    "sourceDeltaPaths": 23,
+    "totalDeltaPathsAgainstPublicRecovery": 68
+  },
+  "node": {
+    "cases": 461,
+    "command": "PYTHONDONTWRITEBYTECODE=1 NODE_OPTIONS=--max-old-space-size=256 WEEBDEX_PUBLIC_UPLOAD_BASELINE_SOURCE=<baseline-5c9-browser.mjs> WEEBDEX_KEY_IMPORT_DRIVER_BASELINE_SOURCE=<baseline-d6-driver.mjs> timeout45s node --experimental-vm-modules --test --test-concurrency=2 <node.args>",
+    "failed": 0,
+    "files": 21,
+    "milliseconds": 2281.924994,
+    "passed": 461,
+    "skipped": 0
+  },
+  "prospectiveNativeGate": {
+    "actualRustUnits": 3,
+    "executedHere": false,
+    "fixtureCleanupSeconds": [
+      15,
+      5,
+      5
+    ],
+    "fixtureTestSeconds": 180,
+    "newRustUnitFunctions": 2,
+    "newSigned400Negatives": 7,
+    "sharedNativeSeconds": 600,
+    "signedHttpScenarios": 1
+  },
+  "python": {
+    "collected": 104,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=weebdex-platform/tests/ci NODE_OPTIONS=--max-old-space-size=256 WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE=<baseline-aca-driver.mjs> timeout45s python3 -B -m unittest -v <python.args>",
+    "failed": 0,
+    "modules": 7,
+    "passed": 103,
+    "seconds": 8.107,
+    "skip": "Permission denied at AF_UNIX socket creation before bind; the receipt does not distinguish EPERM/EACCES.",
+    "skipped": 1
+  },
+  "schema": 1,
+  "scope": "Deduplicated finite qualification and exact source preservation for latest reviewed application retry proposal; no new native or application/browser execution.",
+  "sourcePins": 1322,
+  "sourcePinsEqualFrozenGitBlobs": true,
+  "sourcePinsUnchanged": true
+}

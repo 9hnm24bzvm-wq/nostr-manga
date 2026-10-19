@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "repository": "9hnm24bzvm-wq/nostr-manga",
+  "runId": 39265783479,
+  "attempt": 1,
+  "jobs": [
+    {
+      "id": 118104858759,
+      "head": "4829648f76df5df2a198387bd662d8bea36b95d1",
+      "status": "completed",
+      "conclusion": "failure",
+      "started": "2026-10-19T14:05:19Z",
+      "completed": "2026-10-19T14:14:35Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:05:20Z",
+          "completed": "2026-10-19T14:05:21Z"
+        },
+        {
+          "name": "Run actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5",
+          "number": 2,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:05:21Z",
+          "completed": "2026-10-19T14:05:23Z"
+        },
+        {
+          "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "number": 3,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:05:23Z",
+          "completed": "2026-10-19T14:05:28Z"
+        },
+        {
+          "name": "Run actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c",
+          "number": 4,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:05:28Z",
+          "completed": "2026-10-19T14:05:28Z"
+        },
+        {
+          "name": "Check finite deployment proxy route and header contracts",
+          "number": 5,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:05:28Z",
+          "completed": "2026-10-19T14:05:28Z"
+        },
+        {
+          "name": "Prepare pinned dependencies and frozen-source builds",
+          "number": 6,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:05:28Z",
+          "completed": "2026-10-19T14:13:43Z"
+        },
+        {
+          "name": "Prove native compact-feed PostgreSQL parity before browser execution",
+          "number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:13:43Z",
+          "completed": "2026-10-19T14:14:01Z"
+        },
+        {
+          "name": "Run genuine browser batches under the owned fixture supervisor",
+          "number": 8,
+          "status": "completed",
+          "conclusion": "failure",
+          "started": "2026-10-19T14:14:01Z",
+          "completed": "2026-10-19T14:14:27Z"
+        },
+        {
+          "name": "Validate the closed public evidence schemas",
+          "number": 9,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:14:27Z",
+          "completed": "2026-10-19T14:14:28Z"
+        },
+        {
+          "name": "Upload allowlisted sanitized evidence only",
+          "number": 10,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:14:28Z",
+          "completed": "2026-10-19T14:14:29Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c",
+          "number": 18,
+          "status": "completed",
+          "conclusion": "skipped",
+          "started": "2026-10-19T14:14:29Z",
+          "completed": "2026-10-19T14:14:29Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "number": 19,
+          "status": "completed",
+          "conclusion": "skipped",
+          "started": "2026-10-19T14:14:29Z",
+          "completed": "2026-10-19T14:14:29Z"
+        },
+        {
+          "name": "Post Run actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5",
+          "number": 20,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:14:29Z",
+          "completed": "2026-10-19T14:14:29Z"
+        },
+        {
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed",
+          "conclusion": "success",
+          "started": "2026-10-19T14:14:29Z",
+          "completed": "2026-10-19T14:14:29Z"
+        }
+      ]
+    }
+  ]
+}

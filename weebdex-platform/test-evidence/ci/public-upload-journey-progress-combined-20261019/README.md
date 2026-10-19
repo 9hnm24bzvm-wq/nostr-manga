@@ -1,0 +1,9 @@
+# Group trigger and fixed upload progress: finite continuation
+
+Exact source `2e118bb666b5b155a644f7b289971b233be17d9d`, tree `9bcba723dc5c7f60a7177132c6e9cf990de45b00`, is nine harness/test paths over `17d26d0`. The selector follows actual retained components and immutable official bits-ui 2.16.5 source: the old role=button selector cannot find the div/group child trigger. The correction uses only its unique exact Search... text through a normal locator click. This proves a static incompatibility, without retrospectively identifying the preceding hosted first inner failure.
+
+The fourteen-check journey now retains only fixed index, stage, status and category. All 42 usable markers from 44 enums are wired. Ordered/terminal/persistence guards preserve the primary exception. Python and outer validation require all 14 completed checks; all original signing, account, request/native-terminal, exact mutation and durable readback oracles remain. Final settled/route/exact 21-mutation checks run inside the last check before completion.
+
+Final union: 592 Node cases in 25 files; 119 of 120 Python methods pass with one local socket-creation permission skip; one separate exact actor association. All 1,330 source inputs and nine historical/official files remain unchanged. Both optional source-bound negative witnesses were enabled with zero Node skips. Earlier focused/exploratory checks overlap this union. A metadata-only inventory path typo was corrected without changing source or rerunning tests; raw receipt files are intact.
+
+The 1,293-entry build-source map and676 + 3 original frontend parity were read without building. No new app/native/browser/service/database/install/strict or hosted run occurred. Current application source, native gates, sandbox launcher, observer and workflow are unchanged. The next publication/run remain pending separate approval.

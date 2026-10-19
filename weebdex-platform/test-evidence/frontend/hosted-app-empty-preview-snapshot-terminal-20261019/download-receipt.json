@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "repository": "9hnm24bzvm-wq/nostr-manga",
+  "runId": 39279984569,
+  "attempt": 1,
+  "jobId": 118152227203,
+  "artifactId": 12200273033,
+  "zip": {
+    "bytes": 2841,
+    "sha256": "b610b5521ca78e4caae8220d8a5af605726cc63ea448fab3689214c39c71ae18"
+  },
+  "members": [
+    {
+      "name": "preparation.json",
+      "bytes": 2166,
+      "sha256": "a8812b4b2de0447a339dd8db4d06c8c01261e9a7f71540447d356f00fca6f92e"
+    },
+    {
+      "name": "summary.json",
+      "bytes": 1205,
+      "sha256": "ae384d8957d467173b49bc2c9eda72a3c6af27c89754d0731e8762a1abb8cd94"
+    },
+    {
+      "name": "phases.json",
+      "bytes": 2815,
+      "sha256": "4113ba95ab992a11181b6a49afe39487e667a9ad58113dc47782eea06d7fb0d4"
+    }
+  ],
+  "singleDownload": true,
+  "memberPolicy": "Exactly three fixed regular JSON members; no extra entries",
+  "exactZipBytesPrivatelyRetained": true,
+  "zipOrRawLogsCommitted": false,
+  "retentionDays": 1
+}

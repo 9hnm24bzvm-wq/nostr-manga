@@ -1,0 +1,9 @@
+# Successful short-temp sandbox preflight terminal
+
+The one approved run 39181802530 / attempt 1 passed in 3,226 ms on remote head 2a01e78c / tree c75586be. The exact closed schema2 record reports sandbox requested, browser/context/page creation, data-document script verification, context/browser closure and completion, with worker exit0. Normal owner cleanup is verified with no forced cleanup, remaining owned processes, unknown births or tracking errors. The correlated owned-worker-log witness reports one start/exit with exit0; it is not an independent OS birth census.
+
+Both admitted artifact uploads succeeded. Their ZIP hashes and sole-member hashes are recorded separately. The encrypted member is 9,406 bytes, below the 4 MiB TOTAL envelope bound, and binds the exact repository/run/attempt/source/public JSON hash/approved recipient. The monitor verified both fresh job-output markers exactly once, the original ZIP/member identities, the exact-source public schema and canonical envelope context. Structural validation is distinct from authenticated private recovery, which is separately owned and evidenced.
+
+Only the exact 1,480-byte public JSON and sanitized run/job/artifact/source/hash/context records are committed. Ciphertext bytes, ZIPs, raw job/native logs, decrypted plaintext, private keys/handles and chat identifiers are excluded. Exact admitted bytes remain privately retained locally and in the monitor's store. One-day artifact retention is not a durable-backup or deletion guarantee.
+
+Runtime pins refer to the actual published short-temp source c1a57938, not this evidence branch's earlier runtime baseline. This result qualifies the standalone sandbox/data-document capability only. Application E2E, effective Chromium policy, full-suite acceptance, load capacity and earlier-run causes are not inferred. No extra hosted run is triggered by this local evidence package.

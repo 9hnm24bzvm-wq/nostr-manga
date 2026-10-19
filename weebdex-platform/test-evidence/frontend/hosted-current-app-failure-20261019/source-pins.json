@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "localCommit": "5c9a0ce76ff509412205004148938077c96aa8af",
+  "remoteCommit": "1f19d4f0cba7ce7d58491221d2dbca5cf9c28e5a",
+  "tree": "703bc812b4efdda9124f6e571c9f81dadb06e6fb",
+  "scope": "16 actual published runtime/workflow/validator/declaration paths. Evidence branch runtime baseline is older and is not the executed source.",
+  "compiledSnapshot": {
+    "files": 1287,
+    "sha256": "372ca445d7c9b1dd6feb9205c9f6c5926b4358182fe5751634e6234a9f3bdcd8"
+  },
+  "pins": [
+    {
+      "path": ".github/workflows/hosted-browser-e2e.yml",
+      "bytes": 3733,
+      "sha256": "876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1",
+      "gitBlob": "742d3970dcdfc60b4ba310803b1b6a9f6e6090c4"
+    },
+    {
+      "path": ".ci/browser/package.json",
+      "bytes": 271,
+      "sha256": "df01a6927293a82d018723c3d9932ac584bf16ce3559b80004d137d8affc82fc",
+      "gitBlob": "f8211099133b019ad67233c601f2fc546e096409"
+    },
+    {
+      "path": ".ci/browser/package-lock.json",
+      "bytes": 2198,
+      "sha256": "b117dbd1c52f362161dfd20bb6bae12145db37b2ebf0c63004dc738363738d7d",
+      "gitBlob": "e402db674ff05f9d7dc7d69c6524dcb6cfc03584"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-hosted-browser.py",
+      "bytes": 32163,
+      "sha256": "6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b",
+      "gitBlob": "dcafa3c134e2586140d20146f9885ebb1a4fea09"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/prepare-hosted-browser.py",
+      "bytes": 9235,
+      "sha256": "6a6b3f8319d6e7cd1d9d78d2a8569ca22257fdb1f4f5018cd91742072b4ded42",
+      "gitBlob": "5e6ff2c2a908654e4c9e0d6b0884748955544d02"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/validate-ci-evidence.py",
+      "bytes": 26523,
+      "sha256": "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77",
+      "gitBlob": "578009c0d4bf26399b57e942f70d74ebbad71d49"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-hosted-feed-regression.py",
+      "bytes": 4321,
+      "sha256": "f68f1ae7aaa4339a43e682168bc54c290a764d678aba102ba8f8e6b60c0cc2f4",
+      "gitBlob": "d734a0a6e196078491d12c8928cb33a8ba81012d"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+      "bytes": 6936,
+      "sha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c",
+      "gitBlob": "c2740e0b54270560ba994ec4d7daa705c1b8fe6d"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/browser-temp.py",
+      "bytes": 7156,
+      "sha256": "a6b6d7084227e5e9bcfd797912d57921a3fbc3f9a3d0ea719e26420390dcb542",
+      "gitBlob": "530cb771d1ba9054dba4e8e96478ec6157de2c86"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/hosted-public-upload-profile.py",
+      "bytes": 3653,
+      "sha256": "f0f8f4421194b21b74940dd22b2ff524d028366647ebe82f468fddbb4a43cc8f",
+      "gitBlob": "2c70b226ca0a804402767c278fe104f876c77391"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-journeys.mjs",
+      "bytes": 93765,
+      "sha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d",
+      "gitBlob": "20872b55eeef376fec88a12205700e866c88f49c"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "bytes": 30420,
+      "sha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb",
+      "gitBlob": "25666394619b50f56eed3494c7d88600bc9904ca"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-observer.mjs",
+      "bytes": 7967,
+      "sha256": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71",
+      "gitBlob": "2c8d094f24e65d3fb9a2eb9d6c6dd1d858159a43"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-controls.mjs",
+      "bytes": 15158,
+      "sha256": "357a4663ec1e0a65e6dcde50b42baf640009bad82ab1de14b28b721cae63b71d",
+      "gitBlob": "2ea0de4af66b9a90ce22d4397b38f0d6b5eec68d"
+    },
+    {
+      "path": "weebdex-platform/tests/runtime/browser_fixture.py",
+      "bytes": 112887,
+      "sha256": "b51600aa499ef8d5330482e05b444aa5ca868aaa6c3ad6c7cfd155d6b1052551",
+      "gitBlob": "254b338663526b38ccd268adbe26c7e991f89dda"
+    },
+    {
+      "path": "weebdex-platform/tests/runtime/auth_fixture_guard.py",
+      "bytes": 14105,
+      "sha256": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+      "gitBlob": "397b25e6eea97d67838e9b1ce70d97786f169068"
+    }
+  ]
+}

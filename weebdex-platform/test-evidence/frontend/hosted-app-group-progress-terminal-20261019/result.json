@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "runId": 39250457893,
+  "attempt": 1,
+  "source": {
+    "localCommit": "2e118bb666b5b155a644f7b289971b233be17d9d",
+    "remoteCommit": "8c43699b49db62e959f66af9f43c8e2e3c5be145",
+    "tree": "9bcba723dc5c7f60a7177132c6e9cf990de45b00"
+  },
+  "terminal": "failure",
+  "selection": "public-upload",
+  "timing": {
+    "jobStarted": "2026-10-19T12:14:05Z",
+    "jobCompleted": "2026-10-19T12:26:59Z",
+    "preparationSeconds": 705,
+    "nativeGateSeconds": 30,
+    "browserStepSeconds": 25
+  },
+  "nativeTitle": {
+    "unitsPassed": 3,
+    "unitsFailed": 0,
+    "unitsIgnored": 0,
+    "httpPassed": 1,
+    "httpFailed": 0,
+    "httpIgnored": 0,
+    "negativeRequestsVerified": 7,
+    "sourceAndArtifactsVerified": true,
+    "unitAndHttpOwnedCleanupVerified": true,
+    "httpFixtureCleanupVerified": true,
+    "budgetExhausted": false,
+    "scope": "Validated hosted gate report facts; unavailable hosted binaries were not independently rehashed locally"
+  },
+  "nativeFeed": {
+    "status": "passed",
+    "baselineMs": 5001,
+    "baselineOutcome": "query-canceled",
+    "batchedFirstPageMs": 199,
+    "allMeasurementFlagsTrue": true,
+    "ownedAndFixtureCleanupVerified": true
+  },
+  "browser": {
+    "created": true,
+    "contextCreated": true,
+    "pageCreated": true,
+    "actualSteps": 3,
+    "failedCheck": {
+      "source": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "zeroBasedIndex": 2,
+      "name": "begin, language autosave and real image before cancellation",
+      "fixedSubstep": "mutation-count",
+      "caughtCategory": "assertion",
+      "priorChecksPassed": [
+        0,
+        1
+      ],
+      "closedImportAttempt": 1,
+      "closedImportSubstepsCompleted": 14,
+      "closedImportStatus": "passed",
+      "exactAssertionOrEndpoint": "Not disclosed by admitted closed reports",
+      "countMismatchEstablished": false,
+      "sourceBoundary": "completeWrites marks mutation-count then calls until; until checks observer health before and after the count read"
+    },
+    "caughtStage": "running-checks",
+    "caughtCategory": "journey-failed",
+    "pageErrors": 0,
+    "proxyConnectDenials": 24,
+    "proxyDenialsEstablishCause": false
+  },
+  "observer": {
+    "fixtureControls": 3,
+    "signedRequests": 12,
+    "mutations": 3,
+    "independentReads": 4,
+    "recordValid": false,
+    "browserObserverClosedVerified": false,
+    "independentReaderClosed": true,
+    "retainedFailureLabels": {
+      "recordValid": true,
+      "signedRequestInvalid": 0,
+      "duplicateNativeTerminal": 0,
+      "signedNativeFailed": 1
+    },
+    "nativeFailureScope": "At least one allowlisted Playwright requestfailed terminal was recorded. No endpoint, response status or fixed native error family is exported by these reports.",
+    "counterScope": "Allowlisted upload/account-context paths and at most16retained failure labels; cannot infer global traffic or exact failure cause"
+  },
+  "cleanup": {
+    "fixturePhysicalTeardownVerified": true,
+    "outerPhysicalTeardownVerified": true,
+    "forced": false,
+    "remainingOwnedProcesses": 0,
+    "supervisorTerminal": true,
+    "supervisorExitZero": false,
+    "lifecycleClean": false
+  },
+  "acceptance": {
+    "selectedScopePassed": false,
+    "fullSuitePassed": false,
+    "pendingOtherPhases": 39,
+    "pixelParityEstablished": false,
+    "currentFreshBuildRecorded": true,
+    "currentStrictTypecheckEstablished": false,
+    "hostedCompiledArtifactLocallyReverified": false,
+    "causeEstablished": false
+  },
+  "independentArtifactReview": {
+    "reviewer": "ops",
+    "status": "Clear for exact hashes, schemas, source, privacy and scoped terminal facts; no new runtime or download"
+  },
+  "rawLogsKeysPrivatePayloadExported": false,
+  "newRunTriggered": false
+}

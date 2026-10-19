@@ -8,11 +8,15 @@ import os
 from pathlib import Path
 import re
 import signal
+import stat
 import subprocess
 import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
+_temp_spec = importlib.util.spec_from_file_location('owned_browser_temp', Path(__file__).with_name('browser-temp.py'))
+browser_temp = importlib.util.module_from_spec(_temp_spec)
+_temp_spec.loader.exec_module(browser_temp)
 STAGE = ROOT / '.build/hosted-browser'
 PUBLIC = ROOT / 'ci-evidence'
 SIGNED = {'signed-library', 'signed-profile', 'signed-social', 'signed-context', 'signed-source-controls', 'signed-namespace', 'signed-recipients', 'signed-restart'}
@@ -185,6 +189,94 @@ def project_cleanup(value):
     return {'verified_stopped': stopped, 'ports_closed': ports_closed, 'keys_removed': value.get('synthetic_server_keys_absent') is True, 'remaining_owned_process_count': len(value.get('remaining_owned_processes', [])), 'final_teardown_clean': value.get('final_teardown_clean') is True, 'lifecycle_clean': value.get('lifecycle_clean') is True, 'pg_fault_activated': fault is not None, 'pg_fault_terminal_clean': fault_clean}
 
 
+BROWSER_TMP_CLEANUP_SECONDS = 5
+
+
+def persist_browser_temp(owner, *, process_tree_stopped=False, cleanup_verified=False):
+    """Private bounded journal held open from admission through final cleanup."""
+    output = owner.browser_temp_record
+    held = os.fstat(output.fileno())
+    named = os.stat(owner.browser_temp_record_path, follow_symlinks=False)
+    if (not stat.S_ISREG(held.st_mode) or not stat.S_ISREG(named.st_mode) or
+            (held.st_dev, held.st_ino) != (named.st_dev, named.st_ino) or
+            held.st_nlink != 1 or held.st_uid != os.geteuid() or
+            stat.S_IMODE(held.st_mode) != 0o600):
+        raise RuntimeError('Owned browser temp journal changed')
+    value = dict(schema=1, **owner.browser_temp.journal(),
+                 process_tree_stopped=process_tree_stopped, cleanup_verified=cleanup_verified)
+    data = json.dumps(value, sort_keys=True) + '\n'
+    if len(data.encode('utf-8')) > 4096:
+        raise RuntimeError('Owned browser temp journal exceeded its bound')
+    output.seek(0)
+    output.truncate()
+    output.write(data)
+    output.flush()
+    os.fsync(output.fileno())
+
+
+def prepare_browser_temp(owner, name):
+    """Register a fresh exact root and persist its admission before any child."""
+    owner.browser_temp = browser_temp.BrowserTemp()
+    owner.browser_temp_record = None
+    owner.browser_temp_record_path = STAGE / ('browser-temp-' + name + '.json')
+    owner.browser_temp.create()
+    descriptor = os.open(owner.browser_temp_record_path,
+                         os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    owner.browser_temp_record = os.fdopen(descriptor, 'w')
+    persist_browser_temp(owner)
+
+
+def finish_browser_temp(owner, process, batch, deadline):
+    """Never remove temporary bytes until the complete owned tree is stopped."""
+    temp = getattr(owner, 'browser_temp', None)
+    output = getattr(owner, 'browser_temp_record', None)
+    stopped = clean = False
+    def uncertain():
+        batch['cleanup_error_class'] = 'RuntimeError'
+        batch['cleanup']['verified_stopped'] = False
+        batch.setdefault('outer_cleanup', dict(forced=False,
+            verified_stopped=False, remaining_owned_process_count=0))['verified_stopped'] = False
+    try:
+        if temp is None:
+            if process is not None:
+                raise RuntimeError('Owned browser temp registration unavailable')
+            return
+        if process is not None:
+            if (process.poll() is None or batch.get('supervisor_terminal') is not True or
+                    batch.get('outer_cleanup', {}).get('verified_stopped') is not True):
+                raise RuntimeError('Owned browser temp process closure unverified')
+        elif owner.process_roots:
+            raise RuntimeError('Owned browser temp child admission unverified')
+        if owner.process_members(None) or owner.process_tracking_errors:
+            raise RuntimeError('Owned browser temp process closure unverified')
+        stopped = True
+        temp.cleanup(deadline)
+        clean = not temp.created or temp.removed
+        if temp.created and output is None:
+            raise RuntimeError('Owned browser temp journal unavailable')
+    except Exception:
+        uncertain()
+    finally:
+        try:
+            if output is not None:
+                persist_browser_temp(owner, process_tree_stopped=stopped,
+                                     cleanup_verified=clean and 'cleanup_error_class' not in batch)
+        except Exception:
+            uncertain()
+        finally:
+            try:
+                if temp is not None:
+                    temp.close()
+            except Exception:
+                uncertain()
+            finally:
+                if output is not None:
+                    try:
+                        output.close()
+                    except Exception:
+                        uncertain()
+
+
 def finish_supervisor(owner, process, fixture, batch, seconds=600):
     """Always attempt owned terminal cleanup, even if a stop/receipt step fails."""
     terminal = False
@@ -245,7 +337,14 @@ def run_batch(name, phases, plan, journal, run_id):
     env = {key: value for key, value in os.environ.items() if key in allowed}
     with log.open('x') as output:
         try:
+            prepare_browser_temp(owner, name)
+            # The fixture forwards this allowlisted override to Node/Chromium.
+            # No caller-supplied TMPDIR/TMP/TEMP can select the browser root.
+            env['TMPDIR'] = str(owner.browser_temp.path)
             with owner.process_ownership_lock:
+                owner.browser_temp.check()
+                if not owner.browser_temp.admitted or env.get('TMPDIR') != str(owner.browser_temp.path):
+                    raise RuntimeError('Owned browser temp environment refused')
                 process = subprocess.Popen(argv, cwd=ROOT, env=env, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
                 owner.register_process('supervisor', process)
 
@@ -295,10 +394,17 @@ def run_batch(name, phases, plan, journal, run_id):
                 if row['status'] != 'passed':
                     break  # Mutation state after a failed phase is not assumed safe.
         except Exception as error:
-            batch['error_class'] = type(error).__name__
+            batch['error_class'] = 'RuntimeError' if isinstance(error, browser_temp.Refused) else type(error).__name__
         finally:
-            if process:
-                finish_supervisor(owner, process, fixture, batch)
+            # Use the existing 600-second teardown envelope; temp cleanup gets
+            # at most five seconds of the remaining reserve, never a new one.
+            cleanup_deadline = time.monotonic() + 600
+            try:
+                if process:
+                    finish_supervisor(owner, process, fixture, batch)
+            finally:
+                finish_browser_temp(owner, process, batch,
+                    min(cleanup_deadline, time.monotonic() + BROWSER_TMP_CLEANUP_SECONDS))
     if any(row['batch'] == name and row['phase'] == 'ui14-home-failures' and row['status'] == 'passed' for row in journal['phases']) and not batch['cleanup'].get('pg_fault_terminal_clean'):
         batch['cleanup']['verified_stopped'] = False
     journal['batches'].append(batch)

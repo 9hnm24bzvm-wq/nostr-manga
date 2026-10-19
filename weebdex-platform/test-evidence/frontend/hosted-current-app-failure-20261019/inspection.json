@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "scope": "exact-source pure closed-schema/canonical/cross-summary/source/frontend verification; no fixture/browser execution and no local rebuilt-artifact verification",
+  "publicSchemasAccepted": true,
+  "canonicalBytesAccepted": true,
+  "crossSummaryAccepted": true,
+  "frontendOriginalBytesAccepted": true,
+  "sourceSnapshotSha256": "372ca445d7c9b1dd6feb9205c9f6c5926b4358182fe5751634e6234a9f3bdcd8",
+  "sourceSnapshotFiles": 1287
+}

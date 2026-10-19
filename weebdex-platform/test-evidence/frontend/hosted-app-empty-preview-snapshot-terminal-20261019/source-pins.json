@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "localCommit": "917f3ec99af059230372f0b4bf317c3105772dc2",
+  "remoteCommit": "5abf0dee104a80edbda51f6853966802bbf5f7f6",
+  "tree": "cbab02abaab10db8d0c3f9945536f348c9740438",
+  "scope": "26 actual published runtime/workflow/validator/transport/preview paths; evidence branch runtime baseline is older and is not the executed source",
+  "compiledSnapshot": {
+    "files": 1293,
+    "sha256": "7927de71300d42dc1986ee5d15d2670c4a1f7f286f7a41eb263f4e1f1ba8d07e"
+  },
+  "pins": [
+    {
+      "path": ".github/workflows/hosted-browser-e2e.yml",
+      "bytes": 3733,
+      "sha256": "876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1",
+      "gitBlob": "742d3970dcdfc60b4ba310803b1b6a9f6e6090c4"
+    },
+    {
+      "path": ".ci/browser/package.json",
+      "bytes": 271,
+      "sha256": "df01a6927293a82d018723c3d9932ac584bf16ce3559b80004d137d8affc82fc",
+      "gitBlob": "f8211099133b019ad67233c601f2fc546e096409"
+    },
+    {
+      "path": ".ci/browser/package-lock.json",
+      "bytes": 2198,
+      "sha256": "b117dbd1c52f362161dfd20bb6bae12145db37b2ebf0c63004dc738363738d7d",
+      "gitBlob": "e402db674ff05f9d7dc7d69c6524dcb6cfc03584"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-hosted-browser.py",
+      "bytes": 32163,
+      "sha256": "6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b",
+      "gitBlob": "dcafa3c134e2586140d20146f9885ebb1a4fea09"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/prepare-hosted-browser.py",
+      "bytes": 11179,
+      "sha256": "75ddf0417f28143414e2153e99f5123ec97d25930c49b1efc83a9307a57ebc52",
+      "gitBlob": "d1d9719c4adddcd979e479731ed55da9708177e8"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/validate-ci-evidence.py",
+      "bytes": 27171,
+      "sha256": "29f59b60e44e2b8d5d396c993b5c33f8d9b12abd815195ee3819b859bc472969",
+      "gitBlob": "f4832cb201b113a463303a5fead4788b00be3a07"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-hosted-feed-regression.py",
+      "bytes": 5786,
+      "sha256": "36277f258fa2801abed15069be0002889be68873174333d4e588239b6119d131",
+      "gitBlob": "ce2eb1e9e5dfd52a206d7650e53e187a7bae9c7b"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+      "bytes": 7593,
+      "sha256": "36aad2f9f61dce603584b1c84e456796c731c9c5ff33459575b17a30850224c1",
+      "gitBlob": "595f9a72828cb0a0ba5b4f3a7dcc8e565488aecd"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-title-diagnostics.py",
+      "bytes": 11229,
+      "sha256": "8e4ebd470dbfd33d72c8d3741a9363482775cf66ed4037ea0b388e826682216b",
+      "gitBlob": "3443c75a8752860c73599888370d7146e22a525b"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-hosted-title-regression.py",
+      "bytes": 4976,
+      "sha256": "67d96c409f84035da51be20d216dc5c48ceb68eb85b56c140425baa55714da7b",
+      "gitBlob": "7f3ccac983249722a6f6c3881de9212b26799bdc"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/browser-temp.py",
+      "bytes": 7156,
+      "sha256": "a6b6d7084227e5e9bcfd797912d57921a3fbc3f9a3d0ea719e26420390dcb542",
+      "gitBlob": "530cb771d1ba9054dba4e8e96478ec6157de2c86"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/hosted-public-upload-profile.py",
+      "bytes": 3653,
+      "sha256": "f0f8f4421194b21b74940dd22b2ff524d028366647ebe82f468fddbb4a43cc8f",
+      "gitBlob": "2c70b226ca0a804402767c278fe104f876c77391"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-journeys.mjs",
+      "bytes": 93765,
+      "sha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d",
+      "gitBlob": "20872b55eeef376fec88a12205700e866c88f49c"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-key-import.mjs",
+      "bytes": 6375,
+      "sha256": "bea8773f8130c4e23a36f4326c49404fd89680b4bb2b13802678491d6537d379",
+      "gitBlob": "be1ac4e3168f7da8b04d1110d7953cca94c63c2b"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "bytes": 32934,
+      "sha256": "808d27e183168c5b53f2e37317789b79d21601b75eb515c53d68824766605307",
+      "gitBlob": "495447a2320dcb48ee37f59d8aa62e803ace1a91"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-observer.mjs",
+      "bytes": 8827,
+      "sha256": "f211b70bc0b9089e79ed48a46291a88204b3b60212cf604db4fb15c7dd8f7340",
+      "gitBlob": "44a0b43ea1b544666eb749692d3869d7b3f4c8c7"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-controls.mjs",
+      "bytes": 15158,
+      "sha256": "357a4663ec1e0a65e6dcde50b42baf640009bad82ab1de14b28b721cae63b71d",
+      "gitBlob": "2ea0de4af66b9a90ce22d4397b38f0d6b5eec68d"
+    },
+    {
+      "path": "weebdex-platform/tests/runtime/browser_fixture.py",
+      "bytes": 112887,
+      "sha256": "b51600aa499ef8d5330482e05b444aa5ca868aaa6c3ad6c7cfd155d6b1052551",
+      "gitBlob": "254b338663526b38ccd268adbe26c7e991f89dda"
+    },
+    {
+      "path": "weebdex-platform/tests/runtime/auth_fixture_guard.py",
+      "bytes": 14105,
+      "sha256": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+      "gitBlob": "397b25e6eea97d67838e9b1ce70d97786f169068"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-journey-progress.mjs",
+      "bytes": 2834,
+      "sha256": "fdadc97cf09dc14c134da87e0247e99d69a14f077c604d178da55c94d8eff111",
+      "gitBlob": "31bd371f179bd28a3331f5917ecdee593df3d1bc"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/journey-diagnostics.py",
+      "bytes": 16183,
+      "sha256": "942c5789182d89d8b9ebf0915766d782afaf005c255439d940ed06fa81116b74",
+      "gitBlob": "33b9e99df7093fbc4f909ae167ce013c3ff83239"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/public-upload-diagnostics.py",
+      "bytes": 21967,
+      "sha256": "65f3c8fdb3ee7ae10f9b9cd663044483a877a7a252274c797812bd0f221d73c0",
+      "gitBlob": "3491ee7ea8fd9edfac52362796761afeb1ca9327"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts",
+      "bytes": 16406,
+      "sha256": "6b3e14bfdbe5b2dd518297a493534e8ce353ea2fa21aa0e5904bfbfa05f54e23",
+      "gitBlob": "01e23b22bd72630c532935a8560c4f98327d4220"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-anchors.json",
+      "bytes": 40790,
+      "sha256": "06d6178538990912c5d261a78aec0ab072fe06c3b4aa688c2e16b8ae8d83ea90",
+      "gitBlob": "843add294c045bfb75fa0c7f2624427249cb86e9"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-preview.ts",
+      "bytes": 8537,
+      "sha256": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8",
+      "gitBlob": "36ae292d4741d445e834f04473bdf541c3cde25f"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-client.ts",
+      "bytes": 69850,
+      "sha256": "af792fb9e1ebd24d17cb2d11b0838351ba19f5445786465a73ba70c3e3d4bc18",
+      "gitBlob": "9316cace2a886e5281ea53c29dc52fc0fa5472f8"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "actorSourceAssociation": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 NODE_OPTIONS=--max-old-space-size=256 timeout 10s node --test --test-name-pattern=\"current actor-follow runtime source\" weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs",
+    "milliseconds": 97.208538,
+    "passed": 1
+  },
+  "actualObserverToPython": {
+    "cases": [
+      "valid_discovery",
+      "malformed_query",
+      "duplicate_native_terminal",
+      "native_abort"
+    ],
+    "export": "Fixed failure labels only, then exact closed counts and outer-schema success refusal.",
+    "signatureVerification": "Explicit finite verifier stand-in; not a new genuine crypto or HTTP execution."
+  },
+  "baseline": "95944fab9ee9714bc556a9c9115167d9b8178542",
+  "buildInputSnapshot": {
+    "buildExecuted": false,
+    "count": 1292,
+    "originalFrontend676Plus3Verified": true,
+    "sha256": "18bc1ba729f149672e0b731c93730410c785918c8fc3b9f3d4170512b49ecf06"
+  },
+  "fullTreeFiles": 7197,
+  "limits": [
+    "Finite fakes/source seams only; no new browser, native test, HTTP service, database, build, dependency install or hosted execution.",
+    "One retained AF_UNIX creation-permission skip does not establish a bind witness.",
+    "No whole-frontend strict check or full browser matrix qualification.",
+    "No independent outer OS birth/physical-process-closure receipt was collected for these finite commands.",
+    "Historical source-bound negatives and the earlier source-owner checks overlap this union; do not sum them.",
+    "The previous hosted run stopped at upload-ready/assertion; its exact first observer failure family remains unknown.",
+    "The three diagnostic family counts describe only the first sixteen retained failure labels, not total failures or total requests."
+  ],
+  "node": {
+    "cases": 554,
+    "command": "PYTHONDONTWRITEBYTECODE=1 NODE_OPTIONS=--max-old-space-size=256 WEEBDEX_PUBLIC_UPLOAD_BASELINE_SOURCE=<baseline-5c9-browser.mjs> WEEBDEX_KEY_IMPORT_DRIVER_BASELINE_SOURCE=<baseline-d6-driver.mjs> WEEBDEX_UPLOAD_OBSERVER_BASELINE_SOURCE=<baseline-959-observer.mjs> timeout 45s node --experimental-vm-modules --test --test-concurrency=2 <node.args>",
+    "failed": 0,
+    "files": 23,
+    "milliseconds": 2399.254634,
+    "passed": 554,
+    "skipped": 0
+  },
+  "precompositionProbe": {
+    "errors": 1,
+    "methods": 7,
+    "passed": 6,
+    "rawFileReceiptAvailable": false,
+    "reason": "The new Node fixture had not yet been composed when the preliminary projection probe invoked it.",
+    "scope": "Incomplete intermediate checkout only; not the final qualified source or an additional distinct-case result."
+  },
+  "proposedHostedScope": {
+    "batch": "public-upload",
+    "branch": "ci/browser-failure-diagnostics",
+    "eachReportMaximumBytes": 2097152,
+    "feedParityRequired": true,
+    "hardMaximumMinutes": 140,
+    "mandatoryNativeUnits": 3,
+    "newRunTriggered": false,
+    "newSigned400Negatives": 7,
+    "publicationPerformed": false,
+    "reports": 3,
+    "retentionDays": 1,
+    "signedHttpScenarios": 1
+  },
+  "python": {
+    "collected": 112,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=weebdex-platform/tests/ci NODE_OPTIONS=--max-old-space-size=256 WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE=<baseline-aca-driver.mjs> timeout 45s python3 -B -m unittest -v <python.args>",
+    "failed": 0,
+    "modules": 8,
+    "passed": 111,
+    "seconds": 8.4,
+    "skip": "Permission denied at AF_UNIX socket creation before bind; exact errno is not distinguished.",
+    "skipped": 1
+  },
+  "runtime": {
+    "hostedPythonRemains": "3.12.15",
+    "node": "24.19.0",
+    "python": "3.12.14"
+  },
+  "schema": 1,
+  "scope": "Fresh deduplicated finite source qualification for exact account-bound upload discovery observer repair and closed retained failure counts.",
+  "source": "17d26d0c7338ff32a6233207dc93905b226fe053",
+  "sourceDeltaPaths": 6,
+  "sourcePins": 1325,
+  "sourcePinsEqualFrozenGitBlobs": true,
+  "sourcePinsUnchanged": true,
+  "tree": "2bbae3bf49e0d749b1da99a7811879154013b43f",
+  "unchangedGitObjects": {
+    ".ci/browser/package-lock.json": "e402db674ff05f9d7dc7d69c6524dcb6cfc03584",
+    ".github/workflows/hosted-browser-e2e.yml": "742d3970dcdfc60b4ba310803b1b6a9f6e6090c4",
+    "manga-protocol-lab/server/src": "7474a634125cfc176664d3986b0346ca76c574dd",
+    "weebdex-platform/backend": "3923ca6ee350522edf7d6bda73bbe531853ba615",
+    "weebdex-platform/frontend": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+    "weebdex-platform/platform-integrations": "a6a437ada0b0cef1a220ff36f292eebe84b160e1"
+  }
+}

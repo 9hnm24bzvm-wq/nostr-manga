@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "scope": "Pure exact-source closed-schema/canonical/cross-summary/source/frontend checks; hosted compiled-artifact validation was not replayed locally",
+  "publicSchemasAccepted": true,
+  "canonicalBytesAccepted": true,
+  "crossSummaryAccepted": true,
+  "frontendOriginalBytesAccepted": true,
+  "sourceSnapshotFiles": 1292,
+  "sourceSnapshotSha256": "dad00668e7ab18cfa6fab6e00650425fe1183809166680fae4037f9c102abe5c"
+}

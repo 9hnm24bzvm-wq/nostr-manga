@@ -1,0 +1,17 @@
+test_actual_public_schema_enforces_nested_contract (test_native_feed_diagnostics.NativeFeedDiagnostics.test_actual_public_schema_enforces_nested_contract) ... ok
+test_actual_retained_producer_receipt_matches_closed_schema_and_stays_private (test_native_feed_diagnostics.NativeFeedDiagnostics.test_actual_retained_producer_receipt_matches_closed_schema_and_stays_private) ... ok
+test_fixture_refuses_forced_open_unknown_error_and_nonzero_lifecycle (test_native_feed_diagnostics.NativeFeedDiagnostics.test_fixture_refuses_forced_open_unknown_error_and_nonzero_lifecycle) ... ok
+test_fixture_requires_bounded_exact_unique_owned_birth_identities (test_native_feed_diagnostics.NativeFeedDiagnostics.test_fixture_requires_bounded_exact_unique_owned_birth_identities) ... ok
+test_fixture_requires_every_field_and_rejects_legacy_or_extra_keys (test_native_feed_diagnostics.NativeFeedDiagnostics.test_fixture_requires_every_field_and_rejects_legacy_or_extra_keys) ... ok
+test_measurement_and_result_reject_unbounded_or_private_values (test_native_feed_diagnostics.NativeFeedDiagnostics.test_measurement_and_result_reject_unbounded_or_private_values) ... ok
+test_missing_and_nonboolean_deadline_receipts_cannot_pass (test_native_feed_diagnostics.NativeFeedDiagnostics.test_missing_and_nonboolean_deadline_receipts_cannot_pass) ... ok
+test_not_run_and_failed_are_honest_closed_states (test_native_feed_diagnostics.NativeFeedDiagnostics.test_not_run_and_failed_are_honest_closed_states) ... ok
+test_parser_admits_one_exact_retained_rust_record_only (test_native_feed_diagnostics.NativeFeedDiagnostics.test_parser_admits_one_exact_retained_rust_record_only) ... ok
+test_pass_needs_actual_exit_terminal_cleanup_fixture_and_measurement (test_native_feed_diagnostics.NativeFeedDiagnostics.test_pass_needs_actual_exit_terminal_cleanup_fixture_and_measurement) ... ok
+test_real_short_owned_command_receipt_is_projected_without_its_log (test_native_feed_diagnostics.NativeFeedDiagnostics.test_real_short_owned_command_receipt_is_projected_without_its_log) ... ok
+test_workflow_and_browser_gate_precede_every_fixture (test_native_feed_diagnostics.NativeFeedDiagnostics.test_workflow_and_browser_gate_precede_every_fixture) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.077s
+
+OK

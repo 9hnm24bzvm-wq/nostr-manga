@@ -1,0 +1,195 @@
+{
+  "schema": 1,
+  "kind": "reviewed-source-and-evidence-preservation",
+  "baseRecovery": {
+    "commit": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+    "tree": "d7cb8076302bc27ec2e58586412dc7919cd0b966"
+  },
+  "applicationSource": {
+    "localCommit": "917f3ec99af059230372f0b4bf317c3105772dc2",
+    "publishedCommit": "5abf0dee104a80edbda51f6853966802bbf5f7f6",
+    "publishedBranch": "ci/browser-failure-diagnostics",
+    "tree": "cbab02abaab10db8d0c3f9945536f348c9740438",
+    "sourceFiles": 7207,
+    "runtimeBytesPreservedExceptHistoricalWorkflow": true
+  },
+  "workflowException": {
+    "path": ".github/workflows/hosted-browser-e2e.yml",
+    "sourceCommit": "e4942906d31acd3ec2ea5cc2006e00f58f2103ba",
+    "gitBlob": "ea06c1cd4ec22c7d2286b54f5a9fe599919a45a9",
+    "bytes": 3512,
+    "sha256": "df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27",
+    "historicalProfile": {
+      "runner": "ubuntu-24.04",
+      "jobMinutes": 345,
+      "defaultBatch": "all",
+      "browserStepMinutes": 245,
+      "supervisorBudgetSeconds": 14400
+    },
+    "executedApplicationProfile": {
+      "runner": "ubuntu-22.04",
+      "jobMinutes": 140,
+      "defaultBatch": "public-upload",
+      "browserStepMinutes": 30,
+      "supervisorBudgetSeconds": 3600
+    },
+    "singleExecutionInputException": true,
+    "currentApplicationExecutionQualified": false,
+    "scope": "The general recovery workflow is restored byte-for-byte from the earlier public recovery checkpoint. Historical current-application results remain bound to their actual CI workflow; they do not qualify execution of this restored profile."
+  },
+  "standaloneSandboxProvenance": {
+    "publishedBranch": "ci/browser-sandbox-preflight",
+    "commit": "2a01e78c55fa9dd4520c4b3017f08d37b85b5602",
+    "tree": "c75586bee4cdaaa41826736b5d0475b9a3ee373f",
+    "scope": "Separately preserved standalone sandbox capability source. Its runtime files are not overlaid onto the current application tree, and its capability pass is not application-journey acceptance."
+  },
+  "evidence": {
+    "groups": [
+      {
+        "path": "weebdex-platform/test-evidence/ci/public-upload-preview-refusal-combined-20261019",
+        "sourceCommit": "826b3b13d36c8ef7eec1c2bd9dd28afd2822a0b8",
+        "files": 26,
+        "bytes": 794076
+      },
+      {
+        "path": "weebdex-platform/test-evidence/ci/public-upload-native-failure-projection-20261019",
+        "sourceCommit": "1658c744f09de4d74888692b45e06fe47908a5f4",
+        "files": 25,
+        "bytes": 757670
+      },
+      {
+        "path": "weebdex-platform/test-evidence/ci/public-upload-journey-progress-combined-20261019",
+        "sourceCommit": "d188cc24533d718c982abe58e522996ca87f999d",
+        "files": 23,
+        "bytes": 748425
+      },
+      {
+        "path": "weebdex-platform/test-evidence/ci/public-upload-observer-query-combined-20261019",
+        "sourceCommit": "7af202a9b999107647617888501cc9869258f196",
+        "files": 18,
+        "bytes": 691523
+      },
+      {
+        "path": "weebdex-platform/test-evidence/ci/latest-application-retry-combined-20261019",
+        "sourceCommit": "ecbc521be5ff14fa6923c6a74e6f5cb1672ea590",
+        "files": 21,
+        "bytes": 724092
+      },
+      {
+        "path": "weebdex-platform/test-evidence/ci/current-recovery-public-upload-proposal-20261019",
+        "sourceCommit": "13029ea7e2517273010a32b47da5dca15dc975d3",
+        "files": 13,
+        "bytes": 39764
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/application-owned-browser-temp-20261019",
+        "sourceCommit": "d369bc9408ea02efaac3c1504021fda455a573aa",
+        "files": 4,
+        "bytes": 11593
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/sandbox-short-tmpdir-20261018",
+        "sourceCommit": "950a49e9c381d5cc90978db162499b0dd81b80f9",
+        "files": 4,
+        "bytes": 21274
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-app-preview-abort-terminal-20261019",
+        "sourceCommit": "eb0f6f1e4dc9fb1bfe0eaa8493181d8eb4be2585",
+        "files": 11,
+        "bytes": 27258
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-app-group-progress-terminal-20261019",
+        "sourceCommit": "eb0f6f1e4dc9fb1bfe0eaa8493181d8eb4be2585",
+        "files": 11,
+        "bytes": 26220
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-app-observer-query-terminal-20261019",
+        "sourceCommit": "eb0f6f1e4dc9fb1bfe0eaa8493181d8eb4be2585",
+        "files": 11,
+        "bytes": 24935
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-app-native-title-upload-terminal-20261019",
+        "sourceCommit": "eb0f6f1e4dc9fb1bfe0eaa8493181d8eb4be2585",
+        "files": 11,
+        "bytes": 24172
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-current-app-failure-20261019",
+        "sourceCommit": "eb0f6f1e4dc9fb1bfe0eaa8493181d8eb4be2585",
+        "files": 11,
+        "bytes": 21437
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-sandbox-sealed-terminal-20261018",
+        "sourceCommit": "eb0f6f1e4dc9fb1bfe0eaa8493181d8eb4be2585",
+        "files": 9,
+        "bytes": 16415
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-sandbox-shorttmp-success-20261019",
+        "sourceCommit": "eb0f6f1e4dc9fb1bfe0eaa8493181d8eb4be2585",
+        "files": 9,
+        "bytes": 16309
+      },
+      {
+        "path": "weebdex-platform/test-evidence/frontend/hosted-app-empty-preview-snapshot-terminal-20261019",
+        "sourceCommit": "117562d41eb948cfd3ef09a665b94cd94cdcf69a",
+        "files": 12,
+        "bytes": 31314
+      }
+    ],
+    "totalGroups": 16,
+    "files": 219,
+    "bytes": 3976477,
+    "membership": "The explicitly selected 207 reviewed evidence paths plus the separate 12-file final terminal package. Each package preserves its original manifests, raw finite logs and source-specific limits."
+  },
+  "qualification": {
+    "currentSourceFinite": {
+      "source": "917f3ec99af059230372f0b4bf317c3105772dc2",
+      "nodePassed": 723,
+      "nodeFiles": 29,
+      "pythonCollected": 136,
+      "pythonPassed": 135,
+      "pythonSkipped": 1,
+      "pythonSkipScope": "Permission denied at local AF_UNIX socket creation before bind; EPERM versus EACCES unspecified.",
+      "actorSourceAssociationPassed": 1,
+      "sourcePins": 1339,
+      "buildInputSnapshotFiles": 1293,
+      "buildInputSnapshotSha256": "7927de71300d42dc1986ee5d15d2670c4a1f7f286f7a41eb263f4e1f1ba8d07e",
+      "freshBuildOrStrictRun": false
+    },
+    "latestHostedApplication": {
+      "runId": 39279984569,
+      "attempt": 1,
+      "sourceCommit": "5abf0dee104a80edbda51f6853966802bbf5f7f6",
+      "topLevelResult": "failure",
+      "nativeGate": "Validated reports: three Rust units, one signed HTTP scenario and seven command negatives passed; compact-feed controlled parity passed.",
+      "browserBoundary": "Checks 0-1 and all fourteen key-import substeps passed. Check 2 failed at mutation-count/assertion with one signed preview GET reporting status 200 and native abort; current UI refusal snapshot valid and empty.",
+      "bodyCompletionEstablished": false,
+      "abortCauseEstablished": false,
+      "physicalTeardownVerified": true,
+      "lifecycleClean": false,
+      "fullSuitePassed": false
+    },
+    "overlap": "Focused and earlier union counts overlap and are not summed. Every retained result remains bound to its exact original source/profile.",
+    "newExecutionPerformed": false
+  },
+  "excluded": [
+    "Credentials, private keys and private recovery handles",
+    "Raw hosted job/native worker logs, artifact ZIPs and encrypted payloads",
+    "Private literal transport capsules",
+    "Runtime databases, scratch state and generated configuration",
+    "Package caches and generated dependency/build binaries",
+    "The separately reviewed 815c079 upload-read epoch successor and its finite evidence"
+  ],
+  "limits": [
+    "This is a source/evidence preservation checkpoint, not application acceptance, deployment or a new execution authorization.",
+    "Historical build bundles lost in the executor reset are not reconstructed or claimed preserved here.",
+    "Restored workflow bytes are the only existing execution-input change from the published current application source.",
+    "Current DOM/error-stage facts have no per-request historical or causal guarantee."
+  ]
+}

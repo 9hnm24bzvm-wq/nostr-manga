@@ -1,0 +1,125 @@
+{
+  "actorSourceAssociation": {
+    "milliseconds": 114.481903,
+    "passed": 1
+  },
+  "baseline": "2e118bb666b5b155a644f7b289971b233be17d9d",
+  "buildInputSnapshot": {
+    "buildExecuted": false,
+    "count": 1293,
+    "originalFrontend676Plus3Verified": true,
+    "sha256": "66f80e915e964033a66e6e8cb0588ec32759fab172bb3efff58b2e1c2d540183"
+  },
+  "diagnosticContract": {
+    "actualObserverStandInCases": 7,
+    "earlyIncompleteJourneyRetainsOnlyFixedFacts": true,
+    "errorFamilies": [
+      "aborted",
+      "other"
+    ],
+    "inputRowCap": 128,
+    "methodValues": [
+      "GET",
+      "POST",
+      "PATCH",
+      "DELETE"
+    ],
+    "operationValues": 15,
+    "pendingAndHttpRefusalSuccessGatesPreserved": true,
+    "realBrowserOrCryptoExecuted": false,
+    "retainedOrder": "Original request order, not failure chronology",
+    "retainedRowCap": 16,
+    "selectedRows": "native===failed only",
+    "source": "Existing private passive observer rows only",
+    "status": "Actual nullable HTTP response status; nonboolean integers100..599 only",
+    "successRequirement": "valid, empty, nottruncated in addition to all existing gates",
+    "unknownOrMalformed": "record_valid=false, empty requests, truncated=false; no raw value echo"
+  },
+  "externalBaselineAndOfficialInputs": 9,
+  "externalInputsUnchanged": true,
+  "fullTreeFiles": 7204,
+  "initialExploratoryFixtureCorrection": {
+    "collected": 21,
+    "correctedFocusedRepeat": {
+      "collected": 21,
+      "passed": 21,
+      "rawFileArchived": false,
+      "seconds": 0.405
+    },
+    "failed": 1,
+    "overlap": "The focused results overlap this final union and are not additional cases.",
+    "passed": 20,
+    "rawFileArchived": false,
+    "reason": "The uppercase UUID negative used a digits-only UUID, so uppercasing did not change bytes. One test-only fixture line was corrected to a UUID containing hex letters. Runtime classifier unchanged.",
+    "seconds": 0.381
+  },
+  "limits": [
+    "Finite source/stand-in seams only; no new real browser, native HTTP, database, build, strict check, install or hosted execution.",
+    "The Node fixture exercises the actual passive observer with synthetic EventEmitter requests and an explicit fake verifier; it does not prove cryptographic or network behavior.",
+    "HTTP status and native completion remain separate. A failed200 response body stays failure; finished503 writes still fail the existing200 write oracle. Discovery404 is not invented as a failure.",
+    "Request-order diagnostics cannot identify the first chronological failure and truncated facts do not imply completeness.",
+    "No independent outer OS-birth/process-closure receipt was collected for these finite commands.",
+    "Prior source evidence remains historical; no whole-application acceptance or actual failed endpoint is inferred."
+  ],
+  "node": {
+    "cases": 592,
+    "failed": 0,
+    "files": 25,
+    "milliseconds": 2948.004576,
+    "passed": 592,
+    "skipped": 0
+  },
+  "previousHostedRun": {
+    "browser": "Checks0-1 and key import14 passed; check2 mutation-count/assertion with one retained signed_native_failed. Endpoint, status and native error family were not exported.",
+    "firstEndpointOrCauseKnown": false,
+    "id": 39250457893,
+    "native": "3 Rust units,1 signed HTTP scenario/all7 negatives and PostgreSQL feed gate passed per validated hosted reports.",
+    "observedMutationsAreAcceptedWrites": false,
+    "result": "failed",
+    "source": "2e118bb666b5b155a644f7b289971b233be17d9d",
+    "strongObserverClosedFalseMeansListenersLeftOpen": false
+  },
+  "proposedHostedScope": {
+    "batch": "public-upload",
+    "branch": "ci/browser-failure-diagnostics",
+    "eachReportMaximumBytes": 2097152,
+    "feedParityRequired": true,
+    "hardMaximumMinutes": 140,
+    "mandatoryNativeUnits": 3,
+    "newRunTriggered": false,
+    "newSigned400Negatives": 7,
+    "publicationPerformed": false,
+    "reports": 3,
+    "retentionDays": 1,
+    "signedHttpScenarios": 1
+  },
+  "python": {
+    "collected": 131,
+    "failed": 0,
+    "modules": 10,
+    "passed": 130,
+    "seconds": 12.197,
+    "skip": "Permission denied at local AF_UNIX socket creation before bind; EPERM versus EACCES is not distinguished.",
+    "skipped": 1
+  },
+  "schema": 1,
+  "scope": "Fresh finite qualification of bounded native-failed request diagnostics; no product or observer/runtime behavior repair is asserted.",
+  "source": "553c34825a52714d4c7f9a1b34b526c8f2ac57fd",
+  "sourceDeltaPaths": 3,
+  "sourcePins": 1332,
+  "sourcePinsEqualFrozenGitBlobs": true,
+  "sourcePinsUnchanged": true,
+  "tree": "9874bda18135f22712e5e41946629cf41502e9e2",
+  "unchangedGitObjects": {
+    ".ci/browser/package-lock.json": "e402db674ff05f9d7dc7d69c6524dcb6cfc03584",
+    ".github/workflows/hosted-browser-e2e.yml": "742d3970dcdfc60b4ba310803b1b6a9f6e6090c4",
+    "manga-protocol-lab/server/src": "7474a634125cfc176664d3986b0346ca76c574dd",
+    "weebdex-platform/backend": "3923ca6ee350522edf7d6bda73bbe531853ba615",
+    "weebdex-platform/frontend": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+    "weebdex-platform/platform-integrations": "a6a437ada0b0cef1a220ff36f292eebe84b160e1",
+    "weebdex-platform/scripts/ci/validate-ci-evidence.py": "f4832cb201b113a463303a5fead4788b00be3a07",
+    "weebdex-platform/scripts/public-upload-recovery-browser.mjs": "d9b7f75bfc4ec0e8b1e3ec6d47fbd66020d74e45",
+    "weebdex-platform/scripts/public-upload-recovery-observer.mjs": "44a0b43ea1b544666eb749692d3869d7b3f4c8c7",
+    "weebdex-platform/tests/runtime/auth_fixture_guard.py": "397b25e6eea97d67838e9b1ce70d97786f169068"
+  }
+}

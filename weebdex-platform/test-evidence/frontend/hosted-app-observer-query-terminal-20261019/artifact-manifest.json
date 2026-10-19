@@ -1,0 +1,55 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2859,
+      "path": "README.md",
+      "sha256": "24ba6a688684dca7509e220e3f71f6d1437be7535ad317152793f6f018d7bd72"
+    },
+    {
+      "bytes": 452,
+      "path": "artifacts.json",
+      "sha256": "7cdee9e5e12644e1f945d69998bd8f4e216af001c48fc25e58ddb44c4ae80e6b"
+    },
+    {
+      "bytes": 940,
+      "path": "download-receipt.json",
+      "sha256": "e1962195a05c3c3da2731c801c645736dc22d7afd4e4fc952665096317f85e8c"
+    },
+    {
+      "bytes": 438,
+      "path": "inspection.json",
+      "sha256": "8b087e55184aacecc26a54780515a4a06980f4edada19177673ffd69125049ec"
+    },
+    {
+      "bytes": 4594,
+      "path": "jobs.json",
+      "sha256": "453b7a5ca79be0af3c0e07cd03b7c81528040754054554cbb38b11d1300369bf"
+    },
+    {
+      "bytes": 2247,
+      "path": "phases.json",
+      "sha256": "c1194061234f7f7024aac93facd6c512d5f40815c6d5d002a72e3aa5fa794f80"
+    },
+    {
+      "bytes": 2166,
+      "path": "preparation.json",
+      "sha256": "9215b34b4a822b91ebc44086edc30bc53e95963f804f545652ff8d6c3a50f0ca"
+    },
+    {
+      "bytes": 3338,
+      "path": "result.json",
+      "sha256": "e4087734dcbebe929286b5aca0cb9a69ec1712d731b8ce1e55022fcc417c643a"
+    },
+    {
+      "bytes": 5176,
+      "path": "source-pins.json",
+      "sha256": "dd5d1e1009fb847f42d2772f62e046852d882b7745576fa568494ee288a6ab96"
+    },
+    {
+      "bytes": 1205,
+      "path": "summary.json",
+      "sha256": "ae384d8957d467173b49bc2c9eda72a3c6af27c89754d0731e8762a1abb8cd94"
+    }
+  ],
+  "schema": 1
+}
