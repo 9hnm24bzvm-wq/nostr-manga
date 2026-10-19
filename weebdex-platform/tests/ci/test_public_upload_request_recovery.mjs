@@ -106,7 +106,7 @@ const tags = f => Object.fromEntries(f.templates[0].tags);
 // browser's native terminal or the cause of an observed hosted abort.
 function previewConsumer(f, options = {}) {
   const client = fs.readFileSync(new URL('../../platform-integrations/public-api/upload-client.ts', import.meta.url), 'utf8');
-  assert.equal(digest(client), 'af792fb9e1ebd24d17cb2d11b0838351ba19f5445786465a73ba70c3e3d4bc18');
+  assert.equal(digest(client), '5261d778e2715c3d85085ee03d722df2cf020a086e564c13d667c8937b50d757');
   const start = client.indexOf('  async function uploadPreview('), end = client.indexOf('\n  function uploadAccountFacts', start);
   assert.ok(start > 0 && end > start);
   const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);

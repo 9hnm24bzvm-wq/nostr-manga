@@ -91,6 +91,119 @@ def native_failures_clear(value):
     return value['record_valid'] is True and value['truncated'] is False and value['requests'] == []
 
 
+
+TRANSPORT_REFUSAL_STAGES = set(PREVIEW_REFUSAL_CODES) - {'unavailable'}
+TRANSPORT_REFUSAL_FIELDS = {'operation', 'method', 'observed_status', 'transport_status',
+                            'native_terminal', 'refusal_stage'}
+
+
+def transport_refusals_empty(capture_valid=False, truncated=False):
+    return {'record_valid': False, 'capture_valid': capture_valid,
+            'correlation_complete': False, 'truncated': truncated, 'requests': []}
+
+
+def transport_status(value):
+    return value is None or type(value) is int and 100 <= value <= 599
+
+
+def project_transport_refusals(captures, rows, completed=False):
+    # Event IDs stay private. All exported operation/status/stage facts come from
+    # an exact unique join to the signature-validated passive observer ledger.
+    invalid = transport_refusals_empty()
+    if (type(captures) is not list or not 1 <= len(captures) <= 2 or
+            completed and len(captures) != 2 or type(rows) is not list or len(rows) > 128):
+        return invalid
+    snapshots = []
+    for capture in captures:
+        if (type(capture) is not dict or set(capture) != {'capture_valid', 'snapshot'} or
+                capture.get('capture_valid') is not True):
+            return invalid
+        value = capture['snapshot']
+        if (type(value) is not dict or set(value) != {'schema', 'enabled', 'record_valid', 'truncated', 'records'} or
+                type(value['schema']) is not int or value['schema'] != 1 or value['enabled'] is not True or
+                type(value['record_valid']) is not bool or type(value['truncated']) is not bool or
+                type(value['records']) is not list or len(value['records']) > 16 or
+                value['truncated'] and len(value['records']) != 16):
+            return invalid
+        ids = set()
+        for record in value['records']:
+            if (type(record) is not dict or set(record) != {'event_id', 'stage', 'transport_status'} or
+                    not digest(record['event_id']) or record['event_id'] in ids or
+                    type(record['stage']) is not str or record['stage'] not in TRANSPORT_REFUSAL_STAGES or
+                    not transport_status(record['transport_status'])):
+                return invalid
+            ids.add(record['event_id'])
+        snapshots.append(value)
+    truncated = any(value['truncated'] for value in snapshots)
+    incomplete = transport_refusals_empty(True, truncated)
+    if any(not value['record_valid'] for value in snapshots):
+        return incomplete
+    observed = {}
+    failed_ids = set()
+    for row in rows:
+        if (type(row) is not dict or not digest(row.get('event_id')) or row['event_id'] in observed or
+                type(row.get('native')) is not str or row['native'] not in {'pending', 'finished', 'failed'}):
+            return incomplete
+        observed[row['event_id']] = row
+        if row['native'] == 'failed':
+            failed_ids.add(row['event_id'])
+    records = {}
+    for snapshot in snapshots:
+        for record in snapshot['records']:
+            identity = record['event_id']
+            # A failed reload may leave the same document visible. Identical
+            # repetitions between snapshots are one observation, not two.
+            if identity in records and records[identity] != record:
+                return incomplete
+            records.setdefault(identity, record)
+    if len(records) > 16:
+        return transport_refusals_empty(True, True)
+    if truncated or not failed_ids <= set(records):
+        return incomplete
+    requests = []
+    for identity, record in records.items():
+        row = observed.get(identity)
+        if (type(row) is not dict or type(row.get('method')) is not str or row['method'] not in NATIVE_METHODS or
+                type(row.get('path')) is not str or len(row['path']) > 512 or
+                not re.fullmatch(WATCHED_PATH, row['path']) or '?' in row['path'] or '#' in row['path'] or
+                'status' not in row or not transport_status(row['status']) or
+                row['status'] is not None and record['transport_status'] is not None and
+                row['status'] != record['transport_status']):
+            return incomplete
+        requests.append({'operation': native_operation(row['method'], row['path']), 'method': row['method'],
+                         'observed_status': row['status'], 'transport_status': record['transport_status'],
+                         'native_terminal': row['native'], 'refusal_stage': record['stage']})
+    return {'record_valid': True, 'capture_valid': True, 'correlation_complete': True,
+            'truncated': False, 'requests': requests}
+
+
+def transport_refusals_clear(value):
+    return (value['record_valid'] is True and value['capture_valid'] is True and
+            value['correlation_complete'] is True and value['truncated'] is False and value['requests'] == [])
+
+
+def validate_transport_refusals(value):
+    if (type(value) is not dict or set(value) != {'record_valid', 'capture_valid', 'correlation_complete', 'truncated', 'requests'} or
+            any(type(value[key]) is not bool for key in ['record_valid', 'capture_valid', 'correlation_complete', 'truncated']) or
+            type(value['requests']) is not list or len(value['requests']) > 16 or
+            value['record_valid'] != (value['capture_valid'] and value['correlation_complete']) or
+            value['correlation_complete'] and not value['capture_valid'] or
+            value['truncated'] and (not value['capture_valid'] or value['correlation_complete']) or
+            not value['record_valid'] and value['requests']):
+        raise ValueError('Invalid correlated transport refusal schema')
+    for row in value['requests']:
+        if (type(row) is not dict or set(row) != TRANSPORT_REFUSAL_FIELDS or
+                type(row.get('operation')) is not str or row['operation'] not in NATIVE_OPERATION_NAMES or
+                type(row.get('method')) is not str or row['method'] not in NATIVE_METHODS or
+                row['operation'] != 'other-watched' and NATIVE_OPERATION_METHODS[row['operation']] != row['method'] or
+                not transport_status(row['observed_status']) or not transport_status(row['transport_status']) or
+                row['observed_status'] is not None and row['transport_status'] is not None and
+                row['observed_status'] != row['transport_status'] or
+                type(row.get('native_terminal')) is not str or row['native_terminal'] not in {'pending', 'finished', 'failed'} or
+                type(row.get('refusal_stage')) is not str or row['refusal_stage'] not in TRANSPORT_REFUSAL_STAGES):
+            raise ValueError('Invalid correlated transport refusal facts')
+
+
 def project_observer_failures(raw):
     # Only the observer's first sixteen fixed failure labels are retained. These
     # counts are not a total-failure or total-request claim.
@@ -192,6 +305,10 @@ def project(acceptance):
              'private_values_omitted': True, 'raw_messages_exported': False,
              'browser_observer_failures': project_observer_failures(browser.get('failures') if type(browser) is dict else None),
              'preview_transport_refusals': project_preview_refusals(raw.get('preview_transport_refusals') if type(raw) is dict else None),
+             'transport_refusal_diagnostics': project_transport_refusals(raw.get('transport_refusal_captures') if type(raw) is dict and
+                 type(raw.get('transport_refusal_reader_checks')) is int and 1 <= raw['transport_refusal_reader_checks'] <= 2 and
+                 (raw.get('completed') is not True or raw['transport_refusal_reader_checks'] == 2) else None,
+                 browser.get('rows') if type(browser) is dict else None, raw.get('completed') is True if type(raw) is dict else False),
              'native_failure_diagnostics': project_native_failures(browser.get('rows') if type(browser) is dict else None),
              'journey_diagnostics': project_journey(raw.get('journey_progress') if type(raw) is dict else None),
              'key_import_diagnostics': project_key_import(acceptance.get('public_upload', {}).get('key_import') if type(acceptance.get('public_upload')) is dict else None)}
@@ -249,11 +366,12 @@ def project(acceptance):
 def passed(value):
     return (all(value.get(key) is True for key in FLAGS) and key_import_passed(value['key_import_diagnostics']) and
             observer_failures_clear(value['browser_observer_failures']) and journey_passed(value['journey_diagnostics']) and
-            native_failures_clear(value['native_failure_diagnostics']) and preview_refusals_clear(value['preview_transport_refusals']))
+            native_failures_clear(value['native_failure_diagnostics']) and preview_refusals_clear(value['preview_transport_refusals']) and
+            transport_refusals_clear(value['transport_refusal_diagnostics']))
 
 
 def validate(value):
-    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures', 'journey_diagnostics', 'native_failure_diagnostics', 'preview_transport_refusals'} or type(value['schema']) is not int or value['schema'] != 1:
+    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures', 'journey_diagnostics', 'native_failure_diagnostics', 'preview_transport_refusals', 'transport_refusal_diagnostics'} or type(value['schema']) is not int or value['schema'] != 1:
         raise ValueError('Invalid public upload diagnostics schema')
     if any(type(value[key]) is not bool for key in FLAGS) or any(type(value[key]) is not int or not 0 <= value[key] <= cap for key, cap in COUNTS.items()) or value['private_values_omitted'] is not True or value['raw_messages_exported'] is not False:
         raise ValueError('Invalid public upload diagnostic facts')
@@ -261,6 +379,7 @@ def validate(value):
         raise ValueError('Mutation-count facts disagree')
     if not preview_refusals_valid(value['preview_transport_refusals']):
         raise ValueError('Invalid preview transport refusal facts')
+    validate_transport_refusals(value['transport_refusal_diagnostics'])
     failures = value['browser_observer_failures']
     if (type(failures) is not dict or set(failures) != {'record_valid', *OBSERVER_FAILURES} or
             type(failures.get('record_valid')) is not bool or

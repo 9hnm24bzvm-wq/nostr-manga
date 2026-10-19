@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -22,6 +23,7 @@ runner = load('upload_hosted_runner', 'scripts/ci/run-hosted-browser.py')
 builder = load('upload_profile_builder', 'scripts/ci/hosted-public-upload-profile.py')
 diagnostics = load('upload_public_diagnostics', 'scripts/ci/public-upload-diagnostics.py')
 validator = load('upload_hosted_validator', 'scripts/ci/validate-ci-evidence.py')
+qa_fixture = load('upload_qa_artifact_standin', 'tests/ci/test_public_upload_qa_build.py')
 
 
 def digest(data):
@@ -49,6 +51,8 @@ def accepted_report():
         'key_import': [{'attempt': index, 'substep': diagnostics.KEY_IMPORT_SUBSTEPS[-1], 'completed_substeps': len(diagnostics.KEY_IMPORT_SUBSTEPS), 'status': 'passed', 'caught_category': 'none'} for index in [1, 2]],
         'journey_progress': [{'check_index': index, 'substep': 'complete', 'status': 'passed', 'caught_category': 'none'} for index in range(14)],
         'preview_transport_refusals': {'record_valid': True, 'truncated': False, 'codes': []},
+        'transport_refusal_captures': [{'capture_valid': True, 'snapshot': {'schema': 1, 'enabled': True, 'record_valid': True, 'truncated': False, 'records': []}} for _ in range(2)],
+        'transport_refusal_reader_checks': 2,
         'durable': [{'label': 'committed', 'fixture_only': True, 'scenario': 'public-upload-v1', 'session': {'state': 'committed'},
                      'publication': {'event_id': event, 'original_event': {'id': event, 'kind': 1001, 'verified': True}},
                      'chapter': {'event_id': event, 'pages': [{'file_hash': item, 'storage_sha256': item, 'storage_bytes': 100, 'fresh_original_read': True} for item in [neighbour, new]]}}]}
@@ -83,16 +87,18 @@ class PublicUploadHostedProfile(unittest.TestCase):
         calls = []
         def run(label, _argv, _cwd, seconds):
             calls.append((label, seconds, os.environ.get('PUBLIC_MANGADEX_CATALOGUE')))
+            self.assertEqual(os.environ.get('WEEBDEX_QA_UPLOAD_REFUSALS'), '1')
             if fail_at == label:
                 raise RuntimeError('synthetic build failure')
             if label == 'public-upload-frontend-build':
                 ui.mkdir()
                 (ui / 'index.html').write_bytes(b'public artifact')
                 (ui / 'app.js').write_bytes(b'explicit synthetic bundle')
+                qa_fixture.emit_graph(root, ui)
                 build = {'public_api_catalogue_enabled': True, 'public_signed_upload_enabled': True, 'spa_fallback_sha256': digest(b'public artifact')}
                 (evidence / 'build-integration.json').write_text(json.dumps(build))
             else:
-                files = [{'path': str(path.relative_to(ui)), 'bytes': path.stat().st_size, 'sha256': digest(path.read_bytes())} for path in sorted(ui.iterdir())]
+                files = [{'path': str(path.relative_to(ui)), 'bytes': path.stat().st_size, 'sha256': digest(path.read_bytes())} for path in sorted(ui.rglob('*')) if path.is_file()]
                 (evidence / 'artifact-manifest.json').write_text(json.dumps({'files': files}))
                 for name in ['bootstrap-csp.json', 'execution-status.json', 'integration-source-manifest.json']:
                     (evidence / name).write_text('explicit public receipt')
@@ -110,8 +116,10 @@ class PublicUploadHostedProfile(unittest.TestCase):
             self.assertEqual({name: (evidence / name).read_bytes() for name in saved}, saved)
             self.assertEqual(calls, [('public-upload-frontend-build', 900, '1'), ('public-upload-artifact-record', 60, '1')])
             previous = runner.STAGE
+            previous_root = runner.ROOT
             try:
                 runner.STAGE = stage
+                runner.ROOT = root
                 selected = runner.public_upload_profile({'public_upload_recovery': profile, 'normal_binary': 'synthetic unchanged backend'})
                 self.assertEqual(selected['ui_dir'], str(stage / 'public-upload-frontend'))
                 self.assertEqual(selected['normal_binary'], 'synthetic unchanged backend')
@@ -120,6 +128,7 @@ class PublicUploadHostedProfile(unittest.TestCase):
                     runner.public_upload_profile({'public_upload_recovery': profile})
             finally:
                 runner.STAGE = previous
+                runner.ROOT = previous_root
 
     def test_build_and_record_failures_restore_native_artifact_and_receipts(self):
         for label in ['public-upload-frontend-build', 'public-upload-artifact-record']:
@@ -132,6 +141,65 @@ class PublicUploadHostedProfile(unittest.TestCase):
                 self.assertEqual(os.environ.get('PUBLIC_MANGADEX_CATALOGUE'), old)
                 self.assertEqual((ui / 'index.html').read_bytes(), b'native artifact')
                 self.assertEqual({name: (evidence / name).read_bytes() for name in saved}, saved)
+
+    def test_qa_gate_restores_absent_zero_and_one_even_when_artifact_validation_refuses(self):
+        for old in [None, '0', '1']:
+            for fail in [False, True]:
+                with self.subTest(old=old, fail=fail), tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary)
+                    stage, evidence, ui, saved, _, run = self.profile_fixture(root)
+                    def owned(label, *args):
+                        result = run(label, *args)
+                        if fail and label == 'public-upload-frontend-build':
+                            (ui / qa_fixture.qa.GRAPH).unlink()
+                        return result
+                    with patch.dict(os.environ):
+                        os.environ.pop('WEEBDEX_QA_UPLOAD_REFUSALS', None)
+                        if old is not None:
+                            os.environ['WEEBDEX_QA_UPLOAD_REFUSALS'] = old
+                        if fail:
+                            with self.assertRaises(RuntimeError):
+                                builder.prepare(root, stage, owned, lambda: None)
+                        else:
+                            builder.prepare(root, stage, owned, lambda: None)
+                        self.assertEqual(os.environ.get('WEEBDEX_QA_UPLOAD_REFUSALS'), old)
+                    self.assertEqual((ui / 'index.html').read_bytes(), b'native artifact')
+                    self.assertEqual({name: (evidence / name).read_bytes() for name in saved}, saved)
+
+    def test_changed_graph_during_artifact_recording_is_refused_and_native_restored(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            stage, evidence, ui, saved, _, run = self.profile_fixture(root)
+            def owned(label, *args):
+                result = run(label, *args)
+                if label == 'public-upload-artifact-record':
+                    path = ui / qa_fixture.qa.GRAPH
+                    path.write_bytes(path.read_bytes() + b'\n')
+                return result
+            with self.assertRaises(RuntimeError):
+                builder.prepare(root, stage, owned, lambda: None)
+            self.assertEqual((ui / 'index.html').read_bytes(), b'native artifact')
+            self.assertEqual({name: (evidence / name).read_bytes() for name in saved}, saved)
+
+    def test_changed_or_missing_private_qa_plan_facts_refuse_before_any_owner(self):
+        for mutation in ['missing', 'graph', 'reader', 'extra', 'schema-type']:
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                stage, _, _, _, _, run = self.profile_fixture(root)
+                profile = builder.prepare(root, stage, run, lambda: None)
+                if mutation == 'missing':
+                    profile.pop('qa_upload_refusals')
+                elif mutation == 'schema-type':
+                    profile['qa_upload_refusals']['schema'] = True
+                else:
+                    profile['qa_upload_refusals'][{'graph': 'graph_sha256', 'reader': 'reader_sha256', 'extra': 'unreviewed'}[mutation]] = 'f' * 64
+                previous, previous_root = runner.STAGE, runner.ROOT
+                try:
+                    runner.STAGE, runner.ROOT = stage, root
+                    with self.assertRaises(RuntimeError):
+                        runner.public_upload_profile({'public_upload_recovery': profile})
+                finally:
+                    runner.STAGE, runner.ROOT = previous, previous_root
 
     def test_missing_and_gate_off_profiles_cannot_allocate_a_browser_fixture(self):
         for plan in [{}, {'public_upload_recovery': {}}, {'public_upload_recovery': {'enabled': False}}]:
@@ -166,12 +234,15 @@ class PublicUploadHostedProfile(unittest.TestCase):
                     path.unlink()
                     path.symlink_to(Path(profile['ui_dir']) / 'index.html')
                 previous = runner.STAGE
+                previous_root = runner.ROOT
                 try:
                     runner.STAGE = stage
+                    runner.ROOT = root
                     with self.assertRaises(RuntimeError):
                         runner.public_upload_profile({'public_upload_recovery': profile})
                 finally:
                     runner.STAGE = previous
+                    runner.ROOT = previous_root
 
     def test_previous_scope_or_one_profile_cannot_claim_current_full_suite(self):
         clean = {'passed': True, 'supervisor_terminal': True, 'supervisor_exit_zero': True,

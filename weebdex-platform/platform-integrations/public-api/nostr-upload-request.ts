@@ -70,6 +70,24 @@ export function uploadRequestRefusalStage(error: unknown): UploadRequestRefusalS
   return error !== null && (typeof error === 'object' || typeof error === 'function')
     ? requestRefusals.get(error) ?? 'unavailable' : 'unavailable';
 }
+// QA_UPLOAD_REFUSAL_RING_BEGIN
+// The exact test-build plugin alone replaces this default-off constant.
+const uploadRequestRefusalRecording = false;
+type UploadRequestRefusalRecord = Readonly<{ event_id: string; stage: UploadRequestRefusalStage; transport_status: number | null }>;
+const uploadRequestRefusalRecords: UploadRequestRefusalRecord[] = [];
+let uploadRequestRefusalRecordValid = true, uploadRequestRefusalTruncated = false;
+function recordUploadRequestRefusal(eventId: string | undefined, stage: UploadRequestRefusalStage, status: number | undefined): void {
+  if (!uploadRequestRefusalRecording) return;
+  if (uploadRequestRefusalRecords.length >= 16) uploadRequestRefusalTruncated = true;
+  if (typeof eventId !== 'string' || !/^[0-9a-f]{64}$/.test(eventId) || uploadRequestRefusalRecords.some(row => row.event_id === eventId)) { uploadRequestRefusalRecordValid = false; return; }
+  if (uploadRequestRefusalRecords.length >= 16) return;
+  uploadRequestRefusalRecords.push(Object.freeze({ event_id: eventId, stage, transport_status: status ?? null }));
+}
+export function readUploadRequestRefusals() {
+  return { schema: 1, enabled: uploadRequestRefusalRecording, record_valid: uploadRequestRefusalRecordValid,
+    truncated: uploadRequestRefusalTruncated, records: uploadRequestRefusalRecords.map(row => ({ ...row })) };
+}
+// QA_UPLOAD_REFUSAL_RING_END
 type AuthTemplate = { kind: number; created_at: number; content: string; tags: string[][] };
 export interface UploadRequestPrimitives {
   signExact(signer: UploadRequestIdentity['signer'], owner: string, event: AuthTemplate): Promise<unknown>;
@@ -123,6 +141,9 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
     let bodyFinished = false, finished = false, completed = false;
     let refusalStage: UploadRequestRefusalStage = 'other';
+    // QA_UPLOAD_REFUSAL_ID_BEGIN
+    let refusalEventId: string | undefined;
+    // QA_UPLOAD_REFUSAL_ID_END
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let rejectAbort: (reason: Error) => void = () => {};
@@ -186,6 +207,15 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       const proofBytes = encoder.encode(JSON.stringify(proof));
       const authorization = 'Nostr ' + primitives.b64(proofBytes);
       if (authorization.length > 16384) throw Error('Upload authorization exceeds budget');
+      // QA_UPLOAD_REFUSAL_PARSE_BEGIN
+      if (uploadRequestRefusalRecording) try {
+        // Parse only the exact bounded bytes already used for authorization.
+        // Never reread signer result properties, invoke getters, or retain proof.
+        const serializedProof = JSON.parse(decoder.decode(proofBytes));
+        if (serializedProof && typeof serializedProof === 'object' && !Array.isArray(serializedProof) && Object.hasOwn(serializedProof, 'id') &&
+            typeof serializedProof.id === 'string' && /^[0-9a-f]{64}$/.test(serializedProof.id)) refusalEventId = serializedProof.id;
+      } catch { /* A dispatched refusal without canonical proof ID is unverified. */ }
+      // QA_UPLOAD_REFUSAL_PARSE_END
       const headers: Record<string, string> = { authorization, accept: responseType === 'image' ? 'image/*, application/json' : 'application/json' };
       if (contentType !== undefined) headers['content-type'] = contentType;
       if (beforeSend) await guarded(() => beforeSend(controller.signal));
@@ -268,7 +298,12 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       const outcome = status !== undefined ? 'response' : dispatched ? 'uncertain' : 'unsent';
       const error = new PublicUploadRequestError(status !== undefined ? `Upload response body unavailable (HTTP ${status})` :
         dispatched ? 'Upload request outcome is unknown; reconcile before retrying' : 'Upload request was not sent', outcome, status);
-      requestRefusals.set(error, refusalStage); throw error;
+      requestRefusals.set(error, refusalStage);
+      // QA_UPLOAD_REFUSAL_RECORD_BEGIN
+      if (dispatched) try { recordUploadRequestRefusal(refusalEventId, refusalStage, status); }
+      catch { if (uploadRequestRefusalRecording) uploadRequestRefusalRecordValid = false; }
+      // QA_UPLOAD_REFUSAL_RECORD_END
+      throw error;
     } finally {
       finished = true;
       if (timer !== undefined) primitives.clearTimer(timer);

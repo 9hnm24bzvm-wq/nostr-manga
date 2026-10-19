@@ -80,7 +80,7 @@ def maximum(phase):
 def public_upload_profile(plan):
     profile = plan.get('public_upload_recovery')
     expected = {'enabled', 'ui_dir', 'frontend_manifest', 'frontend_manifest_sha256',
-                'frontend_index_sha256', 'build_receipt', 'build_receipt_sha256'}
+                'frontend_index_sha256', 'build_receipt', 'build_receipt_sha256', 'qa_upload_refusals'}
     if type(profile) is not dict or set(profile) != expected or profile['enabled'] is not True:
         raise RuntimeError('A separate prepared gate-on public upload profile is required')
     paths = {'ui_dir': STAGE / 'public-upload-frontend', 'frontend_manifest': STAGE / 'public-upload-manifest.json', 'build_receipt': STAGE / 'public-upload-build.json'}
@@ -108,6 +108,11 @@ def public_upload_profile(plan):
     actual = {str(path.relative_to(ui)): path for path in ui.rglob('*') if not path.is_dir()}
     if set(actual) != set(expected_files) or any(not path.is_file() or path.stat().st_size != expected_files[name].get('bytes') or sha(path) != expected_files[name].get('sha256') for name, path in actual.items()) or sha(ui / 'index.html') != profile['frontend_index_sha256']:
         raise RuntimeError('Public upload artifact content changed')
+    spec = importlib.util.spec_from_file_location('admitted_public_upload_qa_build', Path(__file__).with_name('public-upload-qa-build.py'))
+    qa = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(qa)
+    if qa.verify(ROOT, ui, True) != qa.record(profile['qa_upload_refusals']):
+        raise RuntimeError('Public upload QA graph differs from the prepared generation')
     return dict(plan, **{key: profile[key] for key in ['ui_dir', 'frontend_manifest', 'frontend_manifest_sha256', 'frontend_index_sha256']})
 
 

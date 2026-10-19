@@ -97,7 +97,7 @@ const sameDraft = (a?: ChapterDraft | null, b?: ChapterDraft | null) => signatur
 export function createPublicUploadAdapter(injected: Partial<PublicUploadDependencies> = {}) {
   const deps = { ...defaults, ...injected };
   type Account = { user: User; actor: string; scope: Scope; identity: UploadRequestIdentity; facts: UploadAccountFacts; assertCurrent: () => void; key: string };
-  type Owned = { account: Account; targetId: string; targetKind: 'manga' | 'chapter'; sessionId?: string; fence?: Fence; commitAttempt?: object; replacement?: ReplacementFence; replacementAttempt?: object; latest?: PublicSession; groups: Map<string, ScanlationGroup>; request: ReturnType<PublicUploadDependencies['createRequest']>; assert: () => void };
+  type Owned = { account: Account; targetId: string; targetKind: 'manga' | 'chapter'; sessionId?: string; sessionEpoch: number; fence?: Fence; commitAttempt?: object; replacement?: ReplacementFence; replacementAttempt?: object; latest?: PublicSession; groups: Map<string, ScanlationGroup>; request: ReturnType<PublicUploadDependencies['createRequest']>; assert: () => void };
   const accounts = new WeakMap<object, Account>(), owners = new WeakMap<PublicUploadOwner, Owned>();
   const replacementAuthority = new WeakMap<PublicSession, Pick<PublicSession, 'can_mutate' | 'can_cancel' | 'can_retry_commit'>>();
   function scope(policy: Policy): Scope {
@@ -172,6 +172,13 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     });
     if (!unsent) { owned.assert(); assertCurrent(); assertMutable(owned); }
   }
+  function selectSession(owned: Owned, sessionId: string | undefined) {
+    if (owned.sessionId !== sessionId) { owned.sessionId = sessionId; owned.sessionEpoch++; }
+  }
+  function assertSessionEpoch(owned: Owned, expected: number) {
+    owned.assert();
+    if (owned.sessionEpoch !== expected) fail('The owned upload session changed during its read', 409);
+  }
   const ownedBy = (owner?: PublicUploadOwner): Owned => { if (!owner || !owners.has(owner)) fail('An explicit signed upload owner is required', 409); owner.assert(); return owners.get(owner)!; };
   function assertMutable(owned: Owned) {
     if (replacementPending(owned)) throw new VisibleError('Reconcile page replacement first', unknownReplacement);
@@ -219,17 +226,21 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     owned.fence = owned.fence ?? readFence(owned.account);
     const replacement = replacementPending(owned);
     const id = publicUuid(sessionId); if (owned.sessionId && owned.sessionId !== id || owned.fence && owned.fence.sessionId !== id || replacement && replacement.sessionId !== id) fail('The owned upload session changed', 409);
-    const response = await raw(owned, `/nostr/uploads/${id}`, 'GET'); if (response.status !== 200) throw resumeError(response.status, response.body);
-    const session = normalizeSession(response.body, id); owned.sessionId = id; owned.latest = session;
+    // A read may overlap an explicit cancel and a new begin. Its captured
+    // session must still own this editor before any delayed snapshot is adopted.
+    let epoch = owned.sessionEpoch;
+    const response = await raw(owned, `/nostr/uploads/${id}`, 'GET'); assertSessionEpoch(owned, epoch); if (response.status !== 200) throw resumeError(response.status, response.body);
+    const session = normalizeSession(response.body, id); selectSession(owned, id); epoch = owned.sessionEpoch; owned.latest = session;
     if (session.is_committed && !owned.fence) fence(owned, { sessionId: id, state: 'accepted-unavailable' });
     for (const groupId of session.public_upload.groupIds) if (!owned.groups.has(groupId)) {
-      owned.assert(); await refresh(owned.account); owned.assert();
-      const groupResponse = await deps.catalogueRead('group.get', { id: groupId }); owned.assert(); await refresh(owned.account); owned.assert();
+      assertSessionEpoch(owned, epoch); await refresh(owned.account); assertSessionEpoch(owned, epoch);
+      const groupResponse = await deps.catalogueRead('group.get', { id: groupId }); assertSessionEpoch(owned, epoch); await refresh(owned.account); assertSessionEpoch(owned, epoch);
       if (groupResponse.status !== 200) throw resumeError(groupResponse.status, groupResponse.body);
       const group = record(groupResponse.body, 'actual upload group'), actual = resource(record(group.public_api, 'actual group provenance').resource, 'scanlation_group');
       if (publicUuid(group.id) !== groupId || publicUuid(actual.id) !== groupId || text(group.name, 'group name') !== actual.attributes.name) fail('Upload group presentation changed its exact UUID or name');
       owned.groups.set(groupId, groupResponse.body as ScanlationGroup);
     }
+    assertSessionEpoch(owned, epoch);
     session.relationships.groups = session.public_upload.groupIds.map(groupId => owned.groups.get(groupId)!);
     const pending = owned.fence ?? readFence(owned.account); if (pending) { owned.fence = pending; session.can_mutate = false; session.can_cancel = false; session.can_retry_commit = false; session.public_upload.commitState = pending.state; }
     if (replacementPending(owned)) freezeReplacement(owned, session);
@@ -240,8 +251,9 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     // A remembered exact session is never replaced by the ambiguous current-session route.
     const replacement = replacementPending(owned);
     if (owned.fence || replacement || owned.sessionId) return { status: 200, body: await exact(owned, (owned.fence?.sessionId ?? replacement?.sessionId ?? owned.sessionId)!) };
-    const response = await raw(owned, '/upload', 'GET'); if (response.status !== 200) return response as Response<PublicSession>;
-    const id = basicSession(response.body); owned.sessionId = id; return { ...response, body: await exact(owned, id) };
+    const epoch = owned.sessionEpoch;
+    const response = await raw(owned, '/upload', 'GET'); assertSessionEpoch(owned, epoch); if (response.status !== 200) return response as Response<PublicSession>;
+    const id = basicSession(response.body); selectSession(owned, id); return { ...response, body: await exact(owned, id) };
   }
   async function presentation(owned: Owned, input: unknown, mangaId: string): Promise<{ body?: Chapter; publicationStatus?: string; receipt: unknown }> {
     const receipt = resource(input, 'chapter'), id = publicUuid(receipt.id); if (!receipt.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === mangaId)) fail('Commit receipt changed its manga');
@@ -272,7 +284,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     const id = publicUuid(target()); let disposed = false;
     const assert = () => { if (disposed || publicUuid(target()) !== id || user.id !== account.actor) fail('The upload editor target changed. No request was replayed.', 409); account.identity.check(); account.assertCurrent(); if (canonicalOrigin(deps.publicOrigin()) !== account.scope.origin) fail('Public upload origin changed', 409); };
     const initialFence = readFence(account), initialReplacement = readReplacement(account);
-    const owned: Owned = { account, assert, targetId: id, targetKind, groups: new Map(), request: transport(account, assert), sessionId: initialFence?.sessionId ?? initialReplacement?.sessionId, fence: initialFence, replacement: initialReplacement };
+    const owned: Owned = { account, assert, targetId: id, targetKind, groups: new Map(), request: transport(account, assert), sessionId: initialFence?.sessionId ?? initialReplacement?.sessionId, sessionEpoch: 0, fence: initialFence, replacement: initialReplacement };
     const owner: PublicUploadOwner = { id, actor: account.actor, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, request: async <T>(route: string, method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', payload?: unknown): Promise<Response<T>> => {
       assert();
       if (route.startsWith('/chapter/')) {
@@ -323,7 +335,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
         else { if (value.replace === true) fail('Replace-all has no public upload command. No native request was sent.', 422); if (targetKind !== 'chapter' || publicUuid(route.slice('/upload/begin/'.length)) !== id || !account.facts.canManage) fail('The bound native account cannot edit this upload target', 403); body = { version: integer(value.version, 1), expectedAccountId: account.actor }; }
         if (owned.sessionId) fail('An owned upload already exists. Resume or explicitly cancel it first.', 409);
         const response = await raw(owned, route, method, body); if (response.status !== 200) return callerView<T>(response);
-        owned.sessionId = basicSession(response.body); return callerView<T>({ ...response, body: await exact(owned, owned.sessionId) });
+        const sessionId = basicSession(response.body); selectSession(owned, sessionId); return callerView<T>({ ...response, body: await exact(owned, sessionId) });
       }
       const match = /^\/upload\/([^/]+)(?:\/([^/]+))?$/.exec(route); if (!match) fail('Unsupported signed upload route', 422);
       const sessionId = publicUuid(match[1]), action = match[2]; if (owned.sessionId !== sessionId) fail('The upload request escaped its owned session', 409);
@@ -342,7 +354,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
           const receipt = resource(response.body, 'chapter'); integer(receipt.attributes.version, 1); if (!receipt.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === current.manga_id)) fail('Accepted receipt changed its target');
           fence(owned, { sessionId, state: 'accepted-unavailable' });
           const result = await presentation(owned, response.body, current.manga_id);
-          if (!result.body) fence(owned, { sessionId, state: 'accepted-unavailable' }); else { fence(owned); owned.sessionId = undefined; owned.latest = undefined; }
+          if (!result.body) fence(owned, { sessionId, state: 'accepted-unavailable' }); else { fence(owned); selectSession(owned, undefined); owned.latest = undefined; }
           return callerView<T>({ ...response, ...result, body: result.body, accepted: true, sessionId });
         } catch (error) { const persisted = readFence(account); if (error && typeof error === 'object' && 'status' in error && error.status === 202 && persisted?.sessionId === sessionId && (persisted.attempt === attempt || persisted.state === 'accepted-unavailable')) fence(owned, { sessionId, state: 'accepted-unavailable' }); else if (owned.fence?.state === 'uncertain' && error && typeof error === 'object' && 'outcome' in error && error.outcome === 'unsent' && persisted?.attempt === attempt) fence(owned); else if (persisted) owned.fence = persisted; throw error; }
       }
@@ -350,7 +362,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
       if (method === 'DELETE' && (action === undefined || action === 'batch' || /^[0-9a-f-]{36}$/i.test(action))) {
         const current = await exact(owned, sessionId); if (!(action ? current.can_mutate : current.can_cancel) || !account.facts.canManage) fail('Upload is read-only', 409);
         const known = new Set(current.page_order); let body: string[] | undefined; if (action === 'batch') body = ids(payload); else if (action) body = [publicUuid(action)]; if (body && (!body.length || body.some(file => !known.has(file)))) fail('Deletion must name exact current staging files', 409);
-        const response = await raw(owned, route, 'DELETE', action === 'batch' ? body : undefined); if (response.status === 200) { if (record(response.body).result !== 'ok') fail('Deletion was not confirmed'); if (!action) { owned.sessionId = undefined; owned.latest = undefined; } } return callerView<T>(response);
+        const response = await raw(owned, route, 'DELETE', action === 'batch' ? body : undefined); if (response.status === 200) { if (record(response.body).result !== 'ok') fail('Deletion was not confirmed'); if (!action) { selectSession(owned, undefined); owned.latest = undefined; } } return callerView<T>(response);
       }
       fail('Unsupported public upload operation. No native mutation was sent.', 422);
     } };
@@ -361,7 +373,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     const owned = ownedBy(owner), id = publicUuid(sessionId), pending = owned.fence ?? readFence(owned.account); if (!pending || pending.sessionId !== id) fail('No exact unresolved publication matches this recovery request', 409);
     const session = await exact(owned, id); if (!session.is_committed || !session.public_upload.receipt) throw new VisibleError('Publication is still unresolved', unknownCommit);
     const shown = await presentation(owned, session.public_upload.receipt, session.manga_id); if (!shown.body) { fence(owned, { sessionId: id, state: 'accepted-unavailable' }); return session; }
-    session.receipt = shown.body; session.committed_result = shown.body; session.can_mutate = false; session.can_cancel = false; session.can_retry_commit = false; fence(owned); owned.sessionId = undefined; return session;
+    session.receipt = shown.body; session.committed_result = shown.body; session.can_mutate = false; session.can_cancel = false; session.can_retry_commit = false; fence(owned); selectSession(owned, undefined); return session;
   }
   async function saveResume(session: UploadSession, value: UploadSnapshot, owner?: PublicUploadOwner): Promise<PublicSession> {
     const owned = ownedBy(owner); assertMutable(owned); const previous = session as PublicSession, fresh = await exact(owned, publicUuid(session.id));

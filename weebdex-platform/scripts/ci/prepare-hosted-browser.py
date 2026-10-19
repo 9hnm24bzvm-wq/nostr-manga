@@ -7,11 +7,19 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import importlib.util
 
 ROOT = Path(__file__).resolve().parents[2]
 REPO = ROOT.parent
 STAGE = ROOT / '.build/hosted-browser'
 PUBLIC = ROOT / 'ci-evidence'
+
+
+def qa_build_contract():
+    spec = importlib.util.spec_from_file_location('hosted_upload_qa_build', ROOT / 'scripts/ci/public-upload-qa-build.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def sha(path):
@@ -67,8 +75,10 @@ def main():
         verify_frontend()
         before = source_snapshot()
         public.update(source_files_checked=676, frontend_preserved=True)
-        env = dict(os.environ)
-        env.update(RUSTUP_TOOLCHAIN='1.90.0', CARGO_TARGET_DIR=str(ROOT / '.build/hosted-native'), WEEBDEX_FRONTEND_ROOT=str(ROOT / '.build/frontend-hosted'), PUBLIC_MANGADEX_CATALOGUE='0')
+        env = qa_build_contract().native_environment(dict(os.environ))
+        # Only the separate, explicit public-upload QA build may turn recording
+        # on. A caller environment cannot enable it in the native generation.
+        env.update(RUSTUP_TOOLCHAIN='1.90.0', CARGO_TARGET_DIR=str(ROOT / '.build/hosted-native'), WEEBDEX_FRONTEND_ROOT=str(ROOT / '.build/frontend-hosted'), PUBLIC_MANGADEX_CATALOGUE='0', WEEBDEX_QA_UPLOAD_REFUSALS='0')
         os.environ.update(env)
         frontend_stage = ROOT / '.build/frontend-hosted'
         if frontend_stage.exists():
@@ -110,6 +120,7 @@ def main():
             if source_snapshot() != before:
                 raise RuntimeError('Frozen source changed during preparation')
             if label == 'frontend-build':
+                qa_build_contract().verify(ROOT, ROOT / 'artifacts/frontend', False)
                 # These facts are derived from the just-completed owned command,
                 # never from historical successful receipts or guessed binaries.
                 result = {'status': 'passed', 'command_exit': receipt['process_exit_code'], 'remaining_owned_members': receipt['surviving_owned_process_ids'], 'changed_inputs': [], 'owned_terminal_receipt': str((STAGE / (label + '-owned.json')).relative_to(ROOT)), 'browser_tests_executed': False}

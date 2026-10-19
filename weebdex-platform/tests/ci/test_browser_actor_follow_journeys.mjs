@@ -225,9 +225,21 @@ test('current actor-follow runtime source has a separate exact association witho
 ];
   function normalizeApplicationRunner(input) {
     const digest = hash(input);
-    assert(['a904994f8ab19164174dc62f17df48ed926de0567603340f080b39415e00c0a6', '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b'].includes(digest), 'Unknown owned-temp application runner');
+    const qaRunnerSha = 'cd82616c45f8d4ee81873a4be45e6206bc133c4f98e167f28b88e8e0449835fb';
+    assert(['a904994f8ab19164174dc62f17df48ed926de0567603340f080b39415e00c0a6', '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b', qaRunnerSha].includes(digest), 'Unknown owned-temp application runner');
     let value = input.toString();
-    if (digest === '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b') for (const [current, previous] of runnerChanges) {
+    if (digest === qaRunnerSha) {
+      const qaChanges = [
+        ["'frontend_index_sha256', 'build_receipt', 'build_receipt_sha256', 'qa_upload_refusals'", "'frontend_index_sha256', 'build_receipt', 'build_receipt_sha256'"],
+        ["    spec = importlib.util.spec_from_file_location('admitted_public_upload_qa_build', Path(__file__).with_name('public-upload-qa-build.py'))\n    qa = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(qa)\n    if qa.verify(ROOT, ui, True) != qa.record(profile['qa_upload_refusals']):\n        raise RuntimeError('Public upload QA graph differs from the prepared generation')\n", ''],
+      ];
+      for (const [current, previous] of qaChanges) {
+        assert.equal(value.split(current).length - 1, 1);
+        value = value.replace(current, previous);
+      }
+      assert.equal(hash(value), '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b');
+    }
+    if (hash(value) === '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b') for (const [current, previous] of runnerChanges) {
       assert.equal(value.split(current).length - 1, 1);
       value = value.replace(current, previous);
     }

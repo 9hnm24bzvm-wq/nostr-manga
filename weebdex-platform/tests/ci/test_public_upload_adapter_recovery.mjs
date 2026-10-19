@@ -525,3 +525,91 @@ test('chapter removal cannot invent pending moderation or successful hide from s
     await assert.rejects(() => owner.request('/chapter/' + CHAPTER, 'DELETE', { removalMode: 'request-review' })); assert.equal(mutations(f).length, 1);
   }
 });
+
+
+// Finite stale-read controls: the fake server snapshot is captured before an
+// explicit confirmed cancel; delivery or group hydration alone is delayed.
+// No network or real server/preview acceptance is represented by these gates.
+for (const phase of ['snapshot', 'group']) for (const beginAnother of [false, true]) test('preview exact read cannot revive a confirmed cancelled owner session; ' + phase + '; begin another=' + beginAnother, { timeout: 2000 }, async () => {
+  let holdNext = false, entered, release;
+  const held = new Promise(resolve => entered = resolve), gate = new Promise(resolve => release = resolve);
+  const pause = async () => { holdNext = false; entered(); await gate; };
+  const groupId = SECOND_FILE;
+  const f = await ready({ request: async (request, next) => {
+    const result = await next(request);
+    if (phase === 'snapshot' && holdNext && request.method === 'GET' && new URL(request.url).pathname === `/api/v1/nostr/uploads/${SESSION}`) await pause();
+    return result;
+  }, dependencies: { catalogueRead: async (operation, { id }) => {
+    assert.equal(operation, 'group.get'); assert.equal(id, groupId);
+    if (phase === 'group' && holdNext) await pause();
+    const resource = { id, type: 'scanlation_group', attributes: { name: 'Actual finite selected group', version: 1 }, relationships: [] };
+    return response({ id, name: resource.attributes.name, version: 1, public_api: { resource } });
+  } } });
+  const page = await attach(f);
+  if (phase === 'group') f.state.sessions.get(SESSION).groupIds = [groupId];
+  holdNext = true;
+  const preview = f.api.uploadPreview(f.owner, f.current, page).then(value => ({ ok: true, value }), error => ({ ok: false, error }));
+  await held;
+  try {
+    await f.api.cancelResume(f.current, f.owner);
+    if (beginAnother) assert.equal((await f.begin(f.owner)).id, SECOND_SESSION);
+  } finally { release(); }
+  const result = await preview;
+  assert.equal(f.requests.filter(request => request.url.endsWith('/preview')).length, 0, 'A read captured before confirmed cancellation must not dispatch a preview afterward');
+  assert.equal(result.ok, false, 'A cancelled session snapshot must not become current again');
+  if (beginAnother) assert.equal((await f.api.currentUpload(f.owner)).id, SECOND_SESSION);
+  else assert.equal(await f.api.currentUpload(f.owner), undefined);
+});
+
+test('delayed preview snapshot remains valid across same-session metadata refresh', { timeout: 2000 }, async () => {
+  let holdNext = false, entered, release;
+  const held = new Promise(resolve => entered = resolve), gate = new Promise(resolve => release = resolve);
+  const f = await ready({ request: async (request, next) => {
+    const result = await next(request);
+    if (holdNext && request.method === 'GET' && new URL(request.url).pathname === `/api/v1/nostr/uploads/${SESSION}`) { holdNext = false; entered(); await gate; }
+    return result;
+  } });
+  const page = await attach(f); holdNext = true;
+  const preview = f.api.uploadPreview(f.owner, f.current, page);
+  await held;
+  try { await f.api.saveResume(f.current, { draft: { title: 'Updated finite annotation', language: 'en' }, page_order: [page.id] }, f.owner); }
+  finally { release(); }
+  assert.equal((await preview).size, PNG.length);
+  assert.equal(f.requests.filter(request => request.url.endsWith('/preview')).length, 1);
+  assert.equal((await f.api.currentUpload(f.owner)).draft.title, 'Updated finite annotation');
+});
+
+test('a newly bound owner can adopt its first exact preview read', async () => {
+  const f = await ready(), page = await attach(f), user = await f.api.loadUploadAccount();
+  const owner = f.api.publicUploadOwner(() => MANGA, user);
+  assert.equal((await f.api.uploadPreview(owner, SESSION, page)).size, PNG.length);
+  assert.equal((await f.api.currentUpload(owner)).id, SESSION);
+  owner.dispose(); assert.equal(owner.alive(), false);
+});
+
+// The undefined→bound→cancelled→undefined cycle must invalidate an earlier
+// unbound read even though its final session UUID is equal to its initial one.
+for (const read of ['preview-first', 'discovery']) for (const beginAnother of [false, true]) test('unbound ' + read + ' cannot survive a session ownership ABA; begin another=' + beginAnother, { timeout: 2000 }, async () => {
+  let holdNext = false, entered, release;
+  const held = new Promise(resolve => entered = resolve), gate = new Promise(resolve => release = resolve);
+  const f = await ready({ request: async (request, next) => {
+    const result = await next(request), route = new URL(request.url).pathname;
+    const matches = read === 'preview-first' ? route === `/api/v1/nostr/uploads/${SESSION}` : route === '/api/v1/upload';
+    if (holdNext && request.method === 'GET' && matches) { holdNext = false; entered(); await gate; }
+    return result;
+  } });
+  const page = await attach(f), user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => MANGA, user);
+  holdNext = true;
+  const stale = (read === 'preview-first' ? f.api.uploadPreview(owner, SESSION, page) : f.api.currentUpload(owner)).then(value => ({ ok: true, value }), error => ({ ok: false, error }));
+  await held;
+  try {
+    const current = await f.api.currentUpload(owner); assert.equal(current.id, SESSION);
+    await f.api.cancelResume(current, owner);
+    if (beginAnother) assert.equal((await f.begin(owner)).id, SECOND_SESSION);
+  } finally { release(); }
+  assert.equal((await stale).ok, false, 'An earlier unbound read must not overwrite the current ownership generation');
+  assert.equal(f.requests.filter(request => request.url.endsWith('/preview')).length, 0);
+  if (beginAnother) assert.equal((await f.api.currentUpload(owner)).id, SECOND_SESSION);
+  else assert.equal(await f.api.currentUpload(owner), undefined);
+  owner.dispose(); assert.equal(owner.alive(), false);
+});

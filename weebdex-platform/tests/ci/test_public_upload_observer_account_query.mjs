@@ -9,7 +9,9 @@ import {
   actualClientDiscovery, encode, eventFor, seal, harness, finish, observerFailureCases,
 } from './public-upload-observer-query-fixture.mjs';
 
-const clientSha = 'af792fb9e1ebd24d17cb2d11b0838351ba19f5445786465a73ba70c3e3d4bc18';
+// Session-epoch successor: requalify this exact current client. The actual
+// source-extracted signed discovery tail below remains the exercised contract.
+const clientSha = '5261d778e2715c3d85085ee03d722df2cf020a086e564c13d667c8937b50d757';
 const baselineSha = '2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71';
 function input(options = {}) {
   const { method = 'GET', pathname = discoveryPath, body = null, event = eventFor(options), ...overrides } = options;
