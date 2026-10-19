@@ -7,6 +7,21 @@ FLAGS = {'record_valid', 'completed', 'context_closed', 'replacement_verified',
          'browser_observer_closed', 'independent_reader_closed', 'request_caps_respected',
          'exact_mutation_count'}
 COUNTS = {'signed_requests': 128, 'mutations': 32, 'independent_reads': 96, 'fixture_controls': 28}
+OBSERVER_FAILURES = ('signed_request_invalid', 'duplicate_native_terminal', 'signed_native_failed')
+
+
+def project_observer_failures(raw):
+    # Only the observer's first sixteen fixed failure labels are retained. These
+    # counts are not a total-failure or total-request claim.
+    value = {'record_valid': False, **{key: 0 for key in OBSERVER_FAILURES}}
+    if (type(raw) is not list or len(raw) > 16 or
+            any(type(code) is not str or code not in OBSERVER_FAILURES for code in raw)):
+        return value
+    return {'record_valid': True, **{key: raw.count(key) for key in OBSERVER_FAILURES}}
+
+
+def observer_failures_clear(value):
+    return value['record_valid'] is True and all(value[key] == 0 for key in OBSERVER_FAILURES)
 
 
 KEY_IMPORT_SUBSTEPS = ['open-settings', 'settings-route', 'public-identity', 'identity-panel',
@@ -51,8 +66,11 @@ def digest(value):
 
 
 def project(acceptance):
+    raw = acceptance.get('public_upload')
+    browser = raw.get('browser_http') if type(raw) is dict else None
     value = {'schema': 1, **{key: False for key in FLAGS}, **{key: 0 for key in COUNTS},
              'private_values_omitted': True, 'raw_messages_exported': False,
+             'browser_observer_failures': project_observer_failures(browser.get('failures') if type(browser) is dict else None),
              'key_import_diagnostics': project_key_import(acceptance.get('public_upload', {}).get('key_import') if type(acceptance.get('public_upload')) is dict else None)}
     try:
         raw = acceptance['public_upload']
@@ -65,7 +83,7 @@ def project(acceptance):
         value['record_valid'] = raw.get('scope') == 'reconstructed-public-upload-replacement-v1' and raw.get('supported_replacement') is True and len(acceptance.get('steps', [])) == 14
         value['completed'] = raw.get('completed') is True
         value['context_closed'] = raw.get('actual_context_closed') is True
-        value['browser_observer_closed'] = browser.get('closed') is True and browser.get('failures') == [] and all(row.get('native') == 'finished' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in rows)
+        value['browser_observer_closed'] = browser.get('closed') is True and observer_failures_clear(value['browser_observer_failures']) and all(row.get('native') == 'finished' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in rows)
         value['independent_reader_closed'] = independent.get('closed') is True and type(independent.get('pending')) is int and independent['pending'] == 0 and all(row.get('complete') is True and row.get('method') == 'GET' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in reads)
         value['request_caps_respected'] = all(type(count) is int and 0 < count <= COUNTS[key] for key, count in counts.items())
         value['exact_mutation_count'] = len(mutations) == 21 and all(row.get('status') == 200 for row in mutations)
@@ -106,16 +124,26 @@ def project(acceptance):
 
 
 def passed(value):
-    return all(value.get(key) is True for key in FLAGS) and key_import_passed(value['key_import_diagnostics'])
+    return (all(value.get(key) is True for key in FLAGS) and key_import_passed(value['key_import_diagnostics']) and
+            observer_failures_clear(value['browser_observer_failures']))
 
 
 def validate(value):
-    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics'} or type(value['schema']) is not int or value['schema'] != 1:
+    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures'} or type(value['schema']) is not int or value['schema'] != 1:
         raise ValueError('Invalid public upload diagnostics schema')
     if any(type(value[key]) is not bool for key in FLAGS) or any(type(value[key]) is not int or not 0 <= value[key] <= cap for key, cap in COUNTS.items()) or value['private_values_omitted'] is not True or value['raw_messages_exported'] is not False:
         raise ValueError('Invalid public upload diagnostic facts')
     if value['exact_mutation_count'] and value['mutations'] != 21:
         raise ValueError('Mutation-count facts disagree')
+    failures = value['browser_observer_failures']
+    if (type(failures) is not dict or set(failures) != {'record_valid', *OBSERVER_FAILURES} or
+            type(failures.get('record_valid')) is not bool or
+            any(type(failures.get(key)) is not int or not 0 <= failures[key] <= 16 for key in OBSERVER_FAILURES) or
+            sum(failures[key] for key in OBSERVER_FAILURES) > 16 or
+            not failures['record_valid'] and any(failures[key] != 0 for key in OBSERVER_FAILURES)):
+        raise ValueError('Invalid browser observer failure facts')
+    if value['browser_observer_closed'] and not observer_failures_clear(failures):
+        raise ValueError('Browser observer closure facts disagree')
 
     imported = value['key_import_diagnostics']
     if (type(imported) is not dict or set(imported) != {'schema', 'record_valid', 'attempts'} or

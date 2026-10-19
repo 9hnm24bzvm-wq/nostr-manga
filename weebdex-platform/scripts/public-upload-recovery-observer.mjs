@@ -5,14 +5,23 @@ import { createHash, randomUUID } from 'node:crypto';
 import { signedEventEnvelope } from './browser-signed-event-envelope.mjs';
 export const uploadDigest = value => createHash('sha256').update(value).digest('hex');
 const route = /^\/api\/v1\/(?:upload(?:\/.*)?|nostr\/(?:account-context|uploads\/[0-9a-f-]+(?:\/files\/[0-9a-f-]+\/(?:preview|replace))?))$/;
-export function validateUploadHttpEvent({ authorization, url, method, body, origin, service, owner, verify, now = Date.now() }) {
+const accountIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+export function validateUploadHttpEvent({ authorization, url, method, body, origin, service, owner, expectedAccountId, verify, now = Date.now() }) {
   assert.ok(['GET', 'POST', 'PATCH', 'DELETE'].includes(method));
   assert.equal(typeof authorization, 'string'); assert.ok(authorization.length <= 16384 && authorization.startsWith('Nostr '));
   const encoded = authorization.slice(6); assert.match(encoded, /^[A-Za-z0-9+/]+={0,2}$/);
   const bytes = Buffer.from(encoded, 'base64'); assert.equal(bytes.toString('base64'), encoded);
   let event; try { event = JSON.parse(bytes.toString('utf8')); } finally { bytes.fill(0); }
   signedEventEnvelope(event);
-  const parsed = new URL(url); assert.equal(parsed.origin, origin); assert.equal(parsed.href, url); assert.ok(!parsed.search && !url.includes('#') && route.test(parsed.pathname));
+  const parsed = new URL(url); assert.equal(parsed.origin, origin); assert.equal(parsed.href, url); assert.ok(!url.includes('#') && route.test(parsed.pathname));
+  // The real upload client binds its initial discovery GET to the account it
+  // just verified. Admit only that exact canonical URL extension, never a
+  // decoded/rebuilt substitute for the full URL covered by the signed u tag.
+  if (url.includes('?')) {
+    assert.equal(method, 'GET'); assert.equal(parsed.pathname, '/api/v1/upload');
+    assert.equal(typeof expectedAccountId, 'string'); assert.match(expectedAccountId, accountIdPattern);
+    assert.equal(parsed.search, '?expectedAccountId=' + expectedAccountId);
+  }
   assert.equal(event.kind, 27235); assert.equal(event.content, ''); assert.equal(event.pubkey, owner);
   assert.ok(Math.abs(event.created_at - Math.floor(now / 1000)) <= 120);
   const id = uploadDigest(JSON.stringify([0, event.pubkey, event.created_at, event.kind, event.tags, event.content]));
@@ -30,7 +39,7 @@ export function validateUploadHttpEvent({ authorization, url, method, body, orig
 }
 export function observePublicUpload(page, scope) {
   const rows = [], requests = new Map(), events = new Set(), nonces = new Set(), failures = [];
-  let closed = false;
+  let closed = false, expectedAccountId;
   const fail = code => { if (failures.length < 16) failures.push(code); };
   const onRequest = request => {
     try {
@@ -38,7 +47,7 @@ export function observePublicUpload(page, scope) {
       assert.equal(closed, false); assert.ok(rows.length < 128, 'Signed upload browser request cap');
       const headers = request.headers(); assert.equal(headers.cookie, undefined, 'Signed upload sent cookie authority');
       const body = request.postDataBuffer(); if (body !== null) assert.ok(body.length <= 32768, 'Observed request body cap');
-      const row = validateUploadHttpEvent({ ...scope, url: request.url(), method: request.method(), authorization: headers.authorization,
+      const row = validateUploadHttpEvent({ ...scope, expectedAccountId, url: request.url(), method: request.method(), authorization: headers.authorization,
         body });
       assert.ok(!events.has(row.event_id) && !nonces.has(row.nonce), 'Duplicate signed request or nonce');
       events.add(row.event_id); nonces.add(row.nonce); delete row.nonce;
@@ -52,6 +61,7 @@ export function observePublicUpload(page, scope) {
   page.on('request', onRequest); page.on('response', onResponse); page.on('requestfinished', onFinished); page.on('requestfailed', onFailed);
   const assertHealthy = () => { assert.equal(failures.length, 0, failures.join(',')); };
   return {
+    bindAccount(value) { assert.equal(closed, false); assert.equal(expectedAccountId, undefined); assert.equal(typeof value, 'string'); assert.match(value, accountIdPattern); expectedAccountId = value; },
     rows, assertHealthy, mutationCount: () => rows.filter(row => row.method !== 'GET').length,
     settled: () => { assertHealthy(); return rows.every(row => row.native === 'finished' && Number.isInteger(row.status) && row.status >= 200 && row.status <= 599); },
     snapshot: () => ({ closed, failures: [...failures], rows: rows.map(row => ({ ...row })) }),
