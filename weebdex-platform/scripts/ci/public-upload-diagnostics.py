@@ -8,6 +8,65 @@ FLAGS = {'record_valid', 'completed', 'context_closed', 'replacement_verified',
          'exact_mutation_count'}
 COUNTS = {'signed_requests': 128, 'mutations': 32, 'independent_reads': 96, 'fixture_controls': 28}
 OBSERVER_FAILURES = ('signed_request_invalid', 'duplicate_native_terminal', 'signed_native_failed')
+UPLOAD_UUID = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+NATIVE_OPERATIONS = (
+    ('GET', r'/api/v1/nostr/account-context', 'account-context'),
+    ('GET', r'/api/v1/upload', 'current-upload'),
+    ('POST', r'/api/v1/upload/check-approval-required', 'approval-check'),
+    ('POST', r'/api/v1/upload/begin', 'begin'),
+    ('POST', r'/api/v1/upload/begin/' + UPLOAD_UUID, 'begin-edit'),
+    ('GET', r'/api/v1/nostr/uploads/' + UPLOAD_UUID, 'session-read'),
+    ('PATCH', r'/api/v1/nostr/uploads/' + UPLOAD_UUID, 'session-save'),
+    ('POST', r'/api/v1/upload/' + UPLOAD_UUID, 'file-batch'),
+    ('DELETE', r'/api/v1/upload/' + UPLOAD_UUID, 'cancel'),
+    ('DELETE', r'/api/v1/upload/' + UPLOAD_UUID + r'/batch', 'file-batch-remove'),
+    ('DELETE', r'/api/v1/upload/' + UPLOAD_UUID + '/' + UPLOAD_UUID, 'file-remove'),
+    ('POST', r'/api/v1/upload/' + UPLOAD_UUID + r'/commit', 'commit'),
+    ('GET', r'/api/v1/nostr/uploads/' + UPLOAD_UUID + r'/files/' + UPLOAD_UUID + r'/preview', 'preview-read'),
+    ('POST', r'/api/v1/nostr/uploads/' + UPLOAD_UUID + r'/files/' + UPLOAD_UUID + r'/replace', 'file-replace'),
+)
+NATIVE_OPERATION_NAMES = {row[2] for row in NATIVE_OPERATIONS} | {'other-watched'}
+NATIVE_OPERATION_METHODS = {row[2]: row[0] for row in NATIVE_OPERATIONS}
+NATIVE_METHODS = {'GET', 'POST', 'PATCH', 'DELETE'}
+NATIVE_DETAIL_FIELDS = {'operation', 'method', 'status', 'error_family'}
+WATCHED_PATH = r'/api/v1/(?:upload(?:/.*)?|nostr/(?:account-context|uploads/[0-9a-f-]+(?:/files/[0-9a-f-]+/(?:preview|replace))?))'
+
+
+def native_operation(method, path):
+    for wanted_method, pattern, name in NATIVE_OPERATIONS:
+        if method == wanted_method and re.fullmatch(pattern, path):
+            return name
+    return 'other-watched'
+
+
+def project_native_failures(raw):
+    # Status is only an observed response header fact, never proof of a complete
+    # response or an accepted write. The observer's native terminal is unchanged.
+    invalid = {'record_valid': False, 'truncated': False, 'requests': []}
+    if type(raw) is not list or len(raw) > 128:
+        return invalid
+    failed = []
+    for row in raw:
+        if (type(row) is not dict or type(row.get('native')) is not str or
+                row['native'] not in {'pending', 'finished', 'failed'}):
+            return invalid
+        if row['native'] != 'failed':
+            continue
+        if (type(row.get('method')) is not str or row['method'] not in NATIVE_METHODS or
+                type(row.get('path')) is not str or len(row['path']) > 512 or
+                not re.fullmatch(WATCHED_PATH, row['path']) or '?' in row['path'] or '#' in row['path'] or
+                'status' not in row or row['status'] is not None and
+                (type(row['status']) is not int or not 100 <= row['status'] <= 599) or
+                type(row.get('native_error')) is not str or row['native_error'] not in {'net::ERR_ABORTED', 'other'}):
+            return invalid
+        failed.append({'operation': native_operation(row['method'], row['path']),
+                       'method': row['method'], 'status': row['status'],
+                       'error_family': 'aborted' if row['native_error'] == 'net::ERR_ABORTED' else 'other'})
+    return {'record_valid': True, 'truncated': len(failed) > 16, 'requests': failed[:16]}
+
+
+def native_failures_clear(value):
+    return value['record_valid'] is True and value['truncated'] is False and value['requests'] == []
 
 
 def project_observer_failures(raw):
@@ -110,6 +169,7 @@ def project(acceptance):
     value = {'schema': 1, **{key: False for key in FLAGS}, **{key: 0 for key in COUNTS},
              'private_values_omitted': True, 'raw_messages_exported': False,
              'browser_observer_failures': project_observer_failures(browser.get('failures') if type(browser) is dict else None),
+             'native_failure_diagnostics': project_native_failures(browser.get('rows') if type(browser) is dict else None),
              'journey_diagnostics': project_journey(raw.get('journey_progress') if type(raw) is dict else None),
              'key_import_diagnostics': project_key_import(acceptance.get('public_upload', {}).get('key_import') if type(acceptance.get('public_upload')) is dict else None)}
     try:
@@ -123,7 +183,7 @@ def project(acceptance):
         value['record_valid'] = raw.get('scope') == 'reconstructed-public-upload-replacement-v1' and raw.get('supported_replacement') is True and len(acceptance.get('steps', [])) == 14
         value['completed'] = raw.get('completed') is True and journey_passed(value['journey_diagnostics'])
         value['context_closed'] = raw.get('actual_context_closed') is True
-        value['browser_observer_closed'] = browser.get('closed') is True and observer_failures_clear(value['browser_observer_failures']) and all(row.get('native') == 'finished' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in rows)
+        value['browser_observer_closed'] = browser.get('closed') is True and observer_failures_clear(value['browser_observer_failures']) and native_failures_clear(value['native_failure_diagnostics']) and all(row.get('native') == 'finished' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in rows)
         value['independent_reader_closed'] = independent.get('closed') is True and type(independent.get('pending')) is int and independent['pending'] == 0 and all(row.get('complete') is True and row.get('method') == 'GET' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in reads)
         value['request_caps_respected'] = all(type(count) is int and 0 < count <= COUNTS[key] for key, count in counts.items())
         value['exact_mutation_count'] = len(mutations) == 21 and all(row.get('status') == 200 for row in mutations)
@@ -165,11 +225,12 @@ def project(acceptance):
 
 def passed(value):
     return (all(value.get(key) is True for key in FLAGS) and key_import_passed(value['key_import_diagnostics']) and
-            observer_failures_clear(value['browser_observer_failures']) and journey_passed(value['journey_diagnostics']))
+            observer_failures_clear(value['browser_observer_failures']) and journey_passed(value['journey_diagnostics']) and
+            native_failures_clear(value['native_failure_diagnostics']))
 
 
 def validate(value):
-    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures', 'journey_diagnostics'} or type(value['schema']) is not int or value['schema'] != 1:
+    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures', 'journey_diagnostics', 'native_failure_diagnostics'} or type(value['schema']) is not int or value['schema'] != 1:
         raise ValueError('Invalid public upload diagnostics schema')
     if any(type(value[key]) is not bool for key in FLAGS) or any(type(value[key]) is not int or not 0 <= value[key] <= cap for key, cap in COUNTS.items()) or value['private_values_omitted'] is not True or value['raw_messages_exported'] is not False:
         raise ValueError('Invalid public upload diagnostic facts')
@@ -184,6 +245,24 @@ def validate(value):
         raise ValueError('Invalid browser observer failure facts')
     if value['browser_observer_closed'] and not observer_failures_clear(failures):
         raise ValueError('Browser observer closure facts disagree')
+    native = value['native_failure_diagnostics']
+    if (type(native) is not dict or set(native) != {'record_valid', 'truncated', 'requests'} or
+            type(native.get('record_valid')) is not bool or type(native.get('truncated')) is not bool or
+            type(native.get('requests')) is not list or len(native['requests']) > 16 or
+            not native['record_valid'] and (native['requests'] or native['truncated']) or
+            native['truncated'] and len(native['requests']) != 16):
+        raise ValueError('Invalid native failure diagnostics schema')
+    for row in native['requests']:
+        if (type(row) is not dict or set(row) != NATIVE_DETAIL_FIELDS or
+                type(row.get('operation')) is not str or row['operation'] not in NATIVE_OPERATION_NAMES or
+                type(row.get('method')) is not str or row['method'] not in NATIVE_METHODS or
+                row['operation'] != 'other-watched' and NATIVE_OPERATION_METHODS[row['operation']] != row['method'] or
+                'status' not in row or row['status'] is not None and
+                (type(row['status']) is not int or not 100 <= row['status'] <= 599) or
+                type(row.get('error_family')) is not str or row['error_family'] not in {'aborted', 'other'}):
+            raise ValueError('Invalid native failure diagnostic facts')
+    if value['browser_observer_closed'] and not native_failures_clear(native):
+        raise ValueError('Native failure facts contradict observer closure')
     journey = value['journey_diagnostics']
     if (type(journey) is not dict or set(journey) != {'schema', 'record_valid', 'checks'} or
             type(journey.get('schema')) is not int or journey['schema'] != 1 or
