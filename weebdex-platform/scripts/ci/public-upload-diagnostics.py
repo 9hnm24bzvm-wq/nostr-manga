@@ -29,6 +29,45 @@ KEY_IMPORT_SUBSTEPS = ['open-settings', 'settings-route', 'public-identity', 'id
     'session-connect', 'session-ready', 'done', 'upload-return', 'upload-ready']
 KEY_IMPORT_CATEGORIES = {'none', 'readiness-timeout', 'duplicate-control', 'browser-timeout', 'assertion', 'unexpected'}
 KEY_IMPORT_FIELDS = {'attempt', 'substep', 'completed_substeps', 'status', 'caught_category'}
+JOURNEY_STAGES = ['start', 'fixture-account', 'navigation', 'key-import', 'account-context',
+    'group-trigger', 'group-query', 'group-result', 'group-close', 'begin-control',
+    'begin-dispatch', 'browser-terminal', 'current-read', 'snapshot-action',
+    'mutation-count', 'exact-read', 'durable-read', 'durable-check', 'snapshot-check',
+    'language', 'file-input', 'preview-order', 'preview-decode', 'cancel-dialog',
+    'cancel-dismiss', 'cancel-confirm', 'cancel-check', 'metadata-title',
+    'metadata-chapter', 'reorder', 'remove', 'replacement-control',
+    'replacement-chooser', 'replacement-check', 'reload', 'metadata-read',
+    'preview-read', 'commit-control', 'publication-check', 'receipt-read',
+    'completion', 'receipt-refresh', 'route', 'complete']
+JOURNEY_FIELDS = {'check_index', 'substep', 'status', 'caught_category'}
+
+
+def journey_row_valid(row, index):
+    if (type(row) is not dict or set(row) != JOURNEY_FIELDS or
+            type(row.get('check_index')) is not int or row['check_index'] != index or
+            type(row.get('substep')) is not str or row['substep'] not in JOURNEY_STAGES or
+            type(row.get('status')) is not str or row['status'] not in {'running', 'passed', 'failed'} or
+            type(row.get('caught_category')) is not str or row['caught_category'] not in KEY_IMPORT_CATEGORIES):
+        return False
+    if row['status'] == 'passed':
+        return row['substep'] == 'complete' and row['caught_category'] == 'none'
+    return row['substep'] != 'complete' and ((row['caught_category'] == 'none') is (row['status'] == 'running'))
+
+
+def project_journey(raw):
+    valid = type(raw) is list and len(raw) <= 14
+    rows = []
+    for index, row in enumerate(raw[:14] if type(raw) is list else []):
+        if not journey_row_valid(row, index) or index and rows[-1]['status'] != 'passed':
+            valid = False
+            break
+        rows.append({key: row[key] for key in sorted(JOURNEY_FIELDS)})
+    return {'schema': 1, 'record_valid': bool(valid), 'checks': rows if valid else []}
+
+
+def journey_passed(value):
+    return (value['record_valid'] is True and len(value['checks']) == 14 and
+            all(row['status'] == 'passed' for row in value['checks']))
 
 
 def key_import_row_valid(row, attempt):
@@ -71,6 +110,7 @@ def project(acceptance):
     value = {'schema': 1, **{key: False for key in FLAGS}, **{key: 0 for key in COUNTS},
              'private_values_omitted': True, 'raw_messages_exported': False,
              'browser_observer_failures': project_observer_failures(browser.get('failures') if type(browser) is dict else None),
+             'journey_diagnostics': project_journey(raw.get('journey_progress') if type(raw) is dict else None),
              'key_import_diagnostics': project_key_import(acceptance.get('public_upload', {}).get('key_import') if type(acceptance.get('public_upload')) is dict else None)}
     try:
         raw = acceptance['public_upload']
@@ -81,7 +121,7 @@ def project(acceptance):
                   'independent_reads': len(reads), 'fixture_controls': raw['fixture_control_calls']}
         value.update({key: count if type(count) is int and 0 <= count <= COUNTS[key] else 0 for key, count in counts.items()})
         value['record_valid'] = raw.get('scope') == 'reconstructed-public-upload-replacement-v1' and raw.get('supported_replacement') is True and len(acceptance.get('steps', [])) == 14
-        value['completed'] = raw.get('completed') is True
+        value['completed'] = raw.get('completed') is True and journey_passed(value['journey_diagnostics'])
         value['context_closed'] = raw.get('actual_context_closed') is True
         value['browser_observer_closed'] = browser.get('closed') is True and observer_failures_clear(value['browser_observer_failures']) and all(row.get('native') == 'finished' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in rows)
         value['independent_reader_closed'] = independent.get('closed') is True and type(independent.get('pending')) is int and independent['pending'] == 0 and all(row.get('complete') is True and row.get('method') == 'GET' and type(row.get('status')) is int and 200 <= row['status'] <= 599 and digest(row.get('event_id')) for row in reads)
@@ -125,11 +165,11 @@ def project(acceptance):
 
 def passed(value):
     return (all(value.get(key) is True for key in FLAGS) and key_import_passed(value['key_import_diagnostics']) and
-            observer_failures_clear(value['browser_observer_failures']))
+            observer_failures_clear(value['browser_observer_failures']) and journey_passed(value['journey_diagnostics']))
 
 
 def validate(value):
-    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures'} or type(value['schema']) is not int or value['schema'] != 1:
+    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures', 'journey_diagnostics'} or type(value['schema']) is not int or value['schema'] != 1:
         raise ValueError('Invalid public upload diagnostics schema')
     if any(type(value[key]) is not bool for key in FLAGS) or any(type(value[key]) is not int or not 0 <= value[key] <= cap for key, cap in COUNTS.items()) or value['private_values_omitted'] is not True or value['raw_messages_exported'] is not False:
         raise ValueError('Invalid public upload diagnostic facts')
@@ -144,6 +184,17 @@ def validate(value):
         raise ValueError('Invalid browser observer failure facts')
     if value['browser_observer_closed'] and not observer_failures_clear(failures):
         raise ValueError('Browser observer closure facts disagree')
+    journey = value['journey_diagnostics']
+    if (type(journey) is not dict or set(journey) != {'schema', 'record_valid', 'checks'} or
+            type(journey.get('schema')) is not int or journey['schema'] != 1 or
+            type(journey.get('record_valid')) is not bool or type(journey.get('checks')) is not list or
+            len(journey['checks']) > 14 or not journey['record_valid'] and journey['checks']):
+        raise ValueError('Invalid upload journey diagnostics schema')
+    for index, row in enumerate(journey['checks']):
+        if not journey_row_valid(row, index) or index and journey['checks'][index - 1]['status'] != 'passed':
+            raise ValueError('Invalid upload journey diagnostics facts')
+    if value['completed'] and not journey_passed(journey):
+        raise ValueError('Upload completion facts disagree with journey progress')
 
     imported = value['key_import_diagnostics']
     if (type(imported) is not dict or set(imported) != {'schema', 'record_valid', 'attempts'} or

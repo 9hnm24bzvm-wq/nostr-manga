@@ -74,7 +74,7 @@ for (const status of [403,503,202]) test(`source-extracted success stage rejects
   const start=source.indexOf(token);assert.ok(start>0);const body=source.slice(start+token.length,source.indexOf('\n  async function durable',start)).trim();assert.ok(body.endsWith('}'));
   const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor, observer={rows:[{method:'POST',native:'finished',status}],mutationCount:()=>1,settled:()=>true};
   const until=async(read,valid)=>{const value=await read();assert.equal(valid(value),true);return value;};
-  await assert.rejects(new AsyncFunction('observer','until','assertUploadRoute','assert','start','count',body.slice(0,-1))(observer,until,()=>{},assert,0,1));
+  await assert.rejects(new AsyncFunction('observer','until','assertUploadRoute','assert','mark','start','count',body.slice(0,-1))(observer,until,()=>{},assert,()=>{},0,1));
 });
 test('final route guard requires the exact full current URL', () => { const route='/title/exact/upload';assertUploadRecoveryRoute(origin+route,origin,route);for(const suffix of ['?x=1','?','#changed','#','/other'])assert.throws(()=>assertUploadRecoveryRoute(origin+route+suffix,origin,route));assert.throws(()=>assertUploadRecoveryRoute('http://127.0.0.1:50124'+route,origin,route)); });
 test('completion titles are closed to the actual three source branches', () => {assert.deepEqual([...uploadCompletionTitles],['Upload request accepted','Chapter added to approval queue','Chapter uploaded successfully']);for(const title of uploadCompletionTitles)assert.equal(assertUploadCompletion(title,{receiptStatus:'available',publicationStatus:'materialized',receipt:{attributes:{isUnavailable:false}}}),title);assert.throws(()=>assertUploadCompletion('Publication outcome unresolved',{receiptStatus:'available'}));});
@@ -83,7 +83,7 @@ test('missing committed receipt status cannot borrow a completion title',()=>{as
 for(const changed of [false,true])test(`source-extracted restored metadata observes actual field values, changed=${changed}`,async()=>{
   const source=fs.readFileSync(new URL('../../scripts/public-upload-recovery-browser.mjs',import.meta.url),'utf8'),token='async function restoredMetadata() {';const at=source.indexOf(token);assert.ok(at>0);const body=source.slice(at+token.length,source.indexOf('\n  async function visibleCompletion',at)).trim();assert.ok(body.endsWith('}'));
   const p={getByPlaceholder:name=>({inputValue:async()=>name==='Chapter Name'?'Synthetic public upload recovery':changed?'changed':'9001'}),locator:()=>({innerText:async()=>' English '})};
-  const until=async(read,valid)=>{const value=await read();assert.equal(valid(value),true);return value;};const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;const pending=new AsyncFunction('until','panel','assertUploadRoute',body.slice(0,-1))(until,async()=>p,()=>{});if(changed)await assert.rejects(pending);else await pending;
+  const until=async(read,valid)=>{const value=await read();assert.equal(valid(value),true);return value;};const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;const pending=new AsyncFunction('until','panel','assertUploadRoute','mark',body.slice(0,-1))(until,async()=>p,()=>{},()=>{});if(changed)await assert.rejects(pending);else await pending;
 });
 
 function replacementSnapshot() {
