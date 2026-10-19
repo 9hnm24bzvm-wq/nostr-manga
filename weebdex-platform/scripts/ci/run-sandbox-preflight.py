@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import selectors
+import secrets
 import signal
 import stat
 import subprocess
@@ -213,6 +214,148 @@ def process(pid):
             'rss': int(fields[21]) * os.sysconf('SC_PAGE_SIZE')}
 
 
+# Reserve 64 bytes for Chromium's ProcessSingleton directory/socket suffix
+# beneath a UTF-8 base of at most 32, below Linux sun_path[108] including NUL.
+MAX_BROWSER_TMP_BYTES = 32
+BROWSER_SOCKET_SUFFIX_BYTES = 64
+LINUX_UNIX_PATH_BYTES = 108
+MAX_BROWSER_TMP_ENTRIES = 4096
+MAX_BROWSER_TMP_DEPTH = 32
+
+
+class BrowserTemp:
+    """One fresh 0700 /tmp leaf, held by identity; never traverse a symlink."""
+    def __init__(self):
+        self.parent = Path('/tmp')
+        self.parent_fd = self.fd = None
+        self.path = self.identity = self.parent_identity = None
+        self.created = self.admitted = self.removed = False
+        self.entries = self.bytes = 0
+
+    @staticmethod
+    def identity_of(value):
+        return (value.st_dev, value.st_ino, value.st_uid)
+
+    def _parent_check(self):
+        value = os.fstat(self.parent_fd)
+        named = os.stat(self.parent, follow_symlinks=False)
+        if (not stat.S_ISDIR(value.st_mode) or not stat.S_ISDIR(named.st_mode) or
+                self.identity_of(value) != self.parent_identity or
+                self.identity_of(named) != self.parent_identity or
+                value.st_uid not in (0, os.geteuid()) or
+                (value.st_mode & 0o022 and not
+                 (value.st_uid == 0 and value.st_mode & stat.S_ISVTX))):
+            raise Refused('browser-temp-parent-refused')
+
+    def create(self):
+        if self.parent_fd is not None or self.created:
+            raise Refused('browser-temp-already-created')
+        self.parent_fd = os.open(self.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        self.parent_identity = self.identity_of(os.fstat(self.parent_fd))
+        self._parent_check()
+        for _ in range(8):
+            token = secrets.token_hex(6)
+            if len(token) != 12 or any(c not in '0123456789abcdef' for c in token):
+                raise Refused('browser-temp-name-refused')
+            path = self.parent / ('sbp-' + token)
+            size = len(str(path).encode('utf-8'))
+            if size > MAX_BROWSER_TMP_BYTES or size + BROWSER_SOCKET_SUFFIX_BYTES >= LINUX_UNIX_PATH_BYTES:
+                raise Refused('browser-temp-path-too-long')
+            try:
+                os.mkdir(path.name, mode=0o700, dir_fd=self.parent_fd)
+            except FileExistsError:
+                continue  # Never admit, reuse or delete a pre-existing name.
+            self.path, self.created = path, True
+            self.fd = os.open(path.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                              dir_fd=self.parent_fd)
+            self.identity = self.identity_of(os.fstat(self.fd))
+            self.check()
+            self.admitted = True
+            return self.path
+        raise Refused('browser-temp-collision-limit')
+
+    def check(self):
+        self._parent_check()
+        held = os.fstat(self.fd)
+        named = os.stat(self.path.name, dir_fd=self.parent_fd, follow_symlinks=False)
+        if (not stat.S_ISDIR(held.st_mode) or not stat.S_ISDIR(named.st_mode) or
+                self.identity_of(held) != self.identity or
+                self.identity_of(named) != self.identity or
+                held.st_uid != os.geteuid() or
+                stat.S_IMODE(held.st_mode) != 0o700 or stat.S_IMODE(named.st_mode) != 0o700):
+            raise Refused('browser-temp-identity-refused')
+
+    def _check_chain(self, chain, deadline):
+        if time.monotonic() >= deadline:
+            raise Refused('browser-temp-cleanup-deadline')
+        self.check()
+        for parent, name, identity in chain:
+            value = os.stat(name, dir_fd=parent, follow_symlinks=False)
+            if not stat.S_ISDIR(value.st_mode) or self.identity_of(value) != identity:
+                raise Refused('browser-temp-descendant-changed')
+
+    def _clear(self, fd, chain, depth, deadline):
+        self._check_chain(chain, deadline)
+        if depth > MAX_BROWSER_TMP_DEPTH:
+            raise Refused('browser-temp-depth-limit')
+        with os.scandir(fd) as items:
+            for item in items:
+                self._check_chain(chain, deadline)
+                self.entries += 1
+                if self.entries > MAX_BROWSER_TMP_ENTRIES:
+                    raise Refused('browser-temp-entry-limit')
+                value = os.stat(item.name, dir_fd=fd, follow_symlinks=False)
+                identity = self.identity_of(value)
+                if value.st_uid != os.geteuid() or value.st_dev != self.identity[0]:
+                    raise Refused('browser-temp-descendant-refused')
+                self.bytes += max(value.st_size, value.st_blocks * 512)
+                if stat.S_ISDIR(value.st_mode):
+                    child = os.open(item.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+                    try:
+                        if self.identity_of(os.fstat(child)) != identity:
+                            raise Refused('browser-temp-descendant-changed')
+                        self._clear(child, chain + [(fd, item.name, identity)], depth + 1, deadline)
+                    finally:
+                        os.close(child)
+                    self._check_chain(chain + [(fd, item.name, identity)], deadline)
+                    os.rmdir(item.name, dir_fd=fd)
+                else:
+                    # Unlink the entry itself, including Chromium socket symlinks.
+                    # A symlink's target is never opened, followed or deleted.
+                    self._check_chain(chain, deadline)
+                    if self.identity_of(os.stat(item.name, dir_fd=fd, follow_symlinks=False)) != identity:
+                        raise Refused('browser-temp-descendant-changed')
+                    os.unlink(item.name, dir_fd=fd)
+
+    def cleanup(self, deadline):
+        if not self.created:
+            return
+        if not self.admitted:
+            raise Refused('browser-temp-admission-unverified')
+        self._clear(self.fd, [], 0, deadline)
+        self._check_chain([], deadline)
+        os.rmdir(self.path.name, dir_fd=self.parent_fd)
+        if os.fstat(self.fd).st_nlink != 0:
+            raise Refused('browser-temp-removal-unverified')
+        try:
+            os.stat(self.path.name, dir_fd=self.parent_fd, follow_symlinks=False)
+        except FileNotFoundError:
+            self.removed = True
+        else:
+            raise Refused('browser-temp-removal-unverified')
+
+    def journal(self):
+        return dict(created=self.created, admitted=self.admitted, removed=self.removed,
+                    identity=self.identity, entries=self.entries, bytes=self.bytes)
+
+    def close(self):
+        for name in ('fd', 'parent_fd'):
+            fd = getattr(self, name)
+            if fd is not None:
+                os.close(fd)
+                setattr(self, name, None)
+
+
 class Owner:
     """Dedicated subreaper; signals only pidfds registered to exact birth IDs."""
     def __init__(self, private, *, work_seconds=90, cleanup_seconds=25, total_seconds=120, started=None):
@@ -220,6 +363,7 @@ class Owner:
                 work_seconds + cleanup_seconds <= total_seconds <= 120):
             raise Refused('invalid-owner-bounds')
         self.private = private
+        self.browser_temp = None
         self.started = time.monotonic() if started is None else started
         self.work_deadline = self.started + work_seconds
         self.total_deadline = self.started + total_seconds
@@ -325,6 +469,10 @@ class Owner:
             self.errors += 1
 
     def launch(self, argv, cwd, env):
+        if self.browser_temp is not None:
+            self.browser_temp.check()
+            if env.get('TMPDIR') != str(self.browser_temp.path):
+                raise Refused('browser-temp-environment-refused')
         gate_read, gate_write = os.pipe()
         launcher = ('import os,sys; f=int(sys.argv[1]); g=os.read(f,1); os.close(f); '
                     'os._exit(73) if g!=b"G" else None; '
@@ -409,6 +557,14 @@ class Owner:
         live = self.scan()
         if self.child:
             self.child.poll()
+        if self.browser_temp is not None:
+            try:
+                if (live != [] or self.unknown or self.errors or
+                        (self.child and self.child.returncode is None)):
+                    raise Refused('browser-temp-worker-unverified')
+                self.browser_temp.cleanup(deadline)
+            except Exception:
+                self.errors += 1
         result = {'verified_stopped': live == [] and not self.unknown and not self.errors and
                   (self.child is None or self.child.returncode is not None),
                   'forced': self.forced, 'remaining_owned': len(live) if live is not None else MAX_BIRTHS,
@@ -418,6 +574,8 @@ class Owner:
         # Keep ownership handles until terminal private facts have been persisted.
         try:
             journal = dict(result, births=[{'pid': p, 'birth': b} for p, b in self.ledger])
+            if self.browser_temp is not None:
+                journal['browser_temp'] = self.browser_temp.journal()
             (self.private / 'owner.json').write_text(json.dumps(journal, sort_keys=True) + '\n')
         finally:
             self.selector.close()
@@ -427,14 +585,16 @@ class Owner:
                 self.log.close()
             for fd in self.ledger.values():
                 os.close(fd)
+            if self.browser_temp is not None:
+                self.browser_temp.close()
         return result
 
 
-def child_environment(source, private):
+def child_environment(source, browser_temp):
     names = ('PATH', 'HOME', 'LANG', 'LC_ALL', 'LC_CTYPE', 'SSL_CERT_FILE', 'SSL_CERT_DIR')
     value = {key: source[key] for key in names if key in source and type(source[key]) is str and
              '\0' not in source[key] and len(source[key]) <= 4096}
-    value.update(TMPDIR=str(private), NODE_OPTIONS='--max-old-space-size=512',
+    value.update(TMPDIR=str(browser_temp), NODE_OPTIONS='--max-old-space-size=512',
                  DEBUG='pw:browser', DEBUG_COLORS='0', DEBUG_HIDE_DATE='1')
     return value
 
@@ -512,12 +672,14 @@ def main():
             raise Refused('unexpected-output-parent')
         private.mkdir(parents=True, mode=0o700, exist_ok=False)
         owner = Owner(private, started=started)
+        owner.browser_temp = BrowserTemp()
+        owner.browser_temp.create()
         def interrupted(*_):
             owner.interrupted = True
         signal.signal(signal.SIGINT, interrupted)
         signal.signal(signal.SIGTERM, interrupted)
         owner.launch([str(node), str(ROOT / 'scripts/ci/sandbox-preflight.mjs')], ROOT,
-                     child_environment(os.environ, private))
+                     child_environment(os.environ, owner.browser_temp.path))
         outcome = owner.observe()
     except Exception:
         outcome = 'owner-error' if owner else 'admission-refused'
@@ -557,7 +719,7 @@ def main():
         validate_public(json.loads(written.decode('utf-8'), object_pairs_hook=unique_object))
         # Optional sealing is a separate, still-unapproved execution step. Only
         # this private receipt permits it to consume a normally closed full log.
-        if owner and cleanup.get('stdout_eof') is True and not owner.output_overflow:
+        if owner and owner.child is not None and cleanup.get('stdout_eof') is True and not owner.output_overflow:
             receipt = seal_ready_receipt(written, read_bytes(private / 'worker.log', MAX_LOG),
                                          cleanup, owner.output_overflow)
             if receipt is not None:

@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from types import SimpleNamespace
 from pathlib import Path
 import unittest
@@ -88,6 +89,8 @@ class SealReadyTests(unittest.TestCase):
                     def cleanup(self):
                         if public.exists():
                             raise AssertionError('Public record precedes cleanup')
+                        self.browser_temp.cleanup(time.monotonic() + 1)
+                        self.browser_temp.close()
                         return clean
                 stdout = io.StringIO()
                 with mock.patch.object(owner, 'ROOT', root), mock.patch.object(owner, 'Owner', StandInOwner), \
