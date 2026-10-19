@@ -47,6 +47,7 @@ jobs:
         timeout-minutes: 2
         run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs
       - name: Prepare pinned dependencies and frozen-source builds
+        id: preparation
         timeout-minutes: 90
         env:
           SELECTED_BATCH: ${{ inputs.batch || 'public-upload' }}
@@ -71,6 +72,26 @@ jobs:
         id: evidence-validation
         if: always()
         run: python3 weebdex-platform/scripts/ci/validate-ci-evidence.py
+      - name: Seal current QA preparation failure diagnostics
+        id: qa-preparation-seal
+        if: always() && steps.preparation.outcome == 'failure' && steps.evidence-validation.outcome == 'success' && hashFiles('weebdex-platform/.build/hosted-browser/qa-preparation-failure/capture.json') != ''
+        timeout-minutes: 2
+        run: |
+          set -euo pipefail
+          PREP_SHA="$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256((Path("weebdex-platform/ci-sanitized-evidence") / "preparation.json").read_bytes()).hexdigest())')"
+          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --expected-preparation-sha256 "$PREP_SHA"
+          SEALED_SHA="$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256(Path("weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json").read_bytes()).hexdigest())')"
+          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --validate --expected-preparation-sha256 "$PREP_SHA" --expected-sealed-sha256 "$SEALED_SHA"
+          printf 'sealed_sha256=%s\n' "$SEALED_SHA" >> "$GITHUB_OUTPUT"
+      - name: Upload only the validated encrypted QA preparation failure
+        if: always() && steps.qa-preparation-seal.outcome == 'success' && steps.qa-preparation-seal.outputs.sealed_sha256 != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hosted-qa-preparation-sealed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json
+          if-no-files-found: error
+          retention-days: 1
+          include-hidden-files: false
       - name: Upload allowlisted sanitized evidence only
         if: always() && steps.evidence-validation.outcome == 'success'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

@@ -82,7 +82,13 @@ def preparation(value):
     fields(value, required, optional)
     insist(value['schema'] == 1 and type(value['schema']) is int)
     insist(value['status'] in ['prepared', 'preparation_failed'])
-    insist(value['stage'] in ['source-preservation', 'native-dependencies', 'native-build', 'signer-dependencies', 'frontend-dependencies', 'frontend-build', 'artifact-record', 'browser-runtime-record', 'public-upload-profile', 'complete'])
+    insist(value['stage'] in ['source-preservation', 'native-dependencies', 'native-build', 'signer-dependencies', 'frontend-dependencies', 'frontend-build', 'artifact-record', 'browser-runtime-record', 'public-upload-profile', 'complete',
+                            'public-upload-profile-preflight', 'public-upload-profile-native-off',
+                            'public-upload-profile-native-evidence', 'public-upload-qa-build',
+                            'public-upload-qa-source', 'public-upload-qa-receipt', 'public-upload-qa-graph',
+                            'public-upload-qa-record', 'public-upload-qa-final-source',
+                            'public-upload-qa-final-graph', 'public-upload-qa-seal',
+                            'public-upload-profile-restore'])
     insist(type(value['source_files_checked']) is int and value['source_files_checked'] in [0, 676])
     for key in ['browser_phases_started', 'frontend_preserved', 'artifacts_uploaded', 'fresh_build', 'historical_binaries_reused', 'ipc_success_established']:
         if key in value:

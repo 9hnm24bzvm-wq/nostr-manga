@@ -60,11 +60,13 @@ test('dedicated workflow never triggers application branches or installs app dep
 });
 test('application workflow remains exact and does not match the dedicated preflight branch', () => {
   const workflow = fs.readFileSync(new URL('../../../.github/workflows/hosted-browser-e2e.yml', import.meta.url));
-  // Two separately approved source profiles; neither is rewritten by this probe.
+  // Exact historical profiles and the reviewed failure-only QA proposal.
+  // This probe never rewrites any application workflow.
   const profiles = new Set([
     '19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1', // bounded CI
     'df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27', // recovery c6
     '876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1', // current-recovery application CI proposal
+    '4a62a482ec907923bb830a41f3524e21f7f23ac6868aedac76caed483feffa3e', // reviewed failure-only encrypted QA diagnostic proposal
   ]);
   const digest = bytes => createHash('sha256').update(bytes).digest('hex');
   assert.ok(profiles.has(digest(workflow)));

@@ -16,6 +16,14 @@ def qa_build_contract():
 
 NATIVE_EVIDENCE = ['build-integration.json', 'integration-source-manifest.json',
                    'artifact-manifest.json', 'bootstrap-csp.json', 'execution-status.json']
+PUBLIC_STAGES = (
+    'public-upload-profile-preflight', 'public-upload-profile-native-off',
+    'public-upload-profile-native-evidence', 'public-upload-qa-build',
+    'public-upload-qa-source', 'public-upload-qa-receipt', 'public-upload-qa-graph',
+    'public-upload-qa-record', 'public-upload-qa-final-source',
+    'public-upload-qa-final-graph', 'public-upload-qa-seal',
+    'public-upload-profile-restore',
+)
 
 
 def sha(path):
@@ -26,8 +34,9 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2) + '\n')
 
 
-def prepare(root, stage, run, verify_source):
+def prepare(root, stage, run, verify_source, progress=lambda _stage: None):
     """The caller's owned runner supplies all execution and deadline handling."""
+    progress('public-upload-profile-preflight')
     evidence = root / 'test-evidence/frontend'
     ui = root / 'artifacts/frontend'
     native = stage / 'public-upload-native-frontend'
@@ -42,7 +51,9 @@ def prepare(root, stage, run, verify_source):
         raise RuntimeError('A genuine native frontend generation is required')
     qa = qa_build_contract()
     qa.gate(os.environ.get('WEEBDEX_QA_UPLOAD_REFUSALS'))
+    progress('public-upload-profile-native-off')
     qa.verify(root, ui, False)
+    progress('public-upload-profile-native-evidence')
     saved = {}
     for name in NATIVE_EVIDENCE:
         path = evidence / name
@@ -55,13 +66,17 @@ def prepare(root, stage, run, verify_source):
     try:
         os.environ['PUBLIC_MANGADEX_CATALOGUE'] = '1'
         os.environ['WEEBDEX_QA_UPLOAD_REFUSALS'] = '1'
+        progress('public-upload-qa-build')
         receipt = run('public-upload-frontend-build', ['node', root / 'scripts/build-frontend.mjs'], root, 900)
+        progress('public-upload-qa-source')
         verify_source()
+        progress('public-upload-qa-receipt')
         current = json.loads((evidence / 'build-integration.json').read_text())
         if current.get('public_api_catalogue_enabled') is not True or current.get('public_signed_upload_enabled') is not True or current.get('spa_fallback_sha256') != sha(ui / 'index.html'):
             raise RuntimeError('Public upload requires the exact gate-on build receipt')
         # This verifies the freshly emitted graph and actual bytes. Finite
         # stand-ins do not establish that a real Vite build has passed it.
+        progress('public-upload-qa-graph')
         qa_artifact = qa.verify(root, ui, True)
         result_dir = evidence / 'hosted-public-upload-build'
         result_dir.mkdir()
@@ -71,10 +86,14 @@ def prepare(root, stage, run, verify_source):
             'changed_inputs': [], 'owned_terminal_receipt': str((stage / 'public-upload-frontend-build-owned.json').relative_to(root)),
             'browser_tests_executed': False,
         })
+        progress('public-upload-qa-record')
         run('public-upload-artifact-record', [sys.executable, root / 'scripts/record-frontend-artifacts.py', 'hosted-public-upload-build/build-result.json'], root, 60)
+        progress('public-upload-qa-final-source')
         verify_source()
+        progress('public-upload-qa-final-graph')
         if qa.verify(root, ui, True) != qa_artifact:
             raise RuntimeError('Public upload QA output changed during artifact recording')
+        progress('public-upload-qa-seal')
         manifest.write_bytes((evidence / 'artifact-manifest.json').read_bytes())
         build.write_bytes((evidence / 'build-integration.json').read_bytes())
         ui.rename(public)
@@ -83,16 +102,27 @@ def prepare(root, stage, run, verify_source):
                 'build_receipt': str(build), 'build_receipt_sha256': sha(build),
                 'qa_upload_refusals': qa_artifact}
     finally:
-        if old_gate is None:
-            os.environ.pop('PUBLIC_MANGADEX_CATALOGUE', None)
-        else:
-            os.environ['PUBLIC_MANGADEX_CATALOGUE'] = old_gate
-        if old_qa_gate is None:
-            os.environ.pop('WEEBDEX_QA_UPLOAD_REFUSALS', None)
-        else:
-            os.environ['WEEBDEX_QA_UPLOAD_REFUSALS'] = old_qa_gate
-        if ui.exists() or ui.is_symlink():
-            ui.rename(failed)
-        native.rename(ui)
-        for name, data in saved.items():
-            (evidence / name).write_bytes(data)
+        # Do not overwrite an earlier failed action's public boundary while
+        # restoring the native generation and its environment.
+        earlier_failure = sys.exc_info()[0] is not None
+        try:
+            if old_gate is None:
+                os.environ.pop('PUBLIC_MANGADEX_CATALOGUE', None)
+            else:
+                os.environ['PUBLIC_MANGADEX_CATALOGUE'] = old_gate
+            if old_qa_gate is None:
+                os.environ.pop('WEEBDEX_QA_UPLOAD_REFUSALS', None)
+            else:
+                os.environ['WEEBDEX_QA_UPLOAD_REFUSALS'] = old_qa_gate
+            if ui.exists() or ui.is_symlink():
+                ui.rename(failed)
+            native.rename(ui)
+            for name, data in saved.items():
+                (evidence / name).write_bytes(data)
+        except BaseException:
+            if not earlier_failure:
+                try:
+                    progress('public-upload-profile-restore')
+                except Exception:
+                    pass  # A diagnostic write cannot replace a restore error.
+            raise

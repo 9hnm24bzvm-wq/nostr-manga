@@ -8,11 +8,95 @@ import subprocess
 import sys
 import time
 import importlib.util
+import re
+import traceback
 
 ROOT = Path(__file__).resolve().parents[2]
 REPO = ROOT.parent
 STAGE = ROOT / '.build/hosted-browser'
 PUBLIC = ROOT / 'ci-evidence'
+QA_FAILURE_CHILDREN = ('public-upload-frontend-build', 'public-upload-artifact-record')
+QA_TRACEBACK_LIMIT = 64 * 1024
+QA_FAILURE_STAGES = (
+    'public-upload-profile', 'public-upload-profile-preflight',
+    'public-upload-profile-native-off', 'public-upload-profile-native-evidence',
+    'public-upload-qa-build', 'public-upload-qa-source', 'public-upload-qa-receipt',
+    'public-upload-qa-graph', 'public-upload-qa-record', 'public-upload-qa-final-source',
+    'public-upload-qa-final-graph', 'public-upload-qa-seal', 'public-upload-profile-restore',
+)
+
+
+def qa_encoded(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=True) + '\n').encode()
+
+
+def qa_private_write(path, data):
+    """Replace one fixed private receipt without following an existing link."""
+    if path.parent.is_symlink() or path.is_symlink():
+        raise RuntimeError('QA failure receipt links are refused')
+    pending = path.with_name(path.name + '.pending')
+    descriptor = os.open(pending, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(descriptor, 'wb') as output:
+        output.write(data)
+    pending.replace(path)
+
+
+def qa_boundaries(capture):
+    return {'schema': 1, 'children': capture['children']}
+
+
+def begin_qa_failure_capture(before):
+    """Create a fresh private pre-child boundary; never read broad stage logs."""
+    context = dict(repository=os.environ.get('GITHUB_REPOSITORY'),
+                   run_id=os.environ.get('GITHUB_RUN_ID'),
+                   run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
+                   source_commit=os.environ.get('GITHUB_SHA'))
+    if (context['repository'] != '9hnm24bzvm-wq/nostr-manga' or
+            any(type(context[key]) is not str or re.fullmatch(r'[1-9][0-9]{0,19}', context[key]) is None
+                for key in ['run_id', 'run_attempt']) or
+            type(context['source_commit']) is not str or re.fullmatch(r'[0-9a-f]{40}', context['source_commit']) is None):
+        raise RuntimeError('Current QA failure capture context is unavailable')
+    for directory in [ROOT, ROOT / '.build', STAGE]:
+        if directory.is_symlink() or not directory.is_dir():
+            raise RuntimeError('QA failure capture directory is unavailable')
+    directory = STAGE / 'qa-preparation-failure'
+    directory.mkdir(mode=0o700)  # A prior capture must never be rebound.
+    capture = {'directory': directory, 'context': context,
+               'source_snapshot_sha256': hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest(),
+               'children': {label: {'entered': False} for label in QA_FAILURE_CHILDREN}}
+    qa_private_write(directory / 'boundaries.json', qa_encoded(qa_boundaries(capture)))
+    return capture
+
+
+def run_qa_failure_child(capture, label, argv, cwd, seconds):
+    if label not in QA_FAILURE_CHILDREN or capture['children'][label]['entered']:
+        raise RuntimeError('QA failure child boundary is unavailable')
+    if label == QA_FAILURE_CHILDREN[1] and not capture['children'][QA_FAILURE_CHILDREN[0]]['entered']:
+        raise RuntimeError('QA failure child order changed')
+    # Persist BEFORE calling even the owned runner. A crash or refusal after
+    # this point without its terminal receipt is uncertainty, never "not run".
+    capture['children'][label]['entered'] = True
+    qa_private_write(capture['directory'] / 'boundaries.json', qa_encoded(qa_boundaries(capture)))
+    return run(label, argv, cwd, seconds)
+
+
+def capture_qa_failure(capture, public, error):
+    """Private traceback tail only; the separate sealer admits ownership."""
+    if public.get('status') != 'preparation_failed' or public.get('stage') not in QA_FAILURE_STAGES:
+        raise RuntimeError('Only QA profile failures can be captured')
+    directory = capture['directory']
+    formatted = ''.join(traceback.TracebackException.from_exception(
+        error, limit=32, capture_locals=False, max_group_width=4, max_group_depth=4).format()).encode()
+    retained = formatted[-QA_TRACEBACK_LIMIT:]
+    qa_private_write(directory / 'traceback.txt', retained)
+    value = {'schema': 1, 'status': 'qa_preparation_failed', 'stage': public['stage'],
+             **capture['context'], 'preparation_sha256': sha(PUBLIC / 'preparation.json'),
+             'source_snapshot_sha256': capture['source_snapshot_sha256'],
+             'boundaries_sha256': sha(directory / 'boundaries.json'),
+             'traceback': {'total_bytes': len(formatted), 'retained_bytes': len(retained),
+                           'truncated': len(retained) != len(formatted),
+                           'sha256': hashlib.sha256(retained).hexdigest()}}
+    qa_private_write(directory / 'capture.json', qa_encoded(value))
 
 
 def qa_build_contract():
@@ -71,6 +155,8 @@ def main():
     PUBLIC.mkdir(exist_ok=True)
     public = {'schema': 1, 'status': 'preparation_failed', 'browser_phases_started': False, 'stage': 'source-preservation', 'source_files_checked': 0, 'frontend_preserved': False, 'artifacts_uploaded': False}
     write(PUBLIC / 'preparation.json', public)
+    qa_capture = None
+    qa_profile_active = False
     try:
         verify_frontend()
         before = source_snapshot()
@@ -136,13 +222,23 @@ def main():
         if os.environ.get('SELECTED_BATCH', 'all') in ['all', 'public-upload']:
             public['stage'] = 'public-upload-profile'
             write(PUBLIC / 'preparation.json', public)
+            qa_profile_active = True
+            qa_capture = begin_qa_failure_capture(before)
             spec = importlib.util.spec_from_file_location('hosted_public_upload_profile', ROOT / 'scripts/ci/hosted-public-upload-profile.py')
             profile = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(profile)
             def verify_source():
                 if source_snapshot() != before:
                     raise RuntimeError('Frozen source changed during public upload preparation')
-            public_upload_profile = profile.prepare(ROOT, STAGE, run, verify_source)
+            def profile_progress(stage):
+                if stage not in profile.PUBLIC_STAGES:
+                    raise RuntimeError('Unknown public upload preparation boundary')
+                public['stage'] = stage
+                write(PUBLIC / 'preparation.json', public)
+            def profile_run(label, argv, cwd, seconds):
+                return run_qa_failure_child(qa_capture, label, argv, cwd, seconds)
+            public_upload_profile = profile.prepare(ROOT, STAGE, profile_run, verify_source, profile_progress)
+            qa_profile_active = False
         verify_frontend()
         if source_snapshot() != before:
             raise RuntimeError('Frozen source changed at the final boundary')
@@ -167,6 +263,11 @@ def main():
     except Exception as error:
         public['error_class'] = type(error).__name__
         write(PUBLIC / 'preparation.json', public)
+        if qa_profile_active and qa_capture is not None:
+            try:
+                capture_qa_failure(qa_capture, public, error)
+            except Exception:
+                pass  # Diagnostic capture must not replace the preparation failure.
         return 1
 
 

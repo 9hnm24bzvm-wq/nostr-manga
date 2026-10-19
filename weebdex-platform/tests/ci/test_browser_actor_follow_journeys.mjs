@@ -104,10 +104,20 @@ test('current actor-follow runtime source has a separate exact association witho
     ['timeout-minutes: 30', 'timeout-minutes: 245', 1],
     ['--budget-seconds 3600', '--budget-seconds 14400', 1],
   ];
+  const sealedQaWorkflowSha = '4a62a482ec907923bb830a41f3524e21f7f23ac6868aedac76caed483feffa3e';
+  const sealedQaWorkflowBlocks = ['        id: preparation\n', "      - name: Seal current QA preparation failure diagnostics\n        id: qa-preparation-seal\n        if: always() && steps.preparation.outcome == 'failure' && steps.evidence-validation.outcome == 'success' && hashFiles('weebdex-platform/.build/hosted-browser/qa-preparation-failure/capture.json') != ''\n        timeout-minutes: 2\n        run: |\n          set -euo pipefail\n          PREP_SHA=\"$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256((Path(\"weebdex-platform/ci-sanitized-evidence\") / \"preparation.json\").read_bytes()).hexdigest())')\"\n          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --expected-preparation-sha256 \"$PREP_SHA\"\n          SEALED_SHA=\"$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256(Path(\"weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json\").read_bytes()).hexdigest())')\"\n          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --validate --expected-preparation-sha256 \"$PREP_SHA\" --expected-sealed-sha256 \"$SEALED_SHA\"\n          printf 'sealed_sha256=%s\\n' \"$SEALED_SHA\" >> \"$GITHUB_OUTPUT\"\n      - name: Upload only the validated encrypted QA preparation failure\n        if: always() && steps.qa-preparation-seal.outcome == 'success' && steps.qa-preparation-seal.outputs.sealed_sha256 != ''\n        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2\n        with:\n          name: hosted-qa-preparation-sealed-${{ github.run_id }}-${{ github.run_attempt }}\n          path: weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json\n          if-no-files-found: error\n          retention-days: 1\n          include-hidden-files: false\n"];
   const normalizeWorkflow = input => {
-    const digest = hash(input);
-    assert([recoveryWorkflowSha, publicUploadWorkflowSha, currentApplicationWorkflowSha].includes(digest), 'Unknown workflow source profile');
+    let digest = hash(input);
+    assert([recoveryWorkflowSha, publicUploadWorkflowSha, currentApplicationWorkflowSha, sealedQaWorkflowSha].includes(digest), 'Unknown workflow source profile');
     let value = input;
+    if (digest === sealedQaWorkflowSha) {
+      for (const block of sealedQaWorkflowBlocks) {
+        assert.equal(value.split(block).length - 1, 1);
+        value = value.replace(block, '');
+      }
+      assert.equal(hash(value), currentApplicationWorkflowSha);
+      digest = currentApplicationWorkflowSha;
+    }
     if (digest === currentApplicationWorkflowSha) {
       const setupPython = "      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0\n        with:\n          python-version: '3.12.15'\n          architecture: x64\n          check-latest: false\n";
       assert.equal(value.split(setupPython).length - 1, 1);
@@ -160,6 +170,25 @@ test('current actor-follow runtime source has a separate exact association witho
     assert.equal(hash(value), priorDiagnosticValidatorSha);
     return value;
   };
+  // Only the exact fixed preparation-stage successor may reverse this one
+  // literal enum addition before the separately fenced native-title reversal.
+  const profileStageValidatorSha = '2fcb77caf7be6ee9b12f3c5ef40c7415653b54fd2ec13768a793168cecd4bf4e';
+  const profileStageAddition = ", 'complete',\n                            'public-upload-profile-preflight', 'public-upload-profile-native-off',\n                            'public-upload-profile-native-evidence', 'public-upload-qa-build',\n                            'public-upload-qa-source', 'public-upload-qa-receipt', 'public-upload-qa-graph',\n                            'public-upload-qa-record', 'public-upload-qa-final-source',\n                            'public-upload-qa-final-graph', 'public-upload-qa-seal',\n                            'public-upload-profile-restore'])";
+  const normalizeProfileStageValidator = input => {
+    const digest = hash(input);
+    assert([priorDiagnosticValidatorSha, nativeTitleValidatorSha, profileStageValidatorSha].includes(digest), 'Unknown preparation-stage evidence validator');
+    let value = input;
+    if (digest === profileStageValidatorSha) {
+      assert.equal(value.split(profileStageAddition).length - 1, 1);
+      value = value.replace(profileStageAddition, ", 'complete'])");
+      assert.equal(hash(value), nativeTitleValidatorSha);
+    }
+    return value;
+  };
+  const profileStageValidator = currentValidator;
+  currentValidator = normalizeProfileStageValidator(currentValidator);
+  assert.equal(normalizeProfileStageValidator(currentValidator), currentValidator);
+  assert.throws(() => normalizeProfileStageValidator(profileStageValidator.replace('def phase_list(value):', 'def phase_list_changed(value):')), /Unknown preparation-stage evidence validator/);
   const nativeTitleValidator = currentValidator;
   currentValidator = normalizeNativeTitleValidator(currentValidator);
   assert.equal(normalizeNativeTitleValidator(currentValidator), currentValidator);
