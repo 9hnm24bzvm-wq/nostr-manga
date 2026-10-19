@@ -1,0 +1,135 @@
+{
+  "records": [
+    {
+      "profile": "strict0",
+      "path": "strict0/cache-audit/26.json",
+      "sha256": "70cef3637d112d03ca2411904af3d71c0b172c87687a8e92f7652e63681c4db0",
+      "pid": 26,
+      "checked_node_mutations": 141,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "strict0",
+      "path": "strict0/cache-audit/34.json",
+      "sha256": "6fc3ba9ca0ac8679e9b4f93617696a2d67edab6fd5e835d519b6507324f0ed69",
+      "pid": 34,
+      "checked_node_mutations": 350,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "strict0",
+      "path": "strict0/cache-audit/6.json",
+      "sha256": "7077b498c43f8512bc68c8c5ecfa9357f5a90eb19c77dd9b3b81d0207736f051",
+      "pid": 6,
+      "checked_node_mutations": 7672,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "strict0",
+      "path": "strict0/cache-audit/65.json",
+      "sha256": "21b71229cd9015157eeb7ec0a60123737dc62bd0cfba168550bb56add56ca766",
+      "pid": 65,
+      "checked_node_mutations": 0,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "strict1",
+      "path": "strict1/cache-audit/26.json",
+      "sha256": "70cef3637d112d03ca2411904af3d71c0b172c87687a8e92f7652e63681c4db0",
+      "pid": 26,
+      "checked_node_mutations": 141,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "strict1",
+      "path": "strict1/cache-audit/34.json",
+      "sha256": "41366bc3e24ecae7bdced6edb0ca0a32b94dd6753dc1e48c92f7b470daf8c3ce",
+      "pid": 34,
+      "checked_node_mutations": 347,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "strict1",
+      "path": "strict1/cache-audit/6.json",
+      "sha256": "b93cd2cb18da9b8220d1486466ef68682f870ed89e11017c7c6a6efbb2cf4619",
+      "pid": 6,
+      "checked_node_mutations": 7876,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "strict1",
+      "path": "strict1/cache-audit/65.json",
+      "sha256": "21b71229cd9015157eeb7ec0a60123737dc62bd0cfba168550bb56add56ca766",
+      "pid": 65,
+      "checked_node_mutations": 0,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "vite0",
+      "path": "vite0/cache-audit/13.json",
+      "sha256": "dec3a3af540a2f3f99314a12603f56307fb11633627ef8619b08b9ec9d992066",
+      "pid": 13,
+      "checked_node_mutations": 3672,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "vite0",
+      "path": "vite0/cache-audit/6.json",
+      "sha256": "57177228785ecd01fa4c1aec32ffd09d98b24956ad40eb05c975989c5de50454",
+      "pid": 6,
+      "checked_node_mutations": 68,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "vite0",
+      "path": "vite0/cache-audit/72.json",
+      "sha256": "8cbcc504ad5b922fba431f379f23212bcca5e95c8afefdce5085e0303a0e62b9",
+      "pid": 72,
+      "checked_node_mutations": 5,
+      "sampled_owned_pid": false
+    },
+    {
+      "profile": "vite0",
+      "path": "vite0/cache-audit/79.json",
+      "sha256": "6881a46c9ec9e1d4acd18aac9beaa3af5dfc5b5067ef88830b9d6d6ff07c6339",
+      "pid": 79,
+      "checked_node_mutations": 9,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "vite1",
+      "path": "vite1/cache-audit/13.json",
+      "sha256": "910885e99359f5820d54e3241a2f99d241bdb34bdec9c2df70dedac15cee974a",
+      "pid": 13,
+      "checked_node_mutations": 3670,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "vite1",
+      "path": "vite1/cache-audit/6.json",
+      "sha256": "57177228785ecd01fa4c1aec32ffd09d98b24956ad40eb05c975989c5de50454",
+      "pid": 6,
+      "checked_node_mutations": 68,
+      "sampled_owned_pid": true
+    },
+    {
+      "profile": "vite1",
+      "path": "vite1/cache-audit/74.json",
+      "sha256": "ff878dd30914f1d0b4edb27d9c76734077ef9096453f574358b1d71b58749738",
+      "pid": 74,
+      "checked_node_mutations": 5,
+      "sampled_owned_pid": false
+    },
+    {
+      "profile": "vite1",
+      "path": "vite1/cache-audit/81.json",
+      "sha256": "14b8aee7b33b4e011d7538ec15648ebb46bfb402a6a6988dee35ffc7f1b9ad02",
+      "pid": 81,
+      "checked_node_mutations": 9,
+      "sampled_owned_pid": true
+    }
+  ],
+  "sampled": 14,
+  "unattributed_short_lived_records": 2,
+  "scope": "All records enforce the exact three roots and report zero writes; unsampled PIDs are not assigned guessed commands or births."
+}

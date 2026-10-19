@@ -1,0 +1,101 @@
+{
+  "planned_offers": {
+    "save": 3,
+    "api": 9,
+    "image": 62,
+    "api_image": 1,
+    "social": 1,
+    "upload": 1,
+    "sync": 1,
+    "library_read": 1
+  },
+  "max_offers": 2000000,
+  "origins": {
+    "api": "http://127.0.0.1:58200",
+    "peer": "http://127.0.0.1:58201",
+    "managed_nginx": "http://127.0.0.1:58202"
+  },
+  "profile": "all-operations",
+  "rates_per_second": {
+    "save": 0.12,
+    "api": 0.405,
+    "image": 3.087,
+    "api_image": 0.001,
+    "social": 0.002,
+    "upload": 0.0001,
+    "sync": 5e-05,
+    "library_read": 0.01
+  },
+  "duration_s": 20.0,
+  "readers": {
+    "total": 2,
+    "histories_30000": 2,
+    "histories_500000": 0
+  },
+  "pageview_equivalent_rate": 0.135,
+  "api_calls_per_page": 3,
+  "seed": 20261010,
+  "timed_image_hashing": false,
+  "workload_scope": "synthetic original-node public seams; not integrated browser/local-progress demand",
+  "demand_accounting": {
+    "accounting_month_days": 30,
+    "requested_monthly": {
+      "image_deliveries": 8000000000,
+      "page_load_events": 350000000,
+      "logical_progress_saves": 300000000,
+      "library_bytes_decimal": 100000000000000
+    },
+    "requested_average_per_s": {
+      "image_deliveries": 3086.41975308642,
+      "page_load_events": 135.03086419753086,
+      "logical_progress_saves": 115.74074074074075
+    },
+    "default_progress_destination": "device IndexedDB; zero progress HTTP writes",
+    "default_progress_network_writes_per_s": 0,
+    "optional_public_sync_publications_per_s": null,
+    "synthetic_original_node": {
+      "durable_library_http_saves_per_s": 0.12,
+      "catalogue_http_reads_per_s": 0.405,
+      "page_equivalents_per_s": 0.135,
+      "assumed_http_reads_per_page": 3,
+      "public_profile_sync_operations_per_s": 5e-05
+    },
+    "qualifies_integrated_app_demand": false,
+    "unresolved_inputs": [
+      "Meaning of page loads versus reader page positions",
+      "Measured integrated-route API/image fan-out",
+      "Image byte distribution and measured hot/cold/cache behavior",
+      "Optional public-library sync consent, publication cadence and snapshot bytes",
+      "Peak and latency objectives; representative 100TB working set"
+    ]
+  },
+  "qualification_contract": "strict-in-window",
+  "dispatch_start_policy": "strict-window-start-v1",
+  "completion_bounds": {
+    "request_timeout_s": 30,
+    "closing_timeout_s": 60,
+    "maximum_scheduling_lateness_s": 1,
+    "latency_slo_declared": false
+  },
+  "upload_semantics": "unique JPEG comment variant, signed original upload, signed chapter publication, approved peer import; retained on both nodes for the full observation",
+  "max_new_upload_bytes_per_node": 536870912,
+  "hot_fraction": 0.2,
+  "hot_probability": 0.8,
+  "peak": {
+    "start": 0,
+    "duration": 0,
+    "multiplier": 1
+  },
+  "pending_limit": 512,
+  "image_workers": 4,
+  "aggregate_image_inflight": 256,
+  "reader_model": "seeded round-robin synthetic contention, not human think time",
+  "semantics": "save acceptance requires signed durable HTTP acknowledgement for the exact event; image acceptance requires complete body length/mime; sync acceptance requires terminal completed job and exact imported event",
+  "caveats": [
+    "All but the final manifest image are static assets; the final image is the decoded-image-preserving JPEG metadata-variant source for fresh signed publication/import. Corpus size and skew are recorded, never treated as cold-storage proof.",
+    "Page equivalents use an explicit synthetic API fan-out assumption, not measured browser/HTML navigation. Separate library_read operations fetch a signed head, root and up to three chunks; they are selective restores, not full-tree downloads.",
+    "The save lane is an explicitly synthetic durable original-node library write stream; default integrated reader progress remains device-local and implies zero network writes. The sync lane imports public profiles, not optional reader-library snapshots.",
+    "Finite windows begin each enabled lane at time0; rare lanes round up and actual offered counts/rates are reported.",
+    "No real WAN, TLS, cold100TB corpus, independent generator host or capacity claim follows from harness preparation."
+  ]
+}

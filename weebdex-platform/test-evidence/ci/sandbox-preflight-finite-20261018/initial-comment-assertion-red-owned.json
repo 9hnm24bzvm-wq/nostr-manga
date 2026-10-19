@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "weebdex-platform/tests/ci/test_sandbox_preflight.mjs"
+  ],
+  "exitCode": 1,
+  "elapsedSeconds": 0.155,
+  "timeout": false,
+  "browserLaunched": false
+}

@@ -1,0 +1,81 @@
+{
+  "excluded": "Runtime databases/configs/scratch/query payloads, raw stdout, environment values, archives/tool binaries and private keys.",
+  "files": [
+    {
+      "bytes": 3490,
+      "path": "README.md",
+      "sha256": "c181c84d2967f6d7df912a1583ea88a985b1a48ebbd14baa1d1d803e8718d713"
+    },
+    {
+      "bytes": 5422,
+      "path": "attempt-history.json",
+      "sha256": "fb833cfdce6b280854a4a6784d754dcf7caa525860935c99acf7e9d28cea3017"
+    },
+    {
+      "bytes": 2518,
+      "path": "cleanup-controls-verbatim.py",
+      "sha256": "de061f30f02d588ea8a827c674c97218ae7d64d05d287357c410ed868c94bda3"
+    },
+    {
+      "bytes": 528,
+      "path": "cleanup-controls.log",
+      "sha256": "1681b6a3f40c1450920526f25eac4e0693418052b2819560b05db5ef921193ef"
+    },
+    {
+      "bytes": 2871,
+      "path": "cleanup-owned.py",
+      "sha256": "9d8aaf970c724c29a02b7867e00a8a0f524a9021569e7c3b64306b14d610de1a"
+    },
+    {
+      "bytes": 273,
+      "path": "exec-after-admission.py",
+      "sha256": "b3cfddffd668af41d352a4617a8f6aa6bc4cc7b2b9f5fe805107e21f8e4e010d"
+    },
+    {
+      "bytes": 178768,
+      "path": "installed-inventory.json",
+      "sha256": "e4cbc464100b9ad3fa27fba5a2ee391bace8dc391f085b87955e90756c804774"
+    },
+    {
+      "bytes": 6884,
+      "path": "launch-diagnostics-03.py",
+      "sha256": "15a16c59a8980fec58b7acd8c44c88885e121a1ff478f73004d0b2782b845182"
+    },
+    {
+      "bytes": 9612,
+      "path": "package-provenance.json",
+      "sha256": "b4fb7324d4d6231d097065752098ec7cf5d6364f3a5f6a65976bd68090d7d933"
+    },
+    {
+      "bytes": 5440,
+      "path": "result.json",
+      "sha256": "a6454db4f5b28ffc432ca4a1bc2f5ab6f95cb7d1a567bc768b58552d0186dd4b"
+    },
+    {
+      "bytes": 13452,
+      "path": "run-diagnostics-owned-03.py",
+      "sha256": "aa10cfabba5626bc7f2daf94a07a54000b4c09b46770e200d326f0922df7bcf3"
+    },
+    {
+      "bytes": 9730,
+      "path": "run-setup-owned.py",
+      "sha256": "7ac9bf4299456fcd2b55e7dbb950bc8163c2d23bef09a2f5ca392d6c9f7f8fd9"
+    },
+    {
+      "bytes": 7060,
+      "path": "setup.py",
+      "sha256": "c8a322123c8a135014014fecbf7f42d4ad6a8d57c026ae3b70fe0b151f06a7f0"
+    },
+    {
+      "bytes": 11374,
+      "path": "source-pins.json",
+      "sha256": "007f1d54897a30f65ad01ac38a8a42e122f90bb3882d35a094897de8f07e4f93"
+    },
+    {
+      "bytes": 2833,
+      "path": "test-methods.log",
+      "sha256": "334322c7d3b7b38e08c10e6b2462e61c30be630babd961d96fa0ec6c00166acc"
+    }
+  ],
+  "schema": 1
+}

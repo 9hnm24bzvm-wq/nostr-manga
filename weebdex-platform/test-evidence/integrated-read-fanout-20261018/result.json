@@ -1,0 +1,37 @@
+{
+  "schema": "integrated-read-fanout-finite-result-v1",
+  "sourceCommit": "c04e4324a1d75dd921f9fd2c7dd6a46016088d92",
+  "baselineCommit": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "sourceInputCount": 42,
+  "scenarioCount": 13,
+  "recipeSourcePins": 35,
+  "final": {
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "cleanup_verified": true,
+    "elapsed_seconds": 0.215
+  },
+  "initial": {
+    "tests": 7,
+    "passed": 6,
+    "failed": 1,
+    "scope": "Retained guarded reproduction of the initial incorrect canonical aggregate-cache assertion; raw assertion and log are retained. Initial full source bytes were not pinned, so no exact initial-source association is claimed.",
+    "correction": "Actual five-stage composed provider removes lastMangaId cache and rereads selector on each new mount."
+  },
+  "node": {
+    "version": "v24.19.0",
+    "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node"
+  },
+  "qualification": {
+    "finite_source_overlay_arithmetic_only": true,
+    "application_started": false,
+    "browser_started": false,
+    "database_started": false,
+    "network_fixture_started": false,
+    "load_executed": false,
+    "account_closure_implemented": false
+  },
+  "source_preserved": true
+}

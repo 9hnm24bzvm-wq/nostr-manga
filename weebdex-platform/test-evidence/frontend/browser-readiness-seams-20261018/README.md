@@ -1,0 +1,11 @@
+# Browser readiness finite evidence, 2026-10-18
+
+Source ed21d6421dff98553470cdd58d401d74877821c3:75/75 Node runner cases across7files pass under the existing20-second owned runner (1.068s, no stop/signals/survivors).54new cases across4files execute actual callbacks/helpers with explicit DOM/HTTP/clipboard/storage stand-ins. One existing legacy file internally checks17 helper cases but is already counted as one Node runner case; those17 are not added again.
+
+The exact original progress callback is retained red against the same new regression:1/6passes. Four wrong durable rows were actually accepted by the old predicate; the positive case additionally lacked the newly reported observed fields. The old wrong-chapter refusal already worked. The original wiring fixture is separately13/14 until it is given the explicit new helper boundary; all previous fixed-check assertions remain. Earlier65-case helper output is retained as initial-candidate, not presented as the final source qualification.
+
+All10 changed source files are pinned. Product components/canonical frontend and phase inventory are unchanged. Source imports only built-in Node modules and existing helper sources; no dependency install, cache copy or browser launch occurred. The separately attempted JSDOM source-accessibility suite was blocked at module startup by the absent restored jsdom27.0.1 path; its methods did not run and are excluded from the75 passing cases. No fixture or dependency substitute was used.
+
+No actual clipboard, key generation, browser permissions, IndexedDB, BroadcastChannel, application or database was exercised by these finite cases. The prepared E2E controls still require an independently accepted hosted run on their exact source. The current one-public-upload CI proposal does not run the ordinary account/local-library phases. Full app offline startup/image reading and simultaneous conflicting cross-tab writes remain outside this proof.
+
+Raw compressed logs are lossless. baseline-recipe records exact source substitution/URL resolution for the historical controls, without requiring those Git objects for normal CI test execution. The original source and existing historical evidence were not edited.

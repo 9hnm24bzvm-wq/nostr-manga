@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-concurrency=1",
+    "weebdex-platform/tests/ci/test_composed_production_aliases.mjs",
+    "weebdex-platform/tests/ci/test_native_settings_utility_sources.mjs",
+    "weebdex-platform/tests/ci/test_frontend_bootstrap.mjs",
+    "weebdex-platform/tests/ci/test_frontend_semantic_contracts.mjs",
+    "weebdex-platform/tests/ci/test_public_api_call_inventory.mjs",
+    "weebdex-platform/tests/ci/test_public_collection_contract.mjs",
+    "weebdex-platform/tests/ci/test_followed_lists_pagination.mjs",
+    "weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree",
+  "deadline_seconds": 30.0,
+  "elapsed_seconds": 1.827,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 6,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

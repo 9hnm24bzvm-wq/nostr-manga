@@ -1,0 +1,69 @@
+name: Hosted sandbox preflight
+
+# This dedicated branch cannot trigger the separate application E2E workflow.
+on:
+  push:
+    branches: [ci/browser-sandbox-preflight]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hosted-sandbox-preflight-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  sandbox:
+    # Only the named standard public runner; no self-hosted or security fallback.
+    if: github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && github.ref == 'refs/heads/ci/browser-sandbox-preflight'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      PYTHONDONTWRITEBYTECODE: '1'
+      NODE_OPTIONS: --max-old-space-size=512
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.19.0
+      - name: Install only the exact official browser tools and bundled Chromium
+        timeout-minutes: 12
+        run: |
+          mkdir -p weebdex-platform/.build/hosted-browser
+          npm ci --prefix .ci/browser --ignore-scripts --omit=optional --no-audit --no-fund --registry=https://registry.npmjs.org --cache weebdex-platform/.cache/sandbox-preflight-npm
+          node weebdex-platform/scripts/ci/browser-runtime.mjs --verify-hosted
+          node .ci/browser/node_modules/playwright/cli.js install --with-deps chromium
+          node weebdex-platform/scripts/ci/browser-runtime.mjs --record-hosted
+      - name: Prove fresh sandboxed browser context and data-document closure
+        id: probe
+        # Owner work remains90s +25s cleanup,120s hard total. This margin
+        # permits terminal-record finalization before the Actions deadline.
+        timeout-minutes: 3
+        run: |
+          set +e
+          report="$(python3 weebdex-platform/scripts/ci/run-sandbox-preflight.py --node "$(command -v node)")"
+          code=$?
+          set -e
+          printf '%s\n' "$report"
+          current_hash="$(printf '%s\n' "$report" | grep -E '^evidence_sha256=[0-9a-f]{64}$' || true)"
+          if [[ "$current_hash" =~ ^evidence_sha256=[0-9a-f]{64}$ ]]; then
+            printf '%s\n' "$current_hash" >> "$GITHUB_OUTPUT"
+          fi
+          exit "$code"
+      - name: Validate the one closed sanitized preflight result
+        id: preflight-validation
+        if: always() && steps.probe.outputs.evidence_sha256 != ''
+        timeout-minutes: 1
+        run: python3 weebdex-platform/scripts/ci/run-sandbox-preflight.py --validate --expected-sha256 "${{ steps.probe.outputs.evidence_sha256 }}"
+      - name: Upload only the sanitized preflight JSON
+        if: always() && steps.preflight-validation.outcome == 'success' && steps.probe.outputs.evidence_sha256 != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hosted-sandbox-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: weebdex-platform/ci-evidence/sandbox-preflight.json
+          if-no-files-found: error
+          retention-days: 1
+          include-hidden-files: false

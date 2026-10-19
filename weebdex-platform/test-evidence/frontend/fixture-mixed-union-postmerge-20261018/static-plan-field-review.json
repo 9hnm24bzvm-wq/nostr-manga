@@ -1,0 +1,51 @@
+{
+  "base": "f1d54c027402829ca76fd3cf2f228a92ceef973a",
+  "sourceAccountingCommit": "b7316fd9556ac2768fe61b71522d847f8d0b6e9f",
+  "sourceMixedSha256": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b",
+  "expectedFixtureConstruction": "Copy original v1 unchanged fields, explicitly enumerate reviewed scope/accounting fields and two caveat edits; compare outside tests to actual exact CLI",
+  "oldFixtureSha256": "50303533772c9454f367109b3267a6671828524f2387d8853198c3bff26e034f",
+  "newFixtureSha256": "630fad1bced464d773c2d6907b6c522fa531b05099bd45e1efb0727f8edc54ad",
+  "addedTopLevelFields": [
+    "workload_scope",
+    "demand_accounting"
+  ],
+  "allOtherPreviousTopLevelFieldsExceptCaveatsUnchanged": true,
+  "caveatDelta": {
+    "removed": [
+      "Pageviews mean scheduled catalogue/discovery API calls, not browser/HTML navigation. Separate library_read operations fetch a signed head, root and up to three chunks; they are selective restores, not full-tree downloads."
+    ],
+    "added": [
+      "Page equivalents use an explicit synthetic API fan-out assumption, not measured browser/HTML navigation. Separate library_read operations fetch a signed head, root and up to three chunks; they are selective restores, not full-tree downloads.",
+      "The save lane is an explicitly synthetic durable original-node library write stream; default integrated reader progress remains device-local and implies zero network writes. The sync lane imports public profiles, not optional reader-library snapshots."
+    ]
+  },
+  "monthSeconds": 2592000,
+  "monthlyInputs": {
+    "image_deliveries": 8000000000,
+    "page_load_events": 350000000,
+    "logical_progress_saves": 300000000,
+    "library_bytes_decimal": 100000000000000
+  },
+  "averageRationale": "Each monthly count divided by30*24*60*60; synthetic stream defaults remain120save/405API/135page-equivalent/3fanout/.05profile-sync",
+  "optionalPublicLibrarySyncRate": null,
+  "integratedDemandQualified": false,
+  "staticLegacyV1Preserved": true,
+  "testCodeDelta": "One versioned fixture basename only; exact default equality and enabled-observer-only delta assertions unchanged",
+  "developmentPlanProbe": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-B",
+      "bench/library-node/mixed.py",
+      "--plan",
+      "--duration",
+      "210",
+      "--qualification-contract",
+      "full-dispatch-bounded-completion"
+    ],
+    "exitCode": 0,
+    "actualParsedPlanEqualsExplicitProposal": true,
+    "testTimeGeneration": false
+  },
+  "historicalPlanRecovered": false,
+  "actualLoadRun": false
+}

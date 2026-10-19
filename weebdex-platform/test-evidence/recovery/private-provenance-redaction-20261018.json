@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "scope": "Seven existing protocol docs plus one explanatory verification note only",
+  "uniqueChatReferences": 27,
+  "uniqueLibraryReferences": 41,
+  "chatOccurrences": 35,
+  "libraryOccurrences": 46,
+  "files": [
+    {
+      "path": "manga-protocol-lab/docs/pending-blossom-scope-choice.md",
+      "originalSha256": "20d3bac7678bd0c22ac2d33b039ee22835a0c8b235a2579231f41db9d5129af2",
+      "redactedSha256": "ae9d383e98cc6219d9c3f75af4f3660211ff05e353fac831bd8e64f59427d639",
+      "chatOccurrences": 1,
+      "libraryOccurrences": 0,
+      "outsideExactReplacementsUnchanged": true
+    },
+    {
+      "path": "manga-protocol-lab/docs/pending-endpoint-discovery-choices.md",
+      "originalSha256": "c095308478fbf4e4acbd48419eb45d432606e6d76f9b0d59862b4f19d38964c4",
+      "redactedSha256": "5e86ebae5e5bec6013581f5cbcbadef554534828f82f119367ed0ef9885a2f41",
+      "chatOccurrences": 4,
+      "libraryOccurrences": 0,
+      "outsideExactReplacementsUnchanged": true
+    },
+    {
+      "path": "manga-protocol-lab/docs/rebuild/CHECKPOINTS.json",
+      "originalSha256": "33e513dde8eec0478b0a9c3197c1bf53152c0810de2a88abb1a1aeb5de07b363",
+      "redactedSha256": "61b67ea0a55f0641d643cc40eb73963292949e09beb5aaf1a18e17d63d141ce4",
+      "chatOccurrences": 15,
+      "libraryOccurrences": 41,
+      "outsideExactReplacementsUnchanged": true
+    },
+    {
+      "path": "manga-protocol-lab/docs/rebuild/PARITY-REFACTOR-BACKEND.md",
+      "originalSha256": "a97372f668e7e61f3766eaee4f33ff6581ab024055df184f28834571bc966532",
+      "redactedSha256": "d0a32735726095f40552a365cb0baa6b14de3933b7956f30c1d2b4636bcea2ef",
+      "chatOccurrences": 1,
+      "libraryOccurrences": 0,
+      "outsideExactReplacementsUnchanged": true
+    },
+    {
+      "path": "manga-protocol-lab/docs/rebuild/PARITY-REQUIREMENTS.md",
+      "originalSha256": "f16a74567bcb1a5174fa597ac9fd5b92ddf2a32662ab1a19d053bac656a781b8",
+      "redactedSha256": "1aa5b7c26aa5d35be5347798de4f053826158f36af858c61fc5910c6430f92bf",
+      "chatOccurrences": 2,
+      "libraryOccurrences": 0,
+      "outsideExactReplacementsUnchanged": true
+    },
+    {
+      "path": "manga-protocol-lab/docs/rebuild/STATUS.md",
+      "originalSha256": "2dcf24b8f996d53c9c60a1ad4a34a1ed4f77828657bd44b94893b5fcc8e316c6",
+      "redactedSha256": "4eef4affabd3ca6b8982948bb76a1227deaa92c442bb77bbca39e0e2804c7a30",
+      "chatOccurrences": 8,
+      "libraryOccurrences": 5,
+      "outsideExactReplacementsUnchanged": true
+    },
+    {
+      "path": "manga-protocol-lab/docs/rebuild/requirements-baseline/spec.md",
+      "originalSha256": "641f99878ba096e5c3c42081b66862e5ea54a124a2d0a5e56d21c87250cf08bf",
+      "redactedSha256": "2c9a294387d75565cb4e840dad5e4aaa00615babeb60e58d3359598072b1e4ad",
+      "chatOccurrences": 4,
+      "libraryOccurrences": 0,
+      "outsideExactReplacementsUnchanged": true
+    }
+  ],
+  "technicalContentUnchangedOutsideExactReplacements": true,
+  "historyRewritten": false,
+  "oldPublishedVersionsStillRetainReferences": true,
+  "credentialsOrAccountCompromiseClaimed": false
+}

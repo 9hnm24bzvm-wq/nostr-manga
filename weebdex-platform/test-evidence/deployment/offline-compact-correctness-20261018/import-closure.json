@@ -1,0 +1,8 @@
+{
+  "bench/library-node/run.py": "3cc47dc190c812e4ba7d35f247d102905dddf3f88259d223921c64d0c90f522a",
+  "src/cbor_profile.py": "67f3e76c18b01b291aac082428b22dfef50c41182685d24f7b039c04abf106f9",
+  "src/library_records.py": "7b7fece7acc665e0513d365ca950be715db4f19178a5b5945699f28b874d76a4",
+  "src/mangadex_migration.py": "c7f17f8ecebb7a867648b03f26c24e0ebb1dab6942552793a5b90a91d17fff33",
+  "src/operator_json.py": "33bd92d454451dc2c629dbcedb3640eaa6dd1d2ce6eef6252de605b17f24cb19",
+  "src/postgres_migration.py": "da585e0541c5189302a9dcb4ae4bf41defbdf80d86bc56bd1914c94b0664c655"
+}

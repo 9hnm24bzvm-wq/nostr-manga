@@ -1,0 +1,8 @@
+{
+  "source": "Authenticated GitHub job-log connector for job117736576998/run39148301394/attempt1",
+  "rawLogBytes": 23806,
+  "rawLogSha256": "9866e4607c0fc61309699d83844548276da30347af0025613a30f60c4b5b2a60",
+  "rawLogPublished": false,
+  "rawBrowserOrFixtureLogsAvailable": false,
+  "sanitizedArtifactMembersArePrimaryFailureEvidence": true
+}

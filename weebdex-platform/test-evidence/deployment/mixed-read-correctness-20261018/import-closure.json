@@ -1,0 +1,12 @@
+{
+  "bench/library-node/mixed.py": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b",
+  "bench/library-node/mixed_metrics.py": "304b6aefdd8d04e0c4dd53fa4b5ec50bec10a5975f24d8601041d0c70bc04900",
+  "bench/library-node/process_metrics.py": "ae0e673a2f52a55610acb1dd69c771d1b0c63c8b01d09ba82e34193cce9c816b",
+  "bench/library-node/run.py": "3cc47dc190c812e4ba7d35f247d102905dddf3f88259d223921c64d0c90f522a",
+  "bench/library-node/test_mixed_reads.py": "4cf3d84c118a22016d18faec0bd7c6e57bb7d8abe091f5a49f48a997a400e59f",
+  "src/cbor_profile.py": "67f3e76c18b01b291aac082428b22dfef50c41182685d24f7b039c04abf106f9",
+  "src/library_records.py": "7b7fece7acc665e0513d365ca950be715db4f19178a5b5945699f28b874d76a4",
+  "src/mangadex_migration.py": "c7f17f8ecebb7a867648b03f26c24e0ebb1dab6942552793a5b90a91d17fff33",
+  "src/operator_json.py": "33bd92d454451dc2c629dbcedb3640eaa6dd1d2ce6eef6252de605b17f24cb19",
+  "src/postgres_migration.py": "da585e0541c5189302a9dcb4ae4bf41defbdf80d86bc56bd1914c94b0664c655"
+}

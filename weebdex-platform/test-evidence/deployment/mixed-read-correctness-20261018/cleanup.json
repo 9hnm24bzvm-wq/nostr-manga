@@ -1,0 +1,17 @@
+{
+  "correctnessGateReleased": true,
+  "error": null,
+  "forced": false,
+  "listenerGateReleased": true,
+  "ownedBirths": 1,
+  "ports": [
+    {
+      "closed": true,
+      "port": 51145
+    }
+  ],
+  "remaining": [],
+  "retainedOutputs": true,
+  "unconfirmedBirths": [],
+  "verifiedStopped": true
+}

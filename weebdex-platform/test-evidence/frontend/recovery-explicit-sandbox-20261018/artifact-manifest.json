@@ -1,0 +1,26 @@
+{
+  "README.md": {
+    "bytes": 437,
+    "sha256": "9dd6ad3edd3b671cc287ba8e3c83a4f7c0b2f38b59331e2b28404560ae0bc0d5"
+  },
+  "baseline-owned.json": {
+    "bytes": 327,
+    "sha256": "a601ef10b1d1aff7482526d7388fbede6ad1a20706281a993c8f9ee2916eeeaa"
+  },
+  "baseline.log": {
+    "bytes": 881,
+    "sha256": "de7e9173fee27fa57c45e3fcc8478a8e502ea04f2077dedd81c3792a8fc70f16"
+  },
+  "green-owned.json": {
+    "bytes": 327,
+    "sha256": "f70e1e1f083c78efac5224c7eb9346ef871eacf3c719bf80a62042816a88bbd6"
+  },
+  "green.log": {
+    "bytes": 98,
+    "sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+  },
+  "result.json": {
+    "bytes": 1680,
+    "sha256": "59bd4148a996d77db778a909260c493783023423fc425fd742b45775d6ffe261"
+  }
+}

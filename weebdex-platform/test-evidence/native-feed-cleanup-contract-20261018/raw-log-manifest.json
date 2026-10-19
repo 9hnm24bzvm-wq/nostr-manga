@@ -1,0 +1,26 @@
+{
+  "baseline.log.gz": {
+    "rawBytes": 1091,
+    "rawSha256": "778fe5f962ee4c6d5a659dd441094648329833a0fdef9888ad71b0e91dc885f8",
+    "gzipBytes": 603,
+    "gzipSha256": "89c655707b121e7f8732ace3d40d886ae2a187cdf88036cbf7f53e75821f2c26"
+  },
+  "baseline-initial-path-error.log.gz": {
+    "rawBytes": 1232,
+    "rawSha256": "25f549f64a8afbbbb33be6276b8ba1a1cf2fd6214f862a7b29881150b4665ffa",
+    "gzipBytes": 595,
+    "gzipSha256": "81a29b53ffea52c7064d225d0d7d31ac42fb9ea16d7288b9734bf41d0edf717e"
+  },
+  "native.log.gz": {
+    "rawBytes": 2309,
+    "rawSha256": "17e237feada89a064affb20d4fbeadcceeb633d139a34a04e66527fda4d10aeb",
+    "gzipBytes": 537,
+    "gzipSha256": "167cd5e7ecb9743666957040f552819c92f1f9c562f9fcd7c4815ed62becdad4"
+  },
+  "selected.log.gz": {
+    "rawBytes": 8965,
+    "rawSha256": "8a5967a9a6f7a5309c49fb17913cc447342d0f21df703949306217c7380fe571",
+    "gzipBytes": 1635,
+    "gzipSha256": "0a7d30ad4fa6c45421fabded1f198f2350450f815b58748a7727e104aff1fb24"
+  }
+}

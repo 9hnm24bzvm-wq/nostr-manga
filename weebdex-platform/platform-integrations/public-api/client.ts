@@ -11,7 +11,18 @@ export class PublicApiClient {
  constructor(private readonly transport:Transport=fetchTransport()){}
  private path(path:string,query?:URLSearchParams){const encoded=query?.toString().replace(/^\?/,'');return path+(encoded?'?'+encoded:'');}
  async entity(path:string,type:ResourceType,query?:URLSearchParams,signal?:AbortSignal):Promise<Response<Entity>>{const result=await this.transport({path:this.path(path,query),signal});if(result.status<200||result.status>=300)return result as Response<Entity>;const body=record(result.body,'entity envelope');if(body.result!=='ok'||body.response!=='entity')throw new PublicApiContractError('Invalid entity response envelope');resource(body.data,type);return result as Response<Entity>;}
- async collection(path:string,type:ResourceType,query?:URLSearchParams,signal?:AbortSignal):Promise<Response<Collection>>{const result=await this.transport({path:this.path(path,query),signal});if(result.status<200||result.status>=300)return result as Response<Collection>;const body=record(result.body,'collection envelope');if(body.result!=='ok'||body.response!=='collection'||!Array.isArray(body.data)||!['total','limit','offset'].every(key=>Number.isSafeInteger(body[key])&&Number(body[key])>=0))throw new PublicApiContractError('Invalid collection response envelope');for(const row of body.data)resource(row,type);return result as Response<Collection>;}
+ async collection(path:string,type:ResourceType,query?:URLSearchParams,signal?:AbortSignal):Promise<Response<Collection>>{
+  const result=await this.transport({path:this.path(path,query),signal});
+  if(result.status<200||result.status>=300)return result as Response<Collection>;
+  const body=record(result.body,'collection envelope');
+  if(body.result!=='ok'||body.response!=='collection'||!Array.isArray(body.data)||!['total','limit','offset'].every(key=>Number.isSafeInteger(body[key])&&Number(body[key])>=0))throw new PublicApiContractError('Invalid collection response envelope');
+  // A relation page may contain a byte-bounded prefix rather than a full page.
+  // It must still fit its declared row bounds, and no resource may appear twice.
+  if(body.data.length>Number(body.limit)||body.data.length>Math.max(0,Number(body.total)-Number(body.offset)))throw new PublicApiContractError('Public collection rows exceed their declared page bounds');
+  const seen=new Set<string>();
+  for(const value of body.data){const row=resource(value,type),id=publicUuid(row.id);if(seen.has(id))throw new PublicApiContractError('Public collection returned a duplicate resource UUID');seen.add(id);}
+  return result as Response<Collection>;
+ }
  manga(id:string,query?:URLSearchParams,signal?:AbortSignal){return this.entity(`/manga/${publicUuid(id)}`,'manga',query,signal);}
  chapter(id:string,query?:URLSearchParams,signal?:AbortSignal){return this.entity(`/chapter/${publicUuid(id)}`,'chapter',query,signal);}
  cover(id:string,signal?:AbortSignal){return this.entity(`/cover/${publicUuid(id)}`,'cover_art',undefined,signal);}

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "repository": "9hnm24bzvm-wq/nostr-manga",
+  "branch": "ci/browser-failure-diagnostics",
+  "sourceCommit": "9feba101f8bb1bda487d1df56a5952151d9f5022",
+  "remoteCommit": "323d0990101e6b6a21328b252444c68060ecb97f",
+  "sourceTree": "8df9b2ef48f11d5e8f5f9b3e343f54eaa464007c",
+  "runId": 39142927874,
+  "runURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/39142927874",
+  "attempt": 1,
+  "status": "completed",
+  "conclusion": "failure",
+  "selectedBatch": "public-upload",
+  "trigger": "one authorized push",
+  "preparationPassed": true,
+  "nativeFeedTestExitCode": 0,
+  "nativeFeedMeasurement": {
+    "scenario": "compact-feed505-plus10000-metadata",
+    "baselineOutcome": "query-canceled",
+    "baselineMs": 5001,
+    "batchedFirstPageMs": 210,
+    "all505IdsReached": true,
+    "bilingual506Preserved": true,
+    "canonicalSampleParity": true,
+    "visibilityWithdrawalsVerified": true,
+    "statementTimeoutUnchanged": true
+  },
+  "outerOwnedCleanupVerified": true,
+  "fixtureCleanupAdapterVerified": false,
+  "fixturePrivateReceiptRetainedInArtifact": false,
+  "browserStep": "skipped",
+  "browserStarted": false,
+  "diagnosis": "The current adapter accepts exactly two cleanup keys, while the current producer writes fifteen lifecycle fields. This deterministically rejects the actual producer schema; private runner cleanup receipt was not uploaded, so its individual fields cannot be re-read after the run.",
+  "artifact": {
+    "id": 12142244217,
+    "name": "hosted-browser-evidence-39142927874-1",
+    "zipBytes": 891,
+    "zipSha256": "6a387741225fbd8edf89efdb1cb416642d4169bdb596b37dac089f1876e546ea",
+    "members": [
+      {
+        "name": "preparation.json",
+        "bytes": 1360
+      }
+    ],
+    "expiresUTC": "2026-10-19T16:11:12Z"
+  },
+  "rerunPerformed": false,
+  "startedUTC": "2026-10-18T15:59:13Z",
+  "completedUTC": "2026-10-18T16:11:15Z",
+  "observedDurationSeconds": 722,
+  "scope": "One authorized push-run on the be283 product baseline plus five reviewed CI-only changes. Current cc5 recovery client changes were outside this run.",
+  "sandboxedBrowserLaunchAttempted": false,
+  "sandboxSupportEstablished": false,
+  "rawJobLogPublished": false,
+  "allBrowserJourneyAssertionsUnexecuted": true
+}

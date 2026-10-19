@@ -25,6 +25,22 @@ class MixedHarness(unittest.TestCase):
         self.assertFalse(value['completion_bounds']['latency_slo_declared'])
         self.assertTrue(all(value['rates_per_second'].values()))
 
+    def test_requested_logical_demand_is_separate_from_synthetic_http_rates(self):
+        value=plan(arguments([])); accounting=value['demand_accounting']
+        self.assertAlmostEqual(accounting['requested_average_per_s']['image_deliveries'],3086.41975308642)
+        self.assertAlmostEqual(accounting['requested_average_per_s']['page_load_events'],135.030864197531)
+        self.assertAlmostEqual(accounting['requested_average_per_s']['logical_progress_saves'],115.740740740741)
+        self.assertEqual(accounting['requested_monthly']['library_bytes_decimal'],100_000_000_000_000)
+        self.assertEqual(accounting['default_progress_network_writes_per_s'],0)
+        self.assertIsNone(accounting['optional_public_sync_publications_per_s'])
+        self.assertFalse(accounting['qualifies_integrated_app_demand'])
+        self.assertEqual(accounting['synthetic_original_node']['durable_library_http_saves_per_s'],120)
+        self.assertEqual(accounting['synthetic_original_node']['assumed_http_reads_per_page'],3)
+        scaled=plan(arguments(['--scale','.01','--save-rate','7','--pageviews','2','--api-per-page','4']))
+        self.assertEqual(scaled['demand_accounting']['requested_monthly'],accounting['requested_monthly'])
+        self.assertEqual(scaled['demand_accounting']['synthetic_original_node']['durable_library_http_saves_per_s'],.07)
+        self.assertEqual(scaled['demand_accounting']['synthetic_original_node']['catalogue_http_reads_per_s'],.08)
+
     def test_cli_plan_and_execution_gate(self):
         command=[sys.executable, 'bench/library-node/mixed.py']
         result=subprocess.run(command+['--plan'],capture_output=True,text=True,check=True)
@@ -60,7 +76,22 @@ class MixedHarness(unittest.TestCase):
 
     def test_unique_jpeg_metadata_preserves_original_stream(self):
         manifest=Path('server/tests/fixtures/real-images/MANIFEST.json')
-        source=(manifest.parent/json.loads(manifest.read_text())['images'][-1]['file']).read_bytes()
+        item=json.loads(manifest.read_text())['images'][-1]
+        path=Path(os.environ.get('MIXED_JPEG_SOURCE',str(manifest.parent/item['file'])))
+        if not path.is_file():
+            self.skipTest('Optional retained JPEG absent; set MIXED_JPEG_SOURCE to its verified local path')
+        source=path.read_bytes()
+        self.assertEqual(len(source),item['bytes'])
+        self.assertEqual(hashlib.sha256(source).hexdigest(),item['sha256'])
+        self.assert_jpeg_variant_preserves_source(source)
+
+    def test_unique_synthetic_jpeg_metadata_preserves_original_stream(self):
+        # The owned synthetic seam remains available without optional image data.
+        from PIL import Image
+        stream=io.BytesIO(); Image.new('RGB',(2,2),(11,22,33)).save(stream,format='JPEG')
+        self.assert_jpeg_variant_preserves_source(stream.getvalue())
+
+    def assert_jpeg_variant_preserves_source(self,source):
         a=jpeg_variant(source,19,1);b=jpeg_variant(source,19,2)
         self.assertNotEqual(hashlib.sha256(a).digest(),hashlib.sha256(b).digest())
         self.assertEqual(a[:4], b'\xff\xd8\xff\xfe')
@@ -78,7 +109,7 @@ class MixedHarness(unittest.TestCase):
         self.assertIsNone(Histogram().result()['p99_ms'])
 
 class ControlledHttpWorkload(unittest.IsolatedAsyncioTestCase):
-    async def run_fixture(self, delay, closing=1, status=200, users=1):
+    async def run_fixture(self, delay, closing=1, status=200, users=1, verification_failure=False):
         import aiohttp
         from aiohttp import web
         received=[]
@@ -100,6 +131,9 @@ class ControlledHttpWorkload(unittest.IsolatedAsyncioTestCase):
                 async def operation(kind,sequence,user):
                     async with session.post(f'http://127.0.0.1:{port}/save',json={'sequence':sequence,'user':user}) as response:
                         value=await response.json()
+                        if verification_failure:
+                            error=RuntimeError('controlled response verification failure')
+                            error.status=response.status; error.response_verification=True; raise error
                         if response.status!=200 or value.get('ack')!=sequence:
                             error=RuntimeError('no exact HTTP acknowledgement');error.status=response.status;raise error
                         return response.status
@@ -146,13 +180,28 @@ class ControlledHttpWorkload(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result['outstanding_at_window_end'],1)
         self.assertTrue(any(row['outcome']=='unacknowledged_or_error' for row in records))
 
+    async def test_verification_failure_preserves_200_without_acceptance(self):
+        result,received,records=await self.run_fixture(0,verification_failure=True)
+        lane=result['operations']['save']; counts=lane['counts']
+        self.assertEqual(len(received),1)
+        self.assertEqual(counts.get('accepted',0),0)
+        self.assertEqual(counts['errors'],1)
+        self.assertEqual(counts['error_reason_response_verification_http_200'],1)
+        self.assertEqual(lane['http_statuses'],{'200':1})
+        self.assertEqual(result['poisoned_readers'],[0])
+        errors=[row for row in records if row['outcome']=='unacknowledged_or_error']
+        self.assertEqual([row['status'] for row in errors],[200])
+
     async def test_http_rejection_poisoning_prevents_false_acceptance(self):
-        result,received,_=await self.run_fixture(0,status=503)
+        result,received,records=await self.run_fixture(0,status=503)
         counts=result['operations']['save']['counts']
         self.assertEqual(len(received),1)
         self.assertEqual(counts.get('accepted',0),0)
         self.assertEqual(counts['errors'],1)
         self.assertEqual(counts['error_reason_server_503'],1)
+        self.assertEqual(result['operations']['save']['http_statuses'],{'503':1})
         self.assertEqual(result['poisoned_readers'],[0])
+        errors=[row for row in records if row['outcome']=='unacknowledged_or_error']
+        self.assertEqual([row['status'] for row in errors],[503])
 
 if __name__=='__main__':unittest.main()

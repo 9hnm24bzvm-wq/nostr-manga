@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "sourceSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+  "progressMethod": "Execute unchanged new finite callback regression with only its source string supplied from exact baseline Git bytes. All test assertions retained. No original source file edited.",
+  "progressGeneratedHarnessSha256": "db9e91a966151b23608d3e4e9cb5742a814466cd63ff380734d1a11050355d96",
+  "newProgressRegressionSha256": "e04e2cc1461462eb42498a8c8bd4261dd0e427d06c557ecc6a8c500facde2572",
+  "wiringMethod": "Execute original fixed-check wiring fixture against new journey source; only relative import/file URLs are made absolute to retain their original resolution from the owned generated harness. The new helper boundary is absent in this original fixture.",
+  "wiringSourceSha256": "264321df786164d2bf5c79b1e2a210c7224a388145b6de568f28076d528f8940",
+  "wiringGeneratedHarnessSha256": "bb13c8ed29dc7eb74f1196592ab09f8810c0ba0eb2736751661342cf49d9288e"
+}

@@ -7,9 +7,11 @@ intents, native originals or the original module's durable state.
 
 `scripts/private-checkpoint.py` provides bounded planning, integrity verification
 and an explicitly enabled copy procedure. Its default is read-only. The finite
-tests use a synthetic command stand-in; **a real PostgreSQL backup/restore drill
-has not been performed by this change**. Qualify the procedure on an isolated
-staging installation before relying on it for production recovery.
+tests use a synthetic command stand-in. A later [real synthetic PostgreSQL17
+mechanics drill](../test-evidence/deployment/private-checkpoint-mechanics-20261018/README.md)
+verified actual dump/transactional restore and three tiny storage roots. That
+is not a full application or production recovery qualification. Qualify the
+procedure on an isolated staging installation before relying on it for recovery.
 
 ## Prerequisites and authority
 
@@ -53,7 +55,10 @@ staging installation before relying on it for production recovery.
   `--node-config /absolute/private/node.json` for an independently configured
   original node. A read-only client of a remote original node must obtain that
   node's separately authorized backup; this script refuses a missing local root.
-  Symlinks, hardlinked files and special files are refused.
+  Symlinks, hardlinked files and special files are refused. Both input runtime
+  configuration files must remain outside all copied roots; overlap is refused
+  before a dump or output creation. Unknown secrets placed among original bytes
+  cannot be recognized automatically: review those roots independently.
 
 ## 1. Establish a consistent, stopped checkpoint
 

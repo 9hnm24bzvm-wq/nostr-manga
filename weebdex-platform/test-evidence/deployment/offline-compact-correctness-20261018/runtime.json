@@ -1,0 +1,16 @@
+{
+  "actualAiohttp": "3.14.4",
+  "blockedEvents": [],
+  "fullRequirementsParity": false,
+  "historicalAiohttpPin": "3.13.5",
+  "offlineAuditHook": true,
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "scope": "in-memory canonical-codec/compaction equivalence only; no throughput, server, WAN, SQL or scaling qualification",
+  "sourceImportCount": 6,
+  "versions": {
+    "Pillow": "12.3.0",
+    "aiohttp": "3.14.4",
+    "cbor2": "5.6.5",
+    "coincurve": "21.0.0"
+  }
+}

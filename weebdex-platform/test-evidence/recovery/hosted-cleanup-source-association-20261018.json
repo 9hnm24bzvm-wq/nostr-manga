@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "publishedBase": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+  "publishedBaseTree": "9fad0a11e76c4ca2174b4d103dfc8238a0e7124f",
+  "composedSourceBeforeMetadata": "8e3ac2c0fcca987f50524990ca5361479f9fc112",
+  "composedTreeBeforeMetadata": "b6bf35f88c774373f3b96aa297df7f56c57d5aaa",
+  "applicationOrder": [
+    {
+      "original": "9b1a00e8a4cd21b26660014400b5dfb0c10d9c20",
+      "applied": "d6c46ed82bc7b0c0b3b11bd4734152e4313673e8",
+      "role": "reviewed source/evidence"
+    },
+    {
+      "original": null,
+      "applied": "3f389beb68cb1b273b8989e2b7349e6fe31b388e",
+      "role": "new normalized hosted-run evidence"
+    },
+    {
+      "original": "c963d383559769a97b7b0709499520adfbeac3f7",
+      "applied": "9c2da4a99f2017bfb7a3362481404d21f4155b18",
+      "role": "reviewed source/evidence"
+    },
+    {
+      "original": "c75f0c9c4551fede33fa71092f5fd9d47b26c522",
+      "applied": "8e3ac2c0fcca987f50524990ca5361479f9fc112",
+      "role": "reviewed source/evidence"
+    }
+  ],
+  "sourceManifest": "hosted-cleanup-current-source-pins-20261018.json",
+  "sourceManifestSha256": "f5ca924c16333431f9f51b774bb64a1eb4e3bb804cd31fc8d8b2c3ea70fd2899",
+  "sourcePins": 1265,
+  "changesFromPublishedCc5SourceManifest": [
+    {
+      "path": "weebdex-platform/docs/verification/api-feature-gap-audit-20261018.md",
+      "historicalSha256": "fb4df1e82c4d31f1bce3be8895d3951cc143b9c8f241b175c7b667afc394130f",
+      "currentSha256": "044922c6753c3950ad10fd4adfc18b751a7b9878c20d8a81cfa64f9f6f32d845"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+      "historicalSha256": "22c617e689c54df1c8af776d5df7cdb2b79ca8ea59e656cbdd8618205fbbd11c",
+      "currentSha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_feed_diagnostics.py",
+      "historicalSha256": "786c71228692f93efad49cb330e19ebcde15b658e24cdeac5e425f729134fe2a",
+      "currentSha256": "1101cbb285c830e4453903c16c6053fc545281b100c523ed0a1a670f686688f6"
+    }
+  ],
+  "historicalProductInputs": 922,
+  "unchangedHistoricalProductInputs": 918,
+  "historicalProductExceptions": [
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+      "historicalSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+      "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-journeys.mjs",
+      "historicalSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+      "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+      "historicalSha256": "22c617e689c54df1c8af776d5df7cdb2b79ca8ea59e656cbdd8618205fbbd11c",
+      "currentSha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c"
+    },
+    {
+      "path": "weebdex-platform/scripts/private-checkpoint.py",
+      "historicalSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+      "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+    }
+  ],
+  "historicalExecutionInputs": 1242,
+  "unchangedHistoricalExecutionInputs": 1228,
+  "historicalExecutionExceptions": [
+    {
+      "path": "manga-protocol-lab/bench/library-node/MIXED.md",
+      "historicalSha256": "f447c2263354dad6914c3f4ba7262de3b0a4490da2563ef65bfcfd215ca72504",
+      "currentSha256": "018559a05e4b4cb621b0b7c5c7bf86bc78b6673e5cf03d5bf3c6e4476fbf7547"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/README.md",
+      "historicalSha256": "cdbffc8497395a66eac4c36c981786858f22f0c5b862ee316af321f0239e1032",
+      "currentSha256": "205aa49ee3bce3e3b98c6dfdbbe8376aa452a2b7757db2f1ed1d7ca6d71dea3c"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/mixed.py",
+      "historicalSha256": "d5592e7a72b6828640bf89b54331996059389f7271a61ee7dcc795e661ae9d1d",
+      "currentSha256": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py",
+      "historicalSha256": "cc887d16336bdad53c1dfaccfea02c4ac9e010cf6c844ac3a0206e5aa1bc911f",
+      "currentSha256": "92c7d81ed72ccfa22b9610b1d91712579a4d272c2360d594a3c0973a4586cc04"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+      "historicalSha256": "77fe28fae8f9075c1fb18feeebe5f879bb0f10a355565f74902324cc68fb1374",
+      "currentSha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db"
+    },
+    {
+      "path": "manga-protocol-lab/scripts/bootstrap.sh",
+      "historicalSha256": "a4d56b91647d443223c4ddd2bf8682aa16811532bed55b34a6c8c141dbe1b384",
+      "currentSha256": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+      "historicalSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+      "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-journeys.mjs",
+      "historicalSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+      "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+      "historicalSha256": "22c617e689c54df1c8af776d5df7cdb2b79ca8ea59e656cbdd8618205fbbd11c",
+      "currentSha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c"
+    },
+    {
+      "path": "weebdex-platform/scripts/private-checkpoint.py",
+      "historicalSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+      "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+      "historicalSha256": "264321df786164d2bf5c79b1e2a210c7224a388145b6de568f28076d528f8940",
+      "currentSha256": "ba6c483dc1eb118d5a5345c5cfcd805494dd29af96dcad507e2be028abbab5e9"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+      "historicalSha256": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101",
+      "currentSha256": "1dd590c4c20aa71174bcaa4bfa523479bca1d3433e91bb03995af66046053bf1"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_feed_diagnostics.py",
+      "historicalSha256": "786c71228692f93efad49cb330e19ebcde15b658e24cdeac5e425f729134fe2a",
+      "currentSha256": "1101cbb285c830e4453903c16c6053fc545281b100c523ed0a1a670f686688f6"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_private_checkpoint.py",
+      "historicalSha256": "3767ddeb35f9e99af092d4e49b9177a8cf52f4c7bcfe3fc13acc2aebfd2a1c27",
+      "currentSha256": "98b284a1bf31a9b08b086e1d28a6026d9ca7cc25eeb5240e305386bd031cc886"
+    }
+  ],
+  "ciOnlyNativeQualificationPins": 19,
+  "ciOnlyQualificationDifferencesFromRecovery": [
+    {
+      "path": ".github/workflows/hosted-browser-e2e.yml",
+      "historicalSha256": "19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1",
+      "currentSha256": "df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py",
+      "historicalSha256": "1b5c78db398d2df758d043eee30032a311d8ef9926214c1784bc35ee596571a5",
+      "currentSha256": "e80ea2ad19ee9277be3b5f35efff8eee37f3f2d83e68dafea5550975bc7117df"
+    }
+  ],
+  "ciOnlyQualificationBoundary": "The 48-case CI validation includes 12 native cases and intentionally pins the separate CI workflow/profile-test pair. It is not a 48-case run of this recovery workflow. The two repaired native source/test files match c963 exactly.",
+  "currentRecoveryWorkflowEqualsPublishedCc5": true,
+  "currentNodeFiles": 133,
+  "currentPythonFiles": 9,
+  "canonicalFrontendTreeEqualsPublishedCc5": true,
+  "backendTreeEqualsPublishedCc5": true,
+  "actualApplicationCodeChangeAfterCc5": false,
+  "fullFrontendOrWholeSuiteRerun": false,
+  "metadataDocFreshnessUpdate": {
+    "path": "weebdex-platform/docs/verification/api-feature-gap-audit-20261018.md",
+    "sha256": "044922c6753c3950ad10fd4adfc18b751a7b9878c20d8a81cfa64f9f6f32d845",
+    "scope": "Labels cc5 prior hold and links the later unchanged mixed-read correctness receipt."
+  },
+  "terminalRetryEvidence": {
+    "path": "weebdex-platform/test-evidence/frontend/hosted-public-upload-retry-20261018/run.json",
+    "sha256": "d1fe10488aaf0118da9cbff8431ed368ce0814f1f38e4d0d75c076430e42c11d",
+    "sourceAssociation": "Retry source c963/tree3c5a matches the two repaired files in this recovery candidate; its complete CI tree differs from the recovery tree as recorded. No current application/browser inheritance."
+  }
+}

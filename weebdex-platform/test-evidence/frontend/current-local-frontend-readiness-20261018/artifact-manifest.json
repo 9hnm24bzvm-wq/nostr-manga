@@ -1,0 +1,29 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 1739,
+      "sha256": "047911bb4038c2b4653d1d82022909bcdc893b06051337ba531f634c522d4525"
+    },
+    "finite-owned.json": {
+      "bytes": 1060,
+      "sha256": "80d4c83e770a8aab8593e57851a3c6c7906daa806b66906bd5cb08d312119800"
+    },
+    "finite.log.gz": {
+      "bytes": 2006,
+      "sha256": "f4356e7c01b88986977353d7fa7718c2aa280c149dca8e25e6ff6e7ff87848ba"
+    },
+    "frontend-lock-archives.json": {
+      "bytes": 297225,
+      "sha256": "22b40fca6911c1f9bb23e3aee05dd7d6e91da0dda1d3726a085fd73278233a5e"
+    },
+    "restore-plan.json": {
+      "bytes": 7838,
+      "sha256": "1c950b2ba4824e3b0183a78209d94acba9b7b8f6d09ba9b4dd7eab44a596d61e"
+    },
+    "result.json": {
+      "bytes": 886,
+      "sha256": "4fb11f2f766548bf832e223b6b5084d843b9b5b67551e73063fc9a1f85bf02ac"
+    }
+  },
+  "excludesSelf": true
+}

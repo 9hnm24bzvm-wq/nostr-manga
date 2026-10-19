@@ -1,0 +1,76 @@
+{
+  "actualSourceHead": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "actualSourceTree": "59cbf855807428690c975bbbba31705aca03464d",
+  "approvedSourceTree": "59cbf855807428690c975bbbba31705aca03464d",
+  "approvedSourceVerified": true,
+  "cleanup": {
+    "correctnessGateReleased": true,
+    "error": null,
+    "forced": false,
+    "ownedBirths": 1,
+    "remaining": [],
+    "retainedOutputs": true,
+    "unconfirmedBirths": [],
+    "verifiedStopped": true
+  },
+  "cleanupSha256": "34cbc709eebe4d899f8e17e0cba8ea8346f19cc4bc73424c03f1b63647753be0",
+  "dependencyInventorySha256": "7e7c5c88bc831111cc7583dbc2d6706ca133a9cff2d427dfb8b54f1085c2dcca",
+  "dependencyInventoryUnchanged": true,
+  "driverSha256": "b72b6d952f6df7eecea57243aa84d955aebf4d3e5409c2a297ead2cf943c370f",
+  "forecastBytes": 1181159424,
+  "installedFilesVerifiedAfter": 41,
+  "installedFilesVerifiedBefore": 41,
+  "launcherSha256": "2fa41208eb226f5c26bf8af82855c7533d20bad59de480583b4470623e9f4aaf",
+  "limits": {
+    "cleanupPhaseBudgetSeconds": 25,
+    "floorFreeBytes": 4294967296,
+    "hostAvailableBytes": 2147483648,
+    "outputsBytes": 67108864,
+    "rssBytes": 1610612736,
+    "seconds": 120,
+    "workSeconds": 90
+  },
+  "maximumNamedAllocationBytes": 36864,
+  "maximumOwnedRssBytes": 312688640,
+  "minimumAvailableMemoryBytes": 8963936256,
+  "minimumFreeBytes": 30697668608,
+  "results": [
+    {
+      "completed_chapters": 30000,
+      "decoded_records_after": 469,
+      "decoded_records_before": 31712,
+      "identical_five_updates": true
+    },
+    {
+      "completed_chapters": 500000,
+      "decoded_records_after": 1843,
+      "decoded_records_before": 511202,
+      "identical_five_updates": true
+    }
+  ],
+  "returnCode": 0,
+  "runtime.jsonSha256": "c2a28fa92ede094afda57caf3dc3eb0107282feb0a366119e32baf301de835e1",
+  "schema": "offline-compact-correctness-v1",
+  "scope": "unchanged30k/500k in-memory correctness file, not benchmark/performance qualification",
+  "seconds": 5.209,
+  "sourceBase": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "sourceImportClosureSha256": "3691c3cd4b2fa007450cda56fd94ca662d539a5e8ae57547861bb2cee44d24c5",
+  "sourcePins": {
+    "manga-protocol-lab/bench/library-node/run.py": "3cc47dc190c812e4ba7d35f247d102905dddf3f88259d223921c64d0c90f522a",
+    "manga-protocol-lab/bench/library-node/test_compact.py": "0a2566c210af96e04d301b5745d6039063cdea27640872b459875743a14d9aa8",
+    "manga-protocol-lab/requirements.txt": "18f532a573b6fa96abcb0ad8e706d5a5ec9a1ccf3ca7557d280556f5136c5028",
+    "manga-protocol-lab/src/auth_model.py": "fd85e977416e17a7ff8edf950c0590f4772f97cba25464de82323104f2844457",
+    "manga-protocol-lab/src/cbor_profile.py": "67f3e76c18b01b291aac082428b22dfef50c41182685d24f7b039c04abf106f9",
+    "manga-protocol-lab/src/library_records.py": "7b7fece7acc665e0513d365ca950be715db4f19178a5b5945699f28b874d76a4",
+    "manga-protocol-lab/src/local_library_migration.py": "19cfd3693462a5bc40f6509b62ff70595989ec6003ef43992dbbaf6daf60049a",
+    "manga-protocol-lab/src/mangadex_migration.py": "c7f17f8ecebb7a867648b03f26c24e0ebb1dab6942552793a5b90a91d17fff33",
+    "manga-protocol-lab/src/operator_json.py": "33bd92d454451dc2c629dbcedb3640eaa6dd1d2ce6eef6252de605b17f24cb19",
+    "manga-protocol-lab/src/postgres_backup.py": "a7c10120769f42c843905040fc6ce77159b0dad602906c60a77b2b067f9a50cc",
+    "manga-protocol-lab/src/postgres_migration.py": "da585e0541c5189302a9dcb4ae4bf41defbdf80d86bc56bd1914c94b0664c655",
+    "manga-protocol-lab/src/serving_supervisor.py": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa",
+    "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+  },
+  "stderr.logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout.logSha256": "22877972f8931c2ec8702aaf92cb0d569122f74de345cd2decf6533f8ea3771a",
+  "success": true
+}

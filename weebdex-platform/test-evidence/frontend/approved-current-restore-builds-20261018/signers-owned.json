@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/scripts/restore-local-library-noble.py"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018",
+  "deadline_seconds": 90,
+  "elapsed_seconds": 8.207,
+  "exit_code": 0,
+  "stop_reason": null,
+  "minimum_free_bytes": 27498467328,
+  "minimum_available_memory_bytes": 9155309568,
+  "maximum_owned_rss_bytes": 18366464,
+  "peak_new_dependency_allocated_bytes": 1996431360,
+  "floor_bytes": 4294967296,
+  "cleanup_reserve_bytes": 134217728,
+  "dependency_growth_cap_bytes": 4294967296,
+  "owned_process_births": [
+    {
+      "pid": 5,
+      "start_time": 3666031
+    }
+  ],
+  "cleanup_signals": [],
+  "surviving_owned_processes": [],
+  "cleanup_verified": true,
+  "census_errors": 0,
+  "guard_internal_failure": false,
+  "cleanup_reserve_seconds": 12,
+  "leader_registered_before_exec": true,
+  "identity": "exact birth recheck plus pidfd-owned session and sampled descendants"
+}

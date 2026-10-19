@@ -1,0 +1,167 @@
+{
+  "status": "passed-finite-transport-seams-only",
+  "source_base": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "candidate_source_commit": "56304c375d31b86d4d96179bfe8cd1be197108e8",
+  "utc": "2026-10-18T17:24:00Z",
+  "tests": 18,
+  "skipped": 0,
+  "elapsed_s": 0.358363,
+  "python": "3.12.14",
+  "aiohttp": "3.14.4",
+  "command": "PYTHONDONTWRITEBYTECODE=1 timeout 30s python3 -m unittest discover -s weebdex-platform/tests/ci -p test_integrated_load_budget.py -v",
+  "source_sha256": {
+    "weebdex-platform/scripts/integrated_load_budget.py": "37d9c383f614d07b4cf281366399677b4e6f1b19e398dff70b743e5209ca25a3",
+    "weebdex-platform/tests/ci/test_integrated_load_budget.py": "39169185470ffd209c4d0729acc2ec08e2b89abc122136886854f5a2445c0d68",
+    "weebdex-platform/docs/integrated-load-transport-budget.md": "778baee437f3d477dd4b3cd8f2ccd4d9d24f6aecaf7ddcce27454f5edd51adff",
+    "weebdex-platform/docs/mixed-load-readiness-20261018.md": "3df4b196df6e449a061182d52adb9adb6a06f46de1e214a4cd819dbc5262458f"
+  },
+  "evidence_sha256": {
+    "seams.log": "b7d627ed3b3c30455aa467c2a6758c44f2831aa5e41739cdcaf9afa6fe3f43bb"
+  },
+  "server_observed_http_requests": 30,
+  "server_received_request_body_bytes": 73,
+  "controlled_cases": {
+    "test_integrated_load_budget.TransportBudgetSeams.test_byte_boundaries_and_head_count_actual_payload_not_content_length": {
+      "server_observed_http_requests": 5,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 4,
+        "HEAD": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_cancel_mid_body_releases_credits_closes_socket_and_joins_task": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_concurrent_response_credits_are_shared_across_lanes": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_connector_refusal_is_one_charged_attempt_with_unknown_response_bytes": {
+      "server_observed_http_requests": 0,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {}
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_delayed_chunked_overflow_refuses_without_consuming_extra_byte": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_disconnected_get_and_put_are_not_retried_inside_aiohttp": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 6,
+      "observed_methods": {
+        "GET": 1,
+        "PUT": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_exact_chunked_limit_accepts_delayed_eof_without_lookahead": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_explicit_retry_spends_a_new_attempt_and_exhaustion_never_sends": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_gzip_counts_encoded_bytes_and_verification_failure_keeps_all_costs": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_inflight_refusal_and_absolute_deadline_are_shared_across_lanes": {
+      "server_observed_http_requests": 3,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 3
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_invalid_destinations_headers_lanes_and_bounds_never_spend_an_attempt": {
+      "server_observed_http_requests": 0,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {}
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_late_verification_cannot_turn_a_stalled_loop_into_completion": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_local_progress_is_unmeasured_and_cannot_be_a_network_lane": {
+      "server_observed_http_requests": 0,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {}
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_no_length_and_truncated_length_never_invent_complete_body": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_redirects_never_forward_authority_body_or_consume_an_extra_attempt": {
+      "server_observed_http_requests": 4,
+      "server_received_request_body_bytes": 64,
+      "observed_methods": {
+        "PUT": 4
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_shared_last_request_slot_and_status_body_accounting": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_timeout_and_context_exit_own_outstanding_request_cleanup": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_upload_reservation_is_shared_and_failed_attempts_are_not_refunded": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 3,
+      "observed_methods": {
+        "POST": 1
+      }
+    }
+  },
+  "application_load_executed": false,
+  "browser_executed": false,
+  "postgres_executed": false,
+  "external_network_executed": false,
+  "install_executed": false,
+  "capacity_qualified": false,
+  "notes": [
+    "One numeric-loopback raw HTTP fixture per case, plus one owned redirect target.",
+    "Connection-refused admission is an actual transport attempt although no HTTP request reached the fixture.",
+    "Consumed encoded-payload cap is distinct from separately observed parser-prefetched bytes; no hard NIC/OS-buffer ceiling is claimed.",
+    "No local-progress HTTP lane or simulated IndexedDB result exists.",
+    "Caller retries consume fresh attempts; no internal connection retry, redirects or uncertain mutation replay occurs.",
+    "Only the installed aiohttp version was qualified; original pinned-version compatibility remains separately unverified.",
+    "Pure primitive only: scheduling/endpoint fan-out execution and all application/production measurements remain unexecuted."
+  ],
+  "historical_scope": "Initial 18-case snapshot before exact-URL refusal successor; not a current-source qualification.",
+  "command_purpose": "The listed plain unittest command reproduces test execution only. Server counts were observed using inline EvidenceResult.addSuccess; the identical callback is now retained in the observation_adapter.",
+  "observation_adapter": "weebdex-platform/scripts/ci/qualify-integrated-load-budget.py",
+  "observation_adapter_sha256": "8ff6eac8201e30ecb5571268249d044b7a980b95df8a63e646895e17952c0db2",
+  "observation_adapter_retained_after_run": true
+}

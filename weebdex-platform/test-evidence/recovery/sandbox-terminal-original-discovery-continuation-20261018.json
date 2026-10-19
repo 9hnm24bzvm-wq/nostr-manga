@@ -1,0 +1,473 @@
+{
+  "schema": 1,
+  "method": "Latest exact-source scoped results composed from separate phases, not one whole-repository run.",
+  "precedingDiscovery": "current-repository-test-discovery-20261018.json",
+  "files": [
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_compact.py",
+      "sha256": "0a2566c210af96e04d301b5745d6039063cdea27640872b459875743a14d9aa8",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass-in-memory-correctness-script",
+      "reason": "Unchanged original script executed against both 30k/500k in-memory histories and five exact updates; not node throughput or application recovery.",
+      "priorCurrentClassification": "unexecuted-heavy-import-budget",
+      "currentSourceSha256": "0a2566c210af96e04d301b5745d6039063cdea27640872b459875743a14d9aa8",
+      "scriptPassed": true,
+      "evidence": "../deployment/offline-compact-correctness-20261018/result.json"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py",
+      "sha256": "cc887d16336bdad53c1dfaccfea02c4ac9e010cf6c844ac3a0206e5aa1bc911f",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "reason": "Actual corrected postmerge finite loopback/process union; authentic JPEG and explicitly new static current-plan fixture, without historical-plan recovery.",
+      "executedMethods": 9,
+      "passedMethods": 9,
+      "setupErrors": 0,
+      "evidence": "../frontend/fixture-mixed-union-postmerge-20261018/green-result.json",
+      "historicalResultBeforeFixtureContinuation": {
+        "path": "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py",
+        "sha256": "cc887d16336bdad53c1dfaccfea02c4ac9e010cf6c844ac3a0206e5aa1bc911f",
+        "priorExecutionClassification": "held",
+        "current": "executed-with-missing-fixture-error",
+        "reason": "Actual controlled loopback/process qualification; no database or external endpoint. Missing declared fixture prevents one method in this file.",
+        "executedMethods": 9,
+        "passedMethods": 8,
+        "setupErrors": 1,
+        "evidence": "../frontend/controlled-bench-seams-final-20261018/status.json"
+      },
+      "currentSourceSha256": "92c7d81ed72ccfa22b9610b1d91712579a4d272c2360d594a3c0973a4586cc04",
+      "sourceChangedSinceHistoricalClassification": true
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_diagnostic_process.py",
+      "sha256": "24874746b08ed1132142ce3144c5a680d9272f20128b5412cf62db9fdff75bcd",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "unittestPassed": 2,
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "24874746b08ed1132142ce3144c5a680d9272f20128b5412cf62db9fdff75bcd"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_disk_guard.py",
+      "sha256": "8b9adfa723bd06c28c169a565c2d1bcdcc93bcbf1469a6d2855a1223f896bc3b",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "reason": "Unchanged test file freshly rerun against the reviewed changed mixed.py import.",
+      "executedMethods": 9,
+      "passedMethods": 9,
+      "setupErrors": 0,
+      "evidence": "../frontend/mixed-import-followon-20261018/result.json",
+      "currentSourceSha256": "8b9adfa723bd06c28c169a565c2d1bcdcc93bcbf1469a6d2855a1223f896bc3b"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_head_verification.py",
+      "sha256": "604cb11c6935ca3840442adf09bf7a2f0fc5b9c9b4326c441141e71f924bc98b",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "reason": "Unchanged test file freshly rerun against the reviewed changed mixed.py import.",
+      "executedMethods": 2,
+      "passedMethods": 2,
+      "setupErrors": 0,
+      "evidence": "../frontend/mixed-import-followon-20261018/result.json",
+      "currentSourceSha256": "604cb11c6935ca3840442adf09bf7a2f0fc5b9c9b4326c441141e71f924bc98b"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_image_shards.py",
+      "sha256": "a11ae68b70a89199461d944d6a314203cd2b81963b383a4d407948e25fd72290",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "reason": "All selected controlled loopback/process methods passed; no database or external endpoint.",
+      "executedMethods": 18,
+      "passedMethods": 18,
+      "setupErrors": 0,
+      "evidence": "../frontend/controlled-bench-seams-final-20261018/status.json",
+      "currentSourceSha256": "a11ae68b70a89199461d944d6a314203cd2b81963b383a4d407948e25fd72290"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+      "sha256": "77fe28fae8f9075c1fb18feeebe5f879bb0f10a355565f74902324cc68fb1374",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "reason": "Actual corrected postmerge finite loopback/process union; authentic JPEG and explicitly new static current-plan fixture, without historical-plan recovery.",
+      "executedMethods": 14,
+      "passedMethods": 14,
+      "setupErrors": 0,
+      "evidence": "../frontend/fixture-mixed-union-postmerge-20261018/green-result.json",
+      "historicalResultBeforeFixtureContinuation": {
+        "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+        "sha256": "77fe28fae8f9075c1fb18feeebe5f879bb0f10a355565f74902324cc68fb1374",
+        "priorExecutionClassification": "held",
+        "current": "executed-with-missing-fixture-error",
+        "reason": "Actual controlled loopback/process qualification; no database or external endpoint. Missing declared fixture prevents one method in this file.",
+        "executedMethods": 11,
+        "passedMethods": 10,
+        "setupErrors": 1,
+        "evidence": "../frontend/controlled-bench-seams-final-20261018/status.json"
+      },
+      "currentSourceSha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db",
+      "sourceChangedSinceHistoricalClassification": true
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_mixed_fixture_config.py",
+      "sha256": "e241bb7d20312d8b1ca75ce135d1b0156020b8cacb3872e5825166513d5bf185",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 7,
+      "evidenceDirectory": "pure-bench-seams-final-20261018",
+      "noNetworkDatabaseOrLoad": true,
+      "currentSourceSha256": "e241bb7d20312d8b1ca75ce135d1b0156020b8cacb3872e5825166513d5bf185"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_mixed_reads.py",
+      "sha256": "4cf3d84c118a22016d18faec0bd7c6e57bb7d8abe091f5a49f48a997a400e59f",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass-controlled-loopback-library-read",
+      "reason": "Unchanged original one-method suite with canonical 30k/500k library histories, nine owned-loopback HTTP reads and corrupt-200 refusal. No database or application binary.",
+      "priorCurrentClassification": "unexecuted-heavy-import-budget",
+      "currentSourceSha256": "4cf3d84c118a22016d18faec0bd7c6e57bb7d8abe091f5a49f48a997a400e59f",
+      "executedMethods": 1,
+      "passedMethods": 1,
+      "setupErrors": 0,
+      "actualHttpObservations": 9,
+      "evidence": "../deployment/mixed-read-correctness-20261018/result.json"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_pg_diagnostics.py",
+      "sha256": "4ec5de4800a10e203f29448b183d761da2e06f2fa3fd72722139e8b2e2acccd8",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass-controlled-postgresql18",
+      "reason": "The unchanged original seventeen-method diagnostic module now passed against isolated official PostgreSQL 18.6; the prior five-pass/twelve-skip record remains in its historical phase.",
+      "currentSourceSha256": "4ec5de4800a10e203f29448b183d761da2e06f2fa3fd72722139e8b2e2acccd8",
+      "previousScopedResult": {
+        "classification": "executed-with-explicit-owned-PG-skips",
+        "evidence": null,
+        "skippedMethods": 12,
+        "unittestPassed": 5,
+        "unittestSkipped": 12,
+        "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25"
+      },
+      "passedMethods": 17,
+      "skippedMethods": 0,
+      "realDatabaseMethods": 12,
+      "evidence": "../operations/pg18-diagnostics-20261018/result.json",
+      "unittestPassed": 17,
+      "unittestSkipped": 0,
+      "evidenceCommit": "b690aea0470d3018f4366394bbd3d6b0492102ef"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_process_metrics.py",
+      "sha256": "95fb4ebfb708648c0e2b22503fff2360249cb6e13a140e55b68ba88fa4a5ce67",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "unittestPassed": 3,
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "95fb4ebfb708648c0e2b22503fff2360249cb6e13a140e55b68ba88fa4a5ce67"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_scheduler_probe.py",
+      "sha256": "7f5ea0a68d111ebbd9ef8635cd130694a33047f506b81c9faf427fe666a476c3",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "unittestPassed": 9,
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "7f5ea0a68d111ebbd9ef8635cd130694a33047f506b81c9faf427fe666a476c3"
+    },
+    {
+      "path": "manga-protocol-lab/bench/library-node/test_wire_security.py",
+      "sha256": "14e4e5bd57381536292185941f7427ce5f101a0285db0e8994880e95e54cccf4",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 2,
+      "evidenceDirectory": "pure-bench-seams-final-20261018",
+      "noNetworkDatabaseOrLoad": true,
+      "currentSourceSha256": "14e4e5bd57381536292185941f7427ce5f101a0285db0e8994880e95e54cccf4"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/app-dom.test.mjs",
+      "sha256": "24fcfaf3dad23a1c653d7e65f42f754cfa8bca58d372d21449df0245fc60e224",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "24fcfaf3dad23a1c653d7e65f42f754cfa8bca58d372d21449df0245fc60e224"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/backup-reopen.test.mjs",
+      "sha256": "5c963efb5adc973064cb10eb489310b14b3378bd84e9d0074514e4e0ec94bf45",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "5c963efb5adc973064cb10eb489310b14b3378bd84e9d0074514e4e0ec94bf45"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/backup.test.mjs",
+      "sha256": "5a20899c5c9bf798a308b3ddb4ae2159f073289ec647142795c103911ddfa4aa",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "5a20899c5c9bf798a308b3ddb4ae2159f073289ec647142795c103911ddfa4aa"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/build-cli.test.mjs",
+      "sha256": "29406682d8cd8ec6f636a0e334ef0b4a5ef5369a7ade2cf32604ce4f039d1aea",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "29406682d8cd8ec6f636a0e334ef0b4a5ef5369a7ade2cf32604ce4f039d1aea"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/codec.test.mjs",
+      "sha256": "b955b650f6f16b586dd6677173bacfd58f3ce6b391f70fd264964fcab8778c90",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "b955b650f6f16b586dd6677173bacfd58f3ce6b391f70fd264964fcab8778c90"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/list-name-ui.test.mjs",
+      "sha256": "03f289000c52c9993254fb5f4c3bfdf20c108e2331e59982250d4cf18881b995",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "03f289000c52c9993254fb5f4c3bfdf20c108e2331e59982250d4cf18881b995"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/local-capacity.test.mjs",
+      "sha256": "50d4d35db6b42328821271d83c2fdeaddce36ba5600c4860caa968143e0a5106",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "50d4d35db6b42328821271d83c2fdeaddce36ba5600c4860caa968143e0a5106"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/nostr.test.mjs",
+      "sha256": "39d0dd9194325aa01e113748499a94cf200ee4e67c0e3b0746a21902a8093199",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "39d0dd9194325aa01e113748499a94cf200ee4e67c0e3b0746a21902a8093199"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/outbox.test.mjs",
+      "sha256": "b9b4544115f9b961644c91eac3940f86ecba750aa7cd294b5b53037d62fbe78a",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "b9b4544115f9b961644c91eac3940f86ecba750aa7cd294b5b53037d62fbe78a"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/publication-boundaries.test.mjs",
+      "sha256": "814f445273b1507628187a2110378d3e70b6563b3a37b7c581b189b3ab044ffc",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "814f445273b1507628187a2110378d3e70b6563b3a37b7c581b189b3ab044ffc"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/publication-ui.test.mjs",
+      "sha256": "587a9c850665ab806bda82feabe344f4e6bf193f5505b890fc9f5fabdee131b3",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "587a9c850665ab806bda82feabe344f4e6bf193f5505b890fc9f5fabdee131b3"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/publication.test.mjs",
+      "sha256": "7e11ad96155bd8217c705c86cf29b81d4b316cb7b389c28bc207fb32b376bc3a",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "7e11ad96155bd8217c705c86cf29b81d4b316cb7b389c28bc207fb32b376bc3a"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/recovery-ui.test.mjs",
+      "sha256": "a9dfc68725f76ae55b7c1cae4bc334abee90b0264be550170cf68363917da158",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "a9dfc68725f76ae55b7c1cae4bc334abee90b0264be550170cf68363917da158"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/recovery.test.mjs",
+      "sha256": "b62694650b566935f06e4d1310e9ef47a2c1d2bf6d2da35c78ea4ab7c0b664ff",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "b62694650b566935f06e4d1310e9ef47a2c1d2bf6d2da35c78ea4ab7c0b664ff"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/render-race.test.mjs",
+      "sha256": "fc1889b0e4727c558bae853f327445ebcd3ccb190c8ba67e37ab20702e4621d4",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "fc1889b0e4727c558bae853f327445ebcd3ccb190c8ba67e37ab20702e4621d4"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/schema-upgrade.test.mjs",
+      "sha256": "6e6048a23a64a8c4c81d55e3736ad8b68d2cb7de319154915af7cecbd2af02ac",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "6e6048a23a64a8c4c81d55e3736ad8b68d2cb7de319154915af7cecbd2af02ac"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/service-worker.test.mjs",
+      "sha256": "b20412905119a721cfc85a684a492904dd39d70d7bd91e3f51bc5b4cd35ae90c",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "b20412905119a721cfc85a684a492904dd39d70d7bd91e3f51bc5b4cd35ae90c"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/signer-ui.test.mjs",
+      "sha256": "1fa56f3e5ab751f5ea827fde080fc04dca4db05c2f284336b37f0bd217078f2e",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "1fa56f3e5ab751f5ea827fde080fc04dca4db05c2f284336b37f0bd217078f2e"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/statistics.test.mjs",
+      "sha256": "74a4e4424154ee48af5920a1164ec76833ec65382c14aec1cc21ad4d1e778535",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "74a4e4424154ee48af5920a1164ec76833ec65382c14aec1cc21ad4d1e778535"
+    },
+    {
+      "path": "manga-protocol-lab/browser-client/tests/store.test.mjs",
+      "sha256": "8f0835031808770022192b51785ab7c3ffea80a17a45bcd7bf62a5e3d6fb11c3",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "group": "20originalNodefiles/140runnercases",
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "8f0835031808770022192b51785ab7c3ffea80a17a45bcd7bf62a5e3d6fb11c3"
+    },
+    {
+      "path": "manga-protocol-lab/scripts/tests/test_package_cli.py",
+      "sha256": "56dbd25c521277c669fab1bd3ce5b8d3dbf38eb37d2b220edc74fb08d8628f92",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "unittestPassed": 12,
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "56dbd25c521277c669fab1bd3ce5b8d3dbf38eb37d2b220edc74fb08d8628f92"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_aliases_cli.py",
+      "sha256": "21e0b10293740f4db3eb85517b23f56bfcbae0e223e91a738525fe58616abcde",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 1,
+      "evidenceCommit": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
+      "currentSourceSha256": "21e0b10293740f4db3eb85517b23f56bfcbae0e223e91a738525fe58616abcde"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_api_index_cli.py",
+      "sha256": "532250969dfd7ff2616163a09c82439cf743753472df7b5c9f2ab5e4371b3e73",
+      "priorExecutionClassification": "selected",
+      "current": "executed-pass",
+      "unittestPassed": 5,
+      "evidenceCommit": "d491b597b913cd25cf978498c88e432133cc4e25",
+      "currentSourceSha256": "532250969dfd7ff2616163a09c82439cf743753472df7b5c9f2ab5e4371b3e73"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_backup_cli.py",
+      "sha256": "c863a167897ccf8238e702b2d0a97fde982b6035c9a2c8c5efdb112eb652487e",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 5,
+      "evidenceCommit": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
+      "currentSourceSha256": "c863a167897ccf8238e702b2d0a97fde982b6035c9a2c8c5efdb112eb652487e"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_cbor_profile.py",
+      "sha256": "69a6da49df22a7e5f306160895d7498dcc51dc81c55c0130b83fa372b1d00276",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 12,
+      "evidenceCommit": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
+      "currentSourceSha256": "69a6da49df22a7e5f306160895d7498dcc51dc81c55c0130b83fa372b1d00276"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_library_input_cli.py",
+      "sha256": "3a0369690a2ace895337b23a36ecabf4f3e702ae30e5c9be8417b5d3dd2674c6",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 3,
+      "evidenceCommit": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
+      "currentSourceSha256": "3a0369690a2ace895337b23a36ecabf4f3e702ae30e5c9be8417b5d3dd2674c6"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_local_library_migration.py",
+      "sha256": "ef1da229525dcebf6fbdbe5ec304d932deafe188acebd94c944ac80f812f0ab6",
+      "priorExecutionClassification": "partially-executed",
+      "current": "executed-pass",
+      "unittestPassed": 7,
+      "evidenceCommit": "f662c3f11e79e32dd94e471fb96a39319aa3921c",
+      "priorPartialDependencyFailureResolved": true,
+      "currentSourceSha256": "ef1da229525dcebf6fbdbe5ec304d932deafe188acebd94c944ac80f812f0ab6"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_mangadex_cli.py",
+      "sha256": "7adb48f37efcb739118a0d12c728e08c33459d4c03592d24f7339f7f303367be",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 9,
+      "evidenceCommit": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
+      "currentSourceSha256": "7adb48f37efcb739118a0d12c728e08c33459d4c03592d24f7339f7f303367be"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_migration_plan_cli.py",
+      "sha256": "d4392ea2e3668cda50687a49c4c7003f998a0b82d950f32cf3299a498ebdfcac",
+      "priorExecutionClassification": "held",
+      "current": "executed-pass",
+      "unittestPassed": 8,
+      "evidenceCommit": "54f5d7bf01ac43f5d88f5a1e7db3f43477d9d9e3",
+      "currentSourceSha256": "d4392ea2e3668cda50687a49c4c7003f998a0b82d950f32cf3299a498ebdfcac"
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_serving_supervisor.py",
+      "sha256": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+      "priorExecutionClassification": "held",
+      "current": "passed-official-nginx-owned-loopback-lifecycle",
+      "unittestMethods": 8,
+      "priorCurrentClassification": "unexecuted-requires-pinned-nginx-runtime",
+      "priorReason": "Pinned nginx1.28.0 absent; requires real owned Linux/loopback process fixture",
+      "casesPassed": 8,
+      "evidence": "../deployment/nginx-runtime-portability-20261018/eight-result.json",
+      "runtimeOverride": "Explicit module.NGINX selects isolated official1.30.6; historical source constant unchanged",
+      "currentSourceSha256": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de"
+    }
+  ],
+  "filesWithExecutionResults": 43,
+  "filesWithLatestScopedPasses": 43,
+  "wholeFilesHeld": 0,
+  "previouslySkippedPgMethodsNowPassed": 12,
+  "pgDiagnosticMethodsLatestPassed": 17,
+  "latestPgDiagnosticSkips": 0,
+  "priorWholeFileHolds": 16,
+  "priorWholeFileHoldsExercised": 16,
+  "wholeRepositoryCurrentSuiteGreen": false,
+  "runtimeRequirementsParity": false,
+  "aiohttpActual": "3.14.4",
+  "aiohttpProjectRequired": "3.13.5"
+}

@@ -1,0 +1,10 @@
+{
+  "execution_worktree_head": "571e368d4dab77fccd46a17aab5c072a4782612b",
+  "production_source_commit": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "production_source_tree": "12b3034915ecf16f8379eefc9615501c05e3476b",
+  "tracked_non_evidence_inputs": 2333,
+  "product_inputs": 925,
+  "all_tracked_non_evidence_inputs_match_base_git_bytes": true,
+  "canonical_frontend_files": 679,
+  "current_raw_product_map_sha256": "f924b898607b07296b12967f755b449874cf1ff3f00e0ee531717ee6d528cd92"
+}

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "qualifiedSource": "1782ad19c3f6a79397efd5f8de2b6314a6b91a25",
+  "baselineLauncherSource": "098e40bae89d9a5c7e8ee935519707f0c40f1574",
+  "baselineTestOverlay": "The new focused source assertion was added before the baseline run; the launcher remained exact098e40ba. It failed only because chromiumSandbox:true was absent.",
+  "sourcePins": {
+    "weebdex-platform/scripts/browser-acceptance.mjs": "2a9aeb0de972d27f5d3869ee3b6609a74eb8d25fc39c39717a9e84467d8b9be7",
+    "weebdex-platform/tests/ci/test_hosted_browser.py": "d2740cf8b7cb0799484f81524faa2a78a2169f101b87481f3d2217792306eb6c"
+  },
+  "baseline": {
+    "command": [
+      "python3",
+      "weebdex-platform/tests/ci/test_hosted_browser.py",
+      "HostedBrowserSeams.test_recovery_browser_launch_requires_explicit_chromium_sandbox"
+    ],
+    "source": "098e40bae89d9a5c7e8ee935519707f0c40f1574",
+    "exit": 1,
+    "elapsedSeconds": 0.071,
+    "timeout": false,
+    "browserLaunched": false
+  },
+  "green": {
+    "command": [
+      "python3",
+      "weebdex-platform/tests/ci/test_hosted_browser.py",
+      "HostedBrowserSeams.test_recovery_browser_launch_requires_explicit_chromium_sandbox"
+    ],
+    "source": "1782ad19c3f6a79397efd5f8de2b6314a6b91a25",
+    "exit": 0,
+    "elapsedSeconds": 0.058,
+    "timeout": false,
+    "browserLaunched": false
+  },
+  "sourceCases": 1,
+  "actualBrowserRun": false,
+  "workflowChanged": false,
+  "pendingCiCandidateChanged": false,
+  "inheritedStrictBuildBrowserAcceptance": false,
+  "scope": "One explicit browser launch option and a finite source assertion only. No system security setting, package, privilege, browser or hosted run was changed/executed."
+}

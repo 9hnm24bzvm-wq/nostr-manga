@@ -1,0 +1,50 @@
+{
+  "status": "passed-finite-controls-only",
+  "source_base": "d57a1f0ba55b65c2d4f4927afc1b350712569c0e",
+  "guard_upstream_commit": "26a79f6775f4b52ae745c9fab5f1b321faa50378",
+  "local_guard_cherry_pick": "baef781",
+  "utc": "2026-10-18T16:49:06Z",
+  "python_tests": 19,
+  "python_elapsed_s": 0.715,
+  "owner_node_groups": 11,
+  "independent_node_cases": 67,
+  "stage_category_pairs": 117,
+  "stage_category_matrix_paths": [
+    "raw projection",
+    "closed serialized validator"
+  ],
+  "commands": [
+    "PYTHONDONTWRITEBYTECODE=1 timeout 30s python3 -m unittest discover -s weebdex-platform/tests/ci -p test_runner*.py -v",
+    "timeout 15s node weebdex-platform/tests/ci/test_runner_lifecycle.mjs",
+    "timeout 15s node weebdex-platform/tests/ci/test_runner_caught_controls.mjs"
+  ],
+  "source_sha256": {
+    "weebdex-platform/scripts/runner-lifecycle.mjs": "384df9c700e337df1717d0e57cb62260f4d581916c18153e465de66bff6abf15",
+    "weebdex-platform/scripts/ci/runner-diagnostics.py": "23852ebaeec6cc5147d039a9eeff93019965e12b6927934c9e659a7100ccf854",
+    "weebdex-platform/scripts/ci/validate-ci-evidence.py": "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77",
+    "weebdex-platform/scripts/browser-acceptance.mjs": "2a9aeb0de972d27f5d3869ee3b6609a74eb8d25fc39c39717a9e84467d8b9be7"
+  },
+  "test_sha256": {
+    "weebdex-platform/tests/ci/test_runner_caught_controls.mjs": "724fc38a2dd8d6184422370e30f18436b61ec7790ee6af74002e596d9d988ed6",
+    "weebdex-platform/tests/ci/test_runner_caught_matrix.py": "e3aaf61fbf3cfdbf4e9076428e2c2531c6d34b0cc3315eff2918618a92abe447"
+  },
+  "evidence_sha256": {
+    "monitor-red.json": "ac0986af53d1511a79fc286999c7d9c63b820d9b6019abf73bb85d6402217ad8",
+    "node-controls-red.log": "05eb7f94dbd25faf08f389e33e294334f24443bd2a909c9bcec1394856d2bd7b",
+    "node-controls.json": "218ef3b509e2b89e94c54e8b7b5eedebfa297c070b25d6eed082eb882efa2021",
+    "node-owner.log": "4c2dad360dd12fe8a6fc00c5a8a56a7a004fb3ec19c70ce606726f24db1e73b2",
+    "python.log": "1b5d1a2246cb74e88cfae6cea23fdf7ada4fc5ff7b150c0e5ab920691c6ac913"
+  },
+  "browser_executed": false,
+  "network_executed": false,
+  "application_or_database_executed": false,
+  "packages_installed": false,
+  "raw_child_stderr_exported": false,
+  "notes": [
+    "The d57 red reproduction changes original fatal exit1 to7 when code getter throws.",
+    "The d57 changing getter is read twice and can place a raw URL/key value into fatal_code.",
+    "The guarded successor reads once, falls back to unknown without throwing, preserves original fatal exit, and passes both regressions.",
+    "Creation booleans do not replace actual acceptance; failed app steps remain distinct from zero-check launcher failure.",
+    "This is synthetic diagnostic correctness evidence, not a successful browser or application journey."
+  ]
+}

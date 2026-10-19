@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "baseCommit": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "qualifiedSource": "b269bf2e8aa45c921c33e6cd9ada5d60592f2e0a",
+  "productCodeChanged": false,
+  "changedOriginalTestSources": [
+    "manga-protocol-lab/bench/library-node/test_mixed.py",
+    "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py"
+  ],
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_mixed",
+    "test_diagnostic_observer"
+  ],
+  "cases": 20,
+  "passed": 20,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "unittestSeconds": 5.043,
+  "guardedSeconds": 5.343,
+  "ownedGroupCleanupVerified": true,
+  "sourceMatchesFrozenCommitAfterRun": true,
+  "authenticImage": {
+    "provenance": "Original tracked Met MANIFEST official image URL; fresh exact-byte recovery on2026-10-18",
+    "url": "https://images.metmuseum.org/CRDImages/as/original/JIB_81_4_Preface_1_sf.JPG",
+    "bytes": 1227747,
+    "sha256": "3ac595477a047f9fa78166a88fd2a8a0306d3d6698fca655e430b5c4e1b4603a",
+    "dimensions": [
+      2816,
+      2112
+    ],
+    "format": "JPEG",
+    "publicDomainPerOriginalManifest": true,
+    "reencoded": false,
+    "additionalPillowDecodedPixelsEqualAfterCommentInsertion": true,
+    "otherThreeCorpusImagesRecovered": false
+  },
+  "planFixture": {
+    "path": "manga-protocol-lab/bench/library-node/fixtures/mixed-210s-bounded-plan-v1.json",
+    "bytes": 2566,
+    "sha256": "50303533772c9454f367109b3267a6671828524f2387d8853198c3bff26e034f",
+    "historicalProposed210sPlanRecovered": false,
+    "meaning": "New static reviewed current-plan contract; actual CLI must equal it, and enabling observer must only add additional_diagnostics. Never generated in test."
+  },
+  "redEvidence": {
+    "jpegCase": "Original method failed with exact missingJPEG FileNotFoundError",
+    "observerCase": "Exact original method loaded from immutable base failed with missinghistoricalplan FileNotFoundError; crypto dependencies restored before this diagnostic"
+  },
+  "packageRecovery": {
+    "retainedApprovalScopeReused": true,
+    "officialPyPIMetadataAndWheelHashesReverified": true,
+    "versions": {
+      "cbor2": "5.6.5",
+      "coincurve": "21.0.0"
+    },
+    "automaticAdditionalDependenciesInstalled": false,
+    "globalInstall": false,
+    "sourceBuild": false,
+    "cacheUsed": false,
+    "packageOrWheelBinariesPublished": false
+  },
+  "limits": {
+    "largeBenchmarkExecuted": false,
+    "actualApplicationLoadExecuted": false,
+    "historicalPlanEquivalenceProven": false,
+    "completeImageCorpusRecovered": false,
+    "wholeOriginalSuitePassed": false,
+    "browserExecuted": false,
+    "deploymentPerformed": false,
+    "historical47of49EvidenceModified": false
+  },
+  "scope": "Two repaired finite modules only. Genuine signed controlled HTTP, CLI/subprocess and four image-worker seams execute; this is harness correctness, not application capacity."
+}

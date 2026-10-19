@@ -16,6 +16,16 @@ spec.loader.exec_module(runner)
 
 
 class HostedBrowserSeams(unittest.TestCase):
+    def test_recovery_browser_launch_requires_explicit_chromium_sandbox(self):
+        import re
+        source = (ROOT / 'scripts/browser-acceptance.mjs').read_text()
+        self.assertEqual(source.count('await chromium.launch('), 1)
+        launch = re.search(r'await chromium\.launch\(\{(.*?)\}\);', source, re.S)
+        self.assertIsNotNone(launch)
+        self.assertEqual(len(re.findall(r'\bchromiumSandbox\s*:\s*true\b', launch.group(1))), 1)
+        self.assertNotIn('chromiumSandbox: false', launch.group(1))
+        self.assertNotIn('--no-sandbox', launch.group(1))
+
     def diagnostic_inputs(self):
         spec = importlib.util.spec_from_file_location('startup_seam', ROOT / 'scripts/ci/startup-diagnostics.py')
         diagnostics = importlib.util.module_from_spec(spec)
@@ -318,7 +328,7 @@ class HostedBrowserSeams(unittest.TestCase):
         self.assertIn("github.ref == 'refs/heads/ci/hosted-browser-e2e'", workflow)
         self.assertIn("github.ref == 'refs/heads/ci/browser-failure-diagnostics'", workflow)
         self.assertIn('contents: read', workflow)
-        self.assertIn('runs-on: ubuntu-24.04', workflow)
+        self.assertIn('runs-on: ubuntu-22.04', workflow)
         self.assertIn('persist-credentials: false', workflow)
         self.assertNotIn('pull_request_target', workflow)
         self.assertNotIn('secrets.', workflow)

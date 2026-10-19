@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "validationCommit": "c43f2cccf6a68965cd002183f20067b2115be3ed",
+  "originalComposedBase": "f1d54c027402829ca76fd3cf2f228a92ceef973a",
+  "methods": {
+    "run": 11,
+    "passed": 11,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "uniqueModules": 2,
+  "unittestElapsedSeconds": 6.387,
+  "guardElapsedSeconds": 6.901,
+  "testFilesUnchangedFromComposedBase": true,
+  "mixedSourceUnchangedFromReviewedB731": true,
+  "sourcePins": 71,
+  "dependencyEntries": 47,
+  "sourceAndDependenciesUnchanged": true,
+  "ignoredAliasSetup": "/workspace/shared/nostr-manga-recovery-20261018/fixture-mixed-union-validation-worktree/manga-protocol-lab/vendor/pydeps",
+  "aliasBytesAndMetadataUnchanged": true,
+  "aiohttpActual": "3.14.4",
+  "aiohttpProjectRequired": "3.13.5",
+  "newInstallation": false,
+  "ownedSurvivors": [],
+  "outerStopReason": null,
+  "scope": "Controlled loopback/process fixtures only; inner negative guard tests intentionally signal their owned worker and allocate32MiB; no application load, database, browser or capacity claim"
+}

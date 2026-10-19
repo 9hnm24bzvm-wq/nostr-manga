@@ -1,0 +1,11 @@
+PASS passive recorder preserves normal process exit
+PASS passive recorder preserves nonzero process exit
+PASS passive recorder preserves throw-in-close process exit
+PASS passive recorder preserves late-rejection process exit
+PASS recorder only subscribes to passive monitor and exit and tolerates save failure
+PASS fatal-code recorder copies only the fixed finite allowlist
+PASS passive fatal-code extraction reads once and refuses throwing or unstable getters
+PASS actual acceptance catch captures the original stage before finally completes
+PASS caught classifications are stage-bound and never export messages or arbitrary codes
+PASS unreadable or nonstring caught errors stay generic without replacing the original outcome
+PASS actual public-upload prefix distinguishes fixture signer and observer setup before any step

@@ -1,0 +1,5 @@
+# Hosted sandbox-refusal outcome
+
+Run39148301394, attempt1, used the exact reviewed CI source1dad688c (published1261b195), with sandboxing enabled and the unchanged public-upload140-minute profile. Cold preparation and the actual native PostgreSQL gate passed. The valid caught diagnostic records launching-browser/browser-sandbox-refused before any journey step. No browser/context/page handle was successfully returned. This does not identify a particular host/kernel/AppArmor cause or prove that no transient browser process started.
+
+The three schema-validated JSON members are copied verbatim and SHA-pinned to the exact2370-byte GitHub artifact ZIP. Upload counters are fallback defaults because their record is invalid; they are not observed zero traffic. Final fixture teardown, key removal and closed ports are verified; lifecycle_clean remains false. No private browser/fixture log was published or retrieved. The raw public job log is hash-only. No fourth run, browser acceptance, current recovery-product build acceptance or full-suite result is claimed.

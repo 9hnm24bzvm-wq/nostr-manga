@@ -1,0 +1,176 @@
+{
+  "status": "prepared-awaiting-explicit-install-approval",
+  "source": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "sourceTree": "12b3034915ecf16f8379eefc9615501c05e3476b",
+  "lockManifestSha256": "33e586c5daaac84481220565f53319ef1f3a9dd21104087018523bc2c137f2b9",
+  "frontendLockSha256": "2169f69125e5d59bb8b143ed2c68a4c7be351ff3b3edd83b29260f2bb4f848ea",
+  "frontendArchiveRecords": 842,
+  "allFrontendArchivesHaveIntegrity": true,
+  "frontendResolvedHosts": [
+    "registry.yarnpkg.com"
+  ],
+  "essentialLockedVersions": {
+    "typescript": "5.9.3",
+    "svelte": "5.55.1",
+    "svelte-check": "4.4.6",
+    "vite": "7.3.1",
+    "@sveltejs/kit": "2.56.1"
+  },
+  "bootstrapAndSignerPackages": {
+    "yarn": {
+      "version": "1.22.22",
+      "resolved": "https://registry.npmjs.org/yarn/-/yarn-1.22.22.tgz",
+      "integrity": "sha512-prL3kGtyG7o9Z9Sv8IPfBNrWTDmXB4Qbes8A9rEzt6wkJV8mUvoirjU0Mp3GGAU06Y0XQyA3/2/RQFVuK7MTfg==",
+      "sourceLock": ".ci/browser/package-lock.json"
+    },
+    "@noble/curves": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/@noble/curves/-/curves-2.0.1.tgz",
+      "integrity": "sha512-vs1Az2OOTBiP4q0pwjW5aF0xp9n4MxVrmkFBxc6EKZc6ddYx5gaZiAsZoq0uRRXWbi3AT/sBqn05eRPtn1JCPw==",
+      "sourceLock": "manga-protocol-lab/browser-client/package-lock.json"
+    },
+    "@noble/hashes": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/@noble/hashes/-/hashes-2.0.1.tgz",
+      "integrity": "sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw==",
+      "sourceLock": "manga-protocol-lab/browser-client/package-lock.json"
+    },
+    "@scure/base": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/@scure/base/-/base-2.0.0.tgz",
+      "integrity": "sha512-3E1kpuZginKkek01ovG8krQ0Z44E3DHPjc5S2rjJw9lZn3KSQOs8S7wqikF/AH7iRanHypj85uGyxk0XAyC37w==",
+      "sourceLock": "weebdex-platform/platform-integrations/local-library/signing-dependencies/package-lock.json"
+    }
+  },
+  "isolatedNpmBootstrap": "Derived one-package npm lock using only existing exact Yarn lock row, npm ci --ignore-scripts --no-audit --no-fund --cache <owned-cache>. Do not install unrelated Playwright from the full tools manifest.",
+  "frontendInstall": "Yarn1.22.22 install --frozen-lockfile --ignore-scripts --non-interactive --cache-folder <owned-cache>, run only against fresh owned copy of canonical frontend. No root prepare hooks.",
+  "signerInstall": "Existing restore-local-library-noble.py restores both Noble packages and invokes exact separate Scure restore. Verify existing provenance expected bytes afterward.",
+  "installBounds": {
+    "frontendDeadlineSeconds": 600,
+    "signerDeadlineSeconds": 90,
+    "yarnBootstrapDeadlineSeconds": 60,
+    "sampledMaximumNewOwnedDependencyCacheBytes": 4294967296,
+    "startFreeBytes": 4563402752,
+    "liveFreeBytes": 4429185024,
+    "minimumAvailableMemoryBytes": 1073741824,
+    "downloadSize": "Not known from lock; no hard network-byte limit is claimed. Record actual retained archive bytes.",
+    "partialOutputs": "Preserve stopped owned staging; no cleanup authorized."
+  },
+  "verificationPlan": {
+    "strictProfiles": [
+      0,
+      1
+    ],
+    "strictDeadlineSecondsPerProfile": 600,
+    "viteDeadlineSecondsPerProfile": 900,
+    "nodeHeapMiB": 2048,
+    "terserWorkers": 1,
+    "heavyStages": "Serialized with ops/backend owner; no new Rust build.",
+    "fullPhysicalProtection": "Discover actual restored physical primary,Noble,Scure roots and all symlink targets; preload existing readonly-cache guard and record full hash/mode/mtimeNs/symlink snapshots before/after. Do not reuse absent seven-root discovery.",
+    "canonicalSource": "All679 canonical files unchanged; latest product/source pins captured before/after.",
+    "freshCssConsumers": true
+  },
+  "unneededForStrictVite": [
+    "jsdom",
+    "fake-indexeddb",
+    "Playwright",
+    "new Rust/toolchain/PG install"
+  ],
+  "sourcePins": {
+    ".ci/browser/package.json": "df01a6927293a82d018723c3d9932ac584bf16ce3559b80004d137d8affc82fc",
+    ".ci/browser/package-lock.json": "b117dbd1c52f362161dfd20bb6bae12145db37b2ebf0c63004dc738363738d7d",
+    "manga-protocol-lab/browser-client/package-lock.json": "d8acbe16c2334d627d02c9c4d7f43d336746d04897e478349013b6cb6b9719c4",
+    "weebdex-platform/platform-integrations/local-library/signing-dependencies/package-lock.json": "dc5d74f233da82060765b02d329cdb630b5327708b8d5b853512bbbf13cfaf3a",
+    "weebdex-platform/frontend/package.json": "33e586c5daaac84481220565f53319ef1f3a9dd21104087018523bc2c137f2b9",
+    "weebdex-platform/frontend/yarn.lock": "2169f69125e5d59bb8b143ed2c68a4c7be351ff3b3edd83b29260f2bb4f848ea",
+    "weebdex-platform/scripts/check-composed-frontend.mjs": "7506ca7ad2be35dcebd08e7a03a16263f91d57d6868047b71a39762d9040f94e",
+    "weebdex-platform/scripts/vite.platform.config.mjs": "03a34343251e65b83fdc71388fcd2fabb1395d17f411182e0e56b766c8308160",
+    "weebdex-platform/scripts/build-frontend.mjs": "631dda7e5764001c599d28faa3351fc8852356d4bc02375d7f2679f2c0dc8a7e",
+    "weebdex-platform/scripts/restore-local-library-noble.py": "d1c3bb1991d33fc59243fe3d47e86dcd243dbb081f19dd2240c1f527bda64155",
+    "weebdex-platform/scripts/restore-local-signing-base.py": "11d859330f3b1ef7f0e3dc0e819e25e69ab397d042e4e9c42f1b51864efe52b5",
+    "weebdex-platform/scripts/semantic-readonly-cache-guard.cjs": "6fe2a5f0756d661a3455e569e01d96247413a61cf00263fdccc8c932554b77dd"
+  },
+  "availablePrimaryNodePackages": {
+    "typescript": {
+      "present": false,
+      "version": null
+    },
+    "svelte": {
+      "present": false,
+      "version": null
+    },
+    "svelte-check": {
+      "present": false,
+      "version": null
+    },
+    "vite": {
+      "present": false,
+      "version": null
+    },
+    "@sveltejs/kit": {
+      "present": false,
+      "version": null
+    },
+    "@tailwindcss/vite": {
+      "present": false,
+      "version": null
+    },
+    "jsdom": {
+      "present": false,
+      "version": null
+    },
+    "fake-indexeddb": {
+      "present": false,
+      "version": null
+    },
+    "playwright": {
+      "present": true,
+      "version": "1.62.1"
+    },
+    "yarn": {
+      "present": false,
+      "version": null
+    },
+    "@noble/curves": {
+      "present": false,
+      "version": null
+    },
+    "@noble/hashes": {
+      "present": false,
+      "version": null
+    }
+  },
+  "historicalPhysicalRootStatus": [
+    {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core",
+      "present": true
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/browser-dom-dependencies/node_modules",
+      "present": false
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/manga-protocol-lab/browser-client/node_modules",
+      "present": false
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules",
+      "present": false
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules",
+      "present": false
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-signing-base-2.0.0/node_modules",
+      "present": false
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules",
+      "present": false
+    }
+  ],
+  "currentCorepackVersion": "0.34.6",
+  "knownCorepackCachesPresent": false,
+  "installsDownloadsOrBrowsersExecuted": false
+}

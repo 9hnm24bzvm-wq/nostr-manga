@@ -1,0 +1,142 @@
+{
+  "cleanup": {
+    "closedPort": true,
+    "error": null,
+    "forced": false,
+    "listenerGateReleased": true,
+    "ownedBirths": 84,
+    "ownerGateReleased": true,
+    "port": 55437,
+    "postmasterExitCode": 0,
+    "postmasterForced": false,
+    "postmasterPidFileRemoved": true,
+    "remaining": [],
+    "retainedDatabaseAndScratch": true,
+    "unconfirmedBirths": [],
+    "verifiedStopped": true
+  },
+  "commandOutputHashPairs": [
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "bbf9855827b898c50dd6a4dc71e093236e6fc5aca4b610607bee280f52e7d570",
+      "tool": "initdb"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "0a885b8f6ca3bf674a04b3a4889467ab24fae8786103bf40c2d3100443d71ed3",
+      "tool": "psql"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "006d4a6d9f28eaba51e60a551ca1140858fc9b663dd9982a46f611e93f3e6eb9",
+      "tool": "psql"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "2a072144415785688e8e561b546b46f6e4d2166f2bb09663893393b69ca86ec6",
+      "tool": "psql"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "tool": "psql"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "77785fc7b151a325a39d2c40a7701cb57736f2ce34b7edbef4e538f42c1509d3",
+      "tool": "psql"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool": "createdb"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool": "psql"
+    },
+    {
+      "returnCode": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tool": "psql"
+    }
+  ],
+  "cumulativeRuntimeSeconds": 13.409,
+  "finiteMethods": 5,
+  "guardSeconds": 11.516,
+  "guardSyntheticControls": {
+    "passed": 3,
+    "scope": "Injected cleanup state/identity/signal functions only; no process, network or database.",
+    "seconds": 0.221,
+    "tests": 3
+  },
+  "installedEntriesAfter": 1024,
+  "installedEntriesBefore": 1024,
+  "installedInventorySha256": "e4cbc464100b9ad3fa27fba5a2ee391bace8dc391f085b87955e90756c804774",
+  "limits": {
+    "cleanupSeconds": 30,
+    "fixtureBytes": 268435456,
+    "floorFreeBytes": 4294967296,
+    "hostAvailableBytes": 2147483648,
+    "outputBytes": 16777216,
+    "ownedRssBytes": 1073741824,
+    "seconds": 178,
+    "workSeconds": 148
+  },
+  "listenerProof": {
+    "address": "127.0.0.1",
+    "capturedPostmasterBirthAndInodeVerifiedBeforeFirstSql": true,
+    "port": 55437,
+    "prelaunchBaselineAndUnchangedAdmittedInode": true,
+    "workerFdSweepNotRequired": true
+  },
+  "migrations": 52,
+  "rawAssociations": {
+    "owner-result.json": "0e4ac302c00ebc43e6a9935e1bd8ff090ff31109427593130424cc78aaf2aee9",
+    "runtime-evidence-03/cleanup.json": "a702b023149c6d75ed8b800a966c7ba3bf97d07038c845ed87a408b130269a48",
+    "runtime-evidence-03/fixture-result.json": "d57300e45f7929204340fea487431ed7efc1b4d6045392921d53124da6cefad6",
+    "runtime-evidence-03/stderr.log": "334322c7d3b7b38e08c10e6b2462e61c30be630babd961d96fa0ec6c00166acc",
+    "runtime-evidence-03/stdout.log": "302635b8cee1dc01cc8a4776965ccbc9be5478be4549bcc4cc9d88086c6f2315",
+    "runtime-owner-result-03.json": "943a2293ce9543f193794f73b8f3b26454be141091e069b641ef4a930cc4c01b",
+    "setup-result.json": "7630dc69d683b585cfe25aa3f6339c8617d77242a5a5769056482eb5f2ee64fc"
+  },
+  "realDatabaseMethods": 12,
+  "sampledResources": {
+    "maximumEvidenceAllocationBytes": 118784,
+    "maximumFixtureAllocationBytes": 162140160,
+    "maximumOwnedRssBytes": 205164544,
+    "minimumAvailableMemoryBytes": 8895303680,
+    "minimumTmpFreeBytes": 5063262208,
+    "minimumWorkspaceFreeBytes": 27098263552
+  },
+  "schema": "pg18-controlled-diagnostics-evidence-v1",
+  "scope": "Actual CLI/WAL/checkpointer/settings/activity/timeout/cancellation diagnostics in a new synthetic PostgreSQL18.6 cluster. No application server or library-node process, app restore, browser, WAN throughput or scale acceptance.",
+  "serverVersionNum": 180006,
+  "setupPackageBytes": 9739724,
+  "setupSampledMaximumNamedAllocationBytes": 60727296,
+  "setupSampledMaximumOwnedRssBytes": 90464256,
+  "setupSeconds": 16.237,
+  "sourceAndInstalledInputsUnchanged": true,
+  "sourceHead": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "sourcePins": 82,
+  "sourceTree": "12b3034915ecf16f8379eefc9615501c05e3476b",
+  "status": "passed",
+  "testSeconds": 10.34,
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "successful": true,
+    "testsRun": 17
+  }
+}

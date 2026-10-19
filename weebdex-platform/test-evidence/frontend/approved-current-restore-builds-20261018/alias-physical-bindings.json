@@ -1,0 +1,37 @@
+[
+  {
+    "package": "@lucide/svelte",
+    "physical_target": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend/node_modules/@lucide/svelte",
+    "package_sha256": "902b0ff1358ba446f2b7262e6d03b5987d2c8ceaa7c4c5c4ec1acfd272469000"
+  },
+  {
+    "package": "svelte-sonner",
+    "physical_target": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend/node_modules/svelte-sonner",
+    "package_sha256": "17a2151da28a914b73a2111aff3a5419dd7aec3a4f92968e1f0154e102fb392b"
+  },
+  {
+    "package": "axios",
+    "physical_target": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend/node_modules/axios",
+    "package_sha256": "8ed8b140849da2bf466af7a8a3d0fc3b166f639291de6470f738f5eccfe2325b"
+  },
+  {
+    "package": "http-status-codes",
+    "physical_target": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend/node_modules/http-status-codes",
+    "package_sha256": "98d6da60c21baffd8d71779edfdf67424e92332edead59b84191dbd8977895ea"
+  },
+  {
+    "package": "@noble/curves",
+    "physical_target": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/curves",
+    "package_sha256": "588b510f1b8804bdf820acbd14065126286d92575c45811acef08fe480899469"
+  },
+  {
+    "package": "@noble/hashes",
+    "physical_target": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/hashes",
+    "package_sha256": "ceb30ba96a14786c419db53f2b8d3d59ece7ac5221c198ac03def462cf96ef23"
+  },
+  {
+    "package": "@scure/base",
+    "physical_target": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/.build/local-signing-base-2.0.0/node_modules/@scure/base",
+    "package_sha256": "93cb3a28e1f34a5399aed7c4ba8ba337acd28b01420c34e6daa9bc35a24f34af"
+  }
+]

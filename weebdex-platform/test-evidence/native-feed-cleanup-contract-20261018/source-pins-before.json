@@ -1,0 +1,21 @@
+{
+  ".github/workflows/hosted-browser-e2e.yml": "19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1",
+  "weebdex-platform/scripts/ci/hosted-public-upload-profile.py": "f0f8f4421194b21b74940dd22b2ff524d028366647ebe82f468fddbb4a43cc8f",
+  "weebdex-platform/scripts/ci/journey-diagnostics.py": "942c5789182d89d8b9ebf0915766d782afaf005c255439d940ed06fa81116b74",
+  "weebdex-platform/scripts/ci/native-feed-diagnostics.py": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c",
+  "weebdex-platform/scripts/ci/owned-fixture-cleanup.py": "2f774c81dcd90ae80d9df6a20ba98b3b0c26169c41d5e93384a68be71feb48f1",
+  "weebdex-platform/scripts/ci/prepare-hosted-browser.py": "6a6b3f8319d6e7cd1d9d78d2a8569ca22257fdb1f4f5018cd91742072b4ded42",
+  "weebdex-platform/scripts/ci/public-upload-diagnostics.py": "ea23c2c50a7eb0f169fe56954e307e3dba070cf5b5f03a84d64f1634461b922d",
+  "weebdex-platform/scripts/ci/run-hosted-browser.py": "a904994f8ab19164174dc62f17df48ed926de0567603340f080b39415e00c0a6",
+  "weebdex-platform/scripts/ci/run-hosted-feed-regression.py": "f68f1ae7aaa4339a43e682168bc54c290a764d678aba102ba8f8e6b60c0cc2f4",
+  "weebdex-platform/scripts/ci/runner-diagnostics.py": "9271b0ee7f39954d9ee470284ac2a2b5550e0c8e14895427804cc3a2b0d1576b",
+  "weebdex-platform/scripts/ci/startup-diagnostics.py": "8df48891fce67614f373e619af7dfc38b809c25f0cd5fa505b24f3d0a3aa26f4",
+  "weebdex-platform/scripts/ci/validate-ci-evidence.py": "9fc684992fe02ca39ef2435c4c7b041ec279994004be158c7898c7501a68ce1a",
+  "weebdex-platform/scripts/run-bounded.py": "704d37bbfed9fb2217f9ff0963793d7426e0ab0c5c8f209c04c7d850b7ef2757",
+  "weebdex-platform/test-evidence/native-account-profile-20261018/public_native_profile/cleanup.json": "70676f2f5a325eeae2c1a12c25adc3de1da1bb8634831a10ce9ad71b153b31cb",
+  "weebdex-platform/tests/ci/test_journey_diagnostics.py": "897506786584b684931dba67b022672818bc17200a46e7736e7b930d591367ef",
+  "weebdex-platform/tests/ci/test_native_feed_diagnostics.py": "1101cbb285c830e4453903c16c6053fc545281b100c523ed0a1a670f686688f6",
+  "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py": "1b5c78db398d2df758d043eee30032a311d8ef9926214c1784bc35ee596571a5",
+  "weebdex-platform/tests/ci/test_runner_diagnostics.py": "d22d226f5afad25440a2fe0859fa07e3b0684bb7dac34511167322bca10572b5",
+  "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+}

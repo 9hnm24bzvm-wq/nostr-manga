@@ -9,7 +9,7 @@ on:
       batch:
         description: Bounded batch, or all 40 phases with separate native and public profiles
         required: true
-        default: all
+        default: public-upload
         type: choice
         options: [all, startup, ordinary-a, ordinary-b, ui10, signed-a, signed-b, signed-c, signed-d, ui-feed, ui-reader, ui-home, actor-follow, public-upload]
 
@@ -24,7 +24,7 @@ jobs:
   browser:
     # Standard public runner only. Never fall back to private/paid/self-hosted.
     if: github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && (github.ref == 'refs/heads/ci/hosted-browser-e2e' || github.ref == 'refs/heads/ci/browser-failure-diagnostics')
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 140
     env:
       CARGO_BUILD_JOBS: 2
@@ -38,6 +38,11 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24.19.0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: '3.12.15'
+          architecture: x64
+          check-latest: false
       - name: Check finite deployment proxy route and header contracts
         timeout-minutes: 2
         run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs

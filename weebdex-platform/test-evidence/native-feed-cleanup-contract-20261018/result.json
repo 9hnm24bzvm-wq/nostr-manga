@@ -1,0 +1,25 @@
+{
+  "status": "finite-qualified-hosted-retry-unrun",
+  "validationSource": "c963d383559769a97b7b0709499520adfbeac3f7",
+  "base": "9feba101f8bb1bda487d1df56a5952151d9f5022",
+  "hostedObservationRun": 39142927874,
+  "defect": "consumer expected exactly2 fixture fields; actual auth_fixture_guard emits15",
+  "privateFixtureFieldCount": 15,
+  "publicResultFieldsUnchanged": true,
+  "retainedActualProducerReceipt": {
+    "path": "weebdex-platform/test-evidence/native-account-profile-20261018/public_native_profile/cleanup.json",
+    "sha256": "70676f2f5a325eeae2c1a12c25adc3de1da1bb8634831a10ce9ad71b153b31cb",
+    "freshPostgresRun": false
+  },
+  "isolatedNativeCases": 12,
+  "affectedCasesIncludingNative": 48,
+  "failureOrSkips": 0,
+  "selectedGuardSeconds": 1.371,
+  "frozenSelectedInputs": 19,
+  "selectedInputsUnchanged": true,
+  "baselineMismatchReproduced": true,
+  "initialBaselineProbePathErrorRetained": true,
+  "noDbInstallBuildBrowserOrCiRetry": true,
+  "pythonVersion": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "scope": "Finite private-receipt producer/consumer and existing closed diagnostic/profile contract tests only. Does not qualify native PostgreSQL execution or genuine hosted browser acceptance."
+}

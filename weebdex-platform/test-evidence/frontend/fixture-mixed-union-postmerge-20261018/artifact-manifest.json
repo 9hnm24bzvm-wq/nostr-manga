@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "files": {
+    "README.md": {
+      "bytes": 3211,
+      "sha256": "3b388a0446b79b8643875a1c6c59933c7e0a8dac879e2ab5ba241c4540614afb"
+    },
+    "composition-review.json": {
+      "bytes": 1798,
+      "sha256": "1a920e28c4e21deee9bcec78299474494c049e7fca209425bd1619657e71d72a"
+    },
+    "dependency-inputs-after.json": {
+      "bytes": 9396,
+      "sha256": "aef15cede558ad0ee0ce0d2a1d235437f6865a8bafe56eded6164edd1f349c84"
+    },
+    "dependency-inputs-before.json": {
+      "bytes": 9396,
+      "sha256": "aef15cede558ad0ee0ce0d2a1d235437f6865a8bafe56eded6164edd1f349c84"
+    },
+    "green-log-manifest.json": {
+      "bytes": 237,
+      "sha256": "f874c78c70b44c252d60fffb3b5a35f05bf278c0686eac96a1e5437eb1037efc"
+    },
+    "green-result.json": {
+      "bytes": 1978,
+      "sha256": "a343ffb213b122b6b72da293d14cf27f89207dbc295b0486a58f4fe4ea17a8ae"
+    },
+    "green-selected-files.json": {
+      "bytes": 4230,
+      "sha256": "c95c401509112af2003c0efeca5c0ef4965c67be82610c6074374bf4ae9ada12"
+    },
+    "independent-static-review.json": {
+      "bytes": 751,
+      "sha256": "640333a6c2551a0dcf57d824c8ae6ba8ac73d73f4530860cfa953a46b3fc27e7"
+    },
+    "owned-resource-receipt.json": {
+      "bytes": 388245,
+      "sha256": "db123cd2f0f6029ff693b55304a6ea1b53d92a0f72852296b5fc769d5b9e5b14"
+    },
+    "packaging-diagnostic.json": {
+      "bytes": 470,
+      "sha256": "f4579bfe87382e438e2fa7964a6f699f20b839ed3c6450ea8c5ef65e3c2d7ee3"
+    },
+    "pin-inputs.py": {
+      "bytes": 1392,
+      "sha256": "820ba6402f18eda8831ad25d956b47ad20929d587ff9a2df85d8e662b06428c1"
+    },
+    "plan-observed.json": {
+      "bytes": 4254,
+      "sha256": "23efdb196ba22591fe27b97f2cf34098617c70e64fb63bdf166a5c68f00229b4"
+    },
+    "red-dependency-inputs-after.json": {
+      "bytes": 9396,
+      "sha256": "aef15cede558ad0ee0ce0d2a1d235437f6865a8bafe56eded6164edd1f349c84"
+    },
+    "red-dependency-inputs-before.json": {
+      "bytes": 9396,
+      "sha256": "aef15cede558ad0ee0ce0d2a1d235437f6865a8bafe56eded6164edd1f349c84"
+    },
+    "red-log-manifest.json": {
+      "bytes": 140,
+      "sha256": "abc17b75efb475a664afddee9827f8b887cae2338b1ae9a08849055c38b6e429"
+    },
+    "red-owned-resource-receipt.json": {
+      "bytes": 391122,
+      "sha256": "6954ca4cfd0b94267463a27e8d82c61f3948c4212c6443e8ad7a1356e47e615d"
+    },
+    "red-result.json": {
+      "bytes": 657,
+      "sha256": "fb6d51ad9f75db516ea9c23f2543762564c5916328393d63faad8fa100d5998c"
+    },
+    "red-source-pins-after.json": {
+      "bytes": 9303,
+      "sha256": "d49a094518cff45ec03790b95ea958347557fcfac6799c57a4f0ed6a3690bc53"
+    },
+    "red-source-pins-before.json": {
+      "bytes": 9303,
+      "sha256": "d49a094518cff45ec03790b95ea958347557fcfac6799c57a4f0ed6a3690bc53"
+    },
+    "run-guarded.py": {
+      "bytes": 2719,
+      "sha256": "6b7aff5643bd4f4da01a001a119c3f163820db93e273ece7e886daa5e232bb70"
+    },
+    "run-union.sh": {
+      "bytes": 658,
+      "sha256": "f6c1bb3a4e2f271eb2ca007a4781972841b353a79c4cda2917194996ccb024aa"
+    },
+    "runtime.json": {
+      "bytes": 1062,
+      "sha256": "5870ae409158a9623c80800f47e9fe8ffa293bc2813eaa2c717323376f69fc9d"
+    },
+    "selected-files.json": {
+      "bytes": 4230,
+      "sha256": "d7c0d27eb10bdb3985d82bad962da14dcaad139118cb0557805038c87a576ec3"
+    },
+    "setup-parser-error.json": {
+      "bytes": 266,
+      "sha256": "29f4e31608b22680464b6057e59af4c8af2b91facb09ae0b0234553deb623be3"
+    },
+    "source-pins-after.json": {
+      "bytes": 9455,
+      "sha256": "422776fede70c03c585b0c07e9b06b58cedf9d74a55134cf6eafb0f3fc74aa5e"
+    },
+    "source-pins-before.json": {
+      "bytes": 9455,
+      "sha256": "422776fede70c03c585b0c07e9b06b58cedf9d74a55134cf6eafb0f3fc74aa5e"
+    },
+    "static-plan-field-review.json": {
+      "bytes": 2635,
+      "sha256": "86d64920e133ee9612f8172316fed403a1e0fd7c08112d1182e2c8c1a4136e09"
+    },
+    "union-red.log.gz": {
+      "bytes": 2381,
+      "sha256": "f963c4526001dbe344571fba100acfaa0b854cc202e5118971d2d04d37f13189"
+    },
+    "union.log.gz": {
+      "bytes": 2058,
+      "sha256": "141342a9b79ea7a4cf0b3af14df4e15ecb26a5ed44c9214b5a438028d50d8cc7"
+    }
+  },
+  "excludesSelf": true,
+  "rawLogsRetainedViaGzip": true
+}

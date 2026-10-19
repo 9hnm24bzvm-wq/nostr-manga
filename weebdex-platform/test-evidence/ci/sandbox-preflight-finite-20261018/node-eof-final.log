@@ -1,0 +1,20 @@
+✔ supported host is exact Ubuntu22.04 Linuxx64 nonroot (1.030147ms)
+✔ launch is explicitly sandboxed and data-only with normal context/browser closure (1.500848ms)
+✔ first caught failure stays closed: launch (0.446635ms)
+✔ first caught failure stays closed: context (0.141364ms)
+✔ first caught failure stays closed: page (0.190738ms)
+✔ first caught failure stays closed: goto (0.227804ms)
+✔ first caught failure stays closed: text (0.221755ms)
+✔ first caught failure stays closed: context-close (0.202456ms)
+✔ first caught failure stays closed: browser-close (0.293734ms)
+✔ classifier never leaks raw messages and reads a throwing/changing getter once (0.361096ms)
+✔ dedicated workflow never triggers application branches or installs app dependencies (0.464212ms)
+✔ application workflow remains exact and does not match the dedicated preflight branch (0.618936ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.770555

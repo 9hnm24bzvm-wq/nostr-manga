@@ -73,6 +73,39 @@
       "verifiedUTC": "2026-10-18T13:27:11Z",
       "verifiedSourceEntries": 5356,
       "qualification": "Exact recovery continuation: unchanged qualified frontend/backend application bytes; migration7/7,CLI38/38,purebench9/9,controlledbench47/49 with two missing-fixture errors,one ordinary Chromium startup permission failure,and synthetic PostgreSQL17 backup/restore mechanics. Reviewed nginx bootstrap source has six finite cases; installed nginx/parser/runtime was still pending in this historical snapshot."
+    },
+    {
+      "localSourceCommit": "6671c45404d4897417c4d3feb0780dff3755cf3e",
+      "localSourceTree": "59cbf855807428690c975bbbba31705aca03464d",
+      "remoteCommit": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+      "remoteTree": "59cbf855807428690c975bbbba31705aca03464d",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/be283b664f699e8c7175f6eac0200cd22e212c8a",
+      "verifiedUTC": "2026-10-18T15:12:00Z",
+      "verifiedSourceEntries": 5375,
+      "qualification": "Exact isolated official nginx 1.30.6 lifecycle and mapped parser continuation, with explicit redirect access-log privacy fence and scoped finite checks. Application frontend/backend qualification remains source-associated to retained historical snapshots; browser, full application restore, load and whole-repository acceptance remain unqualified."
+    },
+    {
+      "localSourceCommit": "6c5000081092134facb8713ccea202fc37edd7b5",
+      "localSourceTree": "9fad0a11e76c4ca2174b4d103dfc8238a0e7124f",
+      "remoteCommit": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+      "remoteTree": "9fad0a11e76c4ca2174b4d103dfc8238a0e7124f",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+      "verifiedUTC": "2026-10-18T16:02:37Z",
+      "verifiedSourceEntries": 5510,
+      "qualification": "Scoped collection validation, backup exclusion, authentic fixture recovery, finite mixed accounting/import checks, compact correctness and finite browser-helper readiness. Fresh full frontend strict/build and genuine browser qualification remain separate. Original inventory had 42 files with execution results and 12 actual-PG method skips."
+    },
+    {
+      "localSourceCommit": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+      "localSourceTree": "12b3034915ecf16f8379eefc9615501c05e3476b",
+      "remoteCommit": "85cda6399d0b5522aa3857c3f95eb289366302e6",
+      "remoteTree": "12b3034915ecf16f8379eefc9615501c05e3476b",
+      "branch": "recovery/combined-successor-20261018",
+      "commitURL": "https://github.com/9hnm24bzvm-wq/nostr-manga/commit/85cda6399d0b5522aa3857c3f95eb289366302e6",
+      "verifiedUTC": "2026-10-18T17:14:00Z",
+      "verifiedSourceEntries": 5606,
+      "qualification": "Reviewed diagnostic/runtime source and finite controls with first two terminal hosted failures, final mixed-read correctness and explicit sandbox option. No application-browser acceptance; the fresh frontend/PG18 evidence is added in a later scoped continuation."
     }
   ],
   "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768"

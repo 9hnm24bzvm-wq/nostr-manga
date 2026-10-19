@@ -1,0 +1,14 @@
+{
+  "source": "GitHub completed decoded job logs endpoint",
+  "runId": 39144824203,
+  "jobId": 117726426599,
+  "bytes": 23804,
+  "sha256": "41936a733b16ce46d8276ae4e3fed2362884c721908550825a571f4b7cfb4419",
+  "rawLogPublished": false,
+  "privateBrowserAndFixtureLogsWereNotUploaded": true,
+  "normalizedPublicArtifacts": [
+    "preparation.json",
+    "summary.json",
+    "phases.json"
+  ]
+}
