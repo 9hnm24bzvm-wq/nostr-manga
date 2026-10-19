@@ -8,6 +8,28 @@ FLAGS = {'record_valid', 'completed', 'context_closed', 'replacement_verified',
          'exact_mutation_count'}
 COUNTS = {'signed_requests': 128, 'mutations': 32, 'independent_reads': 96, 'fixture_controls': 28}
 OBSERVER_FAILURES = ('signed_request_invalid', 'duplicate_native_terminal', 'signed_native_failed')
+PREVIEW_REFUSAL_CODES = ('checkpoint', 'fetch', 'response-header', 'response-media', 'declared-size', 'body-read', 'body-budget', 'decode', 'other', 'unavailable')
+
+
+def preview_refusals_valid(value):
+    return (type(value) is dict and set(value) == {'record_valid', 'truncated', 'codes'} and
+            type(value.get('record_valid')) is bool and type(value.get('truncated')) is bool and
+            type(value.get('codes')) is list and len(value['codes']) <= 16 and
+            all(type(code) is str and code in PREVIEW_REFUSAL_CODES for code in value['codes']) and
+            (value['record_valid'] or not value['codes'] and not value['truncated']) and
+            (not value['truncated'] or len(value['codes']) == 16))
+
+
+def project_preview_refusals(raw):
+    if not preview_refusals_valid(raw):
+        return {'record_valid': False, 'truncated': False, 'codes': []}
+    return {'record_valid': raw['record_valid'], 'truncated': raw['truncated'], 'codes': list(raw['codes'])}
+
+
+def preview_refusals_clear(value):
+    return value['record_valid'] is True and value['truncated'] is False and value['codes'] == []
+
+
 UPLOAD_UUID = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 NATIVE_OPERATIONS = (
     ('GET', r'/api/v1/nostr/account-context', 'account-context'),
@@ -169,6 +191,7 @@ def project(acceptance):
     value = {'schema': 1, **{key: False for key in FLAGS}, **{key: 0 for key in COUNTS},
              'private_values_omitted': True, 'raw_messages_exported': False,
              'browser_observer_failures': project_observer_failures(browser.get('failures') if type(browser) is dict else None),
+             'preview_transport_refusals': project_preview_refusals(raw.get('preview_transport_refusals') if type(raw) is dict else None),
              'native_failure_diagnostics': project_native_failures(browser.get('rows') if type(browser) is dict else None),
              'journey_diagnostics': project_journey(raw.get('journey_progress') if type(raw) is dict else None),
              'key_import_diagnostics': project_key_import(acceptance.get('public_upload', {}).get('key_import') if type(acceptance.get('public_upload')) is dict else None)}
@@ -226,16 +249,18 @@ def project(acceptance):
 def passed(value):
     return (all(value.get(key) is True for key in FLAGS) and key_import_passed(value['key_import_diagnostics']) and
             observer_failures_clear(value['browser_observer_failures']) and journey_passed(value['journey_diagnostics']) and
-            native_failures_clear(value['native_failure_diagnostics']))
+            native_failures_clear(value['native_failure_diagnostics']) and preview_refusals_clear(value['preview_transport_refusals']))
 
 
 def validate(value):
-    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures', 'journey_diagnostics', 'native_failure_diagnostics'} or type(value['schema']) is not int or value['schema'] != 1:
+    if type(value) is not dict or set(value) != FLAGS | set(COUNTS) | {'schema', 'private_values_omitted', 'raw_messages_exported', 'key_import_diagnostics', 'browser_observer_failures', 'journey_diagnostics', 'native_failure_diagnostics', 'preview_transport_refusals'} or type(value['schema']) is not int or value['schema'] != 1:
         raise ValueError('Invalid public upload diagnostics schema')
     if any(type(value[key]) is not bool for key in FLAGS) or any(type(value[key]) is not int or not 0 <= value[key] <= cap for key, cap in COUNTS.items()) or value['private_values_omitted'] is not True or value['raw_messages_exported'] is not False:
         raise ValueError('Invalid public upload diagnostic facts')
     if value['exact_mutation_count'] and value['mutations'] != 21:
         raise ValueError('Mutation-count facts disagree')
+    if not preview_refusals_valid(value['preview_transport_refusals']):
+        raise ValueError('Invalid preview transport refusal facts')
     failures = value['browser_observer_failures']
     if (type(failures) is not dict or set(failures) != {'record_valid', *OBSERVER_FAILURES} or
             type(failures.get('record_valid')) is not bool or

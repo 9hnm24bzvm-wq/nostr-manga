@@ -8,6 +8,39 @@ import { connectPublicUploadKey, createKeyImportStep, uniqueUploadControl } from
 import { createUploadJourneyProgress } from './public-upload-journey-progress.mjs';
 import { createUploadIndependentReader, observePublicUpload, uploadDigest } from './public-upload-recovery-observer.mjs';
 export const publicUploadRecoveryPhase = 'public-upload-recovery';
+export const uploadPreviewRefusalCodes = Object.freeze(['checkpoint', 'fetch', 'response-header', 'response-media', 'declared-size', 'body-read', 'body-budget', 'decode', 'other', 'unavailable']);
+export function projectUploadPreviewRefusals(raw) {
+  const invalid = { record_valid: false, truncated: false, codes: [] };
+  try {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw) || Object.keys(raw).sort().join(',') !== 'codes,count') return invalid;
+    const count = raw.count, source = raw.codes;
+    if (!Number.isInteger(count) || count < 0 || count > 500 || !Array.isArray(source)) return invalid;
+    const length = source.length;
+    if (length !== Math.min(count, 17)) return invalid;
+    const codes = [];
+    for (let index = 0; index < length; index++) {
+      const code = source[index];
+      if (typeof code !== 'string' || !uploadPreviewRefusalCodes.includes(code)) return invalid;
+      codes.push(code);
+    }
+    return { record_valid: true, truncated: count > 16, codes: codes.slice(0, 16) };
+  } catch { return invalid; }
+}
+export async function captureUploadPreviewRefusals(page) {
+  let timer;
+  try {
+    // One passive snapshot of currently rendered error attributes. No event
+    // hook, forced action, response substitution or raw error text is retained.
+    const value = await Promise.race([
+      page.locator('p[role="status"][data-public-upload-preview-refusal]').evaluateAll(nodes => ({
+        count: nodes.length, codes: nodes.slice(0, 17).map(node => node.getAttribute('data-public-upload-preview-refusal')),
+      })),
+      new Promise(resolve => { timer = setTimeout(() => resolve(null), 1000); }),
+    ]);
+    return projectUploadPreviewRefusals(value);
+  } catch { return { record_valid: false, truncated: false, codes: [] }; }
+  finally { if (timer !== undefined) clearTimeout(timer); }
+}
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 export const uploadCompletionTitles = Object.freeze(['Upload request accepted', 'Chapter added to approval queue', 'Chapter uploaded successfully']);
 export function assertUploadRecoveryRoute(value, origin, pathname) {
@@ -75,7 +108,7 @@ export async function runPublicUploadRecovery(h) {
   const observer = observePublicUpload(page, { origin, owner, service: fixture.service_key, verify });
   const reader = createUploadIndependentReader({ origin, owner, service: fixture.service_key, sign });
   const result = report.public_upload = { scope: 'reconstructed-public-upload-replacement-v1', completed: false, supported_replacement: true, chapter_edit: 'unimplemented',
-    fixture_control_calls: 0, key_import: [], journey_progress: [], durable: [], replacement: null, preview_decodes: [], browser_http: null, independent_http: null, ui_controls: [], actual_context_closed: false,
+    fixture_control_calls: 0, key_import: [], journey_progress: [], durable: [], replacement: null, preview_decodes: [], preview_transport_refusals: { record_valid: false, truncated: false, codes: [] }, browser_http: null, independent_http: null, ui_controls: [], actual_context_closed: false,
     limitations: ['Immediate image decode can use an acknowledged local File; signed-preview proof requires hard reload and real key reimport.', 'Publication acceptance and readable catalogue projection are checked separately.', 'No full40 or lost-source equivalence claim.'] };
   let account, sessionId, lastVersion = 0;
   const progress = createUploadJourneyProgress(result.journey_progress, save), mark = stage => progress.mark(stage);
@@ -188,6 +221,7 @@ export async function runPublicUploadRecovery(h) {
     });
     await run('commit once through actual terms and approval controls', async () => { const start = observer.mutationCount(), beforeCommit = await exact(), p = await panel(); mark('commit-control'); await p.locator('#terms').check(); await (await button(p, 'Upload')).click(); await completeWrites(start, 2); const value = await durable('committed', { state: 'committed', images: [], order: beforeCommit.pageOrder }); mark('publication-check'); assert.match(value.publication?.event_id ?? '', /^[0-9a-f]{64}$/); assert.equal(value.chapter?.event_id, value.publication.event_id); assert.equal(value.publication.original_event?.id, value.publication.event_id); assert.equal(value.publication.original_event?.kind, 1001); assert.equal(value.publication.original_event?.verified, true); assert.equal(value.publication.original_event?.pubkey, account.group.pubkey); assert.equal(value.chapter.pages.length, remaining.length); for (let i = 0; i < remaining.length; i++) { const stored = value.chapter.pages[i]; assert.equal(stored.file_hash, remaining[i].sha256); assert.equal(stored.storage_sha256, remaining[i].sha256); assert.equal(stored.storage_bytes, remaining[i].buffer.length); assert.equal(stored.fresh_original_read, true); } const receipt = await exact(); mark('receipt-read'); assert.equal(receipt.isCommitted, true); assert.equal(receipt.canMutate, false); assert.equal(receipt.canCancel, false); assert.equal(receipt.chapterId, value.chapter.id); const completionTitle = await visibleCompletion(receipt); const checkReceipt = page.getByRole('button', { name: 'Check saved publication receipt', exact: true }); if (await checkReceipt.count()) { mark('receipt-refresh'); const before = observer.mutationCount(); await (await button(page, 'Check saved publication receipt')).click(); await until(() => observer.settled(), Boolean, 'Exact receipt read terminals'); assert.equal(observer.mutationCount(), before); } mark('browser-terminal'); await until(() => observer.settled(), Boolean, 'Final signed browser terminals'); mark('route'); assertUploadRoute(); mark('mutation-count'); assert.equal(observer.mutationCount(), 21, 'Exact natural-success journey mutation count'); result.completed = true; return { completion_title: completionTitle, chapter_id: value.chapter.id, event_id: value.publication.event_id, publication_status: value.session.publication_status, readable_projection_not_assumed: true }; });
   } finally {
+    result.preview_transport_refusals = await captureUploadPreviewRefusals(page);
     try { observer.close(); reader.close(); } finally { result.browser_http = observer.snapshot(); result.independent_http = reader.snapshot();
       secret?.fill(0); secret = undefined; secretHex = ''; for (const image of [...images, cancelImage, replacementImage]) image.buffer.fill(0); save(); }
     // The outer safe-error serializer still owns its redaction entry until the

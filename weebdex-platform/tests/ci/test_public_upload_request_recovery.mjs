@@ -9,6 +9,9 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import { createHash } from 'node:crypto';
 import { stripTypeScriptTypes } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
+import { applyPublicUploadOverlay } from '../../platform-integrations/public-api/upload-overlays.mjs';
 
 assert(vm.SourceTextModule, 'Run with node --experimental-vm-modules');
 const source = fs.readFileSync(new URL('../../platform-integrations/public-api/nostr-upload-request.ts', import.meta.url), 'utf8');
@@ -61,7 +64,7 @@ async function fixture(options = {}) {
     });
   }, { context });
   const codec = new vm.SyntheticModule(['hash', 'b64'], function () { this.setExport('hash', digest); this.setExport('b64', primitives.b64); }, { context });
-  const module = new vm.SourceTextModule(stripTypeScriptTypes(source), { context });
+  const module = new vm.SourceTextModule(stripTypeScriptTypes(options.transportSource ?? source), { context });
   await module.link(specifier => {
     if (specifier === '../local-library/protocol/nostr.js') return nostr;
     if (specifier === '../local-library/protocol/codec.js') return codec;
@@ -97,6 +100,101 @@ const errorIs = (outcome, status) => error => {
   return true;
 };
 const tags = f => Object.fromEntries(f.templates[0].tags);
+
+// Actual uploadPreview source plus the actual transport, with explicit staged
+// metadata/stream stand-ins. This identifies consumption boundaries, not a
+// browser's native terminal or the cause of an observed hosted abort.
+function previewConsumer(f, options = {}) {
+  const client = fs.readFileSync(new URL('../../platform-integrations/public-api/upload-client.ts', import.meta.url), 'utf8');
+  assert.equal(digest(client), 'af792fb9e1ebd24d17cb2d11b0838351ba19f5445786465a73ba70c3e3d4bc18');
+  const start = client.indexOf('  async function uploadPreview('), end = client.indexOf('\n  function uploadAccountFacts', start);
+  assert.ok(start > 0 && end > start);
+  const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+  const sessionId = '11111111-1111-8111-8111-111111111111', fileId = '22222222-2222-8222-8222-222222222222';
+  const input = { id: fileId, file_hash: digest(bytes), file_size: String(bytes.length), original_file_name: 'finite-preview.png',
+    public_upload: { fileSize: bytes.length, mimeType: 'image/png', dimensions: { width: 2, height: 3 },
+      previewUrl: `/api/v1/nostr/uploads/${sessionId}/files/${fileId}/preview` } };
+  const fresh = { id: sessionId, version: 1, relationships: { files: [input] } };
+  const owned = { account: { scope: f.scope }, latest: fresh, assert() {}, request: value => f.transport(value) };
+  const deps = { digest: async value => options.badDigest ? '0'.repeat(64) : digest(value),
+    decodeImage: async () => ({ width: options.badDimensions ? 9 : 2, height: 3 }) };
+  const fail = message => { throw Error(message); };
+  const factory = new Function('ownedBy', 'publicUuid', 'exact', 'fail', 'VisibleError', 'replacementPending', 'unknownReplacement', 'Blob', 'deps',
+    stripTypeScriptTypes(client.slice(start, end), { mode: 'transform' }) + '; return uploadPreview;');
+  const preview = factory(() => owned, value => value, async () => fresh, fail, Error, () => undefined, 'finite replacement fence', Blob, deps);
+  return { bytes, input, owned, load: () => preview({}, sessionId, input) };
+}
+function previewResponse(bytes, options = {}) {
+  const headers = new Headers({ 'content-type': options.mime ?? 'image/png', 'content-length': String(options.length ?? bytes.length),
+    'cache-control': options.private === false ? 'public' : 'private, no-store', vary: 'Authorization', 'x-content-type-options': 'nosniff' });
+  return new Response(bytes, { status: 200, headers });
+}
+function heldPreviewBody(bytes) {
+  const entered = deferred(), terminal = deferred(); let reads = 0, cancelled = 0, released = 0;
+  const response = { status: 200, headers: new Headers({ 'content-type': 'image/png', 'content-length': String(bytes.length),
+    'cache-control': 'private, no-store', vary: 'Authorization', 'x-content-type-options': 'nosniff' }),
+    body: { getReader: () => ({ read: async () => {
+      if (++reads === 1) return { done: false, value: bytes };
+      entered.resolve(); return terminal.promise;
+    }, cancel: async () => { cancelled++; terminal.resolve({ done: true }); }, releaseLock: () => { released++; } }) } };
+  return { response, entered: entered.promise, finish: () => terminal.resolve({ done: true }),
+    get reads() { return reads; }, get cancelled() { return cancelled; }, get released() { return released; } };
+}
+
+test('valid 200 preview consumption survives metadata-only autosave change without controller abort', { timeout: 3000 }, async () => {
+  const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]), stream = heldPreviewBody(bytes);
+  const f = await fixture({ fetch: async () => stream.response }), preview = previewConsumer(f);
+  const pending = preview.load(); await stream.entered;
+  preview.owned.latest = { version: 2, page_order: [preview.input.id], relationships: { files: [{ ...preview.input }] } };
+  stream.finish(); const blob = await pending;
+  assert.equal(blob.type, 'image/png'); assert.equal(blob.size, bytes.length);
+  assert.equal(f.requests.length, 1); assert.equal(f.requests[0].init.method, 'GET'); assert.equal(f.requests[0].abortCount, 0);
+  assert.equal(stream.cancelled, 0); assert.equal(stream.released, 1); assert.equal(f.timers.size, 0);
+});
+for (const invalidation of ['owner/view', 'selected identity', 'deadline']) test('HTTP200 pending preview body remains unavailable after ' + invalidation + ' invalidation', { timeout: 3000 }, async () => {
+  const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]), stream = heldPreviewBody(bytes);
+  const f = await fixture({ fetch: async () => stream.response }), preview = previewConsumer(f);
+  const pending = preview.load(); pending.catch(() => {}); await stream.entered;
+  if (invalidation === 'owner/view') f.close(); else if (invalidation === 'selected identity') f.changeIdentity(); else f.advance(60000);
+  stream.finish(); await assert.rejects(pending, errorIs('response', 200));
+  assert.equal(f.requests.length, 1); assert.equal(f.requests[0].abortCount, 1);
+  assert.equal(stream.cancelled, 1); assert.equal(stream.released, 1); assert.equal(f.timers.size, 0);
+});
+for (const boundary of ['media', 'declared size', 'actual size', 'unsafe header']) test('HTTP200 preview consumption rejects ' + boundary + ' without inventing a completed response', { timeout: 3000 }, async () => {
+  let f;
+  f = await fixture({ fetch: async () => {
+    const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+    if (boundary === 'unsafe header') return { status: 200, headers: { get: name => name === 'content-type' ? 'image/png' : name === 'cache-control' ? 'private\tno-store' : null }, body: { cancel: async () => {} } };
+    return previewResponse(boundary === 'actual size' ? new Uint8Array(bytes.length + 1) : bytes,
+      { mime: boundary === 'media' ? 'application/json' : 'image/png', length: boundary === 'declared size' ? bytes.length + 1 : bytes.length });
+  } });
+  const preview = previewConsumer(f); await assert.rejects(preview.load(), errorIs('response', 200));
+  assert.equal(f.requests.length, 1); assert.equal(f.requests[0].abortCount, 1); assert.equal(f.timers.size, 0);
+});
+test('HTTP200 preview stream read rejection cancels only its unfinished reader and retains known status', { timeout: 3000 }, async () => {
+  let cancelled = 0, released = 0;
+  const f = await fixture({ fetch: async () => ({ status: 200, headers: new Headers({ 'content-type': 'image/png' }),
+    body: { getReader: () => ({ read: async () => { throw Error('synthetic stream read failure'); },
+      cancel: async () => { cancelled++; }, releaseLock: () => { released++; } }) } }) });
+  await assert.rejects(previewConsumer(f).load(), errorIs('response', 200));
+  assert.equal(f.requests.length, 1); assert.equal(f.requests[0].abortCount, 1);
+  assert.equal(cancelled, 1); assert.equal(released, 1); assert.equal(f.timers.size, 0);
+});
+for (const refusal of ['privacy', 'digest', 'dimensions']) test('actual preview ' + refusal + ' refusal after complete200 consumption cannot abort that completed request', { timeout: 3000 }, async () => {
+  const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+  const f = await fixture({ fetch: async () => previewResponse(bytes, { private: refusal !== 'privacy' }) });
+  const preview = previewConsumer(f, { badDigest: refusal === 'digest', badDimensions: refusal === 'dimensions' });
+  await assert.rejects(preview.load(), error => {
+    assert.notEqual(error.name, 'PublicUploadRequestError');
+    assert.match(error.message, refusal === 'privacy' ? /privacy headers/ : refusal === 'digest' ? /original image receipt/ : /dimensions/); return true;
+  });
+  assert.equal(f.requests.length, 1); assert.equal(f.requests[0].abortCount, 0); assert.equal(f.timers.size, 0);
+});
+test('empty but fully consumed200 preview is refused by actual receipt validation without controller abort', { timeout: 3000 }, async () => {
+  const f = await fixture({ fetch: async () => previewResponse(new Uint8Array()) });
+  await assert.rejects(previewConsumer(f).load(), error => error.name !== 'PublicUploadRequestError' && /original image receipt/.test(error.message));
+  assert.equal(f.requests.length, 1); assert.equal(f.requests[0].abortCount, 0); assert.equal(f.timers.size, 0);
+});
 
 test('exact original JSON bytes, URL, service, nonce and owner reach one credential-free dispatch without relay response proof', { timeout: 3000 }, async () => {
   const f = await fixture({ holdSigner: true });
@@ -342,4 +440,111 @@ test('overlong or control-bearing allowlisted header values fail closed while re
     await assert.rejects(f.request(), errorIs('response', 200));
     assert.equal(f.requests.length, 1); assert.equal(f.requests[0].abortCount, 1); assert.equal(cancelled, 1);
   }
+});
+
+async function failure(f, overrides) {
+  try { await f.request(overrides); assert.fail('The finite request must refuse'); }
+  catch (error) { assert.equal(error.name, 'PublicUploadRequestError'); return error; }
+}
+test('transport refusal codes are exact frozen literals and never fields on the error', async () => {
+  const f = await fixture({ fetch: async () => { throw Error('reserved-example.invalid/private-value'); } });
+  assert.deepEqual([...f.api.uploadRequestRefusalStages], ['checkpoint', 'fetch', 'response-header', 'response-media', 'declared-size', 'body-read', 'body-budget', 'decode', 'other']);
+  assert.ok(Object.isFrozen(f.api.uploadRequestRefusalStages));
+  const error = await failure(f); assert.equal(f.api.uploadRequestRefusalStage(error), 'fetch');
+  assert.deepEqual(Object.keys(error).sort(), ['bodyAvailable', 'name', 'outcome', 'status']);
+  assert.doesNotMatch(JSON.stringify(error), /fetch|reserved-example|private-value/);
+});
+for (const stage of ['checkpoint', 'fetch', 'response-header', 'response-media', 'declared-size', 'body-read', 'body-budget', 'decode', 'other']) test('actual request brands only the genuine refusal boundary ' + stage, async () => {
+  const bytes = new Uint8Array([1, 2]);
+  const f = await fixture({ fetch: async () => {
+    if (stage === 'fetch') throw Error('finite fetch rejection before Response');
+    if (stage === 'response-header') return { status: 200, headers: { get() { throw Error('finite header read failure'); } } };
+    if (stage === 'body-read') return { status: 200, headers: new Headers({ 'content-type': 'image/png' }), body: { getReader: () => ({ read: async () => { throw Error('finite reader failure'); }, cancel: async () => {}, releaseLock() {} }) } };
+    return stage === 'decode' ? new Response('{broken', { status: 200, headers: { 'content-type': 'application/json' } })
+      : new Response(stage === 'body-budget' ? new Uint8Array(3) : bytes, { status: 200, headers: { 'content-type': stage === 'response-media' ? 'application/json' : 'image/png', 'content-length': stage === 'declared-size' ? '3' : '2' } });
+  } });
+  if (stage === 'checkpoint') f.close();
+  const error = await failure(f, stage === 'other' ? { timeoutMs: -1 } : stage === 'decode' ? {} : { method: 'GET', body: undefined, contentType: undefined, responseType: 'image', responseLimit: 2 });
+  assert.equal(f.api.uploadRequestRefusalStage(error), stage);
+  assert.equal(error.status, ['checkpoint', 'fetch', 'other'].includes(stage) ? undefined : 200);
+  assert.equal(error.outcome, ['checkpoint', 'other'].includes(stage) ? 'unsent' : stage === 'fetch' ? 'uncertain' : 'response');
+  assert.equal(f.requests.length, ['checkpoint', 'other'].includes(stage) ? 0 : 1);
+  if (f.requests.length) assert.equal(f.requests[0].abortCount, 1);
+  assert.equal(f.timers.size, 0);
+});
+for (const invalidate of ['owner/view', 'identity']) test('checkpoint refusal during body read is not falsely branded body-read: ' + invalidate, async () => {
+  const stream = heldPreviewBody(new Uint8Array([1, 2])), f = await fixture({ fetch: async () => stream.response });
+  const pending = f.request({ method: 'GET', body: undefined, contentType: undefined, responseType: 'image' }); pending.catch(() => {});
+  await stream.entered; if (invalidate === 'identity') f.changeIdentity(); else f.close(); stream.finish();
+  await assert.rejects(pending, error => { assert.equal(f.api.uploadRequestRefusalStage(error), 'checkpoint'); return errorIs('response', 200)(error); });
+  assert.equal(f.requests[0].abortCount, 1);
+});
+test('refusal accessor never inspects getters, prototypes, forged or proxied errors', async () => {
+  const f = await fixture({ fetch: async () => { throw Error('finite'); } }), branded = await failure(f);
+  let reads = 0;
+  const trap = () => { reads++; throw Error('reserved-example.invalid/getter-value'); };
+  const unknown = Object.defineProperties({}, { name: { get: trap }, code: { get: trap }, status: { get: trap }, outcome: { get: trap } });
+  const proxy = new Proxy({}, { get: trap, getPrototypeOf: trap, ownKeys: trap });
+  const revoked = Proxy.revocable({}, {}); revoked.revoke();
+  const forged = Object.create(f.api.PublicUploadRequestError.prototype), manual = new f.api.PublicUploadRequestError('finite', 'response', 200);
+  for (const value of [undefined, null, false, 0, 'fetch', () => {}, unknown, proxy, revoked.proxy, forged, manual, new Proxy(branded, {})])
+    assert.equal(f.api.uploadRequestRefusalStage(value), 'unavailable');
+  for (const name of ['name', 'code', 'status', 'outcome']) Object.defineProperty(branded, name, { get: trap });
+  Object.preventExtensions(branded);
+  assert.equal(f.api.uploadRequestRefusalStage(branded), 'fetch'); assert.equal(reads, 0);
+});
+
+let leaseApi;
+async function actualLease() {
+  if (leaseApi) return leaseApi;
+  const context = vm.createContext({ URL, Blob, Error, Object, Map, Set, Symbol, Number, Promise });
+  const code = fs.readFileSync(new URL('../../platform-integrations/public-api/upload-preview.ts', import.meta.url), 'utf8');
+  const module = new vm.SourceTextModule(stripTypeScriptTypes(code), { context });
+  await module.link(() => { throw Error('The preview lease has no runtime imports'); }); await module.evaluate(); leaseApi = module.namespace; return leaseApi;
+}
+function previewSurface(createUploadPreviewLease, stageAccessor, error) {
+  const root = fileURLToPath(new URL('../../frontend/', import.meta.url)), relative = 'src/lib/components/upload/UploadChapterPagesEntry.svelte', id = root + relative;
+  const raw = fs.readFileSync(id, 'utf8'), mid = createFrontendOverlays(root).transform.handler(raw, id).code;
+  const composed = applyPublicUploadOverlay(mid, relative);
+  assert.match(composed, /<p[^>]+role="status" data-public-upload-preview-refusal={previewRefusal}>{previewError}<\/p>/);
+  assert.doesNotMatch(composed, /{previewRefusal}<|console\.(?:log|warn|error).*previewRefusal/);
+  const start = composed.indexOf('\tlet previewError = '), end = composed.indexOf('\n\tconst replacePage = ', start);
+  assert.ok(start > 0 && end > start);
+  const page = { id: 'file', file_hash: 'a'.repeat(64), file_size: '2', public_upload: { mimeType: 'image/png' } };
+  const factory = new Function('createUploadPreviewLease', 'uploadPreview', 'uploadRequestRefusalStage', 'onDestroy', '$state', '$effect', 'untrack', 'owner', 'uploadSession', 'page', 'isDragging', 'isRemoteUploadFile',
+    stripTypeScriptTypes(composed.slice(start, end), { mode: 'transform' }) + '; return { ready: () => previewLease.update(previewContext), get: () => ({ text: previewError, stage: previewRefusal }), dispose: () => previewLease.dispose() };');
+  return factory(createUploadPreviewLease, async () => { throw error; }, stageAccessor, () => {}, value => value, callback => callback(), callback => callback(), { assert() {} }, { id: 'session' }, page, false, () => true);
+}
+test('genuine refusal brand survives the actual lease Error and composed existing preview-error attribute', async () => {
+  const f = await fixture({ fetch: async () => { throw Error('reserved-example.invalid/private-value'); } }), error = await failure(f), api = await actualLease();
+  let reads = 0;
+  for (const name of ['code', 'name', 'status', 'outcome']) Object.defineProperty(error, name, { get() { reads++; throw Error('finite getter'); } });
+  const surface = previewSurface(api.createUploadPreviewLease, f.api.uploadRequestRefusalStage, error);
+  try { await surface.ready(); assert.deepEqual(surface.get(), { text: 'The signed private preview could not be verified. The staged image was kept.', stage: 'fetch' }); assert.equal(reads, 0); }
+  finally { surface.dispose(); }
+});
+test('unknown getter/forged errors remain unavailable through the actual lease and preview surface', async () => {
+  const f = await fixture(), api = await actualLease(); let reads = 0;
+  const error = new Error('reserved-example.invalid/private-value');
+  for (const name of ['code', 'name', 'status', 'outcome']) Object.defineProperty(error, name, { get() { reads++; throw Error('finite getter'); } });
+  for (const value of [error, Object.create(f.api.PublicUploadRequestError.prototype), { code: 'fetch', message: 'reserved-example.invalid' }]) {
+    const surface = previewSurface(api.createUploadPreviewLease, f.api.uploadRequestRefusalStage, value);
+    try { await surface.ready(); assert.equal(surface.get().stage, 'unavailable'); assert.equal(surface.get().text, 'The signed private preview could not be verified. The staged image was kept.'); }
+    finally { surface.dispose(); }
+  }
+  assert.equal(reads, 0);
+});
+test('a malformed error that defeats lease Error classification gets only the existing fallback and unavailable code', async () => {
+  const f = await fixture(), api = await actualLease();
+  const malformed = new Proxy({}, { getPrototypeOf() { throw Error('reserved-example.invalid/prototype-value'); } });
+  const surface = previewSurface(api.createUploadPreviewLease, f.api.uploadRequestRefusalStage, malformed);
+  try { await assert.rejects(surface.ready()); assert.deepEqual(surface.get(), { text: 'Private preview unavailable. The staged image was kept.', stage: 'unavailable' }); }
+  finally { surface.dispose(); }
+});
+test('exact original transport counterfactual has the same error contract without a refusal code', { skip: !process.env.WEEBDEX_UPLOAD_REFUSAL_BASELINE_SOURCE }, async () => {
+  const baseline = fs.readFileSync(process.env.WEEBDEX_UPLOAD_REFUSAL_BASELINE_SOURCE, 'utf8');
+  assert.equal(digest(baseline), '9418845c867fd7fd0706756197900221e3cd73cd87a48133d5ed3ff6ef0d3056');
+  const f = await fixture({ transportSource: baseline, fetch: async () => { throw Error('finite'); } }), old = await failure(f);
+  assert.equal(f.api.uploadRequestRefusalStage, undefined); assert.equal(old.outcome, 'uncertain'); assert.equal(old.status, undefined);
+  assert.deepEqual(Object.keys(old).sort(), ['bodyAvailable', 'name', 'outcome', 'status']); assert.equal(f.requests[0].abortCount, 1);
 });
