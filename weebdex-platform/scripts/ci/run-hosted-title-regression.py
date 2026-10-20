@@ -80,13 +80,17 @@ def run(root, stage, env, deadline, source_hash, verify_source, fixture_validato
                    contract.HTTP_TEST, '--exact', '--ignored', '--test-threads=1']
         value['http'] = owned_test(root, stage, 'native-title-http', command, 300, native_env, (contract.HTTP_TEST,))
         fresh = set(runtime.glob('auth-*')) - old
+        value['fixture_diagnostics'] = contract.empty_fixture_diagnostics('ambiguous' if len(fresh) > 1 else 'unavailable')
         if len(fresh) == 1:
             directory = fresh.pop()
             if not directory.is_symlink() and directory.is_dir():
                 try:
-                    value['http']['fixture_cleanup_verified'] = fixture_validator(read(directory / 'cleanup.json'))
+                    fixture = read(directory / 'cleanup.json')
+                    verified = fixture_validator(fixture)
+                    value['fixture_diagnostics'] = contract.fixture_diagnostics(fixture, verified)
+                    value['http']['fixture_cleanup_verified'] = value['fixture_diagnostics']['normal_run_verified']
                 except (OSError, ValueError, RuntimeError):
-                    pass
+                    value['fixture_diagnostics'] = contract.empty_fixture_diagnostics('invalid')
         verify_source()
         contract.verify_artifacts(binding, root, source_hash)
         if contract.stage_passed(value['http'], 1, True):

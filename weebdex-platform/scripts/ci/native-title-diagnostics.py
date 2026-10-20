@@ -15,7 +15,7 @@ HTTP_TEST = 'signed_title_create_edit_submit_publish_and_overlay_preserve_origin
 CORE_HASHES = {
     'backend/src/public_api/title_disposition.rs': '859adf8f7eea76ab3f6f71686c83c17a1bf34e52afc0c73e5878d1392eb334e0',
     'backend/tests/public_manga_writes.rs': 'c78673bfbe0008231f9d82a72a82f9d271f875b6319329bd05732b6e3acb6022',
-    'tests/runtime/auth_fixture_guard.py': '17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e',
+    'tests/runtime/auth_fixture_guard.py': '8bd64b731f4e608989dd12b129be0323055dfa71c01076e0d0cc71b968d52bec',
     'scripts/run-auth-tests.sh': '119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5',
 }
 TOOL_PATHS = {'strfry': '../manga-protocol-lab/vendor/strfry/strfry',
@@ -25,7 +25,24 @@ STAGE_FIELDS = {'process_started', 'process_exit_code', 'deadline_exceeded', 'ow
                 'cleanup_verified', 'exact_tests_verified', 'passed_tests', 'failed_tests',
                 'ignored_tests', 'fixture_cleanup_verified'}
 RESULT_FIELDS = {'schema', 'status', 'source_verified', 'artifacts_verified', 'budget_exhausted',
-                 'units', 'http', 'negative_requests_verified', 'executable_sha256'}
+                 'units', 'http', 'negative_requests_verified', 'executable_sha256', 'fixture_diagnostics'}
+FIXTURE_FIELDS = {'postgres_cleanup', 'exit', 'forced', 'closed_port', 'remaining_owned_processes',
+                  'cleanup_errors', 'error', 'test_timeout_seconds', 'captured_births',
+                  'unconfirmed_births', 'unconfirmed_child_pids', 'test_returncode',
+                  'postgres_returncode', 'startup_timeout_seconds', 'cleanup_phase_seconds'}
+FIXTURE_DIAGNOSTIC_FIELDS = {'schema', 'receipt_state', 'error_family', 'error_reason',
+    'physical_stopped_reported', 'forced', 'test_exit', 'database_exit', 'normal_run_verified'}
+ERROR_REASONS = {
+    'RuntimeError: owned child birth/session unavailable': 'owned-birth',
+    'RuntimeError: isolated initdb failed': 'initdb',
+    'RuntimeError: isolated postgres exited before readiness': 'postgres-exit',
+    'RuntimeError: owned postgres startup deadline': 'startup-deadline',
+    'RuntimeError: postgres socket ownership changed before createdb': 'pre-create-ownership',
+    'RuntimeError: isolated createdb failed': 'createdb',
+    'RuntimeError: postgres socket ownership changed before tests': 'pre-test-ownership',
+    'postgres exited before cleanup': 'postgres-exit',
+    'interrupted': 'interrupted', 'owned command deadline': 'deadline',
+}
 
 
 def insist(value):
@@ -122,10 +139,123 @@ def empty_stage():
             'passed_tests': 0, 'failed_tests': 0, 'ignored_tests': 0, 'fixture_cleanup_verified': False}
 
 
+def empty_fixture_diagnostics(state='not-run'):
+    return {'schema': 1, 'receipt_state': state, 'error_family': 'unavailable',
+            'error_reason': 'unavailable', 'physical_stopped_reported': False,
+            'forced': False, 'test_exit': None, 'database_exit': None,
+            'normal_run_verified': False}
+
+
+def fixture_diagnostics(raw, normal=False):
+    """Fixed facts from the existing private receipt, never raw errors or IDs.
+
+    Reported physical stop and the unchanged strict normal-run validator are
+    different facts. A nullable child exit does not establish whether it ran.
+    """
+    invalid = empty_fixture_diagnostics('invalid')
+    if type(raw) is not dict or set(raw) != FIXTURE_FIELDS or type(normal) is not bool:
+        return invalid
+    if raw['postgres_cleanup'] not in ['verified_stopped', 'cleanup_unconfirmed']:
+        return invalid
+    if any(type(raw[key]) is not bool for key in ['forced', 'closed_port']):
+        return invalid
+    for key in ['exit', 'test_returncode', 'postgres_returncode']:
+        code = raw[key]
+        if code is None and key != 'exit':
+            continue
+        if type(code) is not int or not -128 <= code <= 255:
+            return invalid
+    error = raw['error']
+    if error is not None and (type(error) is not str or len(error) > 65536):
+        return invalid
+    for key in ['captured_births', 'remaining_owned_processes', 'unconfirmed_births']:
+        rows, seen = raw[key], set()
+        if type(rows) is not list or len(rows) > 4096:
+            return invalid
+        for row in rows:
+            if type(row) is not dict or set(row) != {'pid', 'start_ticks', 'group', 'session'}:
+                return invalid
+            for name, value in row.items():
+                maximum = (1 << 63) - 1 if name == 'start_ticks' else (1 << 31) - 1
+                if type(value) is not int or not 0 < value <= maximum:
+                    return invalid
+            identity = (row['pid'], row['start_ticks'])
+            if identity in seen:
+                return invalid
+            seen.add(identity)
+    pids, errors = raw['unconfirmed_child_pids'], raw['cleanup_errors']
+    if (type(pids) is not list or len(pids) > 4096 or
+            any(type(pid) is not int or not 0 < pid < (1 << 31) for pid in pids) or len(set(pids)) != len(pids)):
+        return invalid
+    if (type(errors) is not list or len(errors) > 4096 or
+            any(type(item) is not str or len(item) > 256 for item in errors)):
+        return invalid
+    for key in ['test_timeout_seconds', 'startup_timeout_seconds']:
+        if type(raw[key]) is not int or not 0 <= raw[key] <= 86400:
+            return invalid
+    phases = raw['cleanup_phase_seconds']
+    if type(phases) is not list or len(phases) != 3 or any(type(n) is not int or not 0 <= n <= 86400 for n in phases):
+        return invalid
+    if normal and (raw['exit'] != 0 or not raw['captured_births'] or
+                   raw['test_timeout_seconds'] != 180 or raw['startup_timeout_seconds'] != 10 or phases != [15, 5, 5]):
+        return invalid
+    family = 'none' if error is None else 'other'
+    if error == 'interrupted':
+        family = 'interrupted'
+    elif error == 'owned command deadline':
+        family = 'deadline'
+    elif error is not None:
+        for prefix, name in [('FileNotFoundError:', 'file-not-found'), ('PermissionError:', 'permission'),
+                             ('RuntimeError:', 'runtime'), ('OSError:', 'os')]:
+            if error.startswith(prefix):
+                family = name
+                break
+    physical = (raw['postgres_cleanup'] == 'verified_stopped' and raw['closed_port'] is True
+                and all(raw[key] == [] for key in ['remaining_owned_processes', 'cleanup_errors',
+                                                 'unconfirmed_births', 'unconfirmed_child_pids']))
+    value = {'schema': 1, 'receipt_state': 'available', 'error_family': family,
+             'error_reason': 'none' if error is None else ERROR_REASONS.get(error, 'other'),
+             'physical_stopped_reported': physical, 'forced': raw['forced'],
+             'test_exit': raw['test_returncode'], 'database_exit': raw['postgres_returncode'],
+             'normal_run_verified': normal}
+    try:
+        validate_fixture_diagnostics(value)
+    except ValueError:
+        return invalid
+    return value
+
+
+def validate_fixture_diagnostics(value):
+    insist(type(value) is dict and set(value) == FIXTURE_DIAGNOSTIC_FIELDS)
+    insist(type(value['schema']) is int and value['schema'] == 1)
+    state = value['receipt_state']
+    insist(state in ['not-run', 'unavailable', 'ambiguous', 'invalid', 'available'])
+    for key in ['physical_stopped_reported', 'forced', 'normal_run_verified']:
+        insist(type(value[key]) is bool)
+    for key in ['test_exit', 'database_exit']:
+        insist(value[key] is None or type(value[key]) is int and -128 <= value[key] <= 255)
+    if state != 'available':
+        insist(value == empty_fixture_diagnostics(state))
+        return
+    insist(value['error_family'] in ['none', 'interrupted', 'deadline', 'file-not-found', 'permission', 'runtime', 'os', 'other'])
+    insist(value['error_reason'] in set(ERROR_REASONS.values()) | {'none', 'other'})
+    insist((value['error_family'] == 'none') == (value['error_reason'] == 'none'))
+    if value['error_reason'] in ['owned-birth', 'initdb', 'startup-deadline', 'pre-create-ownership', 'createdb', 'pre-test-ownership']:
+        insist(value['error_family'] == 'runtime')
+    elif value['error_reason'] == 'postgres-exit':
+        insist(value['error_family'] in ['runtime', 'other'])
+    elif value['error_reason'] in ['interrupted', 'deadline']:
+        insist(value['error_family'] == value['error_reason'])
+    if value['normal_run_verified']:
+        insist(value['physical_stopped_reported'] and not value['forced'] and value['error_family'] == 'none'
+               and value['test_exit'] == value['database_exit'] == 0)
+
+
 def not_run():
     return {'schema': 1, 'status': 'not-run', 'source_verified': False, 'artifacts_verified': False,
             'budget_exhausted': False, 'units': empty_stage(), 'http': empty_stage(),
-            'negative_requests_verified': 0, 'executable_sha256': {'library': None, 'http': None}}
+            'negative_requests_verified': 0, 'executable_sha256': {'library': None, 'http': None},
+            'fixture_diagnostics': empty_fixture_diagnostics()}
 
 
 def parse_tests(text, expected):
@@ -181,13 +311,14 @@ def stage_passed(value, count, fixture=False):
 def passed(value):
     return (value['source_verified'] and value['artifacts_verified'] and not value['budget_exhausted']
             and stage_passed(value['units'], 3) and stage_passed(value['http'], 1, True)
-            and value['negative_requests_verified'] == 7)
+            and value['negative_requests_verified'] == 7 and value['fixture_diagnostics']['normal_run_verified'])
 
 
 def validate(value):
     insist(type(value) is dict and set(value) == RESULT_FIELDS)
     insist(type(value['schema']) is int and value['schema'] == 1)
     insist(value['status'] in ['not-run', 'failed', 'passed'])
+    validate_fixture_diagnostics(value['fixture_diagnostics'])
     for key in ['source_verified', 'artifacts_verified', 'budget_exhausted']:
         insist(type(value[key]) is bool)
     hashes = value['executable_sha256']
@@ -211,6 +342,7 @@ def validate(value):
         if stage['exact_tests_verified']:
             insist(sum(stage[key] for key in ['passed_tests', 'failed_tests', 'ignored_tests']) == maximum)
     insist(value['negative_requests_verified'] == 0 or value['source_verified'] and value['artifacts_verified'] and stage_passed(value['http'], 1, True))
+    insist(value['http']['fixture_cleanup_verified'] == value['fixture_diagnostics']['normal_run_verified'])
     if value['status'] == 'not-run':
         insist(value == not_run())
     insist((value['status'] == 'passed') == passed(value))

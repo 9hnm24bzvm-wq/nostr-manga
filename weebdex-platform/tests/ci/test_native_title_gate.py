@@ -44,6 +44,7 @@ def title_pass():
                  executable_sha256={'library': '1' * 64, 'http': '2' * 64},
                  units=contract.project_stage(owned(), contract.parse_tests(test_text(contract.UNIT_TESTS), contract.UNIT_TESTS)),
                  http=contract.project_stage(owned(), contract.parse_tests(test_text((contract.HTTP_TEST,)), (contract.HTTP_TEST,)), True))
+    value['fixture_diagnostics'] = contract.fixture_diagnostics(fixture_receipt(), True)
     contract.validate(value)
     return value
 
@@ -213,10 +214,13 @@ class NativeTitleGate(unittest.TestCase):
             is_http = command[0] == 'bash'
             names = (contract.HTTP_TEST,) if is_http else contract.UNIT_TESTS
             text = test_text(names)
+            if mode == 'fixture-failed-before-result' and is_http:
+                text = 'no Rust harness result in this explicit fixture-refusal stand-in\n'
             if mode == 'zero-units' and not is_http:
                 text = 'running 0 tests\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n'
             log.write_text(text)
-            receipt.write_text(json.dumps(dict(owned(), **({'cleanup_signals': ['SIGKILL']} if mode == 'forced-unit' and not is_http else {}))))
+            receipt.write_text(json.dumps(dict(owned(), **({'cleanup_signals': ['SIGKILL']} if mode == 'forced-unit' and not is_http else {}),
+                **({'process_exit_code': 72} if mode == 'fixture-failed-before-result' and is_http else {}))))
             if is_http:
                 self.assertEqual(command[2], binding['executables']['http']['path'])
                 self.assertEqual(command[3:], [contract.HTTP_TEST, '--exact', '--ignored', '--test-threads=1'])
@@ -227,10 +231,12 @@ class NativeTitleGate(unittest.TestCase):
                     fixture = fixture_receipt()
                     if mode == 'dirty-fixture':
                         fixture['unconfirmed_births'] = [fixture['captured_births'][0]]
+                    if mode == 'fixture-failed-before-result':
+                        fixture.update(exit=72, error='FileNotFoundError: PRIVATE_DIAGNOSTIC_SENTINEL', test_returncode=None)
                     (directory / 'cleanup.json').write_text(json.dumps(fixture))
             if mode == 'source-change' and not is_http:
                 (root / next(iter(contract.CORE_HASHES))).write_text('source changed during unit stand-in')
-            return SimpleNamespace(returncode=0)
+            return SimpleNamespace(returncode=72 if mode == 'fixture-failed-before-result' and is_http else 0)
         def verify():
             contract.verify_core(root)
         with mock.patch.object(adapter.subprocess, 'run', side_effect=run), mock.patch.object(adapter.time, 'monotonic', return_value=0):
@@ -246,6 +252,20 @@ class NativeTitleGate(unittest.TestCase):
             self.assertEqual(calls[0][1:], [contract.UNIT_PREFIX, '--test-threads=1'])
             self.assertEqual(calls[1][0], 'bash')
             self.assertNotIn('cargo', calls[1])
+
+    def test_adapter_retains_failed_fixture_family_without_promoting_normal_run(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            value, _, _ = self.run_standin(temporary, mode='fixture-failed-before-result')
+            self.assertEqual(value['status'], 'failed')
+            self.assertEqual(value['http']['process_exit_code'], 72)
+            self.assertFalse(value['http']['fixture_cleanup_verified'])
+            self.assertFalse(value['http']['exact_tests_verified'])
+            self.assertEqual(value['fixture_diagnostics']['error_family'], 'file-not-found')
+            self.assertTrue(value['fixture_diagnostics']['physical_stopped_reported'])
+            self.assertFalse(value['fixture_diagnostics']['normal_run_verified'])
+            self.assertIsNone(value['fixture_diagnostics']['test_exit'])
+            self.assertEqual(value['negative_requests_verified'], 0)
+            self.assertNotIn('PRIVATE_DIAGNOSTIC_SENTINEL', json.dumps(value))
 
     def test_adapter_refuses_zero_units_unclean_cleanup_changed_source_and_ambiguous_fixture(self):
         for mode in ['zero-units', 'forced-unit', 'source-change', 'two-fixtures', 'dirty-fixture']:

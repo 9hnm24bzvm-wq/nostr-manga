@@ -33,6 +33,7 @@ class NativeFeedDiagnostics(unittest.TestCase):
             units=contract.title.project_stage(self.owned(), observation(3)),
             http=contract.title.project_stage(self.owned(), observation(1), True),
             negative_requests_verified=7)
+        value['fixture_diagnostics'] = contract.title.fixture_diagnostics(self.fixture(), True)
         contract.title.validate(value)
         return value
 

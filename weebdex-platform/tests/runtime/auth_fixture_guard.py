@@ -91,9 +91,25 @@ def owns_listener(expected, port, proc=Path('/proc')):
             address, number = fields[1].split(':')
             if fields[3] == '0A' and int(number, 16) == port:
                 listeners.append((table, address, fields[9]))
-    sockets = {os.readlink(p) for p in (proc / str(expected['pid']) / 'fd').iterdir()}
+    sockets = set()
+    descriptors = proc / str(expected['pid']) / 'fd'
+    for descriptor in descriptors.iterdir():
+        try:
+            sockets.add(os.readlink(descriptor))
+        except FileNotFoundError as exc:
+            # A postmaster can close an unrelated FD after enumeration. Only
+            # that per-entry ENOENT is harmless: retain the owned live birth,
+            # the FD directory, and a positively observed listener descriptor.
+            if exc.errno != errno.ENOENT:
+                raise
+            current = same(expected, proc)
+            if not current or current['state'] == 'Z':
+                return False
+            if not descriptors.is_dir():
+                raise
     return (len(listeners) == 1 and listeners[0][:2] == ('tcp', '0100007F')
-            and 'socket:[' + listeners[0][2] + ']' in sockets and same(expected, proc) is not None)
+            and 'socket:[' + listeners[0][2] + ']' in sockets and (current := same(expected, proc)) is not None
+            and current['state'] != 'Z')
 
 
 def closed(port):
