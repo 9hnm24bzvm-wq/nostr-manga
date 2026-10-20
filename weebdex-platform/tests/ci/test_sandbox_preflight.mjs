@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
+import { restoreNativeDiagnosticWorkflow } from './native-diagnostic-workflow-association.mjs';
 import { classify, supportedHost, probe } from '../../scripts/ci/sandbox-preflight.mjs';
 
 function fixture(fail = '') {
@@ -59,7 +60,9 @@ test('dedicated workflow never triggers application branches or installs app dep
   assert.doesNotMatch(executableWorkflow, /workflow_dispatch|prepare-hosted-browser\.sh|cargo |pip |yarn install|self-hosted|sysctl|apparmor|--no-sandbox/);
 });
 test('application workflow remains exact and does not match the dedicated preflight branch', () => {
-  const workflow = fs.readFileSync(new URL('../../../.github/workflows/hosted-browser-e2e.yml', import.meta.url));
+  const actualWorkflow = fs.readFileSync(new URL('../../../.github/workflows/hosted-browser-e2e.yml', import.meta.url), 'utf8');
+  const workflow = Buffer.from(restoreNativeDiagnosticWorkflow(actualWorkflow));
+  assert.throws(() => restoreNativeDiagnosticWorkflow(actualWorkflow + '\n# unreviewed\n'), /Unreviewed/);
   // Exact historical profiles and the reviewed failure-only QA proposal.
   // This probe never rewrites any application workflow.
   const profiles = new Set([

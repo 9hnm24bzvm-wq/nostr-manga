@@ -1,10 +1,17 @@
 import test from 'node:test';
+import { restoreNativeDiagnosticWorkflow } from './native-diagnostic-workflow-association.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 
 const root = new URL('../../../', import.meta.url);
-const workflow = fs.readFileSync(new URL('.github/workflows/hosted-browser-e2e.yml', root), 'utf8');
+const actualWorkflow = fs.readFileSync(new URL('.github/workflows/hosted-browser-e2e.yml', root), 'utf8');
+const workflow = restoreNativeDiagnosticWorkflow(actualWorkflow);
+test('native diagnostic normalization refuses altered gate or budget', () => {
+  for (const [before, after] of [['timeout-minutes: 15', 'timeout-minutes: 16'], ['approved bounded run 20261020', 'approved bounded run 20261021']]) {
+    assert.throws(() => restoreNativeDiagnosticWorkflow(actualWorkflow.replace(before, after)), /Unreviewed/);
+  }
+});
 const hash = value => createHash('sha256').update(value).digest('hex');
 const currentDigest = '4a62a482ec907923bb830a41f3524e21f7f23ac6868aedac76caed483feffa3e';
 const priorCiDigest = '876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1';

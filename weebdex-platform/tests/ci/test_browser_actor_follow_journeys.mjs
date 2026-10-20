@@ -8,6 +8,7 @@ import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import { gunzipSync } from 'node:zlib';
 import test from 'node:test';
+import { restoreNativeDiagnosticWorkflow } from './native-diagnostic-workflow-association.mjs';
 import { actorFollowPhase, actorFollowDiagnosticChecks, actorFollowCaseChecks, runActorFollowJourneys, watchActorFollowRequests } from '../../scripts/browser-actor-follow-journeys.mjs';
 import { ui11To16JourneyPhases, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
 import { createJourneyCheck } from '../../scripts/journey-checks.mjs';
@@ -91,7 +92,7 @@ test('current actor-follow runtime source has a separate exact association witho
   const priorWorkflow = Buffer.from(historicalSource.initial_current_workflow_base64, 'base64');
   assert.equal(hash(priorWorkflow), currentSourceAssociation.initial_current_workflow_sha256);
   const proxyStep = '      - name: Check finite deployment proxy route and header contracts\n        timeout-minutes: 2\n        run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs\n';
-  const publishedCiWorkflow = fs.readFileSync(new URL(workflow, root), 'utf8');
+  const publishedCiWorkflow = restoreNativeDiagnosticWorkflow(fs.readFileSync(new URL(workflow, root), 'utf8'));
   // Admit only the exact recovery workflow or its separately approved CI-only
   // successor. Neither may relabel immutable c6/f593/9079 evidence.
   const recoveryWorkflowSha = 'df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27';

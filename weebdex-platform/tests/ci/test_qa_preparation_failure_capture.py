@@ -345,6 +345,18 @@ if (process.argv[5] === 'refuse') {
 
     def test_workflow_requires_failed_preparation_validated_public_hash_and_fresh_sealed_validation(self):
         workflow = (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text()
+        self.assertEqual(workflow.count('  native-upload-diagnostic:\n'), 1)
+        workflow, diagnostic = workflow.split('  native-upload-diagnostic:\n')
+        diagnostic_uploads = re.findall(r'      - name: ([^\n]+)\n(.*?)(?=      - name:|\Z)', diagnostic, re.S)
+        diagnostic_uploads = [(name, block) for name, block in diagnostic_uploads if 'uses: actions/upload-artifact@' in block]
+        self.assertEqual(len(diagnostic_uploads), 1)
+        name, diagnostic_upload = diagnostic_uploads[0]
+        self.assertEqual(name, 'Upload only the bounded validated diagnostic')
+        self.assertIn("if: always() && steps.diagnostic-validation.outcome == 'success'", diagnostic_upload)
+        self.assertIn('uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02', diagnostic_upload)
+        self.assertEqual(re.findall(r'          path: (.*)', diagnostic_upload), ['weebdex-platform/ci-native-upload-evidence/report.json'])
+        for required in ['if-no-files-found: error', 'retention-days: 1', 'include-hidden-files: false']:
+            self.assertIn(required, diagnostic_upload)
         seal = workflow.split('      - name: Seal current QA preparation failure diagnostics\n', 1)[1].split('      - name:', 1)[0]
         self.assertIn("steps.preparation.outcome == 'failure'", seal)
         self.assertIn("steps.evidence-validation.outcome == 'success'", seal)
@@ -365,7 +377,7 @@ if (process.argv[5] === 'refuse') {
         public = next(block for name, block in uploads if name == 'Upload allowlisted sanitized evidence only')
         self.assertEqual(re.findall(r'weebdex-platform/ci-sanitized-evidence/[a-z]+\.json', public),
                          ['weebdex-platform/ci-sanitized-evidence/preparation.json', 'weebdex-platform/ci-sanitized-evidence/summary.json', 'weebdex-platform/ci-sanitized-evidence/phases.json'])
-        for _, block in uploads:
+        for _, block in uploads + diagnostic_uploads:
             for forbidden in ['.log', 'traceback', 'capture.json', 'boundaries', '.build/', 'public.pem']:
                 self.assertNotIn(forbidden, block)
 
