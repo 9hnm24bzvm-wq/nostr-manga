@@ -95,7 +95,7 @@ async function fixture({ records = [], baseline = false, publicFormat = true, le
       const source = fs.readFileSync(path.join(selectedBase, 'local-library/LocalLibraryPanel.svelte'), 'utf8');
       const script = stripTypeScriptTypes(source.match(/<script[^>]*>([\s\S]*?)<\/script>/)[1].replace(/^\s*import[^;]+;\s*$/gm, ''), { mode: 'transform' });
       let cleanup;
-      const sandbox = vm.createContext({ ...Object.fromEntries(Object.keys(library).map(name => [name, library[name]])), sameScope: (a, b) => JSON.stringify(a) === JSON.stringify(b), publicAccountLibraryUnavailable: true, $localLibraryState: get(library.localLibraryState), $state: value => value, $derived: value => value, onMount: fn => { cleanup = fn(); }, disposePanel: () => cleanup(), Blob, navigator: {}, confirm: () => true });
+      const sandbox = vm.createContext({ ...Object.fromEntries(Object.keys(library).map(name => [name, library[name]])), sameScope: (a, b) => JSON.stringify(a) === JSON.stringify(b), publicAccountLibraryUnavailable: true, $localLibraryState: get(library.localLibraryState), $state: Object.assign(value => value, { raw: value => value }), $derived: value => value, onMount: fn => { cleanup = fn(); }, disposePanel: () => cleanup(), Blob, navigator: {}, confirm: () => true });
       vm.runInContext(script + '\n;globalThis.panel={preview,prepareRestore,confirmRestore,closeReview,run,dispose:()=>disposePanel(),consent:v=>foreignOwnerConsent=v,get imported(){return imported},get restore(){return deviceRestore},get notice(){return notice},get error(){return error},get watchers(){return restoreWatchers.size}};', sandbox);
       await Promise.resolve(); return sandbox.panel;
     },

@@ -7,8 +7,9 @@
   import {publicAccountLibraryUnavailable} from '../public-api/library-staging';
   import LibraryManagementTools from './LibraryManagementTools.svelte';
   let pending = $state(''), error = $state(''), notice = $state('');
-  let deviceRestore = $state<DeviceBackupRestoreReview>(), foreignOwnerConsent = $state(false);
-  let imported = $state<ImportReview>(), scopeMatches = $state(false), reviewOpen = $state(false);
+  // Opaque frozen review handles are WeakMap authorities; never deep-proxy them.
+  let deviceRestore = $state.raw<DeviceBackupRestoreReview>(), foreignOwnerConsent = $state(false);
+  let imported = $state.raw<ImportReview>(), scopeMatches = $state(false), reviewOpen = $state(false);
   let tool = $state<'lists' | 'sync' | 'destinations' | 'publish' | 'public-recovery' | 'attempts' | 'recovery'>('lists'), toolOpen = $state(false);
   const restoreWatchers = new Set<() => void>();
   let disposed = false, reviewGeneration = 0, toolGeneration = $state(0);
