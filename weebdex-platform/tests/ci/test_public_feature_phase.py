@@ -208,6 +208,8 @@ class PublicFeaturePhase(unittest.TestCase):
                 report = accepted_report(failed=(index,))
                 row = report['public_features']['checks'][index]
                 row.update(stage=stage, category='prerequisite' if stage == 'merge-prerequisite' else 'operation')
+                if stage in features.REVIEW_STAGES:
+                    row['ui_error'] = 'unavailable'
                 value = features.project(report)
                 self.assertTrue(value['record_valid'])
                 self.assertFalse(features.passed(value))
@@ -217,6 +219,18 @@ class PublicFeaturePhase(unittest.TestCase):
         value = features.project(report)
         self.assertEqual(value['checks'][1]['category'], 'prerequisite')
         self.assertNotEqual(value['checks'][0]['category'], 'prerequisite')
+
+    def test_review_ui_observation_requires_fixed_failure_only_state(self):
+        for index in (0, 1):
+            for stage in features.BACKUP_STAGES[index] & features.REVIEW_STAGES:
+                for state in features.UI_ERROR_STATES:
+                    row = {'id': features.CHECKS[index], 'status': 'failed', 'stage': stage, 'category': 'timeout', 'ui_error': state}
+                    self.assertTrue(features.check_row(row, index))
+                    for invalid in ('private error text', True, {}, None):
+                        self.assertFalse(features.check_row(dict(row, ui_error=invalid), index))
+                    self.assertFalse(features.check_row({key: value for key, value in row.items() if key != 'ui_error'}, index))
+                    self.assertFalse(features.check_row(dict(row, status='passed'), index))
+        self.assertFalse(features.check_row({'id': features.CHECKS[0], 'status': 'failed', 'stage': 'open-settings', 'category': 'operation', 'ui_error': 'visible'}, 0))
 
     def test_backup_diagnostics_reject_raw_values_cross_case_stages_and_false_success(self):
         changes = [

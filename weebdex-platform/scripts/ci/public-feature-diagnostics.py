@@ -23,11 +23,20 @@ BACKUP_STAGES = (
                'confirm-replacement', 'verify-replacement', 'reload-replacement',
                'export-replacement', 'unavailable')),
 )
+REVIEW_STAGES = frozenset(prefix + '-' + suffix
+    for prefix in ('review-merge', 'review-replacement', 'review-replacement-again')
+    for suffix in ('control', 'click', 'confirmation'))
+BACKUP_STAGES = tuple((stages - {'review-merge', 'review-replacement', 'review-replacement-again'}) |
+    {stage for stage in REVIEW_STAGES if stage.startswith('review-merge' if index == 0 else 'review-replacement')}
+    for index, stages in enumerate(BACKUP_STAGES))
+UI_ERROR_STATES = frozenset(('visible', 'absent', 'unavailable'))
 BACKUP_CATEGORIES = frozenset(('check', 'timeout', 'operation', 'prerequisite'))
 
 
 def check_row(row, index):
     required = {'id', 'status'} | ({'stage', 'category'} if index < 2 else set())
+    if type(row) is dict and type(row.get('stage')) is str and row['stage'] in REVIEW_STAGES:
+        required.add('ui_error')
     if (type(row) is not dict or set(row) != required or
             type(row['id']) is not str or row['id'] != CHECKS[index] or
             type(row['status']) is not str or row['status'] not in {'passed', 'failed'}):
@@ -36,6 +45,8 @@ def check_row(row, index):
         return True
     stage, category = row['stage'], row['category']
     if type(stage) is not str or type(category) is not str:
+        return False
+    if stage in REVIEW_STAGES and (type(row['ui_error']) is not str or row['ui_error'] not in UI_ERROR_STATES):
         return False
     if row['status'] == 'passed':
         return stage == 'complete' and category == 'none'

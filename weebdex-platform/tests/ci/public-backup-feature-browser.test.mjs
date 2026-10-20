@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';import {stripTypeScriptTypes} from 'node:
 import {Readable} from 'node:stream';import test from 'node:test';import assert from 'node:assert/strict';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),file=path.join(root,'scripts/public-backup-feature-browser.mjs'),source=fs.readFileSync(file,'utf8');
 const context=vm.createContext({console,URL,Buffer,TextEncoder,TextDecoder,Uint8Array,structuredClone,Date,setTimeout,clearTimeout,queueMicrotask});
-const control=new vm.SourceTextModule(source+'\nexport {canonical,archive,privateState,validState,sameState,exportState,environment,left,deviceOperation,seedRows,mergeExpected,foreignBackup,replacementExpected,downloadStream,fixtureIds,initialized};',{context,identifier:file});
+const control=new vm.SourceTextModule(source+'\nexport {canonical,archive,privateState,validState,sameState,exportState,environment,left,deviceOperation,seedRows,mergeExpected,foreignBackup,replacementExpected,downloadStream,fixtureIds,initialized,prepare,reviewAlert};',{context,identifier:file});
 const cache=new Map();function synthetic(name,values){if(!cache.has(name))cache.set(name,new vm.SyntheticModule(Object.keys(values),function(){for(const[key,value]of Object.entries(values))this.setExport(key,value);},{context,identifier:name}));return cache.get(name);}
 await control.link(specifier=>{assert.equal(specifier,'node:crypto');return synthetic(specifier,{createHash});});await control.evaluate();const api=control.namespace;
 async function load(file){if(!cache.has(file)){const code=fs.readFileSync(file,'utf8'),module=new vm.SourceTextModule(file.endsWith('.ts')?stripTypeScriptTypes(code,{mode:'transform'}):code,{context,identifier:file});cache.set(file,module);await module.link((specifier,importer)=>{if(specifier==='@noble/hashes/sha2.js')return synthetic(specifier,{sha256:bytes=>new Uint8Array(createHash('sha256').update(bytes).digest())});const target=path.resolve(path.dirname(importer.identifier),specifier);return load(target+(path.extname(target)?'':'.ts'));});}return cache.get(file);}
@@ -129,11 +129,35 @@ test('timeout classification uses only a fixed own data property and unknown pri
  for(const raw of [null,undefined,'private string',42,Symbol('private')])assert.deepEqual(structuredClone(api.backupFailureDiagnostic(raw)),{stage:'unavailable',category:'operation'});
 });
 test('actual merge traversal retains the precise preview/review/confirmation boundary on failure',async()=>{
- for(const [method,event,expected] of [['setInputFiles',null,'preview-merge'],['click','Review backup merge','review-merge'],['click','Confirm reviewed merge','confirm-merge']]){
+ for(const [method,event,expected] of [['setInputFiles',null,'preview-merge'],['click','Review backup merge','review-merge-click'],['click','Confirm reviewed merge','confirm-merge']]){
   const driver=journeyDriver(),failure=Error('private failure details'),wrap=locator=>new Proxy(locator,{get(target,key){const value=target[key];if(['getByRole','getByLabel','getByText'].includes(key))return (...args)=>{const child=value(...args);const name=key==='getByRole'?args[1]?.name:args[0];return wrap(new Proxy(child,{get(inner,property){if(property===method&&(!event||name===event))return async()=>{throw failure;};return inner[property];}}));};return value;}});
   const panel=driver.h.page.locator,role=driver.h.page.getByRole;driver.h.page.locator=(...args)=>wrap(panel(...args));driver.h.page.getByRole=(...args)=>wrap(role(...args));
   let caught;try{await api.publicBackupFeatureCases[0].run(driver.h);}catch(error){caught=error;}
-  assert.equal(caught,failure);assert.deepEqual(structuredClone(api.backupFailureDiagnostic(caught)),{stage:expected,category:'operation'});
+  assert.equal(caught,failure);assert.deepEqual(structuredClone(api.backupFailureDiagnostic(caught)),{stage:expected,category:'operation',...(expected==='review-merge-click'?{ui_error:'unavailable'}:{})});
   assert.equal(driver.counts().confirmations,0);
  }
+});
+
+// The real helper is exercised against finite locator controls, without app hooks.
+for(const mode of ['merge','replace'])for(const boundary of ['control','click','confirmation'])for(const alert of [true,false,'reject','hang'])test(`review ${mode} ${boundary} failure has bounded fixed alert ${alert}`,async()=>{
+ const prefix=mode==='merge'?'review-merge':'review-replacement',failure=Object.defineProperty(new Error('private failure'), 'name',{value:'TimeoutError'}),calls=[];
+ const review={waitFor:async()=>{calls.push('control');if(boundary==='control')throw failure;},count:async()=>1,isEnabled:async()=>true,click:async()=>{calls.push('click');if(boundary==='click')throw failure;}};
+ const confirm={...review,waitFor:async()=>{calls.push('confirmation');throw failure;}};
+ const run=h({deadline:Date.now()+35,backupTrace:{stage:prefix},page:{getByRole:()=>({getByRole:(_role,{name})=>name.startsWith('Review')?review:confirm}),locator:selector=>{assert.equal(selector,'[data-local-library-panel] [role="alert"]');return {isVisible:()=>alert==='reject'?Promise.reject(Error('private alert')):alert==='hang'?new Promise(()=>{}):Promise.resolve(alert)};}}});
+ const start=Date.now();let caught;try{await api.prepare(run,mode);}catch(error){caught=error;}assert.equal(caught,failure);assert.equal(run.backupTrace.stage,prefix+'-'+boundary);assert.equal(run.backupTrace.ui_error,alert===true?'visible':alert===false?'absent':'unavailable');assert.ok(Date.now()-start<500);assert.deepEqual(calls,['control',...(boundary==='control'?[]:['click']),...(boundary==='confirmation'?['confirmation']:[])]);
+});
+test('review observation never reads alert text and does not run beyond exhausted deadline',async()=>{let called=false;const run=h({deadline:Date.now()-1,page:{locator(){called=true;throw Error('private');}}});assert.equal(await api.reviewAlert(run),'unavailable');assert.equal(called,false);assert.doesNotMatch(source.slice(source.indexOf('async function reviewAlert'),source.indexOf('function category')),/textContent|innerText|evaluate/);});
+test('repeat replacement review preserves distinct stage and successful readiness unchanged',async()=>{const run=h({backupTrace:{stage:'review-replacement-again'},page:{getByRole:()=>({getByRole:()=>({waitFor:async()=>{},count:async()=>1,isEnabled:async()=>true,click:async()=>{}})})}});await api.prepare(run,'replace');assert.equal(run.backupTrace.stage,'review-replacement-again-confirmation');assert.equal(run.backupTrace.ui_error,undefined);});
+test('actual traced merge retains original failure and exports only fixed visible alert fact',async()=>{
+ const driver=journeyDriver(),error=Error('private UI content'),role=driver.h.page.getByRole,locate=driver.h.page.locator;
+ driver.h.page.getByRole=(...args)=>{const dialog=role(...args),get=dialog.getByRole;dialog.getByRole=(kind,options)=>{const child=get(kind,options);if(options?.name==='Review backup merge')child.click=async()=>{throw error;};return child;};return dialog;};
+ driver.h.page.locator=selector=>selector==='[data-local-library-panel] [role="alert"]'?{isVisible:async()=>true}:locate(selector);
+ let caught;try{await api.publicBackupFeatureCases[0].run(driver.h);}catch(value){caught=value;}assert.equal(caught,error);assert.deepEqual(structuredClone(api.backupFailureDiagnostic(error)),{stage:'review-merge-click',category:'operation',ui_error:'visible'});assert.equal(driver.counts().confirmations,0);
+});
+test('disabled review control exhausts existing deadline without click or extra observation time',async()=>{
+ let clicked=false,observed=false;const run=h({deadline:Date.now()+20,backupTrace:{stage:'review-merge'},page:{getByRole:()=>({getByRole:()=>({waitFor:async()=>{},count:async()=>1,isEnabled:async()=>false,click:async()=>{clicked=true;}})}),waitForTimeout:async()=>new Promise(resolve=>setTimeout(resolve,5)),locator(){observed=true;throw Error('must not inspect');}}});
+ const start=Date.now();await assert.rejects(()=>api.prepare(run,'merge'),/backup_case_deadline/);assert.equal(run.backupTrace.stage,'review-merge-control');assert.equal(run.backupTrace.ui_error,'unavailable');assert.equal(clicked,false);assert.equal(observed,false);assert.ok(Date.now()-start<500);
+});
+test('review alert observation caps a long remaining case budget at 250 ms',async()=>{
+ const run=h({deadline:Date.now()+10000,page:{locator:()=>({isVisible:()=>new Promise(()=>{})})}}),start=Date.now();assert.equal(await api.reviewAlert(run),'unavailable');assert.ok(Date.now()-start>=200);assert.ok(Date.now()-start<1500);
 });

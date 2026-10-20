@@ -10,6 +10,11 @@ const owners=new WeakMap(), failureCategories=new WeakMap(), failureFacts=new We
 function failure(code){const error=Error(code);failureCategories.set(error,code==='backup_merge_prerequisite'?'prerequisite':['backup_case_deadline','backup_initialization_deadline','backup_download_timeout','backup_download_open_timeout'].includes(code)?'timeout':'check');return error;}
 function demand(condition,code){if(!condition)throw failure(code);}
 function mark(h,stage){if(h.backupTrace)h.backupTrace.stage=stage;}
+const reviewStages=new Set(['review-merge','review-replacement','review-replacement-again'].flatMap(prefix=>['control','click','confirmation'].map(suffix=>prefix+'-'+suffix)));
+async function reviewAlert(h){
+ const remaining=Math.min(250,h.deadline-Date.now());if(!(remaining>0))return 'unavailable';let timer;
+ try{return await Promise.race([Promise.resolve().then(()=>h.page.locator('[data-local-library-panel] [role="alert"]').isVisible()).then(value=>value===true?'visible':value===false?'absent':'unavailable',()=>'unavailable'),new Promise(resolve=>{timer=setTimeout(()=>resolve('unavailable'),remaining);})]);}catch{return 'unavailable';}finally{clearTimeout(timer);}
+}
 function category(error){
  if(error!==null&&(typeof error==='object'||typeof error==='function')){
   const known=failureCategories.get(error);if(known)return known;
@@ -17,8 +22,8 @@ function category(error){
  }
  return 'operation';
 }
-function traced(run){return async context=>{const trace={stage:'preconditions'};try{return await run({...context,backupTrace:trace});}catch(error){if(error!==null&&(typeof error==='object'||typeof error==='function'))failureFacts.set(error,Object.freeze({stage:trace.stage,category:category(error)}));throw error;}};}
-export function backupFailureDiagnostic(error){const value=error!==null&&(typeof error==='object'||typeof error==='function')?failureFacts.get(error):null;return value?{stage:value.stage,category:value.category}:{stage:'unavailable',category:'operation'};}
+function traced(run){return async context=>{const trace={stage:'preconditions'};try{return await run({...context,backupTrace:trace});}catch(error){if(error!==null&&(typeof error==='object'||typeof error==='function'))failureFacts.set(error,Object.freeze({stage:trace.stage,category:category(error),...(trace.ui_error===undefined?{}:{ui_error:trace.ui_error})}));throw error;}};}
+export function backupFailureDiagnostic(error){const value=error!==null&&(typeof error==='object'||typeof error==='function')?failureFacts.get(error):null;return value?{...value}:{stage:'unavailable',category:'operation'};}
 
 function canonical(value){if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';if(value&&typeof value==='object')return '{'+Object.keys(value).sort().map(key=>JSON.stringify(key)+':'+canonical(value[key])).join(',')+'}';return JSON.stringify(value);}
 const equal=(a,b)=>canonical(a)===canonical(b);
@@ -70,7 +75,11 @@ function seedRows(ids){return [{family:'series',key:ids.manga,id:ids.manga,statu
 async function downloadStream(h,file){return new Promise((resolve,reject)=>{let expired=false;const timer=setTimeout(()=>{expired=true;reject(failure('backup_download_open_timeout'));},left(h));Promise.resolve().then(()=>file.createReadStream()).then(stream=>{clearTimeout(timer);if(expired)stream?.destroy();else resolve(stream);},()=>{clearTimeout(timer);if(!expired)reject(failure('backup_download_open'));});});}
 async function download(h,locator,state){const waiting=h.page.waitForEvent('download',{timeout:left(h)});waiting.catch(()=>{});await click(h,locator);const file=await waiting;left(h);const stream=await downloadStream(h,file);demand(stream,'backup_download_stream');let timer;try{const bytes=await Promise.race([(async()=>{const chunks=[];let count=0;for await(const chunk of stream){left(h);count+=chunk.length;demand(count<=MAX_FILE,'backup_download_budget');chunks.push(chunk);}return Buffer.concat(chunks);})(),new Promise((_,reject)=>{timer=setTimeout(()=>{stream.destroy();reject(failure('backup_download_timeout'));},left(h));})]);left(h);let parsed;try{parsed=JSON.parse(bytes.toString('utf8'));}catch{throw failure('backup_download_json');}exportState(parsed,state);return parsed;}finally{clearTimeout(timer);stream.destroy();}}
 async function preview(h,backup){await ready(h,panel(h).getByLabel('Preview device backup',{exact:true}));await panel(h).getByLabel('Preview device backup',{exact:true}).setInputFiles({name:'owned-fixture-device-backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))},{timeout:left(h)});await ready(h,dialog(h));}
-async function prepare(h,mode){await click(h,dialog(h).getByRole('button',{name:mode==='merge'?'Review backup merge':'Review backup replacement',exact:true}));await ready(h,dialog(h).getByRole('button',{name:mode==='merge'?'Confirm reviewed merge':'Confirm reviewed replacement',exact:true}));}
+async function prepare(h,mode){
+ const prefix=h.backupTrace.stage;
+ try{mark(h,prefix+'-control');const control=await ready(h,dialog(h).getByRole('button',{name:mode==='merge'?'Review backup merge':'Review backup replacement',exact:true}));mark(h,prefix+'-click');await control.click({timeout:left(h)});left(h);mark(h,prefix+'-confirmation');await ready(h,dialog(h).getByRole('button',{name:mode==='merge'?'Confirm reviewed merge':'Confirm reviewed replacement',exact:true}));}
+ catch(error){if(reviewStages.has(h.backupTrace.stage))h.backupTrace.ui_error=await reviewAlert(h);throw error;}
+}
 async function confirm(h,mode){await click(h,dialog(h).getByRole('button',{name:mode==='merge'?'Confirm reviewed merge':'Confirm reviewed replacement',exact:true}));await dialog(h).waitFor({state:'hidden',timeout:left(h)});await ready(h,panel(h).getByText(mode==='merge'?'Backup merged locally.':'Device library restored from the reviewed backup.',{exact:true}));}
 function mergeExpected(before,incoming){const records=before.records.map(row=>row.family==='series'?incoming.records.find(candidate=>candidate.family==='series'):row);return {...before,records,revision:before.revision+1,archives:[archive(before.records.find(row=>row.family==='series'),before.ownerId,before.scope)]};}
 async function mergeRoundtrip(context){
