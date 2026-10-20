@@ -85,8 +85,16 @@ def record(value):
 
 
 def names(value, maximum=128):
-    insist(type(value) is list and len(value) <= maximum and
-           all(type(item) is str for item in value) and len(set(value)) == len(value))
+    # Fixed private traceback codes identify the refused conjunct without
+    # echoing graph values. Admission and the existing bounds are unchanged.
+    if type(value) is not list:
+        raise RuntimeError('qa-graph-names-list-type')
+    if len(value) > maximum:
+        raise RuntimeError('qa-graph-names-entry-cap')
+    if not all(type(item) is str for item in value):
+        raise RuntimeError('qa-graph-names-member-type')
+    if len(set(value)) != len(value):
+        raise RuntimeError('qa-graph-names-duplicate')
     for item in value:
         path_name(item)
     return value

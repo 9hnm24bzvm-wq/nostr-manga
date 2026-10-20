@@ -54,6 +54,35 @@ def write_graph(ui, graph):
 
 
 class UploadQaBuild(unittest.TestCase):
+    def test_name_refusal_conjuncts_have_fixed_private_codes(self):
+        cases = [('private-marker', 'list-type'),
+                 (['n' + str(index) + '.js' for index in range(129)], 'entry-cap'),
+                 (['okay.js', {'private-marker': True}], 'member-type'),
+                 (['same.js', 'same.js'], 'duplicate')]
+        for value, code in cases:
+            with self.subTest(code=code), self.assertRaisesRegex(
+                    RuntimeError, '^qa-graph-names-' + code + '$') as caught:
+                qa.names(value)
+            self.assertNotIn('private-marker', str(caught.exception))
+
+    def test_name_fixed_codes_keep_type_cap_uniqueness_and_path_gates(self):
+        valid = ['n' + str(index) + '.js' for index in range(128)]
+        self.assertIs(qa.names(valid), valid)
+        for value in [None, True, (), set(), {}, 1]:
+            with self.subTest(kind=type(value).__name__), self.assertRaisesRegex(
+                    RuntimeError, '^qa-graph-names-list-type$'):
+                qa.names(value)
+        for value in [[True], [1], [None], [[]]]:
+            with self.subTest(value=value), self.assertRaisesRegex(
+                    RuntimeError, '^qa-graph-names-member-type$'):
+                qa.names(value)
+        with self.assertRaisesRegex(RuntimeError, '^qa-graph-names-entry-cap$'):
+            qa.names(['a.js', 'b.js', 'c.js'], 2)
+        for value in [['../private-marker'], ['/private-marker'], ['a//private-marker']]:
+            with self.subTest(value=value), self.assertRaisesRegex(
+                    RuntimeError, '^Current upload QA build evidence was refused$'):
+                qa.names(value)
+
     def fixture(self, directory):
         root = Path(directory)
         ui = root / 'artifacts/frontend'

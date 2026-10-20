@@ -104,7 +104,7 @@ export function createUploadRefusalQaPlugin(root, { enabled = readUploadRefusalQ
         chunks: [...selected].sort().map(name => {
           const row = byFile.get(name);
           if (row.imports.length > 128 || row.dynamicImports.length > 128) throw Error('QA chunk imports exceed their finite bound');
-          return { file_name: name, sha256: hash(row.code), imports: [...row.imports], dynamic_imports: [...row.dynamicImports], exports: [...row.exports],
+          return { file_name: name, sha256: hash(row.code), imports: [...row.imports], dynamic_imports: [...new Set(row.dynamicImports)], exports: [...row.exports],
             contains_transport: has(row, transport).length === 1, contains_client: has(row, client).length === 1, contains_reader: row.facadeModuleId === virtualId };
         }),
       };
