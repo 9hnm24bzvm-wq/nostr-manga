@@ -56,14 +56,14 @@ test('known supported host and exact Python ABI are explicitly provisioned befor
   assert.match(preparation, /sys\.version_info\[:2\] == \(3,12\)/);
   assert.match(preparation, /--require-hashes --no-deps/);
 });
-test('hard limits admit the complete single-fixture reservation without widening phase deadlines', () => {
+test('hard limits admit the feature and upload single-fixture reservation without widening job deadlines', () => {
   assert.match(workflow, /timeout-minutes: 140/);
   assert.match(workflow, /timeout-minutes: 90/);
   assert.match(workflow, /timeout-minutes: 12/);
   assert.match(workflow, /timeout-minutes: 30/);
   assert.match(workflow, /--budget-seconds 3600/);
-  const phaseReserve = 600 + 35 + 300 + 600;
-  assert.equal(phaseReserve, 1535);
+  const phaseReserve = 180 + 35 + 600 + 35 + 300 + 600;
+  assert.equal(phaseReserve, 1750);
   assert(phaseReserve < 30 * 60);
   assert(90 + 12 + 30 < 140);
 });
@@ -75,7 +75,8 @@ test('native gate and sandboxed network-fenced application launcher remain prere
   assert.match(acceptance, /Outside exact local fixture/);
   assert.doesNotMatch(acceptance, /--no-sandbox/);
   const runner = fs.readFileSync(new URL('weebdex-platform/scripts/ci/run-hosted-browser.py', root), 'utf8');
-  assert.match(runner, /'public-upload': \[PUBLIC_UPLOAD_PHASE\]/);
+  assert.match(runner, /'public-upload': \[PUBLIC_FEATURE_PHASE, PUBLIC_UPLOAD_PHASE\]/);
+  assert.match(runner, /180 if phase == PUBLIC_FEATURE_PHASE/);
   assert.match(runner, /set\(ALL_PHASES\) <= passed/);
 });
 test('three sanitized reports and one failure-only encrypted QA artifact have exact one-day allowlists', () => {

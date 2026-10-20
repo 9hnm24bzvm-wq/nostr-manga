@@ -6,8 +6,9 @@ import { catalogueEdges } from './catalogue-edges';
 import { popularityQuery,popularityCollection } from './popularity';
 import { normalizePublicUser } from './user-profile';
 import { compareReaderChapters } from './reader-order';
+import { prepareMangaSearch, readRetainedTags } from './search-reads';
 import { PublicApiClient } from './client';
-import { atHomePages,normalizeChapter,normalizeCover,normalizeFeed,normalizeGroup,normalizeManga,normalizeNamed,normalizeTag } from './normalize';
+import { atHomePages,normalizeChapter,normalizeCover,normalizeFeed,normalizeGroup,normalizeManga,normalizeNamed } from './normalize';
 import { publicQuery,canUseMangaFeed,chapterParentControls } from './query';
 import { publicUuid,PublicApiContractError,record,uuidPattern } from './validation';
 import type { ChapterView,Collection,MangaView,NativeForumKind,Resource,Response,ViewFeed } from './types';
@@ -47,7 +48,7 @@ export class RetainedCatalogueClient{
   }
   const detailIncludes=(types:string[])=>new URLSearchParams(types.map(type=>['includes[]',type]));
   if(operation==='manga.trending'||operation==='chapter.trending'){const kind=operation==='manga.trending'?'manga':'chapter',prepared=popularityQuery(kind,query,includes[kind]);if(prepared.emptySelection){if(signal?.aborted)throw new PublicApiContractError('Popularity read cancelled.',499);return{status:200,body:{data:[],total:0,limit:prepared.limit,offset:0,page:1,...(kind==='chapter'?{map:{manga:{}}}:{}),public_api:{selection:'explicit-no-content-ratings'}}};}const response=await popularityCollection(this.api,kind,prepared,signal);return kind==='chapter'?this.chapterFeed(response,signal):failed(response)||!response.body?response:{...response,body:normalizeFeed(response.body,normalizeManga)};}
-  if(operation==='manga.search'){const response=await this.api.collection('/manga','manga',publicQuery('manga',query,includes.manga),signal);return failed(response)||!response.body?response:{...response,body:normalizeFeed(response.body,normalizeManga)};}
+  if(operation==='manga.search'){const prepared=prepareMangaSearch(query,includes.manga);if(prepared.emptySelection){if(signal?.aborted)throw new PublicApiContractError('Search read cancelled.',499);const limit=Number(prepared.query.get('limit')),offset=Number(prepared.query.get('offset')??0);return{status:200,body:{data:[],total:0,limit,offset,page:limit?Math.floor(offset/limit)+1:1,public_api:{selection:'explicit-no-content-ratings'}}};}const response=await this.api.collection('/manga','manga',prepared.query,signal);return failed(response)||!response.body?response:{...response,body:normalizeFeed(response.body,normalizeManga)};}
   if(operation==='manga.relations'||operation==='manga.recommendations') {
    const kind=operation==='manga.relations'?'relation':'recommendation';
    const response=await catalogueEdges(this.api,kind,publicUuid(id),query,signal);
@@ -69,7 +70,8 @@ export class RetainedCatalogueClient{
   if(operation==='cover.list'){const data:unknown[]=[];let offset=0,total=1;while(offset<total){const response=await this.api.collection('/cover','cover_art',new URLSearchParams({'manga[]':publicUuid(id),limit:'100',offset:String(offset)}),signal);if(failed(response)||!response.body)return response;total=response.body.total;if(total>10000)throw new CatalogueUnavailableError('Cover collection exceeds the bounded reader budget.',422);data.push(...response.body.data.map(normalizeCover));if(!response.body.data.length&&offset<total)throw new PublicApiContractError('Cover collection stopped before its total');offset+=response.body.data.length;}return {status:200,body:data};}
   if(operation==='cover.get'){const response=await this.api.cover(publicUuid(id),signal);return failed(response)||!response.body?response:{...response,body:normalizeCover(response.body.data)};}
   if(operation==='author.get'||operation==='group.get'){const response=operation==='author.get'?await this.api.author(publicUuid(id),signal):await this.api.group(publicUuid(id),signal);if(failed(response)||!response.body)return response;const view=operation==='group.get'?normalizeGroup(response.body.data):{...normalizeNamed(response.body.data),relationships:{}};if(operation==='group.get')await this.attachNativeForum('group',[view as typeof view&{relationships:Record<string,unknown>}],signal);return {...response,body:view};}
-  if(['author.search','group.search','tag.search'].includes(operation)){const family=operation.split('.')[0]as'author'|'group'|'tag',response=await this.api.collection(family==='tag'?'/manga/tag':`/${family}`,family==='group'?'scanlation_group':family,publicQuery(family,query),signal);return failed(response)||!response.body?response:{...response,body:normalizeFeed(response.body,row=>family==='tag'?normalizeTag(row):normalizeNamed(row))};}
+  if(operation==='tag.search')return readRetainedTags(this.api,query,signal);
+  if(['author.search','group.search'].includes(operation)){const family=operation.split('.')[0]as'author'|'group',response=await this.api.collection(`/${family}`,family==='group'?'scanlation_group':family,publicQuery(family,query),signal);return failed(response)||!response.body?response:{...response,body:normalizeFeed(response.body,normalizeNamed)};}
   throw new CatalogueUnavailableError(`${operation} has no verified public adapter. Native catalogue fallback is disabled.`);
  }
 }

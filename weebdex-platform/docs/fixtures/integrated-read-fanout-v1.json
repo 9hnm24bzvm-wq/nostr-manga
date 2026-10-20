@@ -548,21 +548,21 @@
     }
   ],
   "sourcePins": {
-    "weebdex-platform/platform-integrations/public-api/site-client.ts": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9",
+    "weebdex-platform/platform-integrations/public-api/site-client.ts": "cd6379824dfa6218c5b5b373a36be80129f611bb235f81225bc62aab6f67ed00",
     "weebdex-platform/platform-integrations/public-api/client.ts": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad",
     "weebdex-platform/platform-integrations/public-api/query.ts": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193",
     "weebdex-platform/platform-integrations/public-api/normalize.ts": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b",
     "weebdex-platform/platform-integrations/public-api/media.ts": "85791b87e3703b80ed22b985946421c4a8830330c2ba402b6d558fbd33cca513",
     "weebdex-platform/platform-integrations/public-api/library-catalogue.ts": "8127da1de74382e0a701f408917de951a47bf32b7be88d5b1e638bdb30de258b",
     "weebdex-platform/platform-integrations/public-api/library-staging.ts": "b9418ece73a23f64580aa017013397a74a440f9d315070e70b9ffbe6bd810169",
-    "weebdex-platform/platform-integrations/public-api/overlays.mjs": "1d001de81da56f4399c5618c971ed7d3dbb82b260cc24810859275b876139916",
-    "weebdex-platform/platform-integrations/public-api/anchors.json": "e6dd74da63dbb23a571aa775a65f0709d6fb638d0737f3bdd92193e543f9f1c2",
-    "weebdex-platform/platform-integrations/public-api/source-hashes.json": "822477b547f98e0241d439cce91a817f0a4d7186031a12fd99d13e70b4a87f33",
+    "weebdex-platform/platform-integrations/public-api/overlays.mjs": "d84c9df12bd54bb78b076e4d753030768d11850e9823b455655eba2e73425b9c",
+    "weebdex-platform/platform-integrations/public-api/anchors.json": "f03ea5f6c0dd9fbac409211aaebae472d8f68909a93c06ab4c14d5a01c80edfa",
+    "weebdex-platform/platform-integrations/public-api/source-hashes.json": "151e2bee2232916a2446621a35379e2658bf273b12cecb0f2fcea2323e680844",
     "weebdex-platform/platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
     "weebdex-platform/platform-integrations/frontend-overlays.mjs": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836",
     "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801",
     "weebdex-platform/platform-integrations/local-library/overlays.mjs": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d",
-    "weebdex-platform/platform-integrations/local-library/library.ts": "2c093421cbeeb368b681f09cd1ae7cb3319316979e4c3304ab3de8fabbd23c76",
+    "weebdex-platform/platform-integrations/local-library/library.ts": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef",
     "weebdex-platform/platform-integrations/local-library/MangaFollow.ts": "c6b26e09d33ce9ef0dbc77593bfa9d87e27d6a24b2f5949452ce1f73e304e89a",
     "weebdex-platform/platform-integrations/local-library/ChapterHistory.ts": "99fef1dedee26c196350aafe23496480512d75704f4a25bc3f72e22a1f4b78bf",
     "weebdex-platform/platform-integrations/local-library/catalog.ts": "c43467046ba3010af1fefb56e7cc0661d2468fc62882f0c8725e3af627445676",
@@ -583,7 +583,8 @@
     "weebdex-platform/frontend/src/lib/components/reader/context.svelte.ts": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
     "weebdex-platform/platform-integrations/frontend-behavior/reader-navigation.ts": "58120d8cc91c0c80344b933db97e8e30cd412e1583db59c2f5cc427ea1e8967f",
     "weebdex-platform/scripts/build-frontend.mjs": "631dda7e5764001c599d28faa3351fc8852356d4bc02375d7f2679f2c0dc8a7e",
-    "weebdex-platform/platform-integrations/public-api/reader-order.ts": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279"
+    "weebdex-platform/platform-integrations/public-api/reader-order.ts": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279",
+    "weebdex-platform/platform-integrations/public-api/search-reads.ts": "240a79aa1389de673e8de403ebc8c8680db2cf9175effab3bf6f2aaa04b85f52"
   },
   "sourceUpdates": [
     {
@@ -613,6 +614,44 @@
         "weebdex-platform/platform-integrations/frontend-overlays.mjs": {
           "before_sha256": "86484b47c2beace9ee55032503256f8d1abac99dab8c02cd7979c522a5ec1a78",
           "after_sha256": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836"
+        }
+      }
+    },
+    {
+      "date": "2026-10-20",
+      "baseline_commit": "20f2d3ee78b4ac65b7d561c411c3833a575e52f8",
+      "reason": "Public search maps explicit no-rating selection and implicit ascending default sort; retained tag pagination slices actual complete queryless snapshots locally. Existing nonempty scenario request counts remain unchanged. Each tag subpage fetches the complete bounded catalogue, so response bytes must be observed independently. No app/browser/load run is inferred.",
+      "pins": {
+        "weebdex-platform/platform-integrations/public-api/site-client.ts": {
+          "before_sha256": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9",
+          "after_sha256": "cd6379824dfa6218c5b5b373a36be80129f611bb235f81225bc62aab6f67ed00"
+        },
+        "weebdex-platform/platform-integrations/public-api/search-reads.ts": {
+          "before_sha256": null,
+          "after_sha256": "240a79aa1389de673e8de403ebc8c8680db2cf9175effab3bf6f2aaa04b85f52"
+        }
+      }
+    },
+    {
+      "date": "2026-10-20",
+      "baseline_commit": "96b9b459d5a30b7291e786f375f8a092c76a1bbd",
+      "reason": "Compose reviewed public chapter edit route admission and guarded device backup restore. These changes do not alter the existing reader/search/library read recipes or attempt counts. The four source pins are reconciled to the combined source; no application/browser/build/load measurement is inferred.",
+      "pins": {
+        "weebdex-platform/platform-integrations/public-api/overlays.mjs": {
+          "before_sha256": "1d001de81da56f4399c5618c971ed7d3dbb82b260cc24810859275b876139916",
+          "after_sha256": "d84c9df12bd54bb78b076e4d753030768d11850e9823b455655eba2e73425b9c"
+        },
+        "weebdex-platform/platform-integrations/public-api/anchors.json": {
+          "before_sha256": "e6dd74da63dbb23a571aa775a65f0709d6fb638d0737f3bdd92193e543f9f1c2",
+          "after_sha256": "f03ea5f6c0dd9fbac409211aaebae472d8f68909a93c06ab4c14d5a01c80edfa"
+        },
+        "weebdex-platform/platform-integrations/public-api/source-hashes.json": {
+          "before_sha256": "822477b547f98e0241d439cce91a817f0a4d7186031a12fd99d13e70b4a87f33",
+          "after_sha256": "151e2bee2232916a2446621a35379e2658bf273b12cecb0f2fcea2323e680844"
+        },
+        "weebdex-platform/platform-integrations/local-library/library.ts": {
+          "before_sha256": "2c093421cbeeb368b681f09cd1ae7cb3319316979e4c3304ab3de8fabbd23c76",
+          "after_sha256": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef"
         }
       }
     }

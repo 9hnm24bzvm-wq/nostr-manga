@@ -150,7 +150,62 @@ test('current actor-follow runtime source has a separate exact association witho
   assert.equal(currentWorkflow.split(proxyStep).length - 1, 1);
   assert.equal(currentWorkflow.replace(proxyStep, ''), priorWorkflow.toString('utf8'));
   const validator = 'scripts/ci/validate-ci-evidence.py';
+  // Reverse only the exact reviewed feature-phase successor, then require
+  // complete prior bytes before the historical actor-only associations below.
+  const featureSourceReversals = {
+  "runner": {
+    "current_sha256": "bf399a040a1ee72d0c37353438f03c0b31acc1bfe92a383f40d67c846330e214",
+    "prior_sha256": "cd82616c45f8d4ee81873a4be45e6206bc133c4f98e167f28b88e8e0449835fb",
+    "changes": [
+      [
+        "PUBLIC_FEATURE_PHASE = 'public-feature-recovery'\n",
+        ""
+      ],
+      [
+        "    'public-upload': [PUBLIC_FEATURE_PHASE, PUBLIC_UPLOAD_PHASE],\n",
+        "    'public-upload': [PUBLIC_UPLOAD_PHASE],\n"
+      ],
+      [
+        "assert len(ALL_PHASES) == 41\n",
+        "assert len(ALL_PHASES) == 40\n"
+      ],
+      [
+        "    return 180 if phase == PUBLIC_FEATURE_PHASE else 150 if phase == 'startup' else 600 if phase in SIGNED or phase == PUBLIC_UPLOAD_PHASE else 300\n",
+        "    return 150 if phase == 'startup' else 600 if phase in SIGNED or phase == PUBLIC_UPLOAD_PHASE else 300\n"
+      ],
+      [
+        "            value['status'] = 'failed'\n    if phase == PUBLIC_FEATURE_PHASE:\n        spec = importlib.util.spec_from_file_location('public_feature_diagnostics', ROOT / 'scripts/ci/public-feature-diagnostics.py')\n        diagnostics = importlib.util.module_from_spec(spec)\n        spec.loader.exec_module(diagnostics)\n        value['public_feature_diagnostics'] = diagnostics.project(acceptance)\n        if not diagnostics.passed(value['public_feature_diagnostics']):\n",
+        ""
+      ]
+    ]
+  },
+  "validator": {
+    "current_sha256": "ba90463396aa821492f130bdf4565740bd6e7d817163b44e44b20fe35e071b84",
+    "prior_sha256": "2fcb77caf7be6ee9b12f3c5ef40c7415653b54fd2ec13768a793168cecd4bf4e",
+    "changes": [
+      [
+        "        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics', 'public_upload_diagnostics', 'public_feature_diagnostics'})\n",
+        "        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics', 'public_upload_diagnostics'})\n"
+      ],
+      [
+        "        if row['phase'] == runner.PUBLIC_FEATURE_PHASE:\n            insist('public_feature_diagnostics' in row and row['batch'] == 'public-upload')\n            spec = importlib.util.spec_from_file_location('public_feature_diagnostic_contract', ROOT / 'scripts/ci/public-feature-diagnostics.py')\n            features = importlib.util.module_from_spec(spec)\n            spec.loader.exec_module(features)\n            feature_value = row['public_feature_diagnostics']\n            features.validate(feature_value)\n            if feature_value['record_valid']:\n                insist(len(feature_value['checks']) <= row['actual_steps'] <= min(len(features.CHECKS), len(feature_value['checks']) + 1))\n                for index, check in enumerate(feature_value['checks']):\n                    failures = [step for step in row['failed_steps'] if step['index'] == index]\n                    insist(failures == ([{'index': index, 'status': 'failed'}] if check['status'] == 'failed' else []))\n            insist(row['status'] != 'passed' or features.passed(feature_value) and row['actual_steps'] == len(features.CHECKS))\n        else:\n            insist('public_feature_diagnostics' not in row)\n",
+        ""
+      ]
+    ]
+  }
+};
+  function restoreFeatureSource(input, kind) {
+    const row = featureSourceReversals[kind], digest = hash(input);
+    const message = kind === 'runner' ? 'Unknown owned-temp application runner' : 'Unknown preparation-stage evidence validator';
+    assert([row.current_sha256, row.prior_sha256].includes(digest), message);
+    let value = input.toString();
+    if (digest === row.current_sha256) for (const [current, prior] of row.changes) {
+      assert.equal(value.split(current).length - 1, 1); value = value.replace(current, prior);
+    }
+    assert.equal(hash(value), row.prior_sha256); return value;
+  }
   let currentValidator = fs.readFileSync(new URL(validator, root), 'utf8');
+  currentValidator = restoreFeatureSource(currentValidator, 'validator');
   // Independently reviewed native-title hash publication is a later successor.
   // Reverse only its two exact blocks before applying historical diagnostic pins.
   const priorDiagnosticValidatorSha = '0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77';
@@ -253,6 +308,7 @@ test('current actor-follow runtime source has a separate exact association witho
   ]
 ];
   function normalizeApplicationRunner(input) {
+    input = restoreFeatureSource(input, 'runner');
     const digest = hash(input);
     const qaRunnerSha = 'cd82616c45f8d4ee81873a4be45e6206bc133c4f98e167f28b88e8e0449835fb';
     assert(['a904994f8ab19164174dc62f17df48ed926de0567603340f080b39415e00c0a6', '6225772326ec91e82da678aeb805f920536f8b086e03df64041c5f9302ef037b', qaRunnerSha].includes(digest), 'Unknown owned-temp application runner');

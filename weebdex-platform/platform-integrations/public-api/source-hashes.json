@@ -47,5 +47,6 @@
   "src/routes/(app)/users/+page.svelte": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
   "src/routes/(app)/user/[id]/settings/+page.svelte": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
   "src/routes/(app)/user/[id]/settings/+layout.svelte": "d224a7f313c8a80f64cdd448c71225bf038f463ab13c6eba2785851535a58bea",
-  "src/routes/(app)/title/[id]/edit/+layout.svelte": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696"
+  "src/routes/(app)/title/[id]/edit/+layout.svelte": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+  "src/routes/(app)/chapter/[id]/edit/+page.ts": "8ccafda56093c99bfe2ba27f724df0521618535e11bcd3279112c2046b6880e6"
 }

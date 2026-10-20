@@ -21,6 +21,7 @@ STAGE = ROOT / '.build/hosted-browser'
 PUBLIC = ROOT / 'ci-evidence'
 SIGNED = {'signed-library', 'signed-profile', 'signed-social', 'signed-context', 'signed-source-controls', 'signed-namespace', 'signed-recipients', 'signed-restart'}
 PUBLIC_UPLOAD_PHASE = 'public-upload-recovery'
+PUBLIC_FEATURE_PHASE = 'public-feature-recovery'
 BATCHES = {
     'ordinary-a': ['account', 'account-recovery', 'upload', 'reader', 'announcements'],
     'ordinary-b': ['local-library', 'filters', 'editorial', 'community', 'pwa'],
@@ -38,10 +39,10 @@ BATCHES = {
     'actor-follow': ['ui14-actor-follow'],
     # Gate-on UUID catalogue profile, with its own operationally ready fixture.
     # Native Startup's SeedManga1 routes belong to the separate gate-off profile.
-    'public-upload': [PUBLIC_UPLOAD_PHASE],
+    'public-upload': [PUBLIC_FEATURE_PHASE, PUBLIC_UPLOAD_PHASE],
 }
 ALL_PHASES = ['startup', *dict.fromkeys(phase for phases in BATCHES.values() for phase in phases)]
-assert len(ALL_PHASES) == 40
+assert len(ALL_PHASES) == 41
 MAX_PHASE_RUNS = sum(len(phases) + (name != 'public-upload') for name, phases in BATCHES.items())
 STOP = False
 
@@ -74,7 +75,7 @@ def write(path, value):
 
 
 def maximum(phase):
-    return 150 if phase == 'startup' else 600 if phase in SIGNED or phase == PUBLIC_UPLOAD_PHASE else 300
+    return 180 if phase == PUBLIC_FEATURE_PHASE else 150 if phase == 'startup' else 600 if phase in SIGNED or phase == PUBLIC_UPLOAD_PHASE else 300
 
 
 def public_upload_profile(plan):
@@ -181,6 +182,13 @@ def project_phase(phase, batch, acceptance, owned):
         spec.loader.exec_module(diagnostics)
         value['public_upload_diagnostics'] = diagnostics.project(acceptance)
         if not diagnostics.passed(value['public_upload_diagnostics']):
+            value['status'] = 'failed'
+    if phase == PUBLIC_FEATURE_PHASE:
+        spec = importlib.util.spec_from_file_location('public_feature_diagnostics', ROOT / 'scripts/ci/public-feature-diagnostics.py')
+        diagnostics = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(diagnostics)
+        value['public_feature_diagnostics'] = diagnostics.project(acceptance)
+        if not diagnostics.passed(value['public_feature_diagnostics']):
             value['status'] = 'failed'
     return value
 

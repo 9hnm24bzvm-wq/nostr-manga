@@ -1,6 +1,6 @@
 // Native and public UUID catalogue references are local device records.
 // Only verified explicit source projection can create original protocol IDs.
-import { installDeviceIdSchema, readDeviceMigrationState, ensureDeviceMigrationOwner } from '../public-api/device-id-migration';
+import { installDeviceIdSchema, readDeviceMigrationState, ensureDeviceMigrationOwner, preparePublicDeviceRestore, commitDeviceIdMigration, type MigrationReview } from '../public-api/device-id-migration';
 import { publicDeviceBackup, validatePublicDeviceBackup, normalizeMigrationRecord, checkedPublicDeviceScope, canonicalLibrary, type PublicDeviceBackup } from '../public-api/device-id-state';
 import { mutatePublicDevice } from '../public-api/device-write-v2';
 import { publicUuid, uuidPattern } from '../public-api/validation';
@@ -204,6 +204,28 @@ export class DeviceStore {
       rows.delete([family, key]);
       if (family === 'lists') for (const row of await request(rows.getAll())) if (row.family === 'members' && row.list === key) rows.delete([row.family, row.key]);
       if (family === 'series') for (const row of await request(rows.getAll())) if (row.family === 'members' && row.series === key) rows.delete([row.family, row.key]);
+    });
+  }
+  // UUID backups retain sidecars and deletion fences through the original
+  // explicit prepare/commit core. They must never enter the legacy row import.
+  async prepareRestore(snapshot: PublicDeviceBackup, options: { expectedRevision: number; ownerId: string; mode: 'merge' | 'replace'; admitForeignOwner: boolean; assertCurrent: () => void }): Promise<MigrationReview> {
+    if (!this.publicFormat) throw Error(PUBLIC_DEVICE_FORMAT_FENCE);
+    const scope = checkedPublicDeviceScope({ ...this.scope });
+    const current = () => { this.ensureOpen(); options.assertCurrent(); if (!sameScope(scope, this.scope)) throw Error('The device catalogue scope changed. Review the backup again.'); };
+    current();
+    const before = await readDeviceMigrationState(this.db); current();
+    if (before.revision !== options.expectedRevision || before.ownerId !== options.ownerId) throw Error('The device library changed. Preview the backup again.');
+    const review = await preparePublicDeviceRestore(this.db, snapshot, { ownerId: options.ownerId, scope, mode: options.mode, admitForeignOwner: options.admitForeignOwner, assertCurrent: current });
+    current();
+    if (review.expectedRevision !== options.expectedRevision) throw Error('The device library changed. Preview the backup again.');
+    return review;
+  }
+  async restore(review: MigrationReview, assertCurrent: () => void, watchCurrent?: (changed: () => void) => () => void) {
+    if (!this.publicFormat) throw Error(PUBLIC_DEVICE_FORMAT_FENCE);
+    return deviceWriteLock(async () => {
+      const current = () => { this.ensureOpen(); assertCurrent(); }; current();
+      const revision = await commitDeviceIdMigration(this.db, review, { confirmed: true, assertCurrent: current, watchCurrent });
+      this.channel?.postMessage({ revision }); return revision;
     });
   }
   async import(snapshot: DeviceSnapshot, expectedRevision: number, mode: 'merge' | 'replace', admitCurrentCatalogue?: (scope: InstanceScope) => void) {

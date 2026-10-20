@@ -267,7 +267,7 @@ def phases(value):
         boolean(value['budget_exhausted'])
     insist(type(value['phases']) is list and len(value['phases']) <= runner.MAX_PHASE_RUNS and type(value['batches']) is list and len(value['batches']) <= len(runner.BATCHES))
     for row in value['phases']:
-        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics', 'public_upload_diagnostics'})
+        fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics', 'public_upload_diagnostics', 'public_feature_diagnostics'})
         insist(row['batch'] in ['startup', *runner.BATCHES] and row['phase'] in runner.ALL_PHASES and row['status'] in ['passed', 'failed'] and row['evidence_scope'] == SCOPE)
         integer(row['actual_steps'])
         integer(row['page_error_count'])
@@ -296,6 +296,21 @@ def phases(value):
             insist(row['status'] != 'passed' or upload.passed(row['public_upload_diagnostics']))
         else:
             insist('public_upload_diagnostics' not in row)
+        if row['phase'] == runner.PUBLIC_FEATURE_PHASE:
+            insist('public_feature_diagnostics' in row and row['batch'] == 'public-upload')
+            spec = importlib.util.spec_from_file_location('public_feature_diagnostic_contract', ROOT / 'scripts/ci/public-feature-diagnostics.py')
+            features = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(features)
+            feature_value = row['public_feature_diagnostics']
+            features.validate(feature_value)
+            if feature_value['record_valid']:
+                insist(len(feature_value['checks']) <= row['actual_steps'] <= min(len(features.CHECKS), len(feature_value['checks']) + 1))
+                for index, check in enumerate(feature_value['checks']):
+                    failures = [step for step in row['failed_steps'] if step['index'] == index]
+                    insist(failures == ([{'index': index, 'status': 'failed'}] if check['status'] == 'failed' else []))
+            insist(row['status'] != 'passed' or features.passed(feature_value) and row['actual_steps'] == len(features.CHECKS))
+        else:
+            insist('public_feature_diagnostics' not in row)
         if row['status'] == 'passed':
             insist(row['actual_steps'] > 0 and row['failed_steps'] == [] and row['page_error_count'] == 0 and row['harness_error_observed'] is False and all(row[key] is True for key in ['runner_report_present', 'owned_runner_terminal', 'runner_exit_zero']))
     for row in value['batches']:

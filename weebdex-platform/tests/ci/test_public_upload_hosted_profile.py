@@ -60,14 +60,15 @@ def accepted_report():
 
 
 class PublicUploadHostedProfile(unittest.TestCase):
-    def test_exact_scope_is_forty_current_phases_not_historical_equivalence(self):
-        self.assertEqual(len(runner.ALL_PHASES), 40)
+    def test_exact_scope_is_forty_one_current_phases_not_historical_equivalence(self):
+        self.assertEqual(len(runner.ALL_PHASES), 41)
         self.assertEqual(len(runner.BATCHES), 12)
-        self.assertEqual(runner.MAX_PHASE_RUNS, 52)
-        self.assertEqual(runner.batch_phases('public-upload', runner.BATCHES['public-upload']), [runner.PUBLIC_UPLOAD_PHASE])
-        self.assertEqual(runner.requested_phases({'public-upload': runner.BATCHES['public-upload']}), [runner.PUBLIC_UPLOAD_PHASE])
+        self.assertEqual(runner.MAX_PHASE_RUNS, 53)
+        self.assertEqual(runner.batch_phases('public-upload', runner.BATCHES['public-upload']), [runner.PUBLIC_FEATURE_PHASE, runner.PUBLIC_UPLOAD_PHASE])
+        self.assertEqual(runner.requested_phases({'public-upload': runner.BATCHES['public-upload']}), [runner.PUBLIC_FEATURE_PHASE, runner.PUBLIC_UPLOAD_PHASE])
         self.assertEqual(runner.requested_phases({'startup': []}), ['startup'])
         self.assertEqual(runner.maximum(runner.PUBLIC_UPLOAD_PHASE), 600)
+        self.assertEqual(runner.maximum(runner.PUBLIC_FEATURE_PHASE), 180)
         self.assertEqual(runner.requested_phases(runner.BATCHES), runner.ALL_PHASES)
         workflow = (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text()
         self.assertIn('actor-follow, public-upload]', workflow)
@@ -253,8 +254,8 @@ class PublicUploadHostedProfile(unittest.TestCase):
         self.assertFalse(summary['full_suite_passed'])
         self.assertEqual(summary['pending_unique_phases'], [runner.PUBLIC_UPLOAD_PHASE])
         validator.summary(summary)
-        isolated = {'phases': [{'phase': runner.PUBLIC_UPLOAD_PHASE, 'status': 'passed'}], 'batches': [clean]}
-        summary = runner.summarize(isolated, 'public-upload', [runner.PUBLIC_UPLOAD_PHASE])
+        isolated = {'phases': [{'phase': phase, 'status': 'passed'} for phase in [runner.PUBLIC_FEATURE_PHASE, runner.PUBLIC_UPLOAD_PHASE]], 'batches': [clean]}
+        summary = runner.summarize(isolated, 'public-upload', [runner.PUBLIC_FEATURE_PHASE, runner.PUBLIC_UPLOAD_PHASE])
         self.assertTrue(summary['selected_scope_passed'])
         self.assertFalse(summary['full_suite_passed'])
         self.assertEqual(len(summary['pending_unique_phases']), 39)

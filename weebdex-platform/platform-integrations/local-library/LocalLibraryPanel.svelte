@@ -2,13 +2,15 @@
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import * as Dialog from '$lib/components/ui/dialog';
-  import { localLibraryState, openLibrary, useMode, message, currentDeviceSnapshot, previewImport, previewAccountImport, applyImport, exportBackup, downloadBlob, type ImportReview } from './library';
+  import { localLibraryState, openLibrary, useMode, message, currentDeviceSnapshot, previewImport, previewAccountImport, applyImport, exportBackup, downloadBlob, prepareDeviceBackupImport, applyDeviceBackupImport, type DeviceBackupRestoreReview, type ImportReview } from './library';
   import { sameScope } from './device-store';
   import {publicAccountLibraryUnavailable} from '../public-api/library-staging';
   import LibraryManagementTools from './LibraryManagementTools.svelte';
   let pending = $state(''), error = $state(''), notice = $state('');
+  let deviceRestore = $state<DeviceBackupRestoreReview>(), foreignOwnerConsent = $state(false);
   let imported = $state<ImportReview>(), scopeMatches = $state(false), reviewOpen = $state(false);
   let tool = $state<'lists' | 'sync' | 'destinations' | 'publish' | 'public-recovery' | 'attempts' | 'recovery'>('lists'), toolOpen = $state(false);
+  const restoreWatchers = new Set<() => void>();
   let disposed = false, reviewGeneration = 0, toolGeneration = $state(0);
   const titles = $derived($localLibraryState.records.filter(row => row.family === 'series'));
   const lists = $derived($localLibraryState.records.filter(row => row.family === 'lists'));
@@ -21,18 +23,30 @@
   function setToolOpen(open: boolean) { toolGeneration++; toolOpen = open; }
   function openTool(next: typeof tool) { tool = next; setToolOpen(true); }
   function toolGuard(generation: number) { return () => { if (disposed || !toolOpen || generation !== toolGeneration) throw Error('This library task was closed. Reopen it and review again.'); }; }
+  function invalidateReview() { reviewGeneration++; for (const changed of [...restoreWatchers]) changed(); restoreWatchers.clear(); }
   async function preview(operation: () => Promise<ImportReview>) {
-    const generation = ++reviewGeneration;
+    invalidateReview(); const generation = reviewGeneration;
     const result = await operation(), snapshot = await currentDeviceSnapshot();
     if (disposed || generation !== reviewGeneration) return;
-    imported = result; scopeMatches = sameScope(result.snapshot.scope, snapshot.scope); reviewOpen = true;
+    deviceRestore = undefined; foreignOwnerConsent = false; imported = result; scopeMatches = sameScope(result.snapshot.scope, snapshot.scope); reviewOpen = true;
   }
   async function fileChanged(event: Event) {
     const input = event.currentTarget as HTMLInputElement, file = input.files?.[0]; input.value = '';
     if (file) await run('preview-import', () => preview(() => previewImport(file)));
   }
-  function closeReview(open: boolean) { reviewOpen = open; if (!open) { reviewGeneration++; imported = undefined; } }
-  onMount(() => { void run('open', openLibrary); return () => { disposed = true; reviewGeneration++; imported = undefined; }; });
+  function closeReview(open: boolean) { reviewOpen = open; if (!open) { invalidateReview(); imported = undefined; deviceRestore = undefined; foreignOwnerConsent = false; } }
+  function restoreGuard(generation: number, selected: ImportReview) { return () => { if (disposed || !reviewOpen || generation !== reviewGeneration || imported !== selected) throw Error('This backup review was closed. Preview the file again.'); }; }
+  async function prepareRestore(mode: 'merge' | 'replace') {
+    const selected = imported!, current = restoreGuard(reviewGeneration, selected);
+    const result = await prepareDeviceBackupImport(selected, mode, foreignOwnerConsent, current);
+    current(); deviceRestore = result;
+  }
+  async function confirmRestore() {
+    const selected = deviceRestore!, current = restoreGuard(reviewGeneration, imported!);
+    await applyDeviceBackupImport(selected, current, changed => { current(); restoreWatchers.add(changed); return () => { restoreWatchers.delete(changed); }; }); current();
+    closeReview(false); notice = selected.mode === 'merge' ? 'Backup merged locally.' : 'Device library restored from the reviewed backup.';
+  }
+  onMount(() => { void run('open', openLibrary); return () => { disposed = true; invalidateReview(); imported = undefined; deviceRestore = undefined; }; });
 </script>
 <section class="space-y-5" data-local-library-panel>
   <header class="space-y-1"><h1 class="text-lg font-semibold">Library</h1><p class="text-muted-foreground text-sm">Choose where to save your reading and keep a backup.</p></header>
@@ -80,7 +94,21 @@
     <Dialog.Header><Dialog.Title>Review library import</Dialog.Title><Dialog.Description>Check this backup before changing your device library.</Dialog.Description></Dialog.Header>
     {#if imported}
       <p>Import preview: {imported.source} · {imported.snapshot.records.length} records · {imported.collisions ?? 0} overlapping keys</p>
-      {#if scopeMatches}
+      {#if scopeMatches && imported.snapshot.version === 2}
+        {#if deviceRestore}
+          <p>Reviewed {deviceRestore.mode === 'merge' ? 'merge' : 'replacement'}: {deviceRestore.summary.records} resulting records · {deviceRestore.summary.merged} archived conflicts · {deviceRestore.summary.deleted} records kept deleted · {deviceRestore.summary.unresolved} unresolved references.</p>
+          <p>{deviceRestore.mode === 'merge' ? 'Newer device saves win; equal timestamps keep your current version.' : 'The active device records will be replaced. Recovery history and deletion fences are retained.'} Your current device owner is preserved. Nothing is published.</p>
+          <div class="flex flex-wrap gap-2">
+            <Button disabled={!!pending} onclick={() => run('restore-backup', confirmRestore)}>Confirm reviewed {deviceRestore.mode === 'merge' ? 'merge' : 'replacement'}</Button>
+            <Button variant="outline" disabled={!!pending} onclick={() => { downloadBlob(new Blob([JSON.stringify(deviceRestore!.backup)], { type: 'application/json' }), 'weebdex-before-restore.json'); }}>Download pre-restore backup</Button>
+            <Button variant="outline" disabled={!!pending} onclick={() => { deviceRestore = undefined; }}>Change restore choice</Button>
+          </div>
+        {:else}
+          <p>This complete backup includes saved titles, progress, lists and recovery history. Choose how to restore it, then confirm the reviewed result.</p>
+          {#if imported.foreignOwner}<p class="text-muted-foreground break-all text-sm">Backup device: {imported.snapshot.ownerId}</p><label class="block text-sm"><input type="checkbox" bind:checked={foreignOwnerConsent} /> I reviewed this backup from another browser device. Restore its library data while keeping this device’s owner.</label>{/if}
+          <div class="flex flex-wrap gap-2"><Button disabled={!!pending || !!imported.foreignOwner && !foreignOwnerConsent} onclick={() => run('prepare-merge', () => prepareRestore('merge'))}>Review backup merge</Button><Button variant="outline" disabled={!!pending || !!imported.foreignOwner && !foreignOwnerConsent} onclick={() => run('prepare-replace', () => prepareRestore('replace'))}>Review backup replacement</Button></div>
+        {/if}
+      {:else if scopeMatches}
         <p>Merge keeps newer device saves and keeps your current version on equal timestamps. Replace removes the current device library. Neither option publishes.</p>
         <div class="flex flex-wrap gap-2"><Button disabled={!!pending} onclick={() => run('merge', async () => { const selected = imported!; await applyImport(selected, 'merge'); closeReview(false); notice = 'Backup merged locally.'; })}>Merge reviewed import</Button><Button variant="outline" disabled={!!pending} onclick={() => { if (confirm('Replace all device-library records with this reviewed backup? Export a backup first.')) void run('replace', async () => { const selected = imported!; await applyImport(selected, 'replace'); closeReview(false); notice = 'Device library replaced from the reviewed backup.'; }); }}>Replace with reviewed import</Button></div>
       {:else}<p role="alert">This backup belongs to another catalogue. Restore it on its original site. Portable protocol backups can be restored from Library recovery.</p>{/if}

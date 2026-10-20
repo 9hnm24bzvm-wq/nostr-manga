@@ -676,5 +676,32 @@
     "composed_before": true,
     "approved_public_feature_exception": "public_uuid_title_editor_route_lifecycle",
     "label": "Recreate captured signed title and cover ownership when canonical target or alias/canonical route pathname changes"
+  },
+  {
+    "path": "src/routes/(app)/chapter/[id]/edit/+page.ts",
+    "sha256": "8ccafda56093c99bfe2ba27f724df0521618535e11bcd3279112c2046b6880e6",
+    "count": 1,
+    "before": "export const load = async ({ params }) => {",
+    "after": "export const load = async ({ params }) => {\n if (Boolean(true)) {\n  const response = await API.Chapter.Get(params.id);\n  if (!response || response.status !== StatusCodes.OK || !response.body) error(response && response.status >= 400 ? response.status : 502);\n  return { id: response.body.id, chapter: response.body };\n }\n",
+    "label": "Public chapter loader reads the actual canonical chapter without native-cookie admission; signed child and server retain mutation authority"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "import { API, Constants, Locale, Permission, Utils } from \"$lib\";",
+    "after": "import { signerIdentity } from \"$localLibrary/publication\";\r\n\timport { API, Constants, Locale, Permission, Utils } from \"$lib\";",
+    "composed_before": true,
+    "label": "Chapter editor discovery follows the selected public signer; it grants no write authority"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "{#if $Session && Permission.Chapter.canUpdate(chapter)}",
+    "after": "{#if $signerIdentity.owner}",
+    "composed_before": true,
+    "approved_public_feature_exception": "public_uuid_signed_chapter_editor_link",
+    "label": "Selected signer may open existing chapter metadata/claim/removal controls; immutable source and per-instance approval rules remain in the signed child and server"
   }
 ]

@@ -401,6 +401,7 @@ class ApplicationBrowserTemp(unittest.TestCase):
             state.ui_dir = stage
             state.verify_frontend = lambda _: None
             state.origin, state.mail_origin = 'http://127.0.0.1:1', 'http://127.0.0.1:2'
+            state.public_upload_controls = False  # Explicit native-profile stand-in.
             state.children, state.logs = {}, {}
             state.generation = 0
             state.receipt = dict(children={}, listener_lifecycle=[])

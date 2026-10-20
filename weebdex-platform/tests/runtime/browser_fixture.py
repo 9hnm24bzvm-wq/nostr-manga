@@ -49,9 +49,21 @@ IDS = {'manga':'SeedManga1','second_manga':'SeedManga2','group':'SeedGroup1','au
        'thread':'SeedThred1','seeder':'SeedStaff1'}
 SIGNED_PHASES={'signed-library','signed-profile','signed-social','signed-context','signed-source-controls','signed-namespace','signed-recipients','signed-restart'}
 PUBLIC_UPLOAD_PHASE='public-upload-recovery'
+PUBLIC_FEATURE_PHASE='public-feature-recovery'
 PUBLIC_UPLOAD_CONTROLS={'upload-account','upload-snapshot'}
 UI_REGRESSION_CONTROLS={'ui-regressions-seed':120,'ui-regressions-readers':120,'ui-regressions-status':30,'ui-regressions-withdraw':30}
 PG_HOME_FAULT_CONTROLS={'pg-home-fault-begin','pg-home-fault-resume'}
+
+
+def public_feature_command(phase, options, script, timeout, public_upload_controls):
+    """Admit only the opted-in feature phase at its existing fixed script/bound."""
+    if phase != PUBLIC_FEATURE_PHASE and options.get('BROWSER_PHASE') != PUBLIC_FEATURE_PHASE:
+        return False
+    if (phase != PUBLIC_FEATURE_PHASE or options.get('BROWSER_PHASE') != PUBLIC_FEATURE_PHASE or
+            public_upload_controls is not True or script != ROOT/'scripts/browser-acceptance.mjs' or
+            type(timeout) is not int or not 15 <= timeout <= 180):
+        raise ValueError('Public feature phase admission refused')
+    return True
 
 
 def free_port():
@@ -1059,9 +1071,10 @@ class Fixture:
             assert Path(argv[0]).name in ['node','python3','python']
             script=Path(argv[1]).resolve();assert script.is_file() and (script.is_relative_to(ROOT/'tests/ui') or script==ROOT/'scripts/browser-acceptance.mjs')
             options=value.get('env',{});assert isinstance(options,dict) and set(options)<= {'BROWSER_PHASE','BROWSER_RUN_ID'}
+            feature_phase=public_feature_command(phase,options,script,timeout,self.public_upload_controls)
             if options.get('BROWSER_PHASE')==PUBLIC_UPLOAD_PHASE:assert self.public_upload_controls and script==ROOT/'scripts/browser-acceptance.mjs'
             signed_control_phase=script==ROOT/'scripts/browser-acceptance.mjs'and options.get('BROWSER_PHASE')in SIGNED_PHASES|{PUBLIC_UPLOAD_PHASE}
-            assert isinstance(timeout,int) and 15<=timeout<=(600 if signed_control_phase else 300)
+            assert isinstance(timeout,int) and 15<=timeout<=(180 if feature_phase else 600 if signed_control_phase else 300)
             (self.run/'browser-commands').mkdir(exist_ok=True)
             command.replace(self.run/'browser-commands'/f'{phase}.json')
             env=self.environment();env['BROWSER_FIXTURE_JSON']=str(self.run/'supervisor.json')

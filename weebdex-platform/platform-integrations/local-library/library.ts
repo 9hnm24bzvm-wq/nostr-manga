@@ -7,6 +7,7 @@ import { DeviceStore, PUBLIC_DEVICE_FORMAT_FENCE, type DeviceRecord, type Device
 import { request } from './protocol/indexeddb.js';
 import {uuidPattern} from '../public-api/validation';
 import { LocalLibrary } from './protocol/store.js';
+import type { MigrationReview } from '../public-api/device-id-migration';
 import type { DeviceListNameReview } from './device-list-name';
 export type { DeviceListNameReview } from './device-list-name';
 import { captureNativeAuthority, sameNativeReadAuthority } from '$platform/mutation-authority';
@@ -256,13 +257,42 @@ export async function authoritativeAccount(expectedId: string): Promise<CheckSes
   return current;
 }
 export async function isAccountMode() { await openLibrary(); return get(localLibraryState).mode === 'account'; }
-export type ImportReview = { snapshot: DeviceSnapshot; expectedRevision: number; source: string; collisions?: number; accountId?: string };
+export type ImportReview = { snapshot: DeviceSnapshot; expectedRevision: number; source: string; collisions?: number; accountId?: string; foreignOwner?: boolean };
+export type DeviceBackupRestoreReview = Readonly<{ mode: 'merge' | 'replace'; summary: MigrationReview['summary']; backup: MigrationReview['backup'] }>;
+const deviceBackupPreviews = new WeakMap<ImportReview, { device: DeviceStore; ownerId: string | null }>();
+const deviceBackupRestores = new WeakMap<DeviceBackupRestoreReview, { device: DeviceStore; review: MigrationReview; assertCurrent: () => void }>();
 export async function previewImport(file: File): Promise<ImportReview> {
   if (file.size > 256 * 1024 * 1024) throw Error('Backup exceeds the 256 MiB import safety limit');
   const current = await currentDeviceSnapshot();
   const snapshot = validateSnapshot(JSON.parse(await file.text()));
   const keys = new Set(current.records.map(row => row.family + ':' + row.key));
-  return { snapshot, expectedRevision: current.revision, source: file.name, collisions: snapshot.records.filter(row => keys.has(row.family + ':' + row.key)).length };
+  const result: ImportReview = { snapshot, expectedRevision: current.revision, source: file.name, collisions: snapshot.records.filter(row => keys.has(row.family + ':' + row.key)).length };
+  if (snapshot.version === 2) {
+    const { freezeLibrary } = await import('../public-api/device-id-state');
+    result.foreignOwner = current.version !== 2 || snapshot.ownerId !== current.ownerId;
+    freezeLibrary(result);
+    deviceBackupPreviews.set(result, { device, ownerId: current.version === 2 ? current.ownerId : null });
+  }
+  return result;
+}
+// Choosing a restore mode prepares a frozen exact-state review. A separate
+// confirmation commits only that review; no signer, relay or account is involved.
+export async function prepareDeviceBackupImport(review: ImportReview, mode: 'merge' | 'replace', admitForeignOwner: boolean, assertCurrent: () => void): Promise<DeviceBackupRestoreReview> {
+  const preview = deviceBackupPreviews.get(review);
+  if (!preview || preview.device !== device || review.snapshot.version !== 2) throw Error('Preview this device backup before reviewing a restore.');
+  if (!preview.ownerId) throw Error('Verify this browser’s catalogue scope, then preview the backup again.');
+  const current = () => { assertCurrent(); if (preview.device !== device) throw Error('The device library changed. Preview the backup again.'); };
+  current();
+  const prepared = await device.prepareRestore(review.snapshot, { expectedRevision: review.expectedRevision, ownerId: preview.ownerId, mode, admitForeignOwner, assertCurrent: current });
+  current();
+  const result = Object.freeze({ mode, summary: prepared.summary, backup: prepared.backup });
+  deviceBackupRestores.set(result, { device, review: prepared, assertCurrent: current }); return result;
+}
+export async function applyDeviceBackupImport(review: DeviceBackupRestoreReview, assertCurrent: () => void, watchCurrent?: (changed: () => void) => () => void) {
+  const prepared = deviceBackupRestores.get(review);
+  if (!prepared || prepared.device !== device) throw Error('Prepare and confirm a fresh device-backup restore review.');
+  deviceBackupRestores.delete(review);
+  return localAction(() => prepared.device.restore(prepared.review, () => { prepared.assertCurrent(); assertCurrent(); }, watchCurrent));
 }
 export async function applyImport(review: ImportReview, mode: 'merge' | 'replace', assertContext?: (scope: InstanceScope) => void) {
   if (review.accountId) {
