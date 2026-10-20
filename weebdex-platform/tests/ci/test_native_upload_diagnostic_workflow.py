@@ -67,7 +67,8 @@ class NativeDiagnosticWorkflow(unittest.TestCase):
         self.assertEqual(document['jobs']['native-upload-diagnostic']['timeout-minutes'], 15)
         self.assertIn("&& !(github.event_name == 'push'", document['jobs']['browser']['if'])
         self.assertTrue(document['jobs']['native-upload-diagnostic']['if'].startswith("github.event_name == 'push' &&"))
-        published = source.replace('    if: >-\n      ', '    if: ')
+        self.assertEqual(source.count('Run ten bounded direct-versus-intercepted comparisons with normal Chromium sandbox'), 1)
+        published = source.replace('    if: >-\n      ', '    if: ').replace('Run ten bounded direct-versus-intercepted comparisons with normal Chromium sandbox', 'Run eight bounded native scenarios with normal Chromium sandbox')
         self.assertEqual(hashlib.sha256(published.encode()).hexdigest(), '9a46af6a61e41b6ca8d82149648ba784c1d58add1b4da4b6550cbdf770336d8b')
         with self.assertRaises(yaml.YAMLError):
             yaml.safe_load(published)
