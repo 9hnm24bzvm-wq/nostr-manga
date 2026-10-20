@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import {pathToFileURL} from 'node:url';
-export const CASES=Object.freeze(['completed-404','delayed-body-404','owner-disposal','identity-change','same-document-history','document-replacement','body-interruption','completed-then-navigation','direct-completed-404','direct-delayed-body-404']);
+export const CASES=Object.freeze(['direct-completed-404','direct-delayed-body-404','completed-404','delayed-body-404','owner-disposal','identity-change','same-document-history','body-interruption','completed-then-navigation','document-replacement']);
 export const STAGES=Object.freeze(['checkpoint','fetch','response-header','response-media','declared-size','body-read','body-budget','decode','other']);
 export const MARKERS=Object.freeze(['controller-abort','signal-abort','reader-cancel','reader-release','body-eof','fetch-resolved','current-return','current-rejected','native-terminal-observed']);
 export const emptyObservation=()=>({state:'not-run',truncated:false,counts:Object.fromEntries(MARKERS.map(k=>[k,0])),order:[]});

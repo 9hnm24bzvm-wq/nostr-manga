@@ -6,7 +6,7 @@ This diagnostic is not the combined application suite and does not change produc
 
 The existing `Hosted browser E2E` workflow is reused. No additional workflow is introduced. Exactly the push commit message `diagnostic(native-upload): approved bounded run 20261020` selects its dedicated job and skips the combined job. Every other push and ordinary manual dispatch retains the original combined job behavior. There is no permanent paths-ignore exemption.
 
-Before any dependency installation or browser execution, the dedicated job verifies the public repository/branch/push identity, non-forced event, exact prior commit `5c3454c4b231f655350d58081dc9eb674c654fb3`, single parent, clean checkout and exact nine-file comparison changed set. An unexpected predecessor or scope fails closed; it does not fall through to the combined suite. This is a one-publication admission, not standing authority to run future diagnostics.
+Before any dependency installation or browser execution, the dedicated job verifies the public repository/branch/push identity, non-forced event, exact prior commit `76d96509fd4272ec6852fa5817ae68d42324aae7`, single parent, clean checkout and exact six-file deadline correction changed set. An unexpected predecessor or scope fails closed; it does not fall through to the combined suite. This is a one-publication admission, not standing authority to run future diagnostics.
 
 ## Bounds and evidence
 
@@ -29,3 +29,7 @@ The initial publication was rejected at YAML admission before any job ran. Both 
 The eight original intercepted scenarios remain, with two direct controls for completed and delayed-body 404 responses. All ten use isolated contexts and the same source-bound adapter, transport and strict observer. This compares native request terminal behavior without modifying production code. An ordinary case failure is retained and the overall result remains failed; subsequent cases may run only after all tasks settle and context cleanup is verified. Unsettled tasks, unverified cleanup or exhausted deadlines stop further cases. Native abort observations never become accepted upload success.
 
 The native-terminal-observed ordering mark records when the harness informs the renderer that a terminal event was observed, after awaiting the application result. It does not establish the actual native event chronology relative to application body-read or return events. Native terminal counts and outcomes remain observations; this marker alone cannot prove cancellation causality.
+
+## Shared deadline correction
+
+The same ten cases now place the two direct controls first and document replacement last. All pre-cleanup work shares one cancellable work deadline, reserving time within the 20-second case cap for cleanup. Pending polls are explicitly cancelled and awaited before detaching the strict request observer. Verified cleanup and settled work remain necessary before continuing after an ordinary failure; unresolved work stops the comparison and preserves failure. Workflow, transport, application behavior and observer acceptance criteria are unchanged.

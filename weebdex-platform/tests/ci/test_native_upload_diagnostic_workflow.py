@@ -32,7 +32,7 @@ class NativeDiagnosticWorkflow(unittest.TestCase):
         self.assertTrue(owner.preflight(self.event, self.environment, self.git))
 
     def test_unrelated_missing_and_extra_paths_refused(self):
-        for paths in [self.paths | {'production.ts'}, self.paths - {'.github/workflows/hosted-browser-e2e.yml'}, set()]:
+        for paths in [self.paths | {'production.ts'}, self.paths | {'.github/workflows/hosted-browser-e2e.yml'}, self.paths | {'weebdex-platform/tests/ci/native-diagnostic-workflow-association.mjs'}, self.paths - {'weebdex-platform/scripts/ci/native-upload-diagnostic-owner.py'}, set()]:
             with self.subTest(paths=len(paths)):
                 original = self.paths; self.paths = paths
                 with self.assertRaises(AssertionError): owner.preflight(self.event, self.environment, self.git)
