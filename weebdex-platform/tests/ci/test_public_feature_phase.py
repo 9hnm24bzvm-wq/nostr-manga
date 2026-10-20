@@ -24,6 +24,8 @@ validator = load('feature_outer_contract', 'scripts/ci/validate-ci-evidence.py')
 def accepted_report(count=6, failed=()):
     checks = [{'id': identity, 'status': 'failed' if index in failed else 'passed'}
               for index, identity in enumerate(features.CHECKS[:count])]
+    for index, row in enumerate(checks[:2]):
+        row.update(stage='open-settings' if index in failed and index == 0 else 'verify-owned-state' if index in failed else 'complete', category='check' if index in failed else 'none')
     return {'phase': features.PHASE, 'passed': count == 6 and not failed,
             'completed_utc': 'finite-finalized',
             'steps': [{'name': 'Feature ' + row['id'], 'status': row['status']} for row in checks],
@@ -199,6 +201,50 @@ class PublicFeaturePhase(unittest.TestCase):
         self.assertIn("if row['status'] != 'passed':\n                    break", source)
         self.assertEqual(runner.batch_phases('public-upload', runner.BATCHES['public-upload']),
                          [features.PHASE, runner.PUBLIC_UPLOAD_PHASE])
+
+    def test_backup_stage_category_allowlists_are_case_specific_and_status_bound(self):
+        for index, stages in enumerate(features.BACKUP_STAGES):
+            for stage in stages:
+                report = accepted_report(failed=(index,))
+                row = report['public_features']['checks'][index]
+                row.update(stage=stage, category='prerequisite' if stage == 'merge-prerequisite' else 'operation')
+                value = features.project(report)
+                self.assertTrue(value['record_valid'])
+                self.assertFalse(features.passed(value))
+                features.validate(value)
+        report = accepted_report(failed=(0, 1))
+        report['public_features']['checks'][1].update(stage='merge-prerequisite', category='prerequisite')
+        value = features.project(report)
+        self.assertEqual(value['checks'][1]['category'], 'prerequisite')
+        self.assertNotEqual(value['checks'][0]['category'], 'prerequisite')
+
+    def test_backup_diagnostics_reject_raw_values_cross_case_stages_and_false_success(self):
+        changes = [
+            lambda r: r['public_features']['checks'][0].pop('stage'),
+            lambda r: r['public_features']['checks'][0].update(stage='https://private.example/key'),
+            lambda r: r['public_features']['checks'][0].update(category='secret'),
+            lambda r: r['public_features']['checks'][0].update(stage='confirm-replacement'),
+            lambda r: r['public_features']['checks'][0].update(stage='merge-prerequisite', category='prerequisite'),
+            lambda r: r['public_features']['checks'][0].update(stage='complete', category='none'),
+            lambda r: r['public_features']['checks'][0].update(stage='initialize-device', category='none'),
+            lambda r: r['public_features']['checks'][0].update(category=True),
+            lambda r: r['public_features']['checks'][0].update(error='secret'),
+            lambda r: r['public_features']['checks'][2].update(stage='complete', category='none'),
+        ]
+        for change in changes:
+            report = accepted_report(failed=(0,))
+            change(report)
+            self.assertEqual(features.project(report), features.empty())
+        for patch in [{'stage': 'initialize-device'}, {'category': 'check'}]:
+            report = accepted_report()
+            report['public_features']['checks'][0].update(patch)
+            self.assertEqual(features.project(report), features.empty())
+        # Old status-only rows cannot silently become new diagnostic evidence.
+        report = accepted_report(failed=(0,))
+        for row in report['public_features']['checks'][:2]:
+            del row['stage']
+            del row['category']
+        self.assertEqual(features.project(report), features.empty())
 
     def test_fixture_requires_exact_opt_in_script_phase_and_180_second_cap(self):
         admit, source = command_admission()

@@ -265,7 +265,7 @@ def phases(value):
     error_fields(value)
     if 'budget_exhausted' in value:
         boolean(value['budget_exhausted'])
-    insist(type(value['phases']) is list and len(value['phases']) <= runner.MAX_PHASE_RUNS and type(value['batches']) is list and len(value['batches']) <= len(runner.BATCHES))
+    insist(type(value['phases']) is list and len(value['phases']) <= runner.MAX_PHASE_RUNS and type(value['batches']) is list and len(value['batches']) <= runner.MAX_BATCH_RUNS)
     for row in value['phases']:
         fields(row, {'batch', 'phase', 'status', 'actual_steps', 'failed_steps', 'page_error_count', 'harness_error_observed', 'runner_report_present', 'owned_runner_terminal', 'runner_exit_zero', 'evidence_scope', 'runner_diagnostics'}, {'startup_diagnostics', 'journey_diagnostics', 'public_upload_diagnostics', 'public_feature_diagnostics'})
         insist(row['batch'] in ['startup', *runner.BATCHES] and row['phase'] in runner.ALL_PHASES and row['status'] in ['passed', 'failed'] and row['evidence_scope'] == SCOPE)

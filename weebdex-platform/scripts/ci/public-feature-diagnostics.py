@@ -10,6 +10,43 @@ CHECKS = (
     'chapter-edit-entry-signed',
 )
 
+BACKUP_STAGES = (
+    frozenset(('preconditions', 'open-settings', 'initialize-device', 'resolve-fixture',
+               'seed-device', 'verify-seed', 'reload-seed', 'export-backup', 'preview-merge',
+               'review-merge', 'verify-review-unchanged', 'download-pre-restore',
+               'confirm-merge', 'verify-merge', 'reload-merge', 'unavailable')),
+    frozenset(('preconditions', 'merge-prerequisite', 'verify-owned-state',
+               'preview-replacement', 'acknowledge-foreign', 'review-replacement',
+               'verify-review-unchanged', 'download-pre-restore', 'cancel-replacement',
+               'verify-cancel', 'reload-cancel', 'preview-replacement-again',
+               'acknowledge-foreign-again', 'review-replacement-again',
+               'confirm-replacement', 'verify-replacement', 'reload-replacement',
+               'export-replacement', 'unavailable')),
+)
+BACKUP_CATEGORIES = frozenset(('check', 'timeout', 'operation', 'prerequisite'))
+
+
+def check_row(row, index):
+    required = {'id', 'status'} | ({'stage', 'category'} if index < 2 else set())
+    if (type(row) is not dict or set(row) != required or
+            type(row['id']) is not str or row['id'] != CHECKS[index] or
+            type(row['status']) is not str or row['status'] not in {'passed', 'failed'}):
+        return False
+    if index >= 2:
+        return True
+    stage, category = row['stage'], row['category']
+    if type(stage) is not str or type(category) is not str:
+        return False
+    if row['status'] == 'passed':
+        return stage == 'complete' and category == 'none'
+    if stage not in BACKUP_STAGES[index] or category not in BACKUP_CATEGORIES:
+        return False
+    # A missing successful merge is a precise dependency refusal, not a second
+    # independently exercised replacement defect. No other case can claim it.
+    if stage == 'merge-prerequisite' or category == 'prerequisite':
+        return index == 1 and stage == 'merge-prerequisite' and category == 'prerequisite'
+    return True
+
 
 def empty():
     return {'schema': 1, 'record_valid': False, 'completed': False,
@@ -19,10 +56,7 @@ def empty():
 
 def check_rows(rows):
     return (type(rows) is list and len(rows) <= len(CHECKS) and
-            all(type(row) is dict and set(row) == {'id', 'status'} and
-                type(row['id']) is str and row['id'] == CHECKS[index] and
-                type(row['status']) is str and row['status'] in {'passed', 'failed'}
-                for index, row in enumerate(rows)))
+            all(check_row(row, index) for index, row in enumerate(rows)))
 
 
 def project(acceptance):
@@ -52,7 +86,7 @@ def project(acceptance):
         return invalid
     return {'schema': 1, 'record_valid': True, 'completed': raw['completed'],
             'actual_context_closed': raw['actual_context_closed'],
-            'checks': [{'id': row['id'], 'status': row['status']} for row in raw['checks']],
+            'checks': [dict(row) for row in raw['checks']],
             'private_values_omitted': True, 'raw_messages_exported': False}
 
 

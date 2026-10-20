@@ -43,6 +43,7 @@ BATCHES = {
 }
 ALL_PHASES = ['startup', *dict.fromkeys(phase for phases in BATCHES.values() for phase in phases)]
 assert len(ALL_PHASES) == 41
+MAX_BATCH_RUNS = len(BATCHES) + 1  # The public feature/upload pair uses separate fixtures.
 MAX_PHASE_RUNS = sum(len(phases) + (name != 'public-upload') for name, phases in BATCHES.items())
 STOP = False
 
@@ -328,9 +329,50 @@ def finish_supervisor(owner, process, fixture, batch, seconds=600):
         batch['cleanup']['verified_stopped'] = False
 
 
-def run_batch(name, phases, plan, journal, run_id):
+def fixture_schedule(name, phases):
+    """Only the two exact public phases split; no generic failure bypass."""
+    if name == 'public-upload':
+        if list(phases) != [PUBLIC_FEATURE_PHASE, PUBLIC_UPLOAD_PHASE]:
+            raise RuntimeError('Unexpected public feature/upload schedule')
+        return [('public-upload-features', [PUBLIC_FEATURE_PHASE], 150, 300),
+                ('public-upload-journey', [PUBLIC_UPLOAD_PHASE], 150, 300)]
+    return [(name, list(phases), 300, 600)]
+
+
+def fixture_reserve(name, phases, readiness_seconds, cleanup_seconds):
+    return sum(maximum(phase) + 35 for phase in batch_phases(name, phases)) + readiness_seconds + cleanup_seconds
+
+
+def safe_next_fixture(batch):
+    """Nonzero case verdict is allowed; forced/uncertain physical cleanup is not."""
+    cleanup, outer = batch.get('cleanup', {}), batch.get('outer_cleanup', {})
+    return (batch.get('supervisor_terminal') is True and
+            cleanup.get('verified_stopped') is True and
+            cleanup.get('final_teardown_clean') is True and
+            cleanup.get('ports_closed') is True and cleanup.get('keys_removed') is True and
+            cleanup.get('remaining_owned_process_count') == 0 and
+            outer.get('verified_stopped') is True and outer.get('forced') is False and
+            outer.get('remaining_owned_process_count') == 0 and
+            'cleanup_error_class' not in batch)
+
+
+def run_batch(name, phases, plan, journal, run_id, *, fixture_slot=None):
+    slot_name, readiness_seconds, cleanup_seconds = name, 300, 600
+    if fixture_slot is not None:
+        slots = fixture_schedule(name, BATCHES.get(name, []))
+        matches = [row for row in slots if row[0] == fixture_slot and row[1] == list(phases)]
+        if name != 'public-upload' or len(matches) != 1:
+            raise RuntimeError('Unexpected independent fixture slot')
+        slot_name, _, readiness_seconds, cleanup_seconds = matches[0]
+    fixture_deadline = time.monotonic() + fixture_reserve(name, phases, readiness_seconds, cleanup_seconds)
     if name == 'public-upload':
         plan = public_upload_profile(plan)  # Fail before allocating an owner.
+    first_phase = len(journal['phases'])
+    def remaining(limit):
+        seconds = min(limit, fixture_deadline - time.monotonic())
+        if seconds <= 0:
+            raise TimeoutError('Independent fixture deadline exhausted')
+        return seconds
     spec = importlib.util.spec_from_file_location('outer_fixture_cleanup', ROOT / 'scripts/ci/owned-fixture-cleanup.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -341,7 +383,7 @@ def run_batch(name, phases, plan, journal, run_id):
     fixture = None
     process = None
     batch = {'batch': name, 'readiness': False, 'cleanup': {'verified_stopped': False}}
-    log = STAGE / ('fixture-' + name + '.log')
+    log = STAGE / ('fixture-' + slot_name + '.log')
     argv = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--ui-dir', plan.get('ui_dir', str(ROOT / 'artifacts/frontend')), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls', '--lifetime-seconds', '3600']
     if name == 'public-upload':
         argv.append('--public-upload-controls')
@@ -350,7 +392,7 @@ def run_batch(name, phases, plan, journal, run_id):
     env = {key: value for key, value in os.environ.items() if key in allowed}
     with log.open('x') as output:
         try:
-            prepare_browser_temp(owner, name)
+            prepare_browser_temp(owner, slot_name)
             # The fixture forwards this allowlisted override to Node/Chromium.
             # No caller-supplied TMPDIR/TMP/TEMP can select the browser root.
             env['TMPDIR'] = str(owner.browser_temp.path)
@@ -380,25 +422,25 @@ def run_batch(name, phases, plan, journal, run_id):
                             return state
                 return None
 
-            state = wait_for(process, ready, 300, owner)
+            state = wait_for(process, ready, remaining(readiness_seconds), owner)
             if name == 'public-upload':
                 verify_public_upload_ready(state, fixture, plan)
             batch['readiness'] = True
             for phase in batch_phases(name, phases):
-                acceptance_path = ROOT / 'test-evidence/frontend/browser' / (phase + '-' + run_id + '-' + name) / 'acceptance.json'
+                acceptance_path = ROOT / 'test-evidence/frontend/browser' / (phase + '-' + run_id + '-' + slot_name) / 'acceptance.json'
                 if acceptance_path.parent.exists():
                     raise RuntimeError('Refusing prior phase evidence')
                 command = fixture / 'browser-command.json'
                 if command.exists() or (fixture / 'browser-command.rejected.json').exists():
                     raise RuntimeError('Uncertain prior queue state')
-                payload = {'phase': phase, 'argv': [plan['node'], str(ROOT / 'scripts/browser-acceptance.mjs')], 'timeout_seconds': maximum(phase), 'env': {'BROWSER_PHASE': phase, 'BROWSER_RUN_ID': run_id + '-' + name}}
+                payload = {'phase': phase, 'argv': [plan['node'], str(ROOT / 'scripts/browser-acceptance.mjs')], 'timeout_seconds': maximum(phase), 'env': {'BROWSER_PHASE': phase, 'BROWSER_RUN_ID': run_id + '-' + slot_name}}
                 write(command, payload)
                 terminal = fixture / ('browser-phase-' + phase + '.json')
                 def completed():
                     if (fixture / 'browser-command.rejected.json').exists():
                         raise RuntimeError('Owned browser command rejected')
                     return read(terminal) if terminal.is_file() else None
-                owned = wait_for(process, completed, maximum(phase) + 35, owner)
+                owned = wait_for(process, completed, remaining(maximum(phase) + 35), owner)
                 acceptance = read(acceptance_path) if acceptance_path.is_file() else {}
                 row = project_phase(phase, name, acceptance, owned)
                 journal['phases'].append(row)
@@ -409,19 +451,26 @@ def run_batch(name, phases, plan, journal, run_id):
         except Exception as error:
             batch['error_class'] = 'RuntimeError' if isinstance(error, browser_temp.Refused) else type(error).__name__
         finally:
-            # Use the existing 600-second teardown envelope; temp cleanup gets
-            # at most five seconds of the remaining reserve, never a new one.
-            cleanup_deadline = time.monotonic() + 600
+            # Each split public fixture owns half the old 600-second envelope.
+            # Reserve 20 seconds inside it for the existing <=10-second fallback,
+            # five-second temp cleanup and bounded observation overhead.
+            cleanup_deadline = min(fixture_deadline, time.monotonic() + cleanup_seconds)
             try:
                 if process:
-                    finish_supervisor(owner, process, fixture, batch)
+                    if fixture_slot is None:
+                        finish_supervisor(owner, process, fixture, batch)
+                    else:
+                        finish_supervisor(owner, process, fixture, batch, seconds=max(0, cleanup_deadline - time.monotonic() - 20))
             finally:
                 finish_browser_temp(owner, process, batch,
                     min(cleanup_deadline, time.monotonic() + BROWSER_TMP_CLEANUP_SECONDS))
+                if time.monotonic() > cleanup_deadline:
+                    batch['cleanup_error_class'] = 'TimeoutError'
+                    batch['cleanup']['verified_stopped'] = False
     if any(row['batch'] == name and row['phase'] == 'ui14-home-failures' and row['status'] == 'passed' for row in journal['phases']) and not batch['cleanup'].get('pg_fault_terminal_clean'):
         batch['cleanup']['verified_stopped'] = False
     journal['batches'].append(batch)
-    runs = [row for row in journal['phases'] if row['batch'] == name]
+    runs = journal['phases'][first_phase:]
     batch['passed'] = batch.get('readiness') is True and batch.get('supervisor_terminal') is True and batch.get('supervisor_exit_zero') is True and batch['cleanup'].get('verified_stopped') is True and batch['cleanup'].get('lifecycle_clean') is True and batch.get('outer_cleanup', {}).get('verified_stopped') is True and batch.get('outer_cleanup', {}).get('forced') is False and len(runs) == len(batch_phases(name, phases)) and all(row['status'] == 'passed' for row in runs) and 'error_class' not in batch and 'cleanup_error_class' not in batch
     write(PUBLIC / 'phases.json', journal)
     return batch
@@ -434,6 +483,32 @@ def summarize(journal, selection, requested):
     lifecycles_clean = clean and all(row.get('supervisor_exit_zero') is True and row['cleanup'].get('lifecycle_clean') is True and row.get('passed') is True for row in journal['batches'])
     target_passed = set(requested) <= passed and not failed and lifecycles_clean and not journal.get('error_class')
     return {'schema': 1, 'selection': selection, 'selected_scope_passed': target_passed, 'full_suite_passed': selection == 'all' and target_passed and set(ALL_PHASES) <= passed, 'required_unique_phases': len(ALL_PHASES), 'passed_unique_phases': sorted(passed - failed), 'failed_unique_phases': sorted(failed), 'pending_unique_phases': sorted(set(ALL_PHASES) - passed - failed), 'actual_phase_runs': len(journal['phases']), 'all_fixture_teardowns_verified': clean, 'all_fixture_lifecycles_clean': lifecycles_clean, 'budget_exhausted': journal.get('budget_exhausted', False), 'interrupted': STOP, 'screenshots_or_raw_logs_uploaded': False, 'private_runtime_artifacts_uploaded': False, 'pixel_parity_established': False}
+
+
+def run_scheduled_batches(batches, plan, journal, run_id, deadline, selection):
+    for name, phases in batches.items():
+        slots = fixture_schedule(name, phases)
+        reserve = sum(fixture_reserve(name, subset, ready, cleanup)
+                      for _, subset, ready, cleanup in slots)
+        if STOP or time.monotonic() + reserve > deadline:
+            journal['budget_exhausted'] = not STOP
+            return
+        # The pair gets the same 1,750-second total admission as before, not a
+        # fresh per-fixture budget. All execution/cleanup elapsed time counts.
+        slot_deadline = min(deadline, time.monotonic() + reserve)
+        for index, (slot, subset, ready, cleanup) in enumerate(slots):
+            remaining = sum(fixture_reserve(name, later, r, c)
+                            for _, later, r, c in slots[index:])
+            if STOP or (index > 0 and time.monotonic() + remaining > slot_deadline):
+                journal['budget_exhausted'] = not STOP
+                return
+            kwargs = {'fixture_slot': slot} if name == 'public-upload' else {}
+            batch = run_batch(name, subset, plan, journal, run_id, **kwargs)
+            # Separate fresh fixtures retain independence without trusting any
+            # failed phase's database, keys, browser context or process tree.
+            if not safe_next_fixture(batch):
+                return
+            write(PUBLIC / 'summary.json', summarize(journal, selection, requested_phases(batches)))
 
 
 def main():
@@ -478,19 +553,7 @@ def main():
         run_id = 'gh-' + os.environ.get('GITHUB_RUN_ID', '') + '-' + os.environ.get('GITHUB_RUN_ATTEMPT', '')
         if not re.fullmatch(r'gh-[0-9]{1,20}-[0-9]{1,5}', run_id):
             raise RuntimeError('A current safe GitHub run identity is required')
-        for name, phases in batches.items():
-            # A complete worst-case phase allowance, startup, readiness and
-            # terminal cleanup reserve must fit before starting a fresh fixture.
-            reserve = sum(maximum(phase) + 35 for phase in batch_phases(name, phases)) + 300 + 600
-            if STOP or time.monotonic() + reserve > deadline:
-                journal['budget_exhausted'] = not STOP
-                break
-            batch = run_batch(name, phases, plan, journal, run_id)
-            # Physical teardown allows independent fresh diagnosis after a
-            # failed phase. It cannot establish a passing batch or suite.
-            if batch.get('supervisor_terminal') is not True or batch['cleanup']['verified_stopped'] is not True:
-                break  # Unresolved cleanup blocks every later fixture.
-            write(PUBLIC / 'summary.json', summarize(journal, args.batch, requested))
+        run_scheduled_batches(batches, plan, journal, run_id, deadline, args.batch)
     except Exception as error:
         journal['error_class'] = type(error).__name__
     write(PUBLIC / 'phases.json', journal)

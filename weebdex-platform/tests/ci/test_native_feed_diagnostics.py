@@ -226,7 +226,12 @@ class NativeFeedDiagnostics(unittest.TestCase):
         self.assertIn('stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL', source)
         runner = (ROOT / 'scripts/ci/run-hosted-browser.py').read_text()
         main = runner[runner.index('def main():'):]
-        self.assertLess(main.index('native_feed.validate'), main.index('batch = run_batch('))
+        self.assertLess(main.index('native_feed.validate'), main.index('run_scheduled_batches('))
+        self.assertEqual(main.count('run_scheduled_batches('), 1)
+        self.assertNotIn('run_batch(', main)
+        scheduler = runner[runner.index('def run_scheduled_batches('):runner.index('def main():')]
+        self.assertEqual(scheduler.count('batch = run_batch('), 1)
+        self.assertLess(scheduler.index('fixture_schedule('), scheduler.index('batch = run_batch('))
         self.assertIn("prepared['native_feed_regression']['status'] != 'passed'", main)
         prep = (ROOT / 'scripts/ci/prepare-hosted-browser.py').read_text()
         self.assertIn("'backend/tests'", prep)

@@ -14,7 +14,7 @@ async function fixture({ fail = [], changedId, prior = [], terminal = true, extr
   const module = new vm.SourceTextModule(source, {context,identifier:file.href});
   const parts = {
     'node:assert/strict': {default:assert},
-    './public-backup-feature-browser.mjs': {publicBackupFeatureCases:rows.slice(0,2)},
+    './public-backup-feature-browser.mjs': {publicBackupFeatureCases:rows.slice(0,2),backupFailureDiagnostic:()=>({stage:'unavailable',category:'operation'})},
     './public-search-feature-browser.mjs': {publicSearchFeatureCases:rows.slice(2,5)},
     './public-chapter-feature-browser.mjs': {publicChapterFeatureCases:rows.slice(5)},
   };
@@ -31,7 +31,7 @@ async function fixture({ fail = [], changedId, prior = [], terminal = true, extr
 }
 test('all six fixed feature cases execute in backup-first order with terminal public facts only',async()=>{
   const f=await fixture();await f.run();assert.deepEqual(f.calls,ids);assert.equal(f.report.public_features.completed,true);
-  assert.deepEqual(JSON.parse(JSON.stringify(f.report.public_features.checks)),ids.map(id=>({id,status:'passed'})));
+  assert.deepEqual(JSON.parse(JSON.stringify(f.report.public_features.checks)),ids.map((id,index)=>({id,status:'passed',...(index<2?{stage:'complete',category:'none'}:{})})));
   assert.equal(f.report.public_features.actual_context_closed,false);assert.equal(f.saves,8);
   assert(!JSON.stringify(f.report.public_features).includes('observation'));
 });
@@ -85,7 +85,18 @@ for(const fail of [[],[0,5]])test('actual dispatcher to actual closed Python pro
   const program="import importlib.util,json,sys; s=importlib.util.spec_from_file_location('features',sys.argv[1]); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); v=m.project(json.load(sys.stdin)); m.validate(v); print(json.dumps({'value':v,'passed':m.passed(v)}))";
   const raw=execFileSync('python3',['-B','-c',program,helper],{input:JSON.stringify(f.report),encoding:'utf8',timeout:5000,maxBuffer:65536,env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});
   const value=JSON.parse(raw);assert.equal(value.passed,fail.length===0);assert.equal(value.value.record_valid,true);
-  assert.deepEqual(value.value.checks,ids.map((id,index)=>({id,status:fail.includes(index)?'failed':'passed'})));
+  assert.deepEqual(value.value.checks,ids.map((id,index)=>({id,status:fail.includes(index)?'failed':'passed',...(index<2?{stage:fail.includes(index)?'unavailable':'complete',category:fail.includes(index)?'operation':'none'}:{})})));
   assert.equal(value.value.completed,true);assert.equal(value.value.raw_messages_exported,false);
   assert(!raw.includes('private fixture'));
+});
+
+test('a tampered terminal status cannot promote a caught backup failure',async()=>{
+ const f=await fixture({fail:[0]});const original=f.input.step;f.input.step=async(name,action)=>{await original(name,action);f.report.steps.at(-1).status='passed';};
+ await assert.rejects(f.run,/Backup outcome must match its owned diagnostic/);
+ assert.equal(f.report.public_features.checks.length,0);assert.equal(f.report.public_features.completed,false);
+});
+test('a tampered failure status cannot fabricate a failure stage for a successful backup',async()=>{
+ const f=await fixture();const original=f.input.step;f.input.step=async(name,action)=>{await original(name,action);f.report.steps.at(-1).status='failed';};
+ await assert.rejects(f.run,/Backup outcome must match its owned diagnostic/);
+ assert.equal(f.report.public_features.checks.length,0);assert.equal(f.report.public_features.completed,false);
 });

@@ -100,3 +100,40 @@ function journeyDriver(initial=empty()){
 test('both actual exported cases complete in order under the finite driver and return only their fixed proof booleans',async()=>{const driver=journeyDriver();const results=[];for(const entry of api.publicBackupFeatureCases)results.push(await entry.run(driver.h));assert.ok(results.every(row=>Object.values(row).every(value=>value===true)));assert.deepEqual(driver.counts(),{downloaded:4,confirmations:2,cancels:1});const final=driver.snapshot();assert.equal(final.count,1);assert.equal(final.revision,3);assert.equal(final.archives.length,6);assert.equal(final.ownerId,owner);assert.equal(driver.log.filter(value=>value==='Review backup replacement').length,2);});
 test('actual first case refuses a nonempty fixture database without seed or confirmation',async()=>{const initial={...empty(),records:[structuredClone(api.seedRows(ids)[0])],count:1},driver=journeyDriver(initial);await assert.rejects(()=>api.publicBackupFeatureCases[0].run(driver.h),/backup_fresh_device_required/);assert.deepEqual(driver.snapshot(),initial);assert.equal(driver.counts().confirmations,0);assert.equal(driver.log.length,0);});
 test('actual second case cannot run without a successful first case in that same page',async()=>{const driver=journeyDriver();await assert.rejects(()=>api.publicBackupFeatureCases[1].run(driver.h),/backup_merge_prerequisite/);assert.deepEqual(driver.snapshot(),empty());assert.equal(driver.counts().confirmations,0);});
+
+test('actual first backup failure reports its owned initialization stage and fixed check category',async()=>{
+ const initial={...empty(),records:[structuredClone(api.seedRows(ids)[0])],count:1},driver=journeyDriver(initial);
+ let original;try{await api.publicBackupFeatureCases[0].run(driver.h);}catch(error){original=error;}
+ assert.match(original.message,/backup_fresh_device_required/);
+ assert.deepEqual(structuredClone(api.backupFailureDiagnostic(original)),{stage:'initialize-device',category:'check'});
+ assert.deepEqual(driver.snapshot(),initial);assert.equal(driver.counts().confirmations,0);
+});
+test('dependent replacement refusal has a distinct prerequisite diagnostic without reads or mutations',async()=>{
+ const driver=journeyDriver();let original;try{await api.publicBackupFeatureCases[1].run(driver.h);}catch(error){original=error;}
+ assert.deepEqual(structuredClone(api.backupFailureDiagnostic(original)),{stage:'merge-prerequisite',category:'prerequisite'});
+ assert.equal(driver.counts().confirmations,0);assert.deepEqual(driver.snapshot(),empty());
+});
+test('actual opening operation preserves original failure and never reads exception text or getters',async()=>{
+ for(const error of [Object.defineProperty(new Error('secret URL and private value'), 'name',{get(){throw Error('must not inspect getter');}}),new Proxy({}, {get(){throw Error('must not inspect properties');},getOwnPropertyDescriptor(){throw Error('hostile descriptor');}})]){
+  const driver=journeyDriver();driver.h.page.goto=async()=>{throw error;};let caught;
+  try{await api.publicBackupFeatureCases[0].run(driver.h);}catch(value){caught=value;}
+  assert.equal(caught,error);const diagnostic=api.backupFailureDiagnostic(error);
+  assert.deepEqual(structuredClone(diagnostic),{stage:'open-settings',category:'operation'});
+  assert.equal(JSON.stringify(diagnostic).includes('secret'),false);
+ }
+});
+test('timeout classification uses only a fixed own data property and unknown primitives fail closed',async()=>{
+ const driver=journeyDriver(),error=Object.defineProperty(new Error('not exported'),'name',{value:'TimeoutError'});
+ driver.h.page.goto=async()=>{throw error;};await assert.rejects(()=>api.publicBackupFeatureCases[0].run(driver.h));
+ assert.deepEqual(structuredClone(api.backupFailureDiagnostic(error)),{stage:'open-settings',category:'timeout'});
+ for(const raw of [null,undefined,'private string',42,Symbol('private')])assert.deepEqual(structuredClone(api.backupFailureDiagnostic(raw)),{stage:'unavailable',category:'operation'});
+});
+test('actual merge traversal retains the precise preview/review/confirmation boundary on failure',async()=>{
+ for(const [method,event,expected] of [['setInputFiles',null,'preview-merge'],['click','Review backup merge','review-merge'],['click','Confirm reviewed merge','confirm-merge']]){
+  const driver=journeyDriver(),failure=Error('private failure details'),wrap=locator=>new Proxy(locator,{get(target,key){const value=target[key];if(['getByRole','getByLabel','getByText'].includes(key))return (...args)=>{const child=value(...args);const name=key==='getByRole'?args[1]?.name:args[0];return wrap(new Proxy(child,{get(inner,property){if(property===method&&(!event||name===event))return async()=>{throw failure;};return inner[property];}}));};return value;}});
+  const panel=driver.h.page.locator,role=driver.h.page.getByRole;driver.h.page.locator=(...args)=>wrap(panel(...args));driver.h.page.getByRole=(...args)=>wrap(role(...args));
+  let caught;try{await api.publicBackupFeatureCases[0].run(driver.h);}catch(error){caught=error;}
+  assert.equal(caught,failure);assert.deepEqual(structuredClone(api.backupFailureDiagnostic(caught)),{stage:expected,category:'operation'});
+  assert.equal(driver.counts().confirmations,0);
+ }
+});
