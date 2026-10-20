@@ -136,7 +136,7 @@ jobs:
             echo 'Dedicated browser preparation failed.'
             exit 1
           fi
-      - name: Run ten bounded direct-versus-intercepted comparisons with normal Chromium sandbox
+      - name: Run six bounded adapter-versus-fetch comparisons with normal Chromium sandbox
         id: diagnostic
         timeout-minutes: 5
         run: python3 -B weebdex-platform/scripts/ci/native-upload-diagnostic-owner.py run

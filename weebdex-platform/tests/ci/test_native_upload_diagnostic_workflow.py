@@ -32,7 +32,7 @@ class NativeDiagnosticWorkflow(unittest.TestCase):
         self.assertTrue(owner.preflight(self.event, self.environment, self.git))
 
     def test_unrelated_missing_and_extra_paths_refused(self):
-        for paths in [self.paths | {'production.ts'}, self.paths | {'.github/workflows/hosted-browser-e2e.yml'}, self.paths | {'weebdex-platform/tests/ci/native-diagnostic-workflow-association.mjs'}, self.paths - {'weebdex-platform/scripts/ci/native-upload-diagnostic-owner.py'}, set()]:
+        for paths in [self.paths | {'production.ts'}, self.paths | {'unapproved-workflow.yml'}, self.paths - {'weebdex-platform/scripts/ci/native-upload-diagnostic-owner.py'}, set()]:
             with self.subTest(paths=len(paths)):
                 original = self.paths; self.paths = paths
                 with self.assertRaises(AssertionError): owner.preflight(self.event, self.environment, self.git)
@@ -67,8 +67,8 @@ class NativeDiagnosticWorkflow(unittest.TestCase):
         self.assertEqual(document['jobs']['native-upload-diagnostic']['timeout-minutes'], 15)
         self.assertIn("&& !(github.event_name == 'push'", document['jobs']['browser']['if'])
         self.assertTrue(document['jobs']['native-upload-diagnostic']['if'].startswith("github.event_name == 'push' &&"))
-        self.assertEqual(source.count('Run ten bounded direct-versus-intercepted comparisons with normal Chromium sandbox'), 1)
-        published = source.replace('    if: >-\n      ', '    if: ').replace('Run ten bounded direct-versus-intercepted comparisons with normal Chromium sandbox', 'Run eight bounded native scenarios with normal Chromium sandbox')
+        self.assertEqual(source.count('Run six bounded adapter-versus-fetch comparisons with normal Chromium sandbox'), 1)
+        published = source.replace('    if: >-\n      ', '    if: ').replace('Run six bounded adapter-versus-fetch comparisons with normal Chromium sandbox', 'Run eight bounded native scenarios with normal Chromium sandbox')
         self.assertEqual(hashlib.sha256(published.encode()).hexdigest(), '9a46af6a61e41b6ca8d82149648ba784c1d58add1b4da4b6550cbdf770336d8b')
         with self.assertRaises(yaml.YAMLError):
             yaml.safe_load(published)

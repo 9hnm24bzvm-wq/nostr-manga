@@ -23,5 +23,21 @@ export function installLifecycleObservation(realm=globalThis){
 const observation=installLifecycleObservation();
 const api=createPublicUploadAdapter({capabilities:async()=>({available:true,schema_ready:true,origin:location.origin,service_key:SERVICE,catalog_namespace:NAMESPACE,connect_origins:[],external_signer_required:true,account_admission_required:true}),publicOrigin:()=>location.origin,proveService:async()=>({origin:location.origin,serviceKey:SERVICE}),selectedSigner:()=>{const captured=generation;return {owner:ACTOR,generation:captured,signer:{signEvent:fail},check:()=>{if(captured!==generation)throw Error('Synthetic identity changed');}};},createRequest:config=>createNostrUploadRequest(config,{signExact:sign,hash:fail,b64:bytes=>btoa(String.fromCharCode(...bytes)),fetch:(url,options)=>{if(new URL(url).origin!==location.origin||options.method!=='GET')throw Error('Synthetic read boundary');return new URL(url).pathname==='/api/v1/upload'?observation.fetch(fetch,url,options):fetch(url,options);},nonce:()=>crypto.randomUUID()}),catalogueRead:fail,multipart:fail,digest:fail,decodeImage:fail,destroy:callback=>destroys.push(callback),newAttempt:fail,fences:storage,replacementFences:storage,replacementLock:fail,replacementMultipart:fail});
 const ledger=()=>{const value=readUploadRequestRefusals();return {state:value.enabled&&value.record_valid&&!value.truncated?'available':'unavailable',count:value.records.length,stages:value.records.map(r=>r.stage)};};
-window.diagnostic={ready:false,ledger,observation:()=>observation.snapshot(),nativeObserved:()=>observation.mark('native-terminal-observed'),get application(){return application;},dispose(){owner.dispose();},identity(){generation++;},history(){history.pushState({},'', '/history-one');history.pushState({},'', '/history-two');history.back();},start(){void api.currentUpload(owner).then(value=>{observation.mark('current-return');application=value===undefined?'missing':'rejected';},()=>{observation.mark('current-rejected');application='rejected';});}};
+// Test-owned strong references remain live through native terminal and context close.
+const retained=[];
+export async function consumeBareResponse(response,mode,retain){
+ retain.response=response;let text;
+ if(mode==='bare-reader-release'||mode==='bare-reader-retained'){
+  const reader=response.body.getReader();retain.reader=reader;const chunks=[];let size=0;
+  for(;;){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>4096)throw Error('Synthetic body budget');chunks.push(part.value);}
+  const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+  text=new TextDecoder().decode(bytes);if(mode==='bare-reader-release')reader.releaseLock();
+ }else if(mode==='bare-text')text=await response.text();
+ else if(mode==='bare-array-buffer')text=new TextDecoder().decode(await response.arrayBuffer());
+ else throw Error('Unknown synthetic consumer');
+ if(response.status!==404||response.headers.get('content-type')!=='application/json'||new TextEncoder().encode(text).byteLength!==18||text!=='{"result":"error"}')throw Error('Unexpected synthetic response');
+ return undefined;
+}
+async function bareCurrent(mode){const url=location.origin+'/api/v1/upload?expectedAccountId='+USER;const event=await sign(null,ACTOR,{kind:27235,created_at:Math.floor(Date.now()/1000),content:'',tags:[['u',url],['method','GET'],['service',SERVICE],['nonce',crypto.randomUUID()]]});const controller=new AbortController(),keep={controller};retained.push(keep);const response=await observation.fetch(fetch,url,{method:'GET',headers:{authorization:'Nostr '+btoa(JSON.stringify(event)),accept:'application/json'},credentials:'omit',redirect:'error',cache:'no-store',signal:controller.signal});return consumeBareResponse(response,mode,keep);}
+window.diagnostic={ready:false,ledger,observation:()=>observation.snapshot(),nativeObserved:()=>observation.mark('native-terminal-observed'),get application(){return application;},start(mode='adapter-completed-404'){application='pending';void (mode.startsWith('adapter-')?api.currentUpload(owner):bareCurrent(mode)).then(value=>{observation.mark('current-return');application=value===undefined?'missing':'rejected';},()=>{observation.mark('current-rejected');application='rejected';});}};
 const account=await api.loadUploadAccount();owner=api.publicUploadOwner(()=>MANGA,account);window.diagnostic.ready=true;
