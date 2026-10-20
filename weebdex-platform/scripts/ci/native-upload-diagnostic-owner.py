@@ -14,23 +14,13 @@ import time
 
 ROOT = Path(__file__).resolve().parents[3]
 MARKER = 'diagnostic(native-upload): approved bounded run 20261020'
-PARENT = '7ee9ede26b45b16ef3b7b47220b30e924a7dbec9'
+PARENT = '6c431c10676bdc64c5cfe09c41c92af681fafc93'
 ALLOWED = frozenset({
     '.github/workflows/hosted-browser-e2e.yml',
-    'weebdex-platform/tests/ci/native-diagnostic-workflow-association.mjs',
-    'weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs',
-    'weebdex-platform/tests/ci/test_current_application_ci_profile.mjs',
-    'weebdex-platform/tests/ci/test_sandbox_preflight.mjs',
-    'weebdex-platform/tests/ci/test_qa_preparation_failure_capture.py',
-    'weebdex-platform/docs/verification/current-upload-lifecycle-controls.md',
-    'weebdex-platform/tests/ci/test_current_upload_lifecycle.mjs',
-    'weebdex-platform/docs/verification/native-upload-diagnostic.md',
     'weebdex-platform/scripts/ci/native-upload-diagnostic-owner.py',
-    'weebdex-platform/scripts/ci/native-upload-diagnostic-report.mjs',
-    'weebdex-platform/scripts/ci/native-upload-diagnostic-browser.mjs',
-    'weebdex-platform/scripts/ci/run-native-upload-diagnostic.mjs',
-    'weebdex-platform/tests/ci/test_native_upload_diagnostic.mjs',
+    'weebdex-platform/tests/ci/native-diagnostic-workflow-association.mjs',
     'weebdex-platform/tests/ci/test_native_upload_diagnostic_workflow.py',
+    'weebdex-platform/docs/verification/native-upload-diagnostic.md',
 })
 
 

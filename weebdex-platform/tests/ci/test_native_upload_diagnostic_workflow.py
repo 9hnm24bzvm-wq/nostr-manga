@@ -1,4 +1,6 @@
 import copy
+import hashlib
+import yaml
 import importlib.util
 import json
 import os
@@ -52,6 +54,23 @@ class NativeDiagnosticWorkflow(unittest.TestCase):
         with self.assertRaises(AssertionError): owner.preflight(self.event, self.environment, self.git)
         self.parent = owner.PARENT; self.dirty = ' M production.ts'
         with self.assertRaises(AssertionError): owner.preflight(self.event, self.environment, self.git)
+
+    def test_full_yaml_parse_and_exact_published_failure_counterfactual(self):
+        source = (ROOT / '.github/workflows/hosted-browser-e2e.yml').read_text()
+        document = yaml.safe_load(source)
+        self.assertEqual(set(document['jobs']), {'browser', 'native-upload-diagnostic'})
+        for job in document['jobs'].values():
+            self.assertIsInstance(job['if'], str)
+            self.assertIn(owner.MARKER, job['if'])
+            self.assertNotIn('\n', job['if'])
+        self.assertEqual(document['jobs']['browser']['timeout-minutes'], 140)
+        self.assertEqual(document['jobs']['native-upload-diagnostic']['timeout-minutes'], 15)
+        self.assertIn("&& !(github.event_name == 'push'", document['jobs']['browser']['if'])
+        self.assertTrue(document['jobs']['native-upload-diagnostic']['if'].startswith("github.event_name == 'push' &&"))
+        published = source.replace('    if: >-\n      ', '    if: ')
+        self.assertEqual(hashlib.sha256(published.encode()).hexdigest(), '9a46af6a61e41b6ca8d82149648ba784c1d58add1b4da4b6550cbdf770336d8b')
+        with self.assertRaises(yaml.YAMLError):
+            yaml.safe_load(published)
 
     def test_single_existing_workflow_mutually_exclusive_jobs(self):
         source = (ROOT / '.github/workflows/hosted-browser-e2e.yml').read_text()
