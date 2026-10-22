@@ -29,6 +29,9 @@ class NativeDiagnosticWorkflow(unittest.TestCase):
         return {'rev-parse': self.sha, 'rev-list': self.sha + ' ' + self.parent, 'diff-tree': '\n'.join(sorted(self.paths)), 'status': self.dirty}[args[0]]
 
     def test_exact_one_time_scope_admitted(self):
+        self.assertEqual(owner.PARENT, 'b9389d59c978dd1bd5f5c66163a61bd24cc7849d')
+        self.assertEqual(owner.MARKER, 'diagnostic(native-upload): approved bounded timing run 20261022')
+        self.assertEqual(len(owner.ALLOWED), 10)
         self.assertTrue(owner.preflight(self.event, self.environment, self.git))
 
     def test_unrelated_missing_and_extra_paths_refused(self):
@@ -67,8 +70,8 @@ class NativeDiagnosticWorkflow(unittest.TestCase):
         self.assertEqual(document['jobs']['native-upload-diagnostic']['timeout-minutes'], 15)
         self.assertIn("&& !(github.event_name == 'push'", document['jobs']['browser']['if'])
         self.assertTrue(document['jobs']['native-upload-diagnostic']['if'].startswith("github.event_name == 'push' &&"))
-        self.assertEqual(source.count('Run six bounded adapter-versus-fetch comparisons with normal Chromium sandbox'), 1)
-        published = source.replace('    if: >-\n      ', '    if: ').replace('Run six bounded adapter-versus-fetch comparisons with normal Chromium sandbox', 'Run eight bounded native scenarios with normal Chromium sandbox')
+        self.assertEqual(source.count('Run six bounded reader-timing comparisons with normal Chromium sandbox'), 1)
+        published = source.replace(owner.MARKER, 'diagnostic(native-upload): approved bounded run 20261020').replace('    if: >-\n      ', '    if: ').replace('Run six bounded reader-timing comparisons with normal Chromium sandbox', 'Run eight bounded native scenarios with normal Chromium sandbox')
         self.assertEqual(hashlib.sha256(published.encode()).hexdigest(), '9a46af6a61e41b6ca8d82149648ba784c1d58add1b4da4b6550cbdf770336d8b')
         with self.assertRaises(yaml.YAMLError):
             yaml.safe_load(published)

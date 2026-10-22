@@ -13,8 +13,8 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[3]
-MARKER = 'diagnostic(native-upload): approved bounded run 20261020'
-PARENT = '4294b711c3b90c9ec3c507435aabdfc59e28f0c6'
+MARKER = 'diagnostic(native-upload): approved bounded timing run 20261022'
+PARENT = 'b9389d59c978dd1bd5f5c66163a61bd24cc7849d'
 ALLOWED = frozenset({
     '.github/workflows/hosted-browser-e2e.yml',
     'weebdex-platform/tests/ci/native-diagnostic-workflow-association.mjs',
@@ -25,6 +25,7 @@ ALLOWED = frozenset({
     'weebdex-platform/scripts/ci/run-native-upload-diagnostic.mjs',
     'weebdex-platform/scripts/ci/native-upload-diagnostic-report.mjs',
     'weebdex-platform/tests/ci/test_native_upload_diagnostic.mjs',
+    'weebdex-platform/tests/ci/test_current_application_ci_profile.mjs',
 })
 
 
