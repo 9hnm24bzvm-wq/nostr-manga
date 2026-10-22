@@ -8,7 +8,7 @@ const root = new URL('../../../', import.meta.url);
 const actualWorkflow = fs.readFileSync(new URL('.github/workflows/hosted-browser-e2e.yml', root), 'utf8');
 const workflow = restoreNativeDiagnosticWorkflow(actualWorkflow);
 test('native diagnostic normalization refuses altered gate or budget', () => {
-  for (const [before, after] of [['timeout-minutes: 15', 'timeout-minutes: 16'], ['approved bounded timing run 20261022', 'approved bounded timing run 20261023']]) {
+  for (const [before, after] of [['timeout-minutes: 15', 'timeout-minutes: 16'], ['approved bounded pipe run 20261022', 'approved bounded pipe run 20261023']]) {
     assert.ok(actualWorkflow.includes(before), 'Counterfactual must change actual workflow bytes');
     assert.throws(() => restoreNativeDiagnosticWorkflow(actualWorkflow.replace(before, after)), /Unreviewed/);
   }
