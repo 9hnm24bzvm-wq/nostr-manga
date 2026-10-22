@@ -112,6 +112,9 @@ const defaults: UploadRequestPrimitives = {
 };
 const JSON_LIMIT = 32 * 1024, MULTIPART_LIMIT = 32 * 1024 * 1024;
 const JSON_RESPONSE_LIMIT = 1024 * 1024, IMAGE_LIMIT = 32 * 1024 * 1024;
+// Only the bounded native-discussion endpoint may carry existing 50k-byte
+// comments (JSON escaping can multiply their serialized size by six).
+const DISCUSSION_JSON_LIMIT = 393216, DISCUSSION_RESPONSE_LIMIT = 8 * 1024 * 1024, NATIVE_REPORT_JSON_LIMIT = 131072;
 const encoder = new TextEncoder(), decoder = new TextDecoder('utf-8', { fatal: true });
 function budget(value: number | undefined, maximum: number): number {
   if (value === undefined) return maximum;
@@ -190,8 +193,12 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       if (!['json', 'image'].includes(responseType)) throw Error('Unsupported upload response type');
       const multipart = contentType !== undefined && /^multipart\/form-data;\s*boundary=[A-Za-z0-9_-]{1,70}$/.test(contentType);
       if (contentType !== undefined && contentType !== 'application/json' && !multipart) throw Error('Upload body requires JSON or an explicit multipart boundary');
-      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : JSON_LIMIT);
-      const responseLimit = budget(input.responseLimit, responseType === 'image' ? IMAGE_LIMIT : JSON_RESPONSE_LIMIT);
+      const discussion = /^\/api\/v1\/nostr\/user\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/discussion$/.test(parsed.pathname) && ['GET','POST'].includes(method) && responseType === 'json';
+      const genericDiscussion = /^\/api\/v1\/nostr\/(?:manga|chapter|group)\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/discussion$/.test(parsed.pathname) && responseType === 'json' && (method === 'GET' || method === 'POST' && !parsed.search && contentType === 'application/json');
+      const discussionWrite = (discussion || genericDiscussion) && method === 'POST' && !parsed.search && contentType === 'application/json';
+      const nativeReportWrite = /^\/api\/v1\/nostr\/(?:user|manga|chapter|group)\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/discussion\/reports$/.test(parsed.pathname) && method === 'POST' && !parsed.search && contentType === 'application/json' && responseType === 'json';
+      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : discussionWrite ? DISCUSSION_JSON_LIMIT : nativeReportWrite ? NATIVE_REPORT_JSON_LIMIT : JSON_LIMIT);
+      const responseLimit = budget(input.responseLimit, responseType === 'image' ? IMAGE_LIMIT : discussion || genericDiscussion ? DISCUSSION_RESPONSE_LIMIT : JSON_RESPONSE_LIMIT);
       if (input.body !== undefined && !(input.body instanceof Uint8Array)) throw Error('Upload body must contain serialized bytes');
       if ((input.body?.byteLength ?? 0) > requestLimit) throw Error('Upload request body exceeds budget');
       const bytes = input.body === undefined ? new Uint8Array() : new Uint8Array(input.body);
@@ -261,7 +268,7 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       const image = responseType === 'image' && status >= 200 && status < 300;
       if (image ? !/^image\/(?:png|jpeg|webp|gif|avif)$/.test(mediaType ?? '') :
           ![204, 205].includes(status) && mediaType !== 'application/json') throw Error('Unexpected upload response content type');
-      const limit = image ? responseLimit : Math.min(responseLimit, JSON_RESPONSE_LIMIT);
+      const limit = image ? responseLimit : Math.min(responseLimit, discussion || genericDiscussion ? DISCUSSION_RESPONSE_LIMIT : JSON_RESPONSE_LIMIT);
       refusalStage = 'declared-size';
       const declaredSize = responseHeaders.get('content-length');
       if (declaredSize !== null && /^\d+$/.test(declaredSize) && Number(declaredSize) > limit) throw Error('Upload response exceeds budget');

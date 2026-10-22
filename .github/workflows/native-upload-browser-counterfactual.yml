@@ -1,0 +1,61 @@
+name: Reviewed native upload browser counterfactual
+on:
+  push:
+    branches: [ci/browser-failure-diagnostics]
+permissions:
+  contents: read
+concurrency:
+  group: native-upload-browser-counterfactual
+  cancel-in-progress: false
+jobs:
+  counterfactual:
+    if: >-
+      github.event_name == 'push' && github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && github.ref == 'refs/heads/ci/browser-failure-diagnostics' && github.event.head_commit.id == github.sha && github.event.head_commit.message == 'diagnostic(native-upload): reviewed browser counterfactual 20261022'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+      NODE_OPTIONS: --max-old-space-size=1024
+      PYTHONDONTWRITEBYTECODE: '1'
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.19.0
+      - name: Verify finite source and payload contracts
+        timeout-minutes: 1
+        run: |
+          node --experimental-vm-modules --test weebdex-platform/tests/ci/test_native_upload_counterfactual.mjs
+          python3 -B weebdex-platform/tests/ci/test_native_upload_archive.py
+      - name: Install only exact diagnostic driver without lifecycle scripts
+        timeout-minutes: 2
+        run: npm ci --prefix .ci/native-upload-counterfactual --ignore-scripts --no-audit --no-fund
+      - name: Verify official archive provenance and freeze SHA256 before extraction
+        timeout-minutes: 5
+        run: |
+          node weebdex-platform/scripts/ci/acquire-native-upload-browsers.mjs "$RUNNER_TEMP/native-upload-counterfactual"
+          python3 weebdex-platform/scripts/ci/extract-native-upload-browsers.py "$RUNNER_TEMP/native-upload-counterfactual"
+      - name: Run one sandboxed six-case comparison
+        id: comparison
+        timeout-minutes: 5
+        run: >-
+          node weebdex-platform/scripts/ci/run-native-upload-browser-counterfactual.mjs
+          --browser-root "$RUNNER_TEMP/native-upload-counterfactual"
+          --playwright-root "$GITHUB_WORKSPACE/.ci/native-upload-counterfactual"
+      - name: Independently validate the one capped report before upload
+        id: validate
+        if: always() && steps.comparison.outcome != 'skipped'
+        timeout-minutes: 1
+        run: node weebdex-platform/scripts/ci/validate-native-upload-counterfactual.mjs
+      - name: Retain only the fixed sanitized counterfactual report
+        if: always() && steps.validate.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-upload-browser-counterfactual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: weebdex-platform/ci-native-upload-counterfactual/validated-report.json
+          if-no-files-found: error
+          retention-days: 1

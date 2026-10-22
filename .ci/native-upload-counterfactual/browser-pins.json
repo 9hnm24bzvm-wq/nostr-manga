@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "review-only; no acquisition or execution performed",
+  "observedAt": "2026-10-22T14:35:00Z",
+  "driver": {
+    "version": "1.64.1",
+    "registryPins": "proposed-playwright-registry-pins.json",
+    "sameForBothBrowsers": true
+  },
+  "browsers": [
+    {
+      "role": "unfixed-control",
+      "channel": "Stable",
+      "version": "156.0.8078.47",
+      "platform": "linux64",
+      "architecture": "x86_64",
+      "kind": "full-chrome",
+      "chromiumTagCommit": "1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775",
+      "download": "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/linux64/chrome-linux64.zip",
+      "generation": "1792451271847937",
+      "size": 200206486,
+      "md5Base64": "cvpoYXzFXs9OK75pfi91hA==",
+      "crc32cBase64": "3+SPsQ==",
+      "sha256": null
+    },
+    {
+      "role": "fix-containing-candidate",
+      "channel": "Beta",
+      "version": "157.0.8103.6",
+      "platform": "linux64",
+      "architecture": "x86_64",
+      "kind": "full-chrome",
+      "chromiumTagCommit": "41520584daa68d0040db7746ae562a0ff82187f6",
+      "download": "https://storage.googleapis.com/chrome-for-testing-public/157.0.8103.6/linux64/chrome-linux64.zip",
+      "generation": "1792024099984701",
+      "size": 202676171,
+      "md5Base64": "5qChIL/Gh+8hZv73vzEakQ==",
+      "crc32cBase64": "EJCYzQ==",
+      "sha256": null
+    }
+  ],
+  "acquisitionGate": "Official object-generation, size, MD5, CRC32C verification and locally computed SHA256 must be recorded and locked before extraction/execution. No vendor SHA256 is known. Null is not an acceptable runtime pin.",
+  "officialAvailability": "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json",
+  "licenseSources": [
+    "https://www.google.com/chrome/terms/",
+    "https://policies.google.com/terms",
+    "https://github.com/microsoft/playwright/blob/v1.64.1/LICENSE"
+  ],
+  "runtimeLimits": {
+    "jobMinutes": 15,
+    "browserAggregateSeconds": 300,
+    "caseSecondsIncludingCleanup": 20,
+    "caseCount": 6,
+    "artifactBytes": 65536,
+    "artifactRetentionDays": 1
+  },
+  "productChanges": false,
+  "observerChanges": false
+}
