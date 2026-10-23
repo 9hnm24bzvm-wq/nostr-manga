@@ -10,7 +10,7 @@ concurrency:
 jobs:
   counterfactual:
     if: >-
-      github.event_name == 'push' && github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && github.ref == 'refs/heads/ci/browser-failure-diagnostics' && github.event.head_commit.id == github.sha && github.event.head_commit.message == 'diagnostic(native-upload): reviewed browser counterfactual 20261022'
+      github.event_name == 'push' && github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && github.ref == 'refs/heads/ci/browser-failure-diagnostics' && github.event.head_commit.id == github.sha && github.event.head_commit.message == 'diagnostic(native-upload): reviewed introspection gate 20261022'
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     env:

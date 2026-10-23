@@ -24,7 +24,7 @@ jobs:
   browser:
     # Standard public runner only. Never fall back to private/paid/self-hosted.
     if: >-
-      github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && (github.ref == 'refs/heads/ci/hosted-browser-e2e' || github.ref == 'refs/heads/ci/browser-failure-diagnostics') && !(github.event_name == 'push' && github.ref == 'refs/heads/ci/browser-failure-diagnostics' && (github.event.head_commit.message == 'diagnostic(native-upload): approved bounded pipe run 20261022' || github.event.head_commit.message == 'diagnostic(native-upload): reviewed browser counterfactual 20261022'))
+      github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && (github.ref == 'refs/heads/ci/hosted-browser-e2e' || github.ref == 'refs/heads/ci/browser-failure-diagnostics') && !(github.event_name == 'push' && github.ref == 'refs/heads/ci/browser-failure-diagnostics' && (github.event.head_commit.message == 'diagnostic(native-upload): approved bounded pipe run 20261022' || github.event.head_commit.message == 'diagnostic(native-upload): reviewed browser counterfactual 20261022' || github.event.head_commit.message == 'diagnostic(native-upload): reviewed introspection gate 20261022'))
     runs-on: ubuntu-22.04
     timeout-minutes: 140
     env:

@@ -99,14 +99,14 @@
     },
     {
       "path": ".github/workflows/hosted-browser-e2e.yml",
-      "bytes": 8752,
-      "sha256": "9d479a44e45077e702537f464ec6a4660bc87580d879cfcd9d3cd0add065f479",
+      "bytes": 8857,
+      "sha256": "29c61963198b921a2e22419cce67d38a4ebd9c868012701bfff2b0bb87dff994",
       "origin": "payload"
     },
     {
       "path": ".github/workflows/native-upload-browser-counterfactual.yml",
-      "bytes": 3086,
-      "sha256": "30906b4df8fc9eb29548e0612f8d2cc111507bae7ebb62ef626f818b8b63b771",
+      "bytes": 3082,
+      "sha256": "8fff6f4f83977ba73cae59b166383ea162633d203e5a271c2aa7d3211d956f16",
       "origin": "payload"
     },
     {
@@ -129,8 +129,8 @@
     },
     {
       "path": "weebdex-platform/scripts/ci/native-upload-counterfactual-contract.mjs",
-      "bytes": 6155,
-      "sha256": "f33e974714d601936c5c12e8e98d652a9930ed602f2ae5eb531bf2f6fe94bb12",
+      "bytes": 7453,
+      "sha256": "92cf3612ab5e1c5b8b26e8b05ee31f638f3620b821f2bdf672e00b97a958f34b",
       "origin": "payload"
     },
     {
@@ -141,14 +141,20 @@
     },
     {
       "path": "weebdex-platform/scripts/ci/run-native-upload-browser-counterfactual.mjs",
-      "bytes": 18936,
-      "sha256": "3105d18e5eceb7cb43462df934da4d1e40d361a30265fa59b51791dbaeb2ec7f",
+      "bytes": 19146,
+      "sha256": "0c7659d5365135321d7e07983b29985e3951601fa8958cccb9d953c05fce966e",
       "origin": "payload"
     },
     {
       "path": "weebdex-platform/scripts/ci/validate-native-upload-counterfactual.mjs",
       "bytes": 878,
       "sha256": "5554caa4eb2ef4252dcfe9f446ac3aca93a5f8ca0f8169ac8fc1b46820c0c55e",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/fixtures/native-upload-preflight-sources.json",
+      "bytes": 36970,
+      "sha256": "6e1941ed21e29bed29054a191622052c58d651378c12cb812febd6c8e80a5b5d",
       "origin": "payload"
     },
     {
@@ -159,8 +165,8 @@
     },
     {
       "path": "weebdex-platform/tests/ci/test_native_upload_counterfactual.mjs",
-      "bytes": 11899,
-      "sha256": "3fdf36245ddf2da5a8824f96f5ea48cf92c144d3f960b9f0f6ba050b3e5f5525",
+      "bytes": 22915,
+      "sha256": "30876ac5d11aee672ff92a1fe3a4c221da950a47b0593d57fbe6ad8437fcc9e0",
       "origin": "payload"
     }
   ]
