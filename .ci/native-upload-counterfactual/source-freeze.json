@@ -123,8 +123,8 @@
     },
     {
       "path": "weebdex-platform/scripts/ci/native-upload-counterfactual-browser.mjs",
-      "bytes": 5295,
-      "sha256": "df5efc10233227398fab895e4e021930f5f98be36c8815caaeedfda0c1807ee5",
+      "bytes": 6044,
+      "sha256": "94c1d6eaa3e17f36ca4ae9218f2b323a748e7e22096479b2ec47470473e5edd4",
       "origin": "payload"
     },
     {
