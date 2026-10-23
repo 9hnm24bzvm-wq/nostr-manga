@@ -1,6 +1,6 @@
 import {createPublicUploadAdapter} from '/modules/adapter.js';
 import {createNostrUploadRequest,readUploadRequestRefusals} from '/modules/transport.js';
-const SERVICE='a'.repeat(64),ACTOR='b'.repeat(64),MANGA='11111111-1111-8111-8111-111111111111',NAMESPACE='66666666-6666-8666-6666-666666666666';
+const SERVICE='a'.repeat(64),ACTOR='b'.repeat(64),MANGA='11111111-1111-8111-8111-111111111111',NAMESPACE='66666666-6666-8666-8666-666666666666';
 const fail=()=>{throw Error('Unsupported synthetic primitive');};
 const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
 const sign=async(_s,pubkey,event)=>({...event,pubkey,id:hex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify([0,pubkey,event.created_at,event.kind,event.tags,event.content])))),sig:'c'.repeat(128)});
