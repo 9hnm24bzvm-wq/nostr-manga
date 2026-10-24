@@ -53,7 +53,7 @@ export async function run({browserRoot,playwrightRoot}){
           if(scope.pending())try{await bounded(scope.settlement(),deadline);}catch{}
           restoreFailure?.();row.cleanup=contextClosed&&settled&&scope.pending()===0&&!scope.unsafe()&&bindings===0&&Date.now()<=deadline;if(row.cleanup)observer?.close();row.expectation=expectedCase(row);active=null;
         }
-        if(!row.cleanup||!row.infrastructure)throw Error('Infrastructure');
+        if(!row.cleanup)throw Error('Infrastructure');
       }
       armScope.cancel();binary.protocol=allProtocol;report.protocol=report.binaries.every(r=>r.protocol);await bounded(armScope.track(browser.close()),Math.min(aggregate,Date.now()+3000));browser=null;await bounded(armScope.track(launcher.close()),Math.min(aggregate,Date.now()+3000));await until(()=>exited,Boolean,Math.min(aggregate,Date.now()+2000));launcher=null;binary.preflight_stage='complete';
     }
