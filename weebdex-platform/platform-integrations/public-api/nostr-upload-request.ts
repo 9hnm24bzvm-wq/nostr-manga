@@ -197,7 +197,8 @@ export function createNostrUploadRequest(context: UploadRequestContext, injected
       const genericDiscussion = /^\/api\/v1\/nostr\/(?:manga|chapter|group)\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/discussion$/.test(parsed.pathname) && responseType === 'json' && (method === 'GET' || method === 'POST' && !parsed.search && contentType === 'application/json');
       const discussionWrite = (discussion || genericDiscussion) && method === 'POST' && !parsed.search && contentType === 'application/json';
       const nativeReportWrite = /^\/api\/v1\/nostr\/(?:user|manga|chapter|group)\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/discussion\/reports$/.test(parsed.pathname) && method === 'POST' && !parsed.search && contentType === 'application/json' && responseType === 'json';
-      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : discussionWrite ? DISCUSSION_JSON_LIMIT : nativeReportWrite ? NATIVE_REPORT_JSON_LIMIT : JSON_LIMIT);
+      const moderatorDecisionWrite = /^\/api\/v1\/nostr\/moderation\/reports\/(?:[A-Za-z0-9_:-]|%3A){1,128}$/.test(parsed.pathname) && method === 'POST' && !url.includes('?') && contentType === 'application/json' && responseType === 'json';
+      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : discussionWrite ? DISCUSSION_JSON_LIMIT : (nativeReportWrite || moderatorDecisionWrite) ? NATIVE_REPORT_JSON_LIMIT : JSON_LIMIT);
       const responseLimit = budget(input.responseLimit, responseType === 'image' ? IMAGE_LIMIT : discussion || genericDiscussion ? DISCUSSION_RESPONSE_LIMIT : JSON_RESPONSE_LIMIT);
       if (input.body !== undefined && !(input.body instanceof Uint8Array)) throw Error('Upload body must contain serialized bytes');
       if ((input.body?.byteLength ?? 0) > requestLimit) throw Error('Upload request body exceeds budget');

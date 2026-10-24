@@ -118,6 +118,9 @@ pub fn spawn_storage_maintenance(state: crate::state::AppState) -> tokio::task::
                 return;
             }
             crate::domains::uploads::recover_storage(&state).await;
+            if let Err(error)=crate::public_api::scheduled_uploads::run_due(&state).await {
+                tracing::warn!("Scheduled upload maintenance unavailable: {}",error);
+            }
         }
     })
 }

@@ -26,13 +26,13 @@ fn number(text: &str) -> bool {
 fn normalize(mut patch: Value) -> PublicApiResult<Value> {
     validation::allowed(&patch,&["title","volume","chapter","translatedLanguage","groups","version"])?;
     validation::version(&patch)?;
-    validation::string(&patch,"title",255,false)?;
+    validation::nullable_string(&patch,"title",255)?;
     for field in ["volume","chapter"] {
-        if let Some(text)=validation::string(&patch,field,32,false)? {
+        if let Some(Some(text))=validation::nullable_string(&patch,field,32)? {
             if !number(&text) { return Err(PublicApiError::bad_request("Invalid chapter or volume number")); }
         }
     }
-    if let Some(language)=validation::string(&patch,"translatedLanguage",12,false)? { validation::language(&language)?; }
+    if let Some(language)=patch.get("translatedLanguage") { validation::public_language(language.as_str().ok_or_else(||PublicApiError::bad_request("Invalid translatedLanguage"))?)?; }
     if let Some(groups)=patch.get("groups") {
         let groups=groups.as_array().filter(|groups|groups.len()<=10)
             .ok_or_else(||PublicApiError::bad_request("Select at most ten distinct groups"))?;
@@ -203,6 +203,22 @@ mod tests {
         }
         for query in ["", "removalMode=", "removalMode=remove", "removalMode=request-review&removalMode=approve-hide", "expectedAccountId=native", "unknown=1"] {
             assert!(removal_query(&format!("/chapter/id?{query}").parse().unwrap()).is_err());
+        }
+    }
+    #[test]
+    fn nullable_chapter_edits_preserve_null_and_omission() {
+        assert_eq!(normalize(json!({"version":1})).unwrap(),json!({"version":1}));
+        for field in ["title","volume","chapter"] {
+            for value in [Value::Null,json!(""),json!("2")] {
+                let patch=json!({"version":1,field:value});
+                assert_eq!(normalize(patch.clone()).unwrap(),patch);
+            }
+            for value in [json!(1),json!(true),json!([]),json!({}),json!("bad\0")] {
+                assert!(normalize(json!({"version":1,field:value})).is_err());
+            }
+        }
+        for field in ["translatedLanguage","groups","version"] {
+            assert!(normalize(json!({"version":1,field:null})).is_err());
         }
     }
     #[test]

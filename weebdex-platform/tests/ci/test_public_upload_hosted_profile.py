@@ -60,18 +60,39 @@ def accepted_report():
 
 
 class PublicUploadHostedProfile(unittest.TestCase):
-    def test_exact_scope_is_forty_one_current_phases_not_historical_equivalence(self):
-        self.assertEqual(len(runner.ALL_PHASES), 41)
-        self.assertEqual(len(runner.BATCHES), 12)
-        self.assertEqual(runner.MAX_PHASE_RUNS, 53)
+    def test_exact_local_runner_scope_is_forty_two_phases_not_hosted_coverage(self):
+        self.assertEqual(len(runner.ALL_PHASES), 42)
+        self.assertEqual(len(runner.BATCHES), 13)
+        self.assertEqual(runner.MAX_PHASE_RUNS, 54)
         self.assertEqual(runner.batch_phases('public-upload', runner.BATCHES['public-upload']), [runner.PUBLIC_FEATURE_PHASE, runner.PUBLIC_UPLOAD_PHASE])
         self.assertEqual(runner.requested_phases({'public-upload': runner.BATCHES['public-upload']}), [runner.PUBLIC_FEATURE_PHASE, runner.PUBLIC_UPLOAD_PHASE])
         self.assertEqual(runner.requested_phases({'startup': []}), ['startup'])
         self.assertEqual(runner.maximum(runner.PUBLIC_UPLOAD_PHASE), 600)
         self.assertEqual(runner.maximum(runner.PUBLIC_FEATURE_PHASE), 180)
         self.assertEqual(runner.requested_phases(runner.BATCHES), runner.ALL_PHASES)
-        workflow = (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text()
-        self.assertIn('actor-follow, public-upload]', workflow)
+
+    def test_retained_public_workflow_declares_forty_phases_without_signed_feature_batch(self):
+        # A declaration in retained YAML is not evidence of hosted execution or
+        # equivalence to the separately checked 42-phase local runner.
+        content = (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_bytes()
+        self.assertEqual(len(content), 8857)
+        self.assertEqual(digest(content), '29c61963198b921a2e22419cce67d38a4ebd9c868012701bfff2b0bb87dff994')
+        workflow = content.decode('utf-8')
+        self.assertIn('description: Bounded batch, or all 40 phases with separate native and public profiles', workflow)
+        self.assertIn('default: public-upload', workflow)
+        self.assertIn('options: [all, startup, ordinary-a, ordinary-b, ui10, signed-a, signed-b, signed-c, signed-d, ui-feed, ui-reader, ui-home, actor-follow, public-upload]', workflow)
+        self.assertNotIn('public-signed-features', workflow)
+        self.assertEqual(workflow.count("SELECTED_BATCH: ${{ inputs.batch || 'public-upload' }}"), 2)
+
+    def test_historical_signed_feature_workflow_retains_original_selector_assertions(self):
+        # Preserve the original assertions against authentic historical bytes,
+        # never a reconstructed workflow or a claim about the retained YAML.
+        content = (ROOT / 'tests/ci/fixtures/hosted-browser-workflow-76d40e0370cd.yml.txt').read_bytes()
+        self.assertEqual(len(content), 8661)
+        self.assertEqual(digest(content), '76d40e0370cdb7c5fb57ae9b4380c39252ff820c1ff2d3dc0a6f0c15fca1d135')
+        workflow = content.decode('utf-8')
+        self.assertIn('description: Bounded batch, or all 42 phases with separate native and public profiles', workflow)
+        self.assertIn('actor-follow, public-upload, public-signed-features]', workflow)
         self.assertEqual(workflow.count("SELECTED_BATCH: ${{ inputs.batch || 'public-upload' }}"), 2)
 
     def profile_fixture(self, root, fail_at=None):
@@ -258,7 +279,7 @@ class PublicUploadHostedProfile(unittest.TestCase):
         summary = runner.summarize(isolated, 'public-upload', [runner.PUBLIC_FEATURE_PHASE, runner.PUBLIC_UPLOAD_PHASE])
         self.assertTrue(summary['selected_scope_passed'])
         self.assertFalse(summary['full_suite_passed'])
-        self.assertEqual(len(summary['pending_unique_phases']), 39)
+        self.assertEqual(len(summary['pending_unique_phases']), 40)
         validator.summary(summary)
 
     def test_closed_projection_passes_only_complete_positive_outcome(self):

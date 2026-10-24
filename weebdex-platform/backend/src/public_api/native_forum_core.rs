@@ -16,6 +16,7 @@ pub enum ForumKind {
     Manga,
     Chapter,
     Group,
+    User,
 }
 impl ForumKind {
     pub fn resource_kind(self) -> ResourceKind {
@@ -23,6 +24,7 @@ impl ForumKind {
             Self::Manga => ResourceKind::Manga,
             Self::Chapter => ResourceKind::Chapter,
             Self::Group => ResourceKind::Group,
+            Self::User => ResourceKind::User,
         }
     }
 }
@@ -85,7 +87,7 @@ pub async fn contexts(
     }
     let mut resolved = BTreeMap::new();
     let mut visible = BTreeMap::new();
-    for kind in [ForumKind::Manga, ForumKind::Chapter, ForumKind::Group] {
+    for kind in [ForumKind::Manga, ForumKind::Chapter, ForumKind::Group, ForumKind::User] {
         let ids: Vec<_> = request
             .resources
             .iter()

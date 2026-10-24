@@ -1,0 +1,782 @@
+{
+  "schema": "bounded-reader-source-associations-v1",
+  "scope": "Exact source comparison only; never runtime, imports, global reads, graph, product, summary or snapshot normalization. No qualification transfers from historical receipts.",
+  "physical_source_commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+  "physical_source_tree": "8661c3cb5a6efe1fb71f1da847f04552645b2763",
+  "previous_source_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+  "source_only": true,
+  "tests_executed": false,
+  "build_executed": false,
+  "browser_executed": false,
+  "http_executed": false,
+  "capacity_qualified": false,
+  "row_count": 5,
+  "literal_reversal_count": 19,
+  "rows": [
+    {
+      "stage": "bounded-reader-to-frozen-main:scripts/prepare-frontend-integration.mjs",
+      "path": "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+      "current_commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "current_blob": "c05c0d05ce09ac77ccdcdd0a906b05d1783b97f3",
+      "current_bytes": 31867,
+      "current_sha256": "e55efc65d6efda7ee894aa29d5671ba3c35ee827d9f3b7cababf1125092353f4",
+      "previous_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "previous_blob": "2fa883d1a9b665ab1ee4e46b634698bf75338869",
+      "previous_bytes": 30561,
+      "previous_sha256": "d498597c8b214f6e4f5025eb6216e0c2b1516d4d1bb27933a727f0c3cfedc38c",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import { createBoundedReaderOverlays, boundedReaderOverlayManifest, boundedReaderApprovedMarkupExceptions } from \"../platform-integrations/bounded-reader/overlays.mjs\";\n",
+          "previous": "",
+          "current_bytes": 169,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "0f71590804b110167eaa4bbb78ae772931e5835169b2e4f447904f33a694830e",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 2,
+          "current": "\tconst boundedReaderPlugin = createBoundedReaderOverlays(frontend);\n",
+          "previous": "",
+          "current_bytes": 68,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "f30fe6d12456e2d2e1ff03fc2632aa7039fdbdbdf21ee6afdea41d122528beef",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 3,
+          "current": ", ...boundedReaderOverlayManifest",
+          "previous": "",
+          "current_bytes": 33,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "fb9ca823cc5435cf3ba485528c821a8c1ea0e0e7742a86bcf640027bd616ff79",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 4,
+          "current": "preBoundedReader = uploadResult?.code ?? preUpload;\n\t\tconst boundedReaderResult = boundedReaderPlugin.transform.handler(preBoundedReader, file);\n\t\tconst result = boundedReaderResult ??",
+          "previous": "result =",
+          "current_bytes": 184,
+          "previous_bytes": 8,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "570ad053a3520b9f586a2ecae23d5cb6445908527630e9af027e712d889903a4",
+          "previous_literal_sha256": "a0b63eb2bd7f518705fa1f12a2cb332dbc78f4b5da054d9fdb9726a2d4c058d3"
+        },
+        {
+          "ordinal": 5,
+          "current": " && !boundedReaderResult, retained_dom_classes_styles_unchanged: extensions.length === 0 && !uploadResult && !boundedReaderResult, retained_original_markup_after_exact_exceptions: true, supplied_styles_unchanged: true, explicit_local_protocol_ui_extension: extensions.length !== 0 || !!uploadResult, explicit_bounded_reader_extension: !!boundedReaderResult, bounded_reader_previous_sha256: hash(preBoundedReader)",
+          "previous": ", retained_dom_classes_styles_unchanged: extensions.length === 0 && !uploadResult, retained_original_markup_after_exact_exceptions: true, supplied_styles_unchanged: true, explicit_local_protocol_ui_extension: extensions.length !== 0 || !!uploadResult",
+          "current_bytes": 412,
+          "previous_bytes": 250,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "4d06ee444ccf43539e3479aafdfe94525cf006a92848d6ed5979712e638716a3",
+          "previous_literal_sha256": "90a76228456a9ce0536db536b8d1d3280ab06e2989617711ed845e1c6b4f00a1"
+        },
+        {
+          "ordinal": 6,
+          "current": "bounded-reader/TitleReadingActions.svelte\", \"bounded-reader/ChapterSelector.svelte\", \"bounded-reader/EditionSelector.svelte\", \"bounded-reader/GroupPage.svelte\", \"bounded-reader/EditionPage.svelte\", \"bounded-reader/Status.svelte\", \"",
+          "previous": "",
+          "current_bytes": 231,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "bc1532b1238c6c7a03e6a44fec74b14a8ec6f430fae3ee07008509530e10d24b",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 7,
+          "current": "bounded_reader_source_only: true, bounded_reader_exact_automatic_continue_parity: false, bounded_reader_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/bounded-reader/overlays.mjs\"))), bounded_reader_anchors_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/bounded-reader/anchors.json\"))), bounded_reader_repairs: boundedReaderOverlayManifest, approved_bounded_reader_extensions: boundedReaderApprovedMarkupExceptions,  ",
+          "previous": "",
+          "current_bytes": 467,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "065206d54bc4f2e3d860139fc084287e0e718077b87120a8c53900e1f0da687a",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "stage": "bounded-reader-to-frozen-main:scripts/compile-frontend-source.mjs",
+      "path": "weebdex-platform/scripts/compile-frontend-source.mjs",
+      "current_commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "current_blob": "863ac1c0a44b7421c42d9d7299f912ce74f0aad0",
+      "current_bytes": 3489,
+      "current_sha256": "8773018dce23b90077d5a95f2827e9bb5f7697f81a260d36a26ea8d2a193fbc5",
+      "previous_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "previous_blob": "42bce7ca399696e13a09b3b3c82e7b11f66f55b2",
+      "previous_bytes": 3350,
+      "previous_sha256": "f8046406692a69afdb897df18919aab44451f2f648b1073fa6c222ded4911b85",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';\n",
+          "previous": "",
+          "current_bytes": 100,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "b43ad413d18008df4fd9d433b5c47d8ea52ec6092b798f39d03f40493fd6af8c",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 2,
+          "current": ", createBoundedReaderOverlays(frontend)",
+          "previous": "",
+          "current_bytes": 39,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "ac28f70076d9a4b5200823cd1af4c658b671f0b65aca95adb865b8482ef4bf0c",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "stage": "bounded-reader-to-frozen-main:scripts/check-composed-frontend.mjs",
+      "path": "weebdex-platform/scripts/check-composed-frontend.mjs",
+      "current_commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "current_blob": "415fcaed06db196c9d7397732ce48c57d1b0af29",
+      "current_bytes": 28651,
+      "current_sha256": "c0fb77a180857a019bf4cbe989b67219c800d73fd6b54d6070c66387471293fd",
+      "previous_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "previous_blob": "f7b00609573e34cae76d014607663dbd76c71a55",
+      "previous_bytes": 28515,
+      "previous_sha256": "7506ca7ad2be35dcebd08e7a03a16263f91d57d6868047b71a39762d9040f94e",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';\n",
+          "previous": "",
+          "current_bytes": 100,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "b43ad413d18008df4fd9d433b5c47d8ea52ec6092b798f39d03f40493fd6af8c",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 2,
+          "current": ", createBoundedReaderOverlays(input)",
+          "previous": "",
+          "current_bytes": 36,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "1323f14041af9b9895d5031d2bc016083f41d1cb8115886d5b3b4a59bf4a8445",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "stage": "bounded-reader-to-frozen-main:scripts/vite.platform.config.mjs",
+      "path": "weebdex-platform/scripts/vite.platform.config.mjs",
+      "current_commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "current_blob": "5a215a6b509fe9e7478f76df62d07e6bdb4face3",
+      "current_bytes": 4887,
+      "current_sha256": "3db39b8947976409beb6bfb46432af4633aba02f0d951b51a2ffccc4250dd67e",
+      "previous_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "previous_blob": "843e5459c5e67bd5384be166acd53f6fe130e7f3",
+      "previous_bytes": 4673,
+      "previous_sha256": "da54dd7eeb8c26d0d019618aaa005b4151b80bc341b743e38eae3f240c717ef6",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';\n",
+          "previous": "",
+          "current_bytes": 100,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "b43ad413d18008df4fd9d433b5c47d8ea52ec6092b798f39d03f40493fd6af8c",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 2,
+          "current": "\"$boundedReader\": path.join(root, \"platform-integrations/bounded-reader\"), ",
+          "previous": "",
+          "current_bytes": 75,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "0a2dd4719f5c62b52badfd204434d5d58912bfe773173b9606ab35bd79fcc514",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 3,
+          "current": ", createBoundedReaderOverlays(frontend)",
+          "previous": "",
+          "current_bytes": 39,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "ac28f70076d9a4b5200823cd1af4c658b671f0b65aca95adb865b8482ef4bf0c",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "stage": "bounded-reader-to-frozen-main:platform-integrations/local-library/library.ts",
+      "path": "weebdex-platform/platform-integrations/local-library/library.ts",
+      "current_commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "current_blob": "ae615bd474d7439f0fb30cfcac9f0064da0e2c7f",
+      "current_bytes": 37875,
+      "current_sha256": "aba0286cf8cb386d703fa2580f937722fe4e68f383a14b73f3a5ebd5830e1838",
+      "previous_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "previous_blob": "5edadede7e0c63676118215a7677ffd2a70aef74",
+      "previous_bytes": 35991,
+      "previous_sha256": "18a90ef68078943f7fbc25bcac80479f0311079f745ef924acd538a00c45cb0e",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "const readerSelectionState = writable({ epoch: 0, pending: false });\n// Read-only notification starts before useMode waits for storage or Session.\n// A reader cannot admit an old-mode action while a new choice is pending.\nexport const readerLibrarySelection = { subscribe: readerSelectionState.subscribe };\n",
+          "previous": "",
+          "current_bytes": 307,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "ba69b4a60a78174b7ef77e3d4f6c9e3928573f6a86bf974b1e0bbbfae4949590",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 2,
+          "current": "let readerObservedCatalogue: { url: string; scope: InstanceScope; generation: number } | undefined;\n",
+          "previous": "",
+          "current_bytes": 100,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "62693671f402ca27614427440cf77c3f0879487d6bb826b367c1801897f494ec",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 3,
+          "current": "      readerObservedCatalogue = { url: new URL(PUBLIC_API_URL.replace(/\\/$/, '') + '/protocol/capabilities', window.location.href).href, scope: { ...liveScope }, generation: (readerObservedCatalogue?.generation ?? 0) + 1 };\n",
+          "previous": "",
+          "current_bytes": 224,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "ad125c969433d31cbb3d47c1f8536bdb9af99ae57e36132989f05c824f053075",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "ordinal": 4,
+          "current": "readerSelectionState.set({ epoch: selection, pending: true });\n  try {\n    await openLibrary();\n    if (mode === 'account' && !(await Session.isValid())) throw Error('Sign into a WeebDex account before choosing account-library mode');\n    if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action');\n    const { transaction } = await import('./protocol/indexeddb.js');\n    if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action before storage dispatch');\n    await transaction(protocol.db, 'meta', 'readwrite', (tx: IDBTransaction) => { tx.objectStore('meta').put(mode, 'weebdexLibraryMode'); });\n    if (selection !== selectionEpoch) return;\n    localLibraryState.update(state => ({ ...state, mode }));\n  } finally {\n    // A superseded selection must not clear the newer selection's pending fence.\n    if (selection === selectionEpoch) readerSelectionState.set({ epoch: selection, pending: false });\n  }",
+          "previous": "await openLibrary();\n  if (mode === 'account' && !(await Session.isValid())) throw Error('Sign into a WeebDex account before choosing account-library mode');\n  if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action');\n  const { transaction } = await import('./protocol/indexeddb.js');\n  await transaction(protocol.db, 'meta', 'readwrite', (tx: IDBTransaction) => { tx.objectStore('meta').put(mode, 'weebdexLibraryMode'); });\n  if (selection !== selectionEpoch) return;\n  localLibraryState.update(state => ({ ...state, mode }));",
+          "current_bytes": 1010,
+          "previous_bytes": 581,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "ad38e742c29b8fe013b9a18a0de35794bc364a50d3a6a4eb6a69ec459fddbe31",
+          "previous_literal_sha256": "b6e9673e3f2ea33317ef1d8a4195d9c20aebeb6b8f6cd6369dd80a0226677112"
+        },
+        {
+          "ordinal": 5,
+          "current": "\n// Bounded reader seam: no snapshot(), getAll(), copied history, or write authority.\n// The caller must recheck this identity before and after its owned readonly transaction.\nexport function readerLibrarySource() {\n  const state = get(localLibraryState);\n  return { context: captureLibraryContext(), admission: captureLibraryAdmission(), selectionPending: get(readerSelectionState).pending, ready: state.ready, mode: state.mode, revision: state.revision, accountRevision: state.accountRevision,\n    scopeStatus: state.scopeStatus, reason: state.error ?? state.scopeReason,\n    observedCatalogue: readerObservedCatalogue && { ...readerObservedCatalogue, scope: { ...readerObservedCatalogue.scope } },\n    scope: verifiedCatalogueScope && { ...verifiedCatalogueScope }, db: state.ready && device ? device.db : undefined };\n}\n",
+          "previous": "",
+          "current_bytes": 824,
+          "previous_bytes": 0,
+          "current_literal_occurrences_at_this_stage": 1,
+          "current_literal_sha256": "232a7066a16fbf0e41446561e2ad9f14edce2d536c5aac6f134059cf9b44de13",
+          "previous_literal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "actual_dependency_pins": [
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/ChapterSelector.svelte",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "bf5cec6aa37edbfd27a6b4dd103af9959e326e42",
+      "bytes": 1653,
+      "sha256": "a1142597ef60e74106cace48cb5679472e116d334d5f25fa0bb6b90af41e2094"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/EditionPage.svelte",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "122623c293f8e51ca929c83753ae66745cce661a",
+      "bytes": 1481,
+      "sha256": "46c0e0b16e23db4f5a401e6facdfcab8882711c9b0c27301d198254ac0f57326"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/EditionSelector.svelte",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "3b9663e8d50535966eef88111035bddc735759eb",
+      "bytes": 481,
+      "sha256": "d3d28a1164341dfce9eb9cfad7df90b77c1c3cfae4f2211828b1bf881da0673c"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/GroupPage.svelte",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "75574990749eaf6c051dbe3acb324ef5769519a7",
+      "bytes": 1377,
+      "sha256": "209fc870fbcef4f6e42befd3e44d2651c126f06176a5c6b622a4beca9d95b03d"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/Status.svelte",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "20796bafdc127a0c7feb87a81c50da562b5050ea",
+      "bytes": 1133,
+      "sha256": "9d286ed3e637e06ac073e1b3df7445f49d94af086c3ea70a798c4f75a95e9623"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/TitleReadingActions.svelte",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "526486ecf3b20dd96f53f21feaec6424fb8ea146",
+      "bytes": 3969,
+      "sha256": "dc565d75d52cd9fa6ddb845c9a9cb4a3d09a37b8eaebee16eb2ccf1ab0544199"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/anchors.json",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "fd0ecd44aa2ef092db15451a512ae4d516c73151",
+      "bytes": 48213,
+      "sha256": "57a4c1020b4afcb7f66c345d3d0ff070d24cb649a90623a3b3ccd504d56d3e23"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/badge-anchors.json",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "903311e9dbcb3a032d8f0e689ce406876f937519",
+      "bytes": 9970,
+      "sha256": "a81b80af1b637794ea23834b713ee06c4bfa5161a009708ef01f7badebea0ca4"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/badge-overlays.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "99dca6f669dd462cc4cb9d76872c3124fac958ef",
+      "bytes": 1785,
+      "sha256": "e36bdf2b2e00c6e6a485f3fbc7d6f63cf05c59f59c4847e87854cdf3561bb960"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/client.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "e4d6afd957f5d054dcd9670f3d8f0a086ea8a270",
+      "bytes": 7202,
+      "sha256": "7877d612236ccd80387c8d54ab9d662deaf92d4ee582b8fd8b7de5c744c81b44"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/completion-contract.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "5feed3c814e4572b1ee732a162a97de500a5e842",
+      "bytes": 3123,
+      "sha256": "16a703c7c2b9593ee82c33a1c34bc63775104f8e5232f5aa263a341d2a830aab"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/contract.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "7baa21eaa4916402ddbf3774ee195310703a5ee6",
+      "bytes": 8841,
+      "sha256": "9bc977b5e4b581d00c15b8e61722fbeb65addaa48add69887bfd2916b6a65539"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/controller.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "2400a8acc86719ff574ab5baf514eb367bde2f7a",
+      "bytes": 27402,
+      "sha256": "ece9cf49e2636e2486d808c483ce25c90c9b8adbed44ea51e9af58d0caef5cbf"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/endpoint.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "093304943275d57c585b2c920257e1c6d57864c6",
+      "bytes": 1791,
+      "sha256": "0c6c950c765dc43979d835ecef90a5bc7982a391ba8287df971d6601a151a6ae"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/history.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "e6b70435c1e25aa9aa757998b977b5c3f5c8b8bd",
+      "bytes": 6510,
+      "sha256": "cfa0c87b6a908311250a0d154b1042d6dc90d7481ab713944f270c647643a2ea"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/native-continue-contract.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "033468ecfaba64e8695c3b04f5299f79a6a9798f",
+      "bytes": 5965,
+      "sha256": "3c6d4fcbb447854b901542e875d829e33df5330d92873c03af4381da57dc0bcd"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/native-continue.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "99a0f1fcfd5a096b0a5d830767fa4180537a2297",
+      "bytes": 3841,
+      "sha256": "04cbae3742c3aa0efd76cf14f051fd834eb360cd8d196db797fe1c21377c8921"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/native-history.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "6d496a8584c3016c85100a0a48edbc2e0d287c50",
+      "bytes": 3939,
+      "sha256": "aa56b1a186a32f12880fcae44e2b1e1c1c271677845ef623efdaa5bfe7281311"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/overlays.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "aa4f103fe368dcc425451906cbd96f3d40534083",
+      "bytes": 4606,
+      "sha256": "a7d89c85f2fdf435c8606f82c5519e532c2717fed698e72fcca81eaaf201c4aa"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/presentation.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "4979feab1482f0610161a53bccffdc0974846e42",
+      "bytes": 1455,
+      "sha256": "f609e06d87da8529b40c7f21ceddcf8165ca47158161d769f1f125c6e11f4d39"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/runtime.svelte.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "bdfe3f9b4e016e3842046ab75ee8e1373335f2dc",
+      "bytes": 9868,
+      "sha256": "b8c4c6c130dde765cc0c8be107c2025ba2c2e33fd4fa8fc2e0402bb38aca04c0"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/title-query.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "812bbcada0dc2ee52b58d9ce9cf8652036d174fd",
+      "bytes": 617,
+      "sha256": "59ea076ddf1f9540f6e31eb7e8fd5f9628686d547fae07ed3eda7e80b41f957c"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/visible-badges.svelte.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "2d3d870921f90af4f83825df17e0ef3fb1a2e932",
+      "bytes": 9103,
+      "sha256": "954e6ca1ea272965f2028abb9366021b338a9a6a20af66db838e64535620566e"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/bounded-reader/visible-badges.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "70bca4e928961c78614f7d289ad5ff58cd630f51",
+      "bytes": 6913,
+      "sha256": "246b9242715c641b16c4ecdabbf8be1ec39cb7819001a1f4216d13b0ba02ae9b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-overlays.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "106bd95eab8bb98a43726dd1295f3d0d21fe2a56",
+      "bytes": 510676,
+      "sha256": "9afd0fb8e3ab74ba093ec036a245dc67f711fbaaf62d01a28310a4d300f7513b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "fc535dcb533cda079af5cc800446da66f428933f",
+      "bytes": 8812,
+      "sha256": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/overlays.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "7db998207ace9e913bb1156c12bcf20df2150de7",
+      "bytes": 137707,
+      "sha256": "da6800f42a482e3107d09db772883b53fcb598344b88c945f98a0541282b1fe2"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "6b07a4fb1beea6168ba4d657f531c3ceab52d975",
+      "bytes": 11480,
+      "sha256": "af9741e4f7c0643055e8073035b554b72fdcb68e970dd1f7e2ed9d16fec4976b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-overlays.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "764214b5e8edcf1f4dc9627565b6c56fa754ce73",
+      "bytes": 2042,
+      "sha256": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-anchors.json",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "8e80627ee1111595e4fbdd882b8e028458ed0806",
+      "bytes": 51073,
+      "sha256": "1fc819c9fc941cbd9f0d9079b5627c9eb9672095178576060803c16ae007ee03"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/native-forum/reader.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "38fb288de2c1bd893abc7247a89b740eb8639137",
+      "bytes": 2553,
+      "sha256": "748fc2997a528057400d4d9368aa58b8ab8c0fd1c3f5e4adacf9b5eb11d6b819"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/owned-json.ts",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "140fbb340fb533b420a2d338db286033862d8027",
+      "bytes": 16458,
+      "sha256": "afe757c8eb7391fdb8b77d74bcf885c56849d782559efdb9625976724f5b1b71"
+    },
+    {
+      "path": "weebdex-platform/scripts/integrated-load/mounted-reader.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "0a735317839640814dcdcf850c25f69451a71982",
+      "bytes": 44683,
+      "sha256": "b6d7b0a15681feada198897b35a4c497dde8b800226a011eba85fe8fe910e977"
+    },
+    {
+      "path": "weebdex-platform/scripts/integrated-load/bounded-source-map.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "35fa00a5c4c72c18c0cecdf38df5ac89770885fd",
+      "bytes": 4236,
+      "sha256": "f0bfa8bb6a2ce7236b17a7783d701a06c5f3d1b75e2062950f215b2684155f53"
+    },
+    {
+      "path": "weebdex-platform/scripts/integrated-load/bounded-mounted-cases.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "344aa6631717ac0208368b223d0af98ab3ea2a05",
+      "bytes": 9281,
+      "sha256": "908fdfefc75114812f87879c9a2140c362b9dea68f44abb7ef3e3244574c3deb"
+    },
+    {
+      "path": "weebdex-platform/scripts/integrated-load/bounded-mounted-fixture.py",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "692530f87a08ee832ea08b9b439a50c5cba19a72",
+      "bytes": 21414,
+      "sha256": "acee300572336170f285ff319f2855d7f3c222308fe54da57db06c6b2023cac9"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/reviewed-preparation-counterfactual.mjs",
+      "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+      "git_blob": "88472c76c16c8b2a690d95af2dadc13da713c587",
+      "bytes": 1547,
+      "sha256": "dd58123e0670703fdee8214e4fd0ec915377d61f32613d18ab68f181d605d6e6"
+    }
+  ],
+  "physical_stage_order": [
+    "frontend",
+    "reader",
+    "local-library",
+    "public-api",
+    "public-upload",
+    "bounded-reader"
+  ],
+  "bounded_stage": {
+    "badge_stage": "Internal to bounded-reader, never a seventh stage.",
+    "reader_patch_count": 34,
+    "reader_markup_exception_count": 12,
+    "badge_patch_count": 16,
+    "badge_markup_exception_count": 5,
+    "upload_fragment_recipe_count": 6,
+    "upload_targets_disjoint": true,
+    "public_gates_unchanged": true,
+    "physical_frontend_file_count": 679,
+    "physical_integration_file_count": 263,
+    "sparse_checkout_is_qualified_preparation": false
+  },
+  "preserved_preparation_chain": {
+    "path": "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+    "order": [
+      {
+        "stage": "physical combined candidate",
+        "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+        "git_blob": "c05c0d05ce09ac77ccdcdd0a906b05d1783b97f3",
+        "bytes": 31867,
+        "sha256": "e55efc65d6efda7ee894aa29d5671ba3c35ee827d9f3b7cababf1125092353f4"
+      },
+      {
+        "stage": "reader reconstruction output / updates input",
+        "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+        "git_blob": "2fa883d1a9b665ab1ee4e46b634698bf75338869",
+        "bytes": 30561,
+        "sha256": "d498597c8b214f6e4f5025eb6216e0c2b1516d4d1bb27933a727f0c3cfedc38c"
+      },
+      {
+        "stage": "updates output / moderator input",
+        "commit": "da89fc08db9ac85429afadd56e0d1467a62bb535",
+        "git_blob": "db9fa8ef193b2c2e0988f294772224003d397237",
+        "bytes": 29891,
+        "sha256": "bdb676c70e3d9eb4a5488b602ad6a778cc25be3b0a196a95fa87d4642fa10543"
+      },
+      {
+        "stage": "moderator output / profile input",
+        "commit": "c477fc169540e6e280f89e59f544cb245f8c38e6",
+        "git_blob": "17fc63e2b342b603348e24e0539cb2b679eb6daf",
+        "bytes": 29847,
+        "sha256": "38011a1d691495466ac05ba441cf9cdc0bbe5d4b743569bf72539d6687344aba"
+      },
+      {
+        "stage": "profile output",
+        "commit": "d4028ee6ccf8cf8bc22228cf8bc9dc97bd927e25",
+        "git_blob": "0db0358e1c2e4bc0117e7e287bc15bd9cf7998f3",
+        "bytes": 29805,
+        "sha256": "56d8e9005ab1ea6af8e299adc25ac210da7d58f794b00d45d6b7996f4b4d7812"
+      }
+    ],
+    "call_site_policy": "New explicit helper accepts only the final frozen current source and returns f7c598c bytes. Existing updates, moderator and profile guards keep their old input/output hashes. Apply reader stage once at comparison caller entry; moderator already applies updates internally, so do not call updates twice. Historical/current product execution branches remain separately named."
+  },
+  "preserved_history_chain": {
+    "path": "weebdex-platform/platform-integrations/local-library/library.ts",
+    "order": [
+      {
+        "stage": "physical combined candidate",
+        "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+        "git_blob": "ae615bd474d7439f0fb30cfcac9f0064da0e2c7f",
+        "bytes": 37875,
+        "sha256": "aba0286cf8cb386d703fa2580f937722fe4e68f383a14b73f3a5ebd5830e1838"
+      },
+      {
+        "stage": "reader reconstruction output / history input",
+        "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+        "git_blob": "5edadede7e0c63676118215a7677ffd2a70aef74",
+        "bytes": 35991,
+        "sha256": "18a90ef68078943f7fbc25bcac80479f0311079f745ef924acd538a00c45cb0e"
+      },
+      {
+        "stage": "history output / fanout source pin",
+        "commit": "ca0934534be6b40638eff264151281db8fa6886a",
+        "git_blob": "37a809585b55f4ecf4980dfff5f011dfca85719f",
+        "bytes": 35984,
+        "sha256": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef"
+      }
+    ],
+    "dispatch_policy": "Only library.ts gets the reader predecessor step before history restoration. Do not place a global normalizer in filesystem reads or imports. Keep updates/integration history for overlays and the signed-feature driver independent."
+  },
+  "preserved_metadata": [
+    {
+      "path": "weebdex-platform/docs/fixtures/reviewed-bundle-source-successors.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "283c40d9fc6cbe6fbcc7c50151f1edd1f9d5b839",
+      "bytes": 61334,
+      "sha256": "aff713f0a29179ee8701b1fd1b63e4cc6756ee2ef9cc84e57a7510ec614738c8"
+    },
+    {
+      "path": "weebdex-platform/docs/fixtures/moderator-composition-source-association.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "a1c7a8fa08b211ac31d8d21c3a5057dfceba9783",
+      "bytes": 5976,
+      "sha256": "7f6d38a7a67cb4843b4bec0061d4dd292297524af9909d0b75bb193c374a54db"
+    },
+    {
+      "path": "weebdex-platform/tests/fixtures/native-profile-actions/source-association.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "ca0c4fd60539bd0503ade81ca0ff850f2d4f80d8",
+      "bytes": 17750,
+      "sha256": "100517251eec79b108c69e4ecd607c79669d74b168f328b2ff1bc2e38892f80b"
+    },
+    {
+      "path": "weebdex-platform/docs/fixtures/device-history-source-association.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "d391faf820e795610ca6db185f1c0c46702299ff",
+      "bytes": 14498,
+      "sha256": "c06a19d189112fb67edcd36e7bc766649b6084284e74a4b3711ea91b8547a33f"
+    },
+    {
+      "path": "weebdex-platform/docs/fixtures/integrated-schedule-catalogue-membership-source-association.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "bea4251331859b96092d7e6200ad1d045da4cccf",
+      "bytes": 51531,
+      "sha256": "4f2aa3ce1919c48263336780c0c0fc352ef1332200d9ab348ada6a2835f02c8d"
+    },
+    {
+      "path": "weebdex-platform/docs/fixtures/integrated-read-fanout-current-source.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "3f264423de452d3ef834765e6462aa31958d196e",
+      "bytes": 12509,
+      "sha256": "1ad1dc4cc04b2bad3321a579877afe2e53f13860e950a1e0c17dab67b387d65b"
+    },
+    {
+      "path": "weebdex-platform/docs/fixtures/integrated-read-fanout-pre-language-source.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "48b6df62df26e9cc25200b7881947fd0d96293fe",
+      "bytes": 7568,
+      "sha256": "3f6f477da56e35a77112923e0ce0177286bd4f7c3e045f4b5d0d5d2936adcbe2"
+    },
+    {
+      "path": "weebdex-platform/docs/fixtures/native-catalogue-source-associations.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "2ec405e732e37a5b073e3050fea91439aeb081e5",
+      "bytes": 65408,
+      "sha256": "9875321067b77992942fe50203c19a79c39d695c1db443cce3b70361bd9084c7"
+    },
+    {
+      "path": "weebdex-platform/docs/fixtures/integrated-read-fanout-v1.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "88653890d25292101c3ebaee5bc8d5bd7bb93ec9",
+      "bytes": 28397,
+      "sha256": "024b5b70c8c0583bed90b774f9f20c5081d0880d54fd00be80eaace4e71984a6"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/public-signed-features-20261022/source-pins.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "c155fb5705419920e0c636a7ea3f6333c0ce3265",
+      "bytes": 8100,
+      "sha256": "0a9c9b85c074bd55a0587112b5b4aaa5cd6b2659b1d31c09a0caf6fe3c43ad8a"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/public-signed-features-20261022/composition-source-successor.json",
+      "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+      "git_blob": "26ebb3bc35edf9902f783a70d15e06f0f3d3b9f2",
+      "bytes": 2696,
+      "sha256": "cf3f58e72b99bce1ec8107f0975ca6e23c6aa6e8238a768408ab73bc0fe58b38"
+    }
+  ],
+  "preserved_local_page_metadata": {
+    "path": "weebdex-platform/docs/fixtures/signed-local-page-source-associations.json",
+    "commit": "f53672188877307294cc4cb14d0de9724b770505",
+    "git_blob": "da15828ccb691bbea5ae381953b989431421a959",
+    "bytes": 73175,
+    "sha256": "c62216c07016789f0cbc25dd0277ebddb4ae1a707edefcb22cb0a4d749263d1c"
+  },
+  "capsule_dispositions": [
+    {
+      "purpose": "Shared transport extraction comparison; use the existing old-source capsule rather than reverse the rewritten wrapper into its former transport implementation.",
+      "historical_source": {
+        "path": "weebdex-platform/platform-integrations/public-api/native-forum/reader.ts",
+        "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+        "git_blob": "cd78ce4a6a52935b59d0ae1e6bea8bc6917559cf",
+        "bytes": 7346,
+        "sha256": "1bf6022f610dc312936a20a92e566788191e2210171a1893e3276b526435c4d0"
+      },
+      "existing_capsule": {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/native-forum-reader-before.ts.txt",
+        "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+        "git_blob": "cd78ce4a6a52935b59d0ae1e6bea8bc6917559cf",
+        "bytes": 7346,
+        "sha256": "1bf6022f610dc312936a20a92e566788191e2210171a1893e3276b526435c4d0"
+      },
+      "maximum_capsule_bytes": 8192,
+      "current_runtime_inputs": [
+        {
+          "path": "weebdex-platform/platform-integrations/public-api/native-forum/reader.ts",
+          "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+          "git_blob": "38fb288de2c1bd893abc7247a89b740eb8639137",
+          "bytes": 2553,
+          "sha256": "748fc2997a528057400d4d9368aa58b8ab8c0fd1c3f5e4adacf9b5eb11d6b819"
+        },
+        {
+          "path": "weebdex-platform/platform-integrations/public-api/owned-json.ts",
+          "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+          "git_blob": "140fbb340fb533b420a2d338db286033862d8027",
+          "bytes": 16458,
+          "sha256": "afe757c8eb7391fdb8b77d74bcf885c56849d782559efdb9625976724f5b1b71"
+        }
+      ],
+      "controls": "Exact old fixture identity; current wrapper and shared owner separately pinned; old fixture only in isolated comparison. Never substitute it for readNativeDiscussionTarget in actual current application execution.",
+      "disposition": "Reuse the existing exact native-forum old-source fixture for isolated comparison only. No capsule is substituted for a current execution input."
+    },
+    {
+      "purpose": "Historical aggregate mounted-runner source inventory only; do not reverse a substantially rewritten service-connected driver or rerun it as current.",
+      "historical_source": {
+        "path": "weebdex-platform/scripts/integrated-load/mounted-reader.mjs",
+        "commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+        "git_blob": "4a798e3e4e02b482835737d53040d8fbd87de3e8",
+        "bytes": 21816,
+        "sha256": "b99b2a0ebbe1e0b0ffb40f4836091ad8423f0450b27cf0427bd23899462bf851"
+      },
+      "maximum_capsule_bytes": 32768,
+      "extraction": "Whole blob, exact 21816 bytes. It is already retained in Git; no new capsule was created here. A future implementation should materialize only if an actual historical assertion needs it.",
+      "current_source": {
+        "path": "weebdex-platform/scripts/integrated-load/mounted-reader.mjs",
+        "commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+        "git_blob": "0a735317839640814dcdcf850c25f69451a71982",
+        "bytes": 44683,
+        "sha256": "b6d7b0a15681feada198897b35a4c497dde8b800226a011eba85fe8fe910e977"
+      },
+      "controls": "The capsule must be data-only and non-imported. No old process, stdin protocol, network, temp output or generated Svelte code may run under a current mounted receipt. Current mounted source, source-map helper, fixture, backend, budget and dependencies require fresh independent admission.",
+      "disposition": "Historical mounted source retained in Git only. No new capsule is created, imported or executed. Current mounted runner remains independently unqualified."
+    }
+  ],
+  "unchanged_language_guard": {
+    "path": "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+    "start_marker_utf8": "\t\tlet normalizedResult = preUpload;",
+    "end_marker_utf8": "\t\treturn { path: relative,",
+    "bytes": 801,
+    "sha256": "213da1c168ac55a52403f2520959fa2ea8e7a3d87d8b36e4d559dafc822bd9c0",
+    "policy": "Extract directly from physical current preparation; no whole-file reconstruction."
+  },
+  "excluded_followup": "The local-page signed-feature driver mismatch is a separate repair. It is not a sixth reader recipe and no original pin is weakened.",
+  "external_mounted_preparation_applied": false
+}

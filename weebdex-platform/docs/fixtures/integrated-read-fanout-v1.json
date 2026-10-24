@@ -559,7 +559,7 @@
     "weebdex-platform/platform-integrations/public-api/anchors.json": "f03ea5f6c0dd9fbac409211aaebae472d8f68909a93c06ab4c14d5a01c80edfa",
     "weebdex-platform/platform-integrations/public-api/source-hashes.json": "151e2bee2232916a2446621a35379e2658bf273b12cecb0f2fcea2323e680844",
     "weebdex-platform/platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
-    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836",
+    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "9afd0fb8e3ab74ba093ec036a245dc67f711fbaaf62d01a28310a4d300f7513b",
     "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801",
     "weebdex-platform/platform-integrations/local-library/overlays.mjs": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d",
     "weebdex-platform/platform-integrations/local-library/library.ts": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef",

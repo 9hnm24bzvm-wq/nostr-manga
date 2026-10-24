@@ -244,7 +244,7 @@ pub(crate) async fn bound_account_write(
         bound_account(tx, capability, true).await?,
     ))
 }
-const BOUND_ACCOUNT_WRITE_SQL: &str = "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 FOR SHARE OF b FOR NO KEY UPDATE OF u";
+const BOUND_ACCOUNT_WRITE_SQL: &str = "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 AND b.revoked_at IS NULL FOR SHARE OF b FOR NO KEY UPDATE OF u";
 async fn bound_account(
     tx: &tokio_postgres::Transaction<'_>,
     capability: &AdmittedHttpCapability,
@@ -264,7 +264,7 @@ async fn bound_account(
     let sql = if write {
         BOUND_ACCOUNT_WRITE_SQL
     } else {
-        "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 FOR SHARE OF b,u"
+        "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 AND b.revoked_at IS NULL FOR SHARE OF b,u"
     };
     let row = tx.query_opt(sql, &[&publisher]).await?.ok_or_else(|| {
         PublicApiError::forbidden("An explicit native account binding is required")
@@ -277,6 +277,33 @@ async fn bound_account(
         row.get(4),
         row.get(5),
     )
+}
+/// Live policy only, not an HTTP write capability. The scheduling module may
+/// construct its narrow sealed worker actor only after its private durable intent
+/// and claim are checked in this same transaction. No saved request is replayed.
+pub(super) async fn scheduled_account(
+    tx: &tokio_postgres::Transaction<'_>, service: &str, author: &str,
+    version: i64, owner: &str,
+) -> PublicApiResult<BoundAccountRead> {
+    let service = hex::decode(service).map_err(|_| PublicApiError::unavailable())?;
+    let author_bytes = hex::decode(author).map_err(|_| PublicApiError::unavailable())?;
+    let current = tx.query_opt("SELECT service_key FROM node_identity WHERE singleton FOR SHARE", &[])
+        .await?.ok_or_else(PublicApiError::unavailable)?;
+    if current.get::<_, Vec<u8>>(0) != service {
+        return Err(PublicApiError::forbidden("Scheduled publication service changed"));
+    }
+    let admission = tx.query_opt("SELECT allowed,version FROM account_permissions WHERE publisher=$1 FOR SHARE", &[&author_bytes])
+        .await?.ok_or_else(|| PublicApiError::forbidden("Scheduled account is not admitted"))?;
+    if !admission.get::<_, bool>(0) || admission.get::<_, i64>(1) != version {
+        return Err(PublicApiError::forbidden("Scheduled account admission changed"));
+    }
+    let row = tx.query_opt(BOUND_ACCOUNT_WRITE_SQL, &[&author]).await?
+        .ok_or_else(|| PublicApiError::forbidden("Scheduled account binding is unavailable"))?;
+    let account = account_policy(row.get(0), row.get(1), row.get(2), row.get(3), row.get(4), row.get(5))?;
+    if account.user_id() != owner {
+        return Err(PublicApiError::forbidden("Scheduled account binding changed"));
+    }
+    Ok(account)
 }
 fn account_policy(
     user_id: String,

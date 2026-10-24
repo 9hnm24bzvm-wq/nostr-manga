@@ -190,6 +190,12 @@ impl AliasIndex {
                     attributes["nostr"] = json!({"eventId":value["protocol_event_id"],"publisher":value["protocol_publisher"],"publicationScope":value["publication_scope"],"publicationStatus":value["publication_status"]});
                     if value.get("instance_overlay").is_some() { attributes["nostr"]["metadataScope"] = json!("instance-local"); }
                 }
+                if value["_public_title_groups"] == json!(true) {
+                    let nostr = attributes.as_object_mut().ok_or_else(PublicApiError::unavailable)?
+                        .entry("nostr").or_insert_with(|| json!({}))
+                        .as_object_mut().ok_or_else(PublicApiError::unavailable)?;
+                    nostr.insert("availableGroupSemantics".into(), json!("visible-title-groups-v1"));
+                }
                 common(value, &mut attributes);
                 if let Some(keys) = self.manga_sort_keys.get(native) {
                     let mut keys = keys.clone();
@@ -209,6 +215,9 @@ impl AliasIndex {
                             .filter(|(_, v)| v.is_string())
                             .collect::<BTreeMap<_, _>>()
                     );
+                }
+                if let Some(links) = value.get("official_links") {
+                    attributes["officialLinks"] = super::title_links::dictionary(links).map_err(|_| PublicApiError::unavailable())?;
                 }
                 if let Some(flag) = value["chapterNumbersResetOnNewVolume"]
                     .as_bool()
@@ -288,6 +297,18 @@ impl AliasIndex {
                 let mut a = json!({"title":nullable(value,&["title"]),"volume":nullable(value,&["volume"]),"chapter":nullable(value,&["chapter"]),
                     "pages":pages.len(),"translatedLanguage":value["language"],"externalUrl":nullable(value,&["externalUrl","external_url"]),"isUnavailable":value["is_unavailable"].as_bool().unwrap_or(false)});
                 common(value, &mut a);
+                // Read-only stored provenance, overwritten after the metadata merge by
+                // catalogue SELECT. This is not actor permission or write authority.
+                if let Some(local) = value["_local_page_source_mutable"].as_bool() {
+                    a["localPageSource"] = json!(if local { "local" } else { "protocol" });
+                }
+                // Native compatibility fact, not account-dependent permission. The
+                // native DTO already exposes this stored attribution name; current
+                // users.username must never stand in for the claim rule's value.
+                if let Some(name) = value["relationships"]["uploader"]["name"].as_str() {
+                    a["localUploaderIsSystem"] = json!(name == "system");
+                }
+
                 if let Some(published) = value.get("published_at") {
                     a["publishAt"] = published.clone();
                     a["readableAt"] = published.clone();
@@ -376,7 +397,7 @@ impl AliasIndex {
                 a
             }
             ResourceKind::Author => {
-                let mut a = json!({"name":value["name"],"biography":localized(value.get("biography").unwrap_or(&value["description"])),"imageUrl":nullable(value,&["imageUrl","image_url"])});
+                let mut a = json!({"name":value["name"],"locked":value["locked"].as_bool().unwrap_or(false),"biography":localized(value.get("biography").unwrap_or(&value["description"])),"imageUrl":nullable(value,&["imageUrl","image_url"])});
                 common(value, &mut a);
                 for (wire, native) in [
                     ("twitter", "twitter"),
@@ -409,7 +430,7 @@ impl AliasIndex {
                 a
             }
             ResourceKind::Group => {
-                let mut a = json!({"name":value["name"],"altNames":alt_titles(&value["alt_names"]),"locked":value["locked"],"inactive":value["inactive"]});
+                let mut a = json!({"name":value["name"],"altNames":alt_titles(&value["alt_names"]),"locked":value["locked"],"inactive":value["inactive"],"localMembershipRoles":"leader-officer-member-v1"});
                 common(value, &mut a);
                 for (wire, native) in [
                     ("website", "website"),
@@ -436,7 +457,7 @@ impl AliasIndex {
                     } else {
                         "member"
                     };
-                    if let Some(r) = self.relationship(
+                    if let Some(mut r) = self.relationship(
                         ResourceKind::User,
                         if role == "leader" {
                             ResourceType::Leader
@@ -446,6 +467,9 @@ impl AliasIndex {
                         &member,
                         includes.contains(role),
                     )? {
+                        // This is a local membership edge flag, not a native
+                        // account role or original protocol signing authority.
+                        r.attributes.get_or_insert_with(|| json!({}))["isOfficer"] = json!(member["is_officer"].as_bool().unwrap_or(false));
                         relationships.push(r);
                     }
                 }
@@ -751,6 +775,48 @@ mod tests {
         assert!(value.attributes.get("nostr").is_none());
     }
     #[test]
+    fn chapter_stored_system_uploader_fact_is_exact_and_not_current_username() {
+        let mut rows=BTreeMap::new();
+        for (kind,native,id) in [(ResourceKind::Chapter,"Chapter","11111111-1111-8111-8111-111111111111"),
+            (ResourceKind::User,"Uploader","22222222-2222-8222-8222-222222222222")] {
+            rows.insert((kind,native.into()),ResolvedPublicId{native_id:native.into(),preferred_id:PublicUuid::parse(id).unwrap(),target:PublicIdTarget::NativeResource});
+        }
+        let mut index=AliasIndex{rows,user_attributes:BTreeMap::new(),manga_sort_keys:BTreeMap::new()};
+        for username in ["system","Renamed current user"] {
+            index.user_attributes.insert("Uploader".into(),json!({"username":username,"version":4}));
+            for (stored,expected) in [(json!("system"),Some(true)),(json!("System"),Some(false)),(json!(" system"),Some(false)),(json!("Actual uploader"),Some(false)),(json!(""),Some(false)),(Value::Null,None),(json!(42),None),(json!({"name":"system"}),None)] {
+                let native=json!({"id":"Chapter","version":7,"localUploaderIsSystem":false,"relationships":{"uploader":{"id":"Uploader","name":stored}}});
+                for includes in [BTreeSet::new(),BTreeSet::from(["user".to_owned()])] {
+                    let value=index.resource(ResourceKind::Chapter,&native,&includes).unwrap();
+                    assert_eq!(value.attributes.get("localUploaderIsSystem").and_then(Value::as_bool),expected);
+                }
+            }
+        }
+        let value=index.resource(ResourceKind::Chapter,&json!({"id":"Chapter","version":7,"localUploaderIsSystem":true}),&BTreeSet::new()).unwrap();
+        assert!(value.attributes.get("localUploaderIsSystem").is_none());
+    }
+    #[test]
+    fn local_group_officer_edges_and_author_lock_are_explicit_not_source_authority() {
+        let gid=PublicUuid::parse("11111111-1111-8111-8111-111111111111").unwrap();
+        let uid=PublicUuid::parse("22222222-2222-8222-8222-222222222222").unwrap();
+        let aid=PublicUuid::parse("33333333-3333-8333-3333-333333333333").unwrap();
+        let mut rows=BTreeMap::new();
+        for (kind,native,id) in [(ResourceKind::Group,"Group",gid),(ResourceKind::User,"Member",uid),(ResourceKind::Author,"Author",aid)] {
+            rows.insert((kind,native.into()),ResolvedPublicId{native_id:native.into(),preferred_id:id,target:PublicIdTarget::NativeResource});
+        }
+        let index=AliasIndex{rows,user_attributes:BTreeMap::from([("Member".into(),json!({"username":"Actual user","version":3}))]),manga_sort_keys:BTreeMap::new()};
+        let group=json!({"id":"Group","name":"Group","relationships":{"members":[{"id":"Member","is_leader":false,"is_officer":true}]}});
+        for includes in [BTreeSet::new(),BTreeSet::from(["member".to_owned()])] {
+            let result=index.resource(ResourceKind::Group,&group,&includes).unwrap();
+            assert_eq!(result.attributes["localMembershipRoles"],"leader-officer-member-v1");
+            let member=&result.relationships[0];assert_eq!(member.resource_type,ResourceType::Member);
+            assert_eq!(member.attributes.as_ref().unwrap()["isOfficer"],true);
+            assert!(member.attributes.as_ref().unwrap().get("nostr").is_none());
+        }
+        let result=index.resource(ResourceKind::Author,&json!({"id":"Author","name":"Author","locked":true}),&BTreeSet::new()).unwrap();
+        assert_eq!(result.attributes["locked"],true);
+    }
+    #[test]
     fn native_nullable_demographic_biography_and_group_links_are_preserved() {
         let mut rows = BTreeMap::new();
         for (kind, native) in [
@@ -837,4 +903,16 @@ mod tests {
         assert_eq!(cover.attributes["fileName"], "Cover00001.webp");
         assert_eq!(cover.id.as_str(), "22222222-2222-8222-8222-222222222222");
     }
+    #[test]
+    fn separate_official_link_dictionary_is_projected_without_provider_invention() {
+        let index=AliasIndex{rows:BTreeMap::from([((ResourceKind::Manga,"Manga00001".into()),ResolvedPublicId{native_id:"Manga00001".into(),preferred_id:PublicUuid::parse("11111111-1111-8111-8111-111111111111").unwrap(),target:PublicIdTarget::NativeResource})]),user_attributes:BTreeMap::new(),manga_sort_keys:BTreeMap::new()};
+        let mut native=json!({"id":"Manga00001","title":"Title","relationships":{"links":{"raw":"https://legacy.example"}},"official_links":{"provider":"opaque-id","":"","__proto__":"<b>text</b>"}});
+        let result=index.resource(ResourceKind::Manga,&native,&BTreeSet::new()).unwrap();
+        assert_eq!(result.attributes["links"],native["relationships"]["links"]);
+        assert_eq!(result.attributes["officialLinks"],native["official_links"]);
+        assert!(result.relationships.is_empty());
+        native["official_links"]=json!({"provider":{"language":"en","region":"US"}});
+        assert!(index.resource(ResourceKind::Manga,&native,&BTreeSet::new()).is_err());
+    }
+
 }

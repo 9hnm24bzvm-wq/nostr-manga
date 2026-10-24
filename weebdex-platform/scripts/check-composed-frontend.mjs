@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';
 // Materialize the actual production transforms in an ignored, local-only tree.
 // This command never starts the application, a browser, or a database.
 import fs from 'node:fs';
@@ -101,7 +102,7 @@ for (const name of ['@lucide/svelte', 'svelte-sonner', 'axios', 'http-status-cod
   aliasesForCheck[name] = [path.join(dependencies, name, typeEntry)];
   packageTypeAliases.push({ name, production_entry: aliases.find(alias => productionAliasName(alias.find) === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
 }
-const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input)];
+const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input), createBoundedReaderOverlays(input)];
 const manifest = [], rewrites = [], maps = new Map(), graph = [], reachable = new Set(), workerTypeBindings = [];
 const projectedSourceRoots = ['src', 'platform-integrations'].map(name => path.join(project, name) + path.sep);
 function isProjectedSource(file) {

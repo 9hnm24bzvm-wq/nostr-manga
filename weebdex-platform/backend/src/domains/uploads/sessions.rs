@@ -78,8 +78,12 @@ fn session_id(id: &str) -> ApiResult<()> {
         Err(ApiError::bad_request("Invalid upload session identifier"))
     }
 }
+#[cfg(test)]
 fn validate_draft(draft: &Draft) -> ApiResult<()> {
-    crate::domains::catalog::validation::language(&draft.language)?;
+    validate_draft_for(draft, crate::domains::catalog::validation::LanguageContract::Native)
+}
+pub(crate) fn validate_draft_for(draft: &Draft, contract: crate::domains::catalog::validation::LanguageContract) -> ApiResult<()> {
+    contract.validate(&draft.language)?;
     for value in [&draft.volume, &draft.chapter] {
         if value.as_ref().is_some_and(|v| !valid_number(v)) {
             return Err(ApiError::bad_request("Invalid chapter or volume number"));
@@ -131,6 +135,7 @@ async fn open_session_for(
     user: &str,
     retry_prepared_commit: bool,
 ) -> ApiResult<Row> {
+    crate::domains::auth::closure::active_in(tx,user).await?;
     session_id(id)?;
     let row=tx.query_opt("SELECT manga_id,chapter_id,edit_version,groups,state,committed_chapter_id,commit_hash,expires_at>clock_timestamp() AS active FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",&[&id,&user]).await?.ok_or_else(||ApiError::not_found("Upload session not found"))?;
     if row.get::<_, String>(4) != "open" {
@@ -254,6 +259,7 @@ async fn current_committed_result(
     session: &str,
     actor: &impl CatalogMutationActor,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     current_committed_result_for_owner(state, tx, chapter, session, actor.user_id()).await
 }
 async fn current_committed_result_for_owner(
@@ -431,6 +437,7 @@ pub(crate) async fn save_resume_in(
     id: &str,
     payload: &ResumePatch,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
     let v = &payload.draft;
     if payload.version <= 0 {
@@ -446,7 +453,7 @@ pub(crate) async fn save_resume_in(
         crate::domains::catalog::validation::string(v, field, max, false)?;
     }
     if let Some(language) = v["language"].as_str().filter(|lang| !lang.is_empty()) {
-        crate::domains::catalog::validation::language(language)?;
+        actor.language_contract().validate(language)?;
     }
     open_session(tx, id, actor.user_id()).await?;
     require_mutable_session(tx, id).await?;
@@ -499,6 +506,7 @@ pub(crate) async fn begin_in(
     actor: &impl CatalogMutationActor,
     payload: &Begin,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("chapter.create")?;
     CatalogRepository::ensure_upload_target(&tx, &payload.manga, actor, &payload.groups).await?;
     expire_owner(&tx, &actor.user_id()).await?;
@@ -543,10 +551,15 @@ pub(crate) async fn begin_edit_in(
     actor: &impl CatalogMutationActor,
     chapter: &str, payload: &Edit,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
+    // Expiry may lock the owner's old OPEN session and media references. Take
+    // those locks before the chapter, matching commit/scheduling admission.
+    // Authorization/version failures roll this entire transaction back; no
+    // filesystem cleanup runs before the handler commits successfully.
+    expire_owner(&tx, &actor.user_id()).await?;
     let old =
         CatalogRepository::authorize_chapter_edit(&tx, &chapter, actor, payload.version).await?;
-    expire_owner(&tx, &actor.user_id()).await?;
     if tx
         .query_opt(
             "SELECT id FROM platform.upload_sessions WHERE owner_id=$1 AND state='open'",
@@ -763,6 +776,7 @@ pub(crate) async fn replace_file_in(
     image: &mut StoredImage,
     variants: &mut Vec<(String, StoredImage)>,
 ) -> ApiResult<FileReplacement> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
     if !storage::valid_id(file) || expected < 1 {
         return Err(ApiError::bad_request("Invalid replacement file or version"));
@@ -857,6 +871,7 @@ pub(crate) async fn attach_in(
     image: &mut StoredImage,
     variants: &mut Vec<(String, StoredImage)>,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
     open_session(&tx, id, &actor.user_id()).await?;
     require_mutable_session(&tx, id).await?;
@@ -921,9 +936,26 @@ pub(crate) async fn commit_in(
     id: &str,
     payload: &Commit,
 ) -> ApiResult<Value> {
+    commit_impl(state, tx, actor, id, payload, None).await
+}
+/// Only the private durable scheduling gate can construct this actor. Ordinary
+/// native/public commits never acquire permission to mutate scheduled sessions.
+pub(crate) async fn commit_scheduled_in(
+    state: &AppState, tx: &Transaction<'_>,
+    actor: &crate::public_api::scheduled_uploads::ScheduledUploadActor,
+    id: &str, payload: &Commit,
+) -> ApiResult<Value> {
+    commit_impl(state, tx, actor, id, payload, Some(actor)).await
+}
+async fn commit_impl(
+    state: &AppState, tx: &Transaction<'_>, actor: &impl CatalogMutationActor,
+    id: &str, payload: &Commit,
+    scheduled: Option<&crate::public_api::scheduled_uploads::ScheduledUploadActor>,
+) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
     session_id(&id)?;
-    validate_draft(&payload.draft)?;
+    validate_draft_for(&payload.draft, actor.language_contract())?;
     let hash = hex::encode(Sha256::digest(
         serde_json::to_vec(&payload).map_err(|_| ApiError::bad_request("Invalid commit"))?,
     ));
@@ -940,7 +972,10 @@ pub(crate) async fn commit_in(
         let value = current_committed_result(&state, &tx, &chapter, &id, actor).await?;
         return Ok(value);
     }
-    let session = open_session_for(&tx, &id, &actor.user_id(), true).await?;
+    let session = match scheduled {
+        Some(schedule) => schedule.session_for(tx, id, &hash).await?,
+        None => open_session_for(tx, id, actor.user_id(), true).await?,
+    };
     let native_commit_payload =
         serde_json::to_value(&payload).map_err(|_| ApiError::bad_request("Invalid commit"))?;
     let rows = file_rows(&tx, &id).await?;
@@ -1009,7 +1044,7 @@ pub(crate) async fn commit_in(
     } else {
         actor.require_permission("chapter.create")?;
         CatalogRepository::ensure_upload_target(&tx, &manga, actor, &groups).await?;
-        let chapter = storage::short_id();
+        let chapter = scheduled.map(|s| s.chapter_id().to_owned()).unwrap_or_else(storage::short_id);
         let mut record = ChapterPublication {
             id: chapter.clone(),
             manga_id: manga.clone(),
@@ -1052,7 +1087,7 @@ pub(crate) async fn commit_in(
                 }
             })
             .collect::<Vec<_>>();
-        let receipt = crate::protocol::publication::publish_native_upload(
+        let receipt = crate::protocol::publication::publish_native_upload_fenced(
             &state,
             &tx,
             actor,
@@ -1061,13 +1096,15 @@ pub(crate) async fn commit_in(
             &mut record,
             &originals,
             &native_commit_payload,
+            scheduled.map(|s| s.source_identity()),
+            scheduled.and_then(|s| s.parent_manifest()),
         )
         .await?;
         let value = match receipt {
             Some(receipt) => {
-                CatalogRepository::publish_verified_protocol_chapter(&tx, &record, &receipt).await?
+                CatalogRepository::publish_verified_protocol_chapter(&tx, &record, &receipt, actor.language_contract()).await?
             }
-            None => CatalogRepository::publish_chapter(&tx, &record).await?,
+            None => CatalogRepository::publish_chapter_for(&tx, &record, actor.language_contract()).await?,
         };
         // Original protocol names are canonical hashes; keep all positions,
         // including repeated identical original bytes, in the instance index.
@@ -1152,6 +1189,7 @@ pub async fn cancel(
     Ok(StatusCode::NO_CONTENT)
 }
 pub(crate) async fn cancel_in(tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
     session_id(&id)?;
     let row = tx
@@ -1161,6 +1199,9 @@ pub(crate) async fn cancel_in(tx: &Transaction<'_>, actor: &impl CatalogMutation
         )
         .await?
         .ok_or_else(|| ApiError::not_found("Upload session not found"))?;
+    if row.get::<_, String>(0) == "scheduled" {
+        return Err(ApiError::conflict("Use the signed owner schedule cancellation operation"));
+    }
     require_mutable_session(&tx, &id).await?;
     if row.get::<_, String>(0) == "committed" {
         return Err(ApiError::conflict(
@@ -1207,6 +1248,7 @@ async fn remove_files(
     Ok(StatusCode::NO_CONTENT)
 }
 pub(crate) async fn remove_files_in(tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str, files: &[String]) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
     if files.len() > MAX_FILES || files.iter().any(|f| !storage::valid_id(f)) {
         return Err(ApiError::bad_request("Invalid upload file identifiers"));

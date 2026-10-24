@@ -5,7 +5,7 @@
       "path": "src/lib/components/upload/UploadChapter.svelte",
       "source_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
       "composed_sha256": "ae8daf28579b883c7d0cdc9d6319e668f310b85b3a443ee62cbe3a21d7552377",
-      "output_sha256": "f1531010cc406773fd03154d5e76696dcf51426374910ac22b98fd4028c994e5"
+      "output_sha256": "f4b8a0ec324f5bc483fd8012b02bd3272f521a183168d99cf7cab2256bd39d28"
     },
     {
       "path": "src/lib/components/upload/UploadChapterPages.svelte",
@@ -48,6 +48,18 @@
       "source_sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
       "composed_sha256": "5ce9490fda4b757072b8c30025291c4fbb847d982311822fbde299eaa1974280",
       "output_sha256": "0500a0fb7a843503e137b44355ef51e683e3484fb54b8784c8b9c66e22857184"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+      "source_sha256": "c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9",
+      "composed_sha256": "e34402aebd6fae2085c3dedcaf650a0bc242c5d921ac2217c9c46515eaed1879",
+      "output_sha256": "ec72abd0e8bb8ccc8925fcf45e65c963c0f1ce53b2fdc7f964bd4c8fb13bde63"
+    },
+    {
+      "path": "src/@types/Upload.d.ts",
+      "source_sha256": "a5579edd66f0af5efe63f226e00912fbbd996fbae52b1ea30a09a70b9358db83",
+      "composed_sha256": "fdeed27ad868c183fab3257feec05e97ef0d4b7f568b87d9339f7628d6620553",
+      "output_sha256": "66a9e2ac1b43784fc2ae4dfedee9313094d5ade49f5af7c9eb5bc1310a5fbdbf"
     }
   ],
   "patches": [
@@ -393,6 +405,104 @@
       "count": 1,
       "before": "\t<Label>\r\n\t\tPages",
       "after": "\t{#if uploadSession?.can_mutate === false && owner.pendingReplacement()?.sessionId === uploadSession.id}\r\n\t\t<div role=\"status\" class=\"space-y-2\">\r\n\t\t\t<p>Replacement outcome unresolved. This exact upload is read-only. Displayed pages are kept until their exact replacement receipt is confirmed.</p>\r\n\t\t\t<Button type=\"button\" variant=\"outline\" disabled={$mutex} onclick={checkSignedReplacement}>Check replacement outcome</Button>\r\n\t\t</div>\r\n\t{/if}\r\n\t<Label>\r\n\t\tPages"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+      "label": "public upload language is explicit code entry, not the native Locale enum",
+      "count": 1,
+      "before": "\t\t\t<Combobox.Root type=\"single\" bind:value={draft.language} {disabled}>\r\n\t\t\t\t<Combobox.Trigger class=\"w-full border-none\">\r\n\t\t\t\t\t{#if draft.language}\r\n\t\t\t\t\t\t<div class=\"flex w-0 flex-auto items-center gap-2\">\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\tclass=\"size-5\"\r\n\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(draft.language)}.svg\"\r\n\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(draft.language)}\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t<span class=\"truncate\">\r\n\t\t\t\t\t\t\t\t{Locale.toLanguage(draft.language)}\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t<span class=\"truncate\">Select Language</span>\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t<Combobox.Content>\r\n\t\t\t\t\t{#each Object.entries(Locale.Languages) as [key, value]}\r\n\t\t\t\t\t\t<Combobox.Item value={key}>\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader class=\"size-5\" src=\"/images/flags/{Locale.to3166(key)}.svg\" alt={value} />\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t{value}\r\n\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Combobox.Content>\r\n\t\t\t</Combobox.Root>",
+      "after": "\t\t\t<Input type=\"text\" bind:value={draft.language} placeholder=\"ta or pt-br\" maxlength={5} required {disabled} />\r\n\t\t\t<p class=\"text-muted-foreground text-sm\">Public uploads use lowercase two-letter codes, optionally followed by a two-letter region. Imported labels remain exact; replace an unsupported code explicitly before saving a full upload draft or publishing.</p>"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "private schedule controls use dedicated typed extensions",
+      "count": 1,
+      "before": "import { revokeUploadPreviewUrl }",
+      "after": "import UploadSchedulesPanel from \"$publicApi/UploadSchedulesPanel.svelte\";\r\n\timport { scheduledUtc, type ScheduleReceipt } from \"$publicApi/upload-schedules\";\r\n\timport { revokeUploadPreviewUrl }"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "scheduling intent is separate from the autosaved chapter draft",
+      "count": 1,
+      "before": "\tlet isOneshot = $state(false);",
+      "after": "\tlet scheduleEnabled = $state(false), publishAt = $state(\"\"), scheduleRevision = $state(0);\r\n\tconst scheduleValid = $derived.by(() => { if (!scheduleEnabled) return true; try { scheduledUtc(publishAt); return true; } catch { return false; } });\r\n\tlet isOneshot = $state(false);"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "invalid UTC never dispatches a scheduling intent",
+      "count": 1,
+      "before": "resumeReady && uploadSession?.can_retry_commit",
+      "after": "scheduleValid && resumeReady && uploadSession?.can_retry_commit"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "only chapter draft commit carries optional nonnullable UTC",
+      "count": 1,
+      "before": "\"POST\", { ...payload, termsAccepted: isTemsAccepted });",
+      "after": "\"POST\", { ...payload, termsAccepted: isTemsAccepted, ...(scheduleEnabled ? { publishAt: scheduledUtc(publishAt) } : {}) });"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "schedule acceptance never enters publication success handling",
+      "count": 1,
+      "before": "if ((res?.status === StatusCodes.OK || res?.status === StatusCodes.ACCEPTED) && res.accepted === true && !res.body) {",
+      "after": "if (res?.status === StatusCodes.ACCEPTED && res.scheduled && res.sessionId) {\r\n\t\t\t\t\tshowScheduleAccepted(res.sessionId, res.scheduled);\r\n\t\t\t\t} else if ((res?.status === StatusCodes.OK || res?.status === StatusCodes.ACCEPTED) && res.accepted === true && !res.body) {"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "confirmed schedules release only the open editor not private originals",
+      "count": 1,
+      "before": "\tconst restoreUpload = (saved: UploadSession) => {\r\n\t\towner.assert();",
+      "after": "\tconst showScheduleAccepted = (sessionId: string, receipt: ScheduleReceipt) => {\r\n\t\towner.assert();\r\n\t\tfor (const file of uploadSession?.relationships.files ?? []) if (file.thumbnail) { if (!revokeUploadPreviewUrl(file.thumbnail)) URL.revokeObjectURL(file.thumbnail); }\r\n\t\twindow.clearTimeout(resumeSaveTimer); uploadSession = undefined; draft = {}; lastSavedUpload = \"\";\r\n\t\tchapter = undefined; signedReceiptPending = false; isBeginAnotherUploadSession = false;\r\n\t\tisTemsAccepted = false; scheduleEnabled = false; publishAt = \"\"; scheduleRevision++;\r\n\t\tmessage = { title: \"Schedule accepted, not a published chapter\", description: `Upload ${sessionId} has a private immutable schedule${receipt.publishAt ? ` for ${receipt.publishAt} UTC` : \"\"}. Check Private scheduled uploads for its current status. You can start another upload now. No reader navigation was started.` };\r\n\t\tisShowMessage = true;\r\n\t};\r\n\tconst restoreUpload = (saved: UploadSession) => {\r\n\t\towner.assert();\r\n\t\tconst scheduled = (saved as UploadSession & { schedule?: ScheduleReceipt }).schedule;\r\n\t\tif (scheduled && !owner.commitState()) { showScheduleAccepted(saved.id, scheduled); return; }"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "UTC scheduling fields remain frozen through dispatch and uncertainty",
+      "count": 1,
+      "before": "\t\t\t<UploadChapterPages bind:pages={uploadSession.relationships.files!} disabled={$mutex || !uploadSession} />",
+      "after": "\t\t\t<UploadChapterPages bind:pages={uploadSession.relationships.files!} disabled={$mutex || !uploadSession} />\r\n\t\t\t<fieldset class=\"space-y-2 rounded border p-3\" disabled={$mutex || uploadSession.can_mutate === false}>\r\n\t\t\t\t<legend>Publication timing</legend>\r\n\t\t\t\t<label class=\"flex gap-2\"><input type=\"checkbox\" bind:checked={scheduleEnabled} />Schedule this upload in UTC</label>\r\n\t\t\t\t{#if scheduleEnabled}\r\n\t\t\t\t\t<label for=\"publish-at-utc\">UTC date and time, including seconds</label>\r\n\t\t\t\t\t<input id=\"publish-at-utc\" type=\"text\" class=\"block w-full rounded border p-2\" bind:value={publishAt} placeholder=\"YYYY-MM-DDTHH:MM:SS\" aria-describedby=\"publish-at-help\" aria-invalid={!scheduleValid} />\r\n\t\t\t\t\t<p id=\"publish-at-help\">UTC only, not your local timezone. A future timestamp creates a private schedule. Past timestamps publish immediately according to server time. Metadata and pages become immutable once scheduled.</p>\r\n\t\t\t\t\t{#if !scheduleValid}<p role=\"status\">Enter a real UTC date and time in YYYY-MM-DDTHH:MM:SS format.</p>{/if}\r\n\t\t\t\t{:else}<p>Publish immediately using the existing publication checks.</p>{/if}\r\n\t\t\t</fieldset>"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "private owner schedule management does not occupy the open form",
+      "count": 1,
+      "before": "\t<form class=\"space-y-5\" onsubmit={uploadSession ? commitUploadSession : createUploadSession}>",
+      "after": "\t<UploadSchedulesPanel {owner} revision={scheduleRevision} />\r\n\t<form class=\"space-y-5\" onsubmit={uploadSession ? commitUploadSession : createUploadSession}>"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "terminal cancelled schedule resolves only its private dispatch fence",
+      "count": 1,
+      "before": "const saved = await reconcileUploadReceipt(owner, sessionId); owner.assert();",
+      "after": "const saved = await reconcileUploadReceipt(owner, sessionId); owner.assert();\r\n\t\t\tif (\"scheduled\" in saved) { showScheduleAccepted(saved.sessionId, saved.scheduled); return; }"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "cancelled schedule is never described as pending publication",
+      "count": 1,
+      "before": "title: \"Schedule accepted, not a published chapter\", description:",
+      "after": "title: receipt.state === \"cancelled\" ? \"Schedule cancelled\" : \"Schedule accepted, not a published chapter\", description:"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "label": "cancelled schedule explains safe terminal release",
+      "count": 1,
+      "before": "description: `Upload ${sessionId} has a private immutable schedule",
+      "after": "description: receipt.state === \"cancelled\" ? `Upload ${sessionId} was cancelled before publication started. You can start another upload now.` : `Upload ${sessionId} has a private immutable schedule"
+    },
+    {
+      "path": "src/@types/Upload.d.ts",
+      "label": "public-only scheduled snapshot state",
+      "count": 1,
+      "before": "state?: \"open\" | \"committed\" | \"deleted\";",
+      "after": "state?: \"open\" | \"committed\" | \"deleted\" | \"scheduled\";"
+    },
+    {
+      "path": "src/@types/Upload.d.ts",
+      "label": "public-only scheduled null expiry is not immediate expiration",
+      "count": 1,
+      "before": "expires_at?: string;",
+      "after": "expires_at?: string | null;"
     }
   ]
 }

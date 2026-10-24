@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "scope": "Exact comparison-only predecessor reconstruction. Never runtime/build substitution or historical browser/HTTP/pipe/timing relabelling.",
+  "path": "weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts",
+  "current_product_source": "e0cb4995864139e16f1ae76e2e402bc7b6de33f9",
+  "previous_product_source": "b922c9deb677be3c8d2e6c2c78249d79a4ee16f5",
+  "browser_executed": false,
+  "http_executed": false,
+  "pipe_timing_qualified": false,
+  "raw": {
+    "current_bytes": 20569,
+    "current_sha256": "03ffe025cadb09194022b6e8ac496a4e089b5ec44a5e512fce83f528bac74eb8",
+    "previous_bytes": 20300,
+    "previous_sha256": "171e5b962818af1134747e8cea4dbbd118deed55b5782237dc76994085d35fc1",
+    "literal_reversals": [
+      {
+        "current": "      const moderatorDecisionWrite = /^\\/api\\/v1\\/nostr\\/moderation\\/reports\\/(?:[A-Za-z0-9_:-]|%3A){1,128}$/.test(parsed.pathname) && method === 'POST' && !url.includes('?') && contentType === 'application/json' && responseType === 'json';\n      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : discussionWrite ? DISCUSSION_JSON_LIMIT : (nativeReportWrite || moderatorDecisionWrite) ? NATIVE_REPORT_JSON_LIMIT : JSON_LIMIT);\n",
+        "previous": "      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : discussionWrite ? DISCUSSION_JSON_LIMIT : nativeReportWrite ? NATIVE_REPORT_JSON_LIMIT : JSON_LIMIT);\n"
+      }
+    ]
+  },
+  "qa_stripped": {
+    "current_bytes": 18099,
+    "current_sha256": "f0d6d15f118577ad5592517a67d4dd1af6b6014df2d0f81199430e55f1267845",
+    "previous_bytes": 17830,
+    "previous_sha256": "6818772364bb6c77ca419ec3fbd96c9d637ff8d3fcfa51911f5dfec5b0cec537",
+    "literal_reversals": [
+      {
+        "current": "      const moderatorDecisionWrite = /^\\/api\\/v1\\/nostr\\/moderation\\/reports\\/(?:[A-Za-z0-9_:-]|%3A){1,128}$/.test(parsed.pathname) && method === 'POST' && !url.includes('?') && contentType === 'application/json' && responseType === 'json';\n      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : discussionWrite ? DISCUSSION_JSON_LIMIT : (nativeReportWrite || moderatorDecisionWrite) ? NATIVE_REPORT_JSON_LIMIT : JSON_LIMIT);\n",
+        "previous": "      const requestLimit = budget(input.requestLimit, multipart ? MULTIPART_LIMIT : discussionWrite ? DISCUSSION_JSON_LIMIT : nativeReportWrite ? NATIVE_REPORT_JSON_LIMIT : JSON_LIMIT);\n"
+      }
+    ]
+  }
+}

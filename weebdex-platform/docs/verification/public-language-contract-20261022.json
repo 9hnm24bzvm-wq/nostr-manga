@@ -1,0 +1,969 @@
+{
+  "kind": "Source-bound finite language-contract qualification, not hosted/browser acceptance",
+  "dateUtc": "2026-10-22",
+  "baseCommit": "bd88eb80ded19bf27e2118ba63da6379062fd7cd",
+  "frozenFinalSource": {
+    "commit": "3c9fff826e8beb4b18e97c10712b0368676cb63f",
+    "tree": "159240e4ac3dc9137bae4db3c5d080f29e7950d2",
+    "backendProductionTree": "c81dcae810c38fa6c5a3630763fa87ff4dbe16b3",
+    "frontendPublicTree": "327e34f4d1e81585a2d6897219bb1063b5b5381e"
+  },
+  "sourceFiles": [
+    {
+      "path": "weebdex-platform/backend/src/client_peer.rs",
+      "sha256": "10e754bb4b6ea61ba966169566c52bbc63cb2375d55fee1d30687d5092b7f885"
+    },
+    {
+      "path": "weebdex-platform/backend/src/config.rs",
+      "sha256": "48a338965f6b4c7e21765d87311251f284e6217a746bfecc7cc87a6c91da552b"
+    },
+    {
+      "path": "weebdex-platform/backend/src/contracts/library.rs",
+      "sha256": "57401cb01a719a53bdcc303a54785995014ae75ea34c4695a384e4575e13cd4c"
+    },
+    {
+      "path": "weebdex-platform/backend/src/contracts/mod.rs",
+      "sha256": "0e02d5494614bd93634057e0099f697f7ab943837a7c21370cce9cec67c5a924"
+    },
+    {
+      "path": "weebdex-platform/backend/src/db.rs",
+      "sha256": "ff67924b63235b9aa4ed175d5bae5bc14197cdb654cd2bbdd8f6a5037eecc26b"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/analytics/mod.rs",
+      "sha256": "0ac70342e26a5a63b1f7963f5f2a85c254a5e90cbf9f29969e1321f0d6fef4e7"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/announcements/README.md",
+      "sha256": "037edaa34ede51c7a3100b7774c964cfffdba038a324dcc546318ccaba136dcc"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/announcements/mod.rs",
+      "sha256": "6fb358c5dc3972c4e43e7752b3c2ec1e3ccb5463d92faad7ac855ccb09f69bc9"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/README.md",
+      "sha256": "d8da539c16dd26613bdfbdac2ed3fcff5a21cc6aa27d12863d8261e9857fb59a"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/clients.rs",
+      "sha256": "3d5f109601d0064fc7b11d4f4ccc3e74de38c2f5f0d45c703fc0713b88c39d94"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/crypto.rs",
+      "sha256": "5d98bf150cb5b9143a67dfce6a405dea26929d7290f8a3fdc78bf91c6cd07808"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/flows.rs",
+      "sha256": "77ca471a4deba390545255d78c76c0085fa1d504d39f0c0e6d3c25ef73960d20"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/mail.rs",
+      "sha256": "dff688e3c8b89cf96f77fc429b39d9b5aceb94790ff9503c9540362c0400921f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/mod.rs",
+      "sha256": "408bbdc5d6ee0b3c2b49c822c16c909c55d33548ea2c413b32c5937b3e90248b"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/preferences.rs",
+      "sha256": "ce19addacf4c564653d914df47931b733fb1235452d38f41c8abe21e4e19cf41"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/auth/principal.rs",
+      "sha256": "e2ece78caf36d498e31510cfe6143b609eb66b8d1aea3705e0b3d263712c164e"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/derivatives.rs",
+      "sha256": "899601fb63557b840a789432e2a2dd87ea61f20b99a355386ed4faaf4d00c3ca"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/entity_mutations.rs",
+      "sha256": "2348f4ee6621377dba07f1cac6ce47f4f401b12e70b04442b4b1a888699483d7"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/feed_diagnostics.rs",
+      "sha256": "5bbe2a65ecad7d2ef350289ed124863d14678417eff409edbfbdbddc9b2eba1d"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/feed_projection.rs",
+      "sha256": "70815f6ce89a313e51d0ae5c446c1a65307c790182c432b1fa7703d120bb5fb4"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/languages.rs",
+      "sha256": "b8a6a0b8ec3a2259bbdc959a94cb2c15d006db76e69c61b466cde52c9385f79a"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/mod.rs",
+      "sha256": "ecf64f62eb1e9725dc56ba2ce75214db67023b4d85805418fda4e01a9274019b"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/mutations.rs",
+      "sha256": "a70d712c9910bbc6e56e5dd5819bd6fe77de9a2476ea9b74727541eb88b58570"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/protocol_bridge.rs",
+      "sha256": "f31b0e3fd0d8357ec9805cc1ae69373e97d3bf6453958c359ed61223cc07e591"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/query.rs",
+      "sha256": "2c8f14d8728af6158223f8de1faa7b2d60d53b53bc2020a846a40f867153bd22"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/read.rs",
+      "sha256": "4fe301d764fd192f24300d41f87c3d874b30c60ebf991814d174504d05f905db"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/repository.rs",
+      "sha256": "437f6a6c42b783b6530a89061ca7a37724838068499b30c2d58a41636ff15923"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/catalog/validation.rs",
+      "sha256": "58057a115f79eba3cd0dd03e9620ce1389be18976f23f881b76c5329f06b9a48"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/community/README.md",
+      "sha256": "1c0dcc1f067c010475018ea6770a0aaa17586e27434474d0be20e268a466fb9e"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/community/mod.rs",
+      "sha256": "9c64d255f012a4f6a672e8aa653ea43237576e337ea5631a5ded0057cba9cfb2"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/follow_mutations.rs",
+      "sha256": "cc5a34af2d8889dbee1c8af5c31697ac7602be388dc75aa89bf9b50dd8d42efa"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/follows.rs",
+      "sha256": "d644bf03b443431195f22156be691a1bd6919143c27e438542f30ae78c4f7447"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/history.rs",
+      "sha256": "67061d19d2d8f61afe7f2168ae455b9ff28b9e179b9d7d5f82fa153568e2bd13"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/lists.rs",
+      "sha256": "a5378027f1b4dc17c6deaae9c4f76ec0c34dcf2f5000e3645b769b7f6fbd5655"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/mod.rs",
+      "sha256": "e23ac9048791478b995fefbc13bda2dae17a25967c83a24d308242400976f794"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/preference_mutations.rs",
+      "sha256": "2b2200df7d4bd5f572ceeb19389816bc5a0c6805e27413f1103ec805f88dc5b5"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/preferences.rs",
+      "sha256": "533d12d3fa973500e939ee64dd90ac507811bf7e9aa0a30eff09873cc912cdc2"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/profile_mutations.rs",
+      "sha256": "569f97b3c7f8e3a0bf62894bc640af44be842cb9c1212946522738a0d4e4319a"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/progress.rs",
+      "sha256": "199d9a64a4f032fff11032479caf084b45a1b1803cbee1a6a040c51ecc7cdf81"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/query.rs",
+      "sha256": "dc2158c5504e0fb30373880ad2633e0e9bccde332120887bedb0644cb18d385f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/ratings.rs",
+      "sha256": "5d984637254967df5dc92f46792fe5c7b917a84d2f9563af83497d7bac7dbda3"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/reading_status.rs",
+      "sha256": "b3d8e8ff3765865367c71245a4e02c594e8f42da39e0a8a0c0ad59b7f0fbc190"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/repository.rs",
+      "sha256": "5e84b54c5788d3a7c00eebfecda64057b97a77048450f1ecf02cf998a737ddd8"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/users.rs",
+      "sha256": "d344533fef512abe6e6e22eff26c67f589fcd2608f4d31fda3a41c6edc00a80d"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/library/validation.rs",
+      "sha256": "007fcc46bd144800b8bd18707ee97e2215dee2b96c7a86dcd7d488ebd5f11228"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/mod.rs",
+      "sha256": "5a2a3087abb27e8938480a192d6f346a04d14dbe7e96d5b50701d48b3ffeb380"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/moderation/mod.rs",
+      "sha256": "a23adeda06459b1d9948b473de40716d19234a4f67e3af0b52f2f02318ba9a18"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/previews/mod.rs",
+      "sha256": "593f9f01f9b0138ee1b4922db16cb23acb0505572d10cee4214bc0f080602e31"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/uploads/README.md",
+      "sha256": "73d62c685a586d19f100ef134c7d603fe7d4092960a867be7c93937f7dcdcf05"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/uploads/derivatives.rs",
+      "sha256": "f3f8bc29d943e0ff0e47cfa041800f6e275182519ea22b9a1807ac447982b2bb"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/uploads/media.rs",
+      "sha256": "ecc85770bc17830d8b60e31d9d871781d71237a0aedc65377ccdb6630ec98762"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/uploads/mod.rs",
+      "sha256": "650182652e64ec5b053cc4b0e2b1f44edfa860e34b528ad6b4848086627de466"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/uploads/proxy.rs",
+      "sha256": "4b74ecabf8dc961c705d4657ca9f147d9d98932cbffc7227e7d0c4f6ca4659cd"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/uploads/sessions.rs",
+      "sha256": "fc008efc68f6adb40005af71c0810253bb014a7409a366746d31b502f7b9bd79"
+    },
+    {
+      "path": "weebdex-platform/backend/src/domains/uploads/storage.rs",
+      "sha256": "71883c65f656e50c030d08b533ff6aa5201108813b411d1c02d78bbff2a7e468"
+    },
+    {
+      "path": "weebdex-platform/backend/src/error.rs",
+      "sha256": "23f52787c1661f59f1e1e241c1cb1d6a11282c02e15a3bc92ec3b56c82110baa"
+    },
+    {
+      "path": "weebdex-platform/backend/src/lib.rs",
+      "sha256": "8052cd460ebb1bf7976d8d6686bd215411ff79b7210d88e2d65b571b2849e85b"
+    },
+    {
+      "path": "weebdex-platform/backend/src/main.rs",
+      "sha256": "89072b2e12ce290a31590f48d36508d486cb6fd1d7a6b8052ab75b05c741b401"
+    },
+    {
+      "path": "weebdex-platform/backend/src/privacy.rs",
+      "sha256": "58ad9202b33a151bb04ae389b73b21e25b4a6f25c5901744c82d2a2570715561"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/adapters.rs",
+      "sha256": "c46004aa45e2f6f1969360c00555a405819f7829fc3ed26977f2304487c89230"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/bridge.rs",
+      "sha256": "4f298315d1fc46e1917d3c042849b50fd3b4b5dc9972f3b0c150f212c291c66b"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/covers.rs",
+      "sha256": "9e5490bcc567f6089a0bb091c61f013181279e7f7404fb120783483822f4ae16"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/deletions.rs",
+      "sha256": "3389f09482c73b1cea338d2c3c659b4d0f55d13a40cb622a5758b7d209ecbbf9"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/http_auth.rs",
+      "sha256": "7b1a6aef40f137d61fbd8174567d15591b6451c024f2d218e77f7e667ad7510a"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/library.rs",
+      "sha256": "7a3fbcf6fcd92f3ba6ddcc22fe8b09e7d70f981a49f01a9a63d7ff83ea07ae07"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/list_aliases.rs",
+      "sha256": "927fe58f1155324bd4411ecd9a3eb042532d2546740d046119652587c114d59f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/media.rs",
+      "sha256": "1f3b6369f30940292a2cd70552f6a779801b04f2a88496f6824caeb6fc8b4a8c"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/mod.rs",
+      "sha256": "d64c24bd99143c3f3cf3678ed4a415e430cf7f2f366badd520d36f97f6e65eab"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/profiles.rs",
+      "sha256": "42a6b623fb892303b8b2d6f7734575991eaef21cab825ee04c2bf911b9c02e39"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/publication.rs",
+      "sha256": "a1090664a768c211edce932e5eb4217fdbd20e392f50febd85b888d2f96ea7a0"
+    },
+    {
+      "path": "weebdex-platform/backend/src/protocol/statuses.rs",
+      "sha256": "498a510ba2d264f4ffe27699f4305859d1438de9f8ca80ac70508fec5d5a2fa9"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/account_reads.rs",
+      "sha256": "0137ee7b6925715b873e1881db421e522886599601eb6d098372c54eb7c49ad8"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/account_settings.rs",
+      "sha256": "30e986308ed40a6532b84b57245202413c05d3b774f87678fc169318f8c6eb55"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/at_home_core.rs",
+      "sha256": "d06e17b94f7f26d8498bf7a8b5020700d6fe9d7a083c92d7d51256aa7fadee16"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/auth.rs",
+      "sha256": "af140bc5bc0038af8c2436a82e4d3be9a85ca9f4cb3e3e8c32889a3e70facdf9"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/catalogue.rs",
+      "sha256": "ea311ce5e5dfacfbcf18a758be30915b11895710e61e610c7f55ef0bcc80c73f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/catalogue_dto.rs",
+      "sha256": "228c2d699c313ec2c760703f6175b622246b5c1d294b198219a76e4200a62887"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/catalogue_edges.rs",
+      "sha256": "66c89729fee505bf1bb750a890ab79daddb9c9750362192b87389652aecf66af"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/chapter_writes.rs",
+      "sha256": "283464a6a42c1721dc610dde876d8ca276817642a26bde76f24cc08a84a728cf"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/cover_filename.rs",
+      "sha256": "b4ebf110be86c860cfe74e60802c550a58ef6a22616925265ce4ab47839a697f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/cover_writes.rs",
+      "sha256": "ac104c736af148e0cdda9fce25351c9847f9d8ce9b0a01dc21e01171e479c286"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/drafts.rs",
+      "sha256": "371a0651705e3463d93bdff639ef0ec88ed6f182d4d307e6b41fa620415001b5"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/dto.rs",
+      "sha256": "32354e6bca75b263b71c9b05637b0043e40fd2a3742c39ad8fa9b572cbb6e63f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/edge_identity.rs",
+      "sha256": "49dfdd1b2d1415ece18a6fb59c9540d8a3bd01d097a6b0c64bedac385ddcd927"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/editorial.rs",
+      "sha256": "6d4639e991725a9fef1209ce809c0c9e14fcbe80889f4b435003c3ac571a20b6"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/errors.rs",
+      "sha256": "22f6d06e5d5fe6b882acf20014f0e86b97a6e51181d15d995c3493e35292d9f3"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/follow_writes.rs",
+      "sha256": "17b163658fd325c9a2e204032019648e4a3beaa783701ba61d7c11f35214f7df"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/id.rs",
+      "sha256": "d0c8c744f7d5d510a800fed944ca959f61175193f9cc47ec683a65bc5a6bde6f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/identity.rs",
+      "sha256": "6319eb025a8898c65f90cd5b913810ab1ca8cd60a4d06ef3db2bb660905c3bc8"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/legacy.rs",
+      "sha256": "2b403e00945629963380c036ae8d6e6190e02693e7f1bc174eda086c0acdb545"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/library.rs",
+      "sha256": "814f1dac05151c853bf74ea2dc2c1221ed855fc2c7b0b957e1fe211c0ddf57ee"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/list_follows.rs",
+      "sha256": "a607da76ef18fd05e47a3305bb331a64aab815aa8d4600ef9ded5157efb725f3"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/lists.rs",
+      "sha256": "198a0e095a27e06c503b6962df2f769cf7d6c4dd52a462f5a01a5201b469ae64"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/manga_writes.rs",
+      "sha256": "13d87b176a482cc67be130c111caf16d83fbddb55936d72596b1b97227244160"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/media.rs",
+      "sha256": "afd574448eb9105025bb9ac790b77f0e64cdad893de5066fbd909c157cf37ea4"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/mod.rs",
+      "sha256": "aea3f347e197619ec225c1d1522b82923a3e818ef7e06ca2bebd8405cb25e6a2"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/native_forum.rs",
+      "sha256": "b33b67b5d5d3de505325aefcc670f88cb7a05f1e1e4624d2502468cb537b9e65"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/native_forum_core.rs",
+      "sha256": "001f1c941c7b8b75030692f884a09457d6bc01fe86e833a598d46a0aacd6f6b6"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/native_profile.rs",
+      "sha256": "e056aaf22c3af57560f9a52d63fbf3dcaf322f27747baf9ec3f8bb72239f091f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/native_reading_status.rs",
+      "sha256": "11980fb3e02fdf30816df237b9fea2bdfdb689cdb04fa9bb4a6d08ab3b0bbd3c"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/popularity.rs",
+      "sha256": "873b132b73dd07e662ccad21cfd819ae021d2cdef5fdf56b33d24d3d384089be"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/postgres_identity.rs",
+      "sha256": "93cbedb88aabacd775725e512b999ebf607b05752c767e82b1b2229c044831ed"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/profiles.rs",
+      "sha256": "e456371b2a85b86eeabe3edceb6cbcaa4f7aaae81949d93b542f23ea53b435d2"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/query.rs",
+      "sha256": "0624257480e9cd66350441f2462ee6d6cb27143d5c33e87c74f861ec8abb5c4c"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/ratings.rs",
+      "sha256": "f4a3a57171f5c521d1b9bcb7dbbdf3f111937a4ae31f13afbb5294fff38ae605"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/relation_paging.rs",
+      "sha256": "7ad390ee9c6f62a56aa034869cafa79514aca724fc2ee7b6908fc5d6e0b9f848"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/relation_writes.rs",
+      "sha256": "99e42ca55af5b38db0d0d45add378d07936e4a9d9413519e234023e7150feaaf"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/reports.rs",
+      "sha256": "ddf565464d8115816e7c02c19fb41f78660e8ba8c50f55298e355e54fd9cc5f4"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/resource_mappings.rs",
+      "sha256": "a0ed37b74194f152d169dab154d210424d8b92f9ed04e9762392bd97c7782ed3"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/routes.rs",
+      "sha256": "5d110174ad0f8f02919baafe3dd1fa47991c15a46c847884ba9e392ee0b53fb4"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/settings_writes.rs",
+      "sha256": "5fecbfb26655b4105c64b8624bc3e0aac7760a7355ecd27d0fd44d91a415d0bb"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/statistics.rs",
+      "sha256": "643dec3cba6d46a35fe6691042860a329e58a9351e8f9b3ce797246822b5099c"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/statuses.rs",
+      "sha256": "d1b01c5310f8c067bdb190d05663267bd8ce60123801a4f444e34f2b96fe2b1a"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/statuses_core.rs",
+      "sha256": "2be8efc6eb3ecc346f2b2f368912cef91b2043f70938fa4fad5c659808972631"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/title_disposition.rs",
+      "sha256": "859adf8f7eea76ab3f6f71686c83c17a1bf34e52afc0c73e5878d1392eb334e0"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/title_links.rs",
+      "sha256": "6bd94115c957ed1c5ab294097c8244c0558d3bd1fb2d1c2a274acd6e7c3f9ee7"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/upload_extensions.rs",
+      "sha256": "bd3dfde6cf9c03a5efa755507e1039434f4e2bba2180128e01547d6823f4bb4c"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/uploads.rs",
+      "sha256": "ec7eb4bf0b958793c98a364c79a7009c36f35381df434b1e250f3ca4ac2a496f"
+    },
+    {
+      "path": "weebdex-platform/backend/src/public_api/uploads_body.rs",
+      "sha256": "ece106c0d1a4afc781236060d9109b5efc2897ad11861415d446baa5e142ab5a"
+    },
+    {
+      "path": "weebdex-platform/backend/src/router.rs",
+      "sha256": "34b01c5b7896ba341ebd1d93e8a41b626d21ec99eba3082feb1572da24d91514"
+    },
+    {
+      "path": "weebdex-platform/backend/src/runtime.rs",
+      "sha256": "b54345fbbbd8e87194e16fa56ded99d6d5f0c510b9b3833957a9408b01af9982"
+    },
+    {
+      "path": "weebdex-platform/backend/src/state.rs",
+      "sha256": "deb45e54443299ed132e9f06cf83160bd2b024e3f1fa812e962a31d855875a18"
+    },
+    {
+      "path": "weebdex-platform/backend/tests/public_manga_writes.rs",
+      "sha256": "4108959db3d6cd3b2b6b7df6884b0754ece639877f82411b31482f1aa6bda369"
+    },
+    {
+      "path": "weebdex-platform/backend/tests/support/public_language_contract.rs",
+      "sha256": "8f3acba1248f6641ec61aebfe59e1e0dd78a84f0beab5c845bcf253563eb1a41"
+    },
+    {
+      "path": "weebdex-platform/backend/tests/support/public_language_restart.rs",
+      "sha256": "5474f85a2d3573abfd401243914fa65c4d1a18f3f1dafa018b23746ba26ea1f8"
+    }
+  ],
+  "schema": {
+    "name": "MangaDex5.13.1",
+    "upstreamRevision": "60a3bb3c9f25675435a479c925d857015201739e",
+    "sha256": "004031ccdfc4b66727dd1f85d09b5300cf60235bbab2de6f6ea4816094bd6d33",
+    "localizedStringHandling": "Documented compatibility interpretation of inconsistent value-pattern schema, not literal-schema parity."
+  },
+  "executables": {
+    "finalSha256": "bab9d353c0891b26f8553c50eea055fa517c188dac1710baaf73a051198fb1ab",
+    "baselineSha256": "5706f08936873112bf6ea962c32fe6851cb74a8dd3701baff1f7ab7652770ff4",
+    "initial35df25eSha256": "70a5e2c84a7301881f3a76dd350c1459eccbe0b48ce1c0f5ab8e7fb3fe34f3e5"
+  },
+  "owner": {
+    "sha256": "6c402bd8f6c0d4b32da611616bbe83b763dada86559f6d0e87c58d8178e71e9c",
+    "method": "Imported exact reviewed main helper via importlib; run(command, worktree, env, fresh evidence path, name, deadline=180). No lowered limits. One isolated PostgreSQL lifecycle per exact ignored test. HTTP uses frozen executable directly, no Cargo.",
+    "limits": {
+      "totalSeconds": 180,
+      "cleanupSeconds": 25,
+      "logBytes": 4194304,
+      "births": 1024,
+      "sampleBytes": 8388608,
+      "evidenceGrowthBytes": 268435456
+    }
+  },
+  "rust": {
+    "toolchain": "1.90.0",
+    "buildFlags": "--locked --offline -j2; CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 CARGO_INCREMENTAL=0",
+    "libraryResult": {
+      "sourceCommit": "35df25e9064d2cca94bf65235502487e2e542d73",
+      "passed": 157,
+      "failed": 0,
+      "ignored": 2,
+      "unchangedProductionTreeThroughFinal": true
+    },
+    "integrationTarget": "public_manga_writes",
+    "selectedResults": [
+      {
+        "name": "Library tests and initial integration executable",
+        "receiptName": "compile-candidate-35df25e-resource-receipt.json",
+        "sourceCommit": "35df25e9064d2cca94bf65235502487e2e542d73",
+        "status": "passed",
+        "expectedFailure": false,
+        "exitCode": 0,
+        "elapsedSeconds": 111.05561693303753,
+        "ownerReceiptSha256": "f40e0adbdadba144841904b869063d9808fc56b61bd745c1fd0a97fcd7968200",
+        "logSha256": "fddc8f20ab7141f408786d113c653397a0c43d4b5765b208762b3348e4f7d3f5",
+        "cleanup": {
+          "verified_stopped": true,
+          "forced": false,
+          "remaining_owned": 0,
+          "unknown_births": 0,
+          "tracking_errors": 0,
+          "stdout_eof": true
+        },
+        "innerPostgres": [],
+        "minSampledFreeBytes": 5057146880,
+        "minSampledAvailableMemoryBytes": 4293070848,
+        "maxSampledOwnedRssBytes": 2105634816,
+        "command": [
+          "bash",
+          "-c",
+          "cargo test --locked --offline -j2 --manifest-path weebdex-platform/backend/Cargo.toml --lib -- --test-threads=1 && cargo test --locked --offline -j2 --manifest-path weebdex-platform/backend/Cargo.toml --test public_manga_writes --no-run --message-format=json"
+        ]
+      },
+      {
+        "name": "Frozen final integration executable",
+        "receiptName": "compile-candidate-3c9fff8-resource-receipt.json",
+        "sourceCommit": "3c9fff826e8beb4b18e97c10712b0368676cb63f",
+        "status": "passed",
+        "expectedFailure": false,
+        "exitCode": 0,
+        "elapsedSeconds": 25.33645208697999,
+        "ownerReceiptSha256": "59eaa178af334c049e72db968308f25d4486188f8c8eb931610df3528f120667",
+        "logSha256": "b3527e3985dedd7f0c98ec8f089956c5d48f0681c622ca48301339faebb53c49",
+        "cleanup": {
+          "verified_stopped": true,
+          "forced": false,
+          "remaining_owned": 0,
+          "unknown_births": 0,
+          "tracking_errors": 0,
+          "stdout_eof": true
+        },
+        "innerPostgres": [],
+        "minSampledFreeBytes": 4673519616,
+        "minSampledAvailableMemoryBytes": 5097406464,
+        "maxSampledOwnedRssBytes": 1210871808,
+        "command": [
+          "bash",
+          "-c",
+          "cargo test --locked --offline -j2 --manifest-path weebdex-platform/backend/Cargo.toml --test public_manga_writes --no-run --message-format=json"
+        ]
+      },
+      {
+        "name": "Public/native durable language contract",
+        "receiptName": "http-language-3c9fff8-resource-receipt.json",
+        "sourceCommit": "3c9fff826e8beb4b18e97c10712b0368676cb63f",
+        "status": "passed",
+        "expectedFailure": false,
+        "exitCode": 0,
+        "elapsedSeconds": 2.517908332985826,
+        "ownerReceiptSha256": "f3ea4a83c620f0039379897fc4294194f7b5db4b73eed0c96ea8d9ba12e0f14a",
+        "logSha256": "1bb0b15f07640ebd9a198e78cc9db4d17c50d5db0ae137a0927ae43a98ffd072",
+        "cleanup": {
+          "verified_stopped": true,
+          "forced": false,
+          "remaining_owned": 0,
+          "unknown_births": 0,
+          "tracking_errors": 0,
+          "stdout_eof": true
+        },
+        "innerPostgres": [
+          {
+            "matchedCapturedBirths": 22,
+            "receiptSha256": "ba0a5ad79ed60a2fcc8a0dedd8e7c7b09e5a7f8b82994d8073d383baaa849f65",
+            "postgresCleanup": "verified_stopped",
+            "closedPort": true,
+            "forced": false,
+            "remainingOwnedProcesses": 0,
+            "cleanupErrors": 0,
+            "unconfirmedBirths": 0
+          }
+        ],
+        "minSampledFreeBytes": 4700172288,
+        "minSampledAvailableMemoryBytes": 5945298944,
+        "maxSampledOwnedRssBytes": 361451520,
+        "command": [
+          "bash",
+          "weebdex-platform/scripts/run-auth-tests.sh",
+          "<hash-preserved-public-manga-writes-3c9fff8>",
+          "language_contract::public_language_writes_reach_durable_storage_without_changing_native_contracts",
+          "--ignored",
+          "--exact",
+          "--test-threads=1",
+          "--nocapture"
+        ]
+      },
+      {
+        "name": "Graceful committed-pending fresh-process recovery",
+        "receiptName": "http-restart-reclaimed-3c9fff8-resource-receipt.json",
+        "sourceCommit": "3c9fff826e8beb4b18e97c10712b0368676cb63f",
+        "status": "passed",
+        "expectedFailure": false,
+        "exitCode": 0,
+        "elapsedSeconds": 2.3372216160059907,
+        "ownerReceiptSha256": "07451049a912647d8048d8c2bba508b29a6e18eca4ae10010480b6b7e1ca8286",
+        "logSha256": "5faf87784b8db7e77efc2d4c644d162fb5520e553fc9579e7a7f5493d0945779",
+        "cleanup": {
+          "verified_stopped": true,
+          "forced": false,
+          "remaining_owned": 0,
+          "unknown_births": 0,
+          "tracking_errors": 0,
+          "stdout_eof": true
+        },
+        "innerPostgres": [
+          {
+            "matchedCapturedBirths": 30,
+            "receiptSha256": "d1ee19abd479112740e021cef8fcdf00daa22e9703eec042b758ed2198b87d46",
+            "postgresCleanup": "verified_stopped",
+            "closedPort": true,
+            "forced": false,
+            "remainingOwnedProcesses": 0,
+            "cleanupErrors": 0,
+            "unconfirmedBirths": 0
+          }
+        ],
+        "minSampledFreeBytes": 4691427328,
+        "minSampledAvailableMemoryBytes": 5884174336,
+        "maxSampledOwnedRssBytes": 353726464,
+        "command": [
+          "bash",
+          "weebdex-platform/scripts/run-auth-tests.sh",
+          "<hash-preserved-public-manga-writes-3c9fff8>",
+          "language_contract::restart::public_ta_pending_publication_survives_fresh_process_recovery",
+          "--ignored",
+          "--exact",
+          "--test-threads=1",
+          "--nocapture"
+        ]
+      },
+      {
+        "name": "Neighboring signed title/cover/editorial lifecycle",
+        "receiptName": "http-title-neighbor-3c9fff8-resource-receipt.json",
+        "sourceCommit": "3c9fff826e8beb4b18e97c10712b0368676cb63f",
+        "status": "passed",
+        "expectedFailure": false,
+        "exitCode": 0,
+        "elapsedSeconds": 4.102134232991375,
+        "ownerReceiptSha256": "2ab35bbe5fdb6ca104c95c0b5424263fa08a615522410c4414835a5cdd0cd8f9",
+        "logSha256": "2058c3cc7f4b895c5196a9e41d4a96db57f2e20517b9e2a8c16b8a50b4cdab3c",
+        "cleanup": {
+          "verified_stopped": true,
+          "forced": false,
+          "remaining_owned": 0,
+          "unknown_births": 0,
+          "tracking_errors": 0,
+          "stdout_eof": true
+        },
+        "innerPostgres": [
+          {
+            "matchedCapturedBirths": 26,
+            "receiptSha256": "9367e585a08a25117ab390165a0fce9a1198ee0b1c198dc34ab8db09e0f9b45b",
+            "postgresCleanup": "verified_stopped",
+            "closedPort": true,
+            "forced": false,
+            "remainingOwnedProcesses": 0,
+            "cleanupErrors": 0,
+            "unconfirmedBirths": 0
+          }
+        ],
+        "minSampledFreeBytes": 4618391552,
+        "minSampledAvailableMemoryBytes": 5866455040,
+        "maxSampledOwnedRssBytes": 373739520,
+        "command": [
+          "bash",
+          "weebdex-platform/scripts/run-auth-tests.sh",
+          "<hash-preserved-public-manga-writes-3c9fff8>",
+          "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority",
+          "--ignored",
+          "--exact",
+          "--test-threads=1",
+          "--nocapture"
+        ]
+      },
+      {
+        "name": "Unchanged native projection and exact signed source",
+        "receiptName": "http-import-labels-35df25e-resource-receipt.json",
+        "sourceCommit": "35df25e9064d2cca94bf65235502487e2e542d73",
+        "status": "passed",
+        "expectedFailure": false,
+        "exitCode": 0,
+        "elapsedSeconds": 2.2138300240039825,
+        "ownerReceiptSha256": "2a8fbc4949e764b40e65f6c19e786c33af4834ae8bad3b302efd0cef6604423c",
+        "logSha256": "47571de0a10996746b8394e4b8e856c44e6b93035980390c7485b3f893038336",
+        "cleanup": {
+          "verified_stopped": true,
+          "forced": false,
+          "remaining_owned": 0,
+          "unknown_births": 0,
+          "tracking_errors": 0,
+          "stdout_eof": true
+        },
+        "innerPostgres": [
+          {
+            "matchedCapturedBirths": 21,
+            "receiptSha256": "fa19e9f0fd536a0b18ccc001ab8f19234fa562aa800f05651020d431715c6da0",
+            "postgresCleanup": "verified_stopped",
+            "closedPort": true,
+            "forced": false,
+            "remainingOwnedProcesses": 0,
+            "cleanupErrors": 0,
+            "unconfirmedBirths": 0
+          }
+        ],
+        "minSampledFreeBytes": 4878938112,
+        "minSampledAvailableMemoryBytes": 5705576448,
+        "maxSampledOwnedRssBytes": 327737344,
+        "command": [
+          "bash",
+          "weebdex-platform/scripts/run-auth-tests.sh",
+          "<hash-preserved-public-manga-writes-35df25e>",
+          "language_contract::imported_language_extensions_preserve_current_projection_and_original_source",
+          "--ignored",
+          "--exact",
+          "--test-threads=1",
+          "--nocapture"
+        ]
+      },
+      {
+        "name": "Old-source public ta behavioral counterfactual",
+        "receiptName": "http-old-ta-counterfactual-reclaimed-bd88eb8-resource-receipt.json",
+        "sourceCommit": "bd88eb80ded19bf27e2118ba63da6379062fd7cd",
+        "status": "failed",
+        "expectedFailure": true,
+        "exitCode": 101,
+        "elapsedSeconds": 1.5503649979946204,
+        "ownerReceiptSha256": "a3fd229edf43d58fa7e40f05aab3a942b4dfb06cc5b9c6952d466f62059ad8b7",
+        "logSha256": "576a7f20b272aba33ff2035fd56d40bf9f9aba694d003557a2e5adfd3f381b9b",
+        "cleanup": {
+          "verified_stopped": true,
+          "forced": false,
+          "remaining_owned": 0,
+          "unknown_births": 0,
+          "tracking_errors": 0,
+          "stdout_eof": true
+        },
+        "innerPostgres": [
+          {
+            "matchedCapturedBirths": 15,
+            "receiptSha256": "cac6ac2aac598cbe9febbc337d4aceb15cbf9e164bf6a758b3a32d30b223f271",
+            "postgresCleanup": "verified_stopped",
+            "closedPort": true,
+            "forced": false,
+            "remainingOwnedProcesses": 0,
+            "cleanupErrors": 0,
+            "unconfirmedBirths": 0
+          }
+        ],
+        "minSampledFreeBytes": 4562968576,
+        "minSampledAvailableMemoryBytes": 5898317824,
+        "maxSampledOwnedRssBytes": 276443136,
+        "command": [
+          "bash",
+          "weebdex-platform/scripts/run-auth-tests.sh",
+          "<hash-preserved-public-manga-writes-old-bd88eb8>",
+          "language_contract::public_language_writes_reach_durable_storage_without_changing_native_contracts",
+          "--ignored",
+          "--exact",
+          "--test-threads=1",
+          "--nocapture"
+        ]
+      }
+    ],
+    "freshProcessScope": "Graceful committed-pending recovery in a separate PID on the same host and same synthetic PostgreSQL database. Not abrupt crash, independent-host, or open-session rollback recovery.",
+    "oldSourceProbe": "First identical public ta manga create fails400 Unsupported language code on baseline;200 and durable ta on final. No missing-module failure used as behavioral evidence.",
+    "oldSourceVerifiedProductionAndContractFiles": 124,
+    "oldSourceProvenanceSha256": "6743f48cb8eeb3f7de49e9fe3ee66679fafa2f9fd1e7ff66bfeb3cc7bb1d89f9"
+  },
+  "frontend": {
+    "command": "node --experimental-vm-modules --test weebdex-platform/tests/ci/{test_public_language_contract,test_public_title_commands,test_public_cover_commands,test_public_upload_overlay_recovery,test_rich_editor_fields,test_public_editorial_commands,test_public_upload_adapter_recovery,test_public_search_wiring}.mjs",
+    "passed": 458,
+    "failed": 0,
+    "logSha256": "df43b937c981b15feeda3477abafc248f3e5e9a0d4015a2ed0f81a41677aee14",
+    "originalFilesPreserved": 679,
+    "originalFileManifestSha256": "561c75d5c8904b4231f3767258cf0ab90f5cb9305b22528d91fef75a014b4538",
+    "counterfactual": {
+      "baselineCommit": "bd88eb80ded19bf27e2118ba63da6379062fd7cd",
+      "candidateCommit": "35df25e9064d2cca94bf65235502487e2e542d73",
+      "sameProbes": 61,
+      "baselinePassed": 30,
+      "baselineFailed": 31,
+      "candidatePassed": 61,
+      "candidateFailed": 0,
+      "probeSource": "public-language-existing-api-probes-20261022.mjs",
+      "probeSha256": "adfdb7ed4820a2fc9da154af12aad95955ce60b9ec09a3ea4c148a9d761b9c22",
+      "method": "Overlay this52-probe source and candidate test_public_title_commands.mjs onto read-only baseline/candidate exports; select counterfactual plus nine title ta/invalid/unchanged-language tests. Existing publicQuery/coverMetadata/controller APIs, not missing new modules. Frontend ta acceptance passed on both sources; corrected strict invalid rejection/filter/unchanged imported uppercase-label behavior supplies failures.",
+      "baselineTapSha256": "765bdaf3a672c4219ff67f09ae247e2482b645dd719d8b8df8902c47e95ad2ad",
+      "candidateTapSha256": "942e99ef48112caa774de1a599e0d70a0d3e192120c24b18a964e93dce7eeee0"
+    }
+  },
+  "retainedAttempts": [
+    {
+      "receiptName": "http-language-35df25e-resource-receipt.json",
+      "receiptSha256": "c1d8143ddeab9f02d78212f510b6abaf3aef070942349d25d8b56c75a183ab97",
+      "status": "failed",
+      "exitCode": 101,
+      "explanation": "Fixture incorrectly used globally manga.update-authorized actor2 for an expected403. Corrected only to separately bound actor4 with permissions[]. Grants and published-title behavior remain intact.",
+      "cleanup": {
+        "verified_stopped": true,
+        "forced": false,
+        "remaining_owned": 0,
+        "unknown_births": 0,
+        "tracking_errors": 0,
+        "stdout_eof": true
+      }
+    },
+    {
+      "receiptName": "compile-old-source-bd88eb8-resource-receipt.json",
+      "receiptSha256": "f8847d0abedb1f1a12c90256d27fa7a7b2579c75642428e13123a5f4ad02cca5",
+      "status": "failed",
+      "exitCode": 101,
+      "explanation": "Baseline export initially omitted compile-time contracts include_str inputs. Completed exact baseline export; successful compile is separately retained.",
+      "cleanup": {
+        "verified_stopped": true,
+        "forced": false,
+        "remaining_owned": 0,
+        "unknown_births": 0,
+        "tracking_errors": 0,
+        "stdout_eof": true
+      }
+    },
+    {
+      "receiptName": "compile-candidate-73cce56-resource-receipt.json",
+      "receiptSha256": "0c4e2be3d507c9ab382480faee1af19b96961c21b564b94672bf07307089c4b2",
+      "status": "passed",
+      "exitCode": 0,
+      "explanation": "Diagnostic only: fixture final assertions arrived after freeze. Superseded by clean-source00e21be and3c9fff8 compiles.",
+      "cleanup": {
+        "verified_stopped": true,
+        "forced": false,
+        "remaining_owned": 0,
+        "unknown_births": 0,
+        "tracking_errors": 0,
+        "stdout_eof": true
+      }
+    },
+    {
+      "receiptName": "http-language-00e21be-resource-receipt.json",
+      "receiptSha256": "5ed3da9a79cd50e4ca35f273182c1a2077e7d0054402e810af88998dee097801",
+      "status": "failed",
+      "exitCode": 101,
+      "explanation": "Fixture cache assertion incorrectly expanded private,no-store to snapshot/stage paths. Restored baseline predicate; actual outer policy remains no-store. No production policy changed.",
+      "cleanup": {
+        "verified_stopped": true,
+        "forced": false,
+        "remaining_owned": 0,
+        "unknown_births": 0,
+        "tracking_errors": 0,
+        "stdout_eof": true
+      }
+    },
+    {
+      "receiptName": "compile-candidate-cache-policy-resource-receipt.json",
+      "receiptSha256": "e6fa8adba12ef5646b6a0659b99691adda1bf11bb63eaf7e814513ac76636600",
+      "status": "failed",
+      "exitCode": null,
+      "explanation": "Refused before spawn by unchanged launch disk floor.",
+      "cleanup": {
+        "verified_stopped": false,
+        "forced": false,
+        "remaining_owned": null,
+        "unknown_births": null,
+        "tracking_errors": null,
+        "stdout_eof": false
+      }
+    },
+    {
+      "receiptName": "http-old-ta-counterfactual-bd88eb8-resource-receipt.json",
+      "receiptSha256": "68bcbaf96b89474fcab77740c6f8cb350e32803d16b4f65efd00a9028cf0f237",
+      "status": "failed",
+      "exitCode": null,
+      "explanation": "Refused before spawn by unchanged launch disk floor.",
+      "cleanup": {
+        "verified_stopped": false,
+        "forced": false,
+        "remaining_owned": null,
+        "unknown_births": null,
+        "tracking_errors": null,
+        "stdout_eof": false
+      }
+    },
+    {
+      "receiptName": "http-restart-3c9fff8-resource-receipt.json",
+      "receiptSha256": "23a8220976314d8931f9ca4ee83dc198d8a431dbcb5b732e03d4cf9272520336",
+      "status": "failed",
+      "exitCode": null,
+      "explanation": "Refused before spawn after unrelated isolated checkout consumed reserve; checkout removed and stopped fixture reversibly archived before allowed retry.",
+      "cleanup": {
+        "verified_stopped": false,
+        "forced": false,
+        "remaining_owned": null,
+        "unknown_births": null,
+        "tracking_errors": null,
+        "stdout_eof": false
+      }
+    }
+  ],
+  "explicitlyNotClaimed": [
+    "Browser execution or Chromium retry",
+    "Full reconstructed frontend build in this lane",
+    "Hosted, production, deployment or publishing",
+    "Independent-host recovery",
+    "Abrupt-crash or precommitted open-session recovery",
+    "Literal parity for inconsistent LocalizedString value pattern",
+    "Final-source rerun of earlier imported-label HTTP; production tree and this test are unchanged"
+  ],
+  "privateEvidencePolicy": "Full bounded logs, ownership receipts, source manifests and hash-preserved executables retained outside the repository. Synthetic runtime PostgreSQL data archives are private local recovery evidence and MUST be excluded from checkpoints/publishing; no database, credentials, private keys or raw runtime configuration included here."
+}

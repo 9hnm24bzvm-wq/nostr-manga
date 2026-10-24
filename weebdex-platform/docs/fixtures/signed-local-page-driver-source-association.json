@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "scope": "signed-local-page-driver-comparison-only-v1",
+  "comparison_only": true,
+  "source_commit": "9c221a556ed4dbe3fcbda889d67b3f403c5a37d7",
+  "previous_source_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+  "preserved_local_page_metadata": {
+    "path": "weebdex-platform/docs/fixtures/signed-local-page-source-associations.json",
+    "bytes": 73175,
+    "sha256": "c62216c07016789f0cbc25dd0277ebddb4ae1a707edefcb22cb0a4d749263d1c"
+  },
+  "row": {
+    "kind": "signedFeatureSourcePinDriver",
+    "path": "weebdex-platform/tests/ci/test_signed_feature_source_pins.py",
+    "current_bytes": 2055,
+    "current_sha256": "a2851efe16c88d1fd14ce48493e24aa415f8c8ac57a397779539822bbd3a3a85",
+    "previous_bytes": 1834,
+    "previous_sha256": "5e603d716a87caf9f143ee423738985aa4e51e5137600c6707857908fdfad263",
+    "literal_reversals": [
+      {
+        "current": "from reviewed_local_page_source_successors import PATHS as LOCAL_PAGE_PATHS, restore_local_page_source\n",
+        "previous": ""
+      },
+      {
+        "current": "            if str(path) in LOCAL_PAGE_PATHS:\n                content = restore_local_page_source(str(path), content)\n",
+        "previous": ""
+      }
+    ]
+  },
+  "qualification": "Authored source association only. No new test, build, runtime, browser or hosted execution is claimed. Reconstructed bytes are comparison output, never runtime input."
+}

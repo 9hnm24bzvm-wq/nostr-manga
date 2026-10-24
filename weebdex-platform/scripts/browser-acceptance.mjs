@@ -15,6 +15,7 @@ import { runUi10Journeys, ui10JourneyPhases } from "./browser-ui10-journeys.mjs"
 import { runUi11To16Journeys, ui11To16JourneyPhases } from "./browser-ui11-16-journeys.mjs";
 import { runPublicUploadRecovery, publicUploadRecoveryPhase } from "./public-upload-recovery-browser.mjs";
 import { runPublicFeatureRecovery, publicFeatureRecoveryPhase } from "./public-feature-recovery-browser.mjs";
+import { runPublicSignedFeatures, publicSignedFeaturePhase } from "./public-signed-feature-browser.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // The supervisor strips NODE_PATH. The portable seam permits only the exact
 // reviewed local package or the isolated lock-integrity-installed CI generation.
@@ -154,7 +155,7 @@ try {
 			}
 			return results;
 		});
-	} else await (phase === publicFeatureRecoveryPhase ? runPublicFeatureRecovery : phase === publicUploadRecoveryPhase ? runPublicUploadRecovery : signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions, runnerStage });
+	} else await (phase === publicSignedFeaturePhase ? runPublicSignedFeatures : phase === publicFeatureRecoveryPhase ? runPublicFeatureRecovery : phase === publicUploadRecoveryPhase ? runPublicUploadRecovery : signedJourneyPhases.includes(phase) ? runSignedJourneys : ui10JourneyPhases.includes(phase) ? runUi10Journeys : ui11To16JourneyPhases.includes(phase) ? runUi11To16Journeys : runJourneys)({ phase, page, context, origin, fixture, step, check, save, insist, open, report, redactions, runnerStage });
 	insist(report.page_errors.length === 0, "Application JavaScript page errors were observed during the journey");
 } catch (error) { runnerStage.caught(error); report.harness_error = safeError(error); }
 finally {
@@ -165,6 +166,7 @@ finally {
 	catch (error) { cleanupFailure('context', error); }
 	if (report.public_upload) report.public_upload.actual_context_closed = report.cleanup.context_closed;
 	if (report.public_features) report.public_features.actual_context_closed = report.cleanup.context_closed;
+	if (report.signed_features) report.signed_features.actual_context_closed = report.cleanup.context_closed;
 	cleanupStage("closing-browser");
 	if (browser) try { await browser.close(); report.cleanup.browser_closed = true; }
 	catch (error) { cleanupFailure('browser', error); }

@@ -51,7 +51,7 @@ impl Fixture {
         let status=response.status().as_u16();
         let private_upload=path.split('?').next().unwrap().starts_with("/api/v1/nostr/uploads/")
             && ["/preview","/replace"].iter().any(|suffix|path.split('?').next().unwrap().ends_with(suffix));
-        let private_cover=path.starts_with("/api/v1/nostr/") && (path.ends_with("/covers")||path.ends_with("/original")) || path.starts_with("/api/v1/cover/") && ["POST","PUT","DELETE"].contains(&method);
+        let private_cover=path.starts_with("/api/v1/nostr/") && (path.split('?').next().unwrap().ends_with("/covers")||path.ends_with("/original")) || path.starts_with("/api/v1/cover/") && ["POST","PUT","DELETE"].contains(&method);
         let private_title=path.starts_with("/api/v1/manga/")&&(method=="DELETE"||path.ends_with("/lock")||path.ends_with("/unlock"));
         assert_eq!(response.headers()["cache-control"],if private_upload || private_cover || private_title {"private, no-store"}else{"no-store"},"{method} {path}");
         if private_cover || private_title {
@@ -122,8 +122,9 @@ async fn fixture()->Fixture {
         let roles=if key==7 {json!(["restricted"])}else{json!(["user"])};
         let user=format!("PublicUploadUser{key}");
         db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,disabled,roles,permissions) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,$6)",
-            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&(key==6),&roles,&permissions]).await.unwrap();
+            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&false,&roles,&permissions]).await.unwrap();
         db.execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",&[&public(key),&user]).await.unwrap();
+        db.execute("UPDATE platform.users SET disabled=$2 WHERE id=$1",&[&user,&(key==6)]).await.unwrap();
     }
     db.execute("INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES('public-upload-native-cookie','PublicUploadUser1',$1,clock_timestamp()+interval '1 hour')",&[&Sha256::digest(b"synthetic-public-upload-cookie").to_vec()]).await.unwrap();
     db.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating,state) VALUES($1,'PublicUploadUser1','Synthetic uploader','Public upload fixture','en','ongoing','safe','published')",&[&FIXTURE_MANGA_ID]).await.unwrap();
@@ -151,6 +152,7 @@ async fn cover(f:&Fixture,manga:&str) {
 async fn signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority() {
     use weebdex_platform::protocol::bridge;
     let mut f=fixture().await;
+    official_link_dictionary_contract(&f).await;
     let db=f.state.db.client().await.unwrap();
     db.batch_execute(r#"UPDATE platform.users SET permissions='["manga.create","manga.update","manga.title.edit","manga.author.edit","manga.artist.edit","manga.tag.edit","manga.link.edit","manga.cover.edit"]' WHERE id IN('PublicUploadUser1','PublicUploadUser2'); UPDATE platform.users SET roles='["moderator"]',permissions='["manga.create","manga.state.update","manga.update","manga.title.edit"]' WHERE id='PublicUploadUser8'; INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES('TitleAuth1','PublicUploadUser1','Fixture','Owned author'); INSERT INTO platform.catalog_tags(id,name,tag_group) VALUES('TitleTag01','Owned tag','genre');"#).await.unwrap();
     let resolver=PostgresPublicIdResolver::new(f.state.db.clone());
@@ -175,7 +177,7 @@ async fn signed_title_create_edit_submit_publish_and_overlay_preserve_original_a
     assert_eq!(f.http.get(format!("{}{path}",f.origin)).send().await.unwrap().status().as_u16(),404);
     f.call(Some(2),"GET",&format!("/api/v1/manga/draft/{manga}"),None,403).await;
     f.call(Some(2),"PUT",&path,Some(json!({"version":1,"title":{"en":"Foreign"}})),403).await;
-    for payload in [json!({"version":1,"officialLinks":{}}),json!({"version":1,"primaryCover":null}),json!({"version":1,"authors":["TitleAuth1"]}),json!({"version":1,"title":{}}),json!({"version":1,"title":{"xx":"Title"}})] {
+    for payload in [json!({"version":1,"officialLinks":{"provider":[]}}),json!({"version":1,"primaryCover":null}),json!({"version":1,"authors":["TitleAuth1"]}),json!({"version":1,"title":{}}),json!({"version":1,"title":{"":"Title"}})] {
         f.call(Some(1),"PUT",&path,Some(payload),400).await;
     }
     f.call(Some(1),"PUT",&path,Some(json!({"version":1,"authors":[tag]})),404).await;
@@ -251,8 +253,9 @@ async fn signed_title_create_edit_submit_publish_and_overlay_preserve_original_a
     f.call(Some(1),"POST",&publish,Some(json!({"version":v})),403).await;
     f.repository.set_publisher_admission(id(1),true).await.unwrap();
     let actual=replay["data"]["attributes"]["version"].as_i64().unwrap();
-    let overlay=f.call(Some(1),"PUT",&path,Some(json!({"version":actual,"title":{"ja":"このインスタンスの題","en":"Local annotation"}})),200).await;
+    let overlay=f.call(Some(1),"PUT",&path,Some(json!({"version":actual,"title":{"ja":"このインスタンスの題","en":"Local annotation"},"officialLinks":{"provider":"instance-only"},"expectedAccountId":account.as_str()})),200).await;
     assert_eq!(overlay["data"]["attributes"]["nostr"]["metadataScope"],"instance-local");assert_eq!(overlay["data"]["attributes"]["title"]["en"],"Local annotation");
+    assert_eq!(overlay["data"]["attributes"]["officialLinks"],json!({"provider":"instance-only"}));
     let unchanged=f.state.protocol.entry(eid).await.unwrap().unwrap();assert_eq!(serde_json::to_value(&unchanged.event).unwrap(),serde_json::to_value(&source.event).unwrap());assert_eq!(unchanged.metadata,source.metadata);
     let provenance:Value=db.query_one("SELECT metadata->'protocol_source_metadata' FROM platform.catalog_manga WHERE id=$1",&[&native]).await.unwrap().get(0);assert_eq!(&provenance,source_metadata);
     let retained=f.state.protocol.entry(eid).await.unwrap().unwrap();assert_eq!(serde_json::to_value(&retained.event).unwrap(),serde_json::to_value(&source.event).unwrap());assert_eq!(retained.metadata,source.metadata);
@@ -588,3 +591,64 @@ async fn title_disposition_lifecycle(f:&Fixture,native:&str,source_id:&str){
     let retained=f.state.protocol.entry(source_key).await.unwrap().unwrap();assert_eq!(serde_json::to_value(&retained.event).unwrap(),serde_json::to_value(&original.event).unwrap());assert_eq!(retained.metadata,original.metadata);
     assert_eq!(db.query_one("SELECT count(*) FROM events WHERE kind=5",&[]).await.unwrap().get::<_,i64>(0),deletions);
 }
+
+// Run within the one owned catalogue fixture; a second same-database listener
+// would not establish an independent isolated test environment.
+async fn official_link_dictionary_contract(f:&Fixture) {
+    let db=f.state.db.client().await.unwrap();
+    let resolver=PostgresPublicIdResolver::new(f.state.db.clone());
+    let account=resolver.preferred(ResourceKind::User,"PublicUploadUser1").await.unwrap().unwrap();
+    let other=resolver.preferred(ResourceKind::User,"PublicUploadUser2").await.unwrap().unwrap();
+    let manga=resolver.preferred(ResourceKind::Manga,FIXTURE_MANGA_ID).await.unwrap().unwrap();
+    let path=format!("/api/v1/manga/{manga}");
+    db.execute("UPDATE platform.catalog_manga SET metadata=jsonb_build_object('links',jsonb_build_object('raw','https://legacy.example','retained','opaque')) WHERE id=$1",&[&FIXTURE_MANGA_ID]).await.unwrap();
+    db.batch_execute(r#"UPDATE platform.users SET permissions='["manga.update","manga.create"]' WHERE id='PublicUploadUser1'"#).await.unwrap();
+    let links=json!({"provider":"  exact opaque id  ","":"","__proto__":"<img src=x onerror=alert(1)>","url":"https://official.example/作品"});
+    let input=json!({"version":1,"officialLinks":links,"expectedAccountId":account});
+    f.call(None,"PUT",&path,Some(input.clone()),401).await;
+    f.call(Some(3),"PUT",&path,Some(input.clone()),403).await;
+    let cookie=f.http.put(format!("{}{path}",f.origin)).header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").json(&input).send().await.unwrap();assert_eq!(cookie.status().as_u16(),401);
+    f.call(Some(1),"PUT",&path,Some(json!({"version":1,"officialLinks":{}})),400).await;
+    f.call(Some(1),"PUT",&path,Some(json!({"version":1,"officialLinks":{},"expectedAccountId":other})),409).await;
+    // Published links need BOTH the ordinary metadata grant and link grant.
+    f.call(Some(1),"PUT",&path,Some(input.clone()),403).await;
+    db.batch_execute(r#"UPDATE platform.users SET permissions='["manga.link.edit"]' WHERE id='PublicUploadUser1'"#).await.unwrap();
+    f.call(Some(1),"PUT",&path,Some(input.clone()),403).await;
+    db.batch_execute(r#"UPDATE platform.users SET permissions='["manga.update","manga.link.edit","manga.create"]' WHERE id='PublicUploadUser1'"#).await.unwrap();
+    for invalid in [Value::Null,json!([]),json!({"provider":{"language":"en","region":"US"}}),json!({"provider":false}),json!({"provider":"題".repeat(683)})] {
+        f.call(Some(1),"PUT",&path,Some(json!({"version":1,"officialLinks":invalid,"expectedAccountId":account})),400).await;
+    }
+    let before=db.query_one("SELECT version,(SELECT count(*) FROM platform.catalog_audit WHERE entity_id=$1) FROM platform.catalog_manga WHERE id=$1",&[&FIXTURE_MANGA_ID]).await.unwrap();assert_eq!(before.get::<_,i32>(0),1);assert_eq!(before.get::<_,i64>(1),0);
+    let saved=f.call(Some(1),"PUT",&path,Some(input),200).await;
+    assert_eq!(saved["data"]["attributes"]["officialLinks"],links);
+    assert_eq!(saved["data"]["attributes"]["links"],json!({"raw":"https://legacy.example","retained":"opaque"}));
+    assert_eq!(saved["data"]["attributes"]["version"],2);
+    let read=f.call(None,"GET",&path,None,200).await;
+    assert_eq!(read["data"]["attributes"]["officialLinks"],links);
+    f.call(Some(1),"PUT",&path,Some(json!({"version":1,"officialLinks":{},"expectedAccountId":account})),409).await;
+    let cleared=f.call(Some(1),"PUT",&path,Some(json!({"version":2,"officialLinks":{},"expectedAccountId":account})),200).await;
+    assert_eq!(cleared["data"]["attributes"]["officialLinks"],json!({}));assert_eq!(cleared["data"]["attributes"]["links"],saved["data"]["attributes"]["links"]);
+    let legacy=f.call(Some(1),"PUT",&path,Some(json!({"version":3,"links":{"al":"123"},"expectedAccountId":account})),200).await;
+    assert_eq!(legacy["data"]["attributes"]["officialLinks"],json!({}));assert_eq!(legacy["data"]["attributes"]["links"],json!({"al":"123"}));
+    let audit=db.query("SELECT old_version,new_version,operation FROM platform.catalog_audit WHERE entity_id=$1 ORDER BY new_version",&[&FIXTURE_MANGA_ID]).await.unwrap();assert_eq!(audit.len(),3);for (i,row) in audit.iter().enumerate(){assert_eq!(row.get::<_,i32>(0),i as i32+1);assert_eq!(row.get::<_,i32>(1),i as i32+2);assert_eq!(row.get::<_,String>(2),"update");}
+    // Draft-owner creation/edit uses manga.create, never another user's draft.
+    db.batch_execute(r#"UPDATE platform.users SET permissions='["manga.create"]' WHERE id IN('PublicUploadUser1','PublicUploadUser2')"#).await.unwrap();
+    let draft=f.call(Some(1),"POST","/api/v1/manga",Some(json!({"title":{"en":"Official dictionary draft"},"originalLanguage":"en","status":"ongoing","contentRating":"safe","officialLinks":links,"expectedAccountId":account})),200).await;
+    let draft_id=draft["data"]["id"].as_str().unwrap();assert_eq!(draft["data"]["attributes"]["officialLinks"],links);
+    let draft_path=format!("/api/v1/manga/{draft_id}");
+    f.call(Some(2),"PUT",&draft_path,Some(json!({"version":1,"officialLinks":{},"expectedAccountId":other})),403).await;
+    let draft_read=f.call(Some(1),"GET",&format!("/api/v1/manga/draft/{draft_id}"),None,200).await;assert_eq!(draft_read["data"]["attributes"]["officialLinks"],links);
+    f.call(Some(1),"PUT",&draft_path,Some(json!({"version":1,"officialLinks":{},"expectedAccountId":account})),200).await;
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+}
+
+#[path="support/primary_cover_contract.rs"]
+mod primary_cover_contract;
+#[path="support/cover_pagination.rs"]
+mod cover_pagination;
+
+#[path = "support/public_language_contract.rs"]
+mod language_contract;
+
+#[path = "support/cover_unicode.rs"]
+mod cover_unicode;

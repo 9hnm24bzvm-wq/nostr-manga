@@ -11,6 +11,7 @@ import { createHash } from 'node:crypto';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const context = vm.createContext({ TextEncoder, TextDecoder, Uint8Array, ArrayBuffer, Blob, AbortController, URL, structuredClone });
 const modules = new Map();
+class RequestFailure extends Error {constructor(message,outcome,status){super(message);this.outcome=outcome;this.status=status;this.bodyAvailable=false;}}
 const forbidden = () => { throw Error('Unexpected production primitive in fake adapter seam'); };
 function synthetic(id, exports) { if (!modules.has(id)) modules.set(id, new vm.SyntheticModule(Object.keys(exports), function () { for (const [key, value] of Object.entries(exports)) this.setExport(key, value); }, { context, identifier: id })); return modules.get(id); }
 async function load(file) {
@@ -21,14 +22,14 @@ async function load(file) {
     if (specifier === '$lib/constants/Error') return load(path.join(root, 'frontend/src/lib/constants/Error.ts'));
     if (specifier === '../local-library/publication') return synthetic(specifier, { capabilities: forbidden, selectedSigner: forbidden });
     if (specifier === '../local-library/protocol/nostr.js') return synthetic(specifier, { proveService: forbidden, origin: value => { const url = new URL(value); if (url.origin !== value || !['http:', 'https:'].includes(url.protocol)) throw Error('Invalid exact origin'); return value; } });
-    if (specifier === './nostr-upload-request') return synthetic(specifier, { createNostrUploadRequest: forbidden });
+    if (specifier === './nostr-upload-request') return synthetic(specifier, { createNostrUploadRequest: forbidden, PublicUploadRequestError: RequestFailure });
     if (specifier === './site-client') return synthetic(specifier, { publicCatalogueRead: forbidden });
-    if (!['./validation', './upload-multipart'].includes(specifier)) throw Error('Unexpected adapter dependency ' + specifier);
+    if (!['./language', './validation', './upload-multipart', './chapter-access', './chapter-command-fence', './upload-schedules'].includes(specifier)) throw Error('Unexpected adapter dependency ' + specifier);
     return load(path.resolve(path.dirname(file), specifier + '.ts'));
   });
   return module;
 }
-const module = await load(path.join(root, 'platform-integrations/public-api/upload-client.ts')); await module.evaluate();
+const module = await load(path.join(process.env.WEEBDEX_LOCAL_PAGE_EDIT_CONTROL_SOURCE ?? path.join(root, 'platform-integrations/public-api'), 'upload-client.ts')); await module.evaluate();
 const adapter = module.namespace;
 const uuid = digit => `${digit.repeat(8)}-${digit.repeat(4)}-8${digit.repeat(3)}-8${digit.repeat(3)}-${digit.repeat(12)}`;
 const MANGA = uuid('1'), SESSION = uuid('2'), USER = uuid('3'), FILE = uuid('4'), CHAPTER = uuid('5'), NAMESPACE = uuid('6'), SECOND_FILE = uuid('7'), SECOND_SESSION = uuid('8');
@@ -52,6 +53,7 @@ function fixture(options = {}) {
   const defaultRequest = async request => {
     const url = new URL(request.url), route = url.pathname.slice('/api/v1'.length), body = request.body && request.contentType === 'application/json' ? JSON.parse(new TextDecoder().decode(request.body)) : undefined;
     if (route === '/nostr/account-context') return response(clone(account));
+    if(route==='/chapter/'+CHAPTER&&request.method==='GET')return response({result:'ok',response:'entity',data:options.chapter ? options.chapter(state) : chapterResource(2)});
     if (route === '/upload' && request.method === 'GET') { const current = state.sessions.get(state.current); return current ? response({ id: current.id, type: 'upload_session', attributes: { version: current.version, isCommitted: current.isCommitted, isProcessed: current.isProcessed, isDeleted: current.isDeleted } }) : refusal(404); }
     if (route === '/upload/begin') { const id = state.beginCount++ ? SECOND_SESSION : SESSION, current = session(id); state.sessions.set(id, current); state.current = id; return response({ id, type: 'upload_session', attributes: { version: current.version, isCommitted: current.isCommitted, isProcessed: current.isProcessed, isDeleted: current.isDeleted } }); }
     if (route === '/upload/check-approval-required') return response({ result: 'ok', requiresApproval: false });
@@ -81,7 +83,7 @@ function fixture(options = {}) {
     capabilities: async () => { await options.capabilities?.(state, storage); return clone(state.policy); }, publicOrigin: () => state.publicOrigin,
     proveService: async (origin, serviceKey) => { proofs.push({ origin, serviceKey }); return { origin, serviceKey }; },
     selectedSigner: () => { const generation = state.generation; return { owner: ACTOR, generation, signer: { signEvent: forbidden }, check: () => { if (!state.active || state.generation !== generation) throw Error('Selected signer changed'); } }; },
-    createRequest: captured => async request => { state.preparing = request; try { captured.assertCurrent(); await captured.beforeSend?.(new AbortController().signal); captured.assertCurrent(); } catch (error) { throw Object.assign(error, { outcome: 'unsent' }); } finally { state.preparing = undefined; } requests.push(request); const result = await (options.request ? options.request(request, defaultRequest, state) : defaultRequest(request)); captured.assertCurrent(); options.afterTransport?.(request, state); return result; },
+    createRequest: captured => async request => { state.preparing = request; try { captured.assertCurrent(); await captured.beforeSend?.(new AbortController().signal); captured.assertCurrent(); } catch (error) { throw Object.assign(error, { outcome: 'unsent' }); } finally { state.preparing = undefined; } requests.push(request); const result = await (request.method==='GET'&&new URL(request.url).pathname==='/api/v1/chapter/'+CHAPTER ? defaultRequest(request) : options.request ? options.request(request, defaultRequest, state) : defaultRequest(request)); captured.assertCurrent(); options.afterTransport?.(request, state); return result; },
     catalogueRead: async (operation, { id }) => { assert.equal(operation, 'chapter.get'); assert.equal(id, CHAPTER); if (options.catalogue) return options.catalogue(state); return response(clone(state.catalogue)); },
     multipart: async file => { const source = await fs.promises.readFile(path.join(root, 'platform-integrations/public-api/upload-multipart.ts'), 'utf8'); assert.match(source, /serializeUploadMultipart/); const multipart = (await load(path.join(root, 'platform-integrations/public-api/upload-multipart.ts'))).namespace; return multipart.serializeUploadMultipart(file, { boundary: 'explicit-fake-boundary-123456' }); },
     digest: async bytes => digest(bytes), decodeImage: async () => ({ width: 2, height: 3 }), destroy: callback => destroys.push(callback), newAttempt: () => 'explicit-fake-attempt-' + (state.attempts = (state.attempts ?? 0) + 1),
@@ -396,17 +398,17 @@ test('begin and edit-begin bind generated JSON to the captured native account, n
   await owner.request('/upload/begin', 'POST', { manga: MANGA, groups: [], expectedAccountId: SECOND_SESSION });
   const begin = f.requests.find(row => row.url.endsWith('/upload/begin'));
   assert.deepEqual(JSON.parse(new TextDecoder().decode(begin.body)), { manga: MANGA, groups: [], expectedAccountId: USER });
-  const g = fixture({ request: (request, next, state) => {
+  const g = fixture({ chapter: () => localEditResource(), request: (request, next, state) => {
     if (new URL(request.url).pathname === '/api/v1/upload/begin/' + CHAPTER) {
-      const current = session(); current.chapterId = CHAPTER; state.sessions.set(SESSION, current); state.current = SESSION;
-      return response({ id: SESSION, type: 'upload_session', attributes: { version: 1, isCommitted: false, isProcessed: false, isDeleted: false } });
+      const current = session(); current.chapterId = CHAPTER; current.editVersion = 2; state.sessions.set(SESSION, current); state.current = SESSION;
+      return response({ id: SESSION, type: 'upload_session', attributes: { version: 1, isCommitted: false, isProcessed: false, isDeleted: false, edit: {chapterId:CHAPTER,version:2,replace:false} } });
     }
     return next(request);
   } });
   const user = await g.api.loadUploadAccount(), edit = g.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
   await edit.request('/upload/begin/' + CHAPTER, 'POST', { version: 2, expectedAccountId: SECOND_SESSION });
   const sent = g.requests.find(row => row.url.endsWith('/upload/begin/' + CHAPTER));
-  assert.deepEqual(JSON.parse(new TextDecoder().decode(sent.body)), { version: 2, expectedAccountId: USER });
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(sent.body)), { version: 2, replace: false, expectedAccountId: USER });
 });
 test('stale captured-account discovery sends its exact signed query and cannot adopt a foreign session after409', async () => {
   const f = fixture({ request: (request, next) => {
@@ -442,7 +444,7 @@ test('stale captured-account chapter and begin commands retain captured intent o
   }
 });
 test('chapter metadata uses exact signed target and official fields, never upload/native fallback', async () => {
-  const wire = chapterResource(3);
+  const wire = chapterResource(3);wire.attributes.title='';wire.attributes.translatedLanguage='es';wire.relationships.push({id:GROUP,type:'scanlation_group'});
   const f = fixture({ request: (request, next) => request.url.endsWith('/chapter/' + CHAPTER)
     ? response({ result: 'ok', response: 'entity', data: wire }) : next(request) });
   const user = await f.api.loadUploadAccount(), owner = f.api.publicUploadOwner(() => CHAPTER, user, 'chapter');
@@ -456,7 +458,7 @@ test('chapter metadata uses exact signed target and official fields, never uploa
 });
 test('chapter claims have no body and ordinary removal keeps actual durable moderation receipt', async () => {
   const f = fixture({ account: account => account.user.permissions.push('self.chapter.remove'), request: (request, next) => {
-    if (new URL(request.url).pathname.endsWith('/chapter/' + CHAPTER + '/claim')) return response({ result: 'ok', response: 'entity', data: chapterResource(3) });
+    if (new URL(request.url).pathname.endsWith('/chapter/' + CHAPTER + '/claim')) return response({ result: 'ok', response: 'entity', data: {...chapterResource(3),attributes:{...chapterResource(3).attributes,uploader:USER},relationships:[...chapterResource(3).relationships,{id:USER,type:'user'}]} });
     if (new URL(request.url).pathname.endsWith('/chapter/' + CHAPTER)) { const result = response({ result: 'ok', status: 'pending-moderation', instanceRemoval: 'pending-moderation', sourceDeletionStatus: 'instance-local-only', requestId: SECOND_SESSION, sourceDeletionRequestId: null }, 202); result.headers['x-weebdex-instance-removal'] = 'pending-moderation'; result.headers['x-weebdex-source-deletion-status'] = 'instance-local-only'; return result; }
     return next(request);
   } });
@@ -613,3 +615,204 @@ for (const read of ['preview-first', 'discovery']) for (const beginAnother of [f
   else assert.equal(await f.api.currentUpload(owner), undefined);
   owner.dispose(); assert.equal(owner.alive(), false);
 });
+
+for(const language of ['tam','und','zh-hant','EN'])test('invalid public language stops stage approval commit and chapter PUT before mutation '+language,async()=>{
+ const f=await ready(),page=await attach(f),before=mutations(f).length;
+ await assert.rejects(()=>f.owner.request('/upload/check-approval-required','POST',{language}));
+ await assert.rejects(()=>f.owner.request('/upload/'+SESSION,'PATCH',{version:f.current.version,draft:{language},page_order:[page.id]}));
+ assert.equal(mutations(f).length,before);assert.deepEqual(f.state.sessions.get(SESSION).draft,{});
+ // Read snapshots preserve unsupported stored labels; a new full commit must
+ // still select a public-valid language and cannot silently rewrite the snapshot.
+ f.state.sessions.get(SESSION).draft={language};const restored=await f.api.currentUpload(f.owner);assert.equal(restored.draft.language,language);
+ await assert.rejects(()=>f.owner.request('/upload/'+SESSION+'/commit','POST',{termsAccepted:true,draft:{language},page_order:[page.id]}));assert.equal(mutations(f).length,before);assert.equal(f.owner.commitState(),undefined);
+ const g=fixture(),user=await g.api.loadUploadAccount(),owner=g.api.publicUploadOwner(()=>CHAPTER,user,'chapter');await assert.rejects(()=>owner.request('/chapter/'+CHAPTER,'PUT',{version:2,language}));assert.equal(mutations(g).length,0);assert.equal(owner.chapterPending(),false);
+});
+test('public upload draft and approval accept ta without native enum translation',async()=>{
+ const f=await ready(),page=await attach(f),saved=await f.api.saveResume(f.current,{draft:{chapter:'1',language:'ta'},page_order:[page.id]},f.owner);assert.equal(saved.draft.language,'ta');
+ await f.owner.request('/upload/check-approval-required','POST',{language:'ta'});assert.equal(JSON.parse(new TextDecoder().decode(f.requests.at(-1).body)).locale,'ta');
+ await f.owner.request('/upload/'+SESSION+'/commit','POST',{termsAccepted:true,draft:saved.draft,page_order:saved.page_order});const commit=f.requests.find(request=>request.url.endsWith('/commit'));assert.equal(JSON.parse(new TextDecoder().decode(commit.body)).chapterDraft.translatedLanguage,'ta');
+});
+
+// New scheduling seams remain fake transport/state tests, not private-media,
+// durable-worker, browser-restart, or original-node acceptance evidence.
+const DUE = '2026-12-01T12:30:45';
+function privateSchedule(state = 'scheduled') { return { id: CHAPTER, type: 'chapter', attributes: { volume: null, chapter: '1', title: null, translatedLanguage: 'en', pages: 0, publishAt: DUE, readableAt: null }, relationships: [], nostr: { publicationStatus: state === 'blocked' ? 'blocked' : 'scheduled', scheduleState: state, scheduleAccepted: true, retryWindowSeconds: 86400, sourceAccepted: false, readerAvailable: false, canCancel: !['starting', 'complete', 'cancelled'].includes(state), canRetry: state === 'blocked' } }; }
+const scheduleLimits = { maximumOutstanding: 32, maximumRetainedBytes: 500 * 1048576, maximumHorizonSeconds: 30 * 86400, retryWindowSeconds: 86400, timezone: 'UTC' };
+async function scheduleRoute(request, next, state) {
+  const url = new URL(request.url), route = url.pathname.slice('/api/v1'.length), body = request.body && request.contentType === 'application/json' ? JSON.parse(new TextDecoder().decode(request.body)) : undefined;
+  if (route === '/upload/' + SESSION + '/commit' && body.chapterDraft.publishAt) {
+    state.scheduleWire = clone(body); const receipt = privateSchedule(); state.schedule = receipt;
+    Object.assign(state.sessions.get(SESSION), { state: 'scheduled', canMutate: false, canRetryCommit: false, isExpired: false, expiresAt: null, receiptStatus: 'unavailable', publicationStatus: 'scheduled', schedule: receipt }); state.current = undefined;
+    if (state.loseScheduleCommit) throw new RequestFailure('Scheduled dispatch reply was lost', 'unknown');
+    return response(clone(receipt), 202);
+  }
+  if (route === '/nostr/uploads/schedules' || route.includes('/schedule') || route === '/upload/' + SESSION && request.method === 'DELETE' && state.schedule) {
+    assert.equal(url.searchParams.get('expectedAccountId'), USER); assert.deepEqual([...url.searchParams.keys()], ['expectedAccountId']);
+    if (state.rebound) return refusal(409);
+    if (route === '/nostr/uploads/schedules') return response({ result: 'ok', data: state.schedule && !['complete', 'cancelled'].includes(state.schedule.nostr.scheduleState) ? [{ uploadSessionId: SESSION, receipt: clone(state.schedule) }] : [], limits: scheduleLimits });
+    if (!state.schedule) return refusal(404);
+    if (request.method === 'GET') return response({ result: 'ok', uploadSessionId: SESSION, receipt: clone(state.schedule) });
+    if (state.loseScheduleAction) throw new RequestFailure('Management response lost', 'unknown');
+    if (request.method === 'DELETE') { state.schedule = privateSchedule('cancelled'); return response({ result: 'ok' }); }
+    state.schedule = privateSchedule(); return response(clone(state.schedule), 202);
+  }
+  return next(request);
+}
+async function readySchedule(options = {}) { const f = await ready({ request: scheduleRoute, ...options }), value = await stagedCommit(f); return { ...f, payload: { ...value.payload, publishAt: DUE } }; }
+test('future UTC is a ChapterDraft-only field; schedule202 is never reader success and releases the open slot', async () => {
+  const f = await readySchedule(), result = await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload);
+  assert.equal(f.state.scheduleWire.chapterDraft.publishAt, DUE); assert.equal(result.status, 202); assert.equal(result.body, undefined); assert.equal(result.scheduled.state, 'scheduled'); assert.equal(result.scheduled.readerAvailable, false); assert.equal(f.owner.commitState(), undefined);
+  assert.equal((await f.begin(f.owner)).id, SECOND_SESSION); assert.equal(f.state.sessions.get(SESSION).state, 'scheduled');
+  const list = await f.owner.schedules.list(); assert.equal(list.entries.length, 1); assert.equal(list.limits.maximumRetainedBytes, 500 * 1048576); assert.equal(await f.owner.schedules.readableChapter(SESSION), undefined);
+  assert.ok([...f.storage.keys()].some(key => key.includes('public-upload-schedules.v1:') && key.endsWith(':' + USER))); assert.ok(![...f.storage.keys()].some(key => key.includes('scheduled-commit')));
+});
+test('lost scheduled dispatch persists captured account and fingerprint, reconstructs owner, and never replays commit', async () => {
+  const f = await readySchedule({ state: { loseScheduleCommit: true } }); await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload)); assert.equal(f.owner.commitState(), 'uncertain');
+  const [key, value] = [...f.storage.entries()].find(([key]) => key.includes('scheduled-commit')); assert.ok(key.endsWith(':' + USER)); const saved = JSON.parse(value); assert.equal(saved.schedule.accountId, USER); assert.equal(saved.schedule.publishAt, DUE); assert.match(saved.schedule.fingerprint, /^[a-f0-9]{64}$/); assert.doesNotMatch(value, /signEvent|privateKey|secret|token/);
+  f.owner.dispose(); const g = fixture({ state: f.state, storage: f.storage, request: scheduleRoute }), { owner } = await g.owner();
+  await assert.rejects(() => g.begin(owner)); const restored = await g.api.reconcileUploadReceipt(owner, SESSION); assert.equal(restored.schedule.state, 'scheduled'); assert.equal(owner.commitState(), undefined); assert.equal(mutations(g).length, 0); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 1);
+});
+test('changed original digest cannot resolve an uncertain scheduling dispatch', async () => {
+  const f = await readySchedule({ state: { loseScheduleCommit: true } }); await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload)); f.state.sessions.get(SESSION).files[0].fileHash = 'd'.repeat(64);
+  await assert.rejects(() => f.api.reconcileUploadReceipt(f.owner, SESSION), /exact staged/); assert.equal(f.owner.commitState(), 'uncertain');
+});
+test('schedule management is captured-account scoped, including cancel, and a rebind never mutates', async () => {
+  const f = await readySchedule(); await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); f.state.rebound = true;
+  for (const action of ['list', 'get', 'cancel', 'retry']) await assert.rejects(() => f.owner.schedules[action](SESSION), /409/);
+  assert.equal(f.requests.filter(row => row.method === 'DELETE' || row.url.includes('/schedule/retry')).length, 0);
+  f.state.rebound = false; await f.owner.schedules.cancel(SESSION); assert.equal(f.requests.find(row => row.method === 'DELETE').url, PUBLIC + '/api/v1/upload/' + SESSION + '?expectedAccountId=' + USER);
+});
+for (const action of ['cancel', 'retry']) test(`uncertain schedule ${action} survives owner reconstruction without replay; unrelated open uploads remain usable`, async () => {
+  const f = await readySchedule(); await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); if (action === 'retry') f.state.schedule = privateSchedule('blocked'); f.state.loseScheduleAction = true;
+  await assert.rejects(() => f.owner.schedules[action](SESSION)); assert.equal(f.owner.schedules.pending(SESSION), action); assert.equal((await f.owner.schedules.get(SESSION)).uncertain, action);
+  const before = mutations(f).length; await assert.rejects(() => f.owner.schedules[action](SESSION), /unresolved/); assert.equal(mutations(f).length, before);
+  f.owner.dispose(); const g = fixture({ state: f.state, storage: f.storage, request: scheduleRoute }), { owner } = await g.owner(); assert.equal(owner.schedules.pending(SESSION), action); await assert.rejects(() => owner.schedules[action](SESSION)); assert.equal(mutations(g).length, 0); assert.equal((await g.begin(owner)).id, SECOND_SESSION);
+  g.state.schedule = privateSchedule('cancelled'); assert.equal((await owner.schedules.get(SESSION)).uncertain, undefined);
+});
+test('completed schedule requires actual readable presentation, not complete state or source acceptance', async () => {
+  const f = await readySchedule(); await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload);
+  f.state.schedule = privateSchedule('complete'); f.state.schedule.nostr = { ...f.state.schedule.nostr, publicationStatus: 'completed_unavailable', sourceAccepted: null }; assert.equal(await f.owner.schedules.readableChapter(SESSION), undefined);
+  f.state.schedule.attributes = chapterResource().attributes; f.state.schedule.relationships = chapterResource().relationships; Object.assign(f.state.schedule.nostr, { publicationStatus: 'readable', sourceAccepted: true, readerAvailable: true });
+  f.state.catalogue.data = []; await assert.rejects(() => f.owner.schedules.readableChapter(SESSION), /not yet available/); f.state.catalogue = chapterView(); assert.equal((await f.owner.schedules.readableChapter(SESSION)).id, CHAPTER);
+  const list = await f.owner.schedules.list(); assert.equal(list.entries.length, 0); assert.equal(list.recent[0].publishAt, DUE); assert.equal((await f.owner.schedules.get(SESSION)).receipt.state, 'complete');
+});
+test('UTC validation rejects null, offsets, fractions and invalid calendar values before any commit', async () => {
+  const f = await readySchedule(), before = mutations(f).length;
+  for (const value of [null, '', '2026-02-29T00:00:00', '2026-01-01T24:00:00', DUE + 'Z', DUE + '.001', DUE + '+00:00', '0000-01-01T00:00:00']) await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', { ...f.payload, publishAt: value }));
+  assert.equal(mutations(f).length, before); assert.equal(f.owner.commitState(), undefined);
+  const utc = (await load(path.join(root, 'platform-integrations/public-api/upload-schedules.ts'))).namespace.scheduledUtc; assert.equal(utc('2028-02-29T23:59:59'), '2028-02-29T23:59:59');
+});
+test('schedule list privacy headers and premature reader facts fail closed', async () => {
+  const f = await readySchedule({ request: async (request, next, state) => { const result = await scheduleRoute(request, next, state); if (state.stripPrivacy && request.url.includes('/schedules?')) result.headers['cache-control'] = 'no-store'; return result; } });
+  await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); f.state.stripPrivacy = true; await assert.rejects(() => f.owner.schedules.list(), /privacy|Private scheduling response/); f.state.stripPrivacy = false;
+  f.state.schedule.nostr.readerAvailable = true; await assert.rejects(() => f.owner.schedules.get(SESSION), /Inconsistent/); assert.equal(f.owner.commitState(), undefined);
+});
+test('terminal cancellation resolves lost scheduled commit without inventing a deleted staging snapshot', async () => {
+  const f = await readySchedule({ state: { loseScheduleCommit: true } }); await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload)); f.state.schedule = privateSchedule('cancelled'); f.state.sessions.delete(SESSION);
+  const resolved = await f.api.reconcileUploadReceipt(f.owner, SESSION); assert.equal(resolved.sessionId, SESSION); assert.equal(resolved.scheduled.state, 'cancelled'); assert.equal(resolved.receipt, undefined); assert.equal(f.owner.commitState(), undefined);
+});
+test('failed persistent schedule fence installation prevents dispatch', async () => {
+  const f = await readySchedule({ dependencies: { scheduleFences: { get: () => null, set: () => { throw Error('Storage unavailable'); }, delete() {} } } });
+  await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload), /Storage unavailable/); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 0);
+});
+test('past publishAt may use the preserved immediate path without creating a schedule receipt', async () => {
+  const f = await ready(), { payload } = await stagedCommit(f), result = await f.owner.request('/upload/' + SESSION + '/commit', 'POST', { ...payload, publishAt: '2020-01-01T00:00:00' });
+  assert.equal(result.status, 200); assert.equal(result.body.id, CHAPTER); assert.equal(result.scheduled, undefined); assert.equal(f.owner.commitState(), undefined); assert.equal(f.storage.size, 0);
+});
+function finishPrivateSchedule(f) { f.state.schedule = { ...privateSchedule('complete'), attributes: chapterResource().attributes, relationships: chapterResource().relationships, nostr: { ...privateSchedule('complete').nostr, publicationStatus: 'readable', sourceAccepted: true, readerAvailable: true } }; f.state.sessions.delete(SESSION); }
+test('completed lost-response recovery releases only terminal private dispatch, without reconstructing deleted original hashes or navigating', async () => {
+  const f = await readySchedule({ state: { loseScheduleCommit: true } }); await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload)); finishPrivateSchedule(f);
+  const before = mutations(f).length, result = await f.api.reconcileUploadReceipt(f.owner, SESSION); assert.equal(result.scheduled.state, 'complete'); assert.equal(result.scheduled.publishAt, DUE); assert.equal(result.sessionId, SESSION); assert.equal(result.receipt, undefined); assert.equal(result.relationships, undefined); assert.equal(f.owner.commitState(), undefined); assert.equal(mutations(f).length, before);
+});
+for (const changed of ['session', 'account', 'chapter', 'time', 'scope']) test(`terminal schedule recovery rejects changed captured ${changed}`, async () => {
+  const f = await readySchedule({ state: { loseScheduleCommit: true }, request: async (request, next, state) => { const result = await scheduleRoute(request, next, state); if (state.wrongSession && request.url.includes('/schedule?')) result.body.uploadSessionId = SECOND_SESSION; return result; } });
+  await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload)); await f.owner.schedules.get(SESSION); finishPrivateSchedule(f);
+  if (changed === 'session') f.state.wrongSession = true;
+  if (changed === 'account') f.state.rebound = true;
+  if (changed === 'chapter') f.state.schedule.id = SECOND_SESSION;
+  if (changed === 'time') { const key = [...f.storage.keys()].find(value => value.includes('public-upload-schedules.v1:')), rows = JSON.parse(f.storage.get(key)); rows[0].publishAt = '2027-01-01T00:00:00'; f.storage.set(key, JSON.stringify(rows)); }
+  if (changed === 'scope') f.state.policy.service_key = 'f'.repeat(64);
+  const before = mutations(f).length; await assert.rejects(() => f.api.reconcileUploadReceipt(f.owner, SESSION)); assert.equal(f.owner.commitState(), 'uncertain'); assert.equal(mutations(f).length, before);
+});
+for (const changed of ['time', 'metadata', 'window', 'state']) test(`retry202 with changed ${changed} remains fenced despite a later successful nonterminal GET`, async () => {
+  const f = await readySchedule({ request: async (request, next, state) => { const result = await scheduleRoute(request, next, state); if (request.url.includes('/schedule/retry?')) { if (changed === 'time') result.body.attributes.publishAt = '2027-01-01T00:00:00'; if (changed === 'metadata') result.body.attributes.title = 'Changed immutable intent'; if (changed === 'window') result.body.nostr.retryWindowSeconds = 2; if (changed === 'state') result.body.nostr.scheduleState = 'blocked'; } return result; } });
+  await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); f.state.schedule = privateSchedule('blocked'); await assert.rejects(() => f.owner.schedules.retry(SESSION), /immutable|retry state/); assert.equal((await f.owner.schedules.get(SESSION)).uncertain, 'retry');
+  const before = mutations(f).length; await assert.rejects(() => f.owner.schedules.retry(SESSION)); assert.equal(mutations(f).length, before);
+});
+test('silent-drop commit storage is detected before POST', async () => {
+  const f = await readySchedule({ dependencies: { scheduleFences: { get: () => null, set() {}, delete() {} } } });
+  await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload), /not persisted exactly/); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 0);
+});
+test('silent-drop management marker is detected before DELETE and cannot be mistaken for dispatch', async () => {
+  const storage = new Map(), f = await readySchedule({ storage, dependencies: { scheduleFences: { get: key => storage.get(key) ?? null, set: (key, value) => { if (!value.includes('"uncertain":')) storage.set(key, value); }, delete: key => storage.delete(key) } } });
+  await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); await assert.rejects(() => f.owner.schedules.cancel(SESSION), /not persisted exactly/); assert.equal(f.requests.filter(row => row.method === 'DELETE').length, 0); assert.equal(f.owner.schedules.pending(SESSION), undefined);
+});
+test('silent-drop scheduled fence removal retains uncertainty, then explicit read resolves without replay after storage recovers', async () => {
+  const storage = new Map(); let drop = true; const f = await readySchedule({ storage, dependencies: { scheduleFences: { get: key => storage.get(key) ?? null, set: (key, value) => storage.set(key, value), delete: key => { if (!drop || !key.includes('scheduled-commit')) storage.delete(key); } } } });
+  await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload), /could not be cleared/); assert.equal(f.owner.commitState(), 'uncertain'); await assert.rejects(() => f.begin(f.owner)); drop = false; await f.api.reconcileUploadReceipt(f.owner, SESSION); assert.equal(f.owner.commitState(), undefined); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 1);
+});
+function deferred() { let resolve; const promise = new Promise(done => resolve = done); return { promise, resolve }; }
+for (const newer of ['schedule', 'replacement']) test(`two adapters: an old confirmation paused after remember cannot erase a newer ${newer} fence`, async () => {
+  const entered = deferred(), release = deferred(); let remembers = 0;
+  const f = await readySchedule({ dependencies: { scheduleLock: async (key, action) => { const value = action(); if (key.includes('public-upload-schedules.v1:') && ++remembers === 2) { entered.resolve(); await release.promise; } return value; } } });
+  const pending = f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); await entered.promise;
+  const g = fixture({ storage: f.storage, state: f.state, request: async (request, next, state) => { if (request.url.endsWith('/upload/' + SECOND_SESSION + '/commit') || request.url.endsWith('/replace')) throw new RequestFailure('Newer operation reply lost', 'unknown'); return scheduleRoute(request, next, state); } }), { owner } = await g.owner();
+  await g.api.reconcileUploadReceipt(owner, SESSION); const next = { ...g, owner, current: await g.begin(owner) }, saved = await stagedCommit(next);
+  if (newer === 'schedule') await assert.rejects(() => owner.request('/upload/' + SECOND_SESSION + '/commit', 'POST', { ...saved.payload, publishAt: DUE }));
+  else { const current = await g.api.currentUpload(owner); await assert.rejects(() => g.api.replaceUploadPage(current, current.relationships.files[0], replacementImage(), owner)); }
+  const key = [...f.storage.keys()].find(key => key.includes(newer === 'schedule' ? 'scheduled-commit.v1:' : 'public-upload-replacement.v1:')), before = f.storage.get(key); assert.ok(before);
+  release.resolve(); await assert.rejects(() => pending); assert.equal(f.storage.get(key), before); assert.equal(owner.pendingCommitSession?.() === SECOND_SESSION || owner.pendingReplacement?.()?.sessionId === SECOND_SESSION, true);
+});
+test('a later private GET unsent failure cannot clear the already-dispatched scheduled POST fence', async () => {
+  const f = await readySchedule({ request: async (request, next, state) => { if (request.url.includes('/schedule?')) throw new RequestFailure('Status GET was not sent', 'unsent'); return scheduleRoute(request, next, state); } });
+  await assert.rejects(() => f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload)); assert.equal(f.owner.commitState(), 'uncertain'); assert.equal(f.requests.filter(row => row.url.endsWith('/commit')).length, 1); await assert.rejects(() => f.begin(f.owner));
+});
+for (const outcome of ['unsent', 'rejected']) test(`late ${outcome} callback cannot erase a replacement scheduled commit record`, async () => {
+  const entered = deferred(), release = deferred(); const f = await readySchedule({ request: async (request, next, state) => { if (request.url.endsWith('/commit')) { entered.resolve(); await release.promise; if (outcome === 'unsent') throw new RequestFailure('Delayed original transport failure', 'unsent'); return refusal(409); } return scheduleRoute(request, next, state); } });
+  const pending = f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); await entered.promise;
+  // Explicit storage interleaving, not evidence of a backend outcome. The CAS
+  // must preserve a different valid record regardless of an old callback type.
+  const key = [...f.storage.keys()].find(key => key.includes('scheduled-commit.v1:')), value = JSON.parse(f.storage.get(key)); value.sessionId = SECOND_SESSION; value.attempt = 'newer-independent-attempt'; f.storage.set(key, JSON.stringify(value)); const exact = f.storage.get(key);
+  release.resolve(); await assert.rejects(() => pending); assert.equal(f.storage.get(key), exact);
+});
+test('retry accepts a legitimate one-way publication-start race without treating canCancel as immutable', async () => {
+  const f = await readySchedule({ request: async (request, next, state) => { const result = await scheduleRoute(request, next, state); if (request.url.includes('/schedule/retry?')) { state.schedule = privateSchedule('starting'); return response(clone(state.schedule), 202); } return result; } });
+  await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); f.state.schedule = privateSchedule('blocked'); const result = await f.owner.schedules.retry(SESSION); assert.equal(result.receipt.state, 'starting'); assert.equal(result.receipt.canCancel, false); assert.equal(result.uncertain, undefined);
+});
+test('active schedule list is one bounded read; unavailable remembered status cannot hide active entries or erase uncertainty', async () => {
+  const f = await readySchedule({ request: async (request, next, state) => { if (state.recentUnavailable && request.url.includes('/schedules?')) return response({ result: 'ok', data: [{ uploadSessionId: SECOND_SESSION, receipt: { ...privateSchedule(), id: SECOND_FILE } }], limits: scheduleLimits }); if (state.recentUnavailable && request.url.includes('/schedule?')) return refusal(404); return scheduleRoute(request, next, state); } });
+  await f.owner.request('/upload/' + SESSION + '/commit', 'POST', f.payload); f.state.loseScheduleAction = true; await assert.rejects(() => f.owner.schedules.cancel(SESSION)); f.state.recentUnavailable = true;
+  const count = f.requests.length, list = await f.owner.schedules.list(); assert.equal(f.requests.length, count + 1); assert.equal(list.entries[0].sessionId, SECOND_SESSION); assert.equal(list.recent[0].sessionId, SESSION); assert.equal(list.recent[0].uncertain, 'cancel'); await assert.rejects(() => f.owner.schedules.get(SESSION), /404/); assert.equal(f.owner.schedules.pending(SESSION), 'cancel'); assert.equal((await f.owner.schedules.list()).entries.length, 1);
+});
+test('a late ordinary publication presentation cannot clear another adapter’s new global scheduled marker', async () => {
+  const entered = deferred(), release = deferred(), f = await ready({ catalogue: async state => { entered.resolve(); await release.promise; return response(clone(state.catalogue)); } }), staged = await stagedCommit(f);
+  const ordinary = f.owner.request('/upload/' + SESSION + '/commit', 'POST', staged.payload); await entered.promise;
+  const g = fixture({ storage: f.storage, state: f.state, request: async (request, next) => { if (request.url.endsWith('/upload/' + SECOND_SESSION + '/commit')) throw new RequestFailure('New scheduled response lost', 'unknown'); return next(request); } }), { owner } = await g.owner();
+  await g.api.reconcileUploadReceipt(owner, SESSION); const next = { ...g, owner, current: await g.begin(owner) }, saved = await stagedCommit(next); await assert.rejects(() => owner.request('/upload/' + SECOND_SESSION + '/commit', 'POST', { ...saved.payload, publishAt: DUE }));
+  const key = [...g.storage.keys()].find(key => key.includes('scheduled-commit.v1:')), exact = g.storage.get(key); assert.ok(exact); release.resolve(); await assert.rejects(() => ordinary); assert.equal(g.storage.get(key), exact); assert.equal(owner.pendingCommitSession(), SECOND_SESSION);
+});
+
+function localEditResource(version=2) { return {id:CHAPTER,type:'chapter',attributes:{version,title:'Local chapter',chapter:'1',volume:null,translatedLanguage:'en',uploader:USER,localPageSource:'local',localUploaderIsSystem:false},relationships:[{id:MANGA,type:'manga'},{id:USER,type:'user'}]}; }
+async function localEditFixture(options={}) {
+  const f=fixture({...options,chapter:state=>options.chapter?.(state)??localEditResource(),catalogue:()=>response(chapterView(localEditResource(3))),request:async(request,next,state)=>{
+    if(new URL(request.url).pathname==='/api/v1/upload/begin/'+CHAPTER){
+      if(options.beginUnknownBeforeAdmission)throw new RequestFailure('Begin delivery unknown before any observed admission','uncertain');
+      const body=JSON.parse(new TextDecoder().decode(request.body)),value=session();
+      Object.assign(value,{chapterId:CHAPTER,editVersion:body.version,draft:{chapter:'1',language:'en'},files:body.replace?[]:[staged()],pageOrder:body.replace?[]:[FILE]});state.sessions.set(SESSION,value);state.current=SESSION;
+      const receipt=response({id:SESSION,type:'upload_session',attributes:{version:1,isCommitted:false,isProcessed:false,isDeleted:false,edit:{chapterId:CHAPTER,version:body.version,replace:body.replace}}});
+      if(options.beginUnknown)throw new RequestFailure('Begin delivery unknown','uncertain');options.beginReceipt?.(receipt);return receipt;
+    }
+    if(options.request)return options.request(request,next,state);return next(request);
+  }});
+  const user=await f.api.loadUploadAccount(),owner=f.api.publicUploadOwner(()=>CHAPTER,user,'chapter');
+  return {...f,user,owner,async begin(replace=false){return owner.request('/upload/begin/'+CHAPTER,'POST',{version:2,replace});}};
+}
+for(const replace of [false,true])test('actual signed edit-begin binds mode and copies originals only for edit '+replace,async()=>{const f=await localEditFixture(),result=await f.begin(replace);assert.equal(result.status,200);assert.equal(result.body.edit_version,2);assert.equal(result.body.page_order.length,replace?0:1);assert.equal(mutations(f).length,1);assert.equal(f.owner.chapterBeginPending(),false);assert.equal(f.owner.chapterPagesPending(),true);await assert.rejects(()=>f.owner.request('/chapter/'+CHAPTER,'PUT',{version:2,title:'Unsafe simultaneous metadata'}),/page-edit session/);assert.equal(mutations(f).length,1);});
+for(const source of ['protocol',undefined,null,'LOCAL'])test('actual begin refuses nonexplicit local provenance '+source,async()=>{const f=await localEditFixture({chapter:()=>{const row=localEditResource();row.attributes.localPageSource=source;return row;}});await assert.rejects(()=>f.begin());assert.equal(mutations(f).length,0);});
+for(const key of ['chapterId','version','replace'])test('contradictory admission receipt '+key+' stays fenced',async()=>{const f=await localEditFixture({beginReceipt:receipt=>{receipt.body.attributes.edit[key]=key==='chapterId'?MANGA:key==='version'?3:true;}});await assert.rejects(()=>f.begin(),/admission receipt/);assert.equal(f.owner.chapterBeginPending(),true);await assert.rejects(()=>f.begin(),/unconfirmed/);assert.equal(mutations(f).length,1);});
+test('witnessed accepted begin requires exact stored editVersion and never automatic POST replay',async()=>{const f=await localEditFixture({request:(request,next,state)=>{if(state.snapshotUnavailable&&request.url.endsWith('/nostr/uploads/'+SESSION))throw new RequestFailure('Later snapshot unavailable','unsent');return next(request);}});f.state.snapshotUnavailable=true;await assert.rejects(()=>f.begin(),/snapshot unavailable/);const again=f.api.publicUploadOwner(()=>CHAPTER,f.user,'chapter');assert.equal(again.chapterBeginPending(),true);f.state.snapshotUnavailable=false;f.state.sessions.get(SESSION).editVersion=3;await assert.rejects(()=>again.reconcileChapterBegin(),/unconfirmed/);f.state.sessions.get(SESSION).editVersion=2;const saved=await again.reconcileChapterBegin();assert.equal(saved.id,SESSION);assert.equal(again.chapterBeginPending(),false);assert.equal(mutations(f).length,1);});
+for(const replace of [false,true])test('unknown admission cannot adopt another tab opposite-mode same-target staging '+replace,async()=>{const f=await localEditFixture({beginUnknownBeforeAdmission:true});await assert.rejects(()=>f.begin(replace),/unknown/);const other=session(SECOND_SESSION);Object.assign(other,{chapterId:CHAPTER,editVersion:2,draft:{chapter:'1',language:'en'},files:replace?[staged()]:[],pageOrder:replace?[FILE]:[]});if(replace)other.files[0].previewUrl='/api/v1/nostr/uploads/'+SECOND_SESSION+'/files/'+FILE+'/preview';f.state.sessions.set(SECOND_SESSION,other);f.state.current=SECOND_SESSION;const again=f.api.publicUploadOwner(()=>CHAPTER,f.user,'chapter'),key=[...f.storage.keys()].find(key=>key.includes(':chapter-begin:')),marker=f.storage.get(key);const inspected=await f.api.currentUpload(again);assert.equal(inspected.id,SECOND_SESSION);assert.equal(inspected.chapter_id,CHAPTER);assert.equal(inspected.edit_version,2);await assert.rejects(()=>again.reconcileChapterBegin(),/no exact accepted session receipt/);assert.equal(f.storage.get(key),marker);await assert.rejects(()=>again.request('/upload/'+SECOND_SESSION,'DELETE'));await assert.rejects(()=>again.request('/chapter/'+CHAPTER,'PUT',{version:2,title:'Still fenced'}));assert.equal(mutations(f).length,1);assert.equal(again.chapterBeginPending(),true);});
+test('unknown admission stays fenced even when current staging may actually be the original',async()=>{const f=await localEditFixture({beginUnknown:true});await assert.rejects(()=>f.begin(),/unknown/);await f.api.currentUpload(f.owner);await assert.rejects(()=>f.owner.reconcileChapterBegin(),/no exact accepted session receipt/);assert.equal(f.owner.chapterBeginPending(),true);assert.equal(mutations(f).length,1);});
+test('local page commit rejects changed chapter receipt and retains saved uncertainty',async()=>{const f=await localEditFixture({request:(request,next)=>request.url.endsWith('/commit')?response({...localEditResource(3),id:SECOND_SESSION}):next(request)}),result=await f.begin();const saved=await f.api.saveResume(result.body,{draft:{chapter:'1',language:'en'},page_order:[FILE]},f.owner);await assert.rejects(()=>f.owner.request('/upload/'+SESSION+'/commit','POST',{draft:saved.draft,page_order:saved.page_order,termsAccepted:true}),/exact chapter or version/);assert.equal(f.owner.commitState(),'uncertain');await assert.rejects(()=>f.owner.request('/chapter/'+CHAPTER,'PUT',{version:2,title:'Unsafe metadata'}));});
+
+test('caller-managed async chapter owner never registers a late Svelte lifecycle hook and explicit disposal fences writes',async()=>{const f=fixture({dependencies:{destroy:()=>{throw Error('Late lifecycle registration');}}}),user=await f.api.loadUploadAccount(),owner=f.api.publicUploadOwner(()=>CHAPTER,user,'chapter','caller');assert.equal(owner.alive(),true);owner.dispose();assert.equal(owner.alive(),false);await assert.rejects(()=>owner.request('/upload/begin/'+CHAPTER,'POST',{version:2}),/editor target changed/);assert.equal(mutations(f).length,0);});

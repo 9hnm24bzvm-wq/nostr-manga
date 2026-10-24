@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';
 // Syntax/source compiler only; no application, browser or database execution.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,7 +16,7 @@ const frontend = process.env.WEEBDEX_FRONTEND_ROOT ?? path.join(root, 'frontend'
 const require = createRequire(path.join(root, '.build/frontend-restore3/package.json'));
 const { compile } = require('svelte/compiler'), { transform } = require('esbuild');
 const integration = prepareFrontendIntegration(frontend);
-const plugins = [createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend), createPublicUploadOverlays(frontend)];
+const plugins = [createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend), createPublicUploadOverlays(frontend), createBoundedReaderOverlays(frontend)];
 const failures = [], warnings = []; let components = 0, scripts = 0;
 const compileOne = async (file, external = false) => {
   let source = fs.readFileSync(file, 'utf8');

@@ -23,7 +23,7 @@ fn localized(value: &Value, field: &str, title: bool) -> PublicApiResult<Value> 
     let entries=value.as_object().filter(|m|m.len()<=64 && (!title || !m.is_empty())).ok_or_else(||bad(field))?;
     let mut size=0usize;
     for (language,text) in entries {
-        v::language(language)?;
+        v::localized_key(language)?;
         let text=text.as_str().ok_or_else(||bad(field))?;
         size+=text.chars().count();
         if text.contains('\0') || title && (text.trim().is_empty() || text.chars().count()>500 || text.len()>1024) || size>50_000 {
@@ -39,12 +39,21 @@ fn primary(value: &Value, language: &str) -> String {
 fn normalize(input: Value, edit: bool, language: &str) -> PublicApiResult<(Value,Value)> {
     v::allowed(&input,&["title","altTitles","description","authors","artists","links","originalLanguage",
         "lastVolume","lastChapter","publicationDemographic","status","year","contentRating",
-        "chapterNumbersResetOnNewVolume","tags","version"])?;
+        "chapterNumbersResetOnNewVolume","tags","version","officialLinks","primaryCover"])?;
     if edit { v::version(&input)?; }
     else if input.get("version").is_some() { return Err(PublicApiError::bad_request("Version is assigned by the server")); }
     let mut native=json!({}); let mut metadata=json!({});
+    if let Some(cover)=input.get("primaryCover") {
+        if cover.is_null() { native["primary_cover"]=Value::Null; }
+        else {
+            let cover=PublicUuid::parse(cover.as_str().ok_or_else(||bad("primaryCover"))?)?;
+            // A new server-assigned title cannot already own an existing cover.
+            if !edit { return Err(PublicApiError::bad_request("Upload a cover after creating the title")); }
+            native["primary_cover"]=json!(cover.as_str());
+        }
+    }
     let language=if let Some(language)=input.get("originalLanguage") {
-        let language=language.as_str().ok_or_else(||bad("originalLanguage"))?;v::language(language)?;language
+        let language=language.as_str().ok_or_else(||bad("originalLanguage"))?;v::public_language(language)?;language
     } else if edit {language} else {return Err(bad("originalLanguage"))};
     if !edit || input.get("originalLanguage").is_some() {native["language"]=json!(language);}
     if let Some(title)=input.get("title") {
@@ -67,6 +76,7 @@ fn normalize(input: Value, edit: bool, language: &str) -> PublicApiResult<(Value
         }
         native["alt_titles"]=flat;metadata["localized_alt_titles"]=json!(alts);
     }
+    if let Some(value)=input.get("officialLinks") {metadata["official_links"]=super::title_links::dictionary(value)?;}
     for (wire,key) in [("lastVolume","last_volume"),("lastChapter","last_chapter")] {
         if let Some(value)=input.get(wire) {
             if value.is_null() {metadata[key]=Value::Null;}
@@ -102,6 +112,9 @@ fn normalize(input: Value, edit: bool, language: &str) -> PublicApiResult<(Value
     Ok((native,metadata))
 }
 async fn ids(tx:&Transaction<'_>, native:&mut Value) -> PublicApiResult<()> {
+    if let Some(cover)=native.get("primary_cover").filter(|v|!v.is_null()) {
+        native["primary_cover"]=json!(resolve(tx,ResourceKind::Cover,&PublicUuid::parse(cover.as_str().unwrap())?).await?);
+    }
     for (field,kind) in [("tags",ResourceKind::Tag),("authors",ResourceKind::Author),("artists",ResourceKind::Author)] {
         if let Some(values)=native.get_mut(field) {
             let mut mapped=Vec::new();
@@ -121,6 +134,8 @@ async fn create(State(state):State<AppState>,OriginalUri(uri):OriginalUri,header
     let (cap,body)=authorize(&state,&uri,&headers,request,64*1024,false).await?;
     let mut input=serde_json::from_slice(&body).map_err(|_|PublicApiError::bad_request("Invalid manga request body"))?;
     let expected=take_expected_account(&mut input)?;
+    if input.get("primaryCover").is_some() && expected.is_none() {return Err(PublicApiError::bad_request("primaryCover requires expectedAccountId"));}
+    if input.get("officialLinks").is_some() && expected.is_none() {return Err(PublicApiError::bad_request("officialLinks requires expectedAccountId"));}
     let (mut native,metadata)=normalize(input,false,"")?;
     let mut client=state.db.client().await?;let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;expected_account(&tx,&actor,expected.as_ref()).await?;ids(&tx,&mut native).await?;
@@ -133,6 +148,8 @@ async fn update(State(state):State<AppState>,Path(manga):Path<String>,OriginalUr
     let (cap,body)=authorize(&state,&uri,&headers,request,64*1024,false).await?;
     let mut input=serde_json::from_slice(&body).map_err(|_|PublicApiError::bad_request("Invalid manga request body"))?;
     let expected=take_expected_account(&mut input)?;
+    if input.get("primaryCover").is_some() && expected.is_none() {return Err(PublicApiError::bad_request("primaryCover requires expectedAccountId"));}
+    if input.get("officialLinks").is_some() && expected.is_none() {return Err(PublicApiError::bad_request("officialLinks requires expectedAccountId"));}
     let mut client=state.db.client().await?;let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;expected_account(&tx,&actor,expected.as_ref()).await?;let manga=resolve(&tx,ResourceKind::Manga,&manga).await?;
     let language:String=tx.query_opt("SELECT language FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)",&[&manga]).await?.ok_or_else(PublicApiError::not_found)?.get(0);
@@ -172,6 +189,40 @@ mod tests {
         let (n,m)=normalize(json!({"title":{"ja":"題","en":"Title"},"description":{"ja":"説明","en":"Text"},"originalLanguage":"ja","status":"ongoing","contentRating":"safe","year":null,"lastVolume":null,"publicationDemographic":null}),false,"").unwrap();
         assert_eq!(n["title"],"題");assert_eq!(n["year"],0);assert_eq!(n["demographic"],"none");
         assert_eq!(m["localized_titles"]["en"],"Title");assert_eq!(m["localized_description"]["ja"],"説明");assert!(m["last_volume"].is_null());
-        for value in [json!({"version":1,"title":{}}),json!({"version":1,"officialLinks":{}}),json!({"version":1,"primaryCover":null}),json!({"version":1,"title":{"en":""}}),json!({"version":1,"year":0}),json!({"version":1,"authors":["native"]}),json!({"version":1,"title":{"ja":"題".repeat(342)}})] {assert!(normalize(value,true,"en").is_err());}
+        for value in [json!({"version":1,"title":{}}),json!({"version":1,"officialLinks":{"provider":[]}}),json!({"version":1,"title":{"en":""}}),json!({"version":1,"year":0}),json!({"version":1,"authors":["native"]}),json!({"version":1,"title":{"ja":"題".repeat(342)}})] {assert!(normalize(value,true,"en").is_err());}
     }
+    #[test]
+    fn language_updates_are_public_only_and_omission_preserves_native_labels() {
+        for native in ["tam", "und", "zh-Hant"] {
+            let (patch, metadata) = normalize(json!({"version":1,"title":{native:"Changed text"}}), true, native).unwrap();
+            assert!(patch.get("language").is_none());
+            assert_eq!(metadata["localized_titles"][native], "Changed text");
+            assert!(normalize(json!({"version":1,"originalLanguage":native}), true, native).is_err());
+        }
+        let (patch, _) = normalize(json!({"version":1,"originalLanguage":"ta"}), true, "tam").unwrap();
+        assert_eq!(patch["language"], "ta");
+    }
+    #[test]
+    fn primary_cover_preserves_presence_and_rejects_invalid_or_foreign_creation() {
+        let cover="11111111-1111-4111-8111-111111111111";
+        assert!(normalize(json!({"version":1}),true,"en").unwrap().0.get("primary_cover").is_none());
+        assert_eq!(normalize(json!({"version":1,"primaryCover":null}),true,"en").unwrap().0.get("primary_cover"),Some(&Value::Null));
+        assert_eq!(normalize(json!({"version":1,"primaryCover":cover}),true,"en").unwrap().0["primary_cover"],cover);
+        let mut create=json!({"title":{"en":"Title"},"originalLanguage":"en","status":"ongoing","contentRating":"safe","primaryCover":null});
+        assert_eq!(normalize(create.clone(),false,"").unwrap().0.get("primary_cover"),Some(&Value::Null));
+        create["primaryCover"]=json!(cover);assert!(normalize(create,false,"").is_err());
+        for value in [json!(false),json!(42),json!({}),json!(""),json!("native-cover")] {
+            assert!(normalize(json!({"version":1,"primaryCover":value}),true,"en").is_err());
+        }
+    }
+    #[test]
+    fn official_links_are_a_separate_exact_metadata_dictionary() {
+        let input=json!({"version":7,"links":{"raw":"https://legacy.example"},"officialLinks":{"provider":"  opaque  ","":"","__proto__":"<b>text</b>"}});
+        let (native,metadata)=normalize(input.clone(),true,"en").unwrap();
+        assert_eq!(native["links"],input["links"]);
+        assert_eq!(metadata["official_links"],input["officialLinks"]);
+        assert!(native.get("officialLinks").is_none());
+        assert_eq!(normalize(json!({"version":7,"officialLinks":{}}),true,"en").unwrap().1["official_links"],json!({}));
+    }
+
 }

@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "scope": "Test-only current-source association and explicit VM pre-effect lifecycle corrections",
+  "product_source_commit": "8b1c58d16d2b5d14790f2f30490f52e21ce7b102",
+  "private_prerequisite_head": "a0234635c0483110706f01232511ab43a48f8a1b",
+  "recorded_at": "2026-10-22T14:02:26.453574+00:00",
+  "node": {
+    "version": "v24.19.0",
+    "command": "NODE_OPTIONS=--experimental-vm-modules timeout 90s node --test --test-concurrency=1 tests/ci/test_account_title_composition.mjs tests/ci/test_public_rating_build_seam.mjs tests/ci/test_native_settings_utility_sources.mjs tests/ci/test_frontend_semantic_contracts.mjs tests/ci/test_integrated_read_fanout_plan.mjs tests/ci/test_reviewed_history_source_successors.mjs tests/ci/test_reviewed_native_source_successors.mjs tests/ci/test_reviewed_integration_source_successors.mjs",
+    "exit": 0,
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "semantic_cases_within_one_test": 135
+  },
+  "python": {
+    "version": "Python 3.12.14",
+    "command": "PYTHONPATH=tests/ci timeout 90s python3 -m unittest test_composition_feature_source_successor test_signed_feature_source_pins test_reviewed_history_source_successors test_reviewed_integration_source_successors",
+    "exit": 0,
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0
+  },
+  "source_inventory": {
+    "path": "source-inventory.json",
+    "file_count": 1426,
+    "bytes": 284731,
+    "sha256": "364d15cbbfe911ef91c9346ae0a58c21bbecb15b4c2dacc7a59e572e2cd3eb3a"
+  },
+  "association": {
+    "path": "docs/fixtures/integrated-discussion-title-source-association.json",
+    "sha256": "f1cb600e66092923ef0b60c31fbb525329b5c3467dc3537dd5b14259a046c7b9",
+    "rows": 7
+  },
+  "immutable_historical_inputs": [
+    {
+      "path": "docs/fixtures/device-history-source-association.json",
+      "sha256": "c06a19d189112fb67edcd36e7bc766649b6084284e74a4b3711ea91b8547a33f"
+    },
+    {
+      "path": "docs/fixtures/native-user-source-associations.json",
+      "sha256": "9d54b6b8a05d920621a3b72fba31f7b4a85c2a81a5d45ff3399075f68b6ea780"
+    },
+    {
+      "path": "docs/fixtures/integrated-read-fanout-current-source.json",
+      "sha256": "1ad1dc4cc04b2bad3321a579877afe2e53f13860e950a1e0c17dab67b387d65b"
+    },
+    {
+      "path": "test-evidence/public-signed-features-20261022/source-pins.json",
+      "sha256": "0a9c9b85c074bd55a0587112b5b4aaa5cd6b2659b1d31c09a0caf6fe3c43ad8a"
+    },
+    {
+      "path": "test-evidence/public-signed-features-20261022/composition-source-successor.json",
+      "sha256": "cf3f58e72b99bce1ec8107f0975ca6e23c6aa6e8238a768408ab73bc0fe58b38"
+    }
+  ],
+  "logs": {
+    "node-first.log": {
+      "bytes": 9029,
+      "sha256": "ada6125ef964d3176ae5ba0a696e4837398babd4152c0f2ed9de08ee43b419cb"
+    },
+    "node-second.log": {
+      "bytes": 5144,
+      "sha256": "a77d939341c25491f92bcbb5c2d8e99f4daf1bb6a20cc74b8c296e2b83af88a1"
+    },
+    "node.log": {
+      "bytes": 5144,
+      "sha256": "c53e212318afb939d36d1be4fbccdcefe232643d9c524accb8e5de104933b137"
+    },
+    "python-first.log": {
+      "bytes": 3574,
+      "sha256": "6740cdcb64e8604282b70bc966dce794f9b44ed55fe079b2606edcbe6e67555d"
+    },
+    "python-second.log": {
+      "bytes": 115,
+      "sha256": "ecb30f598e753fbe4c8336a3c782b57d8674ae91d4832d829fb47df1b89b3570"
+    },
+    "python.log": {
+      "bytes": 115,
+      "sha256": "12a1da17305916374c208a2f43663a45af22df0104e900486629f01ef7a63978"
+    }
+  },
+  "browser_executed": false,
+  "http_executed": false,
+  "database_executed": false,
+  "build_executed": false,
+  "full_finite_executed": false,
+  "remaining": [
+    "integrator composed strict and full finite reruns",
+    "separately scheduled Rust/HTTP acceptance",
+    "generic signed reporting remains unfinished"
+  ]
+}

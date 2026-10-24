@@ -97,6 +97,157 @@ class NativeTitleGate(unittest.TestCase):
         self.assertEqual(loop.count('("DELETE",'), 3)
         self.assertIn('Some(authorization),400).await;', scenario)
 
+    def test_current_core_successor_preserves_three_immutable_inputs_and_rejects_unknown_bytes(self):
+        successor = contract.CORE_SOURCE_SUCCESSOR
+        self.assertEqual(successor['path'], 'backend/tests/public_manga_writes.rs')
+        self.assertEqual(successor['prior_sha256'], 'c78673bfbe0008231f9d82a72a82f9d271f875b6319329bd05732b6e3acb6022')
+        self.assertEqual(successor['current_sha256'], 'a4db6be2152bae12c7a65d78006a4c805f51f703e7aeb00ab71c17c9f4d8c5e7')
+        self.assertEqual(successor['reviewed_commit'], '4563d7dff0e31d9e9e2ce836434da4fc7559b093')
+        self.assertEqual(set(contract.OFFICIAL_LINKS_CORE_HASHES), set(contract.HISTORICAL_CORE_HASHES))
+        changed = [name for name in contract.OFFICIAL_LINKS_CORE_HASHES if contract.OFFICIAL_LINKS_CORE_HASHES[name] != contract.HISTORICAL_CORE_HASHES[name]]
+        self.assertEqual(changed, [successor['path']])
+        self.assertEqual(contract.HISTORICAL_CORE_HASHES[successor['path']], successor['prior_sha256'])
+        self.assertEqual(len(contract.OFFICIAL_LINKS_CORE_HASHES) - len(changed), 3)
+        cover = contract.CORE_COVER_SUCCESSOR
+        self.assertEqual(cover['path'], successor['path'])
+        self.assertEqual(cover['prior_sha256'], successor['current_sha256'])
+        self.assertEqual(cover['current_sha256'], '1afe8d6e2f5c1439207cac8f5e65cc53e5d4f79fdf76978980b21c82854e8851')
+        self.assertEqual(cover['reviewed_commit'], '55a55d6578d991285caaef1eff362ad2f9fc6f1c')
+        self.assertEqual(cover['added_sources'], {
+            'backend/tests/support/primary_cover_contract.rs': 'd3e4a1f3a7745c5468ba053edfcf98438bcd2bf28da9f74f6cb3da1fefd1f188',
+            'backend/tests/support/cover_pagination.rs': '1d200c822ab6cff4888b9964bfb7e6706802e031657f065f6a7f9c7ae549071f',
+            '../manga-protocol-lab/server/tests/support/mod.rs': 'bf78e30a51e798537eb04366a7c39761b85638445746a528635dc5385b9496ca',
+        })
+        expected = dict(contract.OFFICIAL_LINKS_CORE_HASHES)
+        expected[cover['path']] = cover['current_sha256']
+        expected.update(cover['added_sources'])
+        self.assertEqual(contract.COVER_CORE_HASHES, expected)
+        language = contract.CORE_LANGUAGE_SUCCESSOR
+        self.assertEqual(language['path'], cover['path'])
+        self.assertEqual(language['prior_sha256'], cover['current_sha256'])
+        self.assertEqual(language['current_sha256'], '968d201297b0f86f78ff781d598f775790f96b5aa882869da061cbfea36ee7c1')
+        self.assertEqual(language['reviewed_commit'], '99483383cf6f50802945a731a5f1665c64038c42')
+        self.assertEqual(language['added_sources'], {
+            'backend/tests/support/public_language_contract.rs': '8f3acba1248f6641ec61aebfe59e1e0dd78a84f0beab5c845bcf253563eb1a41',
+            'backend/tests/support/public_language_restart.rs': '5474f85a2d3573abfd401243914fa65c4d1a18f3f1dafa018b23746ba26ea1f8',
+        })
+        expected[language['path']] = language['current_sha256']
+        expected.update(language['added_sources'])
+        self.assertEqual(contract.LANGUAGE_CORE_HASHES, expected)
+        self.assertEqual(len(expected), 9)
+        unicode = contract.CORE_COVER_UNICODE_SUCCESSOR
+        self.assertEqual(unicode['path'], language['path'])
+        self.assertEqual(unicode['prior_sha256'], language['current_sha256'])
+        self.assertEqual(unicode['current_sha256'], '6180cd02a63bde2c8d0d511471dc47d3e28c8fdf17a2f41963a268a22f90b0f4')
+        self.assertEqual(unicode['added_sources'], {'backend/tests/support/cover_unicode.rs': '81fbf0eb961b1421631ea0a9eeb2ee26e273595641e7833004f165c1c04ef3db'})
+        self.assertEqual(unicode['reviewed_commits'], ['72ade3a90862b7f580e37880004a18e547229616', '73929bb8e674b73eeae8bab8d824e5431d956a3a'])
+        self.assertEqual(unicode['source_freeze'], '216ba56ad48e1379dc56b13a611a229695a10edc')
+        self.assertEqual(unicode['status'], 'source-association-only-no-execution')
+        expected[unicode['path']] = unicode['current_sha256']
+        expected.update(unicode['added_sources'])
+        self.assertEqual(contract.COVER_UNICODE_CORE_HASHES, expected)
+        self.assertEqual(len(expected), 10)
+        self.assertEqual([name for name in contract.LANGUAGE_CORE_HASHES if contract.LANGUAGE_CORE_HASHES[name] != expected[name]], [unicode['path']])
+        disable = contract.CORE_ACCOUNT_DISABLE_SUCCESSOR
+        self.assertEqual(disable, {
+            'path': 'backend/tests/public_manga_writes.rs',
+            'prior_sha256': '6180cd02a63bde2c8d0d511471dc47d3e28c8fdf17a2f41963a268a22f90b0f4',
+            'current_sha256': 'f499311565a0ee327528de678502088b7278b09b7d98753c3e67b5a7086147c4',
+            'reviewed_commit': 'dfa6135752d9e01c5bb5afa56cfc48b2bfa79bda',
+            'source_freeze': '11ea3ea9f593c134f2ba478bb84fa683f4b14149',
+            'status': 'source-association-only-no-execution',
+        })
+        self.assertEqual(disable['path'], unicode['path'])
+        self.assertEqual(disable['prior_sha256'], unicode['current_sha256'])
+        expected[disable['path']] = disable['current_sha256']
+        self.assertEqual(contract.CORE_HASHES, expected)
+        self.assertEqual(len(expected), 10)
+        self.assertEqual([name for name in contract.COVER_UNICODE_CORE_HASHES if contract.COVER_UNICODE_CORE_HASHES[name] != expected[name]], [disable['path']])
+        with tempfile.TemporaryDirectory() as temporary:
+            root, _, _ = self.fake_artifacts(temporary)
+            for relative in contract.CORE_HASHES:
+                with self.subTest(relative=relative):
+                    source = root / relative
+                    original = source.read_bytes()
+                    source.write_bytes(original + b'\n# unreviewed source\n')
+                    with self.assertRaises(ValueError):
+                        contract.verify_core(root)
+                    source.write_bytes(original)
+                    contract.verify_core(root)
+
+    def test_unicode_append_and_metadata_refuse_historical_partial_duplicate_or_unknown_sources(self):
+        row = contract.CORE_COVER_UNICODE_SUCCESSOR
+        current = contract.restore_account_disable_fixture((ROOT / row['path']).read_bytes())
+        previous = contract.restore_cover_unicode_append(current)
+        self.assertEqual(current, previous + contract.COVER_UNICODE_APPEND)
+        self.assertEqual(hashlib.sha256(previous).hexdigest(), row['prior_sha256'])
+        for value in [previous, current + b' ', current + contract.COVER_UNICODE_APPEND,
+                      current[:-1], current.replace(b'mod cover_unicode;', b'mod unknown;')]:
+            with self.subTest(value=value[-80:]), self.assertRaises(ValueError):
+                contract.restore_cover_unicode_append(value)
+        with self.assertRaises(ValueError):
+            contract.restore_cover_unicode_append(current, dict(reversed(list(row.items()))))
+        for key in row:
+            changed = dict(row)
+            del changed[key]
+            with self.subTest(missing=key), self.assertRaises(ValueError):
+                contract.restore_cover_unicode_append(current, changed)
+        for key, value in [('path', 'unknown'), ('status', 'passed'), ('source_freeze', '0' * 40),
+                           ('reviewed_commits', list(reversed(row['reviewed_commits']))),
+                           ('added_sources', {}), ('unknown', True)]:
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                contract.restore_cover_unicode_append(current, {**row, key: value})
+
+    def test_account_disable_seam_rejects_historical_partial_duplicate_unknown_sources_and_metadata(self):
+        row = contract.CORE_ACCOUNT_DISABLE_SUCCESSOR
+        path = ROOT / row['path']
+        current = path.read_bytes()
+        previous = contract.restore_account_disable_fixture(current)
+        self.assertEqual(hashlib.sha256(previous).hexdigest(), row['prior_sha256'])
+        self.assertEqual(previous.count(contract.ACCOUNT_DISABLE_PRIOR), 1)
+        self.assertEqual(current, previous.replace(contract.ACCOUNT_DISABLE_PRIOR, contract.ACCOUNT_DISABLE_CURRENT, 1))
+        self.assertEqual(path.read_bytes(), current)
+        disabled_update = contract.ACCOUNT_DISABLE_CURRENT.splitlines(keepends=True)[-1]
+        bad_sources = [
+            previous,
+            current + b' ',
+            current[:-1],
+            current + contract.ACCOUNT_DISABLE_CURRENT,
+            current + contract.ACCOUNT_DISABLE_PRIOR,
+            current.replace(disabled_update, b'', 1),
+            current.replace(b'&(key!=5),&false,&roles', b'&(key!=5),&(key==6),&roles', 1),
+            current.replace(disabled_update, disabled_update * 2, 1),
+            current.replace(b'SET disabled=$2', b'SET disabled=true', 1),
+            current.decode(), bytearray(current), None,
+        ]
+        for index, source in enumerate(bad_sources):
+            with self.subTest(source=index), self.assertRaises(ValueError):
+                contract.restore_account_disable_fixture(source)
+        with self.assertRaises(ValueError):
+            contract.restore_account_disable_fixture(current, dict(reversed(list(row.items()))))
+        for key in row:
+            changed = dict(row)
+            del changed[key]
+            with self.subTest(missing=key), self.assertRaises(ValueError):
+                contract.restore_account_disable_fixture(current, changed)
+            with self.subTest(changed=key), self.assertRaises(ValueError):
+                contract.restore_account_disable_fixture(current, {**row, key: 'unknown'})
+        with self.assertRaises(ValueError):
+            contract.restore_account_disable_fixture(current, {**row, 'unknown': True})
+        # Neither substituting a self-consistent old source/hash nor partially
+        # reversing the fixture can turn history into current artifact evidence.
+        with self.assertRaises(ValueError):
+            contract.restore_account_disable_fixture(previous, {**row, 'current_sha256': row['prior_sha256']})
+        with tempfile.TemporaryDirectory() as temporary:
+            root, _, binding = self.fake_artifacts(temporary)
+            source_path = root / row['path']
+            for source in bad_sources[:9]:
+                source_path.write_bytes(source)
+                with self.subTest(source_sha=hashlib.sha256(source).hexdigest()), self.assertRaises(ValueError):
+                    contract.verify_artifacts(binding, root, '1' * 64)
+            source_path.write_bytes(current)
+            contract.verify_core(root)
+
     def test_harness_requires_exact_names_counts_and_one_terminal_record(self):
         text = test_text(contract.UNIT_TESTS)
         self.assertEqual(contract.parse_tests(text, contract.UNIT_TESTS)['passed_tests'], 3)
@@ -200,11 +351,17 @@ class NativeTitleGate(unittest.TestCase):
 
     def run_standin(self, temporary, *, deadline=600, mode=None):
         root, _, binding = self.fake_artifacts(temporary)
+        title_path = root / contract.CORE_ACCOUNT_DISABLE_SUCCESSOR['path']
+        current_title_source = title_path.read_bytes()
+        if mode == 'historical-title-source':
+            title_path.write_bytes(contract.restore_account_disable_fixture(current_title_source))
         stage = root / '.build/hosted-browser'
         stage.mkdir(parents=True)
         (stage / 'plan.json').write_text(json.dumps({'native_title_tests': binding}))
         calls = []
         def run(argv, **kwargs):
+            self.assertEqual(title_path.read_bytes(), current_title_source)
+            self.assertEqual(contract.sha(title_path), contract.CORE_ACCOUNT_DISABLE_SUCCESSOR['current_sha256'])
             self.assertEqual(kwargs['stdout'], adapter.subprocess.DEVNULL)
             self.assertEqual(kwargs['stderr'], adapter.subprocess.DEVNULL)
             command = argv[argv.index('--') + 1:]
@@ -241,6 +398,8 @@ class NativeTitleGate(unittest.TestCase):
             contract.verify_core(root)
         with mock.patch.object(adapter.subprocess, 'run', side_effect=run), mock.patch.object(adapter.time, 'monotonic', return_value=0):
             value = adapter.run(root, stage, {'RUSTUP_TOOLCHAIN': '1.90.0'}, deadline, '1' * 64, verify, feed.fixture_cleanup_verified)
+        if mode != 'historical-title-source':
+            self.assertEqual(title_path.read_bytes(), current_title_source)
         return value, calls, root
 
     def test_adapter_runs_only_exact_three_units_and_one_existing_guarded_scenario(self):
@@ -268,13 +427,15 @@ class NativeTitleGate(unittest.TestCase):
             self.assertNotIn('PRIVATE_DIAGNOSTIC_SENTINEL', json.dumps(value))
 
     def test_adapter_refuses_zero_units_unclean_cleanup_changed_source_and_ambiguous_fixture(self):
-        for mode in ['zero-units', 'forced-unit', 'source-change', 'two-fixtures', 'dirty-fixture']:
+        for mode in ['zero-units', 'forced-unit', 'source-change', 'two-fixtures', 'dirty-fixture', 'historical-title-source']:
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temporary:
                 value, calls, _ = self.run_standin(temporary, mode=mode)
                 self.assertEqual(value['status'], 'failed')
                 self.assertEqual(value['negative_requests_verified'], 0)
                 if mode in ['zero-units', 'forced-unit', 'source-change']:
                     self.assertEqual(len(calls), 1)
+                elif mode == 'historical-title-source':
+                    self.assertEqual(len(calls), 0)
 
     def test_budget_refusal_precedes_unit_or_new_database_launch(self):
         for seconds, calls_expected in [(29, 0), (100, 1)]:

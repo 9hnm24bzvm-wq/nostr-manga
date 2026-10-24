@@ -6,6 +6,8 @@ import json
 import time
 from pathlib import Path
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('integrated_budget', ROOT / 'scripts/integrated_load_budget.py')
@@ -311,15 +313,47 @@ class TransportBudgetSeams(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(budget.snapshot()['http_attempts'], 1)
 
     async def test_late_verification_cannot_turn_a_stalled_loop_into_completion(self):
-        budget = self.budget()
-        def delayed(_):
-            time.sleep(.03)
+        # Drive the actual request/middleware/accounting path without asking an
+        # overloaded host to finish loopback I/O within 10 ms. Only its clock and
+        # response transport are controlled; the original 10 ms deadline and
+        # post-verification timeout gate remain unchanged.
+        clock = [time.monotonic()]
+        consumed, closed, verified = [], [], []
+        async def read(credit):
+            self.assertGreaterEqual(credit, 1)
+            consumed.append(b'x')
+            return b'x'
+        async def wait_for_close():
+            self.assertEqual(closed, [True])
+        response = SimpleNamespace(status=200, headers={},
+            content=SimpleNamespace(at_eof=lambda: bool(consumed), read=read, total_bytes=1),
+            close=lambda: closed.append(True), wait_for_close=wait_for_close)
+        async def request(method, url, **options):
+            self.assertEqual((method, str(url)), ('GET', self.origin + '/bytes/1'))
+            self.assertFalse(options['allow_redirects'])
+            self.assertEqual(len(options['middlewares']), 1)
+            async def dispatched(_):
+                return response
+            return await options['middlewares'][0](object(), dispatched)
+        def delayed(result):
+            self.assertEqual(result['body_bytes'], 1)
+            verified.append(True)
+            clock[0] += .03
             return True
-        async with HTTP(budget, [self.origin], request_timeout_s=.01) as http:
-            with self.assertRaises(module.TransportFailure):
-                await http.request('verification', 'GET', self.origin + '/bytes/1', verify=delayed)
-        self.assertEqual(budget.snapshot()['attempts'][0]['outcome'], 'timeout')
-        self.assertEqual(budget.snapshot()['response_body_bytes_consumed'], 1)
+        with patch.object(module, 'time', SimpleNamespace(monotonic=lambda: clock[0])):
+            budget = self.budget()
+            async with HTTP(budget, [self.origin], request_timeout_s=.01) as http:
+                with patch.object(module.aiohttp.ClientSession, 'request', side_effect=request):
+                    with self.assertRaisesRegex(module.TransportFailure, 'deadline expired'):
+                        await http.request('verification', 'GET', self.origin + '/bytes/1', verify=delayed)
+        result = budget.snapshot()
+        self.assertEqual(verified, [True])
+        self.assertEqual(result['attempts'][0]['outcome'], 'timeout')
+        self.assertTrue(result['attempts'][0]['semantic_verified'])
+        self.assertTrue(result['attempts'][0]['response_close_settled'])
+        self.assertEqual(result['http_attempts'], 1)
+        self.assertEqual(result['response_body_bytes_consumed'], 1)
+        self.assertEqual(result['inflight'], 0)
 
     async def test_invalid_destinations_headers_lanes_and_bounds_never_spend_an_attempt(self):
         budget = self.budget()
@@ -362,6 +396,69 @@ class TransportBudgetSeams(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(value['device_progress'], dict(measured=False, logical_saves_observed=None,
             expected_http_writes=0, backend_substitution_allowed=False))
         self.assertFalse(value['capacity_qualified'])
+
+
+class DeadlineClassificationControls(unittest.IsolatedAsyncioTestCase):
+    """Actual budget request path with a controlled transport/clock, no listener."""
+    async def exercise(self, duration, request_timeout, advance=0, failure=None):
+        clock = [time.monotonic()]
+        consumed, closed = [], []
+        async def read(credit):
+            consumed.append(b'x')
+            return b'x'
+        async def wait_for_close():
+            self.assertEqual(closed, [True])
+        response = SimpleNamespace(status=200, headers={},
+            content=SimpleNamespace(at_eof=lambda: bool(consumed), read=read, total_bytes=1),
+            close=lambda: closed.append(True), wait_for_close=wait_for_close)
+        async def request(method, url, **options):
+            async def dispatched(_):
+                if failure is not None:
+                    raise failure
+                return response
+            return await options['middlewares'][0](object(), dispatched)
+        def verify(_):
+            clock[0] += advance
+            return True
+        with patch.object(module, 'time', SimpleNamespace(monotonic=lambda: clock[0])):
+            budget = Budget(duration_s=duration)
+            async with HTTP(budget, ['http://127.0.0.1:1'], request_timeout_s=request_timeout) as http:
+                with patch.object(module.aiohttp.ClientSession, 'request', side_effect=request):
+                    try:
+                        await http.request('verification', 'GET', 'http://127.0.0.1:1/owned', verify=verify)
+                    except BaseException as error:
+                        result = error
+                    else:
+                        self.fail('Expected a bounded stop')
+        self.assertEqual(budget.snapshot()['inflight'], 0)
+        self.assertEqual(budget.snapshot()['http_attempts'], 1)
+        return result, budget.snapshot()
+
+    async def test_selected_shared_earlier_request_and_equal_deadlines(self):
+        for duration, request_timeout, advance, shared in [
+                (.01, 1, .03, True), (1, .01, .03, False), (1, 1, 1.1, True)]:
+            with self.subTest(duration=duration, request_timeout=request_timeout):
+                error, snapshot = await self.exercise(duration, request_timeout, advance)
+                self.assertIsInstance(error, module.TransportDeadline)
+                self.assertIs(error.shared_deadline, shared)
+                self.assertEqual(snapshot['attempts'][0]['outcome'], 'timeout')
+                self.assertTrue(snapshot['attempts'][0]['response_close_settled'])
+
+    async def test_early_internal_timeout_is_not_selected_deadline_expiry(self):
+        error, _ = await self.exercise(1, 1, failure=TimeoutError())
+        self.assertIsInstance(error, module.TransportFailure)
+        self.assertNotIsInstance(error, module.TransportDeadline)
+
+    async def test_ordinary_transport_failure_is_not_deadline(self):
+        error, _ = await self.exercise(1, 1, failure=module.aiohttp.ClientOSError())
+        self.assertIsInstance(error, module.TransportFailure)
+        self.assertNotIsInstance(error, module.TransportDeadline)
+
+    async def test_cancellation_propagates_without_deadline_relabel(self):
+        cancelled = asyncio.CancelledError()
+        error, snapshot = await self.exercise(1, 1, failure=cancelled)
+        self.assertIs(error, cancelled)
+        self.assertEqual(snapshot['attempts'][0]['outcome'], 'cancelled')
 
 
 if __name__ == '__main__':

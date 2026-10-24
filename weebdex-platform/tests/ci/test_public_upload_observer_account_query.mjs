@@ -4,14 +4,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { validateUploadHttpEvent, uploadDigest } from '../../scripts/public-upload-recovery-observer.mjs';
+import { restoreReviewedLanguageSource } from './reviewed-local-page-source-successors.mjs';
 import {
   accountId, otherAccountId, origin, owner, service, scope, discoveryPath, clientSource,
   actualClientDiscovery, encode, eventFor, seal, harness, finish, observerFailureCases,
 } from './public-upload-observer-query-fixture.mjs';
 
-// Session-epoch successor: requalify this exact current client. The actual
+// Signed chapter-affordance successor: requalify this exact current client. The actual
 // source-extracted signed discovery tail below remains the exercised contract.
-const clientSha = '5261d778e2715c3d85085ee03d722df2cf020a086e564c13d667c8937b50d757';
+const clientSha = 'c8d3e55319a2f93ae1f9b4e11875c2d4711a1d8d985e4dc7df5ab722f26dca8f';
 const baselineSha = '2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71';
 function input(options = {}) {
   const { method = 'GET', pathname = discoveryPath, body = null, event = eventFor(options), ...overrides } = options;
@@ -25,7 +26,7 @@ function rejectedObservation(options) {
 }
 
 test('exact actual client discovery tail reaches a bound observer without mutation or query retention', async () => {
-  assert.equal(uploadDigest(clientSource), clientSha);
+  assert.equal(uploadDigest(restoreReviewedLanguageSource(clientSource, 'uploadClient')), clientSha);
   const actual = await actualClientDiscovery(); assert.equal(actual.method, 'GET'); assert.equal(actual.body, undefined);
   const h = harness();
   try {

@@ -8,8 +8,8 @@ import vm from 'node:vm';
 import {createHash} from 'node:crypto';
 import {stripTypeScriptTypes} from 'node:module';
 import {withBoundedBodyPipe,restoreBoundedBodyPipe,TRANSPORT_SOURCE_SHA256} from '../../scripts/ci/native-upload-pipe-candidate.mjs';
-import {browserModules} from '../../scripts/ci/run-native-upload-diagnostic.mjs';
-const source=fs.readFileSync(new URL('../../platform-integrations/public-api/nostr-upload-request.ts',import.meta.url),'utf8');
+import {historicalTransport,historicalBrowserModules} from './native-upload-historical-fixture.mjs';
+const source=historicalTransport();
 const digest=value=>createHash('sha256').update(value).digest('hex');
 const encoder=new TextEncoder(),flush=async()=>{for(let i=0;i<100;i++)await Promise.resolve();};
 const deferred=()=>{let resolve;return {promise:new Promise(r=>{resolve=r;}),resolve};};
@@ -52,7 +52,7 @@ test('candidate is an exactly reversible edit of the frozen production transport
  assert.ok(candidate.indexOf('chunk.byteLength > limit - size')<candidate.indexOf('new Uint8Array(limit)'));
  for(const drift of [source+'\n',source.replace('limit - size','limit + size'),source.replace('if (!completed) controller.abort();','controller.abort();')])assert.throws(()=>withBoundedBodyPipe(drift));
  assert.throws(()=>restoreBoundedBodyPipe(candidate+'\n'));
- const served=browserModules().get('/modules/transport-pipe.js');assert.equal(served,stripTypeScriptTypes(candidate.replace('const uploadRequestRefusalRecording = false;','const uploadRequestRefusalRecording = true;'),{mode:'transform'}).replace(/from\s+(['"])[^'"]+\1/g,'from "/modules/stubs.js"'));
+ const served=historicalBrowserModules().get('/modules/transport-pipe.js');assert.equal(served,stripTypeScriptTypes(candidate.replace('const uploadRequestRefusalRecording = false;','const uploadRequestRefusalRecording = true;'),{mode:'transform'}).replace(/from\s+(['"])[^'"]+\1/g,'from "/modules/stubs.js"'));
 });
 
 test('both source readers accept exact-cap chunked JSON and preserve actual status',async()=>{

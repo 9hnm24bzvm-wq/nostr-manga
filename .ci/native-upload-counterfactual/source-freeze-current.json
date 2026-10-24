@@ -1,0 +1,173 @@
+{
+  "source_parent_commit": "92c15ddfbcab8dcb88d8a39fc0bc139c6cae20fc",
+  "files": [
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-client.ts",
+      "bytes": 97031,
+      "sha256": "366517eb1d56d0e3474cd0d8067ace517b2439d5bb132d090b54570f77b4c980",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts",
+      "bytes": 20569,
+      "sha256": "03ffe025cadb09194022b6e8ac496a4e089b5ec44a5e512fce83f528bac74eb8",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-multipart.ts",
+      "bytes": 5322,
+      "sha256": "460b130db0e71ff98b85662129060e4a85c8ee9e502f161b9cd33873ffd6c7c0",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/validation.ts",
+      "bytes": 2001,
+      "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/upload-schedules.ts",
+      "bytes": 15608,
+      "sha256": "ac97fd34eea9e4729c387ce029a5f8ad40fa98c76db911289c52486817db56b2",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/language.ts",
+      "bytes": 1557,
+      "sha256": "277af04bf0eb0e6da55ef44e26d20138b9f74bba7d0f955bd14bac57711dc2da",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/chapter-access.ts",
+      "bytes": 2176,
+      "sha256": "ef01312598922398c69c847405f7730a023d5b2e5fabf9303a5736f085cabc46",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/chapter-command-fence.ts",
+      "bytes": 3913,
+      "sha256": "3469ef6123d0a36c1fa8248a443fc416b8ae8581c3e5af102676d5c6a4cc541e",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/lib/constants/Error.ts",
+      "bytes": 584,
+      "sha256": "a1a45c45acec60f4f432844183decee07589f0779ad31785b6484fa001904a61",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-observer.mjs",
+      "bytes": 8827,
+      "sha256": "f211b70bc0b9089e79ed48a46291a88204b3b60212cf604db4fb15c7dd8f7340",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-signed-event-envelope.mjs",
+      "bytes": 2280,
+      "sha256": "dd996a952531690f38f43ea541aa103235da3a49ed6588dd56b0c29e5fa0fb66",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-refusal-qa.mjs",
+      "bytes": 9241,
+      "sha256": "19b6bbb04add4276c24e9918c52e29f951e1450e0f2bb0b6db0683e9be15896f",
+      "origin": "input"
+    },
+    {
+      "path": "weebdex-platform/scripts/vite.platform.config.mjs",
+      "bytes": 4887,
+      "sha256": "3db39b8947976409beb6bfb46432af4633aba02f0d951b51a2ffccc4250dd67e",
+      "origin": "input"
+    },
+    {
+      "path": ".ci/native-upload-counterfactual/browser-pins.json",
+      "bytes": 2193,
+      "sha256": "14d6dcf65a7584123784def783037078f061d750bf554cd67cd34370572230dd",
+      "origin": "payload"
+    },
+    {
+      "path": ".ci/native-upload-counterfactual/package-lock.json",
+      "bytes": 1196,
+      "sha256": "e1da6bd8b8a67849c5e55d257336524a6b9fe4c1764c112efb4e8817ea4f3f35",
+      "origin": "payload"
+    },
+    {
+      "path": ".ci/native-upload-counterfactual/package.json",
+      "bytes": 146,
+      "sha256": "7fe83420276db481e6b48cf6bab3eac95add4ba48a03390bedbc41182636a4a6",
+      "origin": "payload"
+    },
+    {
+      "path": ".github/workflows/hosted-browser-e2e.yml",
+      "bytes": 8857,
+      "sha256": "29c61963198b921a2e22419cce67d38a4ebd9c868012701bfff2b0bb87dff994",
+      "origin": "payload"
+    },
+    {
+      "path": ".github/workflows/native-upload-browser-counterfactual.yml",
+      "bytes": 3082,
+      "sha256": "8fff6f4f83977ba73cae59b166383ea162633d203e5a271c2aa7d3211d956f16",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/acquire-native-upload-browsers.mjs",
+      "bytes": 3656,
+      "sha256": "205501db557e41c507c88169a34ac947e30ced6d0dbf10ade1258c7de39dcf38",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/extract-native-upload-browsers.py",
+      "bytes": 2912,
+      "sha256": "d5e0db783a2eacbaf242a8db3414f81e5d6f645cf63d440b6d7bd1c34d868979",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-upload-counterfactual-browser.mjs",
+      "bytes": 6044,
+      "sha256": "94c1d6eaa3e17f36ca4ae9218f2b323a748e7e22096479b2ec47470473e5edd4",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-upload-counterfactual-contract.mjs",
+      "bytes": 13104,
+      "sha256": "466cf7da2b18737fa076144b21add40ce9433567758291edda4fdde2424aee88",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/native-upload-owned-work.mjs",
+      "bytes": 1633,
+      "sha256": "c0cc7024501086d0af453d23a054c57ff9cbd4aacd4af0ac340c37461c20b22a",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-native-upload-browser-counterfactual.mjs",
+      "bytes": 20817,
+      "sha256": "2f60da9cec36cd196c7ed5ab28d407b759d29bf3fdb47c48cbf6e11ad27c800c",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/validate-native-upload-counterfactual.mjs",
+      "bytes": 878,
+      "sha256": "5554caa4eb2ef4252dcfe9f446ac3aca93a5f8ca0f8169ac8fc1b46820c0c55e",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/fixtures/native-upload-preflight-sources.json",
+      "bytes": 36970,
+      "sha256": "6e1941ed21e29bed29054a191622052c58d651378c12cb812febd6c8e80a5b5d",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_upload_archive.py",
+      "bytes": 3957,
+      "sha256": "6f86b55749f2fa9983bdc64738625bd0d8226dfb6c9c759e125d4f46218c17bd",
+      "origin": "payload"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_upload_counterfactual.mjs",
+      "bytes": 46585,
+      "sha256": "bb1140e9eac0942068b63bc9b80d3718cd6bf9fd62d41222e08420e3ef51467f",
+      "origin": "payload"
+    }
+  ]
+}

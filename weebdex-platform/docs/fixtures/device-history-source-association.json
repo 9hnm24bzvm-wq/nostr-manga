@@ -1,0 +1,82 @@
+{
+  "schema": "device-history-source-association-v1",
+  "reviewed_product": "eeafdcdad2abcef4cc96bb11086c89da774942d3",
+  "previous_source": "ca0934534be6b40638eff264151281db8fa6886a",
+  "scope": "Exact source comparison only; does not transfer historical fanout, browser, capacity or execution qualification to current history. Current product execution must use current bytes.",
+  "browser_executed": false,
+  "capacity_qualified": false,
+  "rows": [
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/overlays.mjs",
+      "current_sha256": "e7d8448c3b792ef9316831c0d887604baae0a057600e5003cf623d930cd179ff",
+      "current_bytes": 132849,
+      "previous_sha256": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d",
+      "previous_bytes": 132323,
+      "literal_reversals": [
+        {
+          "current": "    \"sha256\": \"e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f\",\n    \"count\": 1,\n    \"before\": \"<script lang=\\\"ts\\\">\",\n    \"after\": \"<script lang=\\\"ts\\\">\\r\\n\\timport { localLibraryState, libraryViewKey } from \\\"$localLibrary/library\\\";\\r\\n\\timport DeviceHistoryFeed from \\\"$localLibrary/DeviceHistoryFeed.svelte\\\";\"\n  },\n  {\n    \"path\": \"src/routes/(app)/history/+page.svelte\",\n",
+          "previous": "    \"sha256\": \"e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f\",\n    \"count\": 1,\n    \"before\": \"<script lang=\\\"ts\\\">\",\n    \"after\": \"<script lang=\\\"ts\\\">\\r\\n\\timport { localLibraryState, libraryViewKey } from \\\"$localLibrary/library\\\";\"\n  },\n  {\n    \"path\": \"src/routes/(app)/history/+page.svelte\",\n"
+        },
+        {
+          "current": "    \"sha256\": \"e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f\",\n    \"count\": 1,\n    \"before\": \"\\t<ChapterFeed\",\n    \"after\": \"\\t{#key $libraryViewKey}\\r\\n\\t{#if $localLibraryState.mode === \\\"device\\\"}\\r\\n\\t\\t<DeviceHistoryFeed />\\r\\n\\t{:else}\\r\\n\\t<ChapterFeed\",\n    \"approved_history_continuation_exception\": \"device_history_owned_continuation\"\n  },\n  {\n    \"path\": \"src/routes/(app)/history/+page.svelte\",\n",
+          "previous": "    \"sha256\": \"e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f\",\n    \"count\": 1,\n    \"before\": \"\\t<ChapterFeed\",\n    \"after\": \"\\t{#key $libraryViewKey}\\r\\n\\t<ChapterFeed\",\n    \"approved_library_exception\": \"library_reactivity_key\"\n  },\n  {\n    \"path\": \"src/routes/(app)/history/+page.svelte\",\n"
+        },
+        {
+          "current": "    \"sha256\": \"e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f\",\n    \"count\": 1,\n    \"before\": \"\\t/>\\r\\n</section>\",\n    \"after\": \"\\t/>\\r\\n\\t{/if}\\r\\n\\t{/key}\\r\\n</section>\",\n    \"approved_history_continuation_exception\": \"device_history_owned_continuation\"\n  },\n  {\n    \"path\": \"src/routes/(app)/settings/library/+page.svelte\",\n",
+          "previous": "    \"sha256\": \"e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f\",\n    \"count\": 1,\n    \"before\": \"\\t/>\\r\\n</section>\",\n    \"after\": \"\\t/>\\r\\n\\t{/key}\\r\\n</section>\",\n    \"approved_library_exception\": \"library_reactivity_key\"\n  },\n  {\n    \"path\": \"src/routes/(app)/settings/library/+page.svelte\",\n"
+        },
+        {
+          "current": "export const localLibraryApprovedCoverReadExceptions = patches.filter(patch => patch.approved_cover_read_exception).map(({path,sha256,count,before,after,approved_cover_read_exception}) => ({path,sha256,count,before,after,approved_cover_read_exception}));\n\nexport const localLibraryApprovedPublicCarouselExceptions = patches.filter(patch => patch.approved_public_carousel_exception).map(({path,sha256,count,before,after,approved_public_carousel_exception}) => ({path,sha256,count,before,after,approved_public_carousel_exception}));\n\nexport const localLibraryApprovedHistoryContinuationExceptions = patches.filter(patch => patch.approved_history_continuation_exception).map(({path,sha256,count,before,after,approved_history_continuation_exception}) => ({path,sha256,count,before,after,approved_history_continuation_exception}));\n",
+          "previous": "export const localLibraryApprovedCoverReadExceptions = patches.filter(patch => patch.approved_cover_read_exception).map(({path,sha256,count,before,after,approved_cover_read_exception}) => ({path,sha256,count,before,after,approved_cover_read_exception}));\n\nexport const localLibraryApprovedPublicCarouselExceptions = patches.filter(patch => patch.approved_public_carousel_exception).map(({path,sha256,count,before,after,approved_public_carousel_exception}) => ({path,sha256,count,before,after,approved_public_carousel_exception}));\n"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/library.ts",
+      "current_sha256": "18a90ef68078943f7fbc25bcac80479f0311079f745ef924acd538a00c45cb0e",
+      "current_bytes": 35991,
+      "previous_sha256": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef",
+      "previous_bytes": 35984,
+      "literal_reversals": [
+        {
+          "current": "// Hydration and new catalogue actions require live verification. Previously\n// verified same-tab UUID reader progress may save offline to its exact scope.\nexport function canSaveLocalProgress(state: LibraryState) { return state.ready && state.mode === 'device' && (state.scopeStatus === 'verified' || publicUuidLibraryEnabled && state.cachedScopeReady === true && (state.scopeStatus === 'offline' || state.scopeStatus === 'pending')); }\nexport function assertCurrentCatalogueScopeValue(scope: InstanceScope, allowCachedProgress = false) {\n  assertCataloguePreviewLibraryReady();\n  if (!(get(localLibraryState).scopeStatus === 'verified' || allowCachedProgress && canSaveLocalProgress(get(localLibraryState))) || !verifiedCatalogueScope || !sameScope(scope, verifiedCatalogueScope)) throw new HTTPError(409, 'Current catalogue identity is not verified. Saved-device inspection, backups and explicit saved-record edits remain available; no current title ID was admitted.', 'Catalogue scope unverified');\n}\n",
+          "previous": "// Hydration and new catalogue actions require live verification. Previously\n// verified same-tab UUID reader progress may save offline to its exact scope.\nexport function canSaveLocalProgress(state: LibraryState) { return state.ready && state.mode === 'device' && (state.scopeStatus === 'verified' || publicUuidLibraryEnabled && state.cachedScopeReady === true && (state.scopeStatus === 'offline' || state.scopeStatus === 'pending')); }\nfunction assertCurrentCatalogueScopeValue(scope: InstanceScope, allowCachedProgress = false) {\n  assertCataloguePreviewLibraryReady();\n  if (!(get(localLibraryState).scopeStatus === 'verified' || allowCachedProgress && canSaveLocalProgress(get(localLibraryState))) || !verifiedCatalogueScope || !sameScope(scope, verifiedCatalogueScope)) throw new HTTPError(409, 'Current catalogue identity is not verified. Saved-device inspection, backups and explicit saved-record edits remain available; no current title ID was admitted.', 'Catalogue scope unverified');\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/ChapterHistory.ts",
+      "current_sha256": "33b3c827629ac09b87cf4c30d29bb2b3ae19204b3aae5d77786e11069b9dc41e",
+      "current_bytes": 3831,
+      "previous_sha256": "99fef1dedee26c196350aafe23496480512d75704f4a25bc3f72e22a1f4b78bf",
+      "previous_bytes": 3918,
+      "literal_reversals": [
+        {
+          "current": "import {assertCataloguePreviewLibraryReady} from '../public-api/library-staging';\nimport { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isCurrentCatalogueId, isAccountMode, updateChapters, params, assertCatalogueScope, openLibrary, captureLibraryContext, assertLibraryContext } from './library';\nimport { HTTPError } from '$lib/HTTP';\nimport { openDeviceHistoryFeed } from './history-feed';\nexport { openDeviceHistoryFeed } from './history-feed';\nexport interface UpdateChapterHistoryBatchRequest { read_ids?: string[]; unread_ids?: string[] }\nasync function localHistory(ids?: string[]) {\n  await assertCatalogueScope();\n",
+          "previous": "import {assertCataloguePreviewLibraryReady} from '../public-api/library-staging';\nimport { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isCurrentCatalogueId, isAccountMode, updateChapters, params, assertCatalogueScope, openLibrary, captureLibraryContext, assertLibraryContext } from './library';\nimport { HTTPError } from '$lib/HTTP';\nimport { filteredCatalog, pageRows, compareValue } from './catalog';\nexport interface UpdateChapterHistoryBatchRequest { read_ids?: string[]; unread_ids?: string[] }\nasync function localHistory(ids?: string[]) {\n  await assertCatalogueScope();\n"
+        },
+        {
+          "current": "export async function Feed(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady();\n  const q = params(searchParams), account = await isAccountMode(), view = captureLibraryView();\n  if (account) { const body = await apiRead<MappedChapterHistoryFeedResponse>('/user/history/manga/feed', q, true); assertLibraryView(view); return { status: 200, body }; }\n  // The generic feed requires an exact numeric total. Device history's mounted\n  // continuation owner uses openDeviceHistoryFeed instead of inventing that total.\n  const pager = await openDeviceHistoryFeed(q);\n  try {\n    const page = await pager.load(Number(q.get('page') ?? 1)); assertLibraryView(view);\n    if (page.total === null) throw new HTTPError(409, 'This device history requires bounded continuation. Open My History and use Continue loading or Continue scanning.', 'History continuation required');\n    return { status: 200, body: { total: page.total, page: page.page, limit: page.limit, data: page.data, map: { manga: Object.fromEntries(page.data.map(row => [row.relationships.manga.id, row.relationships.manga])) } } };\n  } finally { pager.dispose(); }\n}\nexport async function UpdateBatch(mangaId: string, payload: UpdateChapterHistoryBatchRequest, admitted?: { context: ReturnType<typeof captureLibraryContext>; assert(): void }) { assertCataloguePreviewLibraryReady();\n  admitted?.assert(); await openLibrary(); admitted?.assert();\n",
+          "previous": "export async function Feed(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady();\n  const q = params(searchParams), account = await isAccountMode(), view = captureLibraryView();\n  if (account) { const body = await apiRead<MappedChapterHistoryFeedResponse>('/user/history/manga/feed', q, true); assertLibraryView(view); return { status: 200, body }; }\n  const snapshot = await currentDeviceSnapshot(), history = new Map(snapshot.records.filter(row => row.family === 'chapters' && isCurrentCatalogueId(row.id) && isCurrentCatalogueId(row.mangaId) && row.completed).map(row => [row.id!, row]));\n  const rows = await filteredCatalog<Chapter>('/chapter/feed', 'id', [...history.keys()], q);\n  const chapters: ChapterHistory[] = rows.filter(row => history.has(row.id)).map(row => ({ ...row, read_at: history.get(row.id)!.readAt ?? new Date(history.get(row.id)!.updated_at * 1000).toISOString() }));\n  const direction = q.get('order') === 'asc' ? 1 : -1;\n  chapters.sort((a, b) => direction * compareValue(a.read_at, b.read_at) || compareValue(a.id, b.id));\n  assertLibraryView(view); return { status: 200, body: { ...pageRows(chapters, q), map: { manga: Object.fromEntries(chapters.map(row => [row.relationships.manga.id, row.relationships.manga])) } } };\n}\nexport async function UpdateBatch(mangaId: string, payload: UpdateChapterHistoryBatchRequest, admitted?: { context: ReturnType<typeof captureLibraryContext>; assert(): void }) { assertCataloguePreviewLibraryReady();\n  admitted?.assert(); await openLibrary(); admitted?.assert();\n"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_signed_feature_source_pins.py",
+      "current_sha256": "7e4179b1fab7dfd0a7915878747ef733b44a5788162ddad911df652de92f6476",
+      "current_bytes": 1617,
+      "previous_sha256": "660ec6d7478eb2d50d368910aa6719868bebc6e4fcd74174aee453c0e27250fd",
+      "previous_bytes": 1432,
+      "literal_reversals": [
+        {
+          "current": "import json\nfrom pathlib import Path\nimport unittest\nfrom reviewed_history_source_successors import PATHS, restore_history_source\nROOT = Path(__file__).resolve().parents[3]\nPIN = ROOT / 'weebdex-platform/test-evidence/public-signed-features-20261022/source-pins.json'\nclass SignedFeaturePins(unittest.TestCase):\n    def test_exact_reviewed_source_associations_preserve_historical_pins(self):\n        value = json.loads(PIN.read_text())\n        self.assertEqual(set(value), {'schema', 'scope', 'browser_executed', 'hosted_executed', 'sources'})\n        self.assertEqual(value['schema'], 1)\n",
+          "previous": "import json\nfrom pathlib import Path\nimport unittest\nROOT = Path(__file__).resolve().parents[3]\nPIN = ROOT / 'weebdex-platform/test-evidence/public-signed-features-20261022/source-pins.json'\nclass SignedFeaturePins(unittest.TestCase):\n    def test_actual_source_bytes_match_reviewed_finite_qualification(self):\n        value = json.loads(PIN.read_text())\n        self.assertEqual(set(value), {'schema', 'scope', 'browser_executed', 'hosted_executed', 'sources'})\n        self.assertEqual(value['schema'], 1)\n"
+        },
+        {
+          "current": "            self.assertNotIn(str(path), seen)\n            seen.add(str(path))\n            content = (ROOT / path).read_bytes()\n            if str(path) in PATHS:\n                content = restore_history_source(str(path), content)\n            self.assertEqual(len(content), row['bytes'], str(path))\n            self.assertEqual(hashlib.sha256(content).hexdigest(), row['sha256'], str(path))\nif __name__ == '__main__':\n",
+          "previous": "            self.assertNotIn(str(path), seen)\n            seen.add(str(path))\n            content = (ROOT / path).read_bytes()\n            self.assertEqual(len(content), row['bytes'], str(path))\n            self.assertEqual(hashlib.sha256(content).hexdigest(), row['sha256'], str(path))\nif __name__ == '__main__':\n"
+        }
+      ]
+    }
+  ]
+}

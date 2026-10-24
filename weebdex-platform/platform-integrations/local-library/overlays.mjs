@@ -430,21 +430,21 @@ const patches = [
   },
   {
     "path": "src/routes/(app)/library/updates/+page.svelte",
-    "label": "selected library mode boundary",
+    "label": "original-anchored device updates boundary",
     "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
     "count": 1,
     "before": "\t<ChapterFeed",
-    "after": "\t{#key $libraryViewKey}\r\n\t<ChapterFeed",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t{#key $libraryViewKey}\r\n\t{#if $localLibraryState.mode === \"device\"}\r\n\t\t<DeviceUpdatesFeed />\r\n\t{:else}\r\n\t<ChapterFeed",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
   },
   {
     "path": "src/routes/(app)/library/updates/+page.svelte",
-    "label": "selected library mode boundary end",
+    "label": "original-anchored device updates boundary end",
     "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
     "count": 1,
     "before": "\t/>\r\n</section>",
-    "after": "\t/>\r\n\t{/key}\r\n</section>",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t/>\r\n\t{/if}\r\n\t{/key}\r\n</section>",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
   },
   {
     "path": "src/routes/(app)/history/+page.svelte",
@@ -452,7 +452,7 @@ const patches = [
     "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
     "count": 1,
     "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport { localLibraryState, libraryViewKey } from \"$localLibrary/library\";"
+    "after": "<script lang=\"ts\">\r\n\timport { localLibraryState, libraryViewKey } from \"$localLibrary/library\";\r\n\timport DeviceHistoryFeed from \"$localLibrary/DeviceHistoryFeed.svelte\";"
   },
   {
     "path": "src/routes/(app)/history/+page.svelte",
@@ -460,8 +460,8 @@ const patches = [
     "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
     "count": 1,
     "before": "\t<ChapterFeed",
-    "after": "\t{#key $libraryViewKey}\r\n\t<ChapterFeed",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t{#key $libraryViewKey}\r\n\t{#if $localLibraryState.mode === \"device\"}\r\n\t\t<DeviceHistoryFeed />\r\n\t{:else}\r\n\t<ChapterFeed",
+    "approved_history_continuation_exception": "device_history_owned_continuation"
   },
   {
     "path": "src/routes/(app)/history/+page.svelte",
@@ -469,8 +469,8 @@ const patches = [
     "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
     "count": 1,
     "before": "\t/>\r\n</section>",
-    "after": "\t/>\r\n\t{/key}\r\n</section>",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t/>\r\n\t{/if}\r\n\t{/key}\r\n</section>",
+    "approved_history_continuation_exception": "device_history_owned_continuation"
   },
   {
     "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -1290,6 +1290,82 @@ const patches = [
     "before": "\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t{#if isMounted && feed?.data?.length}\r\n\t\t\t\t{#each feed.data as manga (manga)}\r\n\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t<MangaSearchEntryCard {manga} isGrid />\r\n\t\t\t\t\t</article>\r\n\t\t\t\t{/each}\r\n\t\t\t{:else}\r\n\t\t\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t\t\t{#each Array.from({ length: 10 })}\r\n\t\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t\t<MangaSearchEntrySkeleton isGrid />\r\n\t\t\t\t\t\t</article>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Carousel>\r\n\t\t\t{/if}\r\n\t\t</Carousel>",
     "after": "\t\t{#if error}\r\n\t\t\t<ErrorComponent {error} />\r\n\t\t\t<Button variant=\"outline\" disabled={isLoading} onclick={widget.retry}>Retry titles</Button>\r\n\t\t{:else}\r\n\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t{#if isMounted && feed?.data?.length}\r\n\t\t\t\t{#each feed.data as manga (manga)}\r\n\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t<MangaSearchEntryCard {manga} isGrid />\r\n\t\t\t\t\t</article>\r\n\t\t\t\t{/each}\r\n\t\t\t{:else}\r\n\t\t\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t\t\t{#each Array.from({ length: 10 })}\r\n\t\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t\t<MangaSearchEntrySkeleton isGrid />\r\n\t\t\t\t\t\t</article>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Carousel>\r\n\t\t\t{/if}\r\n\t\t</Carousel>\r\n\t\t{/if}",
     "approved_public_carousel_exception": "public_carousel_error_retry"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "owned device title continuation import",
+    "before": "import MangaSearch from \"$lib/components/MangaSearch.svelte\";",
+    "after": "import MangaSearch from \"$lib/components/MangaSearch.svelte\";\r\n\timport DeviceTitleLibrary from \"$localLibrary/DeviceTitleLibrary.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "owned device title continuation route",
+    "before": "\t\t<MangaSearch bind:feed {onSearch} />",
+    "after": "\t\t{#if $localLibraryState.mode === \"device\"}\r\n\t\t\t<DeviceTitleLibrary />\r\n\t\t{:else}\r\n\t\t\t<MangaSearch bind:feed {onSearch} />\r\n\t\t{/if}",
+    "approved_title_continuation_exception": "device_title_owned_continuation"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "account-only retained title pagination",
+    "before": "{#if feed && feed.total > feed.limit}",
+    "after": "{#if $localLibraryState.mode === \"account\" && feed && feed.total > feed.limit}",
+    "approved_title_continuation_exception": "device_title_owned_continuation"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "release prior account title DTOs when selected library changes",
+    "before": "let feed = $state<MangaFollowFeedResponse>();",
+    "after": "let feed = $state<MangaFollowFeedResponse>();\r\n\t$effect.pre(() => { $libraryViewKey; feed = undefined; });"
+  },
+  {
+    "path": "src/routes/(app)/library/updates/+page.svelte",
+    "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
+    "count": 1,
+    "label": "device updates continuation import",
+    "before": "import ChapterFeed from \"$lib/components/ChapterFeed.svelte\";",
+    "after": "import ChapterFeed from \"$lib/components/ChapterFeed.svelte\";\r\n\timport DeviceUpdatesFeed from \"$localLibrary/DeviceUpdatesFeed.svelte\";"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "device latest-only continuation import",
+    "before": "import { API, Constants } from \"$lib\";",
+    "after": "import { API, Constants } from \"$lib\";\r\n\timport DeviceUpdatesFeed from \"$localLibrary/DeviceUpdatesFeed.svelte\";"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "prevent compatibility read for device carousel",
+    "before": "while (pending && reads.isLive()) {",
+    "after": "while (pending && reads.isLive()) {\r\n\t\t\t\tif ($libraryIdentity.mode === \"device\") { pending = false; return; }"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "owned latest-only device carousel boundary",
+    "before": "</script>\r\n\r\n{#if",
+    "after": "</script>\r\n\r\n{#if $libraryIdentity.mode === \"device\"}\r\n\t<section><header><h2 class=\"text-xl font-medium\">My Updates</h2></header><DeviceUpdatesFeed latestOnly /></section>\r\n{:else}\r\n{#if",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "owned latest-only device carousel boundary end",
+    "before": "\t</section>\r\n{/if}",
+    "after": "\t</section>\r\n{/if}\r\n{/if}",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
   }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -1338,3 +1414,9 @@ export const localLibraryApprovedSearchPaginationExceptions = patches.filter(pat
 export const localLibraryApprovedCoverReadExceptions = patches.filter(patch => patch.approved_cover_read_exception).map(({path,sha256,count,before,after,approved_cover_read_exception}) => ({path,sha256,count,before,after,approved_cover_read_exception}));
 
 export const localLibraryApprovedPublicCarouselExceptions = patches.filter(patch => patch.approved_public_carousel_exception).map(({path,sha256,count,before,after,approved_public_carousel_exception}) => ({path,sha256,count,before,after,approved_public_carousel_exception}));
+
+export const localLibraryApprovedHistoryContinuationExceptions = patches.filter(patch => patch.approved_history_continuation_exception).map(({path,sha256,count,before,after,approved_history_continuation_exception}) => ({path,sha256,count,before,after,approved_history_continuation_exception}));
+
+export const localLibraryApprovedTitleContinuationExceptions = patches.filter(patch => patch.approved_title_continuation_exception).map(({path,sha256,count,before,after,approved_title_continuation_exception}) => ({path,sha256,count,before,after,approved_title_continuation_exception}));
+
+export const localLibraryApprovedUpdatesContinuationExceptions = patches.filter(patch => patch.approved_updates_continuation_exception).map(({path,sha256,count,before,after,approved_updates_continuation_exception}) => ({path,sha256,count,before,after,approved_updates_continuation_exception}));

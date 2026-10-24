@@ -98,7 +98,7 @@ function environment({ missingThread = false, scopeStatus = 'verified', publicAc
   const nativeComments = () => { if (missingThread) throw Error('Native comments mounted without a native thread'); return Generic(...arguments); };
   const env = {
     Button, Input, Textarea, ProtocolIdentityPanel: Identity, LibraryManagementTools: LibraryTools, Dialog: {Root: DialogRoot, Content: Generic, Header: Generic, Title: Generic, Description: Generic}, Panel: ReaderPanel, LastPage,
-    publicAccountLibraryUnavailable, localLibraryState: state, libraryIdentity: writable({ canUse: scopeStatus === 'verified' }), signerIdentity,
+    publicUuidLibraryEnabled: false, publicAccountLibraryUnavailable, localLibraryState: state, libraryIdentity: writable({ canUse: scopeStatus === 'verified' }), signerIdentity,
     message: cause => cause instanceof Error ? cause.message : String(cause),
     openLibrary: async () => { calls.opened++; }, toast: { error: (...args) => calls.toasts.push(args) },
     relayPreferences: async () => ({ relays: [recipient], revision: 1 }), publicActionRecords: async () => [], publicationJobs: async () => [],

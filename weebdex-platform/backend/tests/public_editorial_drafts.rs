@@ -136,6 +136,7 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     let permissions = json!([
         "author.create",
         "author.update",
+        "author.lock.update",
         "author.delete",
         "scanlation_group.create",
         "scanlation_group.update",
@@ -162,13 +163,14 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
         } else {
             permissions.clone()
         };
-        sql.execute("INSERT INTO platform.users(id,username,email,password_hash,roles,permissions,verified,disabled) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,$6)",&[&user,&format!("editorial-{key}@fixture.invalid"),&roles,&perms,&verified,&disabled]).await.unwrap();
+        sql.execute("INSERT INTO platform.users(id,username,email,password_hash,roles,permissions,verified,disabled) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,$6)",&[&user,&format!("editorial-{key}@fixture.invalid"),&roles,&perms,&verified,&false]).await.unwrap();
         sql.execute(
             "INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",
             &[&public(key), &user],
         )
         .await
         .unwrap();
+        sql.execute("UPDATE platform.users SET disabled=$2 WHERE id=$1",&[&user,&disabled]).await.unwrap();
     }
     for (native, owner, title, draft_state) in [
         ("EditorialDraft1", "EditorialUser2", "Alpha", "draft"),
@@ -349,11 +351,22 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     for invalid in [
         json!({"version":2,"fanbox":null}),
         json!({"version":2,"twitter":"https://twitter.com.evil/a"}),
-        json!({"version":2,"locked":true}),
         json!({"version":2,"biography":null}),
     ] {
         call(&client, &origin, "PUT", &apath, Some(invalid), Some(2), 400).await;
     }
+    // Lock is now supported, but this actor is not staff. A forbidden lock
+    // change must preserve both the visible author and the exact audit count.
+    let before_lock = call(&client, &origin, "GET", &apath, None, None, 200).await;
+    let audit_before: i64 = state.db.client().await.unwrap()
+        .query_one("SELECT count(*) FROM platform.catalog_audit", &[]).await.unwrap().get(0);
+    call(&client, &origin, "PUT", &apath,
+        Some(json!({"version":2,"locked":true})), Some(2), 403).await;
+    let after_lock = call(&client, &origin, "GET", &apath, None, None, 200).await;
+    assert_eq!(after_lock["data"], before_lock["data"]);
+    let audit_after: i64 = state.db.client().await.unwrap()
+        .query_one("SELECT count(*) FROM platform.catalog_audit", &[]).await.unwrap().get(0);
+    assert_eq!(audit_after, audit_before);
     let concurrent_url = format!("{origin}{apath}");
     let edit = json!({"version":2,"name":"Concurrent"});
     let raw = serde_json::to_vec(&edit).unwrap();
@@ -519,6 +532,35 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
         409,
     )
     .await;
+    // Rich editorial controls use explicit optimistic local roles and locks.
+    // Officer UUIDs undergo the same native-only lookup and shared-core authority
+    // as members; source publisher aliases cannot become local officers.
+    let rich_group=call(&client,&origin,"POST","/api/v1/group",Some(json!({"name":"Rich local roles"})),Some(2),200).await;
+    let rich_path=format!("/api/v1/group/{}",rich_group["data"]["id"].as_str().unwrap());
+    call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[publisher]})),Some(2),400).await;
+    call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[member]})),Some(4),403).await;
+    let promoted=call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[member],"members":[]})),Some(2),200).await;
+    assert_eq!(promoted["data"]["attributes"]["localMembershipRoles"],"leader-officer-member-v1");
+    let officer=promoted["data"]["relationships"].as_array().unwrap().iter().find(|r|r["id"]==member.as_str()).unwrap();
+    assert_eq!(officer["attributes"]["isOfficer"],true);
+    assert_eq!(officer["attributes"]["username"],"EditorialUser4");
+    call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[]})),Some(2),409).await;
+    // Being an officer does not grant the leader-only group edit/delete action.
+    call(&client,&origin,"PUT",&rich_path,Some(json!({"version":2,"description":"Officer write"})),Some(4),403).await;
+    call(&client,&origin,"DELETE",&rich_path,None,Some(2),403).await;
+    let moderator=resolver.preferred(ResourceKind::User,"EditorialUser5").await.unwrap().unwrap();
+    let stale_delete=format!("{rich_path}?expectedAccountId={moderator}&expectedVersion=1");
+    call(&client,&origin,"DELETE",&stale_delete,None,Some(5),409).await;
+    let exact_delete=format!("{rich_path}?expectedAccountId={moderator}&expectedVersion=2");
+    call(&client,&origin,"DELETE",&exact_delete,None,Some(5),200).await;
+    let locked_author=call(&client,&origin,"POST","/api/v1/author",Some(json!({"name":"Lock control author"})),Some(2),200).await;
+    let lock_path=format!("/api/v1/author/{}",locked_author["data"]["id"].as_str().unwrap());
+    call(&client,&origin,"PUT",&lock_path,Some(json!({"version":1,"locked":true})),Some(2),403).await;
+    let locked=call(&client,&origin,"PUT",&lock_path,Some(json!({"version":1,"locked":true})),Some(5),200).await;
+    assert_eq!(locked["data"]["attributes"]["locked"],true);
+    call(&client,&origin,"PUT",&lock_path,Some(json!({"version":2,"name":"Cannot edit locked"})),Some(2),403).await;
+    call(&client,&origin,"PUT",&lock_path,Some(json!({"version":1,"locked":false})),Some(5),409).await;
+    call(&client,&origin,"PUT",&lock_path,Some(json!({"version":2,"locked":false})),Some(5),200).await;
     // Draft reads never turn a session cookie or admitted publisher into native
     // owner authority; moderator role alone also does not grant permission.
     call(
@@ -554,6 +596,11 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
         )
         .await;
     }
+    // The private list must remain attached to the explicitly captured
+    // account even if the signer binding changes after UI account discovery.
+    call(&client,&origin,"GET",&format!("/api/v1/manga/draft?expectedAccountId={member}"),None,Some(2),409).await;
+    let pinned=call(&client,&origin,"GET",&format!("/api/v1/manga/draft?expectedAccountId={owner}"),None,Some(2),200).await;
+    assert_eq!(pinned["total"],3);
     let drafts = call(
         &client,
         &origin,
@@ -711,7 +758,19 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     call(&client, &origin, "DELETE", &gpath, None, Some(5), 200).await;
     let sql = state.db.client().await.unwrap();
     let audits=sql.query("SELECT actor_id,operation,old_version,new_version FROM platform.catalog_audit ORDER BY id",&[]).await.unwrap();
-    assert_eq!(audits.len(), 11);
+    assert_eq!(audits.len(), 17);
+    // Exact per-entity histories also prove every refused lock, role and stale
+    // deletion left no audit side effect.
+    for (kind, created, expected) in [
+        (ResourceKind::Group, &rich_group, vec![("create",None,Some(1)),("update",Some(1),Some(2)),("remove",None,None)]),
+        (ResourceKind::Author, &locked_author, vec![("create",None,Some(1)),("update",Some(1),Some(2)),("update",Some(2),Some(3))]),
+    ] {
+        let public_id=PublicUuid::parse(created["data"]["id"].as_str().unwrap()).unwrap();
+        let native=resolver.resolve(kind,&public_id).await.unwrap().unwrap().native_id;
+        let rows=sql.query("SELECT operation,old_version,new_version FROM platform.catalog_audit WHERE entity_id=$1 ORDER BY id",&[&native]).await.unwrap();
+        let actual:Vec<(String,Option<i32>,Option<i32>)>=rows.iter().map(|r|(r.get(0),r.get(1),r.get(2))).collect();
+        assert_eq!(actual,expected.into_iter().map(|(op,old,new)|(op.to_owned(),old,new)).collect::<Vec<_>>());
+    }
     for row in audits {
         assert!(row.get::<_, String>(0).starts_with("EditorialUser"));
         if row.get::<_, String>(1) == "update" {

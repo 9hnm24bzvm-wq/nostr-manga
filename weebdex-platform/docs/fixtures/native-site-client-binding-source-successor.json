@@ -1,0 +1,38 @@
+{
+  "schema": "native-site-client-binding-source-successor-v1",
+  "scope": "Exact source comparison only: preserve the current response-bound chapterPage at runtime, remove it only for the immutable native catalogue predecessor comparison. No production normalization or historical execution claim.",
+  "physical_source_commit": "b2817b1c93d37b7286b22146d063fbd1059aaa4d",
+  "physical_source_tree": "f33470fb778f72ccbcdf311ceb6e6e9df5200c44",
+  "previous_source_commit": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+  "stage": "badge-response-binding-to-frozen-native:platform-integrations/public-api/site-client.ts",
+  "path": "weebdex-platform/platform-integrations/public-api/site-client.ts",
+  "current_bytes": 20036,
+  "current_sha256": "fc0270dd2e3e0bb3b77967c045f07e88555103fbf969a2887c4b25803d6ab935",
+  "current_git_blob": "72d3f0d272a0465ba776400f722e68e181b5860c",
+  "previous_bytes": 19944,
+  "previous_sha256": "6c49b67a4c994ea15746708bd5d0e8136abf6fe30d26c1e24adbf34829bc24df",
+  "native_previous_bytes": 18831,
+  "native_previous_sha256": "cd6379824dfa6218c5b5b373a36be80129f611bb235f81225bc62aab6f67ed00",
+  "required_comparison_order": [
+    "badge-response-binding-to-frozen-native:platform-integrations/public-api/site-client.ts",
+    "native-catalogue-read-fanout-to-historical40"
+  ],
+  "literal_reversals": [
+    {
+      "ordinal": 1,
+      "current": "return {...response,body:{...feed,...(response.body.chapterPage === undefined ? {} : {chapterPage:response.body.chapterPage}),map:{manga:mangas}}};}",
+      "current_bytes": 148,
+      "current_literal_sha256": "431a8e33979551c8500f463ce2a3b637afdb05fc147eaad2008514fb7eb2077c",
+      "previous": "return {...response,body:{...feed,map:{manga:mangas}}};}",
+      "previous_bytes": 56,
+      "previous_literal_sha256": "9a44523706ed860be8a8d6f6b871c97221c2ecbcc2252c46cc4051564d1c81f3"
+    }
+  ],
+  "source_only": true,
+  "runtime_normalization": false,
+  "tests_executed": false,
+  "build_executed": false,
+  "browser_executed": false,
+  "http_executed": false,
+  "capacity_qualified": false
+}

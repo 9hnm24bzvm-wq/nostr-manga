@@ -106,7 +106,7 @@ test('receipt recovery is explicit exact-session read with no implicit replay',(
   assert.match(main,/onclick=\{checkSignedUploadReceipt\}/);assert.match(main,/if \(showSignedCommitFence\(\)\) return;/);
 });
 test('manifest closes the exact integration files and original source remains untouched',()=>{
-  assert.equal(publicUploadOverlayManifest.length,8);assert.equal(new Set(spec.files.map(row=>row.path)).size,8);
+  assert.equal(publicUploadOverlayManifest.length,10);assert.equal(new Set(spec.files.map(row=>row.path)).size,10);
   for(const file of spec.files)assert.equal(hash(fs.readFileSync(path.join(frontend,file.path))),file.source_sha256);
 });
 
@@ -236,16 +236,52 @@ test('changed confirmed bytes update the existing keyed card for its hash-keyed 
 test('signed chapter editor keeps local annotations, exact owner and distinct moderator confirmation', () => {
   const source = fs.readFileSync(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'), 'utf8');
   assert.match(source, /loadUploadAccount\(current\)/);
-  assert.match(source, /publicUploadOwner\(\(\) => initial.id, account, 'chapter'\)/);
-  assert.match(source, /approvesHide = \$derived\([\s\S]*?\['moderator', 'staff', 'sysop'\][\s\S]*?includes\('chapter.remove'\)/);
+  assert.match(source, /publicUploadOwner\(\(\) => initial.id, account, 'chapter', 'caller'\)/);
+  assert.match(source, /approvesHide = \$derived\(access\?\.approvesHide===true\)/);
+  assert.match(source, /owner\.chapterAccess\(chapter\.version\)/);
+  const authority=fs.readFileSync(path.join(root,'platform-integrations/public-api/chapter-access.ts'),'utf8');
+  assert.match(authority, /approvesHide=staff&&has\('chapter.remove'\)/);
   assert.match(source, /Approve hiding this chapter on this instance immediately/);
   assert.match(source, /chapter remains visible until approval/);
   assert.match(source, /removalChoice = approvesHide \? 'approve-hide' : 'request-review'/);
   assert.match(source, /removalChoice === 'approve-hide' \? 'Approve and hide on this instance' : 'Submit removal request'/);
   assert.match(source, /command\('remove', removalChoice\)/);
   assert.match(source, /action === 'remove' \? \{ removalMode \} : undefined/);
-  assert.match(source, /Signed source metadata and published image pages are immutable/);
+  assert.match(source, /Original signed source metadata and protocol image pages are immutable/);
+  assert.match(source, /Eligible local chapter pages use separate private staging below/);
+  assert.match(source, /<PublicChapterPagesEditor \{chapter\} \{owner\} \{access\}/);
+  assert.match(source, /onDestroy\(\(\) => \{ disposed = true; owner\?\.dispose\(\); \}\)/);
   assert.doesNotMatch(source, /API\.|UploadChapterEdit|replaceUploadPage|setInterval/);
-  assert.match(source, /pending = true/);
+  assert.match(source, /pending=owner\.chapterPending\(\)/);
   assert.match(source, /No mutation was replayed/);
+});
+
+test('schedule controls are UTC-only, not ChapterEdit metadata, and preserve immediate default', () => {
+  assert.match(main, /scheduleEnabled = \$state\(false\)/); assert.match(main, /scheduledUtc\(publishAt\)/); assert.match(main, /publish-at-utc/); assert.match(main, /UTC only, not your local timezone/); assert.match(main, /Past timestamps publish immediately according to server time/);
+  assert.match(main, /scheduleValid && resumeReady/); assert.match(main, /<fieldset[^>]+disabled=\{\$mutex \|\| uploadSession.can_mutate === false\}/);
+  assert.doesNotMatch(fs.readFileSync(path.join(root,'platform-integrations/public-api/PublicChapterEditor.svelte'),'utf8'), /publishAt|ScheduleReceipt/);
+});
+test('confirmed schedule202 does not reach published chapter success or reader navigation', () => {
+  assert.ok(main.indexOf('res.scheduled && res.sessionId') < main.indexOf('showSignedCommitFence();', main.indexOf('const res = await owner.request<Chapter>')));
+  const start = main.indexOf('const showScheduleAccepted ='), end = main.indexOf('const restoreUpload =', start), branch = main.slice(start, end);
+  assert.match(branch, /Schedule accepted, not a published chapter/); assert.match(branch, /uploadSession = undefined/); assert.match(branch, /chapter = undefined/); assert.match(branch, /isBeginAnotherUploadSession = false/); assert.doesNotMatch(branch, /goto\(|is_committed = true|owner.request/);
+  assert.match(main, /<UploadSchedulesPanel \{owner\} revision=\{scheduleRevision\}/);
+});
+test('schedule manager controls keep ambiguous operations read-only and verify reader explicitly', () => {
+  const ui = fs.readFileSync(path.join(root,'platform-integrations/public-api/UploadSchedulesPanel.svelte'),'utf8');
+  assert.match(ui, /disabled=\{busy \|\| !!entry.uncertain\}/); assert.match(ui, /Check saved status/); assert.match(ui, /readerAvailable/); assert.match(ui, /readableChapter\(id\)/); assert.match(ui, /sourceAccepted === null/); assert.match(ui, /captured === owner/); assert.match(ui, /onDestroy/);
+  assert.doesNotMatch(ui, /href=\{`\/chapter\/\$\{entry.receipt.chapterId/);
+});
+
+test('public-only snapshot types include scheduled state and null expiry without changing native source', () => { const types = codes.get('src/@types/Upload.d.ts'); assert.match(types, /state\?: "open" \| "committed" \| "deleted" \| "scheduled"/); assert.match(types, /expires_at\?: string \| null/); });
+test('delayed actual autosave callback cannot restore the editor after confirmed schedule acceptance', async () => {
+  let release; const pending = new Promise(resolve => release = resolve), calls = [];
+  const session = { id: 'owned-session', can_mutate: true, relationships: { files: [{ id: 'owned-file' }] } };
+  const model = { uploadSession: session, draft: { language: 'en', chapter: '1' }, lastSavedUpload: '', resumeDisposed: false, resumeSaveTimer: 1, chapter: { id: 'old-reader' }, signedReceiptPending: true, isBeginAnotherUploadSession: true, isTemsAccepted: true, scheduleEnabled: true, publishAt: '2026-12-01T12:30:45', scheduleRevision: 0, message: undefined, isShowMessage: false,
+    owner: { assert() {} }, window: { clearTimeout() {} }, URL: { revokeObjectURL() {} }, revokeUploadPreviewUrl: () => true, isRemoteUploadFile: () => true, snapshot: (draft, files) => ({ draft, files }), signature: JSON.stringify, $state: { snapshot: value => value }, saveResume: () => pending, acknowledge: () => calls.push('acknowledge') };
+  const save = main.slice(main.indexOf('const persistCurrentUpload ='), main.indexOf('let signedReceiptPending ='));
+  const accept = main.slice(main.indexOf('const showScheduleAccepted ='), main.indexOf('const restoreUpload ='));
+  const callbacks = new Function('env', `with(env){${stripTypeScriptTypes(save + accept,{mode:'transform'})};return {persistCurrentUpload,showScheduleAccepted};}`)(model);
+  const inflight = callbacks.persistCurrentUpload(); callbacks.showScheduleAccepted(session.id, { state: 'scheduled', publishAt: '2026-12-01T12:30:45' }); release(session); await inflight;
+  assert.equal(model.uploadSession, undefined); assert.equal(model.chapter, undefined); assert.equal(model.lastSavedUpload, ''); assert.equal(model.scheduleRevision, 1); assert.deepEqual(calls, []);
 });

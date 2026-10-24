@@ -461,6 +461,7 @@ async fn chapter_feed(
 ) -> Result<Json<Value>, FeedError> {
     let q = QueryParams::parse(raw)?;
     let is_manga_list = manga.is_some();
+    let chapter_parent = manga.clone();
     let mut sql = Sql::default();
     sql.conditions
         .push("c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published'".to_owned());
@@ -507,18 +508,23 @@ async fn chapter_feed(
         "WITH matched AS(SELECT {unique} c.id,c.manga_id,{sort} AS sort_value,{sort_text} AS sort_text FROM platform.catalog_chapters c {CHAPTER_PARENT_LOOKUP} LEFT JOIN platform.catalog_chapter_counters s ON s.chapter_id=c.id WHERE {} {match_order}),selected AS MATERIALIZED(SELECT * FROM matched ORDER BY sort_value {order} NULLS LAST,sort_text {order},id LIMIT {limit} OFFSET {offset}){projection}",
         sql.predicate(),
     );
-    Ok(Json(
-        state
-            .db
-            .pool()
-            .get()
-            .await
-            .map_err(|error| FeedError::pool(error, state.config.fixture_feed_diagnostics))?
-            .query_one(&query, &sql.params())
-            .await
-            .map_err(|error| FeedError::query(error, state.config.fixture_feed_diagnostics))?
-            .get(0),
-    ))
+    // Bind only this title route. The namespace, rows, total, parent visibility
+    // and nested DTOs are read in ONE PostgreSQL statement snapshot. idProfile
+    // identifies the ID representation, not a fixed ordering of this dynamic feed.
+    let bound_query = chapter_parent.and_then(|parent| {
+        let service_key = crate::protocol::adapters::chapter_page_service_key(&state)?;
+        let parent = sql.bind(parent);
+        let service_key = sql.bind(service_key);
+        Some(format!("SELECT page.value || CASE WHEN identity.namespace IS NOT NULL AND EXISTS(SELECT 1 FROM platform.catalog_manga m WHERE m.id={parent} AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)) THEN jsonb_build_object('chapterPage',jsonb_build_object('version',1,'mangaId',{parent}::text,'idProfile','native-id-v1','catalogIdentity',jsonb_build_object('catalogNamespace',identity.namespace,'serviceKey',{service_key}::text),'consistency','response-snapshot-v1')) ELSE '{{}}'::jsonb END FROM ({query}) AS page(value) CROSS JOIN (SELECT (SELECT namespace::text FROM platform.catalogue_namespace WHERE singleton) AS namespace) identity"))
+    });
+    let client = state.db.pool().get().await
+        .map_err(|error| FeedError::pool(error, state.config.fixture_feed_diagnostics))?;
+    let params = sql.params();
+    // Missing optional namespace/configuration omits the envelope. SQL failures
+    // are ordinary feed failures, never retried as an unbound second query.
+    let row = client.query_one(bound_query.as_deref().unwrap_or(&query), &params).await
+        .map_err(|error| FeedError::query(error, state.config.fixture_feed_diagnostics))?;
+    Ok(Json(row.get(0)))
 }
 pub async fn chapter_aggregate(
     State(state): State<AppState>,

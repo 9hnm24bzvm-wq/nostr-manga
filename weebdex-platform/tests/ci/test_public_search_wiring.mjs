@@ -23,7 +23,7 @@ async function load(file) {
 }
 for (const name of ['validation', 'query', 'normalize', 'client']) { const module = await load(path.join(directory, name + '.ts')); await module.evaluate(); }
 const site = await load(path.join(directory, 'site-client.ts')); await site.evaluate();
-const searchQuery = await load(path.join(root, 'platform-integrations/frontend-behavior/manga-search-query.ts')); await searchQuery.evaluate();
+const searchQuery = await load(path.join(root, 'platform-integrations/public-api/manga-search-query.ts')); await searchQuery.evaluate();
 const client = modules.get(path.join(directory, 'client.ts')).namespace;
 const uuid = number => '00000000-0000-8000-8000-' + String(number).padStart(12, '0');
 const tags = Array.from({ length: 101 }, (_, index) => ({ id: uuid(index + 1), type: 'tag', attributes: { name: { en: 'Actual tag ' + index }, group: index % 2 ? 'genre' : 'format' }, relationships: [] }));

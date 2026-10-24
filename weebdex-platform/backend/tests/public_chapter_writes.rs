@@ -49,7 +49,7 @@ impl Fixture {
         if let Some(value)=authorization { request=request.header("authorization",value); }
         let response=request.body(body).send().await.unwrap();
         let status=response.status().as_u16();
-        let private_upload=path.split('?').next().unwrap().starts_with("/api/v1/nostr/uploads/")
+        let private_upload=path.starts_with("/api/v1/cover/") && method!="GET" || path.split('?').next().unwrap().starts_with("/api/v1/nostr/uploads/")
             && ["/preview","/replace"].iter().any(|suffix|path.split('?').next().unwrap().ends_with(suffix));
         assert_eq!(response.headers()["cache-control"],if private_upload {"private, no-store"}else{"no-store"});
         let text=response.text().await.unwrap();
@@ -107,8 +107,9 @@ async fn fixture()->Fixture {
         let roles=if key==7 {json!(["restricted"])}else{json!(["user"])};
         let user=format!("PublicUploadUser{key}");
         db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,disabled,roles,permissions) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,$6)",
-            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&(key==6),&roles,&permissions]).await.unwrap();
+            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&false,&roles,&permissions]).await.unwrap();
         db.execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",&[&public(key),&user]).await.unwrap();
+        db.execute("UPDATE platform.users SET disabled=$2 WHERE id=$1",&[&user,&(key==6)]).await.unwrap();
     }
     db.execute("INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES('public-upload-native-cookie','PublicUploadUser1',$1,clock_timestamp()+interval '1 hour')",&[&Sha256::digest(b"synthetic-public-upload-cookie").to_vec()]).await.unwrap();
     db.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating,state) VALUES($1,'PublicUploadUser1','Synthetic uploader','Public upload fixture','en','ongoing','safe','published')",&[&FIXTURE_MANGA_ID]).await.unwrap();
@@ -425,3 +426,6 @@ async fn signed_original_deletion_request_remains_review_only(f:&Fixture) {
     let intent_after:String=db.query_one("SELECT updated_at::text FROM platform.protocol_deletion_intents WHERE chapter_id=$1 AND actor_user_id='PublicUploadUser1'",&[&native]).await.unwrap().get(0);assert_eq!(intent_after,intent_before);
 
 }
+
+#[path="support/nullable_catalog_edits.rs"]
+mod nullable_catalog_edits;

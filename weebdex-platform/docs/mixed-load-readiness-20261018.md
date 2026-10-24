@@ -137,3 +137,12 @@ or download them. PostgreSQL/native application executables and a newly qualifie
 final integrated release remain separate runtime gates. Any later run must
 recheck actual prerequisites and exact source/binary identity. Real browser/IndexedDB
 performance and the user’s production-scale storage/throughput requirements remain unqualified.
+
+## 2026-10-22 finite mounted core, not application admission
+
+A [source-bound mounted reader scenario core](integrated-mounted-scenarios.md)
+now exercises actual composed reader/API fan-out, local coalescing and fake-IDB
+commits against exact owned loopback fixtures, using the shared transport budget.
+Whole-app/shell/static/comment/cover fan-out, real browser/device performance,
+actual backend/native runtime, consented signed sync and production capacity are
+still unmeasured. No application-target execution gate is relaxed by this addition.

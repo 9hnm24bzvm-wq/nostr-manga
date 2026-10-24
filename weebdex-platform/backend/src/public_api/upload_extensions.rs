@@ -102,7 +102,18 @@ async fn snapshot(
     let native_id = resolve(&tx, ResourceKind::UploadSession, &session).await?;
     let native = core::owner_snapshot_in(&state, &tx, &native_id, actor.user_id(),
         actor.has_perm("self.chapter.update")).await?;
-    let result = snapshot_resource(&tx, &native).await?;
+    let mut result = snapshot_resource(&tx, &native).await?;
+    if let Some(schedule)=super::scheduled_uploads::owner_receipt(&state,&tx,&native_id,actor.user_id()).await? {
+        if native["state"]=="scheduled" {
+            result["session"]["publicationStatus"]=schedule["nostr"]["publicationStatus"].clone();
+            result["session"]["canCancel"]=json!(actor.has_perm("self.chapter.update")&&schedule["nostr"]["canCancel"]==true);
+            result["session"]["canRetryCommit"]=json!(false);
+            result["session"]["receiptStatus"]=json!("unavailable");
+            result["session"]["isExpired"]=json!(false);
+            result["session"]["expiresAt"]=Value::Null;
+        }
+        result["session"]["schedule"]=schedule;
+    }
     tx.commit().await?;
     Ok(Json(result))
 }
@@ -257,9 +268,11 @@ async fn snapshot_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiRes
         Some(id) => Some(preferred(tx, ResourceKind::Chapter, id).await?),
         None => None,
     };
-    let groups: Vec<String> = tx.query_one(
-        "SELECT groups FROM platform.upload_sessions WHERE id=$1", &[&native_id],
-    ).await?.get(0);
+    let binding = tx.query_one(
+        "SELECT groups,edit_version FROM platform.upload_sessions WHERE id=$1", &[&native_id],
+    ).await?;
+    let groups: Vec<String> = binding.get(0);
+    let edit_version: Option<i32> = binding.get(1);
     let mut group_ids = Vec::with_capacity(groups.len());
     for group in groups { group_ids.push(preferred(tx, ResourceKind::Group, &group).await?); }
     let rows = tx.query(
@@ -290,7 +303,7 @@ async fn snapshot_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiRes
     let receipt_status = if !committed { "none" }
         else if receipt.is_some() { "available" } else { "unavailable" };
     Ok(json!({"result":"ok","session":{
-        "id":session,"mangaId":manga,"chapterId":chapter,"groupIds":group_ids,
+        "id":session,"mangaId":manga,"chapterId":chapter,"editVersion":edit_version,"groupIds":group_ids,
         "createdAt":native["created_at"],"updatedAt":native["updated_at"],
         "isProcessed":native["is_processed"],"isDeleted":native["is_deleted"],
         "version":native["version"],"draft":draft,"pageOrder":page_order,"files":files,
@@ -317,7 +330,7 @@ async fn preview(
     // Session and file locks fence replacement/cancel/expiry until the immutable
     // object has been opened. Stream permits remain attached to the response.
     let row = tx.query_opt(
-        "SELECT o.storage_key,o.digest,o.mime,o.bytes FROM platform.upload_sessions s JOIN platform.upload_files f ON f.session_id=s.id JOIN platform.media_objects o ON o.id=f.object_id WHERE s.id=$1 AND s.owner_id=$2 AND f.id=$3 AND s.state='open' AND (s.expires_at>clock_timestamp() OR EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.state IN ('prepared','source_accepted'))) FOR SHARE OF s,f,o",
+        "SELECT o.storage_key,o.digest,o.mime,o.bytes FROM platform.upload_sessions s JOIN platform.upload_files f ON f.session_id=s.id JOIN platform.media_objects o ON o.id=f.object_id WHERE s.id=$1 AND s.owner_id=$2 AND f.id=$3 AND (s.state='scheduled' OR (s.state='open' AND (s.expires_at>clock_timestamp() OR EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.state IN ('prepared','source_accepted'))))) FOR SHARE OF s,f,o",
         &[&session, &actor.user_id(), &file],
     ).await?.ok_or_else(PublicApiError::not_found)?;
     let response = media::signed_upload_preview(&state, &row, &headers).await?;

@@ -37,9 +37,12 @@ fn proof(key:u8, service:u8, url:&str, method:&str, body:&[u8])->String {
 }
 struct Server(tokio::task::JoinHandle<()>);
 impl Drop for Server { fn drop(&mut self) { self.0.abort(); } }
+struct OriginalServer { task:tokio::task::JoinHandle<anyhow::Result<()>>, shutdown:Option<tokio::sync::oneshot::Sender<()>> }
+impl Drop for OriginalServer {fn drop(&mut self){if let Some(stop)=self.shutdown.take(){let _=stop.send(());}self.task.abort();}}
 struct Fixture {
     state:AppState, repository:Repository, http:reqwest::Client, origin:String,
-    manga:String, native_manga:String, _server:Server, _storage:tempfile::TempDir,
+    manga:String, native_manga:String, _server:Server, _original:Option<OriginalServer>,
+    original_store:Option<Arc<manga_node::upload::UploadStore>>, original_origin:Option<String>, _storage:tempfile::TempDir,
 }
 impl Fixture {
     async fn raw(&self,method:&str,path:&str,body:Vec<u8>,content_type:&str,authorization:Option<String>,expected:u16)->Value {
@@ -50,7 +53,11 @@ impl Fixture {
         let status=response.status().as_u16();
         let private_upload=path.split('?').next().unwrap().starts_with("/api/v1/nostr/uploads/")
             && ["/preview","/replace"].iter().any(|suffix|path.split('?').next().unwrap().ends_with(suffix));
-        assert_eq!(response.headers()["cache-control"],if private_upload {"private, no-store"}else{"no-store"});
+        let schedule_path=path.split('?').next().unwrap();
+        let schedule_private=(method=="GET"&&(schedule_path=="/api/v1/nostr/uploads/schedules"||schedule_path.ends_with("/schedule")))
+            ||(method=="POST"&&schedule_path.ends_with("/schedule/retry"));
+        if schedule_private {assert!(response.headers().get_all("vary").iter().any(|v|v.to_str().unwrap().split(',').any(|v|v.trim().eq_ignore_ascii_case("authorization"))));}
+        assert_eq!(response.headers()["cache-control"],if private_upload||schedule_private {"private, no-store"}else{"no-store"});
         let text=response.text().await.unwrap();
         let value:Value=serde_json::from_str(&text).unwrap_or_else(|_|panic!("{method} {path}: non-JSON {text}"));
         assert_eq!(status,expected,"{method} {path}: {value}");
@@ -88,7 +95,9 @@ impl Fixture {
             .await.unwrap().unwrap().native_id
     }
 }
-async fn fixture()->Fixture {
+async fn fixture()->Fixture {fixture_options(Config::default(),false).await}
+async fn fixture_options(limits:Config,original:bool)->Fixture {fixture_full(limits,original,false).await}
+async fn fixture_full(limits:Config,original:bool,projection:bool)->Fixture {
     assert_catalog_fixture_ids();
     let dsn=std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").expect("Use scripts/run-auth-tests.sh");
     let pg:tokio_postgres::Config=dsn.parse().unwrap(); assert_eq!(pg.get_dbname(),Some("weebdex_platform_test"));
@@ -102,27 +111,50 @@ async fn fixture()->Fixture {
     for (file,key) in [(&signer,1),(&service,11)] { std::fs::write(file,secret(key)).unwrap();
         use std::os::unix::fs::PermissionsExt;std::fs::set_permissions(file,std::fs::Permissions::from_mode(0o600)).unwrap(); }
     let publication=OperatorRuntimeConfig {
-        operator_key_file:signer,expected_publisher:public(1),storage_owner:public(1),storage_holder:public(11),
+        operator_key_file:signer.clone(),expected_publisher:public(1),storage_owner:public(1),storage_holder:public(11),
         storage:json!({"path":storage.path().join("protocol-originals"),"volume":"PublicUploadFixture","physical_bytes":64*1024*1024,
             "staging_bytes":64*1024*1024,"max_blob_bytes":8*1024*1024,"upload_slots":2}),group_keys_dir:None,backend:None,
         native_node:Some(json!({"bind":"127.0.0.1:9","base_url":"http://127.0.0.1:9","service_key_file":service,"admin_pubkey":public(1),
             "database_plaintext_local":true,"read_policy":"public","sync_worker_enabled":false})) };
-    let state=AppState::connect(Config{public_origin:origin.clone(),database_plaintext_local:true,database_connections:6,
+    let state=AppState::connect(Config{public_origin:origin.clone(),database_plaintext_local:true,database_connections:10,
+        scheduled_upload_maximum:limits.scheduled_upload_maximum,scheduled_upload_bytes:limits.scheduled_upload_bytes,
+        scheduled_upload_retry_seconds:limits.scheduled_upload_retry_seconds,
         uploads_dir:storage.path().join("native-images"),protocol_publication:Some(publication.clone()),..Config::default()},dsn.clone()).await.unwrap();
     let mut repository=Repository::connect(DbConfig{dsn,connections:1,acquisition_timeout:Duration::from_secs(2),cache_weight:1048576,plaintext_local:true}).await.unwrap();
     repository.pool=state.db.pool().clone();repository.migrate().await.unwrap();repository.bind_instance(id(11),id(1)).await.unwrap();
     for key in 1..=8 {repository.set_account_admission(id(key),true).await.unwrap();}
     repository.set_publisher_admission(id(1),true).await.unwrap();
     state.db.migrate(domains::MIGRATIONS).await.unwrap();state.protocol.verify_schema().await.unwrap();
-    state.protocol.install_visibility_function().await.unwrap();state.protocol.configure_publication(publication).await.unwrap();
+    state.protocol.install_visibility_function().await.unwrap();
+    let (original_store,original_origin,original_server)=if original {
+        let store=manga_node::upload::UploadStore::open(repository.clone(),serde_json::from_value(publication.storage.clone()).unwrap(),id(1),id(11)).await.unwrap();
+        let runtime=weebdex_platform::protocol::publication::PublicationRuntime::from_owned_store(repository.clone(),store.clone(),&signer,&public(1),None).unwrap();
+        state.protocol.attach_publication_runtime(runtime).await;
+        let reservation=std::net::TcpListener::bind("127.0.0.1:0").unwrap();let address=reservation.local_addr().unwrap();drop(reservation);
+        let origin=format!("http://{address}");let mut config=publication.native_node.clone().unwrap();
+        config["bind"]=json!(address.to_string());config["base_url"]=json!(origin);config["database_connections"]=json!(10);
+        if projection {
+            let binary=std::env::var_os("STRFRY_BIN").map(std::path::PathBuf::from).expect("Use the existing verified STRFRY_BIN; never download a fixture binary");
+            assert!(binary.is_absolute()&&binary.is_file());
+            config["backend"]=json!({"binary":binary,"data_dir":storage.path().join("real-projection"),"map_bytes":64*1024*1024,"timeout_seconds":5});
+        }
+        let config=serde_json::from_value(config).unwrap();
+        let (ready,wait)=tokio::sync::oneshot::channel();let (stop,shutdown)=tokio::sync::oneshot::channel();
+        let repo=repository.clone();let shared=store.clone();
+        let task=tokio::spawn(async move{manga_node::node::serve_prepared_with_store(config,repo,None,Some(shared),Some(ready),Some(shutdown)).await});
+        tokio::time::timeout(Duration::from_secs(30),wait).await.unwrap().unwrap();
+        store.configure_public_export_role().await.unwrap();
+        (Some(store),Some(origin),Some(OriginalServer{task,shutdown:Some(stop)}))
+    } else {state.protocol.configure_publication(publication).await.unwrap();(None,None,None)};
     let db=state.db.client().await.unwrap();
     for key in [1,2,4,5,6,7,8] {
         let permissions=if key==4 {json!([])}else{json!(["chapter.create","self.chapter.update","self.chapter.remove"])};
         let roles=if key==7 {json!(["restricted"])}else{json!(["user"])};
         let user=format!("PublicUploadUser{key}");
         db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,disabled,roles,permissions) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,$6)",
-            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&(key==6),&roles,&permissions]).await.unwrap();
+            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&false,&roles,&permissions]).await.unwrap();
         db.execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",&[&public(key),&user]).await.unwrap();
+        db.execute("UPDATE platform.users SET disabled=$2 WHERE id=$1",&[&user,&(key==6)]).await.unwrap();
     }
     db.execute("INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES('public-upload-native-cookie','PublicUploadUser1',$1,clock_timestamp()+interval '1 hour')",&[&Sha256::digest(b"synthetic-public-upload-cookie").to_vec()]).await.unwrap();
     db.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating,state) VALUES($1,'PublicUploadUser1','Synthetic uploader','Public upload fixture','en','ongoing','safe','published')",&[&FIXTURE_MANGA_ID]).await.unwrap();
@@ -131,7 +163,7 @@ async fn fixture()->Fixture {
     drop(db);
     let app=weebdex_platform::router::router(state.clone());
     let server=Server(tokio::spawn(async move{axum::serve(listener,app).await.unwrap()}));
-    Fixture{state,repository,http:reqwest::Client::new(),origin,manga,native_manga,_server:server,_storage:storage}
+    Fixture{state,repository,http:reqwest::Client::new(),origin,manga,native_manga,_server:server,_original:original_server,original_store,original_origin,_storage:storage}
 }
 fn png()->Vec<u8> {
     let mut bytes=Cursor::new(Vec::new());DynamicImage::ImageRgb8(RgbImage::from_pixel(13,17,Rgb([91,22,171])))
@@ -698,4 +730,636 @@ async fn exact_nostr_page_replacement_preserves_identity_order_and_authority_fen
     f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,200).await;
     f.replace(1,&session,file,version+1,"replacement.png","image/png",&replacement,409).await;
     assert_eq!(std::fs::read_dir(f.state.config.uploads_dir.join("temporary")).unwrap().count(),0);
+}
+
+async fn schedule_account(f:&Fixture,owner:&str)->String {
+    PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::User,owner).await.unwrap().unwrap().to_string()
+}
+async fn schedule_time(f:&Fixture,seconds:i64)->String {
+    f.state.db.client().await.unwrap().query_one("SELECT to_char((clock_timestamp()+$1::bigint*interval '1 second') AT TIME ZONE 'UTC','YYYY-MM-DD\"T\"HH24:MI:SS')",&[&seconds]).await.unwrap().get(0)
+}
+async fn scheduled_upload(f:&Fixture,bytes:&[u8],seconds:i64)->(String,String,Value,Value) {
+    let session=f.begin(1).await;
+    let files=f.multipart(1,&session,&[("scheduled.png","image/png",bytes)],200).await;
+    let mut payload=commit(files["data"].as_array().unwrap());payload["chapterDraft"]["publishAt"]=json!(schedule_time(f,seconds).await);
+    let receipt=f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(payload.clone()),202).await;
+    assert_eq!(receipt["nostr"]["publicationStatus"],"scheduled");
+    assert_eq!(receipt["nostr"]["sourceAccepted"],false);assert_eq!(receipt["nostr"]["readerAvailable"],false);
+    assert!(receipt["nostr"]["eventId"].is_null());assert!(receipt["attributes"]["readableAt"].is_null());
+    let native=f.native(ResourceKind::UploadSession,&session).await;
+    (session,native,receipt,payload)
+}
+async fn await_schedule_due(f:&Fixture,id:&str) {
+    let seconds:f64=f.state.db.client().await.unwrap().query_one("SELECT greatest(0,extract(epoch FROM due_at-clock_timestamp()))::float8 FROM platform.scheduled_uploads WHERE session_id=$1",&[&id]).await.unwrap().get(0);
+    assert!(seconds<30.0,"fixture must use a near deadline, not wait on real future work");
+    tokio::time::sleep(Duration::from_secs_f64(seconds+0.05)).await;
+}
+fn export_path(f:&Fixture,hash:&str,extension:&str)->std::path::PathBuf {
+    f._storage.path().join("protocol-originals/public").join(&hash[..2]).join(&hash[2..4]).join(format!("{hash}.{extension}"))
+}
+async fn original_get(f:&Fixture,hash:&str,method:reqwest::Method,range:bool,status:u16)->Vec<u8> {
+    let mut request=f.http.request(method,format!("{}/originals/{hash}",f.original_origin.as_ref().unwrap()));
+    if range {request=request.header("Range","bytes=0-15");}
+    let response=request.send().await.unwrap();assert_eq!(response.status().as_u16(),status);
+    response.bytes().await.unwrap().to_vec()
+}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL, existing real STRFRY_BIN and loopback original node; run alone"]
+async fn scheduled_private_original_export_expiry_cancel_and_rebind() {
+    let f=fixture_full(Config::default(),true,true).await;
+    let account=schedule_account(&f,"PublicUploadUser1").await;
+    let list=format!("/api/v1/nostr/uploads/schedules?expectedAccountId={account}");
+    assert_eq!(f.call(Some(1),"GET",&list,None,200).await["data"],json!([]));
+    f.call(Some(1),"GET","/api/v1/nostr/uploads/schedules",None,400).await;
+    // Publish an unrelated synthetic old original first. Its successful GET,
+    // Range and real export prove the negative scheduled controls are meaningful.
+    let old_parent="UploadOld1";
+    f.state.db.client().await.unwrap().execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating,state) VALUES($1,'PublicUploadUser1','Synthetic uploader','Old original control','en','ongoing','safe','published')",&[&old_parent]).await.unwrap();
+    let old_manga=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::Manga,old_parent).await.unwrap().unwrap().to_string();
+    let old=f.call(Some(1),"POST","/api/v1/upload/begin",Some(json!({"manga":old_manga,"groups":[]})),200).await;
+    let old_session=old["id"].as_str().unwrap();let old_bytes=png();let old_hash=hex::encode(Sha256::digest(&old_bytes));
+    let old_files=f.multipart(1,old_session,&[("old.png","image/png",&old_bytes)],200).await;
+    let old_receipt=f.call(Some(1),"POST",&format!("/api/v1/upload/{old_session}/commit"),Some(commit(old_files["data"].as_array().unwrap())),200).await;
+    wait_original_projection(&f,old_receipt["attributes"]["nostr"]["eventId"].as_str().unwrap()).await;
+    assert_eq!(original_get(&f,&old_hash,reqwest::Method::GET,false,200).await,old_bytes);
+    assert_eq!(original_get(&f,&old_hash,reqwest::Method::GET,true,200).await,old_bytes);
+    for _ in 0..16 {f.original_store.as_ref().unwrap().reconcile_public_exports().await.unwrap();if export_path(&f,&old_hash,"png").exists(){break;}}
+    assert_eq!(std::fs::read(export_path(&f,&old_hash,"png")).unwrap(),old_bytes);
+    let before:i64=f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get(0);
+    let bytes=replacement_png();let hash=hex::encode(Sha256::digest(&bytes));
+    let (session,native,receipt,payload)=scheduled_upload(&f,&bytes,2*24*60*60).await;
+    let reserved=receipt["id"].as_str().unwrap();
+    let status=format!("/api/v1/nostr/uploads/{session}/schedule?expectedAccountId={account}");
+    let repeated=f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(payload.clone()),202).await;
+    assert_eq!(repeated["id"],receipt["id"]);
+    let mut changed=payload;changed["chapterDraft"]["title"]=json!("Forbidden changed intent");
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(changed),409).await;
+    assert_eq!(f.call(Some(1),"GET",&list,None,200).await["data"].as_array().unwrap().len(),1);
+    assert_eq!(f.call(Some(1),"GET",&status,None,200).await["receipt"]["id"],receipt["id"]);
+    for path in [format!("/api/v1/chapter/{reserved}"),format!("/api/v1/at-home/server/{reserved}")] {
+        f.call(None,"GET",&path,None,404).await;
+    }
+    assert!(!weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap());
+    let db=f.state.db.client().await.unwrap();
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),before);
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.public_resource_ids WHERE kind='chapter' AND public_id=$1::text::uuid",&[&reserved]).await.unwrap().get::<_,i64>(0),0);
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.catalog_chapters c JOIN platform.scheduled_uploads i ON c.id=i.chapter_id WHERE i.session_id=$1",&[&native]).await.unwrap().get::<_,i64>(0),0);
+    let digests=db.query("SELECT o.digest FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1 UNION SELECT o.digest FROM platform.upload_files f JOIN platform.upload_file_derivatives d ON d.file_id=f.id JOIN platform.media_objects o ON o.id=d.object_id WHERE f.session_id=$1",&[&native]).await.unwrap();
+    assert!(digests.len()>1,"fixture must actually exercise retained derivatives");
+    for row in digests {
+        let digest:String=row.get(0);let binary=hex::decode(&digest).unwrap();
+        for table in ["blob_intents","publication_blobs","public_export_holds","public_export_queue"] {
+            assert_eq!(db.query_one(&format!("SELECT count(*) FROM {table} WHERE hash=$1"),&[&binary]).await.unwrap().get::<_,i64>(0),0,"{table}");
+        }
+        for extension in ["png","jpg","webp"] {assert!(!export_path(&f,&digest,extension).exists());}
+        original_get(&f,&digest,reqwest::Method::GET,false,404).await;
+        original_get(&f,&digest,reqwest::Method::GET,true,404).await;
+        original_get(&f,&digest,reqwest::Method::HEAD,true,404).await;
+    }
+    // Ordinary 24-hour session expiry must not erase a two-day schedule or occupy
+    // the user's one OPEN slot. Native cancel must not delete private references.
+    db.execute("UPDATE platform.upload_sessions SET expires_at=clock_timestamp()-interval '1 second' WHERE id=$1",&[&native]).await.unwrap();
+    let files_before:i64=db.query_one("SELECT count(*) FROM platform.upload_files WHERE session_id=$1",&[&native]).await.unwrap().get(0);
+    let missing_origin=f.http.delete(format!("{}/api/upload/{native}",f.origin)).header("cookie","weebdex_session=synthetic-public-upload-cookie").send().await.unwrap();
+    assert_eq!(missing_origin.status().as_u16(),403,"native CSRF protection remains separate from the scheduling fence");
+    let cancel=f.http.delete(format!("{}/api/upload/{native}",f.origin)).header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").send().await.unwrap();
+    assert_eq!(cancel.status().as_u16(),409);
+    drop(db);domains::uploads::recover_storage(&f.state).await;
+    let next=f.begin(1).await;assert_ne!(next,session);
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{next}"),None,200).await;
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.upload_files WHERE session_id=$1",&[&native]).await.unwrap().get::<_,i64>(0),files_before);
+    // A genuine rebind must fail before returning even an otherwise-empty list.
+    let db=f.state.db.client().await.unwrap();
+    db.batch_execute("INSERT INTO platform.users(id,username,email,password_hash,verified,permissions) VALUES('ScheduledRebound','ScheduledRebound','scheduled-rebound@fixture.invalid','synthetic',true,'[\"chapter.create\",\"self.chapter.update\",\"self.chapter.remove\"]')").await.unwrap();
+    db.execute("UPDATE platform.protocol_identity_bindings SET user_id='ScheduledRebound' WHERE publisher=$1",&[&public(1)]).await.unwrap();drop(db);
+    let rebound=schedule_account(&f,"ScheduledRebound").await;
+    f.call(Some(1),"GET",&list,None,409).await;f.call(Some(1),"GET",&status,None,409).await;
+    f.call(Some(1),"POST",&format!("/api/v1/nostr/uploads/{session}/schedule/retry?expectedAccountId={account}"),None,409).await;
+    assert_eq!(f.call(Some(1),"GET",&format!("/api/v1/nostr/uploads/schedules?expectedAccountId={rebound}"),None,200).await["data"],json!([]));
+    let retained=retained_snapshot(&f,&native).await;
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}?expectedAccountId={account}"),None,409).await;
+    assert_eq!(retained_snapshot(&f,&native).await,retained,"rebound cancellation must not mutate private rows or pins");
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,404).await;
+    f.state.db.client().await.unwrap().execute("UPDATE platform.protocol_identity_bindings SET user_id='PublicUploadUser1' WHERE publisher=$1",&[&public(1)]).await.unwrap();
+    let cancel=format!("/api/v1/upload/{session}?expectedAccountId={account}");
+    for query in [format!("expectedAccountId={account}&extra=1"),format!("expectedAccountId={account}&expectedAccountId={account}"),"expectedAccountId=null".to_owned()] {
+        f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}?{query}"),None,400).await;
+    }
+    let wrong_url=proof(1,11,&format!("{}/api/v1/upload/{session}",f.origin),"DELETE",b"");
+    f.raw("DELETE",&cancel,vec![],"application/json",Some(wrong_url),401).await;
+    assert_eq!(retained_snapshot(&f,&native).await,retained);
+    f.call(Some(1),"DELETE",&cancel,None,200).await;
+    assert_eq!(f.call(Some(1),"GET",&status,None,200).await["receipt"]["nostr"]["scheduleState"],"cancelled");
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.upload_files WHERE session_id=$1",&[&native]).await.unwrap().get::<_,i64>(0),0);
+    original_get(&f,&hash,reqwest::Method::GET,true,404).await;
+    assert_eq!(original_get(&f,&old_hash,reqwest::Method::GET,false,200).await,old_bytes);
+}
+
+async fn install_acceptance_fault(f:&Fixture,kind:&str) {
+    assert!(matches!(kind,"manga"|"chapter"));
+    f.state.db.client().await.unwrap().batch_execute(&format!("CREATE FUNCTION platform.scheduled_acceptance_fault() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.resource_kind='{kind}' AND NEW.state='source_accepted' AND OLD.state='prepared' THEN RAISE EXCEPTION 'synthetic post-acceptance durable acknowledgement fault' USING ERRCODE='58000'; END IF; RETURN NEW; END $$; CREATE TRIGGER scheduled_acceptance_fault BEFORE UPDATE ON platform.protocol_publication_commands FOR EACH ROW EXECUTE FUNCTION platform.scheduled_acceptance_fault()" )).await.unwrap();
+}
+async fn remove_acceptance_fault(f:&Fixture) {
+    f.state.db.client().await.unwrap().batch_execute("DROP TRIGGER scheduled_acceptance_fault ON platform.protocol_publication_commands; DROP FUNCTION platform.scheduled_acceptance_fault()").await.unwrap();
+}
+async fn wait_original_projection(f:&Fixture,event:&str) {
+    let binary:[u8;32]=hex::decode(event).unwrap().try_into().unwrap();
+    tokio::time::timeout(Duration::from_secs(30),async {
+        loop {if f.state.protocol.entry(binary).await.unwrap().is_some(){break;}tokio::time::sleep(Duration::from_millis(30)).await;}
+    }).await.expect("actual original backend did not project the signed receipt");
+}
+async fn restart_platform_over_owned_source(f:&mut Fixture) {
+    let config=f.state.config.as_ref().clone();restart_platform_with_config(f,config).await;
+}
+// Application recreation in the same OS process, not process-crash or power-loss proof.
+async fn restart_platform_with_config(f:&mut Fixture,config:Config) {
+    // Recreate the application, database pool, facade and signer runtime, retaining
+    // only the separately owned original node/store and durable database/files.
+    // This is an application restart, not a claim to have restarted PostgreSQL.
+    f._server.0.abort();let _=(&mut f._server.0).await;
+    let state=AppState::connect(config,std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").unwrap()).await.unwrap();
+    state.protocol.verify_schema().await.unwrap();state.protocol.install_visibility_function().await.unwrap();
+    let mut repo=f.repository.clone();repo.pool=state.db.pool().clone();
+    let config=state.config.protocol_publication.as_ref().unwrap().clone();
+    // Release the previous application's sole runtime owner before reopening its
+    // store when there is no separately running original node in this fixture.
+    f.state=state.clone();
+    if let Some(store)=f.original_store.as_ref() {
+        let runtime=weebdex_platform::protocol::publication::PublicationRuntime::from_owned_store(repo.clone(),store.clone(),&config.operator_key_file,&config.expected_publisher,None).unwrap();
+        state.protocol.attach_publication_runtime(runtime).await;
+    } else {state.protocol.configure_publication(config).await.unwrap();}
+    let address=f.origin.strip_prefix("http://").unwrap();let listener=tokio::net::TcpListener::bind(address).await.unwrap();
+    let app=weebdex_platform::router::router(state.clone());f._server=Server(tokio::spawn(async move{axum::serve(listener,app).await.unwrap()}));
+    f.state=state;f.repository=repo;
+}
+async fn owner_schedule_retry(f:&Fixture,session:&str) {
+    let account=schedule_account(f,"PublicUploadUser1").await;
+    f.call(Some(1),"POST",&format!("/api/v1/nostr/uploads/{session}/schedule/retry?expectedAccountId={account}"),None,202).await;
+}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL and existing real STRFRY_BIN; run alone with fixture guard"]
+async fn scheduled_transient_retry_parent_acceptance_restart_and_receipts() {
+    let mut f=fixture_full(Config::default(),true,true).await;
+    let (session,native,initial,_)=scheduled_upload(&f,&png(),3).await;
+    let account=schedule_account(&f,"PublicUploadUser1").await;
+    let status=format!("/api/v1/nostr/uploads/{session}/schedule?expectedAccountId={account}");
+    f.state.db.client().await.unwrap().batch_execute("CREATE FUNCTION platform.scheduled_start_fault() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF OLD.started_at IS NULL AND NEW.started_at IS NOT NULL THEN RAISE EXCEPTION 'synthetic pre-source infrastructure fault' USING ERRCODE='58000'; END IF; RETURN NEW; END $$; CREATE TRIGGER scheduled_start_fault BEFORE UPDATE ON platform.scheduled_uploads FOR EACH ROW EXECUTE FUNCTION platform.scheduled_start_fault()").await.unwrap();
+    await_schedule_due(&f,&native).await;
+    let error=weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err();assert_eq!(error.status.as_u16(),503);
+    let row=f.state.db.client().await.unwrap().query_one("SELECT state,started_at IS NULL,retry_attempts,failure_code,next_attempt_at>clock_timestamp() FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap();
+    assert_eq!(row.get::<_,String>(0),"scheduled");assert!(row.get::<_,bool>(1));assert_eq!(row.get::<_,i32>(2),1);assert_eq!(row.get::<_,String>(3),"transient_retry");assert!(row.get::<_,bool>(4));
+    assert!(!weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap());
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+    f.state.db.client().await.unwrap().batch_execute("DROP TRIGGER scheduled_start_fault ON platform.scheduled_uploads; DROP FUNCTION platform.scheduled_start_fault()").await.unwrap();
+    install_acceptance_fault(&f,"manga").await;
+    wait_retry_due(&f,&native).await;
+    assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),503);
+    let row=f.state.db.client().await.unwrap().query_one("SELECT i.state,i.started_at IS NOT NULL,i.failure_code,c.event_id,c.scheduled_session_id,c.source_manifest=i.parent_manifest,m.version FROM platform.scheduled_uploads i JOIN platform.upload_sessions s ON s.id=i.session_id JOIN platform.catalog_manga m ON m.id=s.manga_id JOIN platform.protocol_publication_commands c ON c.command_id='manga:'||m.id WHERE i.session_id=$1",&[&native]).await.unwrap();
+    assert_eq!(row.get::<_,String>(0),"blocked");assert!(row.get::<_,bool>(1));assert_eq!(row.get::<_,String>(2),"publication_outcome_uncertain");
+    let parent:String=row.get(3);assert_eq!(row.get::<_,String>(4),native);assert!(row.get::<_,bool>(5));let version:i32=row.get(6);
+    assert!(!weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap(),"post-command503 must not automatically replay");
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,409).await;
+    let pending=f.call(Some(1),"GET",&status,None,200).await["receipt"].clone();
+    assert_eq!(pending["nostr"]["readerAvailable"],false);assert!(pending["nostr"]["eventId"].is_null());
+    // A normal immediate upload cannot adopt a scheduled parent's durable command.
+    let other=f.begin(1).await;let files=f.multipart(1,&other,&[("other.png","image/png",&png())],200).await;
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{other}/commit"),Some(commit(files["data"].as_array().unwrap())),409).await;
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{other}"),None,200).await;
+    remove_acceptance_fault(&f).await;
+    wait_original_projection(&f,&parent).await;
+    weebdex_platform::protocol::bridge::import_page(&f.state).await.unwrap();
+    let associated=f.state.db.client().await.unwrap().query_one("SELECT protocol_series_id,version FROM platform.catalog_manga WHERE id=$1",&[&f.native_manga]).await.unwrap();
+    assert_eq!(associated.get::<_,String>(0),parent);assert_eq!(associated.get::<_,i32>(1),version);
+    restart_platform_over_owned_source(&mut f).await;
+    owner_schedule_retry(&f,&session).await;
+    assert!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap());
+    let commands=f.state.db.client().await.unwrap().query("SELECT resource_kind,event_id,scheduled_session_id FROM platform.protocol_publication_commands ORDER BY resource_kind",&[]).await.unwrap();
+    assert_eq!(commands.len(),2);let chapter:String=commands.iter().find(|r|r.get::<_,String>(0)=="chapter").unwrap().get(1);
+    assert_eq!(commands.iter().find(|r|r.get::<_,String>(0)=="manga").unwrap().get::<_,String>(1),parent);
+    assert!(commands.iter().all(|r|r.get::<_,String>(2)==native));
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT state FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap().get::<_,String>(0),"complete");
+    let complete=f.call(Some(1),"GET",&status,None,200).await["receipt"].clone();
+    assert_ne!(complete["nostr"]["publicationStatus"],"scheduled");assert_eq!(complete["id"],initial["id"]);
+    wait_original_projection(&f,&chapter).await;
+    for _ in 0..3 {weebdex_platform::protocol::bridge::import_page(&f.state).await.unwrap();weebdex_platform::protocol::covers::materialize_page(&f.state).await.unwrap();}
+    let readable=f.call(Some(1),"GET",&status,None,200).await["receipt"].clone();
+    assert_eq!(readable["nostr"]["publicationStatus"],"readable");assert_eq!(readable["nostr"]["readerAvailable"],true);
+    f.call(None,"GET",&format!("/api/v1/chapter/{}",initial["id"].as_str().unwrap()),None,200).await;
+    // Admission controls future publication, not historical reader visibility.
+    f.repository.set_publisher_admission(id(1),false).await.unwrap();
+    let historical=f.call(Some(1),"GET",&status,None,200).await["receipt"].clone();
+    assert_eq!(historical["nostr"]["readerAvailable"],true);
+    f.repository.set_publisher_admission(id(1),true).await.unwrap();
+    // Inject only the actual source visibility seam for this owned original.
+    // This is not a claim that a public signed deletion or moderation UI ran.
+    let source_id=hex::decode(&chapter).unwrap();
+    let db=f.state.db.client().await.unwrap();
+    let original:Value=db.query_one("SELECT raw_event FROM events WHERE id=$1",&[&&source_id[..]]).await.unwrap().get(0);
+    assert_eq!(db.execute("UPDATE events SET state='withdrawing' WHERE id=$1 AND state='hosted'",&[&&source_id[..]]).await.unwrap(),1);
+    assert_eq!(db.query_one("SELECT raw_event FROM events WHERE id=$1",&[&&source_id[..]]).await.unwrap().get::<_,Value>(0),original);
+    drop(db);
+    assert!(f.state.protocol.entry(source_id.try_into().unwrap()).await.unwrap().is_none());
+    f.call(None,"GET",&format!("/api/v1/chapter/{}",initial["id"].as_str().unwrap()),None,404).await;
+    let unavailable=f.call(Some(1),"GET",&status,None,200).await["receipt"].clone();
+    assert_eq!(unavailable["nostr"]["readerAvailable"],false);assert_ne!(unavailable["nostr"]["publicationStatus"],"readable");
+}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL; real two-second configured deadline, run alone"]
+async fn scheduled_captured_deadline_restart_and_blocked_quota() {
+    let mut f=fixture_options(Config{scheduled_upload_retry_seconds:2,scheduled_upload_maximum:1,..Config::default()},false).await;
+    let (session,native,initial,_)=scheduled_upload(&f,&png(),2).await;
+    assert_eq!(initial["nostr"]["retryWindowSeconds"],2);
+    let saved:f64=f.state.db.client().await.unwrap().query_one("SELECT extract(epoch FROM retry_until)::float8 FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap().get(0);
+    let mut config=f.state.config.as_ref().clone();config.scheduled_upload_retry_seconds=86400;
+    restart_platform_with_config(&mut f,config).await;
+    let now:f64=f.state.db.client().await.unwrap().query_one("SELECT extract(epoch FROM retry_until)::float8 FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap().get(0);assert_eq!(saved,now);
+    await_schedule_due(&f,&native).await;tokio::time::sleep(Duration::from_millis(2100)).await;
+    assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),409);
+    let db=f.state.db.client().await.unwrap();
+    let row=db.query_one("SELECT state,started_at IS NULL FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap();assert_eq!(row.get::<_,String>(0),"blocked");assert!(row.get::<_,bool>(1));
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+    db.execute("UPDATE platform.upload_sessions SET expires_at=clock_timestamp()-interval '1 second' WHERE id=$1",&[&native]).await.unwrap();drop(db);
+    domains::uploads::recover_storage(&f.state).await;
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.upload_files WHERE session_id=$1",&[&native]).await.unwrap().get::<_,i64>(0),1);
+    let account=schedule_account(&f,"PublicUploadUser1").await;
+    let status=format!("/api/v1/nostr/uploads/{session}/schedule?expectedAccountId={account}");
+    assert_eq!(f.call(Some(1),"GET",&status,None,200).await["receipt"]["nostr"]["retryWindowSeconds"],2);
+    let list=f.call(Some(1),"GET",&format!("/api/v1/nostr/uploads/schedules?expectedAccountId={account}"),None,200).await;
+    assert_eq!(list["limits"]["retryWindowSeconds"],86400);
+    let next=f.begin(1).await;let files=f.multipart(1,&next,&[("next.png","image/png",&png())],200).await;
+    let mut payload=commit(files["data"].as_array().unwrap());payload["chapterDraft"]["publishAt"]=json!(schedule_time(&f,30).await);
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{next}/commit"),Some(payload.clone()),409).await;
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,200).await;
+    let accepted=f.call(Some(1),"POST",&format!("/api/v1/upload/{next}/commit"),Some(payload),202).await;
+    assert_eq!(accepted["nostr"]["retryWindowSeconds"],86400);
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{next}"),None,200).await;
+}
+
+async fn wait_blocked_on(f:&Fixture,blocker:i32) {
+    tokio::time::timeout(Duration::from_secs(5),async {
+        loop {
+            let waiting:bool=f.state.db.client().await.unwrap().query_one("SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND $1=ANY(pg_blocking_pids(pid)))",&[&blocker]).await.unwrap().get(0);
+            if waiting {break;}tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    }).await.expect("real competing transaction never reached the expected lock");
+}
+async fn wait_claim(f:&Fixture,id:&str,previous:Option<&str>)->String {
+    tokio::time::timeout(Duration::from_secs(5),async {
+        loop {
+            let token:Option<String>=f.state.db.client().await.unwrap().query_one("SELECT lease_token FROM platform.scheduled_uploads WHERE session_id=$1",&[&id]).await.unwrap().get(0);
+            if let Some(token)=token {if previous!=Some(token.as_str()){break token;}}
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    }).await.expect("real worker did not commit its claim before actor/session locks")
+}
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL; actual HTTP cancel versus worker locks, run alone"]
+async fn scheduled_claim_cancel_serialization_and_stale_lease_cas() {
+    let f=fixture().await;
+    let (session,native,_,_)=scheduled_upload(&f,&png(),2).await;await_schedule_due(&f,&native).await;
+    let mut holder=f.state.db.client().await.unwrap();let tx=holder.transaction().await.unwrap();
+    let pid:i32=tx.query_one("SELECT pg_backend_pid()",&[]).await.unwrap().get(0);
+    tx.query_one("SELECT id FROM platform.upload_sessions WHERE id=$1 FOR UPDATE",&[&native]).await.unwrap();
+    let path=format!("/api/v1/upload/{session}");let url=format!("{}{path}",f.origin);let client=f.http.clone();let token=proof(1,11,&url,"DELETE",b"");
+    let cancel=tokio::spawn(async move{client.delete(url).header("authorization",token).send().await.unwrap().status().as_u16()});
+    wait_blocked_on(&f,pid).await;
+    let state=f.state.clone();let worker=tokio::spawn(async move{weebdex_platform::public_api::scheduled_uploads::run_due(&state).await});
+    wait_claim(&f,&native,None).await;tx.commit().await.unwrap();drop(holder);
+    assert_eq!(tokio::time::timeout(Duration::from_secs(10),cancel).await.unwrap().unwrap(),200);
+    assert!(tokio::time::timeout(Duration::from_secs(10),worker).await.unwrap().unwrap().is_err());
+    let row=f.state.db.client().await.unwrap().query_one("SELECT state,started_at IS NULL,lease_token IS NULL FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap();assert_eq!(row.get::<_,String>(0),"cancelled");assert!(row.get::<_,bool>(1)&&row.get::<_,bool>(2));
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+    let (_,native,_,_)=scheduled_upload(&f,&png(),2).await;await_schedule_due(&f,&native).await;
+    let mut holder=f.state.db.client().await.unwrap();let tx=holder.transaction().await.unwrap();
+    tx.query_one("SELECT publisher FROM account_permissions WHERE publisher=$1 FOR UPDATE",&[&&id(1)[..]]).await.unwrap();
+    let state=f.state.clone();let first=tokio::spawn(async move{weebdex_platform::public_api::scheduled_uploads::run_due(&state).await});
+    let old=wait_claim(&f,&native,None).await;
+    // Accelerate only the mutable operational lease of a genuinely claimed row.
+    // Publication deadlines and immutable intent/source inputs remain untouched.
+    f.state.db.client().await.unwrap().execute("UPDATE platform.scheduled_uploads SET lease_until=clock_timestamp()-interval '1 second' WHERE session_id=$1 AND lease_token=$2",&[&native,&old]).await.unwrap();
+    let state=f.state.clone();let second=tokio::spawn(async move{weebdex_platform::public_api::scheduled_uploads::run_due(&state).await});
+    let current=wait_claim(&f,&native,Some(&old)).await;assert_ne!(old,current);tx.commit().await.unwrap();drop(holder);
+    assert!(tokio::time::timeout(Duration::from_secs(20),first).await.unwrap().unwrap().is_err());
+    assert!(tokio::time::timeout(Duration::from_secs(20),second).await.unwrap().unwrap().unwrap());
+    let row=f.state.db.client().await.unwrap().query_one("SELECT state,generation FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap();assert_eq!(row.get::<_,String>(0),"complete");assert_eq!(row.get::<_,i64>(1),2);
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands WHERE scheduled_session_id=$1",&[&native]).await.unwrap().get::<_,i64>(0),2);
+}
+
+#[tokio::test]
+#[ignore="requires isolated guarded PostgreSQL database"]
+async fn scheduled_derivatives_count_toward_private_budget() {
+    let image=replacement_png();let mut config=Config::default();config.scheduled_upload_bytes=image.len() as i64;
+    let f=fixture_options(config,false).await;let session=f.begin(1).await;
+    let uploaded=f.multipart(1,&session,&[("page.png","image/png",&image)],200).await;
+    let native=f.native(ResourceKind::UploadSession,&session).await;
+    let row=f.state.db.client().await.unwrap().query_one("SELECT (SELECT sum(o.bytes)::bigint FROM platform.upload_files x JOIN platform.media_objects o ON o.id=x.object_id WHERE x.session_id=$1),(SELECT sum(o.bytes)::bigint FROM platform.upload_files x JOIN platform.upload_file_derivatives d ON d.file_id=x.id JOIN platform.media_objects o ON o.id=d.object_id WHERE x.session_id=$1)",&[&native]).await.unwrap();
+    assert!(row.get::<_,i64>(0)<=image.len() as i64);assert!(row.get::<_,i64>(1)>0);
+    let mut payload=commit(uploaded["data"].as_array().unwrap());payload["chapterDraft"]["publishAt"]=json!(schedule_time(&f,3600).await);
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(payload),409).await;
+    let row=f.state.db.client().await.unwrap().query_one("SELECT state,(SELECT count(*) FROM platform.scheduled_uploads),(SELECT count(*) FROM platform.protocol_publication_commands) FROM platform.upload_sessions WHERE id=$1",&[&native]).await.unwrap();
+    assert_eq!(row.get::<_,String>(0),"open");assert_eq!(row.get::<_,i64>(1),0);assert_eq!(row.get::<_,i64>(2),0);
+}
+
+// Historical unsigned local chapters use the real catalogue writer and real staged
+// media. No scheduled state, command, signed source, or publication result is mocked.
+async fn local_chapter(f:&Fixture,id:&str,owner:&str)->(String,String) {
+    use weebdex_platform::domains::catalog::{CatalogRepository,CatalogPage,ChapterPublication};
+    let session=f.begin(1).await;let uploaded=f.multipart(1,&session,&[("old.png","image/png",&png())],200).await;
+    let file=f.native(ResourceKind::UploadFile,uploaded["data"][0]["id"].as_str().unwrap()).await;
+    let mut db=f.state.db.client().await.unwrap();let tx=db.transaction().await.unwrap();
+    let row=tx.query_one("SELECT o.id,o.width,o.height FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.id=$1",&[&file]).await.unwrap();
+    let name=format!("{file}.png");
+    CatalogRepository::publish_chapter(&tx,&ChapterPublication{id:id.into(),manga_id:f.native_manga.clone(),uploader_id:owner.into(),uploader_name:owner.into(),title:Some("Historical local chapter".into()),volume:None,chapter:Some("1".into()),language:"en".into(),node:f.origin.clone(),pages:vec![CatalogPage{name:name.clone(),dimensions:[row.get(1),row.get(2)]}],optimized_pages:vec![],groups:vec![],source_id:None,protocol_event_id:None}).await.unwrap();
+    tx.execute("INSERT INTO platform.chapter_pages(chapter_id,position,name,object_id) VALUES($1,0,$2,$3)",&[&id,&name,&row.get::<_,String>(0)]).await.unwrap();
+    tx.commit().await.unwrap();drop(db);let public=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::Chapter,id).await.unwrap().unwrap().to_string();
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,200).await;
+    (public,name)
+}
+async fn schedule_local_edit(f:&Fixture,chapter:&str,seconds:i64)->(String,String,String) {
+    let opened=f.call(Some(1),"POST",&format!("/api/v1/upload/begin/{chapter}"),Some(json!({"version":1})),200).await;
+    let session=opened["id"].as_str().unwrap().to_owned();let native=f.native(ResourceKind::UploadSession,&session).await;
+    let mut db=f.state.db.client().await.unwrap();let tx=db.transaction().await.unwrap();
+    let mut old=Vec::new();for row in tx.query("SELECT id FROM platform.upload_files WHERE session_id=$1",&[&native]).await.unwrap(){old.push(row.get::<_,String>(0));}tx.commit().await.unwrap();drop(db);
+    for native_file in old {let file=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::UploadFile,&native_file).await.unwrap().unwrap();f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}/{file}"),None,200).await;}
+    let files=f.multipart(1,&session,&[("replacement.png","image/png",&replacement_png())],200).await;
+    let file=f.native(ResourceKind::UploadFile,files["data"][0]["id"].as_str().unwrap()).await;
+    let mut payload=commit(files["data"].as_array().unwrap());payload["chapterDraft"]["publishAt"]=json!(schedule_time(f,seconds).await);
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(payload),202).await;
+    (session,native,format!("{file}.png"))
+}
+async fn native_edit(f:&Fixture,chapter:&str,version:i32)->reqwest::Response {
+    f.http.post(format!("{}/api/upload/begin/{chapter}",f.origin)).header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").json(&json!({"version":version,"replace":false})).send().await.unwrap()
+}
+async fn media_response(f:&Fixture,chapter:&str,name:&str,status:u16)->Vec<u8> {
+    let response=f.http.get(format!("{}/data/{chapter}/{name}",f.origin)).send().await.unwrap();assert_eq!(response.status().as_u16(),status);response.bytes().await.unwrap().to_vec()
+}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="requires isolated guarded PostgreSQL database"]
+async fn scheduled_local_edit_preserves_old_reader_and_native_lock_orders() {
+    let f=fixture().await;
+    for (id,native_first) in [("SchedEdit1",true),("SchedEdit2",false)] {
+        let (chapter,old)=local_chapter(&f,id,"PublicUploadUser1").await;
+        let (session,native,new)=schedule_local_edit(&f,&chapter,2).await;
+        assert_eq!(media_response(&f,&chapter,&old,200).await,png());media_response(&f,&chapter,&new,404).await;
+        let before=f.call(None,"GET",&format!("/api/v1/chapter/{chapter}"),None,200).await;assert_eq!(before["data"]["attributes"]["version"],1);
+        await_schedule_due(&f,&native).await;
+        // The durable-start gate releases its chapter lock before execution.
+        // Pause on the existing due-only alias fence after that gate commits, so
+        // the ordering below tests the execution transaction, not mere claiming.
+        let mut barrier=f.state.db.client().await.unwrap();let alias_tx=barrier.transaction().await.unwrap();
+        let barrier_pid:i32=alias_tx.query_one("SELECT pg_backend_pid()",&[]).await.unwrap().get(0);
+        alias_tx.query_one("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",&[&format!("platform-public-id:chapter:{id}")]).await.unwrap();
+        let state=f.state.clone();let worker=tokio::spawn(async move{weebdex_platform::public_api::scheduled_uploads::run_due(&state).await});
+        wait_blocked_on(&f,barrier_pid).await;
+        assert!(f.state.db.client().await.unwrap().query_one("SELECT state='starting' AND started_at IS NOT NULL FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap().get::<_,bool>(0));
+        let mut holder=f.state.db.client().await.unwrap();let tx=holder.transaction().await.unwrap();let pid:i32=tx.query_one("SELECT pg_backend_pid()",&[]).await.unwrap().get(0);
+        tx.query_one("SELECT id FROM platform.catalog_chapters WHERE id=$1 FOR UPDATE",&[&id]).await.unwrap();
+        let http=f.http.clone();let origin=f.origin.clone();let url=format!("{}/api/upload/begin/{id}",f.origin);
+        let request=async move{http.post(url).header("origin",origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").json(&json!({"version":1,"replace":false})).send().await.unwrap()};
+        let native_task=if native_first {
+            let native_task=tokio::spawn(request);wait_blocked_on(&f,pid).await;
+            alias_tx.commit().await.unwrap();drop(barrier);native_task
+        } else {
+            alias_tx.commit().await.unwrap();drop(barrier);wait_blocked_on(&f,pid).await;
+            tokio::spawn(request)
+        };
+        // Both contenders execute their real parent/chapter/session FK paths.
+        // The first native request must acquire the parent's FK KEY SHARE while
+        // the worker holds NO KEY UPDATE; the reverse order must fail stale CAS.
+        wait_chapter_contenders(&f).await;tx.commit().await.unwrap();drop(holder);
+        let response=tokio::time::timeout(Duration::from_secs(20),native_task).await.unwrap().unwrap();let status=response.status().as_u16();let body=response.text().await.unwrap();assert_eq!(status,if native_first{201}else{409},"{body}");
+        assert!(tokio::time::timeout(Duration::from_secs(20),worker).await.unwrap().unwrap().unwrap());
+        let after=f.call(None,"GET",&format!("/api/v1/chapter/{chapter}"),None,200).await;assert_eq!(after["data"]["attributes"]["version"],2);
+        assert_eq!(media_response(&f,&chapter,&new,200).await,replacement_png());
+        if native_first {
+            let open=f.state.db.client().await.unwrap().query_one("SELECT id FROM platform.upload_sessions WHERE owner_id='PublicUploadUser1' AND state='open'",&[]).await.unwrap().get::<_,String>(0);
+            assert!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.upload_files WHERE session_id=$1",&[&open]).await.unwrap().get::<_,i64>(0)>0);
+            let response=f.http.delete(format!("{}/api/upload/{open}",f.origin)).header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").send().await.unwrap();assert_eq!(response.status().as_u16(),204);
+        }
+        let account=schedule_account(&f,"PublicUploadUser1").await;let receipt=f.call(Some(1),"GET",&format!("/api/v1/nostr/uploads/{session}/schedule?expectedAccountId={account}"),None,200).await;assert_eq!(receipt["receipt"]["nostr"]["readerAvailable"],true);
+    }
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+    let (chapter,old)=local_chapter(&f,"SchedEdit3","PublicUploadUser1").await;let (_,native,new)=schedule_local_edit(&f,&chapter,2).await;
+    f.call(Some(1),"PUT",&format!("/api/v1/chapter/{chapter}"),Some(json!({"version":1,"title":"Concurrent actual edit"})),200).await;
+    await_schedule_due(&f,&native).await;assert!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.is_err());
+    assert_eq!(media_response(&f,&chapter,&old,200).await,png());media_response(&f,&chapter,&new,404).await;
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT state FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap().get::<_,String>(0),"blocked");
+}
+async fn wait_retry_due(f:&Fixture,id:&str) {
+    let deadline=tokio::time::Instant::now()+Duration::from_secs(5);
+    loop {if f.state.db.client().await.unwrap().query_one("SELECT next_attempt_at<=clock_timestamp() FROM platform.scheduled_uploads WHERE session_id=$1",&[&id]).await.unwrap().get::<_,bool>(0){return}assert!(tokio::time::Instant::now()<deadline,"retry deadline did not arrive");tokio::time::sleep(Duration::from_millis(25)).await;}
+}
+async fn wait_chapter_contenders(f:&Fixture) {
+    let deadline=tokio::time::Instant::now()+Duration::from_secs(5);
+    loop {let count:i64=f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE '%platform.catalog_chapters%'",&[]).await.unwrap().get(0);if count>=2{return}assert!(tokio::time::Instant::now()<deadline,"both real chapter contenders did not reach row locks");tokio::time::sleep(Duration::from_millis(20)).await;}
+}
+async fn retained_snapshot(f:&Fixture,id:&str)->Value {
+    f.state.db.client().await.unwrap().query_one("SELECT jsonb_build_object('session',(SELECT to_jsonb(s) FROM platform.upload_sessions s WHERE id=$1),'files',(SELECT jsonb_agg(to_jsonb(f) ORDER BY f.id) FROM platform.upload_files f WHERE session_id=$1),'objects',(SELECT jsonb_agg(id ORDER BY id) FROM platform.media_objects),'cleanup',(SELECT jsonb_agg(storage_key ORDER BY storage_key) FROM platform.media_cleanup),'pins',(SELECT jsonb_agg(object_id ORDER BY object_id) FROM platform.protocol_publication_originals))",&[&id]).await.unwrap().get(0)
+}
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="requires isolated guarded PostgreSQL database"]
+async fn native_begin_edit_expiry_lock_order_and_authorization_rollback() {
+    let f=fixture().await;let (chapter,old)=local_chapter(&f,"ExpiryOwn1","PublicUploadUser1").await;local_chapter(&f,"ExpiryOth1","PublicUploadUser2").await;
+    let session=f.begin(1).await;f.multipart(1,&session,&[("uncommitted.png","image/png",&replacement_png())],200).await;
+    let native=f.native(ResourceKind::UploadSession,&session).await;
+    f.state.db.client().await.unwrap().execute("UPDATE platform.upload_sessions SET expires_at=clock_timestamp()-interval '1 second' WHERE id=$1",&[&native]).await.unwrap();
+    let before=retained_snapshot(&f,&native).await;
+    for (target,version,status) in [("ExpiryOwn1",999,409),("ExpiryOth1",1,403)] {
+        let response=native_edit(&f,target,version).await;let actual=response.status().as_u16();let text=response.text().await.unwrap();assert_eq!(actual,status,"{text}");assert_eq!(retained_snapshot(&f,&native).await,before,"failed authorization/version must roll back expiry, files, pins and cleanup queue");
+    }
+    let mut holder=f.state.db.client().await.unwrap();let tx=holder.transaction().await.unwrap();let pid:i32=tx.query_one("SELECT pg_backend_pid()",&[]).await.unwrap().get(0);
+    tx.query_one("SELECT id FROM platform.upload_sessions WHERE id=$1 FOR UPDATE",&[&native]).await.unwrap();
+    let http=f.http.clone();let origin=f.origin.clone();let url=format!("{}/api/upload/begin/ExpiryOwn1",f.origin);
+    let pending=tokio::spawn(async move{http.post(url).header("origin",origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").json(&json!({"version":1,"replace":false})).send().await.unwrap()});wait_blocked_on(&f,pid).await;
+    // While real begin_edit is blocked expiring a media-bearing OPEN session,
+    // it must not already own the chapter lock. NOWAIT proves the revised order.
+    tx.query_one("SELECT id FROM platform.catalog_chapters WHERE id='ExpiryOwn1' FOR UPDATE NOWAIT",&[]).await.unwrap();tx.commit().await.unwrap();drop(holder);
+    let response=tokio::time::timeout(Duration::from_secs(20),pending).await.unwrap().unwrap();let status=response.status().as_u16();let text=response.text().await.unwrap();assert_eq!(status,201,"{text}");
+    let row=f.state.db.client().await.unwrap().query_one("SELECT state,(SELECT count(*) FROM platform.upload_files WHERE session_id=$1) FROM platform.upload_sessions WHERE id=$1",&[&native]).await.unwrap();assert_eq!(row.get::<_,String>(0),"deleted");assert_eq!(row.get::<_,i64>(1),0);
+    assert_eq!(media_response(&f,&chapter,&old,200).await,png());
+}
+async fn new_fixture_parent(f:&mut Fixture,id:&str) {
+    // Distinct native parents must have distinct source manifests even when
+    // signed in the same second; identical originals correctly share an event.
+    let title=format!("Independent fixture parent {id}");
+    f.state.db.client().await.unwrap().execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating,state) VALUES($1,'PublicUploadUser1','Synthetic uploader',$2,'en','ongoing','safe','published')",&[&id,&title]).await.unwrap();
+    f.native_manga=id.to_owned();f.manga=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::Manga,id).await.unwrap().unwrap().to_string();
+}
+#[tokio::test]
+#[ignore="requires isolated guarded PostgreSQL database"]
+async fn scheduled_command_provenance_accepted_pins_and_legacy_refusal() {
+    let mut limits=Config::default();limits.scheduled_upload_maximum=2;let mut f=fixture_options(limits,true).await;
+    let a=scheduled_upload(&f,&replacement_png(),2).await;let b=scheduled_upload(&f,&png(),2).await;
+    install_acceptance_fault(&f,"chapter").await;await_schedule_due(&f,&a.1).await;await_schedule_due(&f,&b.1).await;
+    assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),503);
+    let owner=f.state.db.client().await.unwrap().query_one("SELECT session_id FROM platform.scheduled_uploads WHERE state='blocked'",&[]).await.unwrap().get::<_,String>(0);
+    let (accepted,other)=if owner==a.1{(&a,&b)}else{assert_eq!(owner,b.1);(&b,&a)};
+    let commands=f.state.db.client().await.unwrap().query("SELECT command_id,event_id,scheduled_session_id,state FROM platform.protocol_publication_commands ORDER BY command_id",&[]).await.unwrap();assert_eq!(commands.len(),2);for row in &commands{assert_eq!(row.get::<_,Option<String>>(2).as_deref(),Some(owner.as_str()));}
+    let events:Vec<(String,String)>=commands.iter().map(|r|(r.get(0),r.get::<_,Option<String>>(1).unwrap())).collect();
+    // Same owner and identical source-less parent metadata do not confer ownership
+    // of another schedule's parent command. This second intent cannot adopt it.
+    assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),409);
+    let row=f.state.db.client().await.unwrap().query_one("SELECT state,started_at IS NULL FROM platform.scheduled_uploads WHERE session_id=$1",&[&other.1]).await.unwrap();assert_eq!(row.get::<_,String>(0),"blocked");assert!(row.get::<_,bool>(1));
+    let open=f.begin(1).await;let files=f.multipart(1,&open,&[("quota.jpg","image/jpeg",&jpeg())],200).await;let mut payload=commit(files["data"].as_array().unwrap());payload["chapterDraft"]["publishAt"]=json!(schedule_time(&f,60).await);
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{open}/commit"),Some(payload),409).await;f.call(Some(1),"DELETE",&format!("/api/v1/upload/{open}"),None,200).await;
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{}",accepted.0),None,409).await;
+    f.state.db.client().await.unwrap().execute("UPDATE platform.upload_sessions SET expires_at=clock_timestamp()-interval '1 day' WHERE id=$1",&[&owner]).await.unwrap();
+    let before=retained_snapshot(&f,&owner).await;assert!(!before["pins"].as_array().unwrap().is_empty());weebdex_platform::domains::uploads::recover_storage(&f.state).await;assert_eq!(retained_snapshot(&f,&owner).await,before);
+    // Negative corruption control: the accepted source does not excuse a different
+    // immutable stored manifest. Restore exact original bytes only after refusal.
+    remove_acceptance_fault(&f).await;
+    let parent=format!("manga:{}",f.native_manga);let manifest=f.state.db.client().await.unwrap().query_one("SELECT source_manifest FROM platform.protocol_publication_commands WHERE command_id=$1",&[&parent]).await.unwrap().get::<_,Vec<u8>>(0);let mut corrupt=manifest.clone();corrupt.push(b' ');
+    f.state.db.client().await.unwrap().execute("UPDATE platform.protocol_publication_commands SET source_manifest=$2 WHERE command_id=$1",&[&parent,&corrupt]).await.unwrap();
+    owner_schedule_retry(&f,&accepted.0).await;assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),409);
+    f.state.db.client().await.unwrap().execute("UPDATE platform.protocol_publication_commands SET source_manifest=$2 WHERE command_id=$1",&[&parent,&manifest]).await.unwrap();
+    owner_schedule_retry(&f,&accepted.0).await;assert!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap());
+    let recovered:Vec<(String,String)>=f.state.db.client().await.unwrap().query("SELECT command_id,event_id FROM platform.protocol_publication_commands ORDER BY command_id",&[]).await.unwrap().iter().map(|r|(r.get(0),r.get::<_,Option<String>>(1).unwrap())).collect();assert_eq!(recovered,events,"accepted parent and chapter must recover their original events without signing replacements");
+    f.call(Some(1),"DELETE",&format!("/api/v1/upload/{}",other.0),None,200).await;
+    // A legacy native parent-only command cannot be adopted even before any
+    // chapter command exists. Exercise the admission refusal, not only the
+    // ordinary immutable-upload-command refusal used by the next control.
+    new_fixture_parent(&mut f,"LegacyPar1").await;
+    let legacy_parent=f.begin(1).await;let parent_files=f.multipart(1,&legacy_parent,&[("parent-only.png","image/png",&png())],200).await;
+    install_acceptance_fault(&f,"manga").await;
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{legacy_parent}/commit"),Some(commit(parent_files["data"].as_array().unwrap())),503).await;
+    let legacy_native=f.native(ResourceKind::UploadSession,&legacy_parent).await;
+    let row=f.state.db.client().await.unwrap().query_one("SELECT scheduled_session_id,(SELECT count(*) FROM platform.protocol_publication_commands WHERE upload_session_id=$1) FROM platform.protocol_publication_commands WHERE command_id='manga:LegacyPar1'",&[&legacy_native]).await.unwrap();assert!(row.get::<_,Option<String>>(0).is_none());assert_eq!(row.get::<_,i64>(1),0);
+    let mut future=commit(parent_files["data"].as_array().unwrap());future["chapterDraft"]["publishAt"]=json!(schedule_time(&f,60).await);f.call(Some(1),"POST",&format!("/api/v1/upload/{legacy_parent}/commit"),Some(future),409).await;
+    remove_acceptance_fault(&f).await;f.call(Some(1),"POST",&format!("/api/v1/upload/{legacy_parent}/commit"),Some(commit(parent_files["data"].as_array().unwrap())),200).await;
+    // Legacy NULL provenance stays native. Actual source acceptance and a failed
+    // acknowledgement leave a real OPEN session with source-pinned page bytes.
+    new_fixture_parent(&mut f,"LegacyPar2").await;local_chapter(&f,"LegacyOld2","PublicUploadUser1").await;
+    let legacy=f.begin(1).await;let files=f.multipart(1,&legacy,&[("native.jpg","image/jpeg",&jpeg())],200).await;let native=f.native(ResourceKind::UploadSession,&legacy).await;
+    install_acceptance_fault(&f,"chapter").await;
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{legacy}/commit"),Some(commit(files["data"].as_array().unwrap())),503).await;
+    let row=f.state.db.client().await.unwrap().query_one("SELECT scheduled_session_id,state FROM platform.protocol_publication_commands WHERE upload_session_id=$1",&[&native]).await.unwrap();assert!(row.get::<_,Option<String>>(0).is_none());assert_eq!(row.get::<_,String>(1),"prepared");
+    let mut future=commit(files["data"].as_array().unwrap());future["chapterDraft"]["publishAt"]=json!(schedule_time(&f,60).await);f.call(Some(1),"POST",&format!("/api/v1/upload/{legacy}/commit"),Some(future),409).await;
+    f.state.db.client().await.unwrap().execute("UPDATE platform.upload_sessions SET expires_at=clock_timestamp()-interval '1 day' WHERE id=$1",&[&native]).await.unwrap();let before=retained_snapshot(&f,&native).await;
+    assert_eq!(native_edit(&f,"LegacyOld2",1).await.status().as_u16(),409);weebdex_platform::domains::uploads::recover_storage(&f.state).await;assert_eq!(retained_snapshot(&f,&native).await,before);
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap().get::<_,i64>(0),0);
+}
+#[tokio::test]
+#[ignore="requires isolated guarded PostgreSQL database"]
+async fn scheduled_unknown_prepared_source_is_never_replayed_or_purged() {
+    let mut limits=Config::default();limits.scheduled_upload_maximum=1;let f=fixture_options(limits,true).await;
+    let (session,native,_,_)=scheduled_upload(&f,&replacement_png(),2).await;
+    // Fail the actual original transaction after durable platform preparation,
+    // before any original chapter acceptance. This is not a forged command row.
+    f.state.db.client().await.unwrap().batch_execute("CREATE FUNCTION public.scheduled_original_fault() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.kind=1001 THEN RAISE EXCEPTION 'synthetic original admission failure' USING ERRCODE='58000'; END IF; RETURN NEW; END $$; CREATE TRIGGER scheduled_original_fault BEFORE INSERT ON public.events FOR EACH ROW EXECUTE FUNCTION public.scheduled_original_fault()").await.unwrap();
+    await_schedule_due(&f,&native).await;assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),503);
+    let row=f.state.db.client().await.unwrap().query_one("SELECT c.event_id,c.state,EXISTS(SELECT 1 FROM public.events e WHERE e.id=decode(c.event_id,'hex')) FROM platform.protocol_publication_commands c WHERE upload_session_id=$1",&[&native]).await.unwrap();let event=row.get::<_,String>(0);assert_eq!(row.get::<_,String>(1),"prepared");assert!(!row.get::<_,bool>(2));
+    f.state.db.client().await.unwrap().batch_execute("DROP TRIGGER scheduled_original_fault ON public.events; DROP FUNCTION public.scheduled_original_fault()").await.unwrap();
+    let hash=hex::encode(Sha256::digest(replacement_png()));original_get(&f,&hash,reqwest::Method::GET,true,404).await;
+    owner_schedule_retry(&f,&session).await;let failure=weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err();assert_eq!(failure.status.as_u16(),409);assert!(failure.detail.contains("uncertain"),"{}",failure.detail);
+    assert!(!weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap());f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,409).await;
+    f.state.db.client().await.unwrap().execute("UPDATE platform.upload_sessions SET expires_at=clock_timestamp()-interval '1 day' WHERE id=$1",&[&native]).await.unwrap();let before=retained_snapshot(&f,&native).await;assert!(!before["pins"].as_array().unwrap().is_empty());domains::uploads::recover_storage(&f.state).await;assert_eq!(retained_snapshot(&f,&native).await,before);
+    let row=f.state.db.client().await.unwrap().query_one("SELECT c.event_id,c.state,EXISTS(SELECT 1 FROM public.events e WHERE e.id=decode(c.event_id,'hex')) FROM platform.protocol_publication_commands c WHERE upload_session_id=$1",&[&native]).await.unwrap();assert_eq!(row.get::<_,String>(0),event);assert_eq!(row.get::<_,String>(1),"prepared");assert!(!row.get::<_,bool>(2));
+    original_get(&f,&hash,reqwest::Method::HEAD,true,404).await;
+    let open=f.begin(1).await;let files=f.multipart(1,&open,&[("next.png","image/png",&png())],200).await;let mut payload=commit(files["data"].as_array().unwrap());payload["chapterDraft"]["publishAt"]=json!(schedule_time(&f,60).await);f.call(Some(1),"POST",&format!("/api/v1/upload/{open}/commit"),Some(payload),409).await;
+}
+async fn upload_fixture_cover(f:&Fixture,bytes:&[u8],mime:&str,name:&str)->Value {
+    let version=f.state.db.client().await.unwrap().query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&f.native_manga]).await.unwrap().get::<_,i32>(0).to_string();let account=schedule_account(f,"PublicUploadUser1").await;
+    let (content_type,body)=replacement_multipart(&[("expectedVersion",None,None,version.as_bytes()),("expectedAccountId",None,None,account.as_bytes()),("main",None,None,b"true"),("file",Some(name),Some(mime),bytes)]);
+    let path=format!("/api/v1/cover/{}",f.manga);let token=proof(1,11,&format!("{}{path}",f.origin),"POST",&body);
+    let response=f.http.post(format!("{}{path}",f.origin)).header("content-type",content_type).header("authorization",token).body(body).send().await.unwrap();let status=response.status().as_u16();let text=response.text().await.unwrap();assert_eq!(status,201,"{text}");serde_json::from_str(&text).unwrap()
+}
+#[tokio::test]
+#[ignore="requires isolated guarded PostgreSQL database"]
+async fn scheduled_parent_cover_removal_replacement_and_metadata_edit_block() {
+    let f=fixture().await;
+    f.state.db.client().await.unwrap().batch_execute("UPDATE platform.users SET permissions=permissions||'[\"manga.cover.edit\",\"manga.update\",\"manga.title.edit\"]'::jsonb WHERE id='PublicUploadUser1'; UPDATE platform.users SET roles='[\"moderator\"]',permissions=permissions||'[\"cover.delete\"]'::jsonb WHERE id='PublicUploadUser2'").await.unwrap();
+    let cover=upload_fixture_cover(&f,&jpeg(),"image/jpeg","old.jpg").await;let cover_id=cover["data"]["id"].as_str().unwrap();let native_cover=f.native(ResourceKind::Cover,cover_id).await;
+    let (_,native,_,_)=scheduled_upload(&f,&png(),2).await;
+    let row=f.state.db.client().await.unwrap().query_one("SELECT parent_cover_id,retained_bytes,(SELECT sum(o.bytes)::bigint FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=i.session_id) FROM platform.scheduled_uploads i WHERE session_id=$1",&[&native]).await.unwrap();assert_eq!(row.get::<_,String>(0),native_cover);assert!(row.get::<_,i64>(1)>=row.get::<_,i64>(2)+jpeg().len() as i64,"parent cover bytes must be reserved in the scheduled pool");
+    let account=schedule_account(&f,"PublicUploadUser2").await;let path=format!("/api/v1/cover/{cover_id}");let body=serde_json::to_vec(&json!({"version":cover["data"]["attributes"]["version"],"expectedAccountId":account})).unwrap();
+    let response=f.http.delete(format!("{}{path}",f.origin)).header("content-type","application/json").header("authorization",proof(2,11,&format!("{}{path}",f.origin),"DELETE",&body)).body(body).send().await.unwrap();let status=response.status().as_u16();let text=response.text().await.unwrap();assert_eq!(status,204,"{text}");
+    domains::uploads::recover_storage(&f.state).await;await_schedule_due(&f,&native).await;assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),409);
+    // Reservation is not a physical cover reference pin. Removal is allowed by
+    // normal GC, but the saved schedule must block, never select another cover.
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.cover_media WHERE cover_id=$1",&[&native_cover]).await.unwrap().get::<_,i64>(0),0);
+    upload_fixture_cover(&f,&png(),"image/png","first.png").await;let (_,second,_,_)=scheduled_upload(&f,&png(),2).await;
+    upload_fixture_cover(&f,&jpeg(),"image/jpeg","replacement.jpg").await;await_schedule_due(&f,&second).await;assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),409);
+    let (_,third,_,_)=scheduled_upload(&f,&png(),2).await;let version=f.state.db.client().await.unwrap().query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&f.native_manga]).await.unwrap().get::<_,i32>(0);
+    let response=f.http.put(format!("{}/api/manga/{}",f.origin,f.native_manga)).header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").json(&json!({"version":version,"title":"Unrelated real parent metadata edit"})).send().await.unwrap();let status=response.status().as_u16();let text=response.text().await.unwrap();assert_eq!(status,200,"{text}");
+    await_schedule_due(&f,&third).await;assert_eq!(weebdex_platform::public_api::scheduled_uploads::run_due(&f.state).await.unwrap_err().status.as_u16(),409);
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.scheduled_uploads WHERE state='blocked' AND started_at IS NULL",&[]).await.unwrap().get::<_,i64>(0),3);
+}
+
+#[path="support/account_closure_schedules.rs"]
+mod account_closure_schedules;
+
+// Authored local-edit controls. Execution requires the existing isolated fixture
+// guard; these are not evidence of a run merely because this source is present.
+#[tokio::test]
+#[ignore="requires isolated guarded PostgreSQL database"]
+async fn signed_local_page_edit_modes_preserve_originals_until_atomic_commit() {
+    let f=fixture().await;let (chapter,old)=local_chapter(&f,"LocalEdit1","PublicUploadUser1").await;
+    let account=schedule_account(&f,"PublicUploadUser1").await;
+    // SQL projection wins over imported, attacker-controlled metadata and is not
+    // a publicly writable authority field.
+    f.state.db.client().await.unwrap().execute("UPDATE platform.catalog_chapters SET metadata=metadata || '{\"_local_page_source_mutable\":false,\"localPageSource\":\"protocol\",\"nostr\":{\"eventId\":\"forged\"}}'::jsonb WHERE id='LocalEdit1'",&[]).await.unwrap();
+    let detail=f.call(None,"GET",&format!("/api/v1/chapter/{chapter}"),None,200).await;
+    assert_eq!(detail["data"]["attributes"]["localPageSource"],"local");
+    f.call(Some(1),"PUT",&format!("/api/v1/chapter/{chapter}"),Some(json!({"version":1,"localPageSource":"local","expectedAccountId":account})),400).await;
+    for replace in [None,Some(false),Some(true)] {
+        let mut payload=json!({"version":1,"expectedAccountId":account});if let Some(replace)=replace{payload["replace"]=json!(replace);}
+        let opened=f.call(Some(1),"POST",&format!("/api/v1/upload/begin/{chapter}"),Some(payload),200).await;
+        assert_eq!(opened["attributes"]["edit"],json!({"chapterId":chapter,"version":1,"replace":replace.unwrap_or(false)}));
+        let session=opened["id"].as_str().unwrap();let snapshot=f.call(Some(1),"GET",&format!("/api/v1/nostr/uploads/{session}"),None,200).await;
+        assert_eq!(snapshot["session"]["chapterId"],chapter);assert_eq!(snapshot["session"]["editVersion"],1);
+        assert_eq!(snapshot["session"]["files"].as_array().unwrap().len(),if replace==Some(true){0}else{1});
+        if replace!=Some(true){signed_preview(&f,1,snapshot["session"]["files"][0]["previewUrl"].as_str().unwrap(),&png()).await;}
+        assert_eq!(media_response(&f,&chapter,&old,200).await,png());
+        f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}?expectedAccountId={account}"),None,200).await;
+        assert_eq!(media_response(&f,&chapter,&old,200).await,png());
+    }
+    // Native cookie route exercises the same core, while its transport remains
+    // distinct from signed public admission.
+    for replace in [false,true] {
+        let response=f.http.post(format!("{}/api/upload/begin/LocalEdit1",f.origin)).header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie").json(&json!({"version":1,"replace":replace})).send().await.unwrap();assert_eq!(response.status().as_u16(),201);
+        let body:Value=response.json().await.unwrap();let native=body["id"].as_str().unwrap();
+        let session=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::UploadSession,native).await.unwrap().unwrap().to_string();
+        let snapshot=f.call(Some(1),"GET",&format!("/api/v1/nostr/uploads/{session}"),None,200).await;
+        assert_eq!(snapshot["session"]["editVersion"],1);assert_eq!(snapshot["session"]["files"].as_array().unwrap().len(),if replace{0}else{1});
+        f.call(Some(1),"DELETE",&format!("/api/v1/upload/{session}"),None,200).await;
+    }
+    for (key,version,status) in [(1,2,409),(2,1,403),(4,1,403)] {f.call(Some(key),"POST",&format!("/api/v1/upload/begin/{chapter}"),Some(json!({"version":version,"replace":true})),status).await;}
+    for replace in [Value::Null,json!("true"),json!(1),json!({})] {f.call(Some(1),"POST",&format!("/api/v1/upload/begin/{chapter}"),Some(json!({"version":1,"replace":replace})),400).await;}
+    assert_eq!(media_response(&f,&chapter,&old,200).await,png());
+    let opened=f.call(Some(1),"POST",&format!("/api/v1/upload/begin/{chapter}"),Some(json!({"version":1,"replace":true,"expectedAccountId":account})),200).await;
+    let session=opened["id"].as_str().unwrap();let bytes=replacement_png();let files=f.multipart(1,session,&[("replacement.png","image/png",&bytes)],200).await;
+    assert_eq!(media_response(&f,&chapter,&old,200).await,png());
+    let permissions:Value=f.state.db.client().await.unwrap().query_one("SELECT permissions FROM platform.users WHERE id='PublicUploadUser1'",&[]).await.unwrap().get(0);
+    f.state.db.client().await.unwrap().execute("UPDATE platform.users SET permissions='[]'::jsonb WHERE id='PublicUploadUser1'",&[]).await.unwrap();
+    f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(commit(files["data"].as_array().unwrap())),403).await;
+    assert_eq!(media_response(&f,&chapter,&old,200).await,png());
+    f.state.db.client().await.unwrap().execute("UPDATE platform.users SET permissions=$1 WHERE id='PublicUploadUser1'",&[&permissions]).await.unwrap();
+    let committed=f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(commit(files["data"].as_array().unwrap())),200).await;
+    assert_eq!(committed["id"],chapter);assert_eq!(committed["attributes"]["version"],2);
+    let native_file=f.native(ResourceKind::UploadFile,files["data"][0]["id"].as_str().unwrap()).await;
+    assert_eq!(media_response(&f,&chapter,&format!("{native_file}.png"),200).await,bytes);
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+}
+
+#[tokio::test]
+#[ignore="requires isolated guarded PostgreSQL database and existing STRFRY_BIN"]
+async fn signed_original_page_edits_refuse_both_modes_despite_forged_local_metadata() {
+    let f=fixture_full(Config::default(),true,true).await;let session=f.begin(1).await;
+    let files=f.multipart(1,&session,&[("original.png","image/png",&png())],200).await;
+    let receipt=f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(commit(files["data"].as_array().unwrap())),200).await;
+    let chapter=receipt["id"].as_str().unwrap();let native=f.native(ResourceKind::Chapter,chapter).await;
+    let db=f.state.db.client().await.unwrap();let before:Value=db.query_one("SELECT to_jsonb(c) FROM platform.catalog_chapters c WHERE id=$1",&[&native]).await.unwrap().get(0);
+    assert!(before["protocol_event_id"].is_string());
+    db.execute("UPDATE platform.catalog_chapters SET metadata=metadata || '{\"_local_page_source_mutable\":true,\"localPageSource\":\"local\"}'::jsonb WHERE id=$1",&[&native]).await.unwrap();drop(db);
+    let detail=f.call(None,"GET",&format!("/api/v1/chapter/{chapter}"),None,200).await;assert_eq!(detail["data"]["attributes"]["localPageSource"],"protocol");
+    let version=detail["data"]["attributes"]["version"].as_i64().unwrap();
+    for replace in [false,true] {f.call(Some(1),"POST",&format!("/api/v1/upload/begin/{chapter}"),Some(json!({"version":version,"replace":replace})),409).await;}
+    let after:Value=f.state.db.client().await.unwrap().query_one("SELECT to_jsonb(c) FROM platform.catalog_chapters c WHERE id=$1",&[&native]).await.unwrap().get(0);
+    for key in ["protocol_event_id","version","data","updated_at"]{assert_eq!(after[key],before[key]);}
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.upload_sessions WHERE state='open'",&[]).await.unwrap().get::<_,i64>(0),0);
 }

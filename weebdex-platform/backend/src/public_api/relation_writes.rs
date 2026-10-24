@@ -23,7 +23,7 @@ pub fn router()->Router<AppState>{Router::new()
     .route("/manga/draft/{p0}/relation",get(editing_relations).layer(axum::middleware::from_fn(private_page_headers)))
     .route("/nostr/manga/{p0}/relations",get(editing_relations).layer(axum::middleware::from_fn(private_page_headers)))}
 async fn resource(tx:&Transaction<'_>,owner:&str,related:&str,version:i32)->PublicApiResult<Resource>{
-    let row=tx.query_opt("SELECT r.relation_type,platform.catalog_manga_json(m.id) FROM platform.catalog_relations r JOIN platform.catalog_manga m ON m.id=r.related_id WHERE r.manga_id=$1 AND r.related_id=$2 AND m.state='published' AND m.deleted_at IS NULL AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)",&[&owner,&related]).await?.ok_or_else(PublicApiError::not_found)?;
+    let row=tx.query_opt("SELECT r.relation_type,platform.catalog_public_manga_json(m.id) FROM platform.catalog_relations r JOIN platform.catalog_manga m ON m.id=r.related_id WHERE r.manga_id=$1 AND r.related_id=$2 AND m.state='published' AND m.deleted_at IS NULL AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)",&[&owner,&related]).await?.ok_or_else(PublicApiError::not_found)?;
     let target:Value=row.get::<_,Option<Value>>(1).ok_or_else(PublicApiError::unavailable)?;
     let aliases=AliasIndex::load_in(tx,&[(ResourceKind::Manga,target.clone())]).await?;
     let target=aliases.resource(ResourceKind::Manga,&target,&BTreeSet::new())?;
@@ -102,7 +102,7 @@ async fn editing_relations(State(state):State<AppState>,Path(owner):Path<String>
     let snapshot=relation_paging::snapshot(&owner,version,persisted as u64,&edges)?;page.check(version,&snapshot)?;
     let selected=rows.iter().skip(page.offset as usize).take(page.limit as usize).collect::<Vec<_>>();
     let targets=selected.iter().map(|r|r.get::<_,String>(2)).collect::<Vec<_>>();let mut projected=std::collections::BTreeMap::<String,Value>::new();
-    if !targets.is_empty(){for r in tx.query("SELECT id,platform.catalog_manga_json(id) FROM platform.catalog_manga WHERE id=ANY($1::text[]) AND state='published' AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)",&[&targets]).await?{projected.insert(r.get(0),r.get::<_,Option<Value>>(1).ok_or_else(PublicApiError::unavailable)?);}}
+    if !targets.is_empty(){for r in tx.query("SELECT id,platform.catalog_public_manga_json(id) FROM platform.catalog_manga WHERE id=ANY($1::text[]) AND state='published' AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)",&[&targets]).await?{projected.insert(r.get(0),r.get::<_,Option<Value>>(1).ok_or_else(PublicApiError::unavailable)?);}}
     let values=targets.iter().map(|id|projected.remove(id).ok_or_else(PublicApiError::unavailable)).collect::<PublicApiResult<Vec<_>>>()?;
     let resources=values.iter().cloned().map(|v|(ResourceKind::Manga,v)).collect::<Vec<_>>();let aliases=AliasIndex::load_in(&tx,&resources).await?;let owner_id=preferred(&tx,ResourceKind::Manga,&owner).await?;
     let data=selected.iter().zip(values.iter()).map(|(row,value)|{let target=aliases.resource(ResourceKind::Manga,value,&BTreeSet::new())?;Ok(Resource{id:PublicUuid::parse(row.get::<_,Option<&str>>(0).ok_or_else(PublicApiError::unavailable)?)?,resource_type:ResourceType::MangaRelation,

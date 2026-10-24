@@ -1,7 +1,7 @@
 //! Exact signed, account-bound instance cover operations. Originals are stored
 //! byte-for-byte; no derivative encoder or original event rewrite is invoked.
 use super::{PublicApiError, PublicApiResult, PublicUuid, ResourceKind, auth::{bound_account_read,bound_account_write,BoundAccountRead},
-    catalogue_dto::AliasIndex,dto::{CollectionResponse,EntityResponse,Resource}, uploads::{authorize,no_query,resolve}};
+    catalogue_dto::AliasIndex,dto::{EntityResponse,Resource}, uploads::{authorize,no_query,resolve}};
 use crate::{AppState,domains::{catalog::{CatalogRepository,CoverPublication,entity_mutations::CatalogMutationActor,repository,validation as v},uploads::{media,sessions,storage}}};
 use axum::{Json,Router,extract::{DefaultBodyLimit,Multipart,OriginalUri,Path,Request,State,multipart::Field},http::{HeaderMap,StatusCode},middleware,response::Response,routing::{get,post}};
 use serde_json::{Value,json};
@@ -26,8 +26,23 @@ fn metadata(fields:Value,version:Option<i32>)->PublicApiResult<Value>{
     v::allowed(&fields,&["locale","volume","description","main"])?;
     let mut output=json!({});
     if let Some(version)=version{output["version"]=json!(version);}
-    for key in ["volume","description"]{if let Some(value)=fields.get(key){if value.is_null()&&key=="volume"{output[key]=json!("");}else{output[key]=value.clone();}if let Some(text)=v::string(&output,key,if key=="volume"{32}else{50_000},false)?{output[key]=json!(text);}}}
-    if let Some(language)=fields.get("locale"){let language=language.as_str().ok_or_else(||PublicApiError::bad_request("Invalid cover locale"))?;v::language(language)?;output["language"]=json!(language);}
+    for key in ["volume","description"] {
+        if let Some(value)=fields.get(key) {
+            // Volume retains its existing empty-string storage convention;
+            // description is genuinely nullable and must remain an explicit clear.
+            output[key]=if value.is_null() && key=="volume" { json!("") } else { value.clone() };
+            if let Some(Some(text))=v::nullable_string(&output,key,if key=="volume"{32}else{50_000})? {
+                output[key]=json!(text);
+            }
+        }
+    }
+    if let Some(language)=fields.get("locale") {
+        if language.is_null() { output["language"]=Value::Null; }
+        else {
+            let language=language.as_str().ok_or_else(||PublicApiError::bad_request("Invalid cover locale"))?;
+            v::public_language(language)?;output["language"]=json!(language);
+        }
+    }
     if let Some(main)=fields.get("main"){if !main.is_boolean(){return Err(PublicApiError::bad_request("Invalid main cover flag"));}output["main"]=main.clone();}
     Ok(output)
 }
@@ -75,7 +90,7 @@ async fn upload(State(state):State<AppState>,Path(manga):Path<String>,OriginalUr
     let mut client=state.db.client().await?;let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;account_intent(&tx,&actor,&expected_account).await?;if actor.user_id()!=initial_actor{return Err(PublicApiError::conflict("Cover account changed during image intake"));}let manga=resolve(&tx,ResourceKind::Manga,&manga).await?;parent_version(&tx,&manga,&actor,expected).await?;
     let id=storage::short_id();let cover=CoverPublication{id:id.clone(),manga_id:manga,uploader_id:actor.user_id().into(),uploader_name:actor.username().into(),ext:image.ext.into(),dimensions:[image.width,image.height],volume:fields["volume"].as_str().unwrap_or("").into(),language:fields["language"].as_str().unwrap_or("en").into(),description:fields["description"].as_str().map(str::to_owned),main:fields["main"].as_bool().unwrap_or(false)};
-    CatalogRepository::publish_cover(&tx,&cover).await?;
+    CatalogRepository::publish_cover_for(&tx,&cover,v::LanguageContract::Public).await?;
     let object=sessions::insert_object(&tx,&image).await?;tx.execute("INSERT INTO platform.cover_media(cover_id,variant,object_id) VALUES($1,'original',$2)",&[&id,&object]).await?;
     let result=resource(&tx,value(&tx,&id).await?).await?;
     image.protect_commit(&state.config.uploads_dir).await?;tx.commit().await?;image.confirm_persisted().await;
@@ -102,12 +117,35 @@ async fn read_parent(tx:&Transaction<'_>,actor:&BoundAccountRead,manga:&str)->Pu
     let row=tx.query_opt("SELECT state,owner_id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)",&[&manga]).await?.ok_or_else(PublicApiError::not_found)?;
     if row.get::<_,String>(0)!="published" && !(row.get::<_,String>(1)==actor.user_id()&&actor.has_perm("manga.create")||actor.is_moderator()&&actor.has_perm("manga.cover.edit")){return Err(PublicApiError::not_found());}Ok(())
 }
-async fn list(State(state):State<AppState>,Path(manga):Path<String>,OriginalUri(uri):OriginalUri,headers:HeaderMap,request:Request)->PublicApiResult<Json<CollectionResponse<Resource>>>{
-    let manga=PublicUuid::parse(&manga)?;let (cap,_)=authorize(&state,&uri,&headers,request,1,true).await?;let mut client=state.db.client().await?;let tx=client.build_transaction().isolation_level(tokio_postgres::IsolationLevel::RepeatableRead).start().await?;let actor=bound_account_read(&tx,&cap).await?;let manga=resolve(&tx,ResourceKind::Manga,&manga).await?;read_parent(&tx,&actor,&manga).await?;
-    let rows=tx.query("SELECT id FROM platform.catalog_covers WHERE manga_id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) ORDER BY created_at DESC,id LIMIT 100",&[&manga]).await?;
+// The private signed route keeps the pinned cover collection's limit/offset
+// shape. It is not the public /cover filter API: the path fixes the one parent.
+// No title-wide or 10,000-row history cap is imposed. Integer bounds are the
+// exact JSON/JavaScript integer range, not an upstream catalogue policy.
+const MAX_COVER_OFFSET: usize = 9_007_199_254_740_991;
+fn list_query(uri: &axum::http::Uri) -> PublicApiResult<(u32, i64, Option<PublicUuid>)> {
+    let query = super::query::PublicQuery::parse_unchecked(uri.query())?;
+    query.require_allowed(&["limit", "offset", "expectedAccountId"])?;
+    let limit = query.bounded_usize("limit", 100, 0, 100)? as u32;
+    let offset = query.bounded_usize("offset", 0, 0, MAX_COVER_OFFSET)? as i64;
+    Ok((limit, offset, query.uuid("expectedAccountId")?))
+}
+async fn list(State(state):State<AppState>,Path(manga):Path<String>,OriginalUri(uri):OriginalUri,headers:HeaderMap,request:Request)->PublicApiResult<Json<Value>>{
+    let manga=PublicUuid::parse(&manga)?;let (limit,offset,expected_account)=list_query(&uri)?;
+    // Authorize the complete URL, including its exact page/account intent. Other
+    // upload and cover mutation endpoints retain their no-query restriction.
+    let (cap,_)=super::uploads::authorize_body(&state,&uri,&headers,request,1,true).await?;
+    let mut client=state.db.client().await?;let tx=client.build_transaction().isolation_level(tokio_postgres::IsolationLevel::RepeatableRead).start().await?;
+    let actor=bound_account_read(&tx,&cap).await?;
+    if let Some(expected)=expected_account {
+        if super::uploads::preferred(&tx,ResourceKind::User,actor.user_id()).await?!=expected {
+            return Err(PublicApiError::conflict("Cover account changed; reopen this editor"));
+        }
+    }
+    let manga=resolve(&tx,ResourceKind::Manga,&manga).await?;read_parent(&tx,&actor,&manga).await?;
+    let rows=tx.query("SELECT id FROM platform.catalog_covers WHERE manga_id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) ORDER BY created_at DESC,id LIMIT $2 OFFSET $3",&[&manga,&i64::from(limit),&offset]).await?;
     let total:i64=tx.query_one("SELECT count(*) FROM platform.catalog_covers WHERE manga_id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id)",&[&manga]).await?.get(0);
     let mut data=Vec::new();for row in rows{data.push(resource(&tx,value(&tx,row.get(0)).await?).await?);}
-    let response=CollectionResponse::new(data,100,0,total as u64);tx.commit().await?;Ok(Json(response))
+    let response=json!({"result":"ok","response":"collection","data":data,"limit":limit,"offset":offset,"total":total});tx.commit().await?;Ok(Json(response))
 }
 async fn original(State(state):State<AppState>,Path(cover):Path<String>,OriginalUri(uri):OriginalUri,headers:HeaderMap,request:Request)->PublicApiResult<Response>{
     let cover=PublicUuid::parse(&cover)?;let (cap,_)=authorize(&state,&uri,&headers,request,1,true).await?;let mut client=state.db.client().await?;let tx=client.transaction().await?;let actor=bound_account_read(&tx,&cap).await?;let cover=resolve(&tx,ResourceKind::Cover,&cover).await?;let native=value(&tx,&cover).await?;let parent=native["_manga_id"].as_str().ok_or_else(PublicApiError::unavailable)?;read_parent(&tx,&actor,parent).await?;
@@ -115,3 +153,42 @@ async fn original(State(state):State<AppState>,Path(cover):Path<String>,Original
     let response=media::signed_upload_preview(&state,&row,&headers).await?;tx.commit().await?;Ok(response)
 }
 #[cfg(test)]mod tests{use super::*;#[test]fn cover_metadata_is_explicit_and_file_identity_never_changes(){assert_eq!(metadata(json!({"locale":"ja","volume":null,"main":true}),Some(3)).unwrap(),json!({"language":"ja","volume":"","main":true,"version":3}));for input in[json!({"fileName":"injected.png"}),json!({"locale":"?"}),json!({"main":"true"}),json!({"dimensions":[1,2]}),json!({"description":"bad\0"})]{assert!(metadata(input,Some(1)).is_err());}}}
+
+#[cfg(test)]
+mod nullable_tests {
+    use super::*;
+    #[test]
+    fn nullable_cover_edits_preserve_null_and_omission() {
+        assert_eq!(metadata(json!({}),Some(1)).unwrap(),json!({"version":1}));
+        assert_eq!(metadata(json!({"description":null,"locale":null,"volume":null}),Some(1)).unwrap(),
+            json!({"version":1,"description":null,"language":null,"volume":""}));
+        assert_eq!(metadata(json!({"description":"  text  ","locale":"ja"}),Some(2)).unwrap(),
+            json!({"version":2,"description":"text","language":"ja"}));
+        for field in ["description","locale"] {
+            for value in [json!(1),json!(true),json!([]),json!({}),json!("bad\0")] {
+                assert!(metadata(json!({field:value}),Some(1)).is_err());
+            }
+        }
+        assert!(metadata(json!({"locale":""}),Some(1)).is_err());
+        assert!(metadata(json!({"main":null}),Some(1)).is_err());
+    }
+}
+
+#[cfg(test)]
+mod pagination_tests {
+    use super::*;
+    fn parse(query: &str) -> PublicApiResult<(u32, i64, Option<PublicUuid>)> {
+        list_query(&format!("/nostr/manga/fixture/covers{query}").parse().unwrap())
+    }
+    #[test]
+    fn cover_pages_are_bounded_without_a_title_history_cap() {
+        assert_eq!(parse("").unwrap(), (100, 0, None));
+        assert_eq!(parse("?limit=0&offset=10100").unwrap(), (0, 10100, None));
+        assert_eq!(parse("?limit=100&offset=4294967296").unwrap(), (100, 4294967296, None));
+        assert_eq!(parse("?offset=9007199254740991").unwrap().1, 9007199254740991);
+        assert!(parse("?expectedAccountId=11111111-1111-8111-8111-111111111111").unwrap().2.is_some());
+        for query in ["?limit=101", "?limit=-1", "?limit=1.5", "?limit=1&limit=2", "?offset=-1", "?offset=1.5", "?offset=9007199254740992", "?offset=0&offset=1", "?manga[]=11111111-1111-8111-8111-111111111111", "?expectedAccountId=wrong", "?unexpected=true", "?limit[]=2"] {
+            assert!(parse(query).is_err(), "accepted {query}");
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "badge-real-framework-fixture",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "dependencies": {
+    "@lucide/svelte": "0.561.0",
+    "bits-ui": "2.16.5",
+    "svelte": "5.55.1",
+    "svelte-sonner": "1.1.0"
+  }
+}

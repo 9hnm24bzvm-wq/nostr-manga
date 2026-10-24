@@ -95,16 +95,16 @@ for (const value of [null, [], {}, { id: 'wrong' }, { id: 'a'.repeat(64), projec
 
 function script(relative, exports, supplied = {}) {
   const code = [...compose(relative).matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(match => match[1]).join('\n').replace(/^\s*import[^;]+;\s*$/gm, '').replace(/^\s*export\s+/gm, '');
-  const effects = [], mounts = [], state = Object.assign(value => value, { snapshot: structuredClone });
+  const effects = [], preEffects = [], mounts = [], state = Object.assign(value => value, { snapshot: structuredClone });
   const sandbox = vm.createContext({ console, URLSearchParams, URL, TextEncoder, Uint8Array, ArrayBuffer, structuredClone, Promise,
     Constants: { Manga, MangaFollow, Error: ErrorNamespace }, ...query, ...prompt,
-    $bindable: value => value, $state: state, $derived: value => value, $props: () => ({ feed: undefined, isShowFilter: true }), $effect: callback => effects.push(callback), onMount: callback => mounts.push(callback), onDestroy() {},
-    $mangaView: 'grid', $prefs: { items_per_page: '20', show_safe: true, languages: [], tags: [] },
+    $bindable: value => value, $state: state, $derived: value => value, $props: () => ({ feed: undefined, isShowFilter: true }), $effect: Object.assign(callback => effects.push(callback), { pre: callback => preEffects.push(callback) }), onMount: callback => mounts.push(callback), onDestroy() {},
+    $libraryViewKey: 'owner-a:0', $mangaView: 'grid', $prefs: { items_per_page: '20', show_safe: true, languages: [], tags: [] },
     window: { location: { pathname: '/search', search: '', href: 'http://localhost/search' }, clearTimeout() {}, setTimeout: () => 1 }, ...supplied,
   });
   const transformed = stripTypeScriptTypes(code, { mode: 'transform' });
   const expose = Object.entries(exports).map(([key, expression]) => key + ': ' + expression).join(',');
-  const api = vm.runInContext('(function(){' + transformed + '\nreturn {' + expose + '};})()', sandbox); return { api, effects, mounts, sandbox };
+  const api = vm.runInContext('(function(){' + transformed + '\nreturn {' + expose + '};})()', sandbox); return { api, effects, preEffects, mounts, sandbox };
 }
 check('actual filter query apply normalizes false, zero, and tag modes', () => {
   let navigated;
@@ -152,6 +152,27 @@ for (const [library, input, expected] of [
   const route = script('src/routes/(app)' + pathname + '/+page.svelte', { read: 'onSearch' }, { window, prefs: { applyMangaPreferences }, API: { Manga: { Search: request }, MangaFollow: { Search: request } }, StatusCodes: { OK: 200, TOO_MANY_REQUESTS: 429 }, page: { state: {} }, replaceState() {} });
   await route.api.read();
   check('actual initial read canonicalizes before preferences ' + pathname + input, () => { for (const [key, value] of Object.entries(expected)) { assert.deepEqual(issued.getAll(key), [value]); assert.equal(issued.has(key + '[]'), false); } });
+}
+{
+  let pending, reads = 0;
+  const window = { location: { pathname: '/library', search: '', href: 'http://localhost/library' } };
+  const route = script('src/routes/(app)/library/+page.svelte', { read: 'onSearch', current: '() => feed' }, {
+    window, prefs: { applyMangaPreferences }, API: { MangaFollow: { Search: async () => {
+      reads++; if(reads === 1)return { status: 200, body: { data: ['owner-a'] } };
+      return new Promise(resolve => { pending = resolve; });
+    } } }, StatusCodes: { OK: 200, TOO_MANY_REQUESTS: 429 }, page: { state: {} }, replaceState() {},
+  });
+  await route.api.read();
+  check('actual library pre-effect clears previous owner feed before replacement read', () => {
+    assert.deepEqual(clean(route.api.current()), { data: ['owner-a'] });
+    assert.equal(route.preEffects.length, 1);assert.equal(route.effects.length, 0);
+    route.sandbox.$libraryViewKey = 'owner-b:1';route.preEffects[0]();
+    assert.equal(route.api.current(), undefined);assert.equal(reads, 1);
+  });
+  const reading = route.api.read();
+  check('new library read cannot restore old feed while pending', () => { assert.equal(route.api.current(), undefined);assert.equal(reads, 2); });
+  pending({ status: 200, body: { data: ['owner-b'] } });await reading;
+  check('settled replacement is the new owner feed', () => { assert.deepEqual(clean(route.api.current()), { data: ['owner-b'] }); });
 }
 for (const input of ['?page=0','?page=1000001','?page=1&page[]=2','?page=bad','?tlang=bad','?manga=bad!','?group[]=bad!','?name=x&name[]=y','?rank=x&rank=y','?time=x&time=y','?draft=x&draft=y']) {
   const window = { location: { pathname: '/search', search: input, href: 'http://localhost/search' + input } };

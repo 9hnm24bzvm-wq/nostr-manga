@@ -99,7 +99,7 @@ async fn relation_page(state: AppState, public: &str, raw: Option<&str>) -> Publ
     let mut projected = BTreeMap::<String,Value>::new();
     if includes.contains("manga") && !selected.is_empty() {
         let targets = selected.iter().map(|row| row.get::<_,String>(2)).collect::<Vec<_>>();
-        for row in tx.query("SELECT id,platform.catalog_manga_json(id) FROM platform.catalog_manga WHERE id=ANY($1::text[])", &[&targets]).await? {
+        for row in tx.query("SELECT id,platform.catalog_public_manga_json(id) FROM platform.catalog_manga WHERE id=ANY($1::text[])", &[&targets]).await? {
             projected.insert(row.get(0), row.get::<_,Option<Value>>(1).ok_or_else(PublicApiError::unavailable)?);
         }
     }
@@ -187,7 +187,7 @@ async fn edges(
         )
     };
     let rows = client.query(
-        &format!("SELECT platform.public_manga_edge_key(edge.manga_id,edge.{target}),{attributes},platform.catalog_manga_json(m.id),count(*) OVER() FROM {table} edge JOIN platform.catalog_manga root ON root.id=edge.manga_id JOIN platform.catalog_manga m ON m.id=edge.{target} WHERE {} ORDER BY {order} LIMIT {limit}", sql.predicate()),
+        &format!("SELECT platform.public_manga_edge_key(edge.manga_id,edge.{target}),{attributes},platform.catalog_public_manga_json(m.id),count(*) OVER() FROM {table} edge JOIN platform.catalog_manga root ON root.id=edge.manga_id JOIN platform.catalog_manga m ON m.id=edge.{target} WHERE {} ORDER BY {order} LIMIT {limit}", sql.predicate()),
         &sql.params(),
     ).await?;
     drop(client);

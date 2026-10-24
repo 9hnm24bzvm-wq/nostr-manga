@@ -1,7 +1,8 @@
 import {assertCataloguePreviewLibraryReady} from '../public-api/library-staging';
 import { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isCurrentCatalogueId, isAccountMode, updateChapters, params, assertCatalogueScope, openLibrary, captureLibraryContext, assertLibraryContext } from './library';
 import { HTTPError } from '$lib/HTTP';
-import { filteredCatalog, pageRows, compareValue } from './catalog';
+import { openDeviceHistoryFeed } from './history-feed';
+export { openDeviceHistoryFeed } from './history-feed';
 export interface UpdateChapterHistoryBatchRequest { read_ids?: string[]; unread_ids?: string[] }
 async function localHistory(ids?: string[]) {
   await assertCatalogueScope();
@@ -23,12 +24,14 @@ export async function List(mangaId: string) { assertCataloguePreviewLibraryReady
 export async function Feed(searchParams: URLSearchParams) { assertCataloguePreviewLibraryReady();
   const q = params(searchParams), account = await isAccountMode(), view = captureLibraryView();
   if (account) { const body = await apiRead<MappedChapterHistoryFeedResponse>('/user/history/manga/feed', q, true); assertLibraryView(view); return { status: 200, body }; }
-  const snapshot = await currentDeviceSnapshot(), history = new Map(snapshot.records.filter(row => row.family === 'chapters' && isCurrentCatalogueId(row.id) && isCurrentCatalogueId(row.mangaId) && row.completed).map(row => [row.id!, row]));
-  const rows = await filteredCatalog<Chapter>('/chapter/feed', 'id', [...history.keys()], q);
-  const chapters: ChapterHistory[] = rows.filter(row => history.has(row.id)).map(row => ({ ...row, read_at: history.get(row.id)!.readAt ?? new Date(history.get(row.id)!.updated_at * 1000).toISOString() }));
-  const direction = q.get('order') === 'asc' ? 1 : -1;
-  chapters.sort((a, b) => direction * compareValue(a.read_at, b.read_at) || compareValue(a.id, b.id));
-  assertLibraryView(view); return { status: 200, body: { ...pageRows(chapters, q), map: { manga: Object.fromEntries(chapters.map(row => [row.relationships.manga.id, row.relationships.manga])) } } };
+  // The generic feed requires an exact numeric total. Device history's mounted
+  // continuation owner uses openDeviceHistoryFeed instead of inventing that total.
+  const pager = await openDeviceHistoryFeed(q);
+  try {
+    const page = await pager.load(Number(q.get('page') ?? 1)); assertLibraryView(view);
+    if (page.total === null) throw new HTTPError(409, 'This device history requires bounded continuation. Open My History and use Continue loading or Continue scanning.', 'History continuation required');
+    return { status: 200, body: { total: page.total, page: page.page, limit: page.limit, data: page.data, map: { manga: Object.fromEntries(page.data.map(row => [row.relationships.manga.id, row.relationships.manga])) } } };
+  } finally { pager.dispose(); }
 }
 export async function UpdateBatch(mangaId: string, payload: UpdateChapterHistoryBatchRequest, admitted?: { context: ReturnType<typeof captureLibraryContext>; assert(): void }) { assertCataloguePreviewLibraryReady();
   admitted?.assert(); await openLibrary(); admitted?.assert();

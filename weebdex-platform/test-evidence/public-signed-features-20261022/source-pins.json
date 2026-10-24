@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "scope": "prospective-public-signed-features-v1",
+  "browser_executed": false,
+  "hosted_executed": false,
+  "sources": [
+    {
+      "path": ".github/workflows/hosted-browser-e2e.yml",
+      "bytes": 8661,
+      "sha256": "76d40e0370cdb7c5fb57ae9b4380c39252ff820c1ff2d3dc0a6f0c15fca1d135"
+    },
+    {
+      "path": "weebdex-platform/backend/examples/browser_fixture/signed_features.rs",
+      "bytes": 19891,
+      "sha256": "1249a29b58fca471e20c6462c0e6f8589e479a044dc1a5c5e2a1b42a0dd84ba0"
+    },
+    {
+      "path": "weebdex-platform/backend/examples/browser_fixture_provisioner.rs",
+      "bytes": 62305,
+      "sha256": "14993d09d5a3bf8d772a01b6f6f58b762358ed98c387666892ff4025d2cac944"
+    },
+    {
+      "path": "weebdex-platform/docs/PROTOCOL_SIGNED_FEATURE_FIXTURE.md",
+      "bytes": 5040,
+      "sha256": "b483e5e0eeec5609c65f61b4062f73b3c99e9e3d2835865b32706c35ad5e0af7"
+    },
+    {
+      "path": "weebdex-platform/docs/verification/public-signed-feature-qualification.md",
+      "bytes": 7622,
+      "sha256": "c04566557382a107dd0d69042b46352f9f2e11a7470bda9a5ed0f1442ff34d83"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/lib/components/ChapterListEntry.svelte",
+      "bytes": 7813,
+      "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/lib/components/ReportDialog.svelte",
+      "bytes": 8038,
+      "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/drafts/+layout.svelte",
+      "bytes": 205,
+      "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/drafts/title/+page.svelte",
+      "bytes": 3031,
+      "sha256": "495a4e72a3c9098d6b67f9dbb0cdbb01bf3692bb2849430f2547cad02fda22fd"
+    },
+    {
+      "path": "weebdex-platform/frontend/src/routes/(app)/title/MangaActions.svelte",
+      "bytes": 12126,
+      "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-overlays.mjs",
+      "bytes": 510676,
+      "sha256": "9afd0fb8e3ab74ba093ec036a245dc67f711fbaaf62d01a28310a4d300f7513b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs",
+      "bytes": 8812,
+      "sha256": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-reconstruction/reports/signed/+page.svelte",
+      "bytes": 132,
+      "sha256": "ebb0c0df170583955082b0db30edbebcada7add77b6a973ee1dc4fc124be0c2f"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/overlays.mjs",
+      "bytes": 132323,
+      "sha256": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte",
+      "bytes": 10302,
+      "sha256": "e4f1c783774682001b814d1a6ccf59041e193ab15590c9f3c4d51459703e58fd"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicDraftEntry.svelte",
+      "bytes": 6928,
+      "sha256": "5caf31f8ddfba045db402a057963a80381f5693af939cb1d5e55d0dfc4607bc6"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicDraftFilter.svelte",
+      "bytes": 2984,
+      "sha256": "53d4426c38261169a57112134f2d4ff8a47253de78677dd5f112351377bbc0a3"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicDraftRouteGate.svelte",
+      "bytes": 366,
+      "sha256": "2c03478c4c8f73b4390f5772f1217c52d97cb06062f56d74799cb522fa308a5d"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicDraftSearch.svelte",
+      "bytes": 3423,
+      "sha256": "57c222606f34196578c9b68a46540a46d94cb47c4b6e570bda16ff187b92d09b"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicReportForm.svelte",
+      "bytes": 6101,
+      "sha256": "c56ae9dc6ebeaa6196574d119974dc2e9dd77d6cff8c03805f56fbd346580e10"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicReportInspection.svelte",
+      "bytes": 6391,
+      "sha256": "65077cdb4c90d8a06320ba801f477c015d277bf65344c0363765d40cbd05469d"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/draft-client.ts",
+      "bytes": 5039,
+      "sha256": "d852ad6025010a4b18a24f80e0a86facc4a96990b79388caf327cf08b88fb8ec"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+      "bytes": 10784,
+      "sha256": "5d5eaeedfd462822091252b42b898ddd655a4534549e9b04a4d358be53e92bf0"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/report-client.ts",
+      "bytes": 4904,
+      "sha256": "3ff76fb6b972991bd73cb56c6fa67669c0ea3ea802193149d9a64d4c032a10d1"
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/public-api/report-inspection.ts",
+      "bytes": 7046,
+      "sha256": "8548e94e5ab1f807fabd746bc37a5ee01bc2ee3040a72696b23dc9d6ec8babcf"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-acceptance.mjs",
+      "bytes": 17528,
+      "sha256": "91db64c842e8c3093568935f6ee6a01dc20fdd23a448618d7916b5e5c5e7cb3e"
+    },
+    {
+      "path": "weebdex-platform/scripts/browser-signed-event-envelope.mjs",
+      "bytes": 2280,
+      "sha256": "dd996a952531690f38f43ea541aa103235da3a49ed6588dd56b0c29e5fa0fb66"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/prepare-hosted-browser.py",
+      "bytes": 17416,
+      "sha256": "3784c7babdc3ac5cb74affd231691c90af661d81b5f702dbbe9500a4ab59db4f"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/run-hosted-browser.py",
+      "bytes": 37642,
+      "sha256": "06f996dcdbcd3b0687aaa83d88a39a82b19ac3a475ab4c3cb213937631932f70"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/signed-feature-diagnostics.py",
+      "bytes": 3848,
+      "sha256": "4cda632e9472f71e82b39cd96bb112611ecefaedc0aa90c926e71eadec59fa17"
+    },
+    {
+      "path": "weebdex-platform/scripts/ci/validate-ci-evidence.py",
+      "bytes": 30124,
+      "sha256": "e2d01a31f15cc578e5bb6e3b8a4dbb2273f6448f12764bb6fd675c2cf3ea2628"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-signed-feature-browser.mjs",
+      "bytes": 22743,
+      "sha256": "d28bd88588dbba33c0855f15e92cf9d6ed573935d2e442362a8c7b7514f86ff0"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-signed-feature-observer.mjs",
+      "bytes": 7271,
+      "sha256": "666edc9872a129581525dda3d1ef29564dbbaf69b07ab416640f21a2f60be874"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_upload_diagnostic_workflow.py",
+      "bytes": 12392,
+      "sha256": "194289c9cc71deca014700c46d77e8cc983ac555e2aca903a79513907826664b"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_signed_feature_browser.mjs",
+      "bytes": 13826,
+      "sha256": "101822145aba20cf1f219b3c35152acba8147fb614f50b37409e0275eb9fead0"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_signed_feature_fixture.py",
+      "bytes": 7311,
+      "sha256": "26c1744b5c54d8b39304b3874b9fe1720feccf4840beba57f75839a32b0e7ea5"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_signed_feature_phase.py",
+      "bytes": 8253,
+      "sha256": "04a948c6f628af31683342ca9af8dcc6ecd3c8d8008fea481df1281d094e590b"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_signed_feature_source_pins.py",
+      "bytes": 1432,
+      "sha256": "660ec6d7478eb2d50d368910aa6719868bebc6e4fcd74174aee453c0e27250fd"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_signed_report_inspection.mjs",
+      "bytes": 11700,
+      "sha256": "d5f238ce5845fa1a682b79505a23cc3f3a4013591c2ab55bf1de49308f5091de"
+    },
+    {
+      "path": "weebdex-platform/tests/runtime/browser_fixture.py",
+      "bytes": 119349,
+      "sha256": "38fd1cd2d02397203784d38f6cb1c24aa423c941eff277cb024091c2ff10a498"
+    }
+  ]
+}

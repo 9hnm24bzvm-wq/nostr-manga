@@ -213,4 +213,7 @@ pub const MIGRATIONS: &[Migration] = &[
     Migration {version:100,name:"0100_native_follow_revisions",sql:include_str!("../../migrations/0100_native_follow_revisions.sql")},
     Migration {version:101,name:"0101_title_removal_review",sql:include_str!("../../migrations/0101_title_removal_review.sql")},
     Migration {version:102,name:"0102_native_reading_status_revisions",sql:include_str!("../../migrations/0102_native_reading_status_revisions.sql")},
+    Migration {version:103,name:"0103_scheduled_uploads",sql:include_str!("../../migrations/0103_scheduled_uploads.sql")},
+    Migration {version:104,name:"0104_public_title_filter_groups",sql:include_str!("../../migrations/0104_public_title_filter_groups.sql")},
+    Migration {version:105,name:"0105_account_disable",sql:include_str!("../../migrations/0105_account_disable.sql")},
 ];

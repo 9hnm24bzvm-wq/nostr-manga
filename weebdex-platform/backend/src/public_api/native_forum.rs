@@ -40,6 +40,9 @@ impl NativeForumRepository for Repository {
             ForumKind::Chapter => {
                 "SELECT c.id,platform.catalog_thread_json('chapter',c.id) FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=ANY($1::text[]) AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)"
             }
+            ForumKind::User => {
+                "SELECT u.id,platform.catalog_thread_json('user',u.id) FROM platform.users u WHERE u.id=ANY($1::text[]) AND NOT u.disabled"
+            }
             ForumKind::Group => {
                 "SELECT g.id,platform.catalog_thread_json('group',g.id) FROM platform.catalog_groups g WHERE g.id=ANY($1::text[]) AND g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id)"
             }

@@ -1,3 +1,5 @@
+import { publicWriteLanguage } from './language';
+import { createEditorSearch, officialLinkDictionary, type EditorChoice } from './editor-fields';
 // Scoped signed title metadata commands. No cookie/native command fallback.
 import { capabilities, selectedSigner } from '../local-library/publication';
 import { proveService, origin as canonicalOrigin } from '../local-library/protocol/nostr.js';
@@ -41,19 +43,21 @@ function uuids(value:unknown):string[]{if(!Array.isArray(value)||value.length>10
 // Unsupported cover/relation inputs reject before any metadata mutation.
 export function titleMetadata(input:unknown,language?:string):Record<string,unknown> {
  const row=record(input,'title metadata'),out:Record<string,unknown>={};
- const allowed=['title','description','year','language','demographic','status','content_rating','last_volume','last_chapter','alt_titles','tags','authors','artists','links','version','chapterNumbersResetOnNewVolume'];
- if(Object.keys(row).some(key=>!allowed.includes(key)))fail('Unsupported title field; covers, relations, official links and primary cover require separate reviewed commands',422);
- const lang=plainText(row.language??language,'original language',12);
- if(!/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,2}$/.test(lang))fail('Invalid original language',422);
+ const allowed=['title','description','year','language','demographic','status','content_rating','last_volume','last_chapter','alt_titles','tags','authors','artists','links','officialLinks','version','chapterNumbersResetOnNewVolume'];
+ if(Object.keys(row).some(key=>!allowed.includes(key)))fail('Unsupported title field; covers, relations and primary cover require separate reviewed commands',422);
+ // Only an emitted language field is a public language write. Existing
+ // localized map keys are bounded opaque labels, not a Locale enumeration.
+ const lang=Object.hasOwn(row,'language')?publicWriteLanguage(row.language):language;
  if(Object.hasOwn(row,'language'))out.originalLanguage=lang;
- for(const[key,maximum]of [['title',500],['description',50000]]as const)if(Object.hasOwn(row,key)){const value=plainText(row[key],key,maximum,key==='description');if(key==='title'&&encoder.encode(value).byteLength>1024)fail('Title exceeds the original protocol text budget',422);out[key]={[lang]:value};}
+ for(const[key,maximum]of [['title',500],['description',50000]]as const)if(Object.hasOwn(row,key)){const value=plainText(row[key],key,maximum,key==='description');if(key==='title'&&encoder.encode(value).byteLength>1024)fail('Title exceeds the original protocol text budget',422);out[key]={[plainText(lang,'localized metadata key',100)]:value};}
  if(Object.hasOwn(row,'year')){if(row.year!==null&&row.year!==0&&(!Number.isSafeInteger(row.year)||Number(row.year)<1||Number(row.year)>9999))fail('Invalid publication year',422);out.year=row.year===0?null:row.year;}
  if(Object.hasOwn(row,'demographic')){if(row.demographic!==null&&!['none','shounen','shoujo','josei','seinen'].includes(String(row.demographic)))fail('Invalid publication demographic',422);out.publicationDemographic=row.demographic==='none'?null:row.demographic;}
  for(const[key,wire,values]of [['status','status',['ongoing','completed','hiatus','cancelled']],['content_rating','contentRating',['safe','suggestive','erotica','pornographic']]]as const)if(Object.hasOwn(row,key)){if(!values.some(value=>value===row[key]))fail('Invalid title classification',422);out[wire]=row[key];}
  for(const[key,wire]of [['last_volume','lastVolume'],['last_chapter','lastChapter']]as const)if(Object.hasOwn(row,key))out[wire]=row[key]===null||row[key]===''?null:plainText(row[key],key,32);
  for(const key of ['authors','artists','tags'])if(Object.hasOwn(row,key))out[key]=uuids(row[key]);
- if(Object.hasOwn(row,'alt_titles')){const titles=record(row.alt_titles,'alternate titles');out.altTitles=Object.entries(titles).flatMap(([lang,values])=>{if(!/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,2}$/.test(lang)||!Array.isArray(values)||values.length>100)fail('Invalid alternate title language or list',422);return (values as unknown[]).map(value=>({[lang]:plainText(value,'alternate title',500)}));});if((out.altTitles as unknown[]).length>100)fail('Alternate titles exceed budget',422);}
+ if(Object.hasOwn(row,'alt_titles')){const titles=record(row.alt_titles,'alternate titles');out.altTitles=Object.entries(titles).flatMap(([lang,values])=>{if(!plainText(lang,'alternate title key',100)||!Array.isArray(values)||values.length>100)fail('Invalid alternate title language or list',422);return (values as unknown[]).map(value=>({[lang]:plainText(value,'alternate title',500)}));});if((out.altTitles as unknown[]).length>100)fail('Alternate titles exceed budget',422);}
  if(Object.hasOwn(row,'links')){const links=record(row.links,'title links');out.links=Object.fromEntries(Object.entries(links).map(([key,value])=>[plainText(key,'link key',32),plainText(value,'link value',2048)]));}
+ if(Object.hasOwn(row,'officialLinks'))out.officialLinks=officialLinkDictionary(row.officialLinks);
  if(Object.hasOwn(row,'version'))out.version=positive(row.version);
  if(Object.hasOwn(row,'chapterNumbersResetOnNewVolume')){if(typeof row.chapterNumbersResetOnNewVolume!=='boolean')fail('Invalid chapter reset flag',422);out.chapterNumbersResetOnNewVolume=row.chapterNumbersResetOnNewVolume;}
  if(encoder.encode(JSON.stringify(out)).byteLength>32768)fail('Signed title metadata exceeds the 32 KiB request budget',422);
@@ -63,6 +67,7 @@ function titleEntity(response:Response<unknown>,expected?:string):Resource {
  const body=record(response.body,'signed title entity');if(body.result!=='ok'||body.response!=='entity')fail('Invalid signed title response envelope');
  const row=resource(body.data,'manga'),attrs=row.attributes;
  if(expected&&publicUuid(row.id)!==expected)fail('Title receipt changed the exact canonical target');
+ if(Object.hasOwn(attrs,'officialLinks'))officialLinkDictionary(attrs.officialLinks);
  positive(attrs.version);plainText(attrs.originalLanguage,'actual original language',12);
  if(!['draft','submitted','rejected','published'].includes(String(attrs.state)))fail('Invalid actual title state');
  const titles=record(attrs.title,'actual localized title');if(!Object.values(titles).some(value=>typeof value==='string'&&value.trim()))fail('Title response lacks actual localized title');
@@ -74,6 +79,7 @@ export function titleAwaitingProjection(view:MangaView|undefined):boolean {
 }
 export interface SignedTitleController {
  readonly account:TitleAccount;
+ search(kind:'author'|'tag'|'user',query:string,signal?:AbortSignal):Promise<EditorChoice[]>;
  current():MangaView|undefined;
  pending():boolean;
  assert():void;
@@ -101,11 +107,14 @@ export async function createSignedTitleController(assertCurrent:()=>void,target?
  positive(user.version);
  return {id:publicUuid(user.id),name:plainText(user.username,'bound username',500),permissions:strings(user.permissions),roles:strings(user.roles)};
  }
- const account=Object.freeze(accountFacts(bound));
+ let account=Object.freeze(accountFacts(bound));
  const mutationRequest=deps.createRequest({scope:captured,identity,assertCurrent:check,beforeSend:async signal=>{
   if(signal.aborted)fail('Title request cancelled',409);await refresh();
-  const fresh=accountFacts(await request({url:captured.origin+'/api/v1/nostr/account-context',method:'GET'}));check();
-  if(fresh.id!==account.id)throw new PublicUploadRequestError('The selected signer is now bound to a different native account. Reopen the editor.','unsent',409);
+  let fresh:TitleAccount;
+  try{fresh=accountFacts(await request({url:captured.origin+'/api/v1/nostr/account-context',method:'GET'}));check();}
+  catch(error){account=Object.freeze({...account,permissions:[],roles:[]});throw error;}
+  if(fresh.id!==account.id){account=Object.freeze({...account,permissions:[],roles:[]});throw new PublicUploadRequestError('The selected signer is now bound to a different native account. Reopen the editor.','unsent',409);}
+  account=Object.freeze(fresh);
  }});
  const key=()=>`weebdex.signed-title-pending.v1:${captured.origin}:${captured.serviceKey}:${captured.catalogNamespace}:${identity.owner}:${id??'new'}`;
  const pending=()=>deps.fences.get(key())!==null;
@@ -163,6 +172,7 @@ export async function createSignedTitleController(assertCurrent:()=>void,target?
    const expectedStatus=action==='submit'?201:200;if(response.status!==expectedStatus)fail(`Title command outcome is unconfirmed (HTTP ${response.status})`);
    const row=titleEntity(response,id),next=normalizeManga(row),expectedState=action==='create'?'draft':action==='submit'?'submitted':action==='publish'?'published':action==='reject'?'rejected':previous!.state;
    if(next.version!==(action==='create'?1:version!+1)||next.state!==expectedState)fail('Title receipt has an unexpected version or state');
+   if(Object.hasOwn(payload,'officialLinks')){const expected=officialLinkDictionary(payload.officialLinks),actual=officialLinkDictionary(row.attributes.officialLinks);if(Object.keys(expected).length!==Object.keys(actual).length||Object.entries(expected).some(([key,value])=>!Object.hasOwn(actual,key)||actual[key]!==value))fail('Title receipt did not confirm the exact officialLinks dictionary');}
    deps.fences.delete(fenceKey);installed=false;id=next.id;current=next;
    return {...response,body:next};
   }catch(error){if(installed&&error instanceof PublicUploadRequestError&&error.outcome==='unsent')deps.fences.delete(fenceKey);throw error;}
@@ -211,7 +221,7 @@ export async function createSignedTitleController(assertCurrent:()=>void,target?
   }catch(error){if(installed&&error instanceof PublicUploadRequestError&&error.outcome==='unsent')deps.fences.delete(fenceKey);throw error;}
   finally{busy=false;}
  };
- return {account,current:()=>current,pending,assert:check,dispose:()=>{disposed=true;},read,mutate,disposition};
+ return {get account(){return account;},search:createEditorSearch(async({path,signal})=>request({url:captured.origin+'/api/v1'+path,method:'GET',signal}),check),current:()=>current,pending,assert:check,dispose:()=>{disposed=true;},read,mutate,disposition};
 }
 export async function publicTitleRead(id:string):Promise<Response<MangaView>> {
  const path=window.location.pathname,controller=await createSignedTitleController(()=>{if(window.location.pathname!==path)fail('Title route changed',409);},id);

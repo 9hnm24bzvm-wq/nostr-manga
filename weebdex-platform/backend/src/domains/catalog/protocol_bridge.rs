@@ -163,7 +163,7 @@ async fn resource_id(
 }
 
 async fn owner(tx: &Transaction<'_>, publisher: &str) -> ApiResult<(String, String)> {
-    if let Some(row)=tx.query_opt("SELECT u.id,u.username FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 AND NOT u.disabled",&[&publisher]).await? {return Ok((row.get(0),row.get(1)));}
+    if let Some(row)=tx.query_opt("SELECT u.id,u.username FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1",&[&publisher]).await? {return Ok((row.get(0),row.get(1)));}
     Ok((
         format!("protocol:{publisher}"),
         format!("protocol:{}", &publisher[..12]),
@@ -625,6 +625,16 @@ mod tests {
         .is_err());
     }
     #[test]
+    fn source_language_labels_retain_native_projection_without_public_write_coercion() {
+        for label in ["und", "tam", "ta", "zh-hant", "zh-Hant", "EN"] {
+            assert_eq!(language(label).unwrap(), label.to_ascii_lowercase());
+            let source = json!({"titles":{label:"Exact label"},"originalLanguage":label});
+            let projection = project_series(&source).unwrap();
+            assert_eq!(projection.language, label.to_ascii_lowercase());
+            assert_eq!(projection.metadata["protocol_source_metadata"], source);
+        }
+    }
+    #[test]
     fn original_descriptors_cannot_become_paths_or_fake_hashes() {
         let p = json!({"sha256":"11".repeat(32),"mime":"image/png","width":1,"height":2,"size":3});
         assert_eq!(descriptor(&p).unwrap().2, 1);
@@ -688,6 +698,7 @@ impl CatalogRepository {
         tx: &Transaction<'_>,
         record: &super::repository::ChapterPublication,
         receipt: &crate::protocol::publication::PublicationReceipt,
+        contract: super::validation::LanguageContract,
     ) -> ApiResult<Value> {
         receipt
             .event
@@ -703,7 +714,7 @@ impl CatalogRepository {
         let alias = manga_node::mangadex_compat::uuid("chapter", &receipt.event.id);
         let mut local = record.clone();
         local.source_id = Some(alias.clone());
-        Self::publish_chapter_after_verified_acceptance(tx, &local, receipt).await?;
+        Self::publish_chapter_after_verified_acceptance(tx, &local, receipt, contract).await?;
         tx.execute("INSERT INTO platform.protocol_resource_ids(kind,source_target,compatibility_id,catalog_id) VALUES('chapter',$1,$2,$3) ON CONFLICT(kind,source_target) DO NOTHING",&[&receipt.event.id,&alias,&record.id]).await?;
         let actual:String=tx.query_one("SELECT catalog_id FROM platform.protocol_resource_ids WHERE kind='chapter' AND source_target=$1",&[&receipt.event.id]).await?.get(0);
         if actual != record.id {

@@ -16,8 +16,11 @@ class KeyImportProjection(unittest.TestCase):
     def setUpClass(cls):
         fixture = (ROOT / 'tests/ci/public-upload-key-import-fixture.mjs').as_uri()
         helper = (ROOT / 'scripts/public-upload-key-import.mjs').as_uri()
-        if os.environ.get('WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE'):
-            assert hashlib.sha256(Path(os.environ['WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE']).read_bytes()).hexdigest() == 'd0db904c9961e41e66e708ddf9d8672073d90b965dbe81c1a930f8d9808a694b'
+        baseline = os.environ.get('WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE')
+        if not baseline or not Path(baseline).is_absolute():
+            raise ValueError('Required exact key-import ledger baseline configuration is missing')
+        if hashlib.sha256(Path(baseline).read_bytes()).hexdigest() != 'd0db904c9961e41e66e708ddf9d8672073d90b965dbe81c1a930f8d9808a694b':
+            raise ValueError('Exact key-import ledger baseline SHA-256 differs')
         source = f"""
           import {{importFixture,serializedImportTrace,serializedImportSnapshots}} from {json.dumps(fixture)};
           import {{keyImportSubsteps,keyImportCategories}} from {json.dumps(helper)};
@@ -28,8 +31,8 @@ class KeyImportProjection(unittest.TestCase):
           const saved=[],attempts=[];for(let i=0;i<2;i++)await importFixture({{attemptRows:attempts,snapshotSink:saved}}).run();
           const saveFailures=[];for(const failSaveAt of [[1],[2],[28],[2,3]])saveFailures.push(await serializedImportSnapshots({{failSaveAt}}));
           saveFailures.push(await serializedImportSnapshots({{failAt:'import-form',failSaveAt:[12]}}));
-          let baselineSnapshots=null;
-          if(process.env.WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE){{
+          let baselineSnapshots;
+          {{
             const old=await import(pathToFileURL(process.env.WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE).href);
             const f=importFixture();f.attempts.length=0;baselineSnapshots=[];
             f.args.importStep=old.createKeyImportStep(f.attempts,()=>baselineSnapshots.push(structuredClone(f.attempts)));
@@ -101,16 +104,15 @@ class KeyImportProjection(unittest.TestCase):
                 self.assertEqual(phase['status'], 'failed')
                 validator.phases({'schema': 1, 'phases': [phase], 'batches': []})
 
-    if os.environ.get('WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE'):
-        def test_source_extracted_aca_producer_has_thirteen_invalid_inter_step_saved_rows(self):
-            snapshots = self.serialized['baselineSnapshots']
-            self.assertEqual(len(snapshots), 28)
-            valid = [diagnostics.project_key_import(rows)['record_valid'] for rows in snapshots]
-            self.assertEqual(valid.count(False), 13)
-            self.assertEqual(valid.count(True), 15)
-            self.assertEqual(snapshots[1][0]['substep'], 'open-settings')
-            self.assertEqual(snapshots[1][0]['completed_substeps'], 1)
-            self.assertFalse(valid[1])
+    def test_source_extracted_aca_producer_has_thirteen_invalid_inter_step_saved_rows(self):
+        snapshots = self.serialized['baselineSnapshots']
+        self.assertEqual(len(snapshots), 28)
+        valid = [diagnostics.project_key_import(rows)['record_valid'] for rows in snapshots]
+        self.assertEqual(valid.count(False), 13)
+        self.assertEqual(valid.count(True), 15)
+        self.assertEqual(snapshots[1][0]['substep'], 'open-settings')
+        self.assertEqual(snapshots[1][0]['completed_substeps'], 1)
+        self.assertFalse(valid[1])
 
     def test_actual_failed_review_with_backup_connection_survives_projection_without_success(self):
         acceptance = accepted_report()

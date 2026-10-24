@@ -1,0 +1,69 @@
+{
+  "schema": "retained-title-history-counterfactuals-v1",
+  "entries": {
+    "a8d428b-MangaFollow": {
+      "file": "a8d428b-MangaFollow.ts.txt",
+      "commit": "a8d428bd1d5e6c12e69be3e0e6b8551c8679284c",
+      "path": "weebdex-platform/platform-integrations/local-library/MangaFollow.ts",
+      "git_blob": "4e85ced21606a7d7fb53754ecb22dc9c54b0853d",
+      "bytes": 11066,
+      "sha256": "c6b26e09d33ce9ef0dbc77593bfa9d87e27d6a24b2f5949452ce1f73e304e89a"
+    },
+    "3df4223-title-pagination": {
+      "file": "3df4223-title-pagination.ts.txt",
+      "commit": "3df42230a4bc56f3d5f6a35f67bb306d79303b90",
+      "path": "weebdex-platform/platform-integrations/local-library/title-pagination.ts",
+      "git_blob": "809a06d716187d0aa99537c9e3202c66f25552d6",
+      "bytes": 7192,
+      "sha256": "0270f34c8c7bbd1eb9ad3532b73a0f74b8adf0d50748aa48392186a52acb5aba"
+    },
+    "08c3bb9-title-pagination": {
+      "file": "08c3bb9-title-pagination.ts.txt",
+      "commit": "08c3bb9fe06fa810789c0dcca700c166715a65cb",
+      "path": "weebdex-platform/platform-integrations/local-library/title-pagination.ts",
+      "git_blob": "7c5aa7fc1aa6228cd749b8b260b52ff530bc1397",
+      "bytes": 8329,
+      "sha256": "9512ebe9c18d52e95564cb4b7d8076045f0e58aa3d1084f3ee874f3a63e9403e"
+    },
+    "08c3bb9-history-feed": {
+      "file": "08c3bb9-history-feed.ts.txt",
+      "commit": "08c3bb9fe06fa810789c0dcca700c166715a65cb",
+      "path": "weebdex-platform/platform-integrations/local-library/history-feed.ts",
+      "git_blob": "d9e80c2b8cf55046c26ca540412f1a958bc3d739",
+      "bytes": 3621,
+      "sha256": "eaca7e766a5c404e5ff327d41d59e5d3ac332734c11c0b285d291c066d6cc713"
+    },
+    "9893eea-title-feed": {
+      "file": "9893eea-title-feed.ts.txt",
+      "commit": "9893eea05a9b553276dd478159cadea0ba689f45",
+      "path": "weebdex-platform/platform-integrations/local-library/title-feed.ts",
+      "git_blob": "c4c869f128f7b8faaf8563cb691e670a5ac95612",
+      "bytes": 5021,
+      "sha256": "6ea9bc52b064c2cf3aafb52e0d7f7a3d202c7fa821cd5c1e1ed2cfaa42c80abb"
+    },
+    "d645756-history-pagination": {
+      "file": "d645756-history-pagination.ts.txt",
+      "commit": "d645756a302d5d28c7a5c6f9d45f2eada7f14225",
+      "path": "weebdex-platform/platform-integrations/local-library/history-pagination.ts",
+      "git_blob": "3daaf7dbe6dbad6ddf6abc378fc3f8365c0105bc",
+      "bytes": 11834,
+      "sha256": "7c871516e16d6f4b168faf14a54488c37f8a90aff9abbcb9f4bfd1a24cb3fc57"
+    },
+    "d645756-title-order": {
+      "file": "d645756-title-order.ts.txt",
+      "commit": "d645756a302d5d28c7a5c6f9d45f2eada7f14225",
+      "path": "weebdex-platform/platform-integrations/local-library/title-order.ts",
+      "git_blob": "8f6745216ce19f7cef4faca4b8ce3b1ab4d2d754",
+      "bytes": 3621,
+      "sha256": "4baef934d0c3c2fc3998d4ab7a97ee194b6828d79bd7bc040bdbcc869b4d9b4d"
+    },
+    "bf36e22-MangaFollow": {
+      "file": "bf36e22-MangaFollow.ts.txt",
+      "commit": "bf36e22fd840b02022948423a37c5a11ee4ea4f4",
+      "path": "weebdex-platform/platform-integrations/local-library/MangaFollow.ts",
+      "git_blob": "f06582104d4096ad4903579b7de369f63d71dd71",
+      "bytes": 9968,
+      "sha256": "c13e273326964d9a50e956b8b4020c75c405f24a1948636404a40469b31d0e2e"
+    }
+  }
+}

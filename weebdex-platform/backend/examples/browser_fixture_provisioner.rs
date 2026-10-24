@@ -23,6 +23,8 @@ use zeroize::Zeroizing;
 
 #[path = "browser_fixture/ui_regressions.rs"]
 mod ui_regressions;
+#[path = "browser_fixture/signed_features.rs"]
+mod signed_features;
 
 // These must satisfy the original UploadStore volume grammar (alnum or '-').
 const SOURCE_VOLUME: &str = "browser-fixture";
@@ -564,6 +566,39 @@ fn listeners_offline(root: &Path) -> Result<()> {
     // Exclusive original store ownership still independently fences restoration.
     Ok(())
 }
+/// One real durable original outbox item, not a native upload/publication intent.
+/// Only the explicit restore driver may stage it, after joined listener shutdown.
+fn restore_qualification_enabled(root: &Path) -> Result<()> {
+    let marker = bounded_json(&root.join("fixture-owned.json"))?;
+    ensure!(
+        marker["fixture_only"] == true && marker["full_restore_qualification"] == true,
+        "explicit synthetic restore qualification required"
+    );
+    listeners_offline(root)
+}
+async fn restore_pending_note(repo: &Repository, root: &Path) -> Result<Value> {
+    restore_qualification_enabled(root)?;
+    repo.verify_schema().await?;
+    let setup = bounded_json(&root.join("protocol-setup.json"))?;
+    let public = setup["operator_pubkey"].as_str().context("fixture operator identity")?;
+    let secret = operator_secret(root, public)?;
+    repo.set_account_admission(id(public)?, true).await?;
+    let permit = repo.account_permit(id(public)?).await?;
+    let event = auth::sign(
+        &secret, 1, vec![], "Synthetic isolated restore outbox probe".into(),
+    ).map_err(anyhow::Error::msg)?;
+    ensure!(repo.stage_personal_note(&permit, &event).await?, "restore probe already staged");
+    let pending: i64 = repo.pool.get().await?.query_one(
+        "SELECT count(*) FROM backend_outbox WHERE event_id=$1 AND action='import' AND completed_at IS NULL",
+        &[&id(&event.id)?.as_slice()],
+    ).await?.get(0);
+    ensure!(pending == 1, "one durable pending original outbox item required");
+    let receipt = json!({"fixture_only":true,"event_id":event.id,"kind":1,
+        "pending_original_outbox_items":pending,"native_upload_intent_covered":false});
+    write_json(&root.join("restore-pending-note.json"), &receipt)?;
+    Ok(receipt)
+}
+
 async fn source_revoke(repo: &Repository, root: &Path, request: &Request) -> Result<Value> {
     let (event, _) = recorded_source(root, request.event_id.as_deref())?;
     let secret = operator_secret(root, &event.pubkey)?;
@@ -1167,8 +1202,11 @@ async fn run() -> Result<Value> {
             )
         }
         "status" => status(&repo, &root).await,
+        "signed-feature-account" => signed_features::account(&repo, &root, &request).await,
+        "signed-feature-snapshot" => signed_features::snapshot(&repo, &root, &request).await,
         "upload-account" => upload_account(&repo, &root, &request).await,
         "upload-snapshot" => upload_snapshot(&repo, &root, &request).await,
+        "restore-pending-note" => restore_pending_note(&repo, &root).await,
         "source-revoke" => source_revoke(&repo, &root, &request).await,
         "source-restore" => source_restore(&repo, &root, &request).await,
         "source-status" => source_status(&repo, &root, &request).await,
@@ -1252,6 +1290,23 @@ mod tests {
             safe_failure(&io),
             ("seed-runtime-open", "filesystem-permission-denied")
         );
+    }
+
+    #[test]
+    fn restore_probe_requires_opt_in_and_joined_listener_marker() {
+        let root = tempfile::tempdir().unwrap();
+        let marker = root.path().join("fixture-owned.json");
+        std::fs::write(&marker, br#"{"fixture_only":true}"#).unwrap();
+        assert!(restore_qualification_enabled(root.path()).is_err());
+        std::fs::write(&marker, br#"{"fixture_only":true,"full_restore_qualification":true}"#).unwrap();
+        assert!(restore_qualification_enabled(root.path()).is_err());
+        let stopped = root.path().join("listeners-stopped.json");
+        std::fs::write(&stopped, br#"{"fixture_only":true,"verified_stopped":true,"ports_closed":false}"#).unwrap();
+        assert!(restore_qualification_enabled(root.path()).is_err());
+        std::fs::write(&stopped, br#"{"fixture_only":true,"verified_stopped":true,"ports_closed":true}"#).unwrap();
+        assert!(restore_qualification_enabled(root.path()).is_ok());
+        std::fs::write(&marker, br#"{"fixture_only":true,"full_restore_qualification":1}"#).unwrap();
+        assert!(restore_qualification_enabled(root.path()).is_err());
     }
 
     #[test]

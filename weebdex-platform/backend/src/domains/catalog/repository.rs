@@ -70,6 +70,7 @@ impl CatalogRepository {
         actor: &impl CatalogMutationActor,
         groups: &[String],
     ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         actor.require_permission("chapter.create")?;
         if tx.query_opt("SELECT id FROM platform.catalog_manga WHERE id=$1 AND state='published' AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR SHARE",&[&manga_id]).await?.is_none(){return Err(ApiError::not_found("Published manga not found"));}
         validate_groups(tx, groups).await?;
@@ -82,6 +83,7 @@ impl CatalogRepository {
         actor: &impl CatalogMutationActor,
         version: i32,
     ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         let row=tx.query_opt("SELECT uploader_id,version,protocol_event_id FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga parent WHERE parent.id=manga_id AND parent.deleted_at IS NULL AND parent.state='published' AND parent.protocol_source_visible AND platform.protocol_source_is_visible(parent.protocol_series_id)) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Chapter not found"))?;
         chapter_authority(tx, id, actor, &row.get::<_, String>(0), "update", false).await?;
         if row.get::<_, i32>(1) != version {
@@ -106,6 +108,7 @@ impl CatalogRepository {
         node: &str,
         pages: &[CatalogPage],
     ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         Self::authorize_chapter_edit(tx, id, actor, expected_version).await?;
         if pages.is_empty()
             || pages.len() > 500
@@ -136,7 +139,12 @@ impl CatalogRepository {
         tx: &Transaction<'_>,
         record: &ChapterPublication,
     ) -> ApiResult<Value> {
-        Self::insert_chapter(tx, record, false).await
+        Self::publish_chapter_for(tx, record, v::LanguageContract::Native).await
+    }
+    pub(crate) async fn publish_chapter_for(
+        tx: &Transaction<'_>, record: &ChapterPublication, contract: v::LanguageContract,
+    ) -> ApiResult<Value> {
+        Self::insert_chapter(tx, record, false, contract).await
     }
     /// Private integration capability, never exposed by an unsigned upload.
     /// Canonical public visibility is still required by every read projection.
@@ -144,6 +152,7 @@ impl CatalogRepository {
         tx: &Transaction<'_>,
         record: &ChapterPublication,
         receipt: &crate::protocol::publication::PublicationReceipt,
+        contract: v::LanguageContract,
     ) -> ApiResult<Value> {
         receipt
             .event
@@ -158,16 +167,18 @@ impl CatalogRepository {
         }
         let mut local = record.clone();
         local.protocol_event_id = None;
-        Self::insert_chapter(tx, &local, true).await
+        Self::insert_chapter(tx, &local, true, contract).await
     }
     async fn insert_chapter(
         tx: &Transaction<'_>,
         record: &ChapterPublication,
         verified_source_accepted: bool,
+        contract: v::LanguageContract,
     ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,&record.uploader_id).await?;
         v::id(&record.id)?;
         v::id(&record.manga_id)?;
-        v::language(&record.language)?;
+        contract.validate(&record.language)?;
         if record.pages.is_empty() || record.pages.len() > 500 || record.groups.len() > 100 {
             return Err(ApiError::bad_request("Invalid chapter page or group count"));
         }
@@ -251,6 +262,7 @@ impl CatalogRepository {
         actor: &impl CatalogMutationActor,
         patch: &Value,
     ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         v::allowed(
             patch,
             &[
@@ -264,12 +276,12 @@ impl CatalogRepository {
             return Err(ApiError::conflict("Chapter changed; reload before editing"));
         }
         let protocol_overlay = row.get::<_, Option<String>>(2).is_some();
-        let title = v::string(patch, "title", 500, false)?;
-        let volume = v::string(patch, "volume", 32, false)?;
-        let chapter = v::string(patch, "chapter", 32, false)?;
+        let title = v::nullable_string(patch, "title", 500)?;
+        let volume = v::nullable_string(patch, "volume", 32)?;
+        let chapter = v::nullable_string(patch, "chapter", 32)?;
         let language = v::string(patch, "language", 12, false)?;
         if let Some(lang) = &language {
-            v::language(lang)?;
+            actor.language_contract().validate(lang)?;
         }
         if let Some(groups) = v::ids(patch, "groups", false)? {
             validate_groups(tx, &groups).await?;
@@ -288,7 +300,7 @@ impl CatalogRepository {
         overlay.as_object_mut().unwrap().remove("version");
         overlay["scope"] = json!("instance-local");
         overlay["updated_by"] = json!(actor.user_id());
-        tx.execute("UPDATE platform.catalog_chapters SET title=COALESCE($2,title),volume=COALESCE($3,volume),chapter=COALESCE($4,chapter),language=COALESCE($5,language),metadata=CASE WHEN protocol_event_id IS NOT NULL THEN metadata || jsonb_build_object('instance_overlay',COALESCE(metadata->'instance_overlay','{}'::jsonb) || $6::jsonb) ELSE metadata END,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&title,&volume,&chapter,&language,&overlay]).await?;
+        tx.execute("UPDATE platform.catalog_chapters SET title=CASE WHEN $7 THEN $2 ELSE title END,volume=CASE WHEN $8 THEN $3 ELSE volume END,chapter=CASE WHEN $9 THEN $4 ELSE chapter END,language=COALESCE($5,language),metadata=CASE WHEN protocol_event_id IS NOT NULL THEN metadata || jsonb_build_object('instance_overlay',COALESCE(metadata->'instance_overlay','{}'::jsonb) || $6::jsonb) ELSE metadata END,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&title.as_ref().and_then(Option::as_ref),&volume.as_ref().and_then(Option::as_ref),&chapter.as_ref().and_then(Option::as_ref),&language,&overlay,&title.is_some(),&volume.is_some(),&chapter.is_some()]).await?;
         audit(
             tx,
             &actor.user_id(),
@@ -315,6 +327,7 @@ impl CatalogRepository {
         id: &str,
         actor: &impl CatalogMutationActor,
     ) -> ApiResult<Option<String>> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         v::id(id)?;
         let row = tx.query_opt(
             "SELECT c.uploader_id,c.protocol_event_id FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)",
@@ -328,6 +341,7 @@ impl CatalogRepository {
         id: &str,
         actor: &impl CatalogMutationActor,
     ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         let row=tx.query_opt("SELECT uploader_id,version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga parent WHERE parent.id=manga_id AND parent.deleted_at IS NULL AND parent.state='published' AND parent.protocol_source_visible AND platform.protocol_source_is_visible(parent.protocol_series_id)) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Chapter not found"))?;
         chapter_authority(tx, id, actor, &row.get::<_, String>(0), "remove", true).await?;
         tx.execute("UPDATE platform.catalog_chapters SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1",&[&id]).await?;
@@ -349,6 +363,7 @@ impl CatalogRepository {
         id: &str,
         actor: &impl CatalogMutationActor,
     ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         actor.require_permission("self.chapter.update")?;
         let row=tx.query_opt("SELECT uploader_id,uploader_name,version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga parent WHERE parent.id=manga_id AND parent.deleted_at IS NULL AND parent.state='published' AND parent.protocol_source_visible AND platform.protocol_source_is_visible(parent.protocol_series_id)) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Chapter not found"))?;
         if row.get::<_, String>(0) == actor.user_id() || row.get::<_, String>(1) == "system" {
@@ -380,8 +395,14 @@ impl CatalogRepository {
         tx: &Transaction<'_>,
         record: &CoverPublication,
     ) -> ApiResult<Value> {
+        Self::publish_cover_for(tx, record, v::LanguageContract::Native).await
+    }
+    pub(crate) async fn publish_cover_for(
+        tx: &Transaction<'_>, record: &CoverPublication, contract: v::LanguageContract,
+    ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,&record.uploader_id).await?;
         v::id(&record.id)?;
-        v::language(&record.language)?;
+        contract.validate(&record.language)?;
         if !["jpg", "jpeg", "png", "webp", "avif"].contains(&record.ext.as_str())
             || record.dimensions.iter().any(|v| *v <= 0 || *v > 100_000)
             || record.volume.len() > 32
@@ -395,7 +416,7 @@ impl CatalogRepository {
         if tx.query_opt("SELECT id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&record.manga_id]).await?.is_none(){return Err(ApiError::not_found("Manga not found"));}
         require_mutable_manga(tx, &record.manga_id).await?;
         if record.main {
-            clear_other_main_covers(tx, &record.manga_id, &record.id, &record.uploader_id).await?;
+            clear_other_main_covers(tx, &record.manga_id, Some(&record.id), &record.uploader_id).await?;
         }
         tx.execute("INSERT INTO platform.catalog_covers(id,manga_id,uploader_id,uploader_name,ext,dimensions,volume,language,description,is_main) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",&[&record.id,&record.manga_id,&record.uploader_id,&record.uploader_name,&record.ext,&&record.dimensions[..],&record.volume,&record.language,&record.description,&record.main]).await?;
         audit(
@@ -419,6 +440,7 @@ impl CatalogRepository {
         actor: &impl CatalogMutationActor,
         patch: &Value,
     ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         v::allowed(
             patch,
             &["volume", "description", "language", "main", "version"],
@@ -440,16 +462,19 @@ impl CatalogRepository {
             return Err(ApiError::conflict("Cover changed; reload before editing"));
         }
         let volume = v::string(patch, "volume", 32, false)?;
-        let description = v::string(patch, "description", 50_000, false)?;
-        let language = v::string(patch, "language", 12, false)?;
-        if let Some(lang) = &language {
-            v::language(lang)?;
+        let description = v::nullable_string(patch, "description", 50_000)?;
+        let language = v::nullable_string(patch, "language", 12)?;
+        if let Some(Some(lang)) = &language {
+            actor.language_contract().validate(lang)?;
         }
         let main = v::boolean(patch, "main")?;
         if main == Some(true) {
-            clear_other_main_covers(tx, &parent, id, &actor.user_id()).await?;
+            clear_other_main_covers(tx, &parent, Some(id), &actor.user_id()).await?;
         }
-        tx.execute("UPDATE platform.catalog_covers SET is_main=COALESCE($5,is_main),volume=COALESCE($2,volume),description=COALESCE($3,description),language=COALESCE($4,language),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&volume,&description,&language,&main]).await?;
+        // Cover language is NOT NULL. Empty means unspecified and the public
+        // DTO already exposes it as locale:null, just like the volume sentinel.
+        // Presence bits distinguish explicit clears from omitted edit fields.
+        tx.execute("UPDATE platform.catalog_covers SET is_main=COALESCE($5,is_main),volume=COALESCE($2,volume),description=CASE WHEN $6 THEN $3 ELSE description END,language=CASE WHEN $7 THEN COALESCE($4,'') ELSE language END,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&volume,&description.as_ref().and_then(Option::as_ref),&language.as_ref().and_then(Option::as_ref),&main,&description.is_some(),&language.is_some()]).await?;
         audit(
             tx,
             &actor.user_id(),
@@ -465,11 +490,42 @@ impl CatalogRepository {
             .await?
             .get(0))
     }
+    /// Explicit main selection for a version-checked title edit. The caller owns
+    /// the transaction and title version increment. All guards live here too so
+    /// a direct native caller cannot bypass title or cover authority, visibility,
+    /// publication immutability, or the parent-first cover lock order.
+    pub async fn select_primary_cover(
+        tx: &Transaction<'_>, manga: &str, actor: &impl CatalogMutationActor,
+        expected_title_version: i32, cover: Option<&str>,
+    ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+        v::id(manga)?;
+        require_manga_edit(tx, manga, actor, "manga.update").await?;
+        require_manga_edit(tx, manga, actor, "manga.cover.edit").await?;
+        let version: i32 = tx.query_one("SELECT version FROM platform.catalog_manga WHERE id=$1", &[&manga]).await?.get(0);
+        if version != expected_title_version {
+            return Err(ApiError::conflict("Manga changed; reload before editing"));
+        }
+        let selected = if let Some(id) = cover {
+            v::id(id)?;
+            Some(tx.query_opt("SELECT version,is_main FROM platform.catalog_covers WHERE id=$1 AND manga_id=$2 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) FOR UPDATE", &[&id,&manga]).await?.ok_or_else(||ApiError::not_found("Cover not found for this manga"))?)
+        } else { None };
+        clear_other_main_covers(tx, manga, cover, actor.user_id()).await?;
+        if let (Some(id), Some(row)) = (cover, selected) {
+            if !row.get::<_, bool>(1) {
+                let version: i32 = row.get(0);
+                tx.execute("UPDATE platform.catalog_covers SET is_main=TRUE,version=version+1,updated_at=clock_timestamp() WHERE id=$1", &[&id]).await?;
+                audit(tx, actor.user_id(), "cover", id, "main-select", Some(version), Some(version + 1)).await?;
+            }
+        }
+        Ok(())
+    }
     pub async fn delete_cover(
         tx: &Transaction<'_>,
         id: &str,
         actor: &impl CatalogMutationActor,
     ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
         if !actor.is_moderator() {
             return Err(ApiError::forbidden(
                 "Staff cover deletion permission required",
@@ -499,10 +555,10 @@ impl CatalogRepository {
 // The parent is already locked by every cover writer. Demotion is a real
 // metadata change: preserve per-cover CAS and an attributable audit record.
 async fn clear_other_main_covers(
-    tx: &Transaction<'_>, manga: &str, except: &str, actor: &str,
+    tx: &Transaction<'_>, manga: &str, except: Option<&str>, actor: &str,
 ) -> ApiResult<()> {
     let changed = tx.query(
-        "UPDATE platform.catalog_covers SET is_main=FALSE,version=version+1,updated_at=clock_timestamp() WHERE manga_id=$1 AND id<>$2 AND deleted_at IS NULL AND is_main=TRUE RETURNING id,version",
+        "UPDATE platform.catalog_covers SET is_main=FALSE,version=version+1,updated_at=clock_timestamp() WHERE manga_id=$1 AND ($2::text IS NULL OR id<>$2) AND deleted_at IS NULL AND is_main=TRUE RETURNING id,version",
         &[&manga, &except],
     ).await?;
     for row in changed {
@@ -518,6 +574,7 @@ pub async fn require_manga_edit(
     actor: &impl CatalogMutationActor,
     permission: &str,
 ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     let row=tx.query_opt("SELECT owner_id,locked,state FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Manga not found"))?;
     if actor.is_moderator() && actor.has_perm(permission) {
         return require_mutable_manga(tx, id).await;
@@ -563,6 +620,7 @@ async fn chapter_authority(
     action: &str,
     leader_only: bool,
 ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     if actor.is_moderator() && actor.has_perm(&format!("chapter.{action}")) {
         return Ok(());
     }
@@ -612,6 +670,7 @@ pub async fn audit(
     old: Option<i32>,
     new: Option<i32>,
 ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor).await?;
     tx.execute("INSERT INTO platform.catalog_audit(actor_id,entity_type,entity_id,operation,old_version,new_version) VALUES($1,$2,$3,$4,$5,$6)",&[&actor,&kind,&id,&operation,&old,&new]).await?;
     Ok(())
 }

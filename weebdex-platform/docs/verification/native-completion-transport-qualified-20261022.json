@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-22",
+  "documentationOnlySuccessor": true,
+  "driverSha256": "54fed6c4c326e61892020e02afc1e8a0a1c9864c6f0cfd5e7693dff92064b915",
+  "limits": {
+    "newRoundEvidenceBytes": 82835,
+    "newRoundEvidenceCeilingBytes": 524288,
+    "normalResourceFloorsUnchanged": true,
+    "ownedRssCeilingBytes": 268435456,
+    "priorEvidenceBytes": 62902,
+    "sequentialStages": true,
+    "stageDeadlineSeconds": 60
+  },
+  "mapSha256": "d847bcaf670738ecd46c18d5e3b989b63c7596d831c467a576d86649910779c8",
+  "privateSummarySha256": "64580d744db7db63246944c391920d8fa5cc2b3a949a9d9a32972a2b3cde6fc6",
+  "productCommit": "fb1cca909297e2f79d6fb06920c924ede3030b26",
+  "retainedPriorAttempt": {
+    "associationSha256": "ba9f80da62b8eb6ca8a42bf7f06e87d70f4b7e1e381441c6c590224016f52e93",
+    "cleanup": {
+      "forced": false,
+      "remainingOwned": 0,
+      "stdoutEof": true,
+      "trackingErrors": 0,
+      "unknownBirths": 0,
+      "verifiedStopped": true
+    },
+    "evidencePreserved": true,
+    "failed": 1,
+    "forumStageRun": false,
+    "mapSha256": "93c39892c361efe0655996c1819b23edc6c04ffc4dbc9727ec4de43e86c21c9a",
+    "passed": 151,
+    "reason": "Missing-body case incorrectly required a reader release although no reader was acquired. The reviewed correction asserts zero read, cancel, release and allocation counts; existing-body cases still require one release. Production did not change.",
+    "receiptSha256": "20a13871808681b2be857b66c3b614d976a741ad36a3e5f5abaee4d027e150e4",
+    "status": "failed-test-expectation",
+    "testedCommit": "fb1cca909297e2f79d6fb06920c924ede3030b26",
+    "tests": 152
+  },
+  "schema": "native-completion-source-qualification-v1",
+  "scope": {
+    "actualBrowser": false,
+    "backendAcceptance": false,
+    "cookieAcceptance": false,
+    "dependencyInstallation": false,
+    "hostedCi": false,
+    "httpServerAcceptance": false,
+    "integrationOrPublication": false,
+    "oldCurrentForumEquivalence": true,
+    "productOrTestChangedForThisDocumentation": false,
+    "rawEvidenceIncluded": false,
+    "socketOrServiceLaunch": false,
+    "sourceBoundSyntheticFetchStreamTimerControls": true,
+    "testsRerunForThisDocumentation": false
+  },
+  "sourceHashes": {
+    "forumControlsSha256": "a6987cc7f6013cc1e8e38787433f340ce156b16ce7b0cd275e83a70efa85a7ef",
+    "nativeControlsSha256": "e3bd0403c2bb7c9f7fb30be6db715170b7c47d165ccd9f76489f4e050ec86813",
+    "ownedJsonSha256": "74cc00695a6d0ae985e9a457b437143876715099aef1784ebf3d9d2f03bf6240",
+    "priorOwnerFixtureSha256": "c1ede7e37d425b730e8e804055114a1abe9f26a15e7bb66c90b6350787d04717",
+    "sourceClosureFiles": 10,
+    "sourceClosureSha256": "70dfc1636063a53cc9a74334aaa7a92e9812b36049bc5f722d883bf75370d308"
+  },
+  "stages": [
+    {
+      "associationSha256": "81308d6e665a48aebb79b4b0507b6cff8eddf2509a4db8756a00976c8ff88851",
+      "cancelled": 0,
+      "cleanup": {
+        "forced": false,
+        "remainingOwned": 0,
+        "stdoutEof": true,
+        "trackingErrors": 0,
+        "unknownBirths": 0,
+        "verifiedStopped": true
+      },
+      "elapsedSeconds": 0.881679,
+      "exitCode": 0,
+      "failed": 0,
+      "inputAndToolPinsUnchanged": true,
+      "name": "native-completion-controls",
+      "passed": 152,
+      "peakSampledOwnedRssBytes": 170135552,
+      "receiptSha256": "19df7b7839c5edf45eccb033705edaa1421b75e9de02ef6b8ed8eb8358d821e0",
+      "skipped": 0,
+      "tests": 152,
+      "todo": 0
+    },
+    {
+      "associationSha256": "a563b5233e6112f00d1d1563fe6f8c5182f41c8da6847a64ddf81921ac4b380e",
+      "cancelled": 0,
+      "cleanup": {
+        "forced": false,
+        "remainingOwned": 0,
+        "stdoutEof": true,
+        "trackingErrors": 0,
+        "unknownBirths": 0,
+        "verifiedStopped": true
+      },
+      "elapsedSeconds": 0.617102,
+      "exitCode": 0,
+      "failed": 0,
+      "inputAndToolPinsUnchanged": true,
+      "name": "forum-owner-equivalence",
+      "passed": 26,
+      "peakSampledOwnedRssBytes": 167505920,
+      "receiptSha256": "af5bb28e8a550d4373d95ce482be87d592134aa9c047def2da8d86a9eead6040",
+      "skipped": 0,
+      "tests": 26,
+      "todo": 0
+    }
+  ],
+  "status": "passed-source-controls",
+  "testOnlyCorrectionCommit": "2d2ddea2e9f2a90b2754386fdf8cccf796b70855",
+  "testedCommit": "2d2ddea2e9f2a90b2754386fdf8cccf796b70855",
+  "toolHashes": {
+    "lifecycle": "ba6770dc7dbc70b61a809f631305ba8ee4765ae5fe7fe21291a3c25dac0ed196",
+    "node": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "owner": "8f3e00cb93e93403e6d0bd926f539b849fddbee0b26791eb9d2749cb092d8470",
+    "python": "fa67443527ed9647f760d807e2a38f26340757123e643c4639cf273ed15d5ea7"
+  },
+  "totals": {
+    "cancelled": 0,
+    "failed": 0,
+    "passed": 178,
+    "skipped": 0,
+    "tests": 178,
+    "todo": 0
+  }
+}

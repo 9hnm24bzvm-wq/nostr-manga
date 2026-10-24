@@ -18,6 +18,89 @@ CORE_HASHES = {
     'tests/runtime/auth_fixture_guard.py': '8bd64b731f4e608989dd12b129be0323055dfa71c01076e0d0cc71b968d52bec',
     'scripts/run-auth-tests.sh': '119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5',
 }
+# Historical qualification remains bound to its original source, not this
+# successor. Only the reviewed officialLinks HTTP assertions changed; this
+# association is not a new execution or compiled-artifact receipt.
+HISTORICAL_CORE_HASHES = dict(CORE_HASHES)
+CORE_SOURCE_SUCCESSOR = {
+    'path': 'backend/tests/public_manga_writes.rs',
+    'prior_sha256': 'c78673bfbe0008231f9d82a72a82f9d271f875b6319329bd05732b6e3acb6022',
+    'current_sha256': 'a4db6be2152bae12c7a65d78006a4c805f51f703e7aeb00ab71c17c9f4d8c5e7',
+    'reviewed_commit': '4563d7dff0e31d9e9e2ce836434da4fc7559b093',
+    'reason': 'Reviewed officialLinks dictionary permission, validation, isolation and audit assertions extend the existing owned title HTTP scenario; disposition, auth guard and launcher bytes are unchanged.',
+}
+OFFICIAL_LINKS_CORE_HASHES = {**HISTORICAL_CORE_HASHES,
+               CORE_SOURCE_SUCCESSOR['path']: CORE_SOURCE_SUCCESSOR['current_sha256']}
+# Later source-only association: preserve the earlier exact four-file pinset,
+# and protect both newly imported cover helpers plus their shared fixture bytes.
+CORE_COVER_SUCCESSOR = {
+    'path': 'backend/tests/public_manga_writes.rs',
+    'prior_sha256': 'a4db6be2152bae12c7a65d78006a4c805f51f703e7aeb00ab71c17c9f4d8c5e7',
+    'current_sha256': '1afe8d6e2f5c1439207cac8f5e65cc53e5d4f79fdf76978980b21c82854e8851',
+    'reviewed_commit': '55a55d6578d991285caaef1eff362ad2f9fc6f1c',
+    'reason': 'Reviewed primary-cover and bounded signed-cover-pagination test modules plus query-aware private-cache assertion; original title-disposition scenario and three other core files remain unchanged. No prior binary or execution receipt is relabelled.',
+    'added_sources': {
+        'backend/tests/support/primary_cover_contract.rs': 'd3e4a1f3a7745c5468ba053edfcf98438bcd2bf28da9f74f6cb3da1fefd1f188',
+        'backend/tests/support/cover_pagination.rs': '1d200c822ab6cff4888b9964bfb7e6706802e031657f065f6a7f9c7ae549071f',
+        '../manga-protocol-lab/server/tests/support/mod.rs': 'bf78e30a51e798537eb04366a7c39761b85638445746a528635dc5385b9496ca',
+    },
+}
+COVER_CORE_HASHES = {**OFFICIAL_LINKS_CORE_HASHES,
+              CORE_COVER_SUCCESSOR['path']: CORE_COVER_SUCCESSOR['current_sha256'],
+              **CORE_COVER_SUCCESSOR['added_sources']}
+# Public-language coverage extends, never replaces, the immutable cover pinset.
+CORE_LANGUAGE_SUCCESSOR = {
+    'path': 'backend/tests/public_manga_writes.rs',
+    'prior_sha256': '1afe8d6e2f5c1439207cac8f5e65cc53e5d4f79fdf76978980b21c82854e8851',
+    'current_sha256': '968d201297b0f86f78ff781d598f775790f96b5aa882869da061cbfea36ee7c1',
+    'reviewed_commit': '99483383cf6f50802945a731a5f1665c64038c42',
+    'reason': 'Reviewed public-language HTTP/restart modules and public-language negative input correction; query-aware cache assertion and both cover modules remain intact. The other six protected core sources are byte-identical. No prior execution is relabelled.',
+    'added_sources': {
+        'backend/tests/support/public_language_contract.rs': '8f3acba1248f6641ec61aebfe59e1e0dd78a84f0beab5c845bcf253563eb1a41',
+        'backend/tests/support/public_language_restart.rs': '5474f85a2d3573abfd401243914fa65c4d1a18f3f1dafa018b23746ba26ea1f8',
+    },
+}
+LANGUAGE_CORE_HASHES = {**COVER_CORE_HASHES,
+              CORE_LANGUAGE_SUCCESSOR['path']: CORE_LANGUAGE_SUCCESSOR['current_sha256'],
+              **CORE_LANGUAGE_SUCCESSOR['added_sources']}
+# The reviewed Unicode fixture adds exactly one module; it is not an old HTTP pass.
+CORE_COVER_UNICODE_SUCCESSOR = {
+    'path': 'backend/tests/public_manga_writes.rs',
+    'prior_sha256': '968d201297b0f86f78ff781d598f775790f96b5aa882869da061cbfea36ee7c1',
+    'current_sha256': '6180cd02a63bde2c8d0d511471dc47d3e28c8fdf17a2f41963a268a22f90b0f4',
+    'reviewed_commits': ['72ade3a90862b7f580e37880004a18e547229616', '73929bb8e674b73eeae8bab8d824e5431d956a3a'],
+    'source_freeze': '216ba56ad48e1379dc56b13a611a229695a10edc',
+    'status': 'source-association-only-no-execution',
+    'added_sources': {
+        'backend/tests/support/cover_unicode.rs': '81fbf0eb961b1421631ea0a9eeb2ee26e273595641e7833004f165c1c04ef3db',
+    },
+}
+COVER_UNICODE_APPEND = b'\n#[path = "support/cover_unicode.rs"]\nmod cover_unicode;\n'
+COVER_UNICODE_CORE_HASHES = {**LANGUAGE_CORE_HASHES,
+              CORE_COVER_UNICODE_SUCCESSOR['path']: CORE_COVER_UNICODE_SUCCESSOR['current_sha256'],
+              **CORE_COVER_UNICODE_SUCCESSOR['added_sources']}
+# Account-disable admission now requires binding each fixture identity while its
+# user is enabled, then applying the existing disabled fixture state. This exact
+# source association neither changes the scenario nor renews historical proof.
+CORE_ACCOUNT_DISABLE_SUCCESSOR = {
+    'path': 'backend/tests/public_manga_writes.rs',
+    'prior_sha256': '6180cd02a63bde2c8d0d511471dc47d3e28c8fdf17a2f41963a268a22f90b0f4',
+    'current_sha256': 'f499311565a0ee327528de678502088b7278b09b7d98753c3e67b5a7086147c4',
+    'reviewed_commit': 'dfa6135752d9e01c5bb5afa56cfc48b2bfa79bda',
+    'source_freeze': '11ea3ea9f593c134f2ba478bb84fa683f4b14149',
+    'status': 'source-association-only-no-execution',
+}
+ACCOUNT_DISABLE_PRIOR = (
+    b'            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&(key==6),&roles,&permissions]).await.unwrap();\n'
+    b'        db.execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",&[&public(key),&user]).await.unwrap();\n'
+)
+ACCOUNT_DISABLE_CURRENT = (
+    b'            &[&user,&format!("upload-{key}@fixture.invalid"),&(key!=5),&false,&roles,&permissions]).await.unwrap();\n'
+    b'        db.execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",&[&public(key),&user]).await.unwrap();\n'
+    b'        db.execute("UPDATE platform.users SET disabled=$2 WHERE id=$1",&[&user,&(key==6)]).await.unwrap();\n'
+)
+CORE_HASHES = {**COVER_UNICODE_CORE_HASHES,
+              CORE_ACCOUNT_DISABLE_SUCCESSOR['path']: CORE_ACCOUNT_DISABLE_SUCCESSOR['current_sha256']}
 TOOL_PATHS = {'strfry': '../manga-protocol-lab/vendor/strfry/strfry',
               **{name: '../manga-protocol-lab/vendor/pgsql/bin/' + name
                  for name in ['postgres', 'initdb', 'createdb', 'pg_isready']}}
@@ -62,10 +145,35 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def restore_cover_unicode_append(source, successor=None):
+    value = CORE_COVER_UNICODE_SUCCESSOR if successor is None else successor
+    insist(hashlib.sha256(json.dumps(value, separators=(',', ':')).encode()).hexdigest() == '3eab371db1c437dc4f953b3b14f327e0e4cc78bb2cc40e97982b19d2434844af')
+    insist(type(source) is bytes and hashlib.sha256(source).hexdigest() == value['current_sha256'])
+    insist(source.endswith(COVER_UNICODE_APPEND) and source.count(COVER_UNICODE_APPEND) == 1)
+    previous = source[:-len(COVER_UNICODE_APPEND)]
+    insist(hashlib.sha256(previous).hexdigest() == value['prior_sha256'])
+    return previous
+
+
+def restore_account_disable_fixture(source, successor=None):
+    """Return predecessor bytes for association checking only, never execution."""
+    value = CORE_ACCOUNT_DISABLE_SUCCESSOR if successor is None else successor
+    insist(hashlib.sha256(json.dumps(value, separators=(',', ':')).encode()).hexdigest() == '125978668f6bd542d8470bbd38b21012ee22d5a0c522e9ce1bedbbfc4079ca5d')
+    insist(type(source) is bytes and hashlib.sha256(source).hexdigest() == value['current_sha256'])
+    insist(source.count(ACCOUNT_DISABLE_CURRENT) == 1 and source.count(ACCOUNT_DISABLE_PRIOR) == 0)
+    previous = source.replace(ACCOUNT_DISABLE_CURRENT, ACCOUNT_DISABLE_PRIOR, 1)
+    insist(hashlib.sha256(previous).hexdigest() == value['prior_sha256'])
+    return previous
+
+
 def verify_core(root):
     for relative, digest in CORE_HASHES.items():
         path = root / relative
         insist(not path.is_symlink() and path.is_file() and sha(path) == digest)
+    # Validate both predecessor seams in memory; builds and runtime bindings use
+    # only the current on-disk sources pinned by CORE_HASHES above.
+    previous = restore_account_disable_fixture((root / CORE_ACCOUNT_DISABLE_SUCCESSOR['path']).read_bytes())
+    restore_cover_unicode_append(previous)
 
 
 def executable_path(value, root, kind):

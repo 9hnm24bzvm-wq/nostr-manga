@@ -46,6 +46,9 @@ pub fn router() -> Router<AppState> {
 }
 impl core::sealed::Sealed for BoundAccountWrite {}
 impl core::CatalogMutationActor for BoundAccountWrite {
+    fn language_contract(&self) -> crate::domains::catalog::validation::LanguageContract {
+        crate::domains::catalog::validation::LanguageContract::Public
+    }
     fn user_id(&self) -> &str {
         BoundAccountWrite::user_id(self)
     }
@@ -147,13 +150,14 @@ fn normalize_author(value: Value, edit: bool) -> PublicApiResult<Value> {
     let mut fields = vec!["name", "biography"];
     fields.extend(AUTHOR_LINKS.iter().map(|(field, _, _)| *field));
     if edit {
-        fields.push("version");
+        fields.extend(["version", "locked"]);
     }
     allowed(&value, &fields)?;
     name(&value, !edit)?;
     if edit {
         version(&value)?;
     }
+    if value.get("locked").is_some_and(|v| !v.is_boolean()) { return Err(bad("locked")); }
     if let Some(biography) = value.get("biography") {
         let biography = biography
             .as_object()
@@ -278,7 +282,7 @@ fn normalize_group(value: Value, edit: bool) -> PublicApiResult<Value> {
         "publishDelay",
     ];
     if edit {
-        fields.extend(["leader", "members", "focusedLanguages", "locked", "version"]);
+        fields.extend(["leader", "officers", "members", "focusedLanguages", "locked", "version"]);
     }
     allowed(&value, &fields)?;
     name(&value, !edit)?;
@@ -350,16 +354,13 @@ fn normalize_group(value: Value, edit: bool) -> PublicApiResult<Value> {
     if let Some(leader) = value.get("leader") {
         PublicUuid::parse(leader.as_str().ok_or_else(|| bad("leader"))?)?;
     }
-    if let Some(members) = value.get("members") {
-        let members = members
-            .as_array()
-            .filter(|v| v.len() <= 100)
-            .ok_or_else(|| bad("members"))?;
-        let mut seen = BTreeSet::new();
-        for member in members {
-            let member = PublicUuid::parse(member.as_str().ok_or_else(|| bad("members"))?)?;
-            if !seen.insert(member) {
-                return Err(bad("members"));
+    for field in ["officers", "members"] {
+        if let Some(members) = value.get(field) {
+            let members = members.as_array().filter(|v| v.len() <= 100).ok_or_else(|| bad(field))?;
+            let mut seen = BTreeSet::new();
+            for member in members {
+                let member = PublicUuid::parse(member.as_str().ok_or_else(|| bad(field))?)?;
+                if !seen.insert(member) { return Err(bad(field)); }
             }
         }
     }
@@ -433,11 +434,9 @@ async fn member_ids(tx: &Transaction<'_>, value: &mut Value) -> PublicApiResult<
     if let Some(leader) = value.get("leader").and_then(Value::as_str) {
         ids.insert(PublicUuid::parse(leader)?);
     }
-    if let Some(members) = value.get("members").and_then(Value::as_array) {
-        for member in members {
-            ids.insert(PublicUuid::parse(
-                member.as_str().ok_or_else(|| bad("members"))?,
-            )?);
+    for field in ["officers", "members"] {
+        if let Some(members) = value.get(field).and_then(Value::as_array) {
+            for member in members { ids.insert(PublicUuid::parse(member.as_str().ok_or_else(|| bad(field))?)?); }
         }
     }
     let resolved = PostgresPublicIdResolver::resolve_many_in(
@@ -466,13 +465,36 @@ async fn member_ids(tx: &Transaction<'_>, value: &mut Value) -> PublicApiResult<
         let id = PublicUuid::parse(leader.as_str().ok_or_else(|| bad("leader"))?)?;
         *leader = json!(resolved[&id].native_id);
     }
-    if let Some(members) = value.get_mut("members").and_then(Value::as_array_mut) {
-        for member in members {
-            let id = PublicUuid::parse(member.as_str().ok_or_else(|| bad("members"))?)?;
-            *member = json!(resolved[&id].native_id);
+    for field in ["officers", "members"] {
+        if let Some(members) = value.get_mut(field).and_then(Value::as_array_mut) {
+            for member in members {
+                let id = PublicUuid::parse(member.as_str().ok_or_else(|| bad(field))?)?;
+                *member = json!(resolved[&id].native_id);
+            }
         }
     }
     Ok(())
+}
+// Dedicated signed editors capture both account and optimistic version in the
+// exact DELETE URL. Compatibility callers may omit this optional extension.
+fn delete_intent(query: Option<&str>, delete: bool) -> PublicApiResult<(Option<Value>, Option<i32>)> {
+    let mut account = None; let mut expected_version = None;
+    if let Some(query) = query {
+        if !delete { return Err(bad("editorial query")); }
+        for (key, value) in url::form_urlencoded::parse(query.as_bytes()) {
+            match key.as_ref() {
+                "expectedAccountId" if account.is_none() => account=Some(json!(PublicUuid::parse(&value)?.as_str())),
+                "expectedVersion" if expected_version.is_none() => {
+                    let parsed=value.parse::<i32>().ok().filter(|v| *v>0).ok_or_else(||bad("expectedVersion"))?;
+                    if parsed.to_string()!=value {return Err(bad("expectedVersion"));}
+                    expected_version=Some(parsed);
+                }
+                _ => return Err(bad("editorial query")),
+            }
+        }
+        if account.is_none() {return Err(bad("expectedAccountId"));}
+    }
+    Ok((account, expected_version))
 }
 async fn mutate(
     state: AppState,
@@ -486,12 +508,7 @@ async fn mutate(
     let delete = method == "DELETE";
     // DELETE retains its empty-body contract. Its exact signed URL may carry
     // one account-intent UUID; all other and duplicate query fields reject.
-    let mut expected = None;
-    if let Some(query) = uri.query() {
-        let pairs = url::form_urlencoded::parse(query.as_bytes()).collect::<Vec<_>>();
-        if !delete || pairs.len()!=1 || pairs[0].0!="expectedAccountId" {return Err(PublicApiError::bad_request("Editorial query accepts only one DELETE expectedAccountId"));}
-        expected=Some(json!(PublicUuid::parse(&pairs[0].1)?.as_str()));
-    }
+    let (mut expected, expected_version) = delete_intent(uri.query(), delete)?;
     let body = read_body(request, &headers, delete).await?;
     let cap = admitted_request(&state, &uri, &headers, &method, &body).await?;
     let payload = if delete {
@@ -558,13 +575,14 @@ async fn mutate(
             // Shared legacy deletion keeps its native behavior. The public
             // boundary additionally refuses hidden protocol projections.
             let sql = if kind == ResourceKind::Author {
-                "SELECT id FROM platform.catalog_authors WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) FOR UPDATE"
+                "SELECT version FROM platform.catalog_authors WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_source_is_visible(protocol_event_id) FOR UPDATE"
             } else {
-                "SELECT id FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR UPDATE"
+                "SELECT version FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR UPDATE"
             };
-            tx.query_opt(sql, &[&id])
-                .await?
-                .ok_or_else(PublicApiError::not_found)?;
+            let locked = tx.query_opt(sql, &[&id]).await?.ok_or_else(PublicApiError::not_found)?;
+            if expected_version.is_some_and(|version| locked.get::<_, i32>(0) != version) {
+                return Err(PublicApiError::conflict("Editorial target changed; reload before deletion"));
+            }
             if kind == ResourceKind::Author {
                 core::author_delete(&tx, &actor, id).await?;
             } else {
@@ -580,10 +598,11 @@ async fn mutate(
     };
     let response = if let Some(data) = data {
         let index = AliasIndex::load_in(&tx, &[(kind, data.clone())]).await?;
+        let includes = if kind == ResourceKind::Group {["leader", "member"].into_iter().map(str::to_owned).collect()} else {BTreeSet::new()};
         serde_json::to_value(EntityResponse::<Resource>::new(index.resource(
             kind,
             &data,
-            &BTreeSet::new(),
+            &includes,
         )?))
         .map_err(|_| PublicApiError::unavailable())?
     } else {
@@ -671,6 +690,22 @@ id_handler!(group_delete, Group);
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn rich_editor_extensions_are_update_only_and_strictly_versioned() {
+        assert!(normalize_author(json!({"version":1,"locked":true}), true).is_ok());
+        assert!(normalize_author(json!({"version":1,"locked":"true"}), true).is_err());
+        assert!(normalize_author(json!({"name":"Author","locked":false}), false).is_err());
+        let user="11111111-1111-8111-8111-111111111111";
+        assert_eq!(normalize_group(json!({"version":1,"officers":[user]}), true).unwrap()["officers"],json!([user]));
+        for input in [json!({"version":1,"officers":[user,user]}),json!({"version":1,"officers":["native-id"]}),json!({"version":1,"officers":null}),json!({"name":"Group","officers":[]})] {
+            let edit=input.get("version").is_some();assert!(normalize_group(input,edit).is_err());
+        }
+        let query=format!("expectedAccountId={user}&expectedVersion=7");
+        assert_eq!(delete_intent(Some(&query),true).unwrap(),(Some(json!(user)),Some(7)));
+        assert!(delete_intent(Some(&query),false).is_err());
+        for query in ["expectedVersion=7".to_owned(),format!("expectedAccountId={user}&expectedVersion=0"),format!("expectedAccountId={user}&expectedVersion=01"),format!("expectedAccountId={user}&expectedVersion=7&expectedVersion=7"),format!("expectedAccountId={user}&other=1")] {assert!(delete_intent(Some(&query),true).is_err());}
+        assert_eq!(delete_intent(None,true).unwrap(),(None,None));
+    }
     #[test]
     fn author_contract_validates_nullable_links_and_closed_fields() {
         assert_eq!(normalize_author(json!({"name":"Author","biography":{"en":"A biography"},"fanBox":null,"weibo":"https://author.weibo.cn/a"}),false).unwrap()["fanbox"],Value::Null);

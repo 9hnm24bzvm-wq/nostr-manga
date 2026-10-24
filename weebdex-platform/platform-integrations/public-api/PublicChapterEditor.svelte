@@ -1,8 +1,11 @@
 <script lang="ts">
+  import PublicChapterPagesEditor from './PublicChapterPagesEditor.svelte';
+  import { chapterMetadataPatch } from './language';
   import { onDestroy, onMount, untrack } from 'svelte';
   import { loadUploadAccount, publicUploadOwner, type PublicUploadOwner } from './upload-client';
   import { normalizeChapter } from './normalize';
   import { publicCatalogueRead } from './site-client';
+  import type {ChapterEditAccess} from './chapter-access';
   import { record, resource } from './validation';
   import type { MangaView } from './types';
   let { initial }: { initial: Chapter } = $props();
@@ -10,25 +13,30 @@
   const id = captured.id;
   let chapter = $state(captured), title = $state(captured.title ?? ''), volume = $state(captured.volume ?? ''), number = $state(captured.chapter ?? ''), language = $state(captured.language);
   let groups = $state((captured.relationships.groups ?? []).map(group => group.id).join(', '));
-  let owner: PublicUploadOwner | undefined, user = $state<User>(), ready = $state(false), busy = $state(false), pending = $state(false), removed = $state(false), removalChoice = $state<'request-review' | 'approve-hide'>(), message = $state('');
+  let owner = $state.raw<PublicUploadOwner>(), pagesLocked = $state(true);
+  let ready = $state(false), busy = $state(false), pending = $state(false), removed = $state(false), removalChoice = $state<'request-review' | 'approve-hide'>(), message = $state('');
+  let access=$state<ChapterEditAccess>(),sourcePending=$state(false);
   let disposed = false;
   const current = () => { if (disposed || initial.id !== id) throw Error('The chapter editor changed. Reload the current chapter.'); };
   onDestroy(() => { disposed = true; owner?.dispose(); });
   onMount(() => { void (async () => {
-    try { const account = await loadUploadAccount(current); current(); user = account; owner = publicUploadOwner(() => initial.id, account, 'chapter'); ready = true; }
+    try { const account = await loadUploadAccount(current); current(); owner = publicUploadOwner(() => initial.id, account, 'chapter', 'caller'); await refreshAccess(); current(); pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed'; ready = true; }
     catch (error) { if (!disposed) message = error instanceof Error ? error.message : 'Select a signing identity in Settings and reload this editor.'; }
   })(); });
-  const staff = $derived(!!user?.roles?.some(role => ['moderator', 'staff', 'sysop'].includes(role)));
-  const canUpdate = $derived(!!user?.permissions?.includes('self.chapter.update') || staff && !!user?.permissions?.includes('chapter.update'));
-  const canClaim = $derived(!!user?.permissions?.includes('self.chapter.update'));
-  const approvesHide = $derived(!!user?.roles?.some(role => ['moderator', 'staff', 'sysop'].includes(role)) && !!user?.permissions?.includes('chapter.remove'));
-  const canRemove = $derived(!!user?.permissions?.includes('self.chapter.remove') || approvesHide);
+  const metadataChanged = $derived(title !== (chapter.title ?? '') || volume !== (chapter.volume ?? '') || number !== (chapter.chapter ?? '') || language !== chapter.language || groups !== (chapter.relationships.groups ?? []).map(group => group.id).join(', '));
+  const canUpdate = $derived(access?.canUpdate===true);
+  const canClaim = $derived(access?.canClaim===true);
+  const approvesHide = $derived(access?.approvesHide===true);
+  const canRemove = $derived(access?.canRemove===true);
+  async function refreshAccess(){access=undefined;if(!owner)return;try{const next=await owner.chapterAccess(chapter.version);owner.assert();current();access=next;}catch(error){if(!disposed)message=error instanceof Error?error.message:'Chapter eligibility is unavailable. Reload the current chapter.';}}
   function restore(value: Chapter) { chapter = value; title = value.title ?? ''; volume = value.volume ?? ''; number = value.chapter ?? ''; language = value.language; groups = (value.relationships.groups ?? []).map(group => group.id).join(', '); }
   async function command(action: 'update' | 'claim' | 'remove', removalMode?: 'request-review' | 'approve-hide') {
-    if (!owner || busy || pending || removed || action === 'remove' && !removalMode) return;
+    if (!owner || !ready || busy || pagesLocked || pending || removed || action === 'remove' && !removalMode) return;
     busy = true; message = ''; removalChoice = undefined;
     try {
-      const payload = action === 'update' ? { version: chapter.version, title, volume, chapter: number, language, groups: groups.split(',').map(value => value.trim()).filter(Boolean) } : action === 'remove' ? { removalMode } : undefined;
+      await refreshAccess();owner.assert();current();
+      if(action==='update'?!canUpdate:action==='claim'?!canClaim:removalMode==='approve-hide'?!approvesHide:!canRemove){message=message||'The current account is not eligible for this chapter action.';return;}
+      const payload = action === 'update' ? chapterMetadataPatch(chapter, { title, volume, chapter: number, language, groups: groups.split(',').map(value => value.trim()).filter(Boolean) }) : action === 'remove' ? { removalMode } : undefined;
       const response = await owner.request(`/chapter/${id}${action === 'claim' ? '/claim' : ''}`, action === 'update' ? 'PUT' : action === 'claim' ? 'POST' : 'DELETE', payload);
       owner.assert(); current();
       if (response.status >= 400) { const errors = record(response.body).errors; throw Error(Array.isArray(errors) && typeof errors[0]?.detail === 'string' ? errors[0].detail : `Chapter operation refused (HTTP ${response.status})`); }
@@ -40,46 +48,55 @@
         if (response.status !== 200) throw Error('Chapter mutation outcome is unconfirmed.');
         const row = resource(record(response.body).data, 'chapter');
         restore({ ...chapter, ...normalizeChapter(row, chapter.relationships.manga as unknown as MangaView) } as unknown as Chapter);
+        await refreshAccess();
         message = action === 'claim' ? 'Local catalogue ownership updated. Original signing authority is unchanged.' : 'Instance chapter metadata updated. Original signed metadata and image pages are unchanged.';
       }
     } catch (error) {
-      if (!disposed) { message = error instanceof Error ? error.message : 'Chapter operation failed.'; pending = true; }
-    } finally { if (!disposed) busy = false; }
+      if (!disposed) { message = error instanceof Error ? error.message : 'Chapter operation failed.'; }
+    } finally { if (!disposed) {pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed';busy = false;} }
   }
   async function reload() {
-    if (!owner || busy || removed) return;
+    if (!owner || busy || pagesLocked || removed) return;
     busy = true;
-    try { const response = await publicCatalogueRead<Chapter>('chapter.get', { id }); owner.assert(); current(); if (response.status !== 200 || !response.body || response.body.id !== id) throw Error('Current chapter is unavailable.'); restore(response.body); pending = false; message = 'Current chapter reloaded. No mutation was replayed.'; }
+    try { const response = await publicCatalogueRead<Chapter>('chapter.get', { id }); owner.assert(); current(); if (response.status !== 200 || !response.body || response.body.id !== id) throw Error('Current chapter is unavailable.'); restore(response.body); pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed'; await refreshAccess(); if(access)message = pending?'Current chapter reloaded. Its unconfirmed signed command remains fenced; detail is not a command receipt. No mutation was replayed.':'Current chapter reloaded. No mutation was replayed.'; }
     catch (error) { if (!disposed) message = error instanceof Error ? error.message : 'Could not reload this chapter.'; }
     finally { if (!disposed) busy = false; }
   }
 </script>
 <section class="mx-auto max-w-270 space-y-4 p-5">
   <h2 class="text-xl font-medium">Edit chapter</h2>
-  <p>Changes are instance-local catalogue annotations. Signed source metadata and published image pages are immutable.</p>
+  <p>Changes are instance-local catalogue annotations. Original signed source metadata and protocol image pages are immutable. Eligible local chapter pages use separate private staging below.</p>
   {#if message}<p role="status" class="rounded border p-3">{message}</p>{/if}
   {#if !ready}<p>Select a signing identity in Settings and open this page again if account authorization is required.</p>{/if}
+  {#if sourcePending}<p>Instance review was accepted, but the independent original-source request outcome is unconfirmed. Further chapter writes remain fenced; detail reload cannot reconcile that source request.</p>{:else if pending}<p>This tab’s chapter command recovery state is unconfirmed or unavailable. Reloading detail cannot confirm an unknown command. Further chapter writes stay disabled across reload and remount.</p>{/if}
+  {#if ready&&!access}<p>Chapter eligibility could not be verified. Reload the current chapter before changing it.</p>{/if}
+  {#if access&&!access.claimFactsAvailable}<p>Claim eligibility is unavailable because this server did not provide the exact stored uploader facts.</p>{/if}
   <form class="space-y-3" onsubmit={event => { event.preventDefault(); void command('update'); }}>
-    <fieldset disabled={!ready || busy || pending || removed || !canUpdate} class="space-y-3">
+    <fieldset disabled={!ready || busy || pagesLocked || pending || removed || !canUpdate} class="space-y-3">
       <label class="block">Title<input class="block w-full rounded border p-2" bind:value={title} maxlength="255" /></label>
       <label class="block">Volume<input class="block w-full rounded border p-2" bind:value={volume} maxlength="32" /></label>
       <label class="block">Chapter<input class="block w-full rounded border p-2" bind:value={number} maxlength="32" /></label>
-      <label class="block">Language<input class="block w-full rounded border p-2" bind:value={language} maxlength="12" /></label>
+      <label class="block">Language<input class="block w-full rounded border p-2" bind:value={language} /></label>
+      <p class="text-sm">New language values use lowercase two-letter codes such as ta or pt-br. An unchanged imported label is kept exactly and is not resubmitted.</p>
       <label class="block">Group UUIDs, comma separated<input class="block w-full rounded border p-2" bind:value={groups} /></label>
       <button type="submit" class="rounded border px-4 py-2">Save instance metadata</button>
     </fieldset>
   </form>
   <div class="flex flex-wrap gap-3">
-    <button type="button" class="rounded border px-4 py-2" disabled={!ready || busy || pending || removed || !canClaim} onclick={() => command('claim')}>Claim local chapter ownership</button>
-    <button type="button" class="rounded border px-4 py-2" disabled={!ready || busy || pending || removed || !canRemove} onclick={() => removalChoice = approvesHide ? 'approve-hide' : 'request-review'}>{approvesHide ? 'Approve instance hide' : 'Request chapter removal'}</button>
-    <button type="button" class="rounded border px-4 py-2" disabled={!ready || busy || removed} onclick={reload}>Reload current chapter</button>
+    <button type="button" class="rounded border px-4 py-2" disabled={!ready || busy || pagesLocked || pending || removed || !canClaim} onclick={() => command('claim')}>Claim local chapter ownership</button>
+    <button type="button" class="rounded border px-4 py-2" disabled={!ready || busy || pagesLocked || pending || removed || !canRemove} onclick={() => removalChoice = approvesHide ? 'approve-hide' : 'request-review'}>{approvesHide ? 'Approve instance hide' : 'Request chapter removal'}</button>
+    <button type="button" class="rounded border px-4 py-2" disabled={!ready || busy || pagesLocked || removed} onclick={reload}>Reload current chapter</button>
   </div>
   {#if removalChoice}
     <div role="alertdialog" tabindex="-1" aria-label="Confirm chapter removal" class="space-y-3 rounded border p-4">
       <p>{removalChoice === 'approve-hide' ? 'Approve hiding this chapter on this instance immediately? This action uses your moderator chapter removal grant. Original protocol deletion and peer copies remain separate.' : 'Request instance moderator review of this chapter removal? The chapter remains visible until approval. Original protocol removal is reviewed separately.'}</p>
-      <button type="button" class="rounded border px-4 py-2" onclick={() => command('remove', removalChoice)}>{removalChoice === 'approve-hide' ? 'Approve and hide on this instance' : 'Submit removal request'}</button>
+      <button type="button" class="rounded border px-4 py-2" disabled={!ready||busy||pagesLocked||pending||removed||!canRemove} onclick={() => command('remove', removalChoice)}>{removalChoice === 'approve-hide' ? 'Approve and hide on this instance' : 'Submit removal request'}</button>
       <button type="button" class="rounded border px-4 py-2" onclick={() => removalChoice = undefined}>Cancel</button>
     </div>
+  {/if}
+  {#if owner && ready && !removed}
+    {#if metadataChanged}<p>Save instance metadata or reload the current chapter before opening page staging. Unsaved metadata is not included in page commits.</p>{/if}
+    <PublicChapterPagesEditor {chapter} {owner} {access} disabled={busy || pending || metadataChanged} onlock={locked => pagesLocked = locked} oncommit={value => { restore(value); void refreshAccess(); }} />
   {/if}
   <a class="underline" href={`/title/${chapter.relationships.manga.id}`}>Return to the title</a>
 </section>

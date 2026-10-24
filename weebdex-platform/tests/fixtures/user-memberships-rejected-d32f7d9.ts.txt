@@ -1,0 +1,63 @@
+// Anonymous public presentation only. Never a cookie actor or signing identity.
+import {publicUuid, record, PublicApiContractError} from './validation';
+export interface PublicMembership {id:string;name:string;version:number;isLeader:boolean;isOfficer:boolean;}
+export interface MembershipPage {userId:string;data:PublicMembership[];nextCursor:string|null;}
+const MAX_BYTES=65536, PAGE_SIZE=32;
+function fail(message:string,status=502):never {throw new PublicApiContractError(message,status);}
+function exact(value:Record<string,unknown>,fields:string[],label:string){if(Object.keys(value).length!==fields.length||Object.keys(value).some(key=>!fields.includes(key)))fail('Invalid '+label+' fields.');}
+export function membershipCursor(input:unknown,userId:string):{version:1;userId:string;groupId:string;name:string} {
+ if(typeof input!=='string'||!input||input.length>2048||!/^[A-Za-z0-9_-]+$/.test(input))fail('Invalid public membership cursor.');
+ let value:Record<string,unknown>;try{const bytes=Uint8Array.from(atob(input.replace(/-/g,'+').replace(/_/g,'/')),char=>char.charCodeAt(0));value=record(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));}catch{fail('Invalid public membership cursor.');}
+ exact(value,['version','userId','groupId','name'],'membership cursor');
+ if(value.version!==1||value.userId!==userId||publicUuid(value.groupId)!==value.groupId||typeof value.name!=='string'||!value.name||[...value.name].length>200||new TextEncoder().encode(value.name).byteLength>800)fail('Membership cursor belongs to another target or changed page.',409);
+ return value as {version:1;userId:string;groupId:string;name:string};
+}
+export function normalizeMembershipPage(input:unknown,userId:string,after:string|null=null):MembershipPage {
+ const expected=publicUuid(userId),cursor=after===null?null:(membershipCursor(after,expected),after),body=record(input,'membership page');
+ exact(body,['result','response','data','limit','after','nextCursor','nostr'],'membership page');
+ const meta=record(body.nostr,'membership provenance');exact(meta,['scope','source','identity','requestedId','userId','consistency'],'membership provenance');
+ if(body.result!=='ok'||body.response!=='membership_page'||body.limit!==PAGE_SIZE||body.after!==cursor||!Array.isArray(body.data)||body.data.length>PAGE_SIZE||meta.scope!=='public-native-user'||meta.source!=='persisted-visible-native-memberships'||meta.identity!=='native_public_user'||meta.requestedId!==expected||meta.userId!==expected||meta.consistency!=='live-keyset-v1')fail('Memberships no longer match this native public user. Refresh the profile.',409);
+ const seen=new Set<string>();
+ const data=body.data.map(value=>{
+  const row=record(value,'membership');exact(row,['id','type','attributes','relationships','membership'],'membership');
+  const id=publicUuid(row.id),attributes=record(row.attributes,'group attributes'),edge=record(row.membership,'target membership');
+  exact(attributes,['name','version'],'group attributes');exact(edge,['isLeader','isOfficer'],'target membership');
+  if(row.id!==id||seen.has(id)||row.type!=='scanlation_group'||!Array.isArray(row.relationships)||row.relationships.length||typeof attributes.name!=='string'||!attributes.name||[...attributes.name].length>200||new TextEncoder().encode(attributes.name).byteLength>800||!Number.isSafeInteger(attributes.version)||Number(attributes.version)<1||Number(attributes.version)>2147483647||typeof edge.isLeader!=='boolean'||typeof edge.isOfficer!=='boolean')fail('Invalid target-only public membership.');
+  seen.add(id);return{id,name:attributes.name,version:Number(attributes.version),isLeader:edge.isLeader,isOfficer:edge.isOfficer};
+ });
+ if(body.nextCursor!==null){const next=membershipCursor(body.nextCursor,expected),last=data.at(-1);if(data.length!==PAGE_SIZE||next.groupId!==last?.id||next.name!==last.name||body.nextCursor===cursor)fail('Invalid public membership continuation.');}
+ return{userId:expected,data,nextCursor:body.nextCursor as string|null};
+}
+
+// A single page has a finite wire/time budget. Abort and stale UI generations
+// suppress late results; this does not claim remote cancellation completion.
+export function createMembershipReader(fetcher:typeof fetch=(...args)=>fetch(...args)) {
+ return async(userId:string,after:string|null=null,signal?:AbortSignal):Promise<MembershipPage>=>{
+  const user=publicUuid(userId),cursor=after===null?null:(membershipCursor(after,user),after),controller=new AbortController();
+  const abort=()=>controller.abort();if(signal?.aborted)abort();else signal?.addEventListener('abort',abort,{once:true});
+  const timer=setTimeout(abort,15000);
+  let reader:ReadableStreamDefaultReader<Uint8Array>|undefined,finished=false,stop:(()=>void)|undefined;
+  const cancelled=()=>new PublicApiContractError(signal?.aborted?'Membership read cancelled.':'Membership read timed out. Refresh to try again.',signal?.aborted?499:503);
+  const interruption=new Promise<never>((_,reject)=>{stop=()=>reject(cancelled());controller.signal.addEventListener('abort',stop,{once:true});if(controller.signal.aborted)stop();});
+  const wait=<T>(work:Promise<T>)=>Promise.race([work,interruption]);
+  try {
+   if(controller.signal.aborted)throw cancelled();
+   const query=new URLSearchParams({limit:String(PAGE_SIZE)});if(cursor!==null)query.set('after',cursor);
+   const response=await wait(fetcher('/api/v1/nostr/user/'+user+'/memberships?'+query,{method:'GET',credentials:'omit',cache:'no-store',redirect:'error',signal:controller.signal,headers:{Accept:'application/json'}}).then(response=>{if(controller.signal.aborted){void response.body?.cancel().catch(()=>{});throw cancelled();}return response;}));
+   if(response.status!==200){void response.body?.cancel().catch(()=>{});fail('Public memberships could not be loaded ('+response.status+'). Refresh the profile.',response.status);}
+   if((response.headers.get('content-type')??'').split(';')[0].trim().toLowerCase()!=='application/json'||!response.body){void response.body?.cancel().catch(()=>{});fail('The public membership response was not JSON.');}
+   const length=response.headers.get('content-length');if(length!==null&&(!/^\d+$/.test(length)||Number(length)>MAX_BYTES)){void response.body.cancel().catch(()=>{});fail('Public membership response exceeded its byte budget.',503);}
+   reader=response.body.getReader();const decoder=new TextDecoder('utf-8',{fatal:true});let bytes=0,text='';
+   for(;;){const chunk=await wait(reader.read());if(chunk.done){finished=true;break;}bytes+=chunk.value.byteLength;if(bytes>MAX_BYTES)fail('Public membership response exceeded its byte budget.',503);text+=decoder.decode(chunk.value,{stream:true});}
+   text+=decoder.decode();if(controller.signal.aborted)throw cancelled();
+   let body:unknown;try{body=JSON.parse(text);}catch{fail('The public membership response was malformed.');}
+   return normalizeMembershipPage(body,user,cursor);
+  } finally {
+   clearTimeout(timer);signal?.removeEventListener('abort',abort);if(stop)controller.signal.removeEventListener('abort',stop);
+   if(!finished){controller.abort();void reader?.cancel().catch(()=>{});}else reader?.releaseLock();
+   // Observe the interruption even if cancellation preceded the first race.
+   void interruption.catch(()=>{});
+  }
+ };
+}
+export const readMembershipPage=createMembershipReader();

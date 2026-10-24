@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "scope": "retained-public-workflow-source-comparison-only-v1",
+  "comparison_only": true,
+  "browser_executed": false,
+  "hosted_executed": false,
+  "rows": [
+    {
+      "path": ".github/workflows/hosted-browser-e2e.yml",
+      "current_bytes": 8857,
+      "current_sha256": "29c61963198b921a2e22419cce67d38a4ebd9c868012701bfff2b0bb87dff994",
+      "previous_bytes": 8661,
+      "previous_sha256": "76d40e0370cdb7c5fb57ae9b4380c39252ff820c1ff2d3dc0a6f0c15fca1d135",
+      "previous_fixture": "weebdex-platform/tests/ci/fixtures/hosted-browser-workflow-76d40e0370cd.yml.txt",
+      "previous_source_commit": "c5ff2170a7d2624abe238528ae960d3bef8c916f",
+      "previous_git_blob": "073d48c9545e528d569a9fa4be45c10d07911f4a"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_upload_diagnostic_workflow.py",
+      "current_bytes": 12607,
+      "current_sha256": "b9a81766796ffb15e70b92f67c98e48ba23785781b4028b094379672e653ca32",
+      "previous_bytes": 12392,
+      "previous_sha256": "194289c9cc71deca014700c46d77e8cc983ac555e2aca903a79513907826664b",
+      "previous_fixture": "weebdex-platform/tests/ci/fixtures/native-upload-workflow-test-194289c9cc71.py.txt",
+      "previous_source_commit": "c5ff2170a7d2624abe238528ae960d3bef8c916f",
+      "previous_git_blob": "81826b93af6385b79f50ba68a0fb9d72a92039a3"
+    }
+  ],
+  "qualification": "Exact current source bytes are admitted only for comparison with genuine historical fixtures verified against the named local Git commit and blobs. No historical fixture is executed, no pinset or source is rewritten, and no test, build, runtime, browser, hosted execution or remote publication is claimed."
+}

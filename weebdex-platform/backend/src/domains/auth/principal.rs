@@ -229,7 +229,7 @@ pub async fn optional_principal(
     Ok(principal)
 }
 
-fn constrain_expected_account(headers: &HeaderMap, principal: &SessionPrincipal) -> ApiResult<()> {
+fn expected_account(headers: &HeaderMap) -> ApiResult<Option<&str>> {
     // This never authenticates or grants a capability. Applying it at the
     // optional identity boundary also protects private preview/read branches.
     let mut expected = headers.get_all("x-weebdex-expected-account").iter();
@@ -243,13 +243,91 @@ fn constrain_expected_account(headers: &HeaderMap, principal: &SessionPrincipal)
         if value.is_empty() || value.len() > 128 {
             return Err(ApiError::bad_request("Invalid expected account"));
         }
-        if value != principal.user_id {
-            return Err(ApiError::conflict(
-                "The signed-in account changed; refresh its preview before continuing",
-            ));
-        }
+        return Ok(Some(value));
+    }
+    Ok(None)
+}
+
+fn constrain_expected_account(headers: &HeaderMap, principal: &SessionPrincipal) -> ApiResult<()> {
+    if expected_account(headers)?.is_some_and(|value| value != principal.user_id) {
+        return Err(ApiError::conflict(
+            "The signed-in account changed; refresh its preview before continuing",
+        ));
     }
     Ok(())
+}
+
+fn native_library_cookie<'a>(headers: &'a HeaderMap, name: &str) -> ApiResult<&'a str> {
+    // This seam is deliberately not a bearer/signed/account-recovery adapter.
+    if headers.contains_key(header::AUTHORIZATION) {
+        return Err(ApiError::forbidden("Use a normal browser cookie for completion lookup"));
+    }
+    if expected_account(headers)?.is_none() {
+        return Err(ApiError::bad_request("Expected account is required"));
+    }
+    // The retained cookie helper ignores empty values. At this exact-selection
+    // boundary even `sid=valid; sid=` is ambiguous, so count names first without
+    // changing the existing extractor or unrelated authentication behavior.
+    let mut named = 0;
+    for value in headers.get_all(header::COOKIE) {
+        let value = value.to_str().map_err(|_| ApiError::unauthorized())?;
+        for part in value.split(';') {
+            if part.trim().split_once('=').is_some_and(|(key, _)| key == name) {
+                named += 1;
+                if named > 1 { return Err(ApiError::unauthorized()); }
+            }
+        }
+    }
+    if named != 1 { return Err(ApiError::unauthorized()); }
+    cookie(headers, name).filter(|token| token.len() <= 160)
+        .ok_or_else(ApiError::unauthorized)
+}
+
+fn library_authority_error(error: tokio_postgres::Error) -> ApiError {
+    if error.code().is_some_and(|code| matches!(code.code(), "55P03" | "40P01" | "40001")) {
+        ApiError::conflict("Account authority changed or is busy; refresh before continuing")
+    } else { error.into() }
+}
+
+/// Native cookie owner-library authority, resolved and fenced in the caller's
+/// RepeatableRead transaction. Never use a previously cached/pool principal.
+/// User -> session SHARE locks block disable/role changes and revocation until
+/// commit. They do not promise authority at response delivery or stop expiry.
+pub(crate) async fn require_native_library_principal_in(
+    state: &AppState,
+    headers: &HeaderMap,
+    tx: &tokio_postgres::Transaction<'_>,
+) -> ApiResult<SessionPrincipal> {
+    let hash = crypto::digest(native_library_cookie(headers, &state.config.session_cookie_name)?);
+    let candidate = tx.query_opt(
+        "SELECT id,user_id FROM platform.sessions WHERE token_hash=$1", &[&hash],
+    ).await.map_err(library_authority_error)?.ok_or_else(ApiError::unauthorized)?;
+    let session_id: String = candidate.get(0);
+    let user_id: String = candidate.get(1);
+    // Separate statements make the lock order explicit, unlike a joined lock.
+    let user = tx.query_opt(
+        "SELECT id,username,email,verified,roles,permissions FROM platform.users WHERE id=$1 AND NOT disabled FOR SHARE NOWAIT",
+        &[&user_id],
+    ).await.map_err(library_authority_error)?.ok_or_else(ApiError::unauthorized)?;
+    let session = tx.query_opt(
+        "SELECT id,GREATEST(0,EXTRACT(EPOCH FROM clock_timestamp()-authenticated_at)::BIGINT),purpose='normal' FROM platform.sessions WHERE id=$1 AND user_id=$2 AND token_hash=$3 AND revoked_at IS NULL AND expires_at>clock_timestamp() FOR SHARE NOWAIT",
+        &[&session_id, &user_id, &hash],
+    ).await.map_err(library_authority_error)?.ok_or_else(ApiError::unauthorized)?;
+    if !session.get::<_, bool>(2) {
+        return Err(ApiError::forbidden("Use a normal browser session for completion lookup"));
+    }
+    let principal = SessionPrincipal {
+        user_id: user.get(0), username: user.get(1), email: user.get(2), verified: user.get(3),
+        roles: strings(user.get(4)), permissions: effective_permissions(strings(user.get(5)), None),
+        session_id: session.get(0), is_api_client: false,
+        authenticated_age_seconds: session.get(1), recovery_session: false,
+    };
+    principal.require_browser_session()?;
+    // Preserve normal browser owner-library access, including unverified or
+    // restricted accounts. has_perm("self.library.read") is NOT equivalent.
+    principal.require_library_read()?;
+    constrain_expected_account(headers, &principal)?;
+    Ok(principal)
 }
 
 pub async fn require_library_principal(
@@ -465,5 +543,41 @@ mod tests {
         recovery.roles = vec!["staff".into(), "moderator".into()];
         assert!(!recovery.is_staff());
         assert!(!recovery.is_moderator());
+    }
+    #[test]
+    fn completion_requires_one_expected_account_and_only_native_cookie() {
+        let mut headers = HeaderMap::new();
+        headers.insert(header::COOKIE, "sid=synthetic".parse().unwrap());
+        assert!(native_library_cookie(&headers, "sid").is_err());
+        headers.insert("x-weebdex-expected-account", "owner".parse().unwrap());
+        assert_eq!(native_library_cookie(&headers, "sid").unwrap(), "synthetic");
+        let actor = user(false, &[], &["restricted"]);
+        assert!(actor.require_browser_session().is_ok());
+        assert!(actor.require_library_read().is_ok());
+        assert!(constrain_expected_account(&headers, &actor).is_ok());
+        headers.insert("x-weebdex-expected-account", "other".parse().unwrap());
+        assert_eq!(constrain_expected_account(&headers, &actor).unwrap_err().status, axum::http::StatusCode::CONFLICT);
+        headers.append("x-weebdex-expected-account", "other".parse().unwrap());
+        assert!(native_library_cookie(&headers, "sid").is_err());
+        headers.remove("x-weebdex-expected-account");
+        headers.insert("x-weebdex-expected-account", "owner".parse().unwrap());
+        for authorization in ["Bearer synthetic", "Nostr synthetic", "", "malformed"] {
+            headers.insert(header::AUTHORIZATION, authorization.parse().unwrap());
+            assert!(native_library_cookie(&headers, "sid").is_err());
+        }
+        headers.remove(header::AUTHORIZATION);
+        for cookies in ["sid=one; sid=two".to_owned(), "sid=one; sid=".to_owned(), "sid=; sid=one".to_owned(), format!("sid={}", "x".repeat(161)), "other=value".to_owned()] {
+            headers.insert(header::COOKIE, cookies.parse().unwrap());
+            assert!(native_library_cookie(&headers, "sid").is_err());
+        }
+        headers.insert(header::COOKIE, "sid=synthetic".parse().unwrap());
+        for expected in ["".to_owned(), "x".repeat(129)] {
+            headers.insert("x-weebdex-expected-account", expected.parse().unwrap());
+            assert!(native_library_cookie(&headers, "sid").is_err());
+        }
+        // Existing other endpoints still permit omission of the correlation
+        // header. Mandatory presence is specific to this new completion seam.
+        headers.remove("x-weebdex-expected-account");
+        assert!(constrain_expected_account(&headers, &actor).is_ok());
     }
 }

@@ -47,3 +47,5 @@
     {#if open}{#key viewGeneration}{#if view === 'keys'}<IdentitySetup onfinish={() => setOpen(false)} assertCurrent={viewGuard(viewGeneration)} finishLabel="Done" allowFinishLater={false} />{:else}<ProtocolIdentityPanel bind:selectedOrigin settingsView={view} assertViewCurrent={viewGuard(viewGeneration)} />{/if}{/key}{/if}
   </Dialog.Content>
 </Dialog.Root>
+
+<p class="mt-4"><a class="underline" href="/account/closure">Reversibly disable a bound instance account</a>. This does not delete your original identity or Library.</p>

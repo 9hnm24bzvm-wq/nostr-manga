@@ -22,6 +22,8 @@ PUBLIC = ROOT / 'ci-evidence'
 SIGNED = {'signed-library', 'signed-profile', 'signed-social', 'signed-context', 'signed-source-controls', 'signed-namespace', 'signed-recipients', 'signed-restart'}
 PUBLIC_UPLOAD_PHASE = 'public-upload-recovery'
 PUBLIC_FEATURE_PHASE = 'public-feature-recovery'
+PUBLIC_SIGNED_FEATURE_PHASE = 'public-signed-feature-recovery'
+PUBLIC_GATE_BATCHES = {'public-upload', 'public-signed-features'}
 BATCHES = {
     'ordinary-a': ['account', 'account-recovery', 'upload', 'reader', 'announcements'],
     'ordinary-b': ['local-library', 'filters', 'editorial', 'community', 'pwa'],
@@ -40,16 +42,17 @@ BATCHES = {
     # Gate-on UUID catalogue profile, with its own operationally ready fixture.
     # Native Startup's SeedManga1 routes belong to the separate gate-off profile.
     'public-upload': [PUBLIC_FEATURE_PHASE, PUBLIC_UPLOAD_PHASE],
+    'public-signed-features': [PUBLIC_SIGNED_FEATURE_PHASE],
 }
 ALL_PHASES = ['startup', *dict.fromkeys(phase for phases in BATCHES.values() for phase in phases)]
-assert len(ALL_PHASES) == 41
+assert len(ALL_PHASES) == 42
 MAX_BATCH_RUNS = len(BATCHES) + 1  # The public feature/upload pair uses separate fixtures.
-MAX_PHASE_RUNS = sum(len(phases) + (name != 'public-upload') for name, phases in BATCHES.items())
+MAX_PHASE_RUNS = sum(len(phases) + (name not in PUBLIC_GATE_BATCHES) for name, phases in BATCHES.items())
 STOP = False
 
 
 def batch_phases(name, phases):
-    return list(phases) if name == 'public-upload' else ['startup', *phases]
+    return list(phases) if name in PUBLIC_GATE_BATCHES else ['startup', *phases]
 
 
 def requested_phases(batches):
@@ -118,9 +121,10 @@ def public_upload_profile(plan):
     return dict(plan, **{key: profile[key] for key in ['ui_dir', 'frontend_manifest', 'frontend_manifest_sha256', 'frontend_index_sha256']})
 
 
-def verify_public_upload_ready(state, fixture, plan):
-    declaration = state.get('public_upload', {})
-    if declaration.get('enabled') is not True or declaration.get('fixture_only') is not True or declaration.get('scenario') != 'public-upload-v1':
+def verify_public_upload_ready(state, fixture, plan, *, signed_features=False):
+    declaration = state.get('signed_features' if signed_features else 'public_upload', {})
+    scenario = 'public-signed-features-v1' if signed_features else 'public-upload-v1'
+    if declaration.get('enabled') is not True or declaration.get('fixture_only') is not True or declaration.get('scenario') != scenario:
         raise RuntimeError('Public upload UUID fixture is not opted in')
     reference = state.get('operational_http', {})
     path = ROOT / 'test-evidence/security/live-native-http.json'
@@ -190,6 +194,13 @@ def project_phase(phase, batch, acceptance, owned):
         spec.loader.exec_module(diagnostics)
         value['public_feature_diagnostics'] = diagnostics.project(acceptance)
         if not diagnostics.passed(value['public_feature_diagnostics']):
+            value['status'] = 'failed'
+    if phase == PUBLIC_SIGNED_FEATURE_PHASE:
+        spec = importlib.util.spec_from_file_location('signed_feature_diagnostics', ROOT / 'scripts/ci/signed-feature-diagnostics.py')
+        diagnostics = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(diagnostics)
+        value['signed_feature_diagnostics'] = diagnostics.project(acceptance)
+        if not diagnostics.passed(value['signed_feature_diagnostics']):
             value['status'] = 'failed'
     return value
 
@@ -365,7 +376,7 @@ def run_batch(name, phases, plan, journal, run_id, *, fixture_slot=None):
             raise RuntimeError('Unexpected independent fixture slot')
         slot_name, _, readiness_seconds, cleanup_seconds = matches[0]
     fixture_deadline = time.monotonic() + fixture_reserve(name, phases, readiness_seconds, cleanup_seconds)
-    if name == 'public-upload':
+    if name in PUBLIC_GATE_BATCHES:
         plan = public_upload_profile(plan)  # Fail before allocating an owner.
     first_phase = len(journal['phases'])
     def remaining(limit):
@@ -387,6 +398,8 @@ def run_batch(name, phases, plan, journal, run_id, *, fixture_slot=None):
     argv = [sys.executable, str(ROOT / 'tests/runtime/browser_fixture.py'), '--binary', plan['normal_binary'], '--expected-sha256', plan['normal_sha256'], '--protocol-provisioner', plan['provisioner'], '--provisioner-sha256', plan['provisioner_sha256'], '--ui-dir', plan.get('ui_dir', str(ROOT / 'artifacts/frontend')), '--frontend-index-sha256', plan['frontend_index_sha256'], '--frontend-artifact-manifest', plan['frontend_manifest'], '--frontend-artifact-manifest-sha256', plan['frontend_manifest_sha256'], '--second-protocol-recipient', '--ui-regression-controls', '--pg-home-fault-controls', '--lifetime-seconds', '3600']
     if name == 'public-upload':
         argv.append('--public-upload-controls')
+    if name == 'public-signed-features':
+        argv.append('--signed-feature-controls')
     # No Actions token or provider/account secrets reach the fixture process.
     allowed = {'PATH', 'HOME', 'TMPDIR', 'TMP', 'TEMP', 'LANG', 'LC_ALL', 'LC_CTYPE', 'LD_LIBRARY_PATH', 'SSL_CERT_FILE', 'SSL_CERT_DIR'}
     env = {key: value for key, value in os.environ.items() if key in allowed}
@@ -423,8 +436,8 @@ def run_batch(name, phases, plan, journal, run_id, *, fixture_slot=None):
                 return None
 
             state = wait_for(process, ready, remaining(readiness_seconds), owner)
-            if name == 'public-upload':
-                verify_public_upload_ready(state, fixture, plan)
+            if name in PUBLIC_GATE_BATCHES:
+                verify_public_upload_ready(state, fixture, plan, signed_features=name == 'public-signed-features')
             batch['readiness'] = True
             for phase in batch_phases(name, phases):
                 acceptance_path = ROOT / 'test-evidence/frontend/browser' / (phase + '-' + run_id + '-' + slot_name) / 'acceptance.json'

@@ -14,6 +14,7 @@ import {
 } from './title-client';
 import {
   coverMetadata,
+  coverMetadataPatch,
   serializeCoverMultipart,
   type CoverMetadata,
 } from './cover-multipart';
@@ -41,12 +42,13 @@ export type CoverRecord = {
     dimensions: [number, number];
   } | null;
 };
+export type CoverPage = { data: CoverRecord[]; total: number; limit: 100; offset: number };
 export interface SignedCoverController {
   readonly account: TitleAccount;
   assert(): void;
   dispose(): void;
   pending(): boolean;
-  read(): Promise<{ data: CoverRecord[]; total: number }>;
+  read(offset?: number): Promise<CoverPage>;
   upload(file: UploadImageFile, input: CoverMetadata): Promise<CoverRecord>;
   update(cover: CoverRecord, input: CoverMetadata): Promise<CoverRecord>;
   remove(cover: CoverRecord): Promise<void>;
@@ -154,7 +156,9 @@ export async function createSignedCoverController(
   const mangaId = publicUuid(title().id);
   expectedAccount = publicUuid(expectedAccount);
   let disposed = false,
-    busy = false;
+    busy = false,
+    reading = false,
+    knownParentVersion: number | undefined;
   const known = new Map<string, CoverRecord>();
   const check = () => {
     if (disposed) fail('Cover editor is closed', 409);
@@ -301,42 +305,48 @@ export async function createSignedCoverController(
       original,
     };
   }
-  const read = async () => {
+  const read = async (offset = 0): Promise<CoverPage> => {
     check();
-    if (busy) fail('A cover command is in progress', 409);
-    const response = await request({
-      url: `${captured.origin}/api/v1/nostr/manga/${mangaId}/covers`,
-      method: 'GET',
-    });
-    check();
-    if (response.status !== 200)
-      fail(
-        `Signed cover list refused (HTTP ${response.status})`,
-        response.status,
-      );
-    const body = record(response.body);
-    if (
-      body.result !== 'ok' ||
-      body.response !== 'collection' ||
-      !Array.isArray(body.data) ||
-      body.data.length > 100 ||
-      body.limit !== 100 ||
-      body.offset !== 0 ||
-      !Number.isSafeInteger(body.total) ||
-      Number(body.total) < body.data.length
-    )
-      fail('Invalid bounded cover collection');
-    const rows = body.data.map(cover);
-    if (new Set(rows.map((row) => row.id)).size !== rows.length)
-      fail('Duplicate cover receipt');
+    if (busy || reading) fail('A cover operation is in progress', 409);
+    if (!Number.isSafeInteger(offset) || offset < 0)
+      fail('Cover offset must be a non-negative exact integer', 422);
+    const parentVersion = positive(title().version);
+    // A failed or delayed replacement page must never leave editable stale rows.
     known.clear();
-    for (const row of rows) known.set(row.id, row);
-    return { data: rows, total: Number(body.total) };
+    knownParentVersion = undefined;
+    reading = true;
+    try {
+      const query = new URLSearchParams({limit: '100', offset: String(offset), expectedAccountId: account.id});
+      const response = await request({
+        url: `${captured.origin}/api/v1/nostr/manga/${mangaId}/covers?${query}`,
+        method: 'GET',
+      });
+      check();
+      if (positive(title().version) !== parentVersion)
+        fail('Title changed while reading covers; reload this page', 409);
+      if (response.status !== 200)
+        fail(`Signed cover list refused (HTTP ${response.status})`, response.status);
+      const body = record(response.body);
+      if (
+        body.result !== 'ok' || body.response !== 'collection' ||
+        !Array.isArray(body.data) || body.limit !== 100 || body.offset !== offset ||
+        !Number.isSafeInteger(body.total) || Number(body.total) < 0 ||
+        body.data.length !== Math.min(100, Math.max(0, Number(body.total) - offset))
+      ) fail('Invalid bounded cover collection');
+      const rows = body.data.map(cover);
+      if (new Set(rows.map((row) => row.id)).size !== rows.length)
+        fail('Duplicate cover receipt');
+      for (const row of rows) known.set(row.id, row);
+      knownParentVersion = parentVersion;
+      return { data: rows, total: Number(body.total), limit: 100, offset };
+    } finally {
+      reading = false;
+    }
   };
   const current = (row: CoverRecord) => {
     check();
     const saved = known.get(publicUuid(row.id));
-    if (!saved || saved.version !== row.version || row.mangaId !== mangaId)
+    if (reading || knownParentVersion !== positive(title().version) || !saved || saved.version !== row.version || row.mangaId !== mangaId)
       fail('Read the exact current cover before editing', 409);
     return saved;
   };
@@ -347,7 +357,7 @@ export async function createSignedCoverController(
     file?: UploadImageFile,
   ) => {
     check();
-    if (busy || pending() || titleAwaitingProjection(title()))
+    if (busy || reading || pending() || titleAwaitingProjection(title()))
       fail(
         'This cover/title command is unconfirmed or read-only. Nothing was replayed.',
         409,
@@ -355,7 +365,8 @@ export async function createSignedCoverController(
     if (row) row = current(row);
     const parentVersion = positive(title().version),
       previous = row,
-      desired = action === 'remove' ? undefined : coverMetadata(input);
+      changed = action === 'update' ? coverMetadataPatch(input, row!) : undefined,
+      desired = action === 'remove' ? undefined : action === 'update' ? {locale:row!.locale,volume:row!.volume,description:row!.description,main:row!.main,...changed} : coverMetadata(input);
     busy = true;
     let installed = false;
     try {
@@ -364,7 +375,7 @@ export async function createSignedCoverController(
         const multipart = await serializeCoverMultipart(
           file!,
           parentVersion,
-          desired!,
+          desired! as CoverMetadata,
           account.id,
         );
         check();
@@ -383,7 +394,7 @@ export async function createSignedCoverController(
             'description',
             'main',
           ] as const)
-            if (desired![field] !== row![field])
+            if (Object.hasOwn(changed!, field))
               payload[field] = desired![field];
           if (Object.keys(payload).length === 2)
             fail('No cover metadata changes to save', 422);
@@ -459,6 +470,7 @@ export async function createSignedCoverController(
       installed = false;
       known.clear();
       known.set(next.id, next);
+      knownParentVersion = parentVersion;
       return next;
     } catch (error) {
       if (

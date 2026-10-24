@@ -39,9 +39,12 @@ pub(crate) async fn request_native_chapter_deletion(
     let Some(target) = source else {
         return Ok(None);
     };
-    let runtime = state.protocol.publication_runtime().await?;
     let mut source_client = state.db.client().await?;
     let source_tx = source_client.transaction().await?;
+    crate::domains::auth::closure::active_in(&source_tx,actor.user_id()).await?;
+    // Runtime initialization can touch source storage. Keep current authority
+    // fenced before initialization, not merely before command insertion.
+    let runtime = state.protocol.publication_runtime().await?;
     // Serialize this whole durable native action through original submission,
     // including the uncertain group-signing response window, not just insertion.
     let locked:bool=source_tx.query_one("SELECT pg_try_advisory_xact_lock(hashtextextended('platform-delete:'||$1::text||':'||$2::text,0))", &[&chapter,&actor.user_id()]).await?.get(0);
@@ -61,7 +64,7 @@ pub(crate) async fn request_native_chapter_deletion(
         .client()
         .await?
         .query_opt(
-            "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1",
+            "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL",
             &[&actor.user_id()],
         )
         .await?
@@ -69,7 +72,7 @@ pub(crate) async fn request_native_chapter_deletion(
         .ok_or_else(|| {
             ApiError::new(axum::http::StatusCode::FORBIDDEN,"source_deletion_not_authorized","This account has no configured source deletion identity")
         })?;
-    let group=state.db.client().await?.query_opt("SELECT group_id FROM platform.protocol_identity_bindings WHERE publisher=$1 AND group_id IS NOT NULL", &[&publisher]).await?.map(|r|r.get::<_,String>(0));
+    let group=state.db.client().await?.query_opt("SELECT group_id FROM platform.protocol_identity_bindings WHERE publisher=$1 AND revoked_at IS NULL AND group_id IS NOT NULL", &[&publisher]).await?.map(|r|r.get::<_,String>(0));
     if group.is_none() && (member != publisher || runtime.publisher_identity() != publisher) {
         return Err(ApiError::new(axum::http::StatusCode::FORBIDDEN,"source_deletion_not_authorized",
             "This account cannot sign deletion requests for the original publisher",

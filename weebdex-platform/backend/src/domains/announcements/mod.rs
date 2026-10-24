@@ -112,6 +112,7 @@ async fn create(
     let id = v::new_id("announcement");
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
+    crate::domains::auth::closure::active_in(&tx,&a.user_id).await?;
     tx.execute("INSERT INTO platform.announcements(id,author_id,title,body,pinned,published,published_at) VALUES($1,$2,$3,$4,$5,$6,CASE WHEN $6 THEN clock_timestamp() END)",&[&id,&a.user_id,&title,&body,&pinned,&published]).await?;
     audit(&tx, &a, &id, "create", None, 1, published, pinned).await?;
     let data = tx
@@ -142,6 +143,7 @@ async fn update(
     let published = v::boolean(&p, "published")?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
+    crate::domains::auth::closure::active_in(&tx,&a.user_id).await?;
     let row=tx.query_opt("SELECT version,published,pinned FROM platform.announcements WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Announcement not found"))?;
     if row.get::<_, i32>(0) != version {
         return Err(ApiError::conflict(
@@ -183,6 +185,7 @@ async fn remove(
     let version = v::version(&p)?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
+    crate::domains::auth::closure::active_in(&tx,&a.user_id).await?;
     let row=tx.query_opt("SELECT version,published,pinned FROM platform.announcements WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Announcement not found"))?;
     if row.get::<_, i32>(0) != version {
         return Err(ApiError::conflict(

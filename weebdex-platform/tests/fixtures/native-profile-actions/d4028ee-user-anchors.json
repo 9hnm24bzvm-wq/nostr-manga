@@ -1,0 +1,60 @@
+[
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "icon: MessagesSquare\r\n\t\t},",
+    "after": "icon: MessagesSquare,\r\n\t\t\thidden: !$user.relationships?.thread\r\n\t\t},",
+    "label": "public UUID profiles have no fabricated native-thread comments tab"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "hidden: !$Session || !Permission.User.canUpdate($user)",
+    "after": "hidden: !$Session || !!$user.public_profile_readonly || !Permission.User.canUpdate($user)",
+    "label": "public UUID profiles never expose native revision-based settings"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "canMutate: () => !isBlocked && $user.id !== $Session?.identity.id,",
+    "after": "canRead: () => !$user.public_profile_readonly,\r\n\t\tcanMutate: () => !$user.public_profile_readonly && !isBlocked && $user.id !== $Session?.identity.id,",
+    "label": "public profile read cannot inherit native account follow authority"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "{#if $Session && $user.id !== $Session.identity.id}",
+    "after": "{#if $Session && !$user.public_profile_readonly && $user.id !== $Session.identity.id}",
+    "label": "public UUID profiles omit unsupported native social mutations",
+    "approved_public_availability_exception": "public_uuid_user_native_actions_unavailable"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "\t\tuploads: {",
+    "after": "\t\tlists: {name: \"Lists\",icon: FilesIcon,hidden: !$user.public_lists_available},\r\n\t\tuploads: {",
+    "label": "Protocol-publisher lists use the existing native profile tabs"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "import { page } from \"$app/state\";",
+    "after": "import AccountFollow from \"$publicApi/AccountFollow.svelte\";\r\n\timport { page } from \"$app/state\";",
+    "label": "Native action row imports explicit request-bound account follow"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">",
+    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t{#if $user.public_account_follow_available}<AccountFollow kind=\"user\" targetId={$user.id} requestedId={page.params.id??\"\"}/>{/if}",
+    "approved_public_feature_exception": "public_uuid_bound_account_user_follow",
+    "label": "Supported user account following stays in the existing native action row"
+  }
+]

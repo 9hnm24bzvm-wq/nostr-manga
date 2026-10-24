@@ -13,6 +13,11 @@ verified actual dump/transactional restore and three tiny storage roots. That
 is not a full application or production recovery qualification. Qualify the
 procedure on an isolated staging installation before relying on it for recovery.
 
+A bounded [synthetic application-data qualification driver](full-application-restore.md)
+now prepares the full-schema/runtime drill. Its finite regression/compile evidence
+is not a live restored-application result and does not close production DR or
+pending native upload/title recovery.
+
 ## Prerequisites and authority
 
 - Use Linux, Python 3.10+, and already-installed official `pg_dump`, `pg_restore`,
@@ -200,13 +205,17 @@ upgrade on the staging copy only after the matching release verifies.
 
 With operator approval, start the isolated configured runtime through the existing
 service process manager. Verify `/readyz`, original signer/storage authority,
-account reads, original signed-event visibility and exact original media hashes
-(including Range/conditional reads). Check native and signed upload intent
+account reads, original signed-event visibility and exact original media hashes,
+plus native reader media Range/conditional reads. Check native and signed upload intent
 reconciliation, reader pages, private library state and outbox/restart recovery.
 Gracefully stop and restart the staging runtime once, repeat those checks and
 retain sanitized source/hash/test/physical-shutdown evidence. Do not publish raw
 database dumps, keys, account content or private connection values in that report.
-Only an operator-reviewed successful drill supports a production recovery claim.
+Only an operator-reviewed successful drill that covers the required production
+recovery scope supports a production recovery claim. The bounded synthetic driver
+retains matching source-fixture credentials separately; it cannot establish
+independent full-host or key recovery. Its native reader checks include Range and
+ETag, while original `/originals/{hash}` coverage is hash-only.
 
 References: official PostgreSQL [dump procedure](https://www.postgresql.org/docs/17/app-pgdump.html),
 [restore modes and transaction flags](https://www.postgresql.org/docs/17/app-pgrestore.html),

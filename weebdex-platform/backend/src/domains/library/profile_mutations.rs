@@ -34,6 +34,9 @@ pub(crate) async fn update_in(tx:&Transaction<'_>,actor:&impl CatalogMutationAct
 /// Only the four fields already public in the native profile. Never select the
 /// full JSON object, email, preferences, grants, or private extension keys.
 pub(crate) async fn read_in(db:&impl GenericClient,id:&str)->ApiResult<Value> {
+    if let Some(row)=db.query_opt("SELECT username,version FROM platform.users WHERE id=$1 AND disabled AND closed_at IS NOT NULL",&[&id]).await? {
+        return Ok(json!({"username":row.get::<_,String>(0),"roles":[],"version":row.get::<_,i32>(1),"accountState":"disabled"}));
+    }
     let row=db.query_opt("SELECT username,CASE WHEN octet_length(roles::text)<=32768 THEN roles ELSE NULL END,version,CASE WHEN octet_length(fields::text)<=196608 THEN fields ELSE NULL END FROM platform.users CROSS JOIN LATERAL (SELECT jsonb_strip_nulls(jsonb_build_object('description',profile->'description','discord',profile->'discord','twitter',profile->'twitter','website',profile->'website')) AS fields) public_profile WHERE id=$1 AND NOT disabled",&[&id]).await?.ok_or_else(||ApiError::not_found("User not found"))?;
     let roles:Vec<String>=serde_json::from_value(row.get::<_,Option<Value>>(1).ok_or_else(ApiError::unavailable)?).map_err(|_|ApiError::unavailable())?;
     if roles.len()>128 || roles.iter().any(|r|r.is_empty() || r.len()>128) {return Err(ApiError::unavailable());}

@@ -219,7 +219,7 @@ def main():
             run(label, argv, ROOT, 60)
         import importlib.util
         public_upload_profile = None
-        if os.environ.get('SELECTED_BATCH', 'all') in ['all', 'public-upload']:
+        if os.environ.get('SELECTED_BATCH', 'all') in ['all', 'public-upload', 'public-signed-features']:
             public['stage'] = 'public-upload-profile'
             write(PUBLIC / 'preparation.json', public)
             qa_profile_active = True

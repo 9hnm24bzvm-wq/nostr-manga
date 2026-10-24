@@ -1,5 +1,5 @@
 import type {Resource} from './types';
-export interface ChapterEditAccess {canUpdate:boolean;canClaim:boolean;canRemove:boolean;approvesHide:boolean;claimFactsAvailable:boolean;}
+export interface ChapterEditAccess {canUpdate:boolean;canClaim:boolean;canRemove:boolean;approvesHide:boolean;claimFactsAvailable:boolean;canEditPages:boolean;pageSource:'local'|'protocol'|'unknown';}
 // These are read-only hints from exact native projections, never write authority.
 // Officer status is meaningful only under the explicit local role descriptor.
 export function chapterEditAffordances(chapter:Resource,account:{id:string;roles:string[];permissions:string[]},groups:Resource[]):ChapterEditAccess {
@@ -16,7 +16,9 @@ export function chapterEditAffordances(chapter:Resource,account:{id:string;roles
  }
  const claimFactsAvailable=!!uploader&&typeof chapter.attributes.localUploaderIsSystem==='boolean';
  const approvesHide=staff&&has('chapter.remove');
- return {canUpdate:staff&&has('chapter.update')||has('self.chapter.update')&&(owner||leader||officer),
+ const pageSource=chapter.attributes.localPageSource==='local'?'local':chapter.attributes.localPageSource==='protocol'?'protocol':'unknown';
+ const canUpdate=staff&&has('chapter.update')||has('self.chapter.update')&&(owner||leader||officer);
+ return {canEditPages:pageSource==='local'&&has('self.chapter.update')&&canUpdate,pageSource,canUpdate,
   canRemove:approvesHide||has('self.chapter.remove')&&(owner||leader),approvesHide,
   canClaim:has('self.chapter.update')&&leader&&!!uploader&&!owner&&chapter.attributes.localUploaderIsSystem===false,claimFactsAvailable};
 }

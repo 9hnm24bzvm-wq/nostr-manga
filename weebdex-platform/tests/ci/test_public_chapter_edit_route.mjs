@@ -15,6 +15,7 @@ import { createReaderOverlays } from '../../platform-integrations/frontend-reade
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
 import { createPublicApiOverlays } from '../../platform-integrations/public-api/overlays.mjs';
 import { createPublicUploadOverlays } from '../../platform-integrations/public-api/upload-overlays.mjs';
+import { restoreReviewedLanguageSource } from './reviewed-local-page-source-successors.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const frontend = path.join(root, 'frontend');
@@ -114,11 +115,16 @@ test('fully composed edit layout/page reach the existing keyed signed child and 
   assert.match(page, /import PublicChapterEditor from "\$publicApi\/PublicChapterEditor.svelte"/);
   assert.match(page, /\{#key data.chapter.id\}<PublicChapterEditor initial=\{data.chapter\} \/>\{\/key\}/);
   const editor = fs.readFileSync(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'));
-  assert.equal(createHash('sha256').update(editor).digest('hex'), '77245d8bf59c4b6288a3a3a4097326782a245eb368134d81c610a8e085923f5c');
+  assert.equal(createHash('sha256').update(restoreReviewedLanguageSource(editor.toString(), 'chapterEditor')).digest('hex'), 'b368c2419b3eb1babe92bc3c13d274265249cf7c2200f63fb43415467689d328');
+  // Signed editor affordance successor retains exact source binding.
+  assert.match(editor.toString(), /owner\.chapterAccess\(chapter\.version\)/);
   assert.match(editor.toString(), /loadUploadAccount\(current\)/);
-  assert.match(editor.toString(), /publicUploadOwner\(\(\) => initial.id, account, 'chapter'\)/);
+  assert.match(editor.toString(), /publicUploadOwner\(\(\) => initial.id, account, 'chapter', 'caller'\)/);
   assert.match(editor.toString(), /removalChoice = approvesHide \? 'approve-hide' : 'request-review'/);
-  assert.match(editor.toString(), /Signed source metadata and published image pages are immutable/);
+  assert.match(editor.toString(), /Original signed source metadata and protocol image pages are immutable/);
+  assert.match(editor.toString(), /Eligible local chapter pages use separate private staging below/);
+  assert.match(editor.toString(), /<PublicChapterPagesEditor \{chapter\} \{owner\} \{access\}/);
+  assert.match(editor.toString(), /onDestroy\(\(\) => \{ disposed = true; owner\?\.dispose\(\); \}\)/);
 });
 test('public native Chapter mutation methods stay blocked instead of exposing a revision API', async () => {
   const f = await fixture();

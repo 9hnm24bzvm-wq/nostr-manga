@@ -1,0 +1,1011 @@
+// SOURCE-ONLY POSTIMAGE, NOT EXECUTED OR QUALIFIED.
+// Synthetic HTTP/XHR/IDB boundaries for the unchanged application and real Kit
+// router. No application controller, store setter, navigation epoch, response
+// validator or ownership singleton is replaced here. Importing this file starts
+// no service and imports no package. A separately admitted driver supplies a
+// fresh pinned fake-indexeddb factory and the hash-pinned generated graph.
+// The native account suite MUST be built with PUBLIC_MANGADEX_CATALOGUE='0'.
+// PUBLIC_MANGADEX_CATALOGUE='1' admits explicit device cases only.
+export const BADGE_FIXTURE_ORIGIN = 'http://badge-fixture.test';
+export const BADGE_FIXTURE_REVISION = 'b2817b1c93d37b7286b22146d063fbd1059aaa4d';
+export const BADGE_COMPARISON_REVISION = '14a7bab8a925928f658fbd8ebd160b3388e4b540';
+const STAMP = '2026-10-23T00:00:00.000Z';
+const NAMESPACE = '11111111-1111-4111-8111-111111111111';
+const NEXT_NAMESPACE = '22222222-2222-4222-8222-222222222222';
+const SERVICE_KEY = 'a'.repeat(64);
+const DEVICE_OWNER = '33333333-3333-4333-8333-333333333333';
+const DEVICE_DATABASE = 'weebdex-device-library-v1:' + encodeURIComponent(BADGE_FIXTURE_ORIGIN);
+const MIGRATION_STORES = ['records', 'meta', 'publicAliases', 'idMigrationArchives', 'idMigrationIssues', 'idMigrationTombstones'];
+const PREFERENCES = Object.freeze({ items_per_page: '42', languages: [], show_safe: true, show_suggestive: true,
+  show_erotic: true, show_hentai: false, tags: [], translated_languages: [], uploaders: [], groups: [], version: 0 });
+const clone = value => value === undefined ? undefined : JSON.parse(JSON.stringify(value));
+const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+function requireValue(value, message) { if (!value) throw Error('Badge fixture: ' + message); }
+function infrastructure(message) { const error = Error('Badge fixture infrastructure blocked: ' + message); error.code = 'BADGE_FIXTURE_INFRASTRUCTURE'; return error; }
+function abortError() { const error = Error('Synthetic boundary request aborted'); error.name = 'AbortError'; return error; }
+function boundedInteger(value, max, label) { requireValue(Number.isSafeInteger(value) && value >= 0 && value <= max, 'invalid ' + label); return value; }
+function nativeId(prefix, index) { return prefix + String(index).padStart(9, '0'); }
+function publicId(kind, index) { return `${kind}0000000-0000-4000-8000-${String(index).padStart(12, '0')}`; }
+
+export function createBadgeFixture({ profile = 'native', record = () => {}, timeoutMs = 15000 } = {}) {
+  requireValue(['native', 'public', 'native0', 'public1'].includes(profile), 'profile must be native/native0 or public/public1');
+  const publicProfile = profile === 'public' || profile === 'public1';
+  profile = publicProfile ? 'public' : 'native';
+  requireValue(Number.isSafeInteger(timeoutMs) && timeoutMs >= 1000 && timeoutMs <= 60000, 'timeoutMs must be 1000..60000');
+  requireValue(typeof record === 'function', 'record callback required');
+  const titleId = publicProfile ? publicId('1', 1) : nativeId('M', 1);
+  const otherTitleId = publicProfile ? publicId('1', 2) : nativeId('M', 2);
+  const chapterId = index => publicProfile ? publicId('2', boundedInteger(index, 999999, 'chapter index') + 1) : nativeId('C', boundedInteger(index, 999999, 'chapter index') + 1);
+  const groupId = index => publicProfile ? publicId('3', index + 1) : nativeId('G', index + 1);
+  const accountId = index => nativeId('U', index + 1);
+  let driver, window, closed = false, sequence = 0, generation = 0, caseNumber = 0;
+  let config = defaults(), configured = false, preparing = false, visible = false;
+  let scope = { origin: BADGE_FIXTURE_ORIGIN, catalogNamespace: NAMESPACE, serviceKey: SERVICE_KEY };
+  let actor = accountId(0), completedIds = new Set(), wholeTitleHistory, observedHistory;
+  let historyListener, navigationListener, rawOpen, openDescriptor, idbSuppress = 0, terminalFailure;
+  let requestSerial = 0, currentNavigation, comparison, mutationUncertain = false, pendingBodies = 0;
+  const requests = [], gates = new Map(), pending = new Set(), connections = new Set(), restores = [];
+  const idbTransactions = [], batches = new Map(), bodyControls = new Map(), routeGates = new Map(), routeErrors = new Map();
+  const counters = { capability: 0, completion: 0, mutation: 0, history: 0, chapter: 0, idb: 0, aggregate: 0 };
+  let lastMutationCompletionCount = 0, lastChange, remountEvidence, bodyRemountEvidence, uncertainRemountEvidence;
+  function defaults() { return { mode: publicProfile ? 'device' : 'account', rows: 51, holdIdentity: false, holdBatch: 0,
+    ignoreAbort: false, holdChapterPage: false, holdBodyBatch: 0, holdBodyCancel: false, batchFault: undefined, bindingFault: undefined,
+    alternateEditions: false, completedIds: [], extraCompletedTitleRows: 0, mutation: 'acknowledged' }; }
+  function note(type, detail = {}) { requireValue(sequence < 50000, 'deterministic evidence event budget exceeded'); record({ fixture: 'badge-mounted', sequence: ++sequence, case: caseNumber, type, ...clone(detail) }); }
+  function assertOpen() { if (closed) throw infrastructure('fixture already closed'); if (terminalFailure) throw terminalFailure; }
+  function d() { assertOpen(); if (!driver?.command || !driver?.waitFor) throw infrastructure('attachDriver must provide command and waitFor'); return driver; }
+  async function command(name, args = {}) {
+    const value = await d().command(name, args);
+    if (!value || typeof value !== 'object') return value;
+    return { ...value, library: value.library || value.libraryState, native: value.native || value.nativeAuthority };
+  }
+  async function waitFor(predicate, label) {
+    assertOpen();
+    return d().waitFor(async () => { assertOpen(); return predicate(); }, { timeoutMs, label });
+  }
+  async function settle() { for (let i = 0; i < 3; i++) { await Promise.resolve(); await command('snapshot'); } }
+  function own(work) { pending.add(work); work.then(() => pending.delete(work), () => pending.delete(work)); return work; }
+  function resetCounters() { for (const key of Object.keys(counters)) counters[key] = 0; requests.length = 0; batches.clear(); bodyControls.clear(); }
+  function bodyJson(value, status = 200) {
+    const text = JSON.stringify(value), bytes = new TextEncoder().encode(text);
+    let sent = false, terminal = false; pendingBodies++;
+    const done = () => { if (!terminal) { terminal = true; pendingBodies--; } };
+    const stream = new ReadableStream({
+      pull(controller) { if (!sent) { sent = true; controller.enqueue(bytes); } else { controller.close(); done(); } },
+      cancel() { done(); }
+    }, { highWaterMark: 0 });
+    return new Response(stream, { status, headers: { 'Content-Type': 'application/json', 'Content-Length': String(bytes.byteLength), 'Cache-Control': 'no-store' } });
+  }
+  function returnedBodyJson(value, batch) {
+    // Real Response/ReadableStream semantics, not a fetch-before-headers gate.
+    // JSON bytes are delivered, but the next pull/EOF is held. If the actual
+    // owner cancels its reader, the underlying source's cancellation promise
+    // remains independently held. Aborting fetch cannot settle either gate.
+    requireValue(!bodyControls.has(batch), 'duplicate returned-body control');
+    const bytes = new TextEncoder().encode(JSON.stringify(value));
+    const control = { batch, bytes: bytes.byteLength, chunkDelivered: false, readStarted: false, readSettled: false,
+      cancelStarted: false, cancelSettled: false, cancelCalls: 0, terminal: false, readKey: 'body-read:' + batch, cancelKey: 'body-cancel:' + batch };
+    bodyControls.set(batch, control); pendingBodies++;
+    const terminal = () => {
+      if (!control.terminal && control.readSettled && (!control.cancelStarted || control.cancelSettled)) {
+        control.terminal = true; pendingBodies--; note('returned-body-terminal', { batch, cancelled: control.cancelStarted, pendingBodies });
+      }
+    };
+    const stream = new ReadableStream({
+      pull(controller) {
+        if (!control.chunkDelivered) { control.chunkDelivered = true; controller.enqueue(bytes); note('returned-body-chunk', { batch, bytes: bytes.byteLength }); return; }
+        requireValue(!control.readStarted, 'returned body requested overlapping source pulls');
+        control.readStarted = true;
+        const gate = makeGate(control.readKey, { ignoreAbort: true }); gate.arrived = true;
+        note('returned-body-read-held', { batch, key: gate.key });
+        return gate.promise.then(() => {
+          control.readSettled = true;
+          if (!control.cancelStarted) controller.close();
+          note('returned-body-read-terminal', { batch, cancelled: control.cancelStarted }); terminal();
+        }, error => { control.readSettled = true; control.readError = String(error?.message || error); terminal(); throw error; });
+      },
+      cancel() {
+        control.cancelStarted = true; control.cancelCalls++;
+        if (!control.readStarted) control.readSettled = true; // No source pull exists to await.
+        requireValue(control.cancelCalls === 1, 'underlying body cancellation invoked more than once');
+        // Web Streams settles the pending reader.read() on cancellation. The
+        // production transport must still own reader.cancel() until this genuine
+        // underlying-source cancel promise settles. The read source is tracked
+        // separately; no mutation of the transport's reader or owner is used.
+        if (!config.holdBodyCancel) { control.cancelSettled = true; terminal(); return; }
+        const gate = makeGate(control.cancelKey, { ignoreAbort: true }); gate.arrived = true;
+        note('returned-body-cancel-held', { batch, key: gate.key });
+        return gate.promise.then(() => { control.cancelSettled = true; note('returned-body-cancel-terminal', { batch }); terminal(); }, error => { control.cancelSettled = true; control.cancelError = String(error?.message || error); terminal(); throw error; });
+      }
+    }, { highWaterMark: 0 });
+    const response = new Response(stream, { status: 200, headers: { 'Content-Type': 'application/json', 'Content-Length': String(bytes.byteLength), 'Cache-Control': 'no-store' } });
+    note('returned-body-response-created', { batch, bytes: bytes.byteLength });
+    return response;
+  }
+  function session() { return { identity: { id: actor, internal_id: actor, email: 'synthetic-account@example.invalid', username: 'badge_fixture', is_verified: true },
+    preferences: clone(PREFERENCES), follows: {}, groups: [], roles: [], permissions: [] }; }
+  function groups() { return [0, 1].map(index => ({ id: groupId(index), name: `Fixture Edition ${index + 1}`, version: 1, relationships: {} })); }
+  function manga() { return { id: titleId, title: 'Bounded badge fixture', year: 2026, language: 'en', state: 'published', status: 'ongoing', content_rating: 'safe',
+    created_at: STAMP, updated_at: STAMP, published_at: STAMP, version: 1,
+    ...(publicProfile ? { public_api: { resource: mangaWire(), chapter_count: config.rows, native_forum: { status: 200, available: false } } } : {}),
+    relationships: { available_languages: ['en'], available_groups: groups(), stats: { chapters: config.rows, follows: 0, views: 0 },
+      thread: { id: nativeId('T', 1), relationships: { stats: { replies: 0, up: 0, down: 0 } } } } }; }
+  function mangaWire() { return { id: titleId, type: 'manga', attributes: { title: { en: 'Bounded badge fixture' }, altTitles: [], description: {}, originalLanguage: 'en',
+    publicationDemographic: null, status: 'ongoing', contentRating: 'safe', state: 'published', year: 2026, version: 1,
+    createdAt: STAMP, updatedAt: STAMP, lastVolume: null, lastChapter: null, availableTranslatedLanguages: ['en'], tags: [], links: {} }, relationships: [] }; }
+  function chapter(index) {
+    const edition = config.alternateEditions ? index % 2 : 0;
+    return { id: chapterId(index), title: `Fixture chapter ${index + 1} edition ${edition + 1}`,
+      volume: String(1 + Math.floor(index / 20)), chapter: String(config.alternateEditions ? Math.floor(index / 2) + 1 : index + 1), language: 'en',
+      version: 1, created_at: STAMP, updated_at: STAMP, published_at: STAMP,
+      relationships: { manga: manga(), groups: [groups()[edition]], thread: { id: nativeId('T', index + 2), relationships: { stats: { replies: 0, up: 0, down: 0 } } } } };
+  }
+  function chapterWire(index) { const value = chapter(index); return { id: value.id, type: 'chapter',
+    attributes: { title: value.title, volume: value.volume, chapter: value.chapter, translatedLanguage: value.language, version: 1,
+      createdAt: STAMP, updatedAt: STAMP, publishAt: STAMP, isUnavailable: false, externalUrl: null },
+    relationships: [{ id: titleId, type: 'manga' }, ...value.relationships.groups.map(group => ({ id: group.id, type: 'scanlation_group', attributes: { name: group.name, version: 1 } }))] }; }
+  function pageWitness() {
+    if (config.bindingFault === 'missing') return undefined;
+    return { version: 1, mangaId: config.bindingFault === 'wrong-parent' ? otherTitleId : titleId,
+      idProfile: config.bindingFault === 'wrong-id-profile' ? 'invalid-id-profile' : publicProfile ? 'public-uuid-v1' : 'native-id-v1',
+      consistency: 'response-snapshot-v1', catalogIdentity: { catalogNamespace: config.bindingFault === 'invalid-namespace' ? 'invalid' : scope.catalogNamespace, serviceKey: scope.serviceKey } };
+  }
+  function chapterFeed(url, aggregate = false) {
+    const all = Array.from({ length: config.rows + (aggregate ? config.extraCompletedTitleRows : 0) }, (_, index) => publicProfile ? chapterWire(index) : chapter(index));
+    const witness = pageWitness();
+    if (!publicProfile) return { total: all.length, limit: 100, page: Number(url.searchParams.get('page') || 1), data: all, ...(witness ? { chapterPage: witness } : {}) };
+    const offset = boundedInteger(Number(url.searchParams.get('offset') || 0), 10000, 'offset');
+    const limit = boundedInteger(Number(url.searchParams.get('limit') || 100), 100, 'limit');
+    // Deliberate 101-row witness fault is a server contract violation. It is not
+    // used by the public supported subset, whose collection validator rejects it.
+    return { result: 'ok', response: 'collection', total: all.length, limit, offset, data: all.slice(offset, offset + limit), ...(witness ? { chapterPage: witness } : {}) };
+  }
+  function aggregate() {
+    const rows = Array.from({ length: config.rows + config.extraCompletedTitleRows }, (_, index) => chapter(index));
+    const grouped = new Map();
+    for (const row of rows) { const key = JSON.stringify([row.volume, row.chapter]); let group = grouped.get(key); if (!group) grouped.set(key, group = { volume: row.volume, chapter: row.chapter, entries: {} });
+      group.entries[row.id] = { published_at: STAMP, language: 0, groups: [config.alternateEditions ? Number(row.id === chapterId(0) ? 0 : rows.indexOf(row) % 2) : 0] }; }
+    return { chapters: [...grouped.values()].reverse(), groups: groups(), languages: ['en'] };
+  }
+  function mapAlias(id) { if (typeof id === 'string' && /^chapter:\d+$/.test(id)) return chapterId(Number(id.slice(8))); requireValue(typeof id === 'string' && (publicProfile ? /^[0-9a-f-]{36}$/ : /^[A-Za-z0-9]{10}$/).test(id), 'invalid completed chapter alias'); return id; }
+  function rebuildData() {
+    completedIds = new Set(config.completedIds.map(mapAlias));
+    for (let index = config.rows; index < config.rows + config.extraCompletedTitleRows; index++) completedIds.add(chapterId(index));
+    wholeTitleHistory = config.mode === 'device' ? { [titleId]: Object.fromEntries([...completedIds].map(id => [id, null])) } : undefined;
+    observedHistory = undefined;
+  }
+
+  function makeGate(key, { ignoreAbort = false } = {}) {
+    requireValue(!gates.has(key), 'duplicate boundary gate ' + key);
+    let resolve, reject, released = false, timer;
+    const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); promise.catch(() => {});
+    const gate = { key, promise, ignoreAbort, arrived: false, released: false,
+      release() { if (released) return; released = gate.released = true; clearTimeout(timer); gates.delete(key); resolve(); note('gate-release', { key }); },
+      reject(error) { if (released) return; released = gate.released = true; clearTimeout(timer); gates.delete(key); reject(error); } };
+    timer = setTimeout(() => { terminalFailure = infrastructure('held boundary exceeded deadline: ' + key); gate.reject(terminalFailure); note('gate-timeout', { key }); }, timeoutMs);
+    gates.set(key, gate); return gate;
+  }
+  async function hold(key, signal, ignoreAbort = false) {
+    let gate = gates.get(key); if (!gate) gate = makeGate(key, { ignoreAbort });
+    gate.arrived = true; note('gate-arrive', { key });
+    const abort = () => { note('gate-abort', { key, ignored: ignoreAbort }); if (!ignoreAbort) gate.reject(abortError()); };
+    signal?.addEventListener('abort', abort, { once: true }); if (signal?.aborted) abort();
+    try { await gate.promise; } finally { signal?.removeEventListener('abort', abort); }
+  }
+  function release(key) { const gate = gates.get(key); requireValue(gate && gate.arrived, 'cannot release unobserved gate ' + key); gate.release(); }
+  async function waitGate(key) { await waitFor(() => gates.get(key)?.arrived, 'arrival of ' + key); }
+  async function handleFetch(input, init = {}) {
+    assertOpen();
+    const requestUrl = typeof input === 'string' || input instanceof URL ? String(input) : input?.url;
+    const url = new URL(requestUrl, BADGE_FIXTURE_ORIGIN);
+    requireValue(url.origin === BADGE_FIXTURE_ORIGIN && !url.username && !url.password, 'network escaped isolated origin: ' + url.origin);
+    const method = String(init.method || input?.method || 'GET').toUpperCase();
+    const headers = new Headers(init.headers || input?.headers), signal = init.signal || input?.signal;
+    const body = init.body === undefined ? undefined : typeof init.body === 'string' ? JSON.parse(init.body) : init.body;
+    const item = { serial: ++requestSerial, generation, origin: url.origin, path: url.pathname, query: url.search, method, credentials: init.credentials || input?.credentials || 'same-origin', settled: false };
+    requireValue(requests.length < 4096, 'per-case HTTP request budget exceeded'); requests.push(item); note('request', item);
+    const finish = (value, status = 200) => bodyJson(value, status);
+    try {
+      if (signal?.aborted) throw abortError();
+      const path = url.pathname;
+      if (path === '/__badge_fixture/route') {
+        const kind = url.searchParams.get('kind'), id = url.searchParams.get('id');
+        requireValue(kind === 'title' || kind === 'chapter', 'unsupported fixture route kind');
+        const routeKey = routeGates.get(kind); if (routeKey) await hold(routeKey, signal, true);
+        if (routeErrors.has(kind)) return new Response(null, { status: routeErrors.get(kind), headers: { 'Cache-Control': 'no-store' } });
+        if (kind === 'title') { requireValue(id === titleId, 'wrong title route id'); return finish({ manga: manga(), wholeTitleHistory }); }
+        requireValue(id === chapterId(0) || id === currentNavigation?.chapterId, 'unconfigured chapter route id');
+        return finish({ id, page: url.searchParams.get('page') || '1' });
+      }
+      if (path === '/api/auth/check') return finish(session());
+      if (path === '/api/protocol/capabilities') {
+        counters.capability++;
+        if (!preparing && config.holdIdentity) await hold('identity', signal, false);
+        return finish({ catalog_namespace: scope.catalogNamespace, service_key: scope.serviceKey });
+      }
+      if (method === 'GET' && path === `/api/user/history/manga/${titleId}/completion`) {
+        requireValue(!publicProfile && config.mode === 'account', 'credentialed completion is native account only');
+        requireValue(item.credentials === 'include' && headers.get('X-WeebDex-Expected-Account') === actor, 'missing native completion credentials/account header');
+        const ids = url.searchParams.getAll('id'); requireValue(ids.length >= 1 && ids.length <= 50 && new Set(ids).size === ids.length, 'invalid completion key batch');
+        requireValue(ids.every(id => Array.from({ length: config.rows }, (_, index) => chapterId(index)).includes(id)), 'completion key outside accepted fixture page');
+        const epoch = Number(url.searchParams.get('accountEpoch')); requireValue(Number.isSafeInteger(epoch) && epoch >= 0, 'invalid captured account epoch');
+        const requestScope = { catalogNamespace: url.searchParams.get('catalogNamespace'), serviceKey: url.searchParams.get('serviceKey') === 'null' ? null : url.searchParams.get('serviceKey') };
+        requireValue(equal(requestScope, { catalogNamespace: scope.catalogNamespace, serviceKey: scope.serviceKey }), 'completion request scope is not current synthetic scope');
+        const batch = ++counters.completion;
+        const response = { version: 1, mangaId: titleId, catalogIdentity: requestScope, account: { id: actor, epoch }, consistency: 'live-request-v1', continueProof: 'observed-only', data: ids.map(id => ({ id, completed: completedIds.has(id) })) };
+        batches.set(batch, { transport: 'http', serial: item.serial, ids: [...ids], response, settled: false });
+        if (config.holdBatch === batch) await hold('batch:' + batch, signal, config.ignoreAbort);
+        const fault = config.batchFault?.batch === batch ? config.batchFault.fault : undefined;
+        if (fault === 'http-500') return finish({ error: 'Synthetic completion failure' }, 500);
+        if (fault === 'missing-row') response.data.pop();
+        if (fault === 'duplicate-row') response.data[response.data.length - 1] = clone(response.data[0]);
+        if (fault === 'wrong-account') response.account.id = accountId(1);
+        if (fault === 'wrong-namespace') response.catalogIdentity.catalogNamespace = NEXT_NAMESPACE;
+        return config.holdBodyBatch === batch ? returnedBodyJson(response, batch) : finish(response);
+      }
+      if (path === `/api/user/history/manga/${titleId}` && method === 'POST') {
+        requireValue(!publicProfile && config.mode === 'account', 'native account mutation required');
+        requireValue(item.credentials === 'include' && headers.get('X-WeebDex-Expected-Account') === actor, 'mutation must carry admitted native account');
+        requireValue(body && Array.isArray(body.read_ids || []) && Array.isArray(body.unread_ids || []), 'invalid history mutation body');
+        counters.mutation++; lastMutationCompletionCount = counters.completion;
+        for (const id of body.read_ids || []) completedIds.add(mapAlias(id));
+        for (const id of body.unread_ids || []) completedIds.delete(mapAlias(id));
+        if (config.mutation === 'uncertain') { mutationUncertain = true; note('mutation-uncertain'); throw TypeError('Synthetic connection lost after write admission'); }
+        return finish({ read_updated: (body.read_ids || []).length, unread_updated: (body.unread_ids || []).length });
+      }
+      if (path.startsWith('/api/user/history/')) { if (item.credentials !== 'omit') counters.history++; throw infrastructure('unplanned whole-account history request: ' + path); }
+      if (!publicProfile && path === `/api/manga/${titleId}/chapters` && method === 'GET' || publicProfile && (path === `/api/v1/manga/${titleId}/feed` || path === '/api/v1/chapter') && method === 'GET') {
+        counters.chapter++;
+        const response = chapterFeed(url, publicProfile && path === '/api/v1/chapter' && counters.aggregate > 0);
+        if (!preparing && config.holdChapterPage) await hold('chapter-page', signal, true);
+        return finish(response);
+      }
+      if (path === `/api/manga/${titleId}/aggregate` && method === 'GET') { counters.aggregate++; return finish(aggregate()); }
+      if (publicProfile && path === `/api/v1/manga/${titleId}/aggregate` && method === 'GET') {
+        counters.aggregate++; const volumes = {};
+        for (const row of aggregate().chapters) { const volume = volumes[row.volume] ||= { volume: row.volume, chapters: {} }; const ids = Object.keys(row.entries);
+          volume.chapters[row.chapter] = { chapter: row.chapter, id: ids[0], others: ids.slice(1), count: ids.length }; }
+        return finish({ result: 'ok', volumes });
+      }
+      if (publicProfile && path === `/api/v1/manga/${titleId}/available-groups` && method === 'GET') {
+        const requested = url.searchParams.getAll('ids[]'), after = url.searchParams.get('after');
+        const available = (config.rows ? groups() : []).filter(group => !requested.length || requested.includes(group.id));
+        const position = after ? available.findIndex(group => group.id > after) : 0;
+        requireValue(position >= 0, 'unexpected group continuation');
+        const limit = Number(url.searchParams.get('limit') || 100), selected = available.slice(position, position + limit);
+        return finish({ result: 'ok', semantics: 'visible-title-groups-v1', limit, position, total: available.length,
+          next: position + selected.length < available.length ? selected[selected.length - 1].id : null,
+          data: selected.map(group => ({ id: group.id, type: 'scanlation_group', attributes: { name: group.name, version: 1 }, relationships: [] })) });
+      }
+      if (publicProfile && path === '/api/v1/manga' && method === 'GET') return finish({ result: 'ok', response: 'collection', limit: 100, offset: 0, total: 1, data: [mangaWire()] });
+      if (publicProfile && path === `/api/v1/manga/${titleId}` && method === 'GET') return finish({ result: 'ok', response: 'entity', data: mangaWire() });
+      if (publicProfile && path === '/api/v1/nostr/native-forum/contexts' && method === 'POST') {
+        requireValue(body?.resources?.every(value => ['manga', 'chapter', 'group', 'user'].includes(value.kind)), 'invalid forum resources');
+        return finish({ result: 'ok', data: body.resources.map(value => ({ kind: value.kind, id: value.id, thread: null })), unavailable: [] });
+      }
+      // No fallback to the host network. Unplanned reads are infrastructure
+      // failures, not empty feeds, false completion or old-source successes.
+      throw infrastructure('unconfigured request ' + method + ' ' + path);
+    } catch (error) {
+      if (error?.code === 'BADGE_FIXTURE_INFRASTRUCTURE') terminalFailure = error;
+      note('request-error', { serial: item.serial, name: error?.name || 'Error', message: String(error?.message || error) }); throw error;
+    } finally { item.settled = true; const batch = [...batches.values()].find(value => value.serial === item.serial); if (batch) batch.settled = true; note('request-terminal', { serial: item.serial, path: item.path }); }
+  }
+  const fetchBoundary = (input, init) => own(handleFetch(input, init));
+
+  function instrumentDatabase(db) {
+    if (db.name !== DEVICE_DATABASE || db.__badgeFixtureBoundary) return;
+    Object.defineProperty(db, '__badgeFixtureBoundary', { value: true, configurable: true });
+    const original = db.transaction;
+    db.transaction = function(stores, mode, ...rest) {
+      const tx = original.call(this, stores, mode, ...rest);
+      const names = typeof stores === 'string' ? [stores] : [...stores];
+      if (!idbSuppress && mode === 'readonly' && equal(names.slice().sort(), ['meta', 'records'])) instrumentTransaction(tx);
+      return tx;
+    };
+    restores.push(() => { db.transaction = original; delete db.__badgeFixtureBoundary; });
+  }
+  function instrumentTransaction(tx) {
+    const observed = { generation, ids: [], batch: null, queued: [], held: false, released: false, terminalObserved: false, aborted: false };
+    idbTransactions.push(observed);
+    const originalObjectStore = tx.objectStore, originalDispatch = tx.dispatchEvent, originalAbort = tx.abort;
+    const storeWrappers = new Map();
+    function dispatch(target, original, event) {
+      if (observed.held && !observed.released && (event.type === 'success' || event.type === 'error' || event.type === 'complete' || event.type === 'abort')) {
+        observed.queued.push(() => deliver(target, original, event)); return true;
+      }
+      return deliver(target, original, event);
+    }
+    function deliver(target, original, event) {
+      if (target === tx && ['complete', 'abort'].includes(event.type)) { observed.terminalObserved = true; note('idb-terminal', { batch: observed.batch, event: event.type }); }
+      return original.call(target, event);
+    }
+    function drain() { observed.released = true; for (const deliverEvent of observed.queued.splice(0)) deliverEvent(); }
+    tx.dispatchEvent = function(event) { return dispatch(this, originalDispatch, event); };
+    tx.abort = function() { observed.aborted = true; note('idb-abort', { batch: observed.batch, ignored: observed.held && config.ignoreAbort });
+      if (observed.held && !observed.released && config.ignoreAbort) return;
+      if (observed.held && !observed.released) { gates.get('batch:' + observed.batch)?.release(); drain(); }
+      return originalAbort.call(this);
+    };
+    tx.objectStore = function(name) {
+      const store = originalObjectStore.call(this, name); if (storeWrappers.has(store)) return store;
+      const originalGet = store.get;
+      store.get = function(key) {
+        const chapterRead = name === 'records' && Array.isArray(key) && key[0] === 'chapters';
+        // Admit before queuing a real request: rejected fixture calls must not
+        // leave requests whose promise handlers the product never receives.
+        if (chapterRead) {
+          requireValue(!preparing && config.mode === 'device', 'unexpected bounded IDB chapter read');
+          requireValue(observed.ids.length < 50, 'bounded IDB projection requested more than 50 keys');
+          if (observed.batch === null && config.holdBatch === counters.idb + 1)
+            requireValue(!gates.has('batch:' + (counters.idb + 1)), 'duplicate boundary gate batch:' + (counters.idb + 1));
+        }
+        const request = originalGet.call(this, key);
+        if (chapterRead) {
+          observed.ids.push(key[1]);
+          if (observed.batch === null) {
+            observed.batch = ++counters.idb; batches.set(observed.batch, { transport: 'idb', observed, ids: observed.ids });
+            if (config.holdBatch === observed.batch) {
+              observed.held = true; const gate = makeGate('batch:' + observed.batch, { ignoreAbort: config.ignoreAbort }); gate.arrived = true;
+              gate.promise.then(drain, drain); note('gate-arrive', { key: gate.key, transport: 'idb' });
+            }
+          }
+          requireValue(observed.ids.length <= 50, 'bounded IDB projection requested more than 50 keys');
+        }
+        const dispatchRequest = request.dispatchEvent;
+        request.dispatchEvent = function(event) { return dispatch(this, dispatchRequest, event); };
+        return request;
+      };
+      storeWrappers.set(store, originalGet); return store;
+    };
+  }
+  async function openDeviceDatabase() {
+    requireValue(window?.indexedDB && rawOpen, 'driver must supply pinned IndexedDB before fixture attachment');
+    return new Promise((resolve, reject) => {
+      const query = rawOpen.call(window.indexedDB, DEVICE_DATABASE, 2);
+      query.onupgradeneeded = () => {
+        const db = query.result;
+        for (const name of MIGRATION_STORES) if (!db.objectStoreNames.contains(name)) {
+          if (name === 'records' || name === 'idMigrationTombstones') db.createObjectStore(name, { keyPath: ['family', 'key'] });
+          else if (name === 'meta') db.createObjectStore(name);
+          else if (name === 'publicAliases') db.createObjectStore(name, { keyPath: ['kind', 'legacyId'] });
+          else if (name === 'idMigrationArchives') db.createObjectStore(name, { keyPath: 'digest' });
+          else db.createObjectStore(name, { keyPath: 'sourceKey' });
+        }
+      };
+      query.onerror = () => reject(query.error || infrastructure('device fixture database open failed'));
+      query.onblocked = () => reject(infrastructure('device fixture database unexpectedly blocked'));
+      query.onsuccess = () => { connections.add(query.result); resolve(query.result); };
+    });
+  }
+  async function seedDevice({ revisionOnly = false } = {}) {
+    idbSuppress++;
+    let db;
+    try {
+      db = await openDeviceDatabase();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(MIGRATION_STORES, 'readwrite');
+        tx.oncomplete = resolve; tx.onabort = tx.onerror = () => reject(tx.error || infrastructure('device seed transaction failed'));
+        const meta = tx.objectStore('meta');
+        if (revisionOnly) { const read = meta.get('revision'); read.onsuccess = () => meta.put(Number(read.result || 0) + 1, 'revision'); return; }
+        for (const name of MIGRATION_STORES) tx.objectStore(name).clear();
+        for (const id of completedIds) tx.objectStore('records').put({ family: 'chapters', key: id, id, mangaId: titleId, completed: true, page: null, readAt: STAMP, updated_at: 1792713600 });
+        meta.put(clone(scope), 'instanceScope'); meta.put(DEVICE_OWNER, 'deviceOwnerId'); meta.put(1, 'revision'); meta.put(completedIds.size, 'count');
+        if (publicProfile) meta.put({ version: 2, ownerId: DEVICE_OWNER, scope: clone(scope) }, 'publicIdOwner');
+      });
+    } finally { if (db) { db.close(); connections.delete(db); } idbSuppress--; }
+  }
+  async function attachWindow(value) {
+    assertOpen(); requireValue(value && new URL(value.location.href).origin === BADGE_FIXTURE_ORIGIN, 'wrong window origin');
+    if (window && window !== value) { await assertIdle(); detachWindow(); }
+    else if (window === value) throw infrastructure('window already attached');
+    requireValue(value.indexedDB && typeof value.indexedDB.open === 'function', 'fresh pinned fake-indexeddb factory required');
+    window = value; rawOpen = window.indexedDB.open; openDescriptor = Object.getOwnPropertyDescriptor(window.indexedDB, 'open');
+    window.indexedDB.open = function(...args) {
+      const query = rawOpen.apply(this, args);
+      query.addEventListener('success', () => { connections.add(query.result); instrumentDatabase(query.result); });
+      return query;
+    };
+    historyListener = event => { observedHistory = clone(event.detail?.value === undefined ? event.detail : event.detail.value); note('whole-title-history', { chapters: Object.keys(observedHistory?.[titleId] || {}).length }); };
+    window.addEventListener('badge-fixture-history', historyListener);
+    navigationListener = event => { const value = event.detail; if (value?.phase === 'cancelled' && currentNavigation) currentNavigation.cancelled = true; };
+    window.addEventListener('badge-fixture-navigation', navigationListener);
+    rebuildData(); await seedDevice();
+    note('window-attached', { origin: BADGE_FIXTURE_ORIGIN, profile, database: DEVICE_DATABASE });
+  }
+  function attachDriver(value) { requireValue(value && typeof value.command === 'function' && typeof value.waitFor === 'function', 'driver command and waitFor required'); driver = value; return api; }
+
+  function createXMLHttpRequest(win = window) {
+    requireValue(win?.EventTarget && win?.Event, 'window EventTarget required');
+    return class BadgeBoundaryXMLHttpRequest extends win.EventTarget {
+      static UNSENT = 0; static OPENED = 1; static HEADERS_RECEIVED = 2; static LOADING = 3; static DONE = 4;
+      UNSENT = 0; OPENED = 1; HEADERS_RECEIVED = 2; LOADING = 3; DONE = 4;
+      readyState = 0; status = 0; statusText = ''; response = ''; responseText = ''; responseType = ''; responseURL = '';
+      timeout = 0; withCredentials = false; upload = new win.EventTarget();
+      onreadystatechange = null; onload = null; onerror = null; onabort = null; ontimeout = null; onloadend = null; onloadstart = null; onprogress = null;
+      #method; #url; #headers = new Headers(); #responseHeaders = new Headers(); #abort; #sending = false; #serial = 0; #timer;
+      #emit(type) { const event = new win.Event(type); this.dispatchEvent(event); if (typeof this['on' + type] === 'function') this['on' + type].call(this, event); }
+      #state(state) { this.readyState = state; this.#emit('readystatechange'); }
+      open(method, url, async = true, user, password) {
+        requireValue(async !== false && user === undefined && password === undefined, 'synchronous or credential-string XHR unsupported');
+        if (this.#sending) this.abort(); this.#method = String(method).toUpperCase(); this.#url = new URL(url, BADGE_FIXTURE_ORIGIN).href;
+        this.#headers = new Headers(); this.response = this.responseText = ''; this.status = 0; this.#state(1);
+      }
+      setRequestHeader(name, value) { requireValue(this.readyState === 1 && !this.#sending, 'XHR headers outside opened state'); this.#headers.append(name, value); }
+      getResponseHeader(name) { return this.readyState >= 2 ? this.#responseHeaders.get(name) : null; }
+      getAllResponseHeaders() { return this.readyState < 2 ? '' : [...this.#responseHeaders].map(([key, value]) => `${key}: ${value}\r\n`).join(''); }
+      overrideMimeType() { throw infrastructure('unexpected XHR overrideMimeType'); }
+      send(body) {
+        requireValue(this.readyState === 1 && !this.#sending, 'XHR send outside opened state');
+        this.#sending = true; const serial = ++this.#serial; this.#abort = new AbortController(); this.#emit('loadstart');
+        const finish = type => { if (serial !== this.#serial || !this.#sending) return; this.#sending = false; clearTimeout(this.#timer); this.#state(4); this.#emit(type); this.#emit('loadend'); };
+        if (this.timeout > 0) this.#timer = setTimeout(() => { if (!this.#sending || serial !== this.#serial) return; this.#abort.abort(); this.status = 0; finish('timeout'); }, this.timeout);
+        own((async () => {
+          try {
+            const response = await fetchBoundary(this.#url, { method: this.#method, headers: this.#headers, body,
+              credentials: this.withCredentials ? 'include' : 'same-origin', signal: this.#abort.signal });
+            if (!this.#sending || serial !== this.#serial) {
+              try { await response.body?.cancel(); note('xhr-stale-body-cancelled', { serial }); }
+              catch (error) { terminalFailure = infrastructure('stale XHR response body cancellation failed: ' + String(error?.message || error)); throw terminalFailure; }
+              return;
+            }
+            this.status = response.status; this.statusText = response.statusText; this.responseURL = this.#url; this.#responseHeaders = response.headers; this.#state(2);
+            this.#state(3); const responseText = await response.text();
+            if (!this.#sending || serial !== this.#serial) { note('xhr-stale-body-drained', { serial }); return; }
+            this.responseText = responseText;
+            requireValue(['', 'text', 'json', 'arraybuffer'].includes(this.responseType), 'unsupported XHR responseType');
+            this.response = this.responseType === 'json' ? JSON.parse(this.responseText) : this.responseType === 'arraybuffer' ? new TextEncoder().encode(this.responseText).buffer : this.responseText;
+            this.#emit('progress'); finish('load');
+          } catch (error) { if (error?.code === 'BADGE_FIXTURE_INFRASTRUCTURE') { terminalFailure = error; note('xhr-infrastructure-failure', { serial, message: error.message }); throw error; } if (serial !== this.#serial || !this.#sending) return; this.status = 0; finish(error?.name === 'AbortError' ? 'abort' : 'error'); }
+        })());
+      }
+      abort() { if (!this.#sending) { this.readyState = 0; return; } this.#abort?.abort(); clearTimeout(this.#timer); this.#sending = false; ++this.#serial;
+        this.status = 0; this.response = this.responseText = ''; this.#state(4); this.#emit('abort'); this.#emit('loadend'); this.readyState = 0; }
+    };
+  }
+
+  const entrySelector = 'article:has(a[href^="/chapter/"])';
+  function entryNodes() { requireValue(window?.document, 'attached document required'); return [...window.document.querySelectorAll(entrySelector)]; }
+  function badgeDom() { return entryNodes().map(node => ({ href: node.querySelector('a[href^="/chapter/"]')?.getAttribute('href'),
+    action: node.querySelector('button[title]')?.getAttribute('title'), unknown: node.querySelectorAll('[aria-label="Read status unavailable"]').length,
+    disabled: node.querySelector('button[title="Read status unavailable"]')?.disabled === true, border: node.classList.contains('!border-l-green-800') })); }
+  function statusText() { return window.document.querySelector('[role="status"][aria-label="Chapter read status"]')?.textContent || ''; }
+  function retryCount() { return [...window.document.querySelectorAll('button')].filter(node => node.textContent?.trim() === 'Retry read status').length; }
+  async function assertUnknown({ allowUnavailable = false } = {}) {
+    await settle();
+    const rows = badgeDom(); requireValue(rows.length === config.rows, 'unknown check did not observe every displayed chapter');
+    for (const row of rows) {
+      // A genuine library scope migration removes read controls rather than
+      // manufacturing an enabled unknown button. Both states must be non-read.
+      requireValue(row.action === 'Read status unavailable' && row.disabled && row.unknown === 1 || allowUnavailable && row.action === undefined,
+        'an old completion value was published or a missing control was mistaken for an unknown badge');
+      requireValue(!row.border, 'unknown chapter received the unread green border');
+    }
+    note('unknown-dom-verified', { rows: rows.length, allowUnavailable });
+  }
+  async function idleBoundaries() {
+    await waitFor(() => [...gates.values()].every(gate => gate.released) &&
+      idbTransactions.every(tx => tx.terminalObserved) && pending.size === 0 && pendingBodies === 0, 'terminal HTTP/XHR/IDB ownership before independent case');
+  }
+  async function configure(next = {}) {
+    assertOpen(); requireValue(next && typeof next === 'object' && !Array.isArray(next), 'configuration object required');
+    const allowed = Object.keys(defaults()); requireValue(Object.keys(next).every(key => allowed.includes(key)), 'unknown configuration key');
+    if (configured) {
+      requireValue(![...gates.values()].some(gate => !gate.released), 'configure cannot abandon a held boundary or evade an unsettled owner');
+      await idleBoundaries();
+    }
+    // Defaults apply per case, not cumulatively. Unspecified hold/fault/mode
+    // flags must not leak from the preceding iteration of the immutable cases.
+    const selected = { ...defaults(), ...clone(next) };
+    boundedInteger(selected.rows, 101, 'visible rows'); boundedInteger(selected.extraCompletedTitleRows, 1000, 'extra history rows');
+    requireValue(['device', 'account'].includes(selected.mode), 'invalid selected library mode');
+    requireValue(!publicProfile || selected.mode === 'device', 'public1 cannot select unsupported native account mode');
+    requireValue(['acknowledged', 'uncertain'].includes(selected.mutation), 'invalid mutation outcome');
+    requireValue([0, 1, 2].includes(selected.holdBatch), 'only batch1/2 may be held');
+    requireValue([0, 1].includes(selected.holdBodyBatch) && typeof selected.holdBodyCancel === 'boolean', 'invalid returned-body hold configuration');
+    requireValue(!selected.holdBodyBatch || !publicProfile && selected.mode === 'account' && selected.holdBatch === 0 && !selected.batchFault && selected.rows >= 1, 'returned-body supplement requires a successful native account batch without a preheaders hold');
+    requireValue(!selected.holdBodyCancel || selected.holdBodyBatch === 1, 'held cancel requires an actual returned-body control');
+    requireValue(!selected.batchFault || [1, 2].includes(selected.batchFault.batch) && ['http-500', 'missing-row', 'duplicate-row', 'wrong-account', 'wrong-namespace'].includes(selected.batchFault.fault), 'invalid batch fault');
+    requireValue(!selected.bindingFault || ['missing', 'wrong-parent', 'wrong-id-profile', 'invalid-namespace'].includes(selected.bindingFault), 'invalid binding fault');
+    requireValue(Array.isArray(selected.completedIds), 'completedIds array required');
+    if (configured) {
+      // The actual controller deliberately has no uncertain-fence reset API.
+      // A new document may clear it ONLY between independent cases, after every
+      // old terminal is observed. Remount/abort assertions never take this path.
+      if (typeof driver?.reloadCurrentSource !== 'function') throw infrastructure('independent configuration requires a genuine hash-pinned full document reload; no fake fence or owner reset is allowed');
+      const receipt = await driver.reloadCurrentSource({ fixture: api, href: BADGE_FIXTURE_ORIGIN + '/__badge_outside' });
+      requireValue(receipt?.reloaded === true && [BADGE_FIXTURE_REVISION, BADGE_COMPARISON_REVISION].includes(receipt?.sourceRevision) && /^[0-9a-f]{64}$/.test(receipt?.manifestSha256 || ''), 'full reload must return the reviewed current/explicit comparison hash-pinned receipt');
+      mutationUncertain = false; note('independent-document-reloaded', { sourceRevision: receipt.sourceRevision, manifestSha256: receipt.manifestSha256 });
+    }
+    preparing = true;
+    try {
+      await command('navigate', { href: '/__badge_outside?case=' + (caseNumber + 1) });
+      visible = false; config = selected; generation++; caseNumber++; configured = true;
+      scope = { origin: BADGE_FIXTURE_ORIGIN, catalogNamespace: NAMESPACE, serviceKey: SERVICE_KEY }; actor = accountId(0);
+      lastChange = undefined; remountEvidence = undefined; bodyRemountEvidence = undefined; uncertainRemountEvidence = undefined; currentNavigation = undefined; routeGates.clear(); routeErrors.clear();
+      rebuildData(); await seedDevice();
+      await command('refreshSession'); await command('openLibrary'); await command('refreshLibrary'); await command('verifyCatalogue');
+      await command('selectMode', { mode: config.mode });
+      const snapshot = await command('snapshot');
+      requireValue(snapshot.library?.ready === true && snapshot.library?.mode === config.mode && snapshot.library?.scopeStatus === 'verified', 'real library did not reach configured ready/verified selection');
+      requireValue(publicProfile || snapshot.native?.actor === actor, 'synthetic auth was not accepted by actual Session authority');
+      await idleBoundaries(); resetCounters();
+      note('configured', { profile, mode: config.mode, rows: config.rows, generation, config });
+    } finally { preparing = false; }
+  }
+  async function openTitle(page) {
+    requireValue(configured, 'configure before opening title');
+    requireValue(page && typeof page.locator === 'function', 'real driver page facade required');
+    await command('navigate', { href: `/title/${titleId}?fixtureCase=${caseNumber}` }); visible = true;
+    // goto settling is not proof of XHR chapter-feed completion. A held feed
+    // deliberately remains pending; all other openTitle calls observe its DOM.
+    if (!config.holdChapterPage) await waitChapterFeed(page);
+    note('title-opened', { titleId, heldChapterPage: config.holdChapterPage });
+  }
+  async function waitChapterFeed(page) {
+    await waitFor(async () => counters.chapter >= 1 && await page.locator(entrySelector).count() === config.rows &&
+      (config.rows > 0 || window.document.body.textContent?.includes('No chapters found')), 'retained chapter feed and exact displayed row count');
+    await settle();
+  }
+  async function waitBadges(page) {
+    await waitChapterFeed(page);
+    await waitFor(() => { const rows = badgeDom(); return rows.length === config.rows && rows.every(row => row.action === 'Mark as read' || row.action === 'Mark as unread') && !statusText(); }, 'all-or-nothing visible badge publication');
+    const rows = badgeDom();
+    for (const row of rows) { const id = row.href?.split('/')[2]; requireValue(row.action === (completedIds.has(id) ? 'Mark as unread' : 'Mark as read'), 'badge differs from admitted completion boundary'); }
+    note('badges-ready', { rows: rows.length, completionRequests: counters.completion, idbBatches: counters.idb });
+  }
+  async function waitIdentity() {
+    await waitGate('identity');
+    if (!config.holdChapterPage) await waitFor(() => entryNodes().length === config.rows && counters.chapter >= 1, 'simultaneously mounted retained feed while identity held');
+    await settle();
+    requireValue(counters.capability === 1, 'title and badge failed to share the held capability handoff');
+  }
+  async function releaseIdentity() { release('identity'); config.holdIdentity = false; await settle(); }
+  async function waitBatch(batch) {
+    await waitFor(() => batches.has(batch), 'completion batch ' + batch);
+    if (config.holdBatch === batch) await waitGate('batch:' + batch);
+    if (config.batchFault?.batch === batch) await waitFor(() => retryCount() === 1 && /incomplete|invalid|account|catalogue|unavailable|cover|row|HTTP/i.test(statusText()), 'failed completion batch rendered uncertainty');
+    await settle();
+  }
+  async function releaseBatch(batch) {
+    // A new device projection can reuse batch numbers after selection changes.
+    // Keep release/assertion attached to the old held HTTP request, not its replacement.
+    const captured = lastChange?.field === 'selection' && batch === 2 ? lastChange.oldBatch : batches.get(batch);
+    requireValue(captured, 'cannot release absent batch');
+    if (gates.has('batch:' + batch)) release('batch:' + batch);
+    else requireValue(captured.transport === 'http' && captured.settled, 'held batch disappeared without an observed abort terminal');
+    config.holdBatch = 0;
+    await waitFor(() => captured.transport === 'http' ? captured.settled : captured.observed.terminalObserved, 'released batch terminal observation');
+    await settle();
+  }
+  async function assertRetainedGroupsAndEditions(page) {
+    requireValue(config.alternateEditions, 'alternate edition configuration required');
+    await waitBadges(page);
+    const nodes = entryNodes(); requireValue(nodes.length === config.rows, 'grouping dropped chapter editions');
+    const links = nodes.map(node => node.querySelector('a[href^="/chapter/"]')?.getAttribute('href'));
+    requireValue(new Set(links).size === config.rows && links.every(link => /^\/chapter\//.test(link || '')), 'edition links lost exact distinct chapter ids');
+    for (let index = 0; index < config.rows; index++) {
+      const row = nodes.find(node => node.querySelector(`a[href="/chapter/${chapterId(index)}"]`));
+      requireValue(row?.querySelector(`a[href="/group/${groupId(index % 2)}"]`)?.textContent === `Fixture Edition ${index % 2 + 1}`, 'edition group metadata changed');
+    }
+    const text = window.document.body.textContent || '';
+    requireValue(text.includes('Volume 1') && text.includes('Chapter 1'), 'retained volume/alternate chapter group headings absent');
+    note('retained-groups-verified', { editions: config.rows });
+  }
+  async function change(field, page) {
+    requireValue(['account', 'catalogue', 'page', 'revision', 'namespace', 'selection'].includes(field), 'unsupported authority change');
+    requireValue(batches.has(2) && gates.has('batch:2'), 'authority change requires actually held second batch');
+    const before = await command('snapshot');
+    // Make the withheld old response visibly distinguishable from any new
+    // unread projection, without altering what the first batch already saw.
+    const stale = batches.get(2); if (stale.response) for (const row of stale.response.data) row.completed = true;
+    lastChange = { field, before, oldGeneration: generation, oldCompletionRequests: counters.completion, oldBatch: stale };
+    if (field === 'account') { actor = accountId(1); await command('refreshSession'); }
+    if (field === 'catalogue') { scope = { ...scope, serviceKey: 'b'.repeat(64) }; await command('verifyCatalogue'); }
+    if (field === 'namespace') { scope = { ...scope, catalogNamespace: NEXT_NAMESPACE }; await command('verifyCatalogue'); }
+    if (field === 'revision') { await seedDevice({ revisionOnly: true }); await command('refreshLibrary'); }
+    if (field === 'selection') {
+      // The real command may start device reads before its promise resolves.
+      // Declare only the next transport here; the snapshot below still proves
+      // that actual useMode changed the product authority.
+      config.mode = 'device'; config.holdBatch = 0;
+      await command('selectMode', { mode: 'device' });
+    }
+    if (field === 'page') {
+      const key = 'route:title:change'; routeGates.set('title', key);
+      currentNavigation = { kind: 'page', promise: command('navigate', { href: `/title/${titleId}?page=2&fixtureCase=${caseNumber}` }) };
+      currentNavigation.promise.catch(() => {}); await waitGate(key);
+    }
+    const after = await command('snapshot'); lastChange.after = after;
+    if (field === 'account') requireValue(after.native?.actor !== before.native?.actor, 'actual Session refresh did not change actor');
+    if (field === 'revision') requireValue(after.library?.revision > before.library?.revision, 'actual storage revision refresh did not change revision');
+    if (field === 'selection') requireValue(after.library?.mode === 'device', 'real useMode did not select device');
+    if (field === 'catalogue' || field === 'namespace') requireValue(after.library?.scopeStatus === 'migration_required', 'real catalogue verification did not fence mismatched scope');
+    note('authority-changed', { field });
+  }
+  async function assertNoOldBadgePublication(page) {
+    requireValue(lastChange || currentNavigation?.kind === 'pending-chapter-feed', 'no captured change to verify');
+    if (currentNavigation?.kind === 'pending-chapter-feed') await waitChapterFeed(page);
+    await settle();
+    requireValue(!badgeDom().some(row => row.action === 'Mark as unread'), 'stale withheld completion published after authority/navigation change');
+    if (lastChange?.field === 'catalogue' || lastChange?.field === 'namespace') await assertUnknown({ allowUnavailable: true });
+    else if (lastChange?.field === 'page' || currentNavigation?.kind === 'pending-chapter-feed') {
+      requireValue(/Reload/i.test(statusText()) || badgeDom().every(row => row.action === 'Read status unavailable'), 'old pending page was not fenced');
+      if (currentNavigation?.kind === 'pending-chapter-feed') requireValue(retryCount() === 0, 'old pending page binding offered an unsafe retry');
+      await assertUnknown();
+    } else {
+      // A fresh, correctly-authorized projection is allowed. Read-only checks
+      // ensure it cannot be mistaken for the discarded completed old batch.
+      await waitFor(() => !/Checking read status/.test(statusText()), 'post-change current projection or explicit refusal');
+      requireValue(!badgeDom().some(row => row.action === 'Mark as unread'), 'old account/revision completion leaked');
+    }
+    if (currentNavigation?.promise) {
+      for (const key of routeGates.values()) if (gates.has(key)) release(key);
+      routeGates.clear(); await currentNavigation.promise; currentNavigation = undefined;
+    }
+    note('stale-publication-refused');
+  }
+  async function assertNoAutomaticRequery() {
+    await waitFor(() => mutationUncertain, 'uncertain mutation admitted and rejected at HTTP boundary');
+    requireValue(mutationUncertain, 'uncertain mutation not observed at HTTP boundary');
+    await waitFor(() => /not reliably acknowledged|Reload and check/i.test(statusText()), 'persistent uncertain mutation fence');
+    await settle();
+    const before = counters.completion;
+    requireValue(before === lastMutationCompletionCount && counters.mutation === 1, 'uncertain mutation triggered automatic requery or replay');
+    // Let effects and timer tasks scheduled by the genuine app drain. This is a
+    // bounded no-replay observation, not a claim about arbitrary future time.
+    await new Promise(resolve => setTimeout(resolve, 300)); await settle();
+    requireValue(counters.completion === before && counters.mutation === 1, 'uncertain mutation auto-requeried within settled observation');
+    note('uncertain-no-requery', { observedMs: 300, completionRequests: before });
+  }
+  async function remountTitle(page) {
+    requireValue(config.ignoreAbort && config.holdBatch === 1 && gates.has('batch:1'), 'remount requires one genuinely unsettled boundary');
+    const initial = await command('snapshot');
+    remountEvidence = { initial, batch: batches.get(1), requestCount: counters.completion, idbCount: counters.idb, windows: window };
+    await command('navigate', { href: `/chapter/${chapterId(0)}/1` });
+    await command('navigate', { href: `/title/${titleId}?fixtureCase=${caseNumber}&remount=1` });
+    await waitChapterFeed(page);
+    requireValue(window === remountEvidence.windows && gates.has('batch:1'), 'remount reset graph or released old terminal');
+    note('same-graph-remount', { via: 'title -> chapter -> title' });
+  }
+  async function assertUnsettledRefusal(page) {
+    requireValue(remountEvidence && gates.has('batch:1'), 'original unsettled owner missing');
+    await waitFor(() => /settled|cleanup|pending.*owned|already.*progress|unsettled/i.test(statusText()), 'new mount refused unsettled transport/storage owner');
+    await assertUnknown();
+    requireValue(counters.completion === remountEvidence.requestCount && counters.idb === remountEvidence.idbCount, 'new mount bypassed still-owned boundary');
+    if (config.mode === 'device') requireValue(remountEvidence.batch.observed.aborted && !remountEvidence.batch.observed.terminalObserved, 'IDB cancellation did not remain terminal-unsettled');
+    note('unsettled-remount-refused', { mode: config.mode });
+  }
+  async function assertNoBypassOwner() {
+    requireValue(remountEvidence, 'no remount ownership evidence');
+    await settle();
+    requireValue(window === remountEvidence.windows && counters.completion === remountEvidence.requestCount && counters.idb === remountEvidence.idbCount,
+      'late old terminal started a bypass query or replaced the module graph');
+    requireValue(!gates.has('batch:1'), 'original terminal remains unreleased');
+    await assertUnknown(); note('late-terminal-no-bypass', { mode: config.mode });
+  }
+  function bodyControl(batch) { const control = bodyControls.get(batch); requireValue(control, 'returned-body control not admitted'); return control; }
+  async function waitBodyBatch(batch) {
+    await waitFor(() => {
+      const control = bodyControls.get(batch), request = batches.get(batch);
+      return request?.transport === 'http' && request.settled && control?.chunkDelivered && control.readStarted && !control.readSettled && gates.get(control.readKey)?.arrived;
+    }, 'returned response headers plus delivered bytes and pending body EOF');
+    const control = bodyControl(batch);
+    requireValue(!gates.has('batch:' + batch) && pendingBodies >= 1, 'body supplement was replaced by a preheaders hold');
+    note('returned-body-awaiting-eof', { batch, headersSettled: true, bytes: control.bytes });
+  }
+  async function waitBodyCancel(batch) {
+    await waitFor(() => { const control = bodyControls.get(batch); return control?.cancelStarted && control.cancelCalls === 1 && !control.cancelSettled && gates.get(control.cancelKey)?.arrived; }, 'actual reader.cancel with held underlying-source cancellation');
+    note('returned-body-cancel-observed', { batch, cancelCalls: bodyControl(batch).cancelCalls });
+  }
+  async function releaseBodyRead(batch) {
+    const control = bodyControl(batch); requireValue(control.readStarted && !control.readSettled, 'body EOF source not held');
+    release(control.readKey); await waitFor(() => control.readSettled, 'returned-body source pull terminal');
+    // The useful supplemental assertion is made here while cancellation is
+    // genuinely still pending, not after prematurely closing every gate.
+    if (config.holdBodyCancel && control.cancelStarted) requireValue(!control.cancelSettled && !control.terminal && pendingBodies >= 1, 'EOF release accidentally settled held cancellation');
+    note('returned-body-read-released', { batch, cancellationStillHeld: control.cancelStarted && !control.cancelSettled });
+  }
+  async function releaseBodyCancel(batch) {
+    const control = bodyControl(batch); requireValue(control.readSettled && control.cancelStarted && !control.cancelSettled, 'release actual body source terminal before held cancellation');
+    release(control.cancelKey); await waitFor(() => control.cancelSettled && control.terminal, 'held body cancellation true terminal');
+    await settle();
+  }
+  async function releaseBodyTerminal(batch) {
+    const control = bodyControl(batch);
+    if (!control.readSettled) await releaseBodyRead(batch);
+    if (control.cancelStarted && !control.cancelSettled) await releaseBodyCancel(batch);
+    await waitFor(() => control.terminal, 'returned response body terminal');
+  }
+  async function remountTitleWithHeldBody(page) {
+    requireValue(config.mode === 'account' && !publicProfile && config.holdBodyBatch === 1 && config.holdBodyCancel, 'returned-body/cancel supplement requires native account controls');
+    await waitBodyBatch(1); const control = bodyControl(1);
+    bodyRemountEvidence = { window, generation, caseNumber, requestCount: counters.completion, mutationCount: counters.mutation, idbCount: counters.idb,
+      initial: await command('snapshot'), control };
+    await command('navigate', { href: `/chapter/${chapterId(0)}/1` });
+    await waitBodyCancel(1);
+    await command('navigate', { href: `/title/${titleId}?fixtureCase=${caseNumber}&returnedBodyRemount=1` });
+    await waitChapterFeed(page);
+    requireValue(window === bodyRemountEvidence.window && generation === bodyRemountEvidence.generation && caseNumber === bodyRemountEvidence.caseNumber && !control.terminal,
+      'returned-body remount recreated the graph or prematurely settled cancellation');
+    note('returned-body-same-graph-remount', { batch: 1, via: 'title -> chapter -> title', headersSettled: batches.get(1).settled });
+  }
+  async function assertBodyUnsettledRefusal(page) {
+    requireValue(bodyRemountEvidence && !bodyRemountEvidence.control.terminal, 'held returned-body owner evidence missing');
+    const evidence = bodyRemountEvidence, control = evidence.control;
+    await waitBodyCancel(control.batch);
+    await waitFor(() => /settled|cleanup|pending.*owned|already.*progress|unsettled/i.test(statusText()), 'replacement mount refused still-owned returned-body cancellation');
+    await assertUnknown();
+    requireValue(window === evidence.window && generation === evidence.generation && caseNumber === evidence.caseNumber, 'body-owner refusal came from a replacement document');
+    requireValue(counters.completion === evidence.requestCount && counters.mutation === evidence.mutationCount && counters.idb === evidence.idbCount,
+      'remount admitted a second transport/storage request before true body cancellation terminal');
+    requireValue(control.cancelStarted && !control.cancelSettled && pendingBodies >= 1, 'body cancel was not actually pending during refusal');
+    note('returned-body-remount-refused', { batch: control.batch, readSettled: control.readSettled, cancelSettled: false, completionRequests: counters.completion });
+  }
+  async function assertNoBodyBypassOwner() {
+    requireValue(bodyRemountEvidence?.control.terminal, 'true returned-body terminal has not been observed');
+    const evidence = bodyRemountEvidence;
+    await settle(); await new Promise(resolve => setTimeout(resolve, 300)); await settle();
+    requireValue(window === evidence.window && generation === evidence.generation && caseNumber === evidence.caseNumber && counters.completion === evidence.requestCount && counters.idb === evidence.idbCount,
+      'old returned-body terminal caused a bypass requery or replaced the graph');
+    requireValue(!gates.has(evidence.control.readKey) && !gates.has(evidence.control.cancelKey) && pendingBodies === 0, 'returned-body gates or stream remain unsettled');
+    await assertUnknown();
+    note('returned-body-terminal-no-bypass', { batch: evidence.control.batch, observedMs: 300, completionRequests: counters.completion, pendingBodies });
+  }
+  async function retryAfterBodyTerminal(page) {
+    requireValue(bodyRemountEvidence?.control.terminal && pendingBodies === 0, 'explicit retry requires the true returned-body/cancel terminal');
+    const evidence = bodyRemountEvidence, before = counters.completion;
+    requireValue(window === evidence.window && generation === evidence.generation && caseNumber === evidence.caseNumber && before === evidence.requestCount,
+      'owner-release probe must stay in the same graph without an automatic requery');
+    const retry = page.getByRole('button', { name: 'Retry read status', exact: true });
+    requireValue(await retry.count() === 1 && !await retry.isDisabled(), 'no genuine bounded badge Retry control after terminal');
+    await retry.click(); await waitBadges(page);
+    requireValue(counters.completion === before + 1 && counters.idb === evidence.idbCount && counters.mutation === evidence.mutationCount,
+      'released owner did not admit exactly one explicit current-source completion retry');
+    requireValue(window === evidence.window && bodyControls.get(1) === evidence.control && evidence.control.terminal,
+      'retry replaced the graph or the original terminal witness');
+    note('returned-body-owner-released-for-explicit-retry', { completionRequestsBefore: before, completionRequestsAfter: counters.completion, sameGraph: true });
+  }
+  async function remountUncertainTitle(page) {
+    requireValue(!publicProfile && config.mode === 'account' && mutationUncertain, 'native uncertain mutation required before same-graph remount');
+    await assertNoAutomaticRequery(); await assertIdle();
+    uncertainRemountEvidence = { window, generation, caseNumber, requestCount: counters.completion, mutationCount: counters.mutation, idbCount: counters.idb,
+      initial: await command('snapshot') };
+    await command('navigate', { href: `/chapter/${chapterId(0)}/1` });
+    await command('navigate', { href: `/title/${titleId}?fixtureCase=${caseNumber}&uncertainMutationRemount=1` });
+    await waitChapterFeed(page);
+    note('uncertain-mutation-same-graph-remount', { via: 'title -> chapter -> title', generation });
+  }
+  async function assertUncertainFenceSurvivesRemount(page) {
+    requireValue(uncertainRemountEvidence && mutationUncertain, 'uncertain same-graph remount evidence missing');
+    const evidence = uncertainRemountEvidence;
+    await waitFor(() => /not reliably acknowledged|Reload and check/i.test(statusText()), 'module-owned uncertain mutation fence on remounted consumers');
+    await assertUnknown();
+    requireValue(window === evidence.window && generation === evidence.generation && caseNumber === evidence.caseNumber, 'uncertain fence check recreated the graph');
+    requireValue(counters.completion === evidence.requestCount && counters.mutation === evidence.mutationCount && counters.mutation === 1 && counters.idb === evidence.idbCount,
+      'remounted uncertain mutation inferred completion, replayed mutation, or queried another history source');
+    requireValue(retryCount() === 0, 'uncertain mutation fence offered an automatic retry control');
+    await assertNoAutomaticRequery();
+    note('uncertain-mutation-fence-survived-remount', { completionRequests: counters.completion, mutationRequests: counters.mutation, generation });
+  }
+  async function assertOriginalDeviceContinue(page) {
+    requireValue(config.mode === 'device' && config.extraCompletedTitleRows > 100, 'whole-title device continuation fixture not configured');
+    const expected = chapterId(0), before = counters.aggregate;
+    await assertSharedHistoryIsWholeTitle();
+    const button = page.getByRole('button', { name: 'Continue Reading', exact: true });
+    requireValue(await button.count() === 1 && !await button.isDisabled(), 'retained whole-title device Continue is not available');
+    currentNavigation = { kind: 'device-continue', chapterId: expected };
+    await button.click();
+    await waitFor(async () => new URL((await command('snapshot')).href).pathname === `/chapter/${expected}/1`, 'retained device Continue navigated to oldest unread chapter');
+    requireValue(counters.aggregate > before && counters.history === 0 && counters.completion === 0, 'device Continue did not use retained aggregate in device isolation');
+    note('retained-device-continue', { target: expected, aggregateRequests: counters.aggregate }); currentNavigation = undefined;
+  }
+  async function assertSharedHistoryIsWholeTitle() {
+    requireValue(config.mode === 'device' && wholeTitleHistory, 'whole-title device history required');
+    requireValue(observedHistory !== undefined, 'missing real harness history observation; install badge-fixture-history event');
+    requireValue(equal(observedHistory, wholeTitleHistory), 'visible badge projection replaced or partially overwrote shared whole-title Continue history');
+    requireValue(Object.keys(observedHistory[titleId] || {}).length === completedIds.size, 'shared device history lost out-of-page rows');
+    note('whole-title-history-preserved', { rows: completedIds.size, outsidePage: config.extraCompletedTitleRows });
+  }
+  async function openComparisonSource(page, revision) {
+    requireValue(revision === BADGE_COMPARISON_REVISION, 'unreviewed old-source revision');
+    await idleBoundaries();
+    if (typeof driver?.openComparisonSource !== 'function') throw infrastructure('separately hash-pinned old-source generated graph is required');
+    const otherFixture = api.fork();
+    const result = await driver.openComparisonSource({ revision, profile: publicProfile ? 'public1' : 'native0', fixture: otherFixture, href: BADGE_FIXTURE_ORIGIN + '/__badge_outside' });
+    requireValue(result?.sourceRevision === revision && /^[0-9a-f]{64}$/.test(result?.manifestSha256 || '') && result?.page && result?.close,
+      'comparison driver did not provide a healthy separately pinned old graph');
+    comparison = { ...result, fixture: otherFixture };
+    await otherFixture.configure({ mode: publicProfile ? 'device' : 'account', rows: 51, completedIds: ['chapter:0'], holdBatch: 2 });
+    await otherFixture.openTitle(result.page);
+    // Old code may not issue bounded completion at all. Do not wait for a
+    // nonexistent old batch and relabel its timeout as the expected negative.
+    note('comparison-source-opened', { revision, manifestSha256: result.manifestSha256 });
+  }
+  async function assertBadgeContractFails() {
+    requireValue(comparison, 'old graph was not opened');
+    const other = comparison.fixture;
+    try {
+      await other.waitChapterFeed(comparison.page);
+      await comparison.page.getByRole('button', { name: 'Continue Reading', exact: true }).count();
+      const receipt = await comparison.snapshot?.();
+      requireValue(receipt?.frameworkReady === true && receipt?.uncaughtErrors === 0, 'comparison graph infrastructure is not healthy');
+      const rows = await comparison.page.locator(entrySelector).all();
+      requireValue(rows.length === 51, 'comparison feed did not render exact fixture rows');
+      let genuineViolation = false;
+      for (const row of rows) {
+        const unavailable = await row.locator('button[title="Read status unavailable"]').count();
+        const inferred = await row.locator('button[title="Mark as read"],button[title="Mark as unread"]').count();
+        if (!unavailable && inferred) genuineViolation = true;
+      }
+      requireValue(genuineViolation, 'old source did not exhibit a healthy semantic badge-contract violation');
+      note('comparison-negative-observed', { revision: BADGE_COMPARISON_REVISION, reason: 'read/unread inferred without complete bound visible projection' });
+    } finally { await comparison.close(); comparison = undefined; }
+  }
+  async function waitChapterPage() { await waitGate('chapter-page'); }
+  async function releaseChapterPage() { release('chapter-page'); config.holdChapterPage = false; await settle(); }
+  async function hashThenNavigationStart(page) {
+    requireValue(config.holdChapterPage && gates.has('chapter-page'), 'pending chapter feed required');
+    const beforeHash = await command('snapshot'), href = beforeHash.href;
+    const countsBeforeHash = clone(counters), requestsBeforeHash = requests.length;
+    const originalRequests = requests.slice(), heldGate = gates.get('chapter-page');
+    const feedPath = publicProfile ? '/api/v1/manga/' + titleId + '/feed' : '/api/manga/' + titleId + '/chapters';
+    const heldFeeds = requests.filter(row => row.path === feedPath && !row.settled);
+    requireValue(heldFeeds.length === 1 && heldGate && !heldGate.released, 'one original held chapter request required');
+    const heldFeed = heldFeeds[0], feedBeforeHash = clone(heldFeed);
+    const admittedGroupRequest = row => publicProfile && row.origin === BADGE_FIXTURE_ORIGIN &&
+      row.path === '/api/v1/manga/' + titleId + '/available-groups' && row.query === '?limit=100' &&
+      row.method === 'GET' && row.credentials === 'same-origin' && row.generation === generation && row.settled;
+    await command('hash', { hash: '#pending-badge' });
+    await waitFor(async () => {
+      const value = await command('snapshot');
+      return new URL(value.href).hash === '#pending-badge' && value.pageUrl === value.href && value.navigationEpoch > beforeHash.navigationEpoch;
+    }, 'real hash event committed page binding and invalidated epoch');
+    const hashSnapshot = await command('snapshot');
+    requireValue(new URL(hashSnapshot.href).hash === '#pending-badge', 'real hash navigation did not commit');
+    if (publicProfile) await waitFor(() => requests.slice(requestsBeforeHash).every(row => row.settled), 'started public group options after actual hash');
+    const afterHashRequests = requests.slice(requestsBeforeHash);
+    requireValue(publicProfile ? afterHashRequests.length <= 2 && afterHashRequests.every(admittedGroupRequest) : afterHashRequests.length === 0, 'unexpected requests caused by hash transition');
+    // Empty location.hash retains a trailing # in pinned jsdom; native back
+    // leaves Kit page.url stale. Actual Kit goto restores both exact bindings
+    // without replacing the retained title or its still-held original feed.
+    await command('navigate', { href, replaceState: true });
+    await waitFor(async () => {
+      const value = await command('snapshot');
+      return value.href === href && value.pageUrl === beforeHash.pageUrl && value.navigationEpoch > hashSnapshot.navigationEpoch;
+    }, 'actual Kit restoration of exact href and page binding with invalidated epoch');
+    const restored = await command('snapshot');
+    requireValue(restored.href === href, 'hash round-trip changed retained feed href');
+    requireValue(restored.pageUrl === beforeHash.pageUrl && restored.routeId === beforeHash.routeId, 'hash restoration changed retained page binding');
+    if (publicProfile) await waitFor(() => requests.slice(requestsBeforeHash).every(row => row.settled), 'started public group options after actual Kit restoration');
+    const extraRequests = requests.slice(requestsBeforeHash);
+    const observed = value => ({ href: value.href, pageUrl: value.pageUrl, routeId: value.routeId, navigationEpoch: value.navigationEpoch });
+    note('hash-restoration-boundaries', { before: observed(beforeHash), hashed: observed(hashSnapshot), restored: observed(restored),
+      countersBefore: countsBeforeHash, countersAfter: clone(counters), heldFeedBefore: feedBeforeHash, heldFeedAfter: clone(heldFeed),
+      sameHeldGate: gates.get('chapter-page') === heldGate, gateReleased: heldGate.released, requestsBefore: requestsBeforeHash,
+      requestsAfter: requests.length, afterHashRequests: clone(afterHashRequests), extraRequests: clone(extraRequests) });
+    requireValue(equal(counters, countsBeforeHash) && gates.get('chapter-page') === heldGate && !heldGate.released &&
+      requests.includes(heldFeed) && !heldFeed.settled && originalRequests.every((row, index) => requests[index] === row),
+      'hash restoration replaced or released the held original feed');
+    requireValue(publicProfile ? extraRequests.length <= 2 && extraRequests.every(admittedGroupRequest) && afterHashRequests.every((row, index) => extraRequests[index] === row) : extraRequests.length === 0,
+      'hash restoration added an unadmitted request');
+    note('hash-binding-restored', { before: observed(beforeHash), hashed: observed(hashSnapshot), restored: observed(restored), counters: clone(counters), requests: requests.length });
+    const key = 'route:chapter:pending'; routeGates.set('chapter', key);
+    currentNavigation = { kind: 'pending-chapter-feed', promise: command('navigate', { href: `/chapter/${chapterId(0)}/1` }) };
+    currentNavigation.promise.catch(() => {}); await waitGate(key);
+    requireValue(new URL((await command('snapshot')).href).pathname === `/title/${titleId}`, 'held route gate failed to retain old page while navigation pending');
+    note('hash-then-navigation-start', { href, independentRouteGate: key });
+  }
+  async function beginNavigation({ hold: shouldHold = true, error = false, href = `/chapter/${chapterId(0)}/1` } = {}) {
+    requireValue(!currentNavigation, 'another fixture navigation is still active');
+    const target = new URL(href, BADGE_FIXTURE_ORIGIN);
+    requireValue(target.origin === BADGE_FIXTURE_ORIGIN && (target.pathname === `/chapter/${chapterId(0)}/1` || target.pathname === `/title/${titleId}`), 'framework control must use an admitted title/chapter route');
+    const kind = target.pathname.startsWith('/title/') ? 'title' : 'chapter';
+    const key = 'route:' + kind + ':framework:' + sequence;
+    if (shouldHold) routeGates.set(kind, key);
+    if (error) routeErrors.set(kind, 503);
+    const before = await command('snapshot');
+    const navigation = currentNavigation = { kind: 'framework-control', target: target.href, routeKind: kind, gateKey: shouldHold ? key : undefined, before, expectsError: !!error, settled: false, rejected: undefined };
+    navigation.promise = command('navigate', { href: target.href }).then(value => { navigation.settled = true; navigation.result = value; return value; }, failure => { navigation.settled = true; navigation.rejected = String(failure?.message || failure); throw failure; });
+    navigation.promise.catch(() => {});
+    // Return without waiting for goto or the load gate. Cancellation may prevent
+    // the loader from being called at all. waitNavigation handles either event.
+    return navigationObservation();
+  }
+  async function releaseNavigation() {
+    requireValue(currentNavigation?.kind === 'framework-control', 'no active framework-control navigation');
+    if (currentNavigation.gateKey && gates.has(currentNavigation.gateKey)) release(currentNavigation.gateKey);
+    routeGates.delete(currentNavigation.routeKind);
+    return navigationObservation();
+  }
+  async function waitNavigation() {
+    requireValue(currentNavigation?.kind === 'framework-control', 'no active framework-control navigation');
+    await waitFor(() => currentNavigation.settled || currentNavigation.gateKey && gates.get(currentNavigation.gateKey)?.arrived, 'real navigation gate admission or cancellation terminal');
+    return navigationObservation();
+  }
+  async function finishNavigation() {
+    requireValue(currentNavigation?.kind === 'framework-control', 'no active framework-control navigation');
+    requireValue(!currentNavigation.gateKey || !gates.has(currentNavigation.gateKey), 'release route gate before finishing navigation');
+    const navigation = currentNavigation; await navigation.promise.catch(() => {});
+    const observation = await navigationObservation(), state = observation.state;
+    const actual = state.href || state.page?.href || state.page?.url;
+    const hasPageError = !!state.error || !!state.page?.error;
+    const outcome = hasPageError ? 'load-error' : navigation.cancelled && actual === navigation.before.href ? 'cancelled' : navigation.rejected ? 'rejected' : actual === navigation.target ? 'committed' : 'rejected';
+    if (navigation.expectsError && outcome === 'committed') throw infrastructure('route error injection committed without a real page-error witness');
+    routeErrors.delete(navigation.routeKind); routeGates.delete(navigation.routeKind); currentNavigation = undefined;
+    return { ...observation, outcome }; 
+  }
+  async function navigationObservation() {
+    const state = await command('snapshot'), navigation = currentNavigation;
+    return { state, target: navigation?.target, settled: navigation?.settled ?? !navigation, rejected: navigation?.rejected,
+      cancelled: !!navigation?.cancelled, held: !!navigation?.gateKey && gates.has(navigation.gateKey), before: navigation?.before };
+  }
+  async function leaveGuard() { requireValue(!currentNavigation, 'settle navigation before leaving guard'); return command('navigate', { href: '/__badge_outside?guard=' + sequence }); }
+  async function remountGuard(page) { await leaveGuard(); return openTitle(page); }
+  function detachWindow() {
+    if (window && historyListener) window.removeEventListener('badge-fixture-history', historyListener);
+    if (window && navigationListener) window.removeEventListener('badge-fixture-navigation', navigationListener);
+    if (window?.indexedDB && rawOpen) { if (openDescriptor) Object.defineProperty(window.indexedDB, 'open', openDescriptor); else delete window.indexedDB.open; }
+    for (const restore of restores.splice(0).reverse()) restore();
+    for (const db of connections) db.close(); connections.clear();
+    window = undefined; rawOpen = undefined; historyListener = undefined; navigationListener = undefined; openDescriptor = undefined;
+    idbTransactions.length = 0; observedHistory = undefined;
+  }
+  async function assertIdle() {
+    assertOpen();
+    // Fresh forks and already-idle reattachments must not call a driver which
+    // is deliberately between realms. Inspect these boundary terminals first.
+    const idleNow = () => pending.size === 0 && pendingBodies === 0 && gates.size === 0 && idbTransactions.every(tx => tx.terminalObserved);
+    if (!idleNow()) await idleBoundaries();
+    const value = { pendingHttp: pending.size, pendingBodies, pendingIdb: idbTransactions.filter(tx => !tx.terminalObserved).length };
+    requireValue(Object.values(value).every(count => count === 0), 'boundary is not terminal-idle');
+    return value;
+  }
+  async function assertXhrAbortReuseCleanup() {
+    // Infrastructure control only: two ordinary finite auth reads, no app store
+    // mutation. Reuse before the first await resumes to expose stale-body leaks.
+    await assertIdle();
+    const XHR = createXMLHttpRequest(window), xhr = new XHR();
+    xhr.open('GET', BADGE_FIXTURE_ORIGIN + '/api/auth/check'); xhr.send(); xhr.abort();
+    let completed = false, failure;
+    xhr.onload = () => { completed = true; };
+    xhr.onerror = xhr.onabort = xhr.ontimeout = () => { failure = infrastructure('reused XHR did not complete its own response'); };
+    xhr.open('GET', BADGE_FIXTURE_ORIGIN + '/api/auth/check'); xhr.send();
+    await waitFor(() => { if (failure) throw failure; return completed; }, 'aborted/reused XHR own completion');
+    await assertIdle();
+    requireValue(xhr.status === 200 && JSON.parse(xhr.responseText).identity.id === actor, 'old XHR changed the reused response');
+    note('xhr-abort-reuse-terminal-control', { pendingHttp: pending.size, pendingBodies, status: xhr.status });
+    return { pendingHttp: pending.size, pendingBodies, status: xhr.status };
+  }
+  async function close() {
+    if (closed) return;
+    // Release every synthetic terminal, then allow application-owned cleanup
+    // to settle before closing boundary connections. No owner singleton reset.
+    for (const gate of [...gates.values()]) gate.release();
+    routeGates.clear();
+    if (currentNavigation?.promise) await currentNavigation.promise.catch(() => {});
+    const started = Date.now();
+    try {
+      while (pending.size || pendingBodies || idbTransactions.some(tx => !tx.terminalObserved)) {
+        // A real cancellation may begin asynchronously after the first release.
+        // Closing releases newly encountered fixture gates, never app owners.
+        for (const gate of [...gates.values()]) gate.release();
+        if (Date.now() - started >= timeoutMs) throw infrastructure('HTTP/body/IDB boundary cleanup did not settle');
+        await new Promise(resolve => setTimeout(resolve, 5));
+      }
+    } finally {
+      const receipt = { pendingHttp: pending.size, pendingBodies, gates: gates.size, pendingIdb: idbTransactions.filter(tx => !tx.terminalObserved).length };
+      detachWindow(); closed = true; note('closed', receipt);
+    }
+  }
+  const api = Object.freeze({ profile, origin: BADGE_FIXTURE_ORIGIN, titleId, chapterId,
+    environment: Object.freeze({ PUBLIC_MANGADEX_CATALOGUE: publicProfile ? '1' : '0', PUBLIC_API_URL: BADGE_FIXTURE_ORIGIN + '/api', PUBLIC_KRATOS_PUBLIC_API: BADGE_FIXTURE_ORIGIN + '/kratos', PUBLIC_PROXY_URL: BADGE_FIXTURE_ORIGIN + '/proxy' }),
+    attachDriver, attachWindow, assertIdle, assertXhrAbortReuseCleanup, fork: () => createBadgeFixture({ profile, record, timeoutMs }), fetch: fetchBoundary, createXMLHttpRequest, configure, openTitle, waitIdentity, releaseIdentity, waitBadges,
+    capabilityRequests: async () => counters.capability, completionRequests: async () => counters.completion,
+    mutationRequests: async () => counters.mutation, credentialedHistoryRequests: async () => counters.history,
+    waitBatch, releaseBatch, assertRetainedGroupsAndEditions, change, assertNoOldBadgePublication, assertNoAutomaticRequery,
+    remountTitle, assertUnsettledRefusal, assertNoBypassOwner, waitBodyBatch, waitBodyCancel, releaseBodyRead, releaseBodyCancel, releaseBodyTerminal, remountTitleWithHeldBody, assertBodyUnsettledRefusal, assertNoBodyBypassOwner, retryAfterBodyTerminal, remountUncertainTitle, assertUncertainFenceSurvivesRemount, assertOriginalDeviceContinue, assertSharedHistoryIsWholeTitle,
+    openComparisonSource, assertBadgeContractFails, waitChapterFeed, waitChapterPage, releaseChapterPage, hashThenNavigationStart, beginNavigation, releaseNavigation, waitNavigation, finishNavigation, navigationObservation, leaveGuard, remountGuard, close,
+    snapshot: () => clone({ profile, configured, caseNumber, generation, counters, requests, pending: pending.size, pendingBodies, gateKeys: [...gates.keys()], bodyControls: [...bodyControls.values()], mutationUncertain }) });
+  return api;
+}

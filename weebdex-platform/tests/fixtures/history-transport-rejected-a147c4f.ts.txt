@@ -1,0 +1,26 @@
+import { HistoryBudget, HISTORY_LIMITS } from './history-pagination';
+// This transport is exclusive to explicit history actions. Accounting includes
+// every raw response byte and each parent/chapter page, not only logical calls.
+export async function historyJson(url: string, budget: HistoryBudget, native = false): Promise<{ status: number; body: unknown }> {
+  budget.request();
+  const response = await fetch(url, { method: 'GET', credentials: native ? 'omit' : 'same-origin', cache: 'no-store', redirect: 'error', signal: budget.signal, headers: { Accept: 'application/json' } });
+  budget.check();
+  const reader = response.body?.getReader();
+  if (!reader) throw Error('History lookup returned no response body');
+  const chunks: Uint8Array[] = []; let size = 0;
+  try {
+    if (!(response.headers.get('Content-Type') ?? '').includes('application/json')) throw Error('History lookup returned non-JSON data');
+    for (;;) {
+      budget.check(); const next = await reader.read(); budget.check();
+      if (next.done) break;
+      size += next.value.byteLength; budget.consume(next.value.byteLength);
+      if (size > HISTORY_LIMITS.responseBytes) throw Error('History response exceeds its byte budget. This batch was not skipped.');
+      chunks.push(next.value);
+    }
+  } catch (error) { void reader.cancel().catch(() => {}); throw error; }
+  finally { reader.releaseLock(); }
+  const data = new Uint8Array(size); let position = 0;
+  for (const chunk of chunks) { data.set(chunk, position); position += chunk.byteLength; }
+  budget.check();
+  return { status: response.status, body: JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(data)) };
+}

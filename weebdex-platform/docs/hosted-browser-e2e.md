@@ -1,4 +1,15 @@
-# Current separate public-upload profile
+# Current separately selectable signed-feature qualification
+
+The current source adds `public-signed-features`: one actual report/draft/chapter
+phase with a separate synthetic fixture and unexpanded upload grants. Current
+scope is42 distinct phases,13 logical batches, at most14 physical fixtures and54
+scheduled executions. The default `public-upload` pair is unchanged. Job/browser
+caps remain140/30 minutes with normal sandboxing and sanitized one-day evidence.
+See [prospective outcomes and finite qualification](verification/public-signed-feature-qualification.md).
+No browser or hosted pass is claimed for this addition. Counts, budgets and run
+statements in the older sections below describe historical source generations.
+
+# Historical separate public-upload profile introduction
 
 The current scheduler adds a separately built gate-on `public-upload` batch:
 40 distinct current phases, 12 fresh-fixture batches and 52 scheduled executions.

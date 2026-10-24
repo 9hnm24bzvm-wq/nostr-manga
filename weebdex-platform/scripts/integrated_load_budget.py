@@ -28,6 +28,13 @@ class TransportFailure(RuntimeError):
     """Fixed error, with no URL, header, body or private underlying exception."""
 
 
+class TransportDeadline(TransportFailure):
+    """An expired selected deadline, distinguished from other transport failures."""
+    def __init__(self, *, shared_deadline):
+        super().__init__('Owned HTTP deadline expired')
+        self.shared_deadline = shared_deadline
+
+
 class VerificationRejected(RuntimeError):
     pass
 
@@ -223,7 +230,9 @@ class BudgetedHTTP:
         self._tasks.add(task)
         record = response = None
         began = None
-        deadline = min(self.budget.deadline, time.monotonic() + self.timeout)
+        request_deadline = time.monotonic() + self.timeout
+        shared_deadline = self.budget.deadline <= request_deadline
+        deadline = min(self.budget.deadline, request_deadline)
 
         async def one_attempt(request, handler):
             nonlocal record, began
@@ -302,6 +311,8 @@ class BudgetedHTTP:
         except TimeoutError:
             if record:
                 record['outcome'] = 'timeout'
+            if time.monotonic() >= deadline:
+                raise TransportDeadline(shared_deadline=shared_deadline) from None
             raise TransportFailure('Owned HTTP deadline expired') from None
         except Exception:
             if record:

@@ -127,8 +127,9 @@ async fn signed_account_reads_scope_native_follows_and_never_disclose_other_priv
     let db=state.db.client().await.unwrap();
     for (key,verified,disabled,roles) in [(2,true,false,json!(["user"])),(4,true,false,json!(["user"])),(5,true,true,json!(["user"])),(6,true,false,json!(["banned"])),(7,false,false,json!(["user"])),(8,true,false,json!(["user"]))] {
         let user=format!("ReadUser{key}");
-        db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,disabled,roles,preferences) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,'{\"private_setting\":\"fixture-secret-value\"}')",&[&user,&format!("account-read-{key}@fixture.invalid"),&verified,&disabled,&roles]).await.unwrap();
+        db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,disabled,roles,preferences) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,'{\"private_setting\":\"fixture-secret-value\"}')",&[&user,&format!("account-read-{key}@fixture.invalid"),&verified,&false,&roles]).await.unwrap();
         db.execute("INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",&[&public(key),&user]).await.unwrap();
+        db.execute("UPDATE platform.users SET disabled=$2 WHERE id=$1",&[&user,&disabled]).await.unwrap();
     }
     db.batch_execute(r#"
         INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES('ReadGroup1','ReadUser2','Fixture','Visible group'),('ReadGroup2','ReadUser2','Fixture','Hidden group');

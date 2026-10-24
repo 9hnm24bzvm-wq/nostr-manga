@@ -9,6 +9,7 @@ import { createHash } from 'node:crypto';
 import { gunzipSync } from 'node:zlib';
 import test from 'node:test';
 import { restoreNativeDiagnosticWorkflow } from './native-diagnostic-workflow-association.mjs';
+import { restoreSignedFeatureSource } from './signed-feature-source-association.mjs';
 import { actorFollowPhase, actorFollowDiagnosticChecks, actorFollowCaseChecks, runActorFollowJourneys, watchActorFollowRequests } from '../../scripts/browser-actor-follow-journeys.mjs';
 import { ui11To16JourneyPhases, ui11To16DiagnosticChecks } from '../../scripts/browser-ui11-16-journeys.mjs';
 import { createJourneyCheck } from '../../scripts/journey-checks.mjs';
@@ -253,6 +254,7 @@ test('current actor-follow runtime source has a separate exact association witho
   }
 };
   function restoreFeatureSource(input, kind) {
+    input = restoreSignedFeatureSource(input, kind);
     input = restoreBackupSource(input, kind);
     const row = featureSourceReversals[kind], digest = hash(input);
     const message = kind === 'runner' ? 'Unknown owned-temp application runner' : 'Unknown preparation-stage evidence validator';

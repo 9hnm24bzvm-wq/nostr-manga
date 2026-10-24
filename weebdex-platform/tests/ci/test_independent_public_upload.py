@@ -55,7 +55,7 @@ class IndependentPublicUpload(unittest.TestCase):
         self.assertLess(1750, 30 * 60)
         self.assertEqual(runner.maximum(runner.PUBLIC_FEATURE_PHASE), 180)
         self.assertEqual(runner.maximum(runner.PUBLIC_UPLOAD_PHASE), 600)
-        self.assertEqual(runner.MAX_PHASE_RUNS, 53)
+        self.assertEqual(runner.MAX_PHASE_RUNS, 54)
         self.assertEqual(runner.MAX_BATCH_RUNS, len(runner.BATCHES) + 1)
         self.assertIn('timeout-minutes: 140', (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text())
         self.assertIn('timeout-minutes: 30', (ROOT.parent / '.github/workflows/hosted-browser-e2e.yml').read_text())

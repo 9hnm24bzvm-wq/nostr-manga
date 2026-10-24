@@ -157,6 +157,15 @@ async fn api_not_found() -> ApiError {
     ApiError::not_found("Unknown API endpoint")
 }
 
+fn signed_upload_schedule_private(parts:&[&str],method:&Method)->bool {
+    match parts {
+        ["api","v1","nostr","uploads","schedules"] => *method==Method::GET,
+        ["api","v1","nostr","uploads",session,"schedule"] => *method==Method::GET&&crate::public_api::PublicUuid::parse(session).is_ok(),
+        ["api","v1","nostr","uploads",session,"schedule","retry"] => *method==Method::POST&&crate::public_api::PublicUuid::parse(session).is_ok(),
+        _=>false,
+    }
+}
+
 fn segment_prefix(path: &str, prefix: &str) -> bool {
     path == prefix
         || path
@@ -352,12 +361,44 @@ fn request_origin(headers: &HeaderMap, expected: &str) -> Result<Option<HeaderVa
         Err(ApiError::forbidden("Cross-origin requests are not allowed"))
     }
 }
+/// Only the native completion and Continue seams get the account preflight
+/// header. This is not a global native API or public/signed CORS expansion.
+fn native_account_reader_path(path: &str) -> bool {
+    path.strip_prefix("/api/user/history/manga/")
+        .and_then(|rest| rest.strip_suffix("/completion").or_else(|| rest.strip_suffix("/continue")))
+        .is_some_and(|id| !id.is_empty() && !id.contains('/'))
+}
+fn preflight_headers_allowed(value: &str, native_account_reader: bool) -> bool {
+    value.split(',').all(|h| {
+        let h = h.trim().to_ascii_lowercase();
+        ["accept", "authorization", "content-type", "x-csrf-token"].contains(&h.as_str())
+            || native_account_reader && h == "x-weebdex-expected-account"
+    })
+}
 fn signed_upload_replacement_path(parts: &[&str]) -> bool {
     matches!(parts, ["api", "v1", "nostr", "uploads", session, "files", file, "replace"]
         if crate::public_api::PublicUuid::parse(session).is_ok()
             && crate::public_api::PublicUuid::parse(file).is_ok())
 }
+fn signed_native_user_report_budget(path: &str, method: &Method) -> Option<usize> {
+    let (kind, rest) = path.strip_prefix("/api/v1/nostr/")?.split_once('/')?;
+    if !matches!(kind, "user" | "manga" | "chapter" | "group") { return None; }
+    let (user, suffix) = rest.split_once('/')?;
+    (suffix == "discussion/reports" && *method == Method::POST
+        && crate::public_api::PublicUuid::parse(user).is_ok())
+        .then_some(crate::public_api::native_user_reports::BODY_LIMIT)
+}
+fn signed_moderator_decision_budget(path:&str,method:&Method)->Option<usize> {
+    let id=path.strip_prefix("/api/v1/nostr/moderation/reports/")?;
+    // encodeURIComponent uses %3A for the only escaped character in native IDs.
+    let decoded=id.replace("%3A",":");
+    (*method==Method::POST && crate::domains::catalog::validation::id(&decoded).is_ok())
+        .then_some(crate::public_api::native_user_reports::BODY_LIMIT)
+}
 fn body_budget(path: &str, method: &Method, state: &AppState) -> (usize, Duration) {
+    if let Some(maximum) = signed_native_user_report_budget(path, method).or_else(||signed_moderator_decision_budget(path,method)) {
+        return (maximum, Duration::from_secs(state.config.json_body_timeout_seconds));
+    }
     let parts = path
         .split('/')
         .filter(|part| !part.is_empty())
@@ -438,6 +479,7 @@ async fn request_boundary(
     };
     if request.method() == Method::OPTIONS {
         if let Some(origin) = origin {
+            let native_account_reader = native_account_reader_path(original_path(&request));
             let allowed = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"];
             let method = request
                 .headers()
@@ -447,13 +489,9 @@ async fn request_boundary(
                 .headers()
                 .get(header::ACCESS_CONTROL_REQUEST_HEADERS)
                 .and_then(|v| v.to_str().ok())
-                .is_none_or(|v| {
-                    v.split(',').all(|h| {
-                        ["accept", "authorization", "content-type", "x-csrf-token"]
-                            .contains(&h.trim().to_ascii_lowercase().as_str())
-                    })
-                });
-            if !method.is_some_and(|m| allowed.contains(&m)) || !headers_allowed {
+                .is_none_or(|v| preflight_headers_allowed(v, native_account_reader));
+            if !method.is_some_and(|m| allowed.contains(&m))
+                || native_account_reader && method != Some("GET") || !headers_allowed {
                 return boundary_error(public, ApiError::forbidden("Unsupported cross-origin request"));
             }
             let mut response = StatusCode::NO_CONTENT.into_response();
@@ -466,11 +504,13 @@ async fn request_boundary(
             );
             response.headers_mut().insert(
                 header::ACCESS_CONTROL_ALLOW_METHODS,
-                HeaderValue::from_static("GET, HEAD, POST, PUT, PATCH, DELETE"),
+                HeaderValue::from_static(if native_account_reader { "GET" } else { "GET, HEAD, POST, PUT, PATCH, DELETE" }),
             );
             response.headers_mut().insert(
                 header::ACCESS_CONTROL_ALLOW_HEADERS,
-                HeaderValue::from_static("Accept, Authorization, Content-Type, X-CSRF-Token"),
+                HeaderValue::from_static(if native_account_reader {
+                    "Accept, Authorization, Content-Type, X-CSRF-Token, X-WeebDex-Expected-Account"
+                } else { "Accept, Authorization, Content-Type, X-CSRF-Token" }),
             );
             response.headers_mut().insert(
                 header::VARY,
@@ -525,11 +565,36 @@ fn signed_relation_page_private(parts: &[&str], method: &Method) -> bool {
         _ => false,
     }
 }
+fn signed_native_user_discussion_private(path: &str, method: &Method) -> bool {
+    let Some((user, suffix)) = path.strip_prefix("/api/v1/nostr/user/").and_then(|rest| rest.split_once('/')) else { return false; };
+    suffix == "discussion" && crate::public_api::PublicUuid::parse(user).is_ok()
+        && matches!(*method, Method::GET | Method::HEAD | Method::POST)
+}
+fn signed_native_user_report_private(path: &str, method: &Method) -> bool {
+    if signed_native_user_report_budget(path, method).is_some() { return true; }
+    let Some((kind, rest)) = path.strip_prefix("/api/v1/nostr/").and_then(|rest| rest.split_once('/')) else { return false; };
+    if !matches!(kind, "user" | "manga" | "chapter" | "group") { return false; }
+    let Some((user, suffix)) = rest.split_once('/') else { return false; };
+    suffix == "discussion/reports/context" && crate::public_api::PublicUuid::parse(user).is_ok()
+        && matches!(*method, Method::GET | Method::HEAD)
+}
+fn account_closure_private(path:&str, method:&Method)->bool {
+    let parts=path.split('/').filter(|part|!part.is_empty()).collect::<Vec<_>>();
+    matches!(parts.as_slice(),["api","account","closure",_]
+        | ["api","v1","nostr","user",_,"closure"]
+        | ["api","v1","user","delete",_])
+        || matches!(parts.as_slice(),["api","v1","user",_]) && *method==Method::DELETE
+}
 async fn response_headers(State(state): State<AppState>, request: Request, next: Next) -> Response {
     let service_worker = request.uri().path() == "/service-worker.js";
+    let native_account_reader = native_account_reader_path(original_path(&request));
+    let closure_private=account_closure_private(original_path(&request),request.method());
+    let signed_report_private = signed_native_user_report_private(original_path(&request), request.method())
+        || segment_prefix(original_path(&request), "/api/v1/nostr/moderation/reports");
     let signed_upload_private = {
         let parts = original_path(&request).split('/').filter(|part| !part.is_empty()).collect::<Vec<_>>();
-        signed_relation_page_private(&parts, request.method()) || matches!(parts.as_slice(), ["api", "v1", "cover", _]) && matches!(*request.method(), Method::POST | Method::PUT | Method::DELETE)
+        closure_private || signed_upload_schedule_private(&parts, request.method()) || signed_report_private || signed_native_user_discussion_private(original_path(&request), request.method())
+            || signed_relation_page_private(&parts, request.method()) || matches!(parts.as_slice(), ["api", "v1", "cover", _]) && matches!(*request.method(), Method::POST | Method::PUT | Method::DELETE)
             || matches!(parts.as_slice(),["api","v1","nostr","manga",_,"reading-status"] | ["api","v1","nostr","user",_,"profile"])
             || matches!(parts.as_slice(),["api","v1","user",_]) && *request.method()==Method::PUT
             || matches!(parts.as_slice(),["api","v1","manga",_,"status"]) && *request.method()==Method::POST
@@ -549,10 +614,13 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
         response
             .headers_mut()
             .insert(header::CACHE_CONTROL, HeaderValue::from_static(
-                if signed_upload_private { "private, no-store" } else { "no-store" }));
+                if signed_upload_private || native_account_reader { "private, no-store" } else { "no-store" }));
+    }
+    if native_account_reader {
+        response.headers_mut().append(header::VARY, HeaderValue::from_static("Cookie, Authorization, X-WeebDex-Expected-Account"));
     }
     if signed_upload_private {
-        response.headers_mut().append(header::VARY, HeaderValue::from_static("Authorization"));
+        response.headers_mut().append(header::VARY, HeaderValue::from_static(if signed_report_private || closure_private { "Authorization, Cookie" } else { "Authorization" }));
     }
     if service_worker {
         response.headers_mut().insert(
@@ -585,6 +653,7 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
             HeaderValue::from_static("max-age=31536000"),
         );
     }
+    if closure_private {response.headers_mut().insert(header::REFERRER_POLICY,HeaderValue::from_static("no-referrer"));}
     if !response.headers().contains_key(header::REFERRER_POLICY) {
         response.headers_mut().insert(
             header::REFERRER_POLICY,
@@ -594,7 +663,7 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
     if response.status() == StatusCode::SERVICE_UNAVAILABLE {
         response
             .headers_mut()
-            .insert(header::CACHE_CONTROL, HeaderValue::from_static(if signed_upload_private { "private, no-store" } else { "no-store" }));
+            .insert(header::CACHE_CONTROL, HeaderValue::from_static(if signed_upload_private || native_account_reader { "private, no-store" } else { "no-store" }));
     }
     response
 }
@@ -602,6 +671,79 @@ async fn response_headers(State(state): State<AppState>, request: Request, next:
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn signed_moderator_budget_does_not_widen_other_native_routes() {
+        for id in ["NativeReport","report_1","report:1","report%3A1"] {assert_eq!(signed_moderator_decision_budget(&format!("/api/v1/nostr/moderation/reports/{id}"),&Method::POST),Some(131072));}
+        for id in ["","bad/id","bad%2Fid","bad%253Aid","../other","bad?query", "bad%3aid"] {assert_eq!(signed_moderator_decision_budget(&format!("/api/v1/nostr/moderation/reports/{id}"),&Method::POST),None);}
+        for method in [Method::GET,Method::HEAD,Method::PUT,Method::PATCH,Method::DELETE] {assert_eq!(signed_moderator_decision_budget("/api/v1/nostr/moderation/reports/report_1",&method),None);}
+    }
+    #[test]
+    fn signed_native_user_report_budget_and_privacy_are_exact() {
+        let path = "/api/v1/nostr/user/11111111-1111-8111-8111-111111111111/discussion/reports";
+        assert_eq!(signed_native_user_report_budget(path, &Method::POST), Some(131_072));
+        assert!(signed_native_user_report_private(path, &Method::POST));
+        let context = format!("{path}/context");
+        for method in [Method::GET, Method::HEAD] {
+            assert!(signed_native_user_report_private(&context, &method));
+            assert_eq!(signed_native_user_report_budget(&context, &method), None);
+            assert_eq!(signed_native_user_report_budget(path, &method), None);
+            assert!(!signed_native_user_report_private(path, &method));
+        }
+        for bad in [format!("{path}/"),format!("{path}/extra"),context,path.replace("/user/","/user//"),path.replace("11111111-1111-8111-8111-111111111111","native1234"),path.replace("/v1/","/v10/"),path.replace("/reports","")] {
+            assert_eq!(signed_native_user_report_budget(&bad, &Method::POST), None, "{bad}");
+            assert!(!signed_native_user_report_private(&bad, &Method::POST), "{bad}");
+        }
+        for method in [Method::PUT,Method::DELETE,Method::OPTIONS] {
+            assert_eq!(signed_native_user_report_budget(path, &method), None);
+            assert!(!signed_native_user_report_private(path, &method));
+        }
+    }
+    #[test]
+    fn generic_native_report_budget_and_privacy_are_exact() {
+        let id = "11111111-1111-8111-8111-111111111111";
+        for kind in ["manga", "chapter", "group"] {
+            let path = format!("/api/v1/nostr/{kind}/{id}/discussion/reports");
+            assert_eq!(signed_native_user_report_budget(&path, &Method::POST), Some(131_072));
+            assert!(signed_native_user_report_private(&path, &Method::POST));
+            for method in [Method::GET, Method::HEAD] {
+                assert!(signed_native_user_report_private(&format!("{path}/context"), &method));
+                assert!(!signed_native_user_report_private(&path, &method));
+                assert_eq!(signed_native_user_report_budget(&path, &method), None);
+            }
+            for bad in [format!("{path}/"),format!("{path}/context"),format!("{path}/extra"),path.replace(id,"native-id"),path.replace(kind,"publisher"),path.replace(kind,"author"),path.replace("/reports","")] {
+                assert_eq!(signed_native_user_report_budget(&bad, &Method::POST), None);
+                assert!(!signed_native_user_report_private(&bad, &Method::POST));
+            }
+        }
+    }
+    #[test]
+    fn signed_native_user_discussion_private_policy_is_exact_typed() {
+        let path = "/api/v1/nostr/user/11111111-1111-8111-8111-111111111111/discussion";
+        for method in [Method::GET, Method::HEAD, Method::POST] {
+            assert!(signed_native_user_discussion_private(path, &method));
+        }
+        for method in [Method::PUT, Method::DELETE, Method::OPTIONS] {
+            assert!(!signed_native_user_discussion_private(path, &method));
+        }
+        for bad in [format!("{path}/"), format!("{path}/extra"), path.replace("/user/", "/user//"), path.replace("11111111-1111-8111-8111-111111111111", "native1234"), path.replace("/v1/", "/v10/"), path.replace("/discussion", "/profile")] {
+            assert!(!signed_native_user_discussion_private(&bad, &Method::POST), "{bad}");
+        }
+    }
+    #[test]
+    fn schedule_private_routes_are_exact_typed_and_method_bound() {
+        let id="11111111-1111-8111-8111-111111111111";
+        assert!(signed_upload_schedule_private(&["api","v1","nostr","uploads","schedules"],&Method::GET));
+        assert!(signed_upload_schedule_private(&["api","v1","nostr","uploads",id,"schedule"],&Method::GET));
+        assert!(signed_upload_schedule_private(&["api","v1","nostr","uploads",id,"schedule","retry"],&Method::POST));
+        for (parts,method) in [
+            (vec!["api","v1","nostr","uploads","schedules"],Method::POST),
+            (vec!["api","v1","nostr","uploads",id,"schedule"],Method::HEAD),
+            (vec!["api","v1","nostr","uploads",id,"schedule","retry"],Method::GET),
+            (vec!["api","v1","nostr","uploads","native-id","schedule"],Method::GET),
+            (vec!["api","v1","nostr","uploads",id,"schedule","extra"],Method::GET),
+        ] {assert!(!signed_upload_schedule_private(&parts,&method));}
+    }
+
     #[test]
     fn signed_replacement_body_budget_and_private_cache_select_exact_public_path() {
         let session="11111111-1111-4111-8111-111111111111";
@@ -625,6 +767,15 @@ mod tests {
         for path in [vec!["api","v1","nostr","manga","native1234","relations"],vec!["api","v1","nostr","manga",id,"relations","extra"],vec!["api","v1","manga",id,"relation"],vec!["api","manga",id,"relations"]] {
             assert!(!signed_relation_page_private(&path,&Method::GET));
         }
+    }
+    #[test]
+    fn account_disable_privacy_includes_errors_and_wrong_methods() {
+        for path in ["/api/account/closure/prepare","/api/account/closure/confirm","/api/account/closure/user", "/api/v1/nostr/user/bad-id/closure","/api/v1/user/delete/bad-code"] {
+            for method in [Method::GET,Method::POST,Method::DELETE] {assert!(account_closure_private(path,&method));}
+        }
+        assert!(account_closure_private("/api/v1/user/bad-id",&Method::DELETE));
+        assert!(!account_closure_private("/api/v1/user/user",&Method::GET));
+        assert!(!account_closure_private("/api/v1/nostr/user/user/profile",&Method::GET));
     }
     #[tokio::test]
     async fn unknown_api_is_a_real_error() {
@@ -717,6 +868,26 @@ mod tests {
         );
         headers.append(header::ORIGIN, "https://example.invalid".parse().unwrap());
         assert!(request_origin(&headers, "https://example.invalid").is_err());
+    }
+    #[test]
+    fn account_reader_header_scope_is_native_and_route_local() {
+        for (id, operation) in ["chapter", "native%3A128", "%61"].into_iter().flat_map(|id| ["completion", "continue"].map(|operation| (id, operation))) {
+            let path = format!("/api/user/history/manga/{id}/{operation}");
+            assert!(native_account_reader_path(&path));
+            for method in [Method::GET, Method::HEAD] {
+                let request = Request::builder().method(method).uri(&path).body(axum::body::Body::empty()).unwrap();
+                assert!(matches!(read_class(&request), Class::LibraryHead));
+            }
+        }
+        for path in ["/api/user/history/manga/id", "/api/v1/user/history/manga/id/completion", "/api/user/history/manga//completion", "/api/user/history/manga/id/completion/extra", "/api/user/history/manga/a/b/completion", "/api/v1/user/history/manga/id/continue", "/api/user/history/manga//continue", "/api/user/history/manga/id/continue/extra", "/api/user/history/manga/a/b/continue"] {
+            assert!(!native_account_reader_path(path), "{path}");
+        }
+        let header = "Accept, X-WeebDex-Expected-Account";
+        assert!(preflight_headers_allowed(header, true));
+        assert!(!preflight_headers_allowed(header, false));
+        assert!(!preflight_headers_allowed("X-Other", true));
+        assert!(!preflight_headers_allowed("X-WeebDex-Expected-Account, X-Other", true));
+        assert!(preflight_headers_allowed("Accept, Content-Type", false));
     }
 }
 

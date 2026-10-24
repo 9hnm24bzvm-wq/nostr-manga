@@ -7,7 +7,8 @@ export interface PublicUserView {
   description?: string; discord?: string; twitter?: string; website?: string;
   version?: number;
   roles: string[];
-  relationships: Record<string, never>;
+  account_state?: "disabled";
+  relationships: { thread?: Record<string, unknown> | null };
   public_api: ViewProvenance;
   public_profile_readonly: true;
   public_lists_available?: true;
@@ -24,6 +25,6 @@ export function normalizePublicUser(input: unknown): PublicUserView {
   }
   // Some protocol-publisher profiles have no mutable revision. Preserve omission.
   const provenance = record(row).nostr;
-  if (provenance !== undefined) {const source=record(provenance, 'public user provenance');if(source.identity==='native_public_user'){output.public_account_follow_available=true;for(const field of ['description','discord','twitter','website'] as const)if(attrs[field]!==undefined){if(typeof attrs[field]!=='string'||new TextEncoder().encode(attrs[field] as string).byteLength>(field==='description'?20000:2048))throw new PublicApiContractError('Invalid native public profile field');output[field]=attrs[field] as string;}}if(source.identity==='protocol_publisher'&&source.known===true&&typeof source.pubkey==='string'&&/^[0-9a-f]{64}$/.test(source.pubkey))output.public_lists_available=true;}
+  if (provenance !== undefined) {const source=record(provenance, 'public user provenance');if(source.identity==='native_public_user'){if(attrs.accountState!==undefined&&attrs.accountState!=='disabled')throw new PublicApiContractError('Invalid native account state');if(attrs.accountState==='disabled'){if(['description','discord','twitter','website'].some(field=>attrs[field]!==undefined)||attrs.roles.length)throw new PublicApiContractError('Disabled account disclosed profile fields');output.account_state='disabled';output.name+=' (disabled)';}else output.public_account_follow_available=true;for(const field of ['description','discord','twitter','website'] as const)if(attrs[field]!==undefined){if(typeof attrs[field]!=='string'||new TextEncoder().encode(attrs[field] as string).byteLength>(field==='description'?20000:2048))throw new PublicApiContractError('Invalid native public profile field');output[field]=attrs[field] as string;}}if(source.identity==='protocol_publisher'&&source.known===true&&typeof source.pubkey==='string'&&/^[0-9a-f]{64}$/.test(source.pubkey))output.public_lists_available=true;}
   return output;
 }

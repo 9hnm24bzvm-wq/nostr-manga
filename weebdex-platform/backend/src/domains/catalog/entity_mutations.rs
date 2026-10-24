@@ -10,6 +10,9 @@ use tokio_postgres::Transaction;
 // constructed, transaction-rechecked write capability implement this marker.
 pub(crate) mod sealed { pub trait Sealed {} }
 pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    // Contract selection follows the sealed authenticated transport, never JSON
+    // input or a UUID. Native principals keep their historical validation.
+    fn language_contract(&self) -> v::LanguageContract { v::LanguageContract::Native }
     fn user_id(&self) -> &str;
     fn username(&self) -> &str;
     fn is_moderator(&self) -> bool;
@@ -119,7 +122,7 @@ fn public_metadata(payload: &Value, native: &[&str], additional: &[&str]) -> Api
             let languages = value.as_array().filter(|a| a.len() <= 100)
                 .ok_or_else(|| ApiError::bad_request("Invalid focused languages"))?;
             for language in languages {
-                v::language(language.as_str().ok_or_else(|| ApiError::bad_request("Invalid language"))?)?;
+                v::public_language(language.as_str().ok_or_else(|| ApiError::bad_request("Invalid language"))?)?;
             }
         } else {
             v::string(payload, key, if *key == "description" { 50_000 } else { 2048 }, false)?;
@@ -214,6 +217,7 @@ pub(crate) async fn author_create(
     actor: &impl CatalogMutationActor,
     input: AuthorCreate,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("author.create")?;
     let AuthorCreate { name, metadata } = input;
     let id = v::new_id("author");
@@ -236,6 +240,7 @@ pub(crate) async fn author_update(
     id: &str,
     input: AuthorUpdate,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("author.update")?;
     v::id(id)?;
     let AuthorUpdate { version, name, locked, metadata } = input;
@@ -268,6 +273,7 @@ pub(crate) async fn author_delete(
     actor: &impl CatalogMutationActor,
     id: &str,
 ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     staff_permission(actor, "author.delete")?;
     v::id(id)?;
     // Serialize soft deletion with title creator assignment. The reference
@@ -291,6 +297,7 @@ pub(crate) async fn group_create(
     actor: &impl CatalogMutationActor,
     input: GroupCreate,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("scanlation_group.create")?;
     let GroupCreate { name, metadata, inactive, assign_creator_leader } = input;
     let id = v::new_id("group");
@@ -316,6 +323,7 @@ pub(crate) async fn group_update(
     id: &str,
     input: GroupUpdate,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     v::id(id)?;
     let GroupUpdate { version, name, locked, inactive, metadata, leader, officers, members } = input;
     let row=tx.query_opt("SELECT locked,version FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Group not found"))?;
@@ -397,6 +405,7 @@ pub(crate) async fn group_delete(
     actor: &impl CatalogMutationActor,
     id: &str,
 ) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     staff_permission(actor, "scanlation_group.delete")?;
     v::id(id)?;
     let n=tx.execute("UPDATE platform.catalog_groups SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?;
@@ -470,6 +479,10 @@ mod tests {
         assert_eq!(group.metadata["publishDelay"],"P1D");
         assert!(GroupUpdate::parse(&update).is_err());
         assert!(GroupUpdate::parse_public_normalized(&json!({"version":1,"focused_languages":["unsupported"]})).is_err());
+        assert!(GroupUpdate::parse_public_normalized(&json!({"version":1,"focused_languages":["ta"]})).is_ok());
+        assert!(GroupUpdate::parse_public_normalized(&json!({"version":1,"focused_languages":["tam"]})).is_err());
+        assert!(GroupUpdate::parse(&json!({"version":1,"focused_languages":["tam"]})).is_ok());
+        assert!(GroupUpdate::parse(&json!({"version":1,"focused_languages":["ta"]})).is_err());
     }
     #[test]
     fn author_lock_requires_both_real_staff_role_and_permission() {

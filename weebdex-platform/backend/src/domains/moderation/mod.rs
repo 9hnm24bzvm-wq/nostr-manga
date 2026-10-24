@@ -17,6 +17,8 @@ use axum::{
     routing::{delete, get, post},
 };
 use serde_json::{Value, json};
+pub(crate) mod personal_reports;
+
 const CATEGORIES: &[&str] = &[
     "user",
     "manga",
@@ -116,6 +118,7 @@ async fn create(
     let details = v::string(&p, "details", 20000, false)?.unwrap_or_default();
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
+    crate::domains::auth::closure::active_in(&tx,&a.user_id).await?;
     create_report(&tx, &a, &entity, &target, &reason, &details).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
@@ -157,6 +160,36 @@ async fn review(
     };
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
+    crate::domains::auth::closure::active_in(&tx,&a.user_id).await?;
+    let decision = review_report(&tx, &a, id, notes.as_deref(), expected, status, operation).await?;
+    let value = tx.query_one("SELECT platform.report_json($1)", &[&id]).await?.get(0);
+    let _ = decision;
+    tx.commit().await?;
+    Ok(Json(value))
+}
+
+/// Sealed genuine mutation actor. Personal inspection capabilities do not
+/// implement this trait; neither UUIDs nor report ownership grant review rights.
+pub(crate) trait ReportReviewActor: crate::domains::catalog::entity_mutations::CatalogMutationActor + sealed::Sealed {}
+impl ReportReviewActor for SessionPrincipal {}
+#[derive(Debug)]
+pub(crate) struct ReportDecision {
+    pub old_version: i32,
+    pub new_version: i32,
+    pub effect: Value,
+}
+/// Native and signed adapters share exactly one terminal transition/effect/audit
+/// transaction. Caller authenticates, owns locks and commits. Never emits events.
+pub(crate) async fn review_report(
+    tx: &tokio_postgres::Transaction<'_>, a: &impl ReportReviewActor,
+    id: &str, notes: Option<&str>, expected: Option<i32>, status: &str, operation: &str,
+) -> ApiResult<ReportDecision> {
+    if !a.is_moderator() { return Err(ApiError::forbidden("Moderator report permission required")); }
+    a.require_permission("report.update")?;
+    if !matches!((status, operation), ("accepted", "accept") | ("refused", "reject")) {
+        return Err(ApiError::bad_request("Invalid report decision"));
+    }
+    crate::domains::auth::closure::active_in(tx,a.user_id()).await?;
     // Title removal uses target-first locking, matching the dedicated DELETE
     // path. A report's immutable target/reason is re-read under the report lock.
     let title_target=if status=="accepted" {
@@ -197,8 +230,8 @@ async fn review(
         tx.execute("INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES($1,$2,$3,TRUE,FALSE) ON CONFLICT(group_id,user_id) DO UPDATE SET name=EXCLUDED.name,is_leader=TRUE,is_officer=FALSE",&[&group_id,&claimant,&claimant_name]).await?;
         tx.execute("UPDATE platform.catalog_groups SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&group_id]).await?;
         crate::domains::catalog::repository::audit(
-            &tx,
-            &a.user_id,
+            tx,
+            &a.user_id(),
             "group",
             &group_id,
             &format!("claim_accept_report:{id}"),
@@ -217,7 +250,7 @@ async fn review(
         if submitted_version != Some(current.get::<_, i32>(0)) {
             return Err(ApiError::conflict("Chapter changed since this removal request; review its current state"));
         }
-        crate::domains::catalog::CatalogRepository::delete_chapter(&tx, &chapter, &a).await?;
+        crate::domains::catalog::CatalogRepository::delete_chapter(tx, &chapter, a).await?;
         effect = json!({"action":"instance_soft_hide", "chapter_id":chapter, "source_deletion":"independent_original_moderation"});
     }
     if status == "accepted" && row.get::<_,String>(5) == "manga_removal_request" {
@@ -227,18 +260,14 @@ async fn review(
         let submitted:Option<i32>=row.get(6);
         let current:i32=tx.query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&manga]).await?.get(0);
         if submitted!=Some(current){return Err(ApiError::conflict("Title changed since this removal request; review its current state"));}
-        let next=crate::domains::catalog::mutations::manga_delete_in(&tx,&a,&manga,Some(current)).await?;
+        let next=crate::domains::catalog::mutations::manga_delete_in(tx,a,&manga,Some(current)).await?;
         effect=json!({"action":"instance_soft_hide","manga_id":manga,"old_version":current,"new_version":next,"source_deletion":"not_requested","original_event_rewritten":false});
     }
-    tx.execute("UPDATE platform.reports SET status=$2,notes=$3,reviewed_by=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&status,&notes,&a.user_id]).await?;
-    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version,notes,effect) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)",&[&id,&a.user_id,&operation,&old,&status,&version,&(version+1),&notes,&effect]).await?;
-    let value = tx
-        .query_one("SELECT platform.report_json($1)", &[&id])
-        .await?
-        .get(0);
-    tx.commit().await?;
-    Ok(Json(value))
+    tx.execute("UPDATE platform.reports SET status=$2,notes=$3,reviewed_by=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&status,&notes,&a.user_id()]).await?;
+    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version,notes,effect) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)",&[&id,&a.user_id(),&operation,&old,&status,&version,&(version+1),&notes,&effect]).await?;
+    Ok(ReportDecision {old_version:version, new_version:version+1, effect})
 }
+
 async fn remove(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -250,12 +279,26 @@ async fn remove(
     v::id(&id)?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    let row=tx.query_opt("UPDATE platform.reports SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1 AND deleted_at IS NULL RETURNING status,version",&[&id]).await?.ok_or_else(||ApiError::not_found("Report not found"))?;
-    let status: String = row.get(0);
-    let version: i32 = row.get(1);
-    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version) VALUES($1,$2,'delete',$3,$3,$4,$5)",&[&id,&a.user_id,&status,&(version-1),&version]).await?;
+    delete_report(&tx,&a,&id,None).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
+}
+
+/// Report-only native soft deletion. Never reads or mutates the reported target.
+/// Preserve the native status, notes, reviewer and empty audit effect for every
+/// undeleted status. The caller owns the transaction and commit.
+pub(crate) struct ReportDeletion {pub status:String,pub old_version:i32,pub new_version:i32}
+pub(crate) async fn delete_report(tx:&tokio_postgres::Transaction<'_>,a:&impl ReportReviewActor,id:&str,expected:Option<i32>)->ApiResult<ReportDeletion>{
+    if !a.is_moderator(){return Err(ApiError::forbidden("Moderator report permission required"));}
+    a.require_permission("report.delete")?;v::id(id)?;
+    crate::domains::auth::closure::active_in(tx,a.user_id()).await?;
+    let row=tx.query_opt("SELECT status,version FROM platform.reports WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Report not found"))?;
+    let status:String=row.get(0);let old_version:i32=row.get(1);
+    if expected.is_some_and(|v|v!=old_version){return Err(ApiError::conflict("Report changed; reopen deletion review"));}
+    let new_version=old_version.checked_add(1).ok_or_else(||ApiError::conflict("Report revision exhausted"))?;
+    tx.execute("UPDATE platform.reports SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1",&[&id]).await?;
+    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version) VALUES($1,$2,'delete',$3,$3,$4,$5)",&[&id,&a.user_id(),&status,&old_version,&new_version]).await?;
+    Ok(ReportDeletion{status,old_version,new_version})
 }
 
 // Only genuine native sessions and private, transaction-rechecked public write
@@ -284,13 +327,14 @@ pub(crate) async fn create_report(
     reason: &str,
     details: &str,
 ) -> ApiResult<String> {
+    crate::domains::auth::closure::active_in(tx,a.user_id()).await?;
     a.require_permission("report.create")?;
     category(entity)?;
     v::id(target)?;
     v::id(reason)?;
     // Serialize per-user limits and duplicate creation, without trusting a client-supplied identity.
     tx.query_one(
-        "SELECT id FROM platform.users WHERE id=$1 FOR UPDATE",
+        "SELECT id FROM platform.users WHERE id=$1 AND NOT disabled FOR NO KEY UPDATE",
         &[&a.user_id()],
     )
     .await?;

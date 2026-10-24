@@ -3934,6 +3934,70 @@ const patches = [
   "count": 1,
   "before": "\t\t\t\tconst score = groups.filter(e => currentGroups.includes(e ?? \"\")).length;",
   "after": "\t\t\t\tconst score = groups.filter(group => group && currentGroups.some(current => group.id && current.id ? group.id === current.id : group.name === current.name)).length;"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot enqueue pages after a deferred initial tick",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tif (!reader.pages.length || !reader.currentPage || reader.pages.every(e => e.isLoaded)) {",
+  "after": "\t\t\tif (disposed || !reader.pages.length || !reader.currentPage || reader.pages.every(e => e.isLoaded)) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot publish deferred queue changes",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tif (queue.length !== clone.length || queue.some((e, i) => e !== clone[i])) {",
+  "after": "\t\t\tif (disposed) return;\r\n\t\t\tif (queue.length !== clone.length || queue.some((e, i) => e !== clone[i])) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot acquire pages after mutex admission",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tif (!reader.pages.length || !queue.length) {",
+  "after": "\t\t\tif (disposed || !reader.pages.length || !queue.length) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot start another parallel page",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tfor (let i = 0; i < queue.length && parallel < $readerPrefs.parallel; i++) {",
+  "after": "\t\t\tfor (let i = 0; !disposed && i < queue.length && parallel < $readerPrefs.parallel; i++) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader final tick rechecks exact live page before loading claim",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\t\t\tif (page.isLoading || page.isLoaded || page.isFailed) {",
+  "after": "\t\t\t\t\tif (disposed || !page || reader.pages[page.index] !== page || page.isLoading || page.isLoaded || page.isFailed) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader queue tracks its own page claims across replacement",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\t\t\tpage.isLoading = true;",
+  "after": "\t\t\t\t\tpage.isLoading = true;\r\n\t\t\t\t\townedPages.add(page);"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader queue releases only its still owned page claim",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\t\t\t\t\tpage.isLoading = false;",
+  "after": "\t\t\t\t\t\t\tif (!ownedPages.delete(page)) return;\r\n\t\t\t\t\t\t\tpage.isLoading = false;\r\n\t\t\t\t\t\t\tif (disposed) return;"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader replacement releases old claims synchronously before next queue",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\tconst temporaryUrls = new Set<string>();\r\n\tlet disposed = false;\r\n\tonDestroy(() => {\r\n\t\tdisposed = true;",
+  "after": "\tconst temporaryUrls = new Set<string>();\r\n\tconst ownedPages = new Set<ReaderPage>();\r\n\tlet disposed = false;\r\n\tonDestroy(() => {\r\n\t\tdisposed = true;\r\n\t\tfor (const page of ownedPages) page.isLoading = false;\r\n\t\townedPages.clear();"
 }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');

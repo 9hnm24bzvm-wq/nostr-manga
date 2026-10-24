@@ -1,0 +1,153 @@
+// SOURCE-BOUND PLAN/RUNNER, UNEXECUTED. Invoke only inside a separately admitted
+// mounted/browser owner serving the composed current application. The fixture
+// controls real HTTP/IDB boundaries, never substitutes a badge controller, list,
+// entry, runtime, completion validator or owned transport. This is intentionally
+// NOT wired into historical mounted v4, whose acceptance/pins remain unchanged.
+import assert from 'node:assert/strict';
+export const VISIBLE_BADGE_MOUNTED_CASES = Object.freeze([
+  'simultaneous title and badge mounting', 'zero one fifty fifty-one hundred',
+  'no partial second batch', 'failed and malformed second batch',
+  'grouped alternate edition badge fidelity', 'account catalogue page revision change',
+  'acknowledged and uncertain mutation', 'abort remount unsettled contention',
+  'device Continue isolation', 'old-source negative control',
+  'missing page binding preserves feed', 'pending page navigation requires reload'
+]);
+export async function runVisibleBadgeMountedCases({ page, fixture, currentSource, record }) {
+  // The supplied owner must pin actual composed inputs including retained files.
+  assert.equal(currentSource.claim, 'source-comparison-only-unqualified', 'Do not relabel an old accepted run');
+  assert(currentSource.sha256 && currentSource.files.includes('platform-integrations/bounded-reader/badge-anchors.json'));
+  const cases = [];
+  const run = async (name, operation) => { const value = { name, outcome: 'started' }; cases.push(value); await operation(); value.outcome = 'passed'; record(value); };
+  const entries = () => page.locator('article:has(a[href^="/chapter/"])');
+  const unknown = async () => { for (const entry of await entries().all()) { assert.equal(await entry.locator('button[title="Read status unavailable"]').isDisabled(), true); assert.equal(await entry.locator('[aria-label="Read status unavailable"]').count(), 1); assert(!String(await entry.getAttribute('class')).includes('!border-l-green-800')); } };
+  await run(casesName(0), async () => { await fixture.configure({ mode: 'account', rows: 51, holdIdentity: true }); await fixture.openTitle(page); await fixture.waitIdentity(); assert.equal(await fixture.capabilityRequests(), 1); await fixture.releaseIdentity(); await fixture.waitBadges(page); assert.equal(await fixture.completionRequests(), 2); });
+  await run(casesName(1), async () => { for (const rows of [0, 1, 50, 51, 100]) { await fixture.configure({ mode: 'account', rows }); await fixture.openTitle(page); await fixture.waitBadges(page); assert.equal(await entries().count(), rows); assert.equal(await fixture.completionRequests(), Math.ceil(rows / 50)); } await fixture.configure({ rows: 101 }); await fixture.openTitle(page); assert.equal(await fixture.completionRequests(), 0); });
+  await run(casesName(2), async () => { await fixture.configure({ rows: 51, holdBatch: 2 }); await fixture.openTitle(page); await fixture.waitBatch(2); await unknown(); await fixture.releaseBatch(2); await fixture.waitBadges(page); assert.equal(await entries().count(), 51); });
+  await run(casesName(3), async () => { for (const fault of ['http-500', 'missing-row', 'duplicate-row', 'wrong-account', 'wrong-namespace']) { await fixture.configure({ rows: 100, batchFault: { batch: 2, fault } }); await fixture.openTitle(page); await fixture.waitBatch(2); await unknown(); assert.equal(await page.getByRole('button', { name: 'Retry read status' }).count(), 1); } });
+  await run(casesName(4), async () => { await fixture.configure({ rows: 51, alternateEditions: true, completedIds: ['chapter:0', 'chapter:50'] }); await fixture.openTitle(page); await fixture.waitBadges(page); await fixture.assertRetainedGroupsAndEditions(page); assert.equal(await entries().locator('button[title="Mark as unread"]').count(), 2); assert.equal(await entries().locator('button[title="Mark as read"]').count(), 49); });
+  await run(casesName(5), async () => { for (const field of ['account', 'catalogue', 'page', 'revision', 'namespace', 'selection']) { await fixture.configure({ rows: 51, holdBatch: 2 }); await fixture.openTitle(page); await fixture.waitBatch(2); await fixture.change(field, page); await fixture.releaseBatch(2); await fixture.assertNoOldBadgePublication(page); } });
+  await run(casesName(6), async () => { for (const outcome of ['acknowledged', 'uncertain']) { await fixture.configure({ rows: 1, mutation: outcome }); await fixture.openTitle(page); await fixture.waitBadges(page); await entries().locator('button[title="Mark as read"]').click(); if (outcome === 'acknowledged') { await fixture.waitBadges(page); assert.equal(await entries().locator('button[title="Mark as unread"]').count(), 1); } else { await unknown(); assert.equal(await fixture.mutationRequests(), 1); await fixture.assertNoAutomaticRequery(); } } });
+  await run(casesName(7), async () => { for (const mode of ['account', 'device']) { await fixture.configure({ mode, rows: 1, holdBatch: 1, ignoreAbort: true }); await fixture.openTitle(page); await fixture.waitBatch(1); await fixture.remountTitle(page); await fixture.assertUnsettledRefusal(page); await fixture.releaseBatch(1); await fixture.assertNoBypassOwner(); } });
+  await run(casesName(8), async () => { await fixture.configure({ mode: 'device', rows: 51, extraCompletedTitleRows: 120 }); await fixture.openTitle(page); await fixture.waitBadges(page); await fixture.assertOriginalDeviceContinue(page); assert.equal(await fixture.credentialedHistoryRequests(), 0); await fixture.assertSharedHistoryIsWholeTitle(); });
+  await run(casesName(9), async () => { await fixture.openComparisonSource(page, '14a7bab8a925928f658fbd8ebd160b3388e4b540'); await fixture.assertBadgeContractFails(page); });
+  await run(casesName(10), async () => { for (const bindingFault of ['missing', 'wrong-parent', 'wrong-id-profile', 'invalid-namespace']) { await fixture.configure({ rows: 51, bindingFault }); await fixture.openTitle(page); await fixture.waitChapterFeed(page); assert.equal(await entries().count(), 51); await unknown(); assert.equal(await fixture.completionRequests(), 0); assert.equal(await page.getByRole('button', { name: 'Retry read status' }).count(), 0); assert.match(await page.getByRole('status', { name: 'Chapter read status' }).textContent(), /Reload/); } });
+  await run(casesName(11), async () => { await fixture.configure({ rows: 51, holdChapterPage: true }); await fixture.openTitle(page); await fixture.waitChapterPage(); await fixture.hashThenNavigationStart(page); await fixture.releaseChapterPage(); await fixture.assertNoOldBadgePublication(page); assert.equal(await page.getByRole('button', { name: 'Retry read status' }).count(), 0); });
+  assert.deepEqual(cases.map(value => value.name), [...VISIBLE_BADGE_MOUNTED_CASES]);
+  return cases;
+}
+function casesName(index) { return VISIBLE_BADGE_MOUNTED_CASES[index]; }
+
+// NEW fixture-only supplement. The original twelve native groups above remain
+// byte-for-byte unchanged; none are relabeled as public-profile account support.
+export const PUBLIC_DEVICE_BADGE_CASES = Object.freeze([
+  'public device zero one fifty fifty-one hundred', 'public device held batch',
+  'public grouped alternate editions', 'public device abort remount contention',
+  'public device Continue isolation', 'public missing page binding preserves feed',
+  'public pending page navigation requires reload'
+]);
+export async function runPublicDeviceBadgeCases({ page, fixture, record }) {
+  assert.equal(fixture.profile, 'public');
+  const cases = [], entries = () => page.locator('article:has(a[href^="/chapter/"])');
+  const unknown = async () => { for (const entry of await entries().all()) { assert.equal(await entry.locator('button[title="Read status unavailable"]').isDisabled(), true); assert.equal(await entry.locator('[aria-label="Read status unavailable"]').count(), 1); assert(!String(await entry.getAttribute('class')).includes('!border-l-green-800')); } };
+  const run = async (index, operation) => { const row = { name: PUBLIC_DEVICE_BADGE_CASES[index], profile: 'public1', outcome: 'started' }; cases.push(row); await operation(); assert.equal(await fixture.credentialedHistoryRequests(), 0); row.outcome = 'passed'; record(row); };
+  await run(0, async () => { for (const rows of [0,1,50,51,100]) { await fixture.configure({ mode: 'device', rows }); await fixture.openTitle(page); await fixture.waitBadges(page); assert.equal(await entries().count(), rows); } });
+  await run(1, async () => { await fixture.configure({ mode: 'device', rows: 51, holdBatch: 1 }); await fixture.openTitle(page); await fixture.waitBatch(1); await unknown(); await fixture.releaseBatch(1); await fixture.waitBadges(page); assert.equal(await entries().count(), 51); });
+  await run(2, async () => { await fixture.configure({ mode: 'device', rows: 51, alternateEditions: true, completedIds: ['chapter:0','chapter:50'] }); await fixture.openTitle(page); await fixture.waitBadges(page); await fixture.assertRetainedGroupsAndEditions(page); assert.equal(await entries().locator('button[title="Mark as unread"]').count(), 2); assert.equal(await entries().locator('button[title="Mark as read"]').count(), 49); });
+  await run(3, async () => { await fixture.configure({ mode: 'device', rows: 1, holdBatch: 1, ignoreAbort: true }); await fixture.openTitle(page); await fixture.waitBatch(1); await fixture.remountTitle(page); await fixture.assertUnsettledRefusal(page); await fixture.releaseBatch(1); await fixture.assertNoBypassOwner(); });
+  await run(4, async () => { await fixture.configure({ mode: 'device', rows: 51, extraCompletedTitleRows: 120 }); await fixture.openTitle(page); await fixture.waitBadges(page); await fixture.assertOriginalDeviceContinue(page); await fixture.assertSharedHistoryIsWholeTitle(); });
+  await run(5, async () => { for (const bindingFault of ['missing','wrong-parent','wrong-id-profile','invalid-namespace']) { await fixture.configure({ mode: 'device', rows: 51, bindingFault }); await fixture.openTitle(page); await fixture.waitChapterFeed(page); assert.equal(await entries().count(), 51); await unknown(); assert.equal(await page.getByRole('button', { name: 'Retry read status' }).count(), 0); assert.match(await page.getByRole('status', { name: 'Chapter read status' }).textContent(), /Reload/); } });
+  await run(6, async () => { await fixture.configure({ mode: 'device', rows: 51, holdChapterPage: true }); await fixture.openTitle(page); await fixture.waitChapterPage(); await fixture.hashThenNavigationStart(page); await fixture.releaseChapterPage(); await fixture.assertNoOldBadgePublication(page); });
+  assert.deepEqual(cases.map(row => row.name), [...PUBLIC_DEVICE_BADGE_CASES]);
+  return cases;
+}
+
+export async function runBadgeFrameworkCases({ page, fixture, driver, guardMode, record }) {
+  assert(['installed', 'omitted-control'].includes(guardMode));
+  const cases = [], installed = guardMode === 'installed';
+  const run = async (name, operation) => { const row = { name, profile: fixture.profile, guardMode, outcome: 'started' }; cases.push(row); row.observations = await operation(); row.outcome = 'passed'; record(row); };
+  const app = () => page.command('snapshot');
+  const route = suffix => `${fixture.origin}/title/${fixture.titleId}${suffix}`;
+  const epochChanged = async previous => driver.waitFor(async () => (await app()).navigationEpoch > previous, { label: 'real guard invalidated navigation epoch' });
+  await fixture.configure({ mode: fixture.profile === 'public' ? 'device' : 'account', rows: 1 });
+  await run('fixture XHR abort reuse body terminals', () => fixture.assertXhrAbortReuseCleanup());
+  await fixture.openTitle(page); await fixture.waitBadges(page);
+  await run(installed ? 'real guard pending navigation' : 'guard omitted negative control', async () => {
+    const before = await app();
+    await fixture.beginNavigation({ href: route('?framework=pending'), hold: true }); await fixture.waitNavigation();
+    const pending = await app();
+    assert.equal(pending.pageUrl, before.pageUrl, 'Pending route must not be replaced by a synthetic page update');
+    if (installed) assert(pending.navigationEpoch > before.navigationEpoch, 'Pending navigation did not invalidate the real guard');
+    else assert.equal(pending.navigationEpoch, before.navigationEpoch, 'Omitted guard control was unexpectedly protected');
+    await fixture.releaseNavigation(); const terminal = await fixture.finishNavigation();
+    assert.equal(terminal.outcome, 'committed', 'Negative control must still have a healthy real router');
+    return { before: before.navigationEpoch, pending: pending.navigationEpoch, terminal, expectedGuardFailureDetected: !installed };
+  });
+  if (!installed) return cases;
+  await run('real hash event invalidates without fabricated page binding', async () => {
+    const before = await app(); await page.command('hash', { hash: '#framework-hash' }); await epochChanged(before.navigationEpoch);
+    const after = await app(); assert.equal(new URL(after.pageUrl).pathname, new URL(before.pageUrl).pathname);
+    return { before: before.navigationEpoch, after: after.navigationEpoch, pageUrl: after.pageUrl };
+  });
+  await run('real cancellation stays separate from load error', async () => {
+    const before = await app(), href = route('?framework=cancel');
+    await page.command('cancelNextNavigation', { href }); await fixture.beginNavigation({ href, hold: false });
+    const terminal = await fixture.finishNavigation();
+    assert.equal(terminal.outcome, 'cancelled');
+    const after = await app(); assert.equal(after.pageUrl, before.pageUrl); assert(after.navigationEpoch > before.navigationEpoch);
+    return { terminal, before: before.navigationEpoch, after: after.navigationEpoch };
+  });
+  await run('real load error has its own router terminal', async () => {
+    const before = await app(); await fixture.beginNavigation({ href: route('?framework=load-error'), error: true, hold: false });
+    const terminal = await fixture.finishNavigation();
+    assert.equal(terminal.outcome, 'load-error');
+    // Kit may commit an error page. Never assert the cancelled-navigation URL rule here.
+    const after = await app(); assert(after.navigationEpoch > before.navigationEpoch);
+    return { terminal, resultingPageUrl: after.pageUrl, resultingRoute: after.routeId };
+  });
+  await run('real A B A transitions and guard cleanup', async () => {
+    await fixture.remountGuard(page);
+    const start = await driver.snapshot();
+    await fixture.leaveGuard(); const outside = await driver.snapshot();
+    assert.equal(outside.application.routeId, '/__badge_outside');
+    assert(outside.application.navigationEpoch > start.application.navigationEpoch);
+    const removes = outside.dom.listeners.slice(start.dom.listeners.length).filter(row => row.action === 'remove' && ['hashchange','popstate'].includes(row.type));
+    assert(removes.some(row => row.type === 'hashchange') && removes.some(row => row.type === 'popstate'), 'Real guard listener cleanup was not observed');
+    await fixture.remountGuard(page); const again = await driver.snapshot();
+    assert.equal(new URL(again.application.pageUrl).pathname, `/title/${fixture.titleId}`);
+    const adds = again.dom.listeners.slice(outside.dom.listeners.length).filter(row => row.action === 'add' && ['hashchange','popstate'].includes(row.type));
+    assert.equal(adds.filter(row => row.type === 'hashchange').length, 1); assert.equal(adds.filter(row => row.type === 'popstate').length, 1);
+    const before = await app(); await page.command('hash', { hash: '#framework-remounted' }); await epochChanged(before.navigationEpoch);
+    return { start: start.application.navigationEpoch, outside: outside.application.navigationEpoch, remounted: again.application.navigationEpoch, removed: removes, added: adds };
+  });
+  return cases;
+}
+
+// NEW focused regressions, additional to (not replacements for) native twelve.
+export const NATIVE_BADGE_TERMINAL_SUPPLEMENTS = Object.freeze([
+  'returned body cancellation remains owned across same-graph remount',
+  'uncertain mutation fence survives same-graph remount'
+]);
+export async function runNativeBadgeTerminalSupplements({ page, fixture, record }) {
+  assert.equal(fixture.profile, 'native');
+  const cases = [];
+  const run = async (index, operation) => { const row = { name: NATIVE_BADGE_TERMINAL_SUPPLEMENTS[index], profile: 'native0', scope: 'new-terminal-regression', outcome: 'started' }; cases.push(row); await operation(); row.outcome = 'passed'; record(row); };
+  await run(0, async () => {
+    await fixture.configure({ mode: 'account', rows: 1, holdBodyBatch: 1, holdBodyCancel: true });
+    await fixture.openTitle(page); await fixture.waitBodyBatch(1);
+    await fixture.remountTitleWithHeldBody(page); await fixture.waitBodyCancel(1);
+    await fixture.assertBodyUnsettledRefusal(page);
+    await fixture.releaseBodyRead(1); await fixture.assertBodyUnsettledRefusal(page);
+    await fixture.releaseBodyCancel(1); await fixture.assertNoBodyBypassOwner();
+    await fixture.retryAfterBodyTerminal(page);
+  });
+  await run(1, async () => {
+    await fixture.configure({ mode: 'account', rows: 1, mutation: 'uncertain' });
+    await fixture.openTitle(page); await fixture.waitBadges(page);
+    await page.locator('article:has(a[href^="/chapter/"])').locator('button[title="Mark as read"]').click();
+    await fixture.assertNoAutomaticRequery();
+    await fixture.remountUncertainTitle(page); await fixture.assertUncertainFenceSurvivesRemount(page);
+    assert.equal(await fixture.mutationRequests(), 1);
+  });
+  assert.deepEqual(cases.map(row => row.name), [...NATIVE_BADGE_TERMINAL_SUPPLEMENTS]);
+  return cases;
+}

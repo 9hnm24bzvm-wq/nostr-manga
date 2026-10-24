@@ -16,7 +16,7 @@ use axum::{
 use serde_json::{json, Value};
 pub async fn get(State(state): State<AppState>, Path(id): Path<String>) -> ApiResult<Json<Value>> {
     v::id(&id)?;
-    let row=state.db.client().await?.query_opt("SELECT platform.library_user_json(id) FROM platform.users WHERE id=$1 AND NOT disabled",&[&id]).await?.ok_or_else(||ApiError::not_found("User not found"))?;
+    let row=state.db.client().await?.query_opt("SELECT platform.library_user_json(id) FROM platform.users WHERE id=$1 AND (NOT disabled OR closed_at IS NOT NULL)",&[&id]).await?.ok_or_else(||ApiError::not_found("User not found"))?;
     Ok(Json(row.get(0)))
 }
 pub async fn search(

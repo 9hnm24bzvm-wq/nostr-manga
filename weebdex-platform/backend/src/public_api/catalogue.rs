@@ -4,7 +4,7 @@ use super::{
     PostgresPublicIdResolver, PublicApiError, PublicApiResult, PublicIdResolver, PublicIdTarget,
     PublicUuid, ResourceKind,
     catalogue_dto::AliasIndex,
-    dto::{CollectionResponse, EntityResponse, Resource},
+    dto::{CollectionResponse, EntityResponse, Resource, ResourceType},
     query::{PublicQuery, QuerySchema},
 };
 use crate::{
@@ -44,6 +44,8 @@ const MANGA_SCALAR: &[&str] = &[
     "title",
     "authorOrArtist",
     "year",
+    "yearFrom",
+    "yearTo",
     "includedTagsMode",
     "excludedTagsMode",
     "createdAtSince",
@@ -102,6 +104,7 @@ pub fn router() -> Router<AppState> {
         .route("/manga/tag", get(tags))
         .route("/manga/{p0}", get(manga_one))
         .route("/manga/{p0}/feed", get(feed))
+        .route("/manga/{p0}/available-groups", get(available_groups))
         .route("/manga/{p0}/aggregate", get(aggregate))
         .route("/chapter", get(chapter_many))
         .route("/chapter/{p0}", get(chapter_one))
@@ -265,25 +268,25 @@ pub(super) fn parts(
         ResourceKind::Manga => (
             "m",
             "platform.catalog_manga m LEFT JOIN platform.catalog_manga_counters stats ON stats.manga_id=m.id",
-            "platform.catalog_manga_json(m.id) || jsonb_build_object('_latest_chapter_id',(SELECT l.id FROM platform.catalog_chapters l WHERE l.manga_id=m.id AND l.deleted_at IS NULL AND platform.protocol_source_is_visible(l.protocol_event_id) ORDER BY l.published_at DESC,l.id LIMIT 1))",
+            "platform.catalog_public_manga_json(m.id) || jsonb_build_object('_latest_chapter_id',(SELECT l.id FROM platform.catalog_chapters l WHERE l.manga_id=m.id AND l.deleted_at IS NULL AND platform.protocol_source_is_visible(l.protocol_event_id) ORDER BY l.published_at DESC,l.id LIMIT 1))",
             MANGA_VISIBLE,
         ),
         ResourceKind::Chapter => (
             "c",
             "platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id",
-            "platform.catalog_chapter_json(c.id)",
+            "platform.catalog_public_chapter_json(c.id) || jsonb_build_object('_local_page_source_mutable', c.protocol_event_id IS NULL)",
             CHAPTER_VISIBLE,
         ),
         ResourceKind::Cover => (
             "c",
             "platform.catalog_covers c JOIN platform.catalog_manga m ON m.id=c.manga_id",
-            "platform.catalog_cover_json(c.id) || jsonb_build_object('_manga_id',c.manga_id,'_manga',platform.catalog_manga_json(c.manga_id))",
+            "platform.catalog_cover_json(c.id) || jsonb_build_object('_manga_id',c.manga_id,'_manga',platform.catalog_public_manga_json(c.manga_id))",
             "c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)",
         ),
         ResourceKind::Author => (
             "a",
             "platform.catalog_authors a",
-            "platform.catalog_author_json(a.id) || jsonb_build_object('relationships',jsonb_build_object('manga',(SELECT COALESCE(jsonb_agg(platform.catalog_manga_json(am.id) ORDER BY am.id),'[]'::jsonb) FROM platform.catalog_manga am WHERE am.state='published' AND am.deleted_at IS NULL AND am.protocol_source_visible AND platform.protocol_source_is_visible(am.protocol_series_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga_creators ac WHERE ac.author_id=a.id AND ac.manga_id=am.id))))",
+            "platform.catalog_author_json(a.id) || jsonb_build_object('relationships',jsonb_build_object('manga',(SELECT COALESCE(jsonb_agg(platform.catalog_public_manga_json(am.id) ORDER BY am.id),'[]'::jsonb) FROM platform.catalog_manga am WHERE am.state='published' AND am.deleted_at IS NULL AND am.protocol_source_visible AND platform.protocol_source_is_visible(am.protocol_series_id) AND EXISTS(SELECT 1 FROM platform.catalog_manga_creators ac WHERE ac.author_id=a.id AND ac.manga_id=am.id))))",
             "a.deleted_at IS NULL AND platform.protocol_source_is_visible(a.protocol_event_id)",
         ),
         ResourceKind::Group => (
@@ -352,6 +355,22 @@ async fn id_filter(
     sql.array(column, ids.clone(), exclude);
     Ok(ids)
 }
+// Application-owned native year range extension. Validate before predicates so
+// count-only and paged requests share exactly the same admission and SQL.
+fn apply_year_range(q: &PublicQuery, native: &mut QueryParams) -> PublicApiResult<()> {
+    let lower = q.first("yearFrom").map(|_| q.bounded_usize("yearFrom", 0, 0, 9999)).transpose()?;
+    let upper = q.first("yearTo").map(|_| q.bounded_usize("yearTo", 0, 0, 9999)).transpose()?;
+    if (lower.is_some() || upper.is_some()) && q.first("year").is_some() {
+        return Err(PublicApiError::bad_request("Exact year and year range cannot be combined"));
+    }
+    if matches!((lower, upper), (Some(from), Some(to)) if from > to) {
+        return Err(PublicApiError::bad_request("yearFrom exceeds yearTo"));
+    }
+    for (key, value) in [("yearFrom", lower), ("yearTo", upper)] {
+        if let Some(value) = value { native.values.insert(key.into(), vec![value.to_string()]); }
+    }
+    Ok(())
+}
 fn native_query(q: &PublicQuery) -> QueryParams {
     QueryParams {
         values: BTreeMap::new(),
@@ -373,7 +392,7 @@ fn validate_choices(values: &[String], choices: &[&str]) -> PublicApiResult<()> 
 }
 fn validate_languages(values: &[String]) -> PublicApiResult<()> {
     for value in values {
-        crate::domains::catalog::validation::language(value)?;
+        crate::domains::catalog::validation::public_search_language(value)?;
     }
     Ok(())
 }
@@ -507,6 +526,7 @@ pub(super) async fn filters(
                     n.values.insert(to.into(), ids);
                 }
             }
+            apply_year_range(q, &mut n)?;
             if let Some(year) = q.first("year") {
                 if year == "none" {
                     sql.conditions.push("m.year=0".into());
@@ -673,7 +693,8 @@ pub(super) async fn filters(
             }
             if kind == ResourceKind::Group {
                 if let Some(language) = q.first("focusedLanguage") {
-                    validate_languages(&[language.to_owned()])?;
+                    // Opaque bounded string, not a language-pattern field in the pinned schema.
+                    // PublicQuery has already enforced length and NUL bounds.
                     let p = sql.bind(language.to_owned());
                     sql.conditions.push(format!("COALESCE(g.metadata->'focused_languages',g.metadata->'focusedLanguage','[]'::jsonb) ? {p}"));
                 }
@@ -702,7 +723,7 @@ pub(super) async fn filters(
                 false,
             )
             .await?;
-            validate_languages(&q.list("locales[]"))?;
+            for locale in q.list("locales[]") { crate::domains::catalog::validation::public_language(&locale)?; }
             sql.array("c.language", q.list("locales[]"), false);
         }
         _ => {}
@@ -760,9 +781,48 @@ async fn collection(
         .read_only(true).start().await?;
     let mut sql = Sql::default();
     filters(&state, Some(&tx), kind, &q, &mut sql, scope.as_deref(), None).await?;
-    let response = collection_in(&tx, kind, &q, &mut sql).await?;
+    let mut response = collection_in(&tx, kind, &q, &mut sql).await?;
+    // Only the single validated scalar manga filter proves a title on /chapter.
+    // General, list/account-scoped and multi-title feeds receive no envelope.
+    if kind == ResourceKind::Chapter && scope.is_none() {
+        if let Some(public) = q.uuid("manga")? {
+            let parents = PostgresPublicIdResolver::resolve_many_in(&*tx, ResourceKind::Manga, &[public.clone()]).await?;
+            if let Some(parent) = parents.get(&public).filter(|row| row.target == PublicIdTarget::NativeResource) {
+                let visible = tx.query_opt(&format!("SELECT id FROM platform.catalog_manga m WHERE m.id=$1 AND {MANGA_VISIBLE}"), &[&parent.native_id]).await?;
+                if visible.is_some() { attach_chapter_page(&state, &tx, &public, &mut response).await?; }
+            }
+        }
+    }
     tx.commit().await?;
     Ok(Json(response))
+}
+// Optional provenance is resolved in the SAME read-only RepeatableRead
+// transaction as alias mapping, visibility, rows, counts and relationship DTOs.
+// Missing optional namespace data omits the witness. Query failures retain
+// ordinary route error semantics rather than retrying or masking failures.
+async fn attach_chapter_page(
+    state: &AppState,
+    tx: &tokio_postgres::Transaction<'_>,
+    public: &PublicUuid,
+    response: &mut CollectionResponse<Resource>,
+) -> PublicApiResult<()> {
+    let Some(service_key) = crate::protocol::adapters::chapter_page_service_key(state) else { return Ok(()); };
+    if !response.data.iter().all(|row| {
+        let parents = row.relationships.iter().filter(|relation| relation.resource_type == ResourceType::Manga).collect::<Vec<_>>();
+        row.resource_type == ResourceType::Chapter && parents.len() == 1 && parents[0].id == *public
+    }) { return Ok(()); }
+    // Absent namespace is optional data. Query/permission/infrastructure errors
+    // retain the route's ordinary error semantics; no retry or swallowed SQL error.
+    let namespace = tx.query_opt("SELECT namespace::text FROM platform.catalogue_namespace WHERE singleton", &[]).await?
+        .map(|row| row.get::<_, String>(0));
+    let Some(namespace) = namespace else { return Ok(()); };
+    if !PublicUuid::parse(&namespace).is_ok_and(|id| id.as_str() == namespace) { return Ok(()); }
+    response.extensions.insert("chapterPage".into(), json!({
+        "version":1, "mangaId":public, "idProfile":"public-uuid-v1",
+        "catalogIdentity":{"catalogNamespace":namespace,"serviceKey":service_key},
+        "consistency":"response-snapshot-v1"
+    }));
+    Ok(())
 }
 pub(super) fn collection_schema(kind: ResourceKind, scoped: bool) -> QuerySchema<'static> {
     let mut operation = schema(kind);
@@ -824,25 +884,89 @@ pub(super) async fn collection_in(
         total as u64,
     ))
 }
+// Optional presentation read: no chapter-page or language filter is inherited.
+// Count and at most101 minimal rows share one repeatable-read snapshot. The
+// public UUID keyset has no offset ceiling and never exposes native IDs.
+async fn available_groups(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    RawQuery(raw): RawQuery,
+) -> PublicApiResult<Json<Value>> {
+    let q = PublicQuery::parse(raw.as_deref(), &QuerySchema {
+        default_limit: 100, max_limit: 100, max_offset: 0,
+        scalar: &["after"], arrays: &["ids[]"], includes: &[], order: &[],
+    })?;
+    q.require_allowed(&["limit", "after", "ids[]"])?;
+    if q.limit == 0 || q.first("after").is_some() && !q.list("ids[]").is_empty() {
+        return Err(PublicApiError::bad_request("Expected a nonzero page limit and unambiguous group cursor"));
+    }
+    let public = PublicUuid::parse(&id)?;
+    let mut client = state.db.client().await?;
+    let tx = client.build_transaction().isolation_level(tokio_postgres::IsolationLevel::RepeatableRead)
+        .read_only(true).start().await?;
+    let parents = PostgresPublicIdResolver::resolve_many_in(&*tx, ResourceKind::Manga, &[public.clone()]).await?;
+    let parent = parents.get(&public).filter(|row| row.target == PublicIdTarget::NativeResource)
+        .ok_or_else(PublicApiError::not_found)?;
+    let visible = tx.query_opt(&format!("SELECT id FROM platform.catalog_manga m WHERE m.id=$1 AND {MANGA_VISIBLE}"), &[&parent.native_id]).await?;
+    if visible.is_none() { return Err(PublicApiError::not_found()); }
+    let mut sql = Sql::default();
+    let manga = sql.bind(parent.native_id.clone());
+    sql.conditions.push(format!("g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id) AND EXISTS(SELECT 1 FROM platform.catalog_chapter_groups cg JOIN platform.catalog_chapters c ON c.id=cg.chapter_id WHERE cg.group_id=g.id AND c.manga_id={manga} AND c.deleted_at IS NULL AND NOT c.is_unavailable AND platform.protocol_source_is_visible(c.protocol_event_id))"));
+    if !q.list("ids[]").is_empty() {
+        let (ids, _) = mapped(&state, Some(&tx), &q, "ids[]", ResourceKind::Group).await?;
+        if ids.is_empty() { sql.conditions.push("FALSE".into()); }
+        else { sql.array("g.id", ids, false); }
+    }
+    let predicate = sql.predicate();
+    let total: i64 = tx.query_one(&format!("SELECT count(*) FROM platform.catalog_groups g WHERE {predicate}"), &sql.params()).await?.get(0);
+    let table = "platform.catalog_groups g LEFT JOIN platform.public_resource_ids aliases ON aliases.kind='group' AND aliases.native_id=g.id AND aliases.preferred";
+    let mut position: i64 = 0;
+    if let Some(after) = q.first("after") {
+        let cursor = PublicUuid::parse(after)?;
+        let p = sql.bind(cursor.to_string());
+        let exists = tx.query_opt(&format!("SELECT g.id FROM {table} WHERE {predicate} AND aliases.public_id={p}::text::uuid"), &sql.params()).await?;
+        if exists.is_none() { return Err(PublicApiError::conflict("Group choices changed; restart from the first page")); }
+        position = tx.query_one(&format!("SELECT count(*) FROM {table} WHERE {predicate} AND aliases.public_id<={p}::text::uuid"), &sql.params()).await?.get(0);
+        sql.conditions.push(format!("(aliases.public_id>{p}::text::uuid OR aliases.public_id IS NULL)"));
+    }
+    let limit = sql.bind(i64::from(q.limit) + 1);
+    let rows = tx.query(&format!("SELECT jsonb_build_object('id',g.id,'name',g.name),aliases.public_id::text FROM {table} WHERE {} ORDER BY aliases.public_id NULLS FIRST LIMIT {limit}", sql.predicate()), &sql.params()).await?;
+    // Missing canonical aliases must never silently reduce the counted set.
+    if rows.iter().any(|row| row.get::<_, Option<String>>(1).is_none()) { return Err(PublicApiError::unavailable()); }
+    let more = rows.len() > q.limit as usize;
+    let resources = rows.iter().take(q.limit as usize).map(|row| (ResourceKind::Group, row.get::<_, Value>(0))).collect::<Vec<_>>();
+    let index = AliasIndex::load_in(&tx, &resources).await?;
+    let data = resources.iter().map(|(kind, value)| {
+        Ok(Resource { id: index.id(*kind, value["id"].as_str().ok_or_else(PublicApiError::unavailable)?)?,
+            resource_type: ResourceType::ScanlationGroup, attributes: json!({"name":value["name"]}), relationships: vec![] })
+    }).collect::<PublicApiResult<Vec<_>>>()?;
+    let next = if more { data.last().map(|row| row.id.clone()) } else { None };
+    tx.commit().await?;
+    Ok(Json(json!({"result":"ok","semantics":"visible-title-groups-v1","data":data,"total":total,"position":position,"limit":q.limit,"next":next})))
+}
 async fn feed(
     State(state): State<AppState>,
     Path(id): Path<String>,
     RawQuery(raw): RawQuery,
 ) -> PublicApiResult<Json<CollectionResponse<Resource>>> {
-    let native = resolve(&state, ResourceKind::Manga, &id).await?;
-    let exists = state
-        .db
-        .client()
-        .await?
-        .query_opt(
-            &format!("SELECT id FROM platform.catalog_manga m WHERE m.id=$1 AND {MANGA_VISIBLE}"),
-            &[&native],
-        )
-        .await?;
-    if exists.is_none() {
-        return Err(PublicApiError::not_found());
-    }
-    feed_for_manga_ids(state, raw, vec![native]).await
+    let public = PublicUuid::parse(&id)?;
+    let mut client = state.db.client().await?;
+    let tx = client.build_transaction().isolation_level(tokio_postgres::IsolationLevel::RepeatableRead)
+        .read_only(true).start().await?;
+    let parents = PostgresPublicIdResolver::resolve_many_in(&*tx, ResourceKind::Manga, &[public.clone()]).await?;
+    let parent = parents.get(&public).filter(|row| row.target == PublicIdTarget::NativeResource)
+        .ok_or_else(PublicApiError::not_found)?;
+    let visible = tx.query_opt(&format!("SELECT id FROM platform.catalog_manga m WHERE m.id=$1 AND {MANGA_VISIBLE}"), &[&parent.native_id]).await?;
+    if visible.is_none() { return Err(PublicApiError::not_found()); }
+    let q = PublicQuery::parse(raw.as_deref(), &collection_schema(ResourceKind::Chapter, true))?;
+    if q.limit == 0 { return Err(PublicApiError::bad_request("Feed limit must be 1..500")); }
+    let scope = vec![parent.native_id.clone()];
+    let mut sql = Sql::default();
+    filters(&state, Some(&tx), ResourceKind::Chapter, &q, &mut sql, Some(&scope), None).await?;
+    let mut response = collection_in(&tx, ResourceKind::Chapter, &q, &mut sql).await?;
+    attach_chapter_page(&state, &tx, &public, &mut response).await?;
+    tx.commit().await?;
+    Ok(Json(response))
 }
 pub(super) async fn feed_for_manga_ids(
     state: AppState,
@@ -909,7 +1033,7 @@ async fn random(
     let q = PublicQuery::parse(raw.as_deref(), &operation)?;
     let mut sql = Sql::default();
     filters(&state, None, ResourceKind::Manga, &q, &mut sql, None, None).await?;
-    let value:Option<Value>=state.db.client().await?.query_opt(&format!("SELECT platform.catalog_manga_json(m.id) FROM platform.catalog_manga m WHERE {} ORDER BY random() LIMIT 1",sql.predicate()),&sql.params()).await?.and_then(|r|r.get(0));
+    let value:Option<Value>=state.db.client().await?.query_opt(&format!("SELECT platform.catalog_public_manga_json(m.id) FROM platform.catalog_manga m WHERE {} ORDER BY random() LIMIT 1",sql.predicate()),&sql.params()).await?.and_then(|r|r.get(0));
     let value = value.ok_or_else(PublicApiError::not_found)?;
     let resolver = PostgresPublicIdResolver::new(state.db.clone());
     let index =
@@ -1058,6 +1182,25 @@ mod tests {
                     _ => assert!(s.scalar.contains(&name) || s.arrays.contains(&name), "{path} missing filter {name}"),
                 }
             }
+        }
+    }
+    #[test]
+    fn application_year_ranges_keep_native_inclusive_bounds_and_refuse_ambiguity() {
+        for raw in ["yearFrom=0", "yearTo=9999", "yearFrom=2000&yearTo=2000", "yearFrom=2000&yearTo=2020"] {
+            let q = PublicQuery::parse(Some(raw), &schema(ResourceKind::Manga)).unwrap();
+            let mut native = native_query(&q); apply_year_range(&q, &mut native).unwrap();
+            let mut sql = Sql::default(); manga_filters(&native, &mut sql, "m", None).unwrap();
+            if q.first("yearFrom").is_some() { assert!(sql.predicate().contains("m.year >=")); }
+            if q.first("yearTo").is_some() { assert!(sql.predicate().contains("m.year <=")); }
+        }
+        for raw in ["year=none&yearTo=0", "year=2000&yearFrom=2000", "yearFrom=2001&yearTo=2000", "yearFrom=-1", "yearTo=10000", "yearFrom=1.5", "yearFrom="] {
+            let q = PublicQuery::parse(Some(raw), &schema(ResourceKind::Manga)).unwrap();
+            assert!(apply_year_range(&q, &mut native_query(&q)).is_err(), "{raw}");
+        }
+        for raw in ["year=none", "year=2000"] {
+            let q = PublicQuery::parse(Some(raw), &schema(ResourceKind::Manga)).unwrap();
+            let mut native = native_query(&q); apply_year_range(&q, &mut native).unwrap();
+            assert!(native.first("yearFrom").is_none() && native.first("yearTo").is_none());
         }
     }
     #[test]

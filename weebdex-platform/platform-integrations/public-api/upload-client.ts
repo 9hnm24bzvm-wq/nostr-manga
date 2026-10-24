@@ -28,7 +28,8 @@ declare global {
   }
 }
 type PublicFile = UploadSessionFile & { public_upload?: FileFacts };
-type PublicSession = UploadSession & { manga_id: string; chapter_id?: string; draft?: ChapterDraft | null; page_order: string[]; can_mutate: boolean; can_cancel: boolean; can_retry_commit: boolean; is_expired: boolean; expires_at: string | null; state: string; schedule?: ScheduleReceipt; publication_status?: string; target_status: string; receipt?: Chapter; committed_result?: Chapter; public_upload: { groupIds: string[]; receipt: unknown; receiptStatus: 'none' | 'available' | 'unavailable'; commitState?: string } };
+export type PublicSession = UploadSession & { manga_id: string; chapter_id?: string; edit_version?: number; draft?: ChapterDraft | null; page_order: string[]; can_mutate: boolean; can_cancel: boolean; can_retry_commit: boolean; is_expired: boolean; expires_at: string | null; state: string; schedule?: ScheduleReceipt; publication_status?: string; target_status: string; receipt?: Chapter; committed_result?: Chapter; public_upload: { groupIds: string[]; receipt: unknown; receiptStatus: 'none' | 'available' | 'unavailable'; commitState?: string } };
+type ChapterBeginFence = { chapterId: string; parentId: string; version: number; replace: boolean; sessionId?: string };
 type Fence = { sessionId: string; state: 'uncertain' | 'accepted-unavailable'; attempt?: string; schedule?: { accountId: string; publishAt: string; fingerprint: string } };
 export type UploadReplacementStatus = Readonly<{ state: 'uncertain'; sessionId: string; fileId: string; expectedVersion: number }>;
 export type UploadReplacementResult = { session: PublicSession; file: UploadSessionFile };
@@ -42,6 +43,9 @@ export interface PublicUploadOwner {
   pendingCommitSession(): string | undefined;
   pendingReplacement(): UploadReplacementStatus | undefined;
   chapterAccess(version:number):Promise<ChapterEditAccess>;
+  chapterPagesPending(): boolean;
+  chapterBeginPending(): boolean;
+  reconcileChapterBegin(): Promise<PublicSession>;
   chapterPending():boolean;
   chapterPendingPhase():ChapterFencePhase|undefined;
   request<T = unknown>(route: string, method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', payload?: unknown): Promise<Response<T>>;
@@ -110,7 +114,7 @@ const sameDraft = (a?: ChapterDraft | null, b?: ChapterDraft | null) => signatur
 export function createPublicUploadAdapter(injected: Partial<PublicUploadDependencies> = {}) {
   const deps = { ...defaults, ...injected, chapterFences: injected.chapterFences ?? injected.fences ?? defaults.chapterFences, scheduleFences: injected.scheduleFences ?? injected.fences ?? defaults.scheduleFences, scheduleLock: injected.scheduleLock ?? injected.replacementLock ?? defaults.scheduleLock };
   type Account = { user: User; actor: string; scope: Scope; identity: UploadRequestIdentity; facts: UploadAccountFacts; assertCurrent: () => void; key: string };
-  type Owned = { account: Account; targetId: string; targetKind: 'manga' | 'chapter'; sessionId?: string; sessionEpoch: number; fence?: Fence; commitAttempt?: object; replacement?: ReplacementFence; replacementAttempt?: object; latest?: PublicSession; schedules?: ReturnType<typeof createUploadSchedules>; groups: Map<string, ScanlationGroup>; request: ReturnType<PublicUploadDependencies['createRequest']>; assert: () => void };
+  type Owned = { chapterPending?: () => boolean; account: Account; targetId: string; targetKind: 'manga' | 'chapter'; sessionId?: string; sessionEpoch: number; fence?: Fence; commitAttempt?: object; replacement?: ReplacementFence; replacementAttempt?: object; latest?: PublicSession; schedules?: ReturnType<typeof createUploadSchedules>; groups: Map<string, ScanlationGroup>; request: ReturnType<PublicUploadDependencies['createRequest']>; assert: () => void };
   const accounts = new WeakMap<object, Account>(), owners = new WeakMap<PublicUploadOwner, Owned>();
   const replacementAuthority = new WeakMap<PublicSession, Pick<PublicSession, 'can_mutate' | 'can_cancel' | 'can_retry_commit'>>();
   function scope(policy: Policy): Scope {
@@ -222,7 +226,22 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     if (owned.sessionEpoch !== expected) fail('The owned upload session changed during its read', 409);
   }
   const ownedBy = (owner?: PublicUploadOwner): Owned => { if (!owner || !owners.has(owner)) fail('An explicit signed upload owner is required', 409); owner.assert(); return owners.get(owner)!; };
-  function assertMutable(owned: Owned) {
+  const chapterBeginKey = (account: Account) => account.key + ':chapter-begin:' + account.actor;
+  function readChapterBegin(account: Account): ChapterBeginFence | undefined {
+    const saved = deps.fences.get(chapterBeginKey(account)); if (saved === null) return;
+    let value: Record<string, unknown>; try { value = record(JSON.parse(saved)); } catch { return fail('Page-edit admission recovery is unreadable. No mutation was sent.', 409); }
+    if (Object.keys(value).some(key => !['chapterId','parentId','version','replace','sessionId'].includes(key)) || typeof value.replace !== 'boolean') fail('Invalid page-edit admission recovery', 409);
+    return { chapterId: publicUuid(value.chapterId), parentId: publicUuid(value.parentId), version: integer(value.version, 1), replace: value.replace, ...(value.sessionId === undefined ? {} : { sessionId: publicUuid(value.sessionId) }) };
+  }
+  function writeChapterBegin(account: Account, next: ChapterBeginFence | undefined, expected?: ChapterBeginFence) {
+    const key = chapterBeginKey(account), before = readChapterBegin(account);
+    if (JSON.stringify(before) !== JSON.stringify(expected)) fail('Page-edit admission recovery changed. Its fence was kept.', 409);
+    if (next) deps.fences.set(key, JSON.stringify(next)); else deps.fences.delete(key);
+    if (JSON.stringify(readChapterBegin(account)) !== JSON.stringify(next)) fail('Page-edit admission recovery storage is unavailable', 409);
+  }
+  function assertMutable(owned: Owned, ownChapterCommand = false) {
+    if (!ownChapterCommand && owned.chapterPending?.()) fail(chapterUnconfirmed, 409);
+    if (readChapterBegin(owned.account)) fail('Page-edit admission is unconfirmed. Explicitly recover the current owned session; no begin request was replayed.', 409);
     if (replacementPending(owned)) throw new VisibleError('Reconcile page replacement first', unknownReplacement);
     if (owned.fence || readFence(owned.account)) throw new VisibleError('Reconcile publication first', unknownCommit);
     if (owned.latest && (owned.targetKind === 'manga' ? owned.latest.manga_id !== owned.targetId || !!owned.latest.chapter_id && !owned.latest.is_committed : owned.latest.chapter_id !== owned.targetId)) fail('The discovered upload belongs to a different editor target. Open its original editor before changing it.', 409);
@@ -231,7 +250,8 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     const guard = () => {
       owned.assert();
       if (method === 'GET') { if (path === '/upload' && (owned.fence || readFence(owned.account) || replacementPending(owned))) throw new VisibleError('Reconcile publication first', unknownCommit); return; }
-      if (!ownCommit) return assertMutable(owned);
+      if (!ownCommit) return assertMutable(owned, path.startsWith('/chapter/'));
+      if (owned.chapterPending?.() || readChapterBegin(owned.account)) fail('A chapter command or page admission is unresolved. Commit recovery was kept.',409);
       if (replacementPending(owned)) throw new VisibleError('Reconcile page replacement first', unknownReplacement);
       const pending = readFence(owned.account);
       if (owned.commitAttempt !== ownCommit.token || pending?.sessionId !== ownCommit.sessionId || pending.state !== 'uncertain' || pending.attempt !== ownCommit.attempt || owned.sessionId !== ownCommit.sessionId) throw new VisibleError('Publication context changed', unknownCommit);
@@ -254,6 +274,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
   function normalizeSession(input: unknown, expected: string): PublicSession {
     const envelope = record(input, 'upload snapshot'); if (envelope.result !== 'ok') fail('Invalid upload snapshot envelope'); const row = record(envelope.session, 'upload snapshot session');
     const id = publicUuid(row.id); if (id !== expected) fail('Upload snapshot changed the requested session', 409);
+    const editVersion = row.editVersion === null || row.editVersion === undefined ? undefined : integer(row.editVersion, 1);
     const mangaId = publicUuid(row.mangaId), chapterId = row.chapterId === null ? undefined : publicUuid(row.chapterId), groupIds = ids(row.groupIds, 10), order = ids(row.pageOrder);
     if (!Array.isArray(row.files) || row.files.length > 500) fail('Invalid staged image list'); const files = row.files.map(file => normalizeFile(file, id, true));
     if (files.length !== order.length || new Set(files.map(file => file.id)).size !== files.length || order.some(file => !files.some(row => row.id === file))) fail('Staged order does not cover the exact current image set');
@@ -263,7 +284,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     const receiptStatus = row.receiptStatus; if (receiptStatus !== 'none' && receiptStatus !== 'available' && receiptStatus !== 'unavailable' || !!receipt !== (receiptStatus === 'available') || isCommitted && receiptStatus === 'none' || !isCommitted && (state === 'scheduled' ? receiptStatus !== 'unavailable' : receiptStatus !== 'none')) fail('Invalid exact receipt availability');
     const schedule = row.schedule === undefined ? undefined : scheduleReceipt(row.schedule); if (state === 'scheduled' && !schedule) fail('Scheduled session lacks its private intent receipt');
     const publication = row.publicationStatus === null ? undefined : text(row.publicationStatus, 'publication status');
-    return { id, created_at: text(row.createdAt, 'upload creation time'), updated_at: text(row.updatedAt, 'upload update time'), version: integer(row.version, 1), is_committed: isCommitted, is_processed: isProcessed, is_deleted: isDeleted, manga_id: mangaId, ...(chapterId ? { chapter_id: chapterId } : {}), draft: row.draft === null ? null : draft(row.draft), page_order: order, can_mutate: canMutate, can_cancel: canCancel, can_retry_commit: canRetry, is_expired: isExpired, expires_at: state === 'scheduled' ? null : text(row.expiresAt, 'upload expiry'), state, ...(schedule ? { schedule } : {}), publication_status: publication, target_status: text(row.targetStatus, 'upload target status'), relationships: { files: order.map(id => files.find(file => file.id === id)!) }, public_upload: { groupIds, receipt, receiptStatus } };
+    return { id, created_at: text(row.createdAt, 'upload creation time'), updated_at: text(row.updatedAt, 'upload update time'), version: integer(row.version, 1), is_committed: isCommitted, is_processed: isProcessed, is_deleted: isDeleted, manga_id: mangaId, ...(chapterId ? { chapter_id: chapterId } : {}), ...(editVersion === undefined ? {} : { edit_version: editVersion }), draft: row.draft === null ? null : draft(row.draft), page_order: order, can_mutate: canMutate, can_cancel: canCancel, can_retry_commit: canRetry, is_expired: isExpired, expires_at: state === 'scheduled' ? null : text(row.expiresAt, 'upload expiry'), state, ...(schedule ? { schedule } : {}), publication_status: publication, target_status: text(row.targetStatus, 'upload target status'), relationships: { files: order.map(id => files.find(file => file.id === id)!) }, public_upload: { groupIds, receipt, receiptStatus } };
   }
   async function exact(owned: Owned, sessionId: string): Promise<PublicSession> {
     owned.fence = owned.fence ?? readFence(owned.account);
@@ -348,20 +369,33 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
     const view: User = { id: publicUuid(user.id), name: text(user.username, 'bound username'), version: integer(user.version, 1), roles, permissions };
     account.actor = view.id; account.user = view; account.facts = { canBegin, canManage, permissions, publication, limits }; accounts.set(view, account); return view;
   }
-  function publicUploadOwner(target: () => string, user: User, targetKind: 'manga' | 'chapter' = 'manga'): PublicUploadOwner {
+  function publicUploadOwner(target: () => string, user: User, targetKind: 'manga' | 'chapter' = 'manga', lifecycle: 'component' | 'caller' = 'component'): PublicUploadOwner {
     const account = accounts.get(user); if (!account) fail('Load the selected signer’s bound upload account first', 409);
     const id = publicUuid(target()); let disposed = false;
     const assert = () => { if (disposed || publicUuid(target()) !== id || user.id !== account.actor) fail('The upload editor target changed. No request was replayed.', 409); account.identity.check(); account.assertCurrent(); if (canonicalOrigin(deps.publicOrigin()) !== account.scope.origin) fail('Public upload origin changed', 409); };
-    const initialFence = readFence(account), initialReplacement = readReplacement(account);
-    const owned: Owned = { account, assert, targetId: id, targetKind, groups: new Map(), request: transport(account, assert), sessionId: initialFence?.sessionId ?? initialReplacement?.sessionId, sessionEpoch: 0, fence: initialFence, replacement: initialReplacement };
+    const initialFence = readFence(account), initialReplacement = readReplacement(account), initialBegin = readChapterBegin(account);
+    const owned: Owned = { account, assert, targetId: id, targetKind, groups: new Map(), request: transport(account, assert), sessionId: initialFence?.sessionId ?? initialReplacement?.sessionId ?? initialBegin?.sessionId, sessionEpoch: 0, fence: initialFence, replacement: initialReplacement };
     let chapterSnapshot:{version:number;parentId:string}|undefined;
     const chapterFence=createChapterCommandFence(deps.chapterFences,{origin:account.scope.origin,serviceKey:account.scope.serviceKey,catalogNamespace:account.scope.catalogNamespace,signer:account.identity.owner,accountId:account.actor,chapterId:id},deps.digest,assert);
+    if (targetKind === 'chapter') owned.chapterPending = () => chapterFence.pending();
     const captureChapter=(chapter:Resource)=>{if(publicUuid(chapter.id)!==id)fail('Chapter receipt changed its exact target');const parents=chapter.relationships.filter(row=>row.type==='manga');if(parents.length!==1)fail('Chapter parent is unavailable or ambiguous');return{version:integer(chapter.attributes.version,1),parentId:publicUuid(parents[0].id)};};
     owned.schedules = createUploadSchedules({ key: account.key.replace('public-upload-recovery.v1:', 'public-upload-schedules.v1:'), accountId: account.actor, assert, store: deps.scheduleFences, lock: deps.scheduleLock, attempt: deps.newAttempt,
       request: async (path, method, guard) => { assert(); guard(); const request = transport(account, () => { assert(); guard(); }); const response = await request({ url: account.scope.origin + '/api/v1' + path, method }); assert(); guard(); return response; },
       present: async receipt => { const parents = receipt.relationships.filter(row => row.type === 'manga'); if (parents.length !== 1) fail('Scheduled reader parent is unavailable'); return (await presentation(owned, receipt, publicUuid(parents[0].id))).body; },
     });
-    const owner: PublicUploadOwner = { id, actor: account.actor, schedules: owned.schedules.manager, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, chapterPending:()=>chapterFence.pending(), chapterPendingPhase:()=>chapterFence.phase(), chapterAccess: async (version:number):Promise<ChapterEditAccess> => {
+    const owner: PublicUploadOwner = { id, actor: account.actor, schedules: owned.schedules.manager, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, chapterPagesPending: () => !!owned.sessionId || !!readChapterBegin(account) || !!readFence(account) || !!readReplacement(account), chapterBeginPending: () => !!readChapterBegin(account), reconcileChapterBegin: async () => {
+      assert(); const pending = readChapterBegin(account);
+      if (!pending || targetKind !== 'chapter' || pending.chapterId !== id) fail('No page-edit admission belongs to this chapter', 409);
+      // Current ownership/target/version cannot identify an uncertain admission:
+      // another tab may have admitted a different mode for that same chapter.
+      // Only an exact accepted receipt witnessed before the snapshot failed can
+      // bind recovery to this attempt. Read-only inspection never clears it.
+      if (!pending.sessionId) fail('Page-edit admission is still unconfirmed: no exact accepted session receipt was received. Current staging can be inspected read-only, but cannot prove this attempt or its mode.', 409);
+      const response = await discover(owned), session = response.body;
+      assert();
+      if (response.status !== 200 || !session || session.chapter_id !== id || session.manga_id !== pending.parentId || session.edit_version !== pending.version || session.id !== pending.sessionId) fail('Page-edit admission is still unconfirmed. Staging was kept; no begin request was replayed.', 409);
+      writeChapterBegin(account, undefined, pending); return session;
+    }, chapterPending:()=>chapterFence.pending(), chapterPendingPhase:()=>chapterFence.phase(), chapterAccess: async (version:number):Promise<ChapterEditAccess> => {
       assert();if(targetKind!=='chapter')fail('Chapter affordances require an exact chapter owner',422);
       const freshUser=await loadUploadAccount(assert),fresh=accounts.get(freshUser)!;assert();
       if(fresh.actor!==account.actor||fresh.identity.owner!==account.identity.owner||!equalScope(fresh.scope,account.scope))fail('The bound chapter account or service changed. Reopen the editor.',409);
@@ -386,6 +420,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
       assert();
       if (route.startsWith('/chapter/')) {
         assertMutable(owned);if(chapterFence.pending())fail(chapterUnconfirmed,409);
+        if (owned.sessionId) fail('Finish or explicitly cancel the owned page-edit session before changing chapter metadata or ownership.',409);
         if (targetKind !== 'chapter' || ![ `/chapter/${id}`, `/chapter/${id}/claim` ].includes(route) || !['PUT', 'POST', 'DELETE'].includes(method) || route.endsWith('/claim') !== (method === 'POST')) fail('Chapter command escaped its exact signed target', 422);
         const grants = account.facts.permissions, staff = (user.roles ?? []).some(role => ['moderator', 'staff', 'sysop'].includes(role));
         const permission = method === 'DELETE' ? 'remove' : 'update';
@@ -451,7 +486,35 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
       if ((route === '/upload/begin' || route.startsWith('/upload/begin/')) && method === 'POST') {
         const value = record(payload); let body: unknown;
         if (route === '/upload/begin') { if (targetKind !== 'manga' || !account.facts.canBegin || !account.facts.canManage || publicUuid(value.manga) !== id) fail('The bound native account cannot begin this target upload', 403); body = { manga: id, groups: ids(value.groups, 10), expectedAccountId: account.actor }; }
-        else { if (value.replace === true) fail('Replace-all has no public upload command. No native request was sent.', 422); if (targetKind !== 'chapter' || publicUuid(route.slice('/upload/begin/'.length)) !== id || !account.facts.canManage) fail('The bound native account cannot edit this upload target', 403); body = { version: integer(value.version, 1), expectedAccountId: account.actor }; }
+        else {
+          if (targetKind !== 'chapter' || publicUuid(route.slice('/upload/begin/'.length)) !== id || Object.keys(value).some(key => !['version','replace','expectedAccountId'].includes(key)) || value.replace !== undefined && typeof value.replace !== 'boolean') fail('Invalid exact page-edit admission', 422);
+          const version = integer(value.version, 1), replace = value.replace === true;
+          const access = await owner.chapterAccess(version); assert();
+          if (!access.canEditPages || !account.facts.canManage) fail(access.pageSource === 'protocol' ? 'Original signed protocol pages are immutable.' : 'Local page-edit eligibility could not be verified.',403);
+          const existing = await discover(owned); assert();
+          if (existing.status !== 404 || owned.sessionId) fail('An owned upload may already exist. Resume its original editor or explicitly cancel it first.',409);
+          assertMutable(owned);
+          let marker: ChapterBeginFence = { chapterId:id,parentId:chapterSnapshot!.parentId,version,replace };
+          writeChapterBegin(account, marker);
+          let received = false;
+          try {
+            const guard = () => { assert(); if (chapterFence.pending() || readFence(account) || readReplacement(account) || JSON.stringify(readChapterBegin(account)) !== JSON.stringify(marker)) fail('Page-edit admission ownership changed. Recovery was kept.',409); };
+            const request = transport(account, guard);
+            const response = await request({ url:account.scope.origin+'/api/v1'+route,method:'POST',body:encoder.encode(JSON.stringify({version,replace,expectedAccountId:account.actor})),contentType:'application/json' }); received = true; guard();
+            if (response.status >= 400 && response.status < 500 && response.bodyAvailable === true && record(response.body).result === 'error' && Array.isArray(record(response.body).errors)) { writeChapterBegin(account,undefined,marker); return callerView<T>(response); }
+            if (response.status !== 200 || response.bodyAvailable !== true) fail('Page-edit admission is unconfirmed',409);
+            const sessionId = basicSession(response.body), edit = record(record(record(response.body).attributes).edit);
+            if (publicUuid(edit.chapterId) !== id || edit.version !== version || edit.replace !== replace) fail('Page-edit admission receipt changed its target, version or mode',409);
+            const next = {...marker,sessionId}; writeChapterBegin(account,next,marker); marker=next; selectSession(owned,sessionId);
+            const session = await exact(owned,sessionId); guard();
+            if (session.chapter_id !== id || session.manga_id !== marker.parentId || session.edit_version !== version || session.is_committed || session.is_deleted || replace && session.page_order.length !== 0) fail('Page-edit staging differs from its signed admission receipt',409);
+            writeChapterBegin(account,undefined,marker); return callerView<T>({...response,body:session});
+          } catch (error) {
+            // A failed later snapshot is not evidence that the admission POST was unsent.
+            if (!received && error instanceof PublicUploadRequestError && error.outcome === 'unsent') writeChapterBegin(account,undefined,marker);
+            throw error;
+          }
+        }
         if (owned.sessionId) fail('An owned upload already exists. Resume or explicitly cancel it first.', 409);
         const response = await raw(owned, route, method, body); if (response.status !== 200) return callerView<T>(response);
         const sessionId = basicSession(response.body); selectSession(owned, sessionId); return callerView<T>({ ...response, body: await exact(owned, sessionId) });
@@ -462,6 +525,7 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
         const value = record(payload); if (value.termsAccepted !== true) fail('Explicit upload terms acceptance is required', 422);
         const candidate = { draft: draft(value.draft), page_order: ids(value.page_order) }; if (!candidate.page_order.length || !candidate.draft.language) fail('A language and staged page order are required', 422);
         const current = await exact(owned, sessionId); if (!current.can_mutate || !current.can_retry_commit || !sameDraft(current.draft, candidate.draft) || JSON.stringify(current.page_order) !== JSON.stringify(candidate.page_order)) fail('Commit must match the acknowledged private draft and exact page order', 409);
+        if (targetKind === 'chapter' && (current.chapter_id !== id || current.edit_version === undefined || value.publishAt !== undefined)) fail('Local page commits require their exact edit binding and cannot be scheduled',409);
         const publishAt = value.publishAt === undefined ? undefined : scheduledUtc(value.publishAt);
         const schedule = publishAt === undefined ? undefined : { accountId: account.actor, publishAt, fingerprint: await scheduleFingerprint(current) }; owned.assert();
         const body = { chapterDraft: { ...(publishAt === undefined ? {} : { publishAt }), volume: candidate.draft.volume || null, chapter: candidate.draft.chapter || null, title: candidate.draft.title || null, translatedLanguage: publicWriteLanguage(candidate.draft.language) }, pageOrder: candidate.page_order, termsAccepted: true };
@@ -483,7 +547,9 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
           }
           if (response.status === 202) { await change({ ...expected!, sessionId, state: 'accepted-unavailable' }); return callerView<T>({ ...response, body: undefined, accepted: true, sessionId }); }
           if (response.status !== 200) { if (response.status >= 400 && response.status < 500 && record(response.body).result === 'error' && Array.isArray(record(response.body).errors)) { await change(); return callerView<T>(response); } throw resumeError(response.status, response.body); }
-          const receipt = resource(response.body, 'chapter'); integer(receipt.attributes.version, 1); if (!receipt.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === current.manga_id)) fail('Accepted receipt changed its target');
+          const receipt = resource(response.body, 'chapter'); integer(receipt.attributes.version, 1);
+          if (targetKind === 'chapter' && (publicUuid(receipt.id) !== id || receipt.attributes.version !== current.edit_version! + 1)) fail('Page-edit commit receipt changed the exact chapter or version',409);
+          if (!receipt.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === current.manga_id)) fail('Accepted receipt changed its target');
           await change({ sessionId, state: 'accepted-unavailable', ...(schedule ? { schedule } : {}) });
           const result = await presentation(owned, response.body, current.manga_id);
           if (!result.body) await change({ sessionId, state: 'accepted-unavailable', ...(schedule ? { schedule } : {}) }); else { await change(); selectSession(owned, undefined); owned.latest = undefined; }
@@ -498,13 +564,18 @@ export function createPublicUploadAdapter(injected: Partial<PublicUploadDependen
       }
       if (method === 'PATCH' && action === undefined) { const value = record(payload); const current = await exact(owned, sessionId); if (!current.can_mutate || !account.facts.canManage) fail('Upload is read-only', 409); const body = { version: integer(value.version, 1), draft: draft(value.draft), pageOrder: ids(value.page_order ?? value.pageOrder) }; if(body.draft.language)publicWriteLanguage(body.draft.language); const response = await raw(owned, `/nostr/uploads/${sessionId}`, 'PATCH', body); return callerView<T>(response.status === 200 ? { ...response, body: (owned.latest = normalizeSession(response.body, sessionId)) } : response); }
       if (method === 'DELETE' && (action === undefined || action === 'batch' || /^[0-9a-f-]{36}$/i.test(action))) {
-        const current = await exact(owned, sessionId); if (!(action ? current.can_mutate : current.can_cancel) || !account.facts.canManage) fail('Upload is read-only', 409);
+        const current = await exact(owned, sessionId);
+        if (!action && current.is_deleted) { selectSession(owned,undefined); owned.latest=undefined; return callerView<T>({status:200,body:{result:'ok'}}); }
+        if (!(action ? current.can_mutate : current.can_cancel) || !account.facts.canManage) fail('Upload is read-only', 409);
         const known = new Set(current.page_order); let body: string[] | undefined; if (action === 'batch') body = ids(payload); else if (action) body = [publicUuid(action)]; if (body && (!body.length || body.some(file => !known.has(file)))) fail('Deletion must name exact current staging files', 409);
         const response = await raw(owned, route, 'DELETE', action === 'batch' ? body : undefined); if (response.status === 200) { if (record(response.body).result !== 'ok') fail('Deletion was not confirmed'); if (!action) { selectSession(owned, undefined); owned.latest = undefined; } } return callerView<T>(response);
       }
       fail('Unsupported public upload operation. No native mutation was sent.', 422);
     } };
-    owners.set(owner, owned); deps.destroy(owner.dispose); return owner;
+    owners.set(owner, owned);
+    // Async account setup must use the caller's already-registered onDestroy.
+    // Ordinary synchronously-created upload components retain their own hook.
+    if (lifecycle === 'component') deps.destroy(owner.dispose); return owner;
   }
   async function currentUpload(owner?: PublicUploadOwner): Promise<PublicSession | undefined> { const owned = ownedBy(owner), response = await discover(owned); if (response.status === 404 && !owned.sessionId && !owned.fence) return; if (response.status !== 200 || !response.body) throw resumeError(response.status, response.body); return response.body; }
   async function reconcileUploadReceipt(owner: PublicUploadOwner, sessionId: string): Promise<PublicSession | { sessionId: string; scheduled: ScheduleReceipt }> {

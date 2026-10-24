@@ -1,0 +1,175 @@
+import { deviceTimestampInstant } from './device-time';
+// Device history alone has a local ordering key. Do not reuse this cursor for
+// title/updates views whose global catalogue ordering is not known locally.
+export type HistoryKey = Readonly<{ id: string; mangaId: string; readAt: string }>;
+export type HistoryRow = { id: string; read_at?: string; relationships: { manga: { id: string } } };
+export const HISTORY_LIMITS = Object.freeze({ batch: 100, scan: 1000, requests: 40, bytes: 8 * 1024 * 1024, responseBytes: 1024 * 1024, cacheBytes: 4 * 1024 * 1024, deadlineMs: 10000, cleanupMs: 250, fragments: 65536, emptyFragments: 128, retainedVisits: 65536, cachedPages: 3 });
+export class HistoryBudgetStop extends Error {}
+export class HistoryTransportUnsettled extends Error { constructor() { super('History transport cleanup is unconfirmed. Loading is stopped; reopen My History after pending work settles.'); } }
+export class HistoryCapacityError extends Error { constructor() { super('One saved chapter exceeds this bounded history view. Loading is stopped without skipping it. Reopen after changing preferences or after the catalogue changes.'); } }
+class HistoryRetentionStop extends HistoryBudgetStop { constructor(readonly scopeExceeded: boolean) { super('retained data budget'); } }
+export class HistoryCancelled extends Error { constructor() { super('History loading was cancelled. Continue to resume.'); } }
+export class HistoryBudget {
+  readonly controller = new AbortController();
+  readonly signal = this.controller.signal;
+  readonly expires: number;
+  requests = 0;
+  bytes = 0;
+  private readonly timer: ReturnType<typeof setTimeout>;
+  constructor(private readonly assertCurrent: () => void, private readonly clock = () => Date.now()) {
+    this.expires = clock() + HISTORY_LIMITS.deadlineMs;
+    this.timer = setTimeout(() => this.controller.abort(new HistoryBudgetStop('deadline')), HISTORY_LIMITS.deadlineMs);
+  }
+  check() {
+    this.assertCurrent();
+    if (this.signal.aborted) throw this.signal.reason;
+    if (this.clock() >= this.expires) throw new HistoryBudgetStop('deadline');
+  }
+  request() { this.check(); if (this.requests >= HISTORY_LIMITS.requests) throw new HistoryBudgetStop('request budget'); this.requests++; }
+  consume(bytes: number) { this.check(); if (!Number.isSafeInteger(bytes) || bytes < 0) throw Error('Invalid history byte accounting'); this.bytes += bytes; if (this.bytes > HISTORY_LIMITS.bytes) throw new HistoryBudgetStop('byte budget'); }
+  cancel() { this.controller.abort(new HistoryCancelled()); }
+  close() { clearTimeout(this.timer); }
+}
+export type HistoryPage<T> = { page: number; limit: number; data: T[]; total: number | null; scanned: number; candidates: number; ready: boolean; complete: boolean; continuation: boolean; reason?: string; notice?: string };
+export type HistoryHydrate<T> = (keys: readonly HistoryKey[], budget: HistoryBudget) => Promise<T[]>;
+const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
+// A bounded admission estimate for the retained representation, not an exact
+// engine-heap measurement. Shared parent/resource objects are counted once;
+// strings use UTF-16 charges and traversal/edge work has an independent cap.
+export function historyRetainedSize(roots: readonly unknown[]): number {
+  const pending = [...roots], seen = new Set<object>();
+  let size = 0, visits = 0;
+  while (pending.length) {
+    if (++visits > HISTORY_LIMITS.retainedVisits) return Infinity;
+    const value = pending.pop();
+    if (typeof value === 'string') size += 16 + 2 * value.length;
+    else if (value !== null && typeof value === 'object') {
+      if (seen.has(value)) continue;
+      seen.add(value); size += 64;
+      for (const key in value) if (Object.prototype.hasOwnProperty.call(value, key)) {
+        size += 16 + 2 * key.length;
+        if (size > HISTORY_LIMITS.cacheBytes || pending.length + visits >= HISTORY_LIMITS.retainedVisits) return Infinity;
+        pending.push((value as Record<string, unknown>)[key]);
+      }
+    } else if (value === null || value === undefined || typeof value === 'number' || typeof value === 'boolean') size += 8;
+    else return Infinity;
+    if (size > HISTORY_LIMITS.cacheBytes) return Infinity;
+  }
+  return size;
+}
+export class HistoryPager<T extends HistoryRow> {
+  private keys: (HistoryKey & { readSecond: number; readFraction: string })[];
+  private offset = 0;
+  private accepted = 0;
+  private window: { ordinal: number; row: T }[] = [];
+  private pages = new Map<number, T[]>();
+  private displayed: T[] = [];
+  private active?: HistoryBudget;
+  private disposed = false;
+  private poisoned?: HistoryTransportUnsettled | HistoryCapacityError;
+  private pageLimit: number;
+  get limit() { return this.pageLimit; }
+  private batchLimit: number;
+  constructor(keys: readonly HistoryKey[], private readonly hydrate: HistoryHydrate<T>, private readonly assertCurrent: () => void, limit = 100, direction = 'desc') {
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100 || !['asc', 'desc'].includes(direction)) throw Error('Invalid device history page controls');
+    this.pageLimit = limit;
+    this.batchLimit = Math.min(HISTORY_LIMITS.batch, limit);
+    if (keys.length > 2000000) throw Error('History snapshot exceeds the existing local record budget');
+    const unique = new Set<string>();
+    this.keys = keys.map(row => {
+      if (unique.has(row.id) || !row.id || !row.mangaId) throw Error('Invalid device history snapshot');
+      let instant: readonly [number, string];
+      try { instant = deviceTimestampInstant(row.readAt); } catch { throw Error('Invalid device history snapshot'); }
+      const [readSecond, readFraction] = instant;
+      unique.add(row.id); return Object.freeze({ ...row, readSecond, readFraction });
+    });
+    const order = direction === 'asc' ? 1 : -1;
+    this.keys.sort((a, b) => order * (a.readSecond - b.readSecond || compare(a.readFraction, b.readFraction)) || compare(a.id, b.id));
+  }
+  releaseDisplayedPage() { this.displayed = []; }
+  cancel() { this.active?.cancel(); }
+  dispose() { this.disposed = true; this.cancel(); this.keys = []; this.pages.clear(); this.window = []; this.displayed = []; }
+  private check() { if (this.poisoned) throw this.poisoned; if (this.disposed) throw new HistoryCancelled(); this.assertCurrent(); }
+  private response(page: number, data: T[], ready: boolean, reason?: string): HistoryPage<T> {
+    this.displayed = data;
+    const complete = this.offset === this.keys.length;
+    return { page, limit: this.limit, data, total: complete ? this.accepted : null, scanned: this.offset, candidates: this.keys.length, ready, complete, continuation: !ready || !complete || page * this.limit < this.accepted, ...(reason ? { reason } : {}) };
+  }
+  private remember(page: number, rows: T[]) {
+    this.pages.delete(page); this.pages.set(page, rows);
+    while (this.pages.size && (this.pages.size > HISTORY_LIMITS.cachedPages || historyRetainedSize([this.displayed, this.window, ...this.pages.values()]) > HISTORY_LIMITS.cacheBytes)) this.pages.delete(this.pages.keys().next().value!);
+  }
+  async load(page = 1): Promise<HistoryPage<T>> {
+    this.check();
+    if (!Number.isSafeInteger(page) || page < 1 || !Number.isSafeInteger(page * this.limit)) throw Error('Invalid device history page');
+    if (this.active) throw Error('History loading is already in progress');
+    const cached = this.pages.get(page);
+    if (cached) return this.response(page, cached, true);
+    let start = (page - 1) * this.limit, end = start + this.limit;
+    // An evicted previous page is re-scanned, not guessed from stale counts.
+    if (start < (this.window[0]?.ordinal ?? this.accepted)) { this.offset = 0; this.accepted = 0; this.window = []; this.pages.clear(); }
+    this.window = this.window.filter(entry => entry.ordinal >= start);
+    const budget = this.active = new HistoryBudget(() => this.check());
+    const actionStart = this.offset;
+    let attempted = 0;
+    let scanned = 0, reason: string | undefined, notice: string | undefined;
+    try {
+      while (this.accepted < end && this.offset < this.keys.length) {
+        budget.check();
+        if (scanned >= HISTORY_LIMITS.scan) { reason = 'scan budget'; break; }
+        const chunk = this.keys.slice(this.offset, this.offset + Math.min(this.batchLimit, HISTORY_LIMITS.scan - scanned));
+        attempted = chunk.length;
+        const rows = await this.hydrate(chunk, budget); budget.check();
+        const wanted = new Map(chunk.map(row => [row.id, row])), found = new Map<string, T>();
+        for (const row of rows) { const key = wanted.get(row.id); if (!key || found.has(row.id) || row.relationships?.manga?.id !== key.mangaId) throw Error('History lookup returned a duplicate, unrequested or wrong-parent chapter'); found.set(row.id, { ...row, read_at: key.readAt }); }
+        const prepared = [...found.values()];
+        if (historyRetainedSize([rows, prepared]) > HISTORY_LIMITS.cacheBytes) throw new HistoryRetentionStop(true);
+        let accepted = this.accepted;
+        const window = [...this.window];
+        for (const key of chunk) { const row = found.get(key.id); if (row) { if (accepted >= start) window.push({ ordinal: accepted, row }); accepted++; } }
+        const retained = () => historyRetainedSize([this.displayed, this.window, window, rows, prepared, ...this.pages.values()]);
+        // Optional cached pages are evicted first; all pending and retained
+        // roots share one identity-aware accounting pass, not per-batch JSON.
+        while (this.pages.size && retained() > HISTORY_LIMITS.cacheBytes) this.pages.delete(this.pages.keys().next().value!);
+        if (retained() > HISTORY_LIMITS.cacheBytes) throw new HistoryRetentionStop(false);
+        // Commit only after the entire scoped hydration and admission succeed.
+        // Missing/filtered identities consume no slots; failed batches never
+        // advance the cursor or silently discard a saved record.
+        budget.check();
+        this.accepted = accepted; this.window = window;
+        this.offset += chunk.length; scanned += chunk.length;
+      }
+    } catch (error) {
+      if (error instanceof HistoryTransportUnsettled || error instanceof HistoryCapacityError) this.poisoned = error;
+      const cause = this.poisoned ?? (budget.signal.aborted ? budget.signal.reason : error);
+      budget.controller.abort(cause);
+      if (cause instanceof HistoryRetentionStop) {
+        reason = cause.message;
+        if (attempted > 1) {
+          this.batchLimit = Math.max(1, Math.floor(attempted / 2));
+          notice = 'Retained data reached its limit. Continue with a smaller exact scan; no chapter was skipped.';
+        } else if (cause.scopeExceeded || this.limit === 1) {
+          throw this.poisoned = new HistoryCapacityError();
+        } else {
+          this.pageLimit = Math.max(1, Math.floor(this.limit / 2));
+          this.batchLimit = Math.min(this.batchLimit, this.limit);
+          this.offset = 0; this.accepted = 0; this.window = []; this.pages.clear();
+          page = 1; start = 0; end = this.limit;
+          notice = 'Page size reduced to ' + this.limit + ' to stay within the retained-data limit. Restarted at page 1; no chapter was skipped.';
+        }
+      } else if (cause instanceof HistoryBudgetStop) {
+        reason = cause.message;
+        // A valid byte-prefix server can require several subpages per batch.
+        // If no whole batch fitted, the next explicit action retries a smaller
+        // exact scope rather than looping forever on the same 100 IDs.
+        if (this.offset === actionStart && attempted > 1) this.batchLimit = Math.max(1, Math.floor(attempted / 2));
+      } else throw cause;
+    }
+    finally { budget.close(); this.active = undefined; }
+    this.check();
+    const rows = this.window.filter(entry => entry.ordinal >= start && entry.ordinal < end).map(entry => entry.row);
+    const ready = this.accepted >= end || this.offset === this.keys.length;
+    if (ready) this.remember(page, rows);
+    return { ...this.response(page, rows, ready, reason), ...(notice ? { notice } : {}) };
+  }
+}

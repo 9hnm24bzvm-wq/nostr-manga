@@ -24,7 +24,7 @@ const QUERY: QuerySchema<'static> = QuerySchema {
     default_limit: 10,
     max_limit: 100,
     max_offset: u32::MAX,
-    scalar: &["state"],
+    scalar: &["state", "expectedAccountId"],
     arrays: &[],
     includes: INCLUDES,
     order: &["title", "year", "createdAt", "updatedAt"],
@@ -58,6 +58,7 @@ fn query(raw: Option<&str>, detail: bool) -> PublicApiResult<PublicQuery> {
         }
     }
     let mut query = PublicQuery::parse(raw, &schema)?;
+    if let Some(expected) = query.first("expectedAccountId") { PublicUuid::parse(expected)?; }
     if !detail && query.limit == 0 {
         return Err(PublicApiError::bad_request(
             "Draft limit must be between 1 and 100",
@@ -101,6 +102,11 @@ async fn list(
         .start()
         .await?;
     let actor = bound_account_read(&tx, &cap).await?;
+    if let Some(expected) = query.first("expectedAccountId") {
+        let expected = PublicUuid::parse(expected)?;
+        let current = super::uploads::preferred(&tx, ResourceKind::User, actor.user_id()).await?;
+        if expected != current { return Err(PublicApiError::conflict("The selected signer is bound to another account; reload draft access")); }
+    }
     let mut sql = Sql::default();
     sql.conditions.push("m.deleted_at IS NULL AND m.state IN ('draft','submitted','rejected') AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)".into());
     if let Some(owner) = actor.draft_owner_filter()? {
@@ -137,7 +143,7 @@ async fn list(
         .join(",");
     let limit = sql.bind(i64::from(query.limit));
     let offset = sql.bind(i64::from(query.offset));
-    let values = tx.query(&format!("SELECT platform.catalog_manga_json(m.id) FROM platform.catalog_manga m WHERE {predicate} ORDER BY {order} LIMIT {limit} OFFSET {offset}"), &sql.params()).await?
+    let values = tx.query(&format!("SELECT platform.catalog_public_manga_json(m.id) FROM platform.catalog_manga m WHERE {predicate} ORDER BY {order} LIMIT {limit} OFFSET {offset}"), &sql.params()).await?
         .into_iter().map(|row| row.get::<_, Option<Value>>(0).ok_or_else(PublicApiError::unavailable)).collect::<PublicApiResult<Vec<_>>>()?;
     let resources = values
         .iter()
@@ -184,7 +190,7 @@ async fn detail(
     .remove(&id)
     .filter(|v| v.target == PublicIdTarget::NativeResource)
     .ok_or_else(PublicApiError::not_found)?;
-    let row = tx.query_opt("SELECT m.owner_id,platform.catalog_manga_json(m.id) FROM platform.catalog_manga m WHERE m.id=$1 AND m.deleted_at IS NULL AND m.state IN ('draft','submitted','rejected') AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)", &[&target.native_id]).await?.ok_or_else(PublicApiError::not_found)?;
+    let row = tx.query_opt("SELECT m.owner_id,platform.catalog_public_manga_json(m.id) FROM platform.catalog_manga m WHERE m.id=$1 AND m.deleted_at IS NULL AND m.state IN ('draft','submitted','rejected') AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)", &[&target.native_id]).await?.ok_or_else(PublicApiError::not_found)?;
     actor.require_draft_owner(row.get::<_, &str>(0))?;
     let value: Value = row
         .get::<_, Option<Value>>(1)
@@ -207,6 +213,8 @@ mod tests {
             ("createdAt".into(), Direction::Desc)
         );
         assert!(query(Some("includes[]=creator"), true).is_ok());
+        assert_eq!(query(Some("expectedAccountId=11111111-1111-8111-8111-111111111111"), false).unwrap().first("expectedAccountId"), Some("11111111-1111-8111-8111-111111111111"));
+        assert!(query(Some("expectedAccountId=11111111-1111-8111-8111-111111111111"), true).is_err());
         for raw in [
             "limit=0",
             "limit=101",
@@ -215,6 +223,8 @@ mod tests {
             "state=draft&state=rejected",
             "order[rating]=desc",
             "includes[]=user",
+            "expectedAccountId=native",
+            "expectedAccountId=11111111-1111-8111-8111-111111111111&expectedAccountId=11111111-1111-8111-8111-111111111111",
         ] {
             assert!(query(Some(raw), false).is_err(), "{raw}");
         }

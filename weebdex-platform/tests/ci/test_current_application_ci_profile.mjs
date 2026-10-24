@@ -1,5 +1,6 @@
 import test from 'node:test';
-import { restoreNativeDiagnosticWorkflow } from './native-diagnostic-workflow-association.mjs';
+import { restoreNativeDiagnosticWorkflow, restoreSignedFeatureWorkflow } from './native-diagnostic-workflow-association.mjs';
+import { restoreSignedFeatureSource } from './signed-feature-source-association.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -7,13 +8,56 @@ import { createHash } from 'node:crypto';
 const root = new URL('../../../', import.meta.url);
 const actualWorkflow = fs.readFileSync(new URL('.github/workflows/hosted-browser-e2e.yml', root), 'utf8');
 const workflow = restoreNativeDiagnosticWorkflow(actualWorkflow);
+const signedFeatureWorkflow = fs.readFileSync(new URL('./fixtures/hosted-browser-workflow-76d40e0370cd.yml.txt', import.meta.url), 'utf8');
 test('native diagnostic normalization refuses altered gate or budget', () => {
-  for (const [before, after] of [['timeout-minutes: 15', 'timeout-minutes: 16'], ['approved bounded pipe run 20261022', 'approved bounded pipe run 20261023']]) {
-    assert.ok(actualWorkflow.includes(before), 'Counterfactual must change actual workflow bytes');
+  for (const [before, after, expectedCount] of [['timeout-minutes: 15', 'timeout-minutes: 16', 1], ['approved bounded pipe run 20261022', 'approved bounded pipe run 20261023', 2]]) {
+    assert.equal(actualWorkflow.split(before).length - 1, expectedCount);
     assert.throws(() => restoreNativeDiagnosticWorkflow(actualWorkflow.replace(before, after)), /Unreviewed/);
   }
 });
 const hash = value => createHash('sha256').update(value).digest('hex');
+test('signed-feature successor reverses exactly to immutable diagnostic workflow before existing reversal', () => {
+  // Exact reversible bytes plus immutable digests keep this check usable from
+  // a shallow publication without unpublished local commit objects.
+  const successor = signedFeatureWorkflow;
+  const historical = restoreSignedFeatureWorkflow(successor);
+  assert.equal(hash(historical), '66a3f9577f49c8f92a9b6cba5ab8bb76497bb5624157d363a5f052f1898990d9');
+  assert.equal(hash(successor), '76d40e0370cdb7c5fb57ae9b4380c39252ff820c1ff2d3dc0a6f0c15fca1d135');
+  assert.equal(restoreSignedFeatureWorkflow(successor), historical);
+  assert.equal(restoreSignedFeatureWorkflow(historical), historical);
+  assert.equal(restoreNativeDiagnosticWorkflow(successor), restoreNativeDiagnosticWorkflow(historical));
+  assert.equal(restoreNativeDiagnosticWorkflow(workflow), workflow);
+});
+test('signed-feature association rejects arbitrary edits and incomplete or altered counterfactuals', () => {
+  const mutations = [
+    signedFeatureWorkflow + '\n# unreviewed\n',
+    signedFeatureWorkflow.replace('all 42 phases', 'all 40 phases'),
+    signedFeatureWorkflow.replace(', public-signed-features]', ']'),
+    signedFeatureWorkflow.replace(', public-signed-features]', ', public-signed-features, public-signed-features]'),
+    signedFeatureWorkflow.replace('default: public-upload', 'default: public-signed-features'),
+    signedFeatureWorkflow.replace('all 42 phases', 'all 43 phases'),
+    restoreSignedFeatureWorkflow(signedFeatureWorkflow).replace('timeout-minutes: 140', 'timeout-minutes: 141'),
+  ];
+  for (const mutation of mutations) {
+    assert.throws(() => restoreSignedFeatureWorkflow(mutation), /Unreviewed/);
+    assert.throws(() => restoreNativeDiagnosticWorkflow(mutation), /Unreviewed/);
+  }
+});
+for (const [kind, file, successorSha, predecessorSha, partialBefore, partialAfter] of [
+  ['runner', 'run-hosted-browser.py', '06f996dcdbcd3b0687aaa83d88a39a82b19ac3a475ab4c3cb213937631932f70', '8345f6782c4430fc78c25592b719858c01537a7cedc82e9d17497d9b156a71c7', "PUBLIC_SIGNED_FEATURE_PHASE = 'public-signed-feature-recovery'\n", ''],
+  ['validator', 'validate-ci-evidence.py', 'e2d01a31f15cc578e5bb6e3b8a4dbb2273f6448f12764bb6fd675c2cf3ea2628', '08290930bf5b23ae3132bd6c37dc4e1e11fb61e9f14eeee6984fc608abedb731', ", 'signed_feature_diagnostics'}", '}'],
+]) test('signed-feature ' + kind + ' reverses exact bytes and rejects arbitrary or partial changes', () => {
+  const successor = fs.readFileSync(new URL('weebdex-platform/scripts/ci/' + file, root), 'utf8');
+  assert.equal(hash(successor), successorSha);
+  const predecessor = restoreSignedFeatureSource(successor, kind);
+  assert.equal(hash(predecessor), predecessorSha);
+  assert.equal(restoreSignedFeatureSource(predecessor, kind), predecessor);
+  assert.equal(successor.split(partialBefore).length - 1, 1);
+  for (const mutation of [successor + '\n# unreviewed\n', predecessor + '\n# unreviewed\n', successor.replace(partialBefore, partialAfter), successor.replace('def ', 'def altered_')]) {
+    assert.throws(() => restoreSignedFeatureSource(mutation, kind), /Unknown/);
+  }
+  assert.throws(() => restoreSignedFeatureSource(successor, 'unapproved'), /Unknown/);
+});
 const currentDigest = '4a62a482ec907923bb830a41f3524e21f7f23ac6868aedac76caed483feffa3e';
 const priorCiDigest = '876f174a31c346e17efdbec045e5f00377c2cf3fae966eac5445b4858754f6a1';
 const sealedQaBlocks = ['        id: preparation\n', "      - name: Seal current QA preparation failure diagnostics\n        id: qa-preparation-seal\n        if: always() && steps.preparation.outcome == 'failure' && steps.evidence-validation.outcome == 'success' && hashFiles('weebdex-platform/.build/hosted-browser/qa-preparation-failure/capture.json') != ''\n        timeout-minutes: 2\n        run: |\n          set -euo pipefail\n          PREP_SHA=\"$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256((Path(\"weebdex-platform/ci-sanitized-evidence\") / \"preparation.json\").read_bytes()).hexdigest())')\"\n          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --expected-preparation-sha256 \"$PREP_SHA\"\n          SEALED_SHA=\"$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256(Path(\"weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json\").read_bytes()).hexdigest())')\"\n          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --validate --expected-preparation-sha256 \"$PREP_SHA\" --expected-sealed-sha256 \"$SEALED_SHA\"\n          printf 'sealed_sha256=%s\\n' \"$SEALED_SHA\" >> \"$GITHUB_OUTPUT\"\n      - name: Upload only the validated encrypted QA preparation failure\n        if: always() && steps.qa-preparation-seal.outcome == 'success' && steps.qa-preparation-seal.outputs.sealed_sha256 != ''\n        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2\n        with:\n          name: hosted-qa-preparation-sealed-${{ github.run_id }}-${{ github.run_attempt }}\n          path: weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json\n          if-no-files-found: error\n          retention-days: 1\n          include-hidden-files: false\n"];
@@ -101,4 +145,12 @@ test('three sanitized reports and one failure-only encrypted QA artifact have ex
   assert.match(workflow, /--validate --expected-preparation-sha256/);
   assert.match(workflow, /--expected-sealed-sha256/);
   assert.doesNotMatch(workflow, /path:.*(?:traceback|boundaries|capture)\.(?:txt|json)/);
+});
+
+test('actual retained public workflow is distinct from historical signed-feature fixture',()=>{
+ assert.equal(hash(actualWorkflow),'29c61963198b921a2e22419cce67d38a4ebd9c868012701bfff2b0bb87dff994');
+ assert.equal(hash(signedFeatureWorkflow),'76d40e0370cdb7c5fb57ae9b4380c39252ff820c1ff2d3dc0a6f0c15fca1d135');
+ assert.match(actualWorkflow,/all 40 phases/);assert.doesNotMatch(actualWorkflow,/public-signed-features/);
+ assert.throws(()=>restoreSignedFeatureWorkflow(actualWorkflow),/Unreviewed/);
+ assert.equal(hash(restoreNativeDiagnosticWorkflow(actualWorkflow)),'4a62a482ec907923bb830a41f3524e21f7f23ac6868aedac76caed483feffa3e');
 });

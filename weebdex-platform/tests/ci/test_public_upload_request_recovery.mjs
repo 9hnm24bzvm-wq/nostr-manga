@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import {restoreBundleSource} from './reviewed-bundle-source-successors.mjs';
+import {restoreModeratorTransportSource} from './reviewed-moderator-transport-source-successors.mjs';
 // Run with Node >= 22.13 and --experimental-vm-modules. Only this production
 // transport is evaluated, with explicit finite in-memory primitive adapters.
 // SHA-256 is real Node crypto; signatures/service proof are deliberately NOT
@@ -12,6 +14,7 @@ import { stripTypeScriptTypes } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
 import { applyPublicUploadOverlay } from '../../platform-integrations/public-api/upload-overlays.mjs';
+import { restoreReviewedLanguageSource } from './reviewed-local-page-source-successors.mjs';
 
 assert(vm.SourceTextModule, 'Run with node --experimental-vm-modules');
 const source = fs.readFileSync(new URL('../../platform-integrations/public-api/nostr-upload-request.ts', import.meta.url), 'utf8');
@@ -106,9 +109,11 @@ const tags = f => Object.fromEntries(f.templates[0].tags);
 // browser's native terminal or the cause of an observed hosted abort.
 function previewConsumer(f, options = {}) {
   const client = fs.readFileSync(new URL('../../platform-integrations/public-api/upload-client.ts', import.meta.url), 'utf8');
-  assert.equal(digest(client), '5261d778e2715c3d85085ee03d722df2cf020a086e564c13d667c8937b50d757');
+  assert.equal(digest(restoreReviewedLanguageSource(client, 'uploadClient')), 'c8d3e55319a2f93ae1f9b4e11875c2d4711a1d8d985e4dc7df5ab722f26dca8f');
   const start = client.indexOf('  async function uploadPreview('), end = client.indexOf('\n  function uploadAccountFacts', start);
   assert.ok(start > 0 && end > start);
+  // Chapter-access successor leaves this exact preview consumer unchanged.
+  assert.equal(digest(client.slice(start, end)), '369d7261e2b8b84989602d45154bd44ba9fcc2817c9e986c4d1ac50fc3ad3fae');
   const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
   const sessionId = '11111111-1111-8111-8111-111111111111', fileId = '22222222-2222-8222-8222-222222222222';
   const input = { id: fileId, file_hash: digest(bytes), file_size: String(bytes.length), original_file_name: 'finite-preview.png',
@@ -548,3 +553,77 @@ test('exact original transport counterfactual has the same error contract withou
   assert.equal(f.api.uploadRequestRefusalStage, undefined); assert.equal(old.outcome, 'uncertain'); assert.equal(old.status, undefined);
   assert.deepEqual(Object.keys(old).sort(), ['bodyAvailable', 'name', 'outcome', 'status']); assert.equal(f.requests[0].abortCount, 1);
 });
+
+test('only exact native user discussion supports native 50000-byte bodies including worst-case JSON escapes',async()=>{
+ const route='/api/v1/nostr/user/11111111-1111-8111-8111-111111111111/discussion';
+ for(const body of ['x'.repeat(50000),'\x01'.repeat(50000)]){const f=await fixture(),bytes=text.encode(JSON.stringify({body}));await f.request({url:f.scope.origin+route,body:bytes});assert.equal(f.requests.length,1);assert.equal(f.templates[0].tags.find(row=>row[0]==='payload')[1],digest(bytes));assert.deepEqual(new Uint8Array(f.requests[0].init.body),bytes);}
+ for(const path of [route+'/',route+'?extra=1',route.replace('/user/','/publisher/'),route.replace('11111111-1111-8111-8111-111111111111','native'),'/api/v1/upload/begin']){const f=await fixture();await assert.rejects(()=>f.request({url:f.scope.origin+path,body:text.encode(JSON.stringify({body:'x'.repeat(50000)}))}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);assert.equal(f.signerCalls,0);}
+ const f=await fixture();await assert.rejects(()=>f.request({url:f.scope.origin+route,body:new Uint8Array(393217)}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);
+});
+test('native discussion page supports twenty maximally escaped stored comments but retains a hard response bound',async()=>{
+ const route='/api/v1/nostr/user/11111111-1111-8111-8111-111111111111/discussion',value=JSON.stringify({data:Array.from({length:20},()=>({body:'\x01'.repeat(50000)}))});assert.ok(text.encode(value).length>1024*1024);
+ const f=await fixture({fetch:()=>new Response(value,{status:200,headers:{'content-type':'application/json'}})});assert.equal((await f.request({url:f.scope.origin+route+'?page=1',method:'GET',body:undefined,contentType:undefined})).body.data.length,20);
+ const ordinary=await fixture({fetch:()=>new Response(value,{status:200,headers:{'content-type':'application/json'}})});await assert.rejects(()=>ordinary.request(),error=>error.outcome!=='unsent');
+ const huge=await fixture({fetch:()=>new Response('{}',{status:200,headers:{'content-type':'application/json','content-length':String(8*1024*1024+1)}})});await assert.rejects(()=>huge.request({url:huge.scope.origin+route}),error=>error.outcome!=='unsent');
+});
+test('only exact native moderation POST allows bounded20000-byte details with worst JSON escaping',async()=>{const route='/api/v1/nostr/user/11111111-1111-8111-8111-111111111111/discussion/reports';for(const details of['x'.repeat(20000),'\x01'.repeat(20000)]){const f=await fixture(),bytes=text.encode(JSON.stringify({details}));await f.request({url:f.scope.origin+route,body:bytes});assert.equal(f.requests.length,1);assert.equal(f.templates[0].tags.find(row=>row[0]==='payload')[1],digest(bytes));assert.deepEqual(new Uint8Array(f.requests[0].init.body),bytes);}const f=await fixture();await assert.rejects(()=>f.request({url:f.scope.origin+route,body:new Uint8Array(131073)}));assert.equal(f.requests.length,0);assert.equal(f.templates.length,0);});
+test('native moderation larger body budget cannot widen source-report, methods, query, response type or sibling routes',async()=>{const root='/api/v1/nostr/user/11111111-1111-8111-8111-111111111111/discussion/reports';for(const patch of[{url:root+'/context'},{url:root+'/extra'},{url:root+'?foo=1'},{url:root,method:'PATCH'},{url:root,method:'PUT'},{url:root,responseType:'image'},{url:'/api/v1/report'},{url:root.replace('/11111111-1111-8111-8111-111111111111/','/NativeUser/')},{url:root+'/'}]){const f=await fixture();await assert.rejects(()=>f.request({...patch,url:f.scope.origin+patch.url,body:new Uint8Array(32769)}));assert.equal(f.requests.length,0);assert.equal(f.templates.length,0);}});
+
+for(const kind of ['manga','chapter','group']){
+ test('exact '+kind+' native report POST shares only the bounded native moderation budget',async()=>{
+  const route='/api/v1/nostr/'+kind+'/11111111-1111-8111-8111-111111111111/discussion/reports';
+  for(const details of ['x'.repeat(20000),'🌌'.repeat(5000),'\x01'.repeat(20000)]){const f=await fixture(),bytes=text.encode(JSON.stringify({details}));await f.request({url:f.scope.origin+route,body:bytes});assert.equal(f.requests.length,1);assert.equal(f.templates[0].tags.find(row=>row[0]==='payload')[1],digest(bytes));assert.deepEqual(new Uint8Array(f.requests[0].init.body),bytes);}
+  const f=await fixture();await assert.rejects(()=>f.request({url:f.scope.origin+route,body:new Uint8Array(131073)}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);assert.equal(f.templates.length,0);
+ });
+ test('generic '+kind+' report budget never widens protocol reports, unrelated kinds or context/inspection',async()=>{
+  const route='/api/v1/nostr/'+kind+'/11111111-1111-8111-8111-111111111111/discussion/reports';
+  for(const patch of [{url:route+'/context'},{url:route+'/extra'},{url:route+'/'},{url:route+'?extra=1'},{url:route,method:'PATCH'},{url:route,method:'PUT'},{url:route,method:'DELETE'},{url:route,method:'GET'},{url:route,responseType:'image'},{url:route.replace('/'+kind+'/','/publisher/')},{url:route.replace('/'+kind+'/','/author/')},{url:'/api/v1/report'},{url:'/api/v1/nostr/account/reports/native'}]){const f=await fixture();await assert.rejects(()=>f.request({...patch,url:f.scope.origin+patch.url,body:new Uint8Array(32769)}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);assert.equal(f.templates.length,0);}
+ });
+}
+
+// Separately bounded repair: generic POST comments previously inherited32KiB,
+// despite the actual controller and native storage admitting50,000 UTF8 bytes.
+for(const kind of ['manga','chapter','group']){
+ test('actual '+kind+' reviewed comment plans at32KiB and50K bytes reach exact-budget transport',async()=>{
+  const {fixture:accountFixture,id,actor,loadSignedFixtureModule}=await import('./report-draft-fixture.mjs'),{createSignedNativeDiscussion}=await loadSignedFixtureModule('native-forum/signed-client'),threadId='ActualStoredThread';
+  const a=accountFixture({handler:()=>({status:200,body:{result:'ok',nostr:{scope:'instance-account',source:'persisted-native-discussion',identity:'native_catalogue_resource',accountId:actor,targetKind:kind,targetId:id,threadId},data:{thread:{id:threadId,locked:false},threadVote:0,feed:{total:0,limit:20,page:1,data:[]},actions:{create:true,threadVote:false,replies:{}}}}})}),c=await createSignedNativeDiscussion(kind,id,threadId,a.check,a.deps);await c.read();
+  const route='/api/v1/nostr/'+kind+'/'+id+'/discussion';
+  try{for(const body of ['x'.repeat(32768),'x'.repeat(50000),'🌌'.repeat(12500),'\x01'.repeat(50000)]){
+   const prepared=c.plan({operation:'create',body}),bytes=text.encode(JSON.stringify(prepared)),f=await fixture();assert.equal(prepared.expectedTargetId,id);assert.equal(prepared.expectedThreadId,threadId);await f.request({url:f.scope.origin+route,body:bytes});assert.equal(f.requests.length,1);assert.equal(f.templates[0].tags.find(row=>row[0]==='payload')[1],digest(bytes));assert.deepEqual(new Uint8Array(f.requests[0].init.body),bytes);
+  }
+  for(const body of ['x'.repeat(50001),'🌌'.repeat(12501)])assert.throws(()=>c.plan({operation:'create',body}));
+  const f=await fixture();await assert.rejects(()=>f.request({url:f.scope.origin+route,body:new Uint8Array(393217)}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);assert.equal(f.signerCalls,0);
+  }finally{c.dispose();}
+ });
+ test('generic '+kind+' comment budget cannot widen methods,query,response,IDs,kinds or source APIs',async()=>{
+  const route='/api/v1/nostr/'+kind+'/11111111-1111-8111-8111-111111111111/discussion';
+  for(const patch of [{url:route+'/'},{url:route+'/extra'},{url:route+'?page=1'},{url:route,method:'PATCH'},{url:route,method:'PUT'},{url:route,method:'DELETE'},{url:route,method:'GET'},{url:route,responseType:'image'},{url:route.replace('/'+kind+'/','/publisher/')},{url:route.replace('/'+kind+'/','/author/')},{url:route.replace('11111111-1111-8111-8111-111111111111','native-id')},{url:'/api/v1/report'},{url:'/api/v1/upload/begin'}]){const f=await fixture();await assert.rejects(()=>f.request({...patch,url:f.scope.origin+patch.url,body:new Uint8Array(32769)}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);assert.equal(f.signerCalls,0);}
+ });
+ test('exact frozen pre-budget '+kind+' transport rejects otherwise valid50K payload',async()=>{
+  const relative='weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts';
+  const beforeModerator=restoreModeratorTransportSource(relative,source,'raw');
+  const baseline=restoreBundleSource('pre-generic-discussion-budget',relative,beforeModerator);
+  assert.equal(digest(baseline),'b9079ea5b27f19ecdbbaaea5f9316804b563fa4400c04c19b26a5ed966640411');
+  const route='/api/v1/nostr/'+kind+'/11111111-1111-8111-8111-111111111111/discussion',f=await fixture({transportSource:baseline});await assert.rejects(()=>f.request({url:f.scope.origin+route,body:text.encode(JSON.stringify({body:'x'.repeat(50000)}))}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);assert.equal(f.signerCalls,0);
+ });
+}
+
+for(const kind of ['manga','chapter','group']){
+ test('exact '+kind+' generic feed accepts20maximal native comments but stops at8MiB',async()=>{
+  const route='/api/v1/nostr/'+kind+'/11111111-1111-8111-8111-111111111111/discussion',value=JSON.stringify({data:Array.from({length:20},()=>({body:'\x01'.repeat(50000)}))});assert.ok(text.encode(value).length>1024*1024);assert.ok(text.encode(value).length<8*1024*1024);
+  for(const method of ['GET','POST']){const f=await fixture({fetch:()=>new Response(value,{status:200,headers:{'content-type':'application/json'}})});assert.equal((await f.request({url:f.scope.origin+route+(method==='GET'?'?page=1&order=desc':''),method,...(method==='GET'?{body:undefined,contentType:undefined}:{})})).body.data.length,20);}
+  const f=await fixture({fetch:()=>new Response('{}',{status:200,headers:{'content-type':'application/json','content-length':String(8*1024*1024+1)}})});await assert.rejects(()=>f.request({url:f.scope.origin+route,method:'GET',body:undefined,contentType:undefined}),error=>error.outcome!=='unsent');
+  const streamed=await fixture({fetch:()=>new Response(JSON.stringify('x'.repeat(8*1024*1024)),{status:200,headers:{'content-type':'application/json'}})});await assert.rejects(()=>streamed.request({url:streamed.scope.origin+route,method:'GET',body:undefined,contentType:undefined}),error=>error.outcome!=='unsent');assert.equal(streamed.requests.length,1);
+ });
+ test('generic '+kind+' response allowance stays absent on wrong method,POSTquery,nonJSON or unrelated endpoint',async()=>{
+  const route='/api/v1/nostr/'+kind+'/11111111-1111-8111-8111-111111111111/discussion';
+  for(const patch of [{url:route,method:'PATCH'},{url:route,method:'PUT'},{url:route,method:'DELETE'},{url:route+'?unexpected=1'},{url:route,contentType:undefined,body:undefined},{url:route+'/reports/context',method:'GET',body:undefined,contentType:undefined},{url:route+'/'},{url:route+'/extra'},{url:'/api/v1/report'},{url:route.replace('/'+kind+'/','/publisher/')}]){const f=await fixture({fetch:()=>new Response('{}',{status:200,headers:{'content-type':'application/json','content-length':String(1024*1024+1)}})});await assert.rejects(()=>f.request({...patch,url:f.scope.origin+patch.url}),error=>error.outcome!=='unsent');assert.equal(f.requests.length,1);}
+  const f=await fixture();await assert.rejects(()=>f.request({url:f.scope.origin+route,contentType:'text/plain',body:text.encode('notJSON')}),error=>error.outcome==='unsent');assert.equal(f.requests.length,0);
+ });
+ test('exact frozen pre-budget '+kind+' transport rejects otherwise valid6MB feed',async()=>{
+  const relative='weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts';
+  const beforeModerator=restoreModeratorTransportSource(relative,source,'raw');
+  const baseline=restoreBundleSource('pre-generic-discussion-budget',relative,beforeModerator);
+  assert.equal(digest(baseline),'b9079ea5b27f19ecdbbaaea5f9316804b563fa4400c04c19b26a5ed966640411');const route='/api/v1/nostr/'+kind+'/11111111-1111-8111-8111-111111111111/discussion';const value=JSON.stringify({data:Array.from({length:20},()=>({body:'\x01'.repeat(50000)}))}),f=await fixture({transportSource:baseline,fetch:()=>new Response(value,{status:200,headers:{'content-type':'application/json','content-length':String(text.encode(value).length)}})});await assert.rejects(()=>f.request({url:f.scope.origin+route+'?page=1',method:'GET',body:undefined,contentType:undefined}),error=>error.outcome!=='unsent');assert.equal(f.requests.length,1);
+ });
+}

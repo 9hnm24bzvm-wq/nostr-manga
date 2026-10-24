@@ -1,6 +1,8 @@
-# Native account closure: three policy choices
+# Native account closure: policy decision and historical choices
 
-Source review only, recovery 5cbd05d9. Native DELETE /api/v1/user/{id} and POST /api/v1/user/delete/{code} remain unsupported; this document implements no account closure, deletion, retention job or credential change. Original Nostr kind 5 authored-event withdrawal is a separate action and cannot close an instance account or promise relay erasure.
+Update2026-10-22: the user approved reversible disabling, no automatic purge, revoked access, hidden contact/biography, preserved contribution history and sole-group-leader handoff. Implementation and exact administrator-only recovery are documented in [reversible-account-disable.md](reversible-account-disable.md). Source and finite client controls are authored; independent frozen-source and actual HTTP/concurrency/rendered qualification remain required. No real account action has occurred.
+
+Historical proposal (before approval), recovery5cbd05d9. Native DELETE /api/v1/user/{id} and POST /api/v1/user/delete/{code} remain unsupported; this document implements no account closure, deletion, retention job or credential change. Original Nostr kind 5 authored-event withdrawal is a separate action and cannot close an instance account or promise relay erasure.
 
 ## Recommended first milestone
 

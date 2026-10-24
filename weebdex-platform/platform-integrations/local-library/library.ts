@@ -41,6 +41,10 @@ export function assertLibraryContext(context: ReturnType<typeof captureLibraryCo
 // Explicit selections are captured before any storage/network wait. The first
 // persisted mode discovery is permitted once, never a subsequent user selection.
 let selectionEpoch = 0;
+const readerSelectionState = writable({ epoch: 0, pending: false });
+// Read-only notification starts before useMode waits for storage or Session.
+// A reader cannot admit an old-mode action while a new choice is pending.
+export const readerLibrarySelection = { subscribe: readerSelectionState.subscribe };
 export function captureLibraryAdmission() {
   return { authority: captureNativeAuthority(), selectionEpoch, context: get(localLibraryState).ready ? captureLibraryContext() : undefined };
 }
@@ -83,6 +87,7 @@ export function openLibrary(): Promise<void> {
 }
 let scopeVerification: Promise<void> | undefined;
 let verifiedCatalogueScope: InstanceScope | undefined;
+let readerObservedCatalogue: { url: string; scope: InstanceScope; generation: number } | undefined;
 export function verifyCatalogueScope(): Promise<void> {
   if (scopeVerification) return scopeVerification;
   localLibraryState.update(state => state.scopeStatus === 'migration_required' ? state : ({ ...state, scopeStatus: 'pending', scopeReason: undefined }));
@@ -94,6 +99,7 @@ export function verifyCatalogueScope(): Promise<void> {
       const policy = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await bytesResponse(response, 65536)));
       if (typeof policy.catalog_namespace !== 'string' || !/^[0-9a-f-]{32,36}$/.test(policy.catalog_namespace) || (policy.service_key !== null && policy.service_key !== undefined && !/^[0-9a-f]{64}$/.test(policy.service_key))) throw Error('Instance returned an invalid catalogue scope');
       const liveScope: InstanceScope = { origin: new URL(PUBLIC_API_URL || '/api', window.location.href).origin, catalogNamespace: policy.catalog_namespace, serviceKey: policy.service_key ?? null };
+      readerObservedCatalogue = { url: new URL(PUBLIC_API_URL.replace(/\/$/, '') + '/protocol/capabilities', window.location.href).href, scope: { ...liveScope }, generation: (readerObservedCatalogue?.generation ?? 0) + 1 };
       const result = await device.verifyLiveScope(liveScope);
       if (result.status === 'verified') { const saved = await device.snapshot(); if (publicUuidLibraryEnabled ? saved.scope.origin !== liveScope.origin || saved.scope.catalogNamespace !== liveScope.catalogNamespace || !!saved.scope.serviceKey && !!liveScope.serviceKey && saved.scope.serviceKey !== liveScope.serviceKey : !sameScope(saved.scope, liveScope)) throw Error('Current service identity does not confirm the saved catalogue scope'); verifiedCatalogueScope = saved.scope; } else verifiedCatalogueScope = undefined;
       localLibraryState.update(state => ({ ...state, scopeStatus: cataloguePreviewLibraryUnavailable ? 'migration_required' : result.status, scopeReason: cataloguePreviewLibraryUnavailable ? CATALOGUE_PREVIEW_LIBRARY_FENCE : result.reason, cachedScopeReady:result.status==='verified' }));
@@ -113,7 +119,7 @@ export async function assertCatalogueScope() {
 // Hydration and new catalogue actions require live verification. Previously
 // verified same-tab UUID reader progress may save offline to its exact scope.
 export function canSaveLocalProgress(state: LibraryState) { return state.ready && state.mode === 'device' && (state.scopeStatus === 'verified' || publicUuidLibraryEnabled && state.cachedScopeReady === true && (state.scopeStatus === 'offline' || state.scopeStatus === 'pending')); }
-function assertCurrentCatalogueScopeValue(scope: InstanceScope, allowCachedProgress = false) {
+export function assertCurrentCatalogueScopeValue(scope: InstanceScope, allowCachedProgress = false) {
   assertCataloguePreviewLibraryReady();
   if (!(get(localLibraryState).scopeStatus === 'verified' || allowCachedProgress && canSaveLocalProgress(get(localLibraryState))) || !verifiedCatalogueScope || !sameScope(scope, verifiedCatalogueScope)) throw new HTTPError(409, 'Current catalogue identity is not verified. Saved-device inspection, backups and explicit saved-record edits remain available; no current title ID was admitted.', 'Catalogue scope unverified');
 }
@@ -129,13 +135,20 @@ export async function useMode(mode: Mode) {
   if (!['device', 'account'].includes(mode)) throw Error('Unknown library mode');
   if (mode === 'account') assertAccountLibraryReady();
   const selection = ++selectionEpoch;
-  await openLibrary();
-  if (mode === 'account' && !(await Session.isValid())) throw Error('Sign into a WeebDex account before choosing account-library mode');
-  if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action');
-  const { transaction } = await import('./protocol/indexeddb.js');
-  await transaction(protocol.db, 'meta', 'readwrite', (tx: IDBTransaction) => { tx.objectStore('meta').put(mode, 'weebdexLibraryMode'); });
-  if (selection !== selectionEpoch) return;
-  localLibraryState.update(state => ({ ...state, mode }));
+  readerSelectionState.set({ epoch: selection, pending: true });
+  try {
+    await openLibrary();
+    if (mode === 'account' && !(await Session.isValid())) throw Error('Sign into a WeebDex account before choosing account-library mode');
+    if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action');
+    const { transaction } = await import('./protocol/indexeddb.js');
+    if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action before storage dispatch');
+    await transaction(protocol.db, 'meta', 'readwrite', (tx: IDBTransaction) => { tx.objectStore('meta').put(mode, 'weebdexLibraryMode'); });
+    if (selection !== selectionEpoch) return;
+    localLibraryState.update(state => ({ ...state, mode }));
+  } finally {
+    // A superseded selection must not clear the newer selection's pending fence.
+    if (selection === selectionEpoch) readerSelectionState.set({ epoch: selection, pending: false });
+  }
 }
 export async function localAction<T>(operation: () => Promise<T>): Promise<T> {
   assertCataloguePreviewLibraryReady();
@@ -391,4 +404,14 @@ export function applyAccountFollow(context: ReturnType<typeof captureLibraryCont
   const follows = { ...(account.follows ?? {}) };
   if (value) follows[id] = value as typeof follows[string]; else delete follows[id];
   Session.set({ ...account, follows });
+}
+
+// Bounded reader seam: no snapshot(), getAll(), copied history, or write authority.
+// The caller must recheck this identity before and after its owned readonly transaction.
+export function readerLibrarySource() {
+  const state = get(localLibraryState);
+  return { context: captureLibraryContext(), admission: captureLibraryAdmission(), selectionPending: get(readerSelectionState).pending, ready: state.ready, mode: state.mode, revision: state.revision, accountRevision: state.accountRevision,
+    scopeStatus: state.scopeStatus, reason: state.error ?? state.scopeReason,
+    observedCatalogue: readerObservedCatalogue && { ...readerObservedCatalogue, scope: { ...readerObservedCatalogue.scope } },
+    scope: verifiedCatalogueScope && { ...verifiedCatalogueScope }, db: state.ready && device ? device.db : undefined };
 }

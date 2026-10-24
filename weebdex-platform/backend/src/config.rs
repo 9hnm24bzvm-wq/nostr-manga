@@ -44,6 +44,11 @@ pub struct Config {
     pub session_lifetime_seconds: u64,
     pub registration_enabled: bool,
     pub uploads_dir: PathBuf,
+    /// Protective instance scheduling limits, not upstream MangaDex limits.
+    pub scheduled_upload_maximum: u32,
+    pub scheduled_upload_bytes: i64,
+    pub scheduled_upload_horizon_seconds: u32,
+    pub scheduled_upload_retry_seconds: u32,
     pub auth_mail: Option<crate::domains::auth::MailConfig>,
 }
 
@@ -77,6 +82,10 @@ impl Default for Config {
             session_lifetime_seconds: 7 * 24 * 60 * 60,
             registration_enabled: false,
             uploads_dir: "runtime/uploads".into(),
+            scheduled_upload_maximum: 32,
+            scheduled_upload_bytes: 500 * 1024 * 1024,
+            scheduled_upload_horizon_seconds: 30 * 24 * 60 * 60,
+            scheduled_upload_retry_seconds: 24 * 60 * 60,
             auth_mail: None,
         }
     }
@@ -285,6 +294,11 @@ impl Config {
     }
 
     pub fn validate(&self) -> Result<()> {
+        ensure!((1..=1000).contains(&self.scheduled_upload_maximum)
+            && (1..=536870912000_i64).contains(&self.scheduled_upload_bytes)
+            && (1..=31536000).contains(&self.scheduled_upload_horizon_seconds)
+            && (1..=86400).contains(&self.scheduled_upload_retry_seconds),
+            "Invalid scheduled upload limits");
         ensure!(
             !self.production || !self.fixture_feed_diagnostics,
             "fixture feed diagnostics are forbidden in production"
@@ -642,6 +656,13 @@ fn validate_origin(text: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn scheduling_retry_limit_is_protective_and_defaults_to_one_day() {
+        assert_eq!(Config::default().scheduled_upload_retry_seconds,86400);
+        for seconds in [1,2,86400] {assert!(Config{scheduled_upload_retry_seconds:seconds,..Config::default()}.validate().is_ok());}
+        for seconds in [0,86401,u32::MAX] {assert!(Config{scheduled_upload_retry_seconds:seconds,..Config::default()}.validate().is_err());}
+    }
+
 
     fn runtime_fixture() -> (tempfile::TempDir, Config) {
         let root = tempfile::tempdir().unwrap();

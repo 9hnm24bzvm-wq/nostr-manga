@@ -1,0 +1,95 @@
+// Shared owner extracted from native-forum/reader.ts. A caller deadline does not
+// release a fetch/read/cancel that ignores abort. No detached cancellation work.
+export interface OwnedJsonDependencies {
+  fetch: typeof fetch;
+  origin(): string;
+  setTimer(callback: () => void, ms: number): ReturnType<typeof setTimeout>;
+  clearTimer(timer: ReturnType<typeof setTimeout>): void;
+}
+export type JsonLimits = Readonly<{ bytes: number; fragments: number; emptyFragments: number; deadlineMs: number; cleanupMs: number }>;
+export class JsonOwnerUnsettled extends Error {
+  readonly unsettled = true;
+  constructor() { super('Response cleanup is unconfirmed. New reads are stopped until fetch, read and cancellation settle.'); }
+}
+const defaults: OwnedJsonDependencies = {
+  fetch: (...args) => fetch(...args), origin: () => window.location.origin,
+  setTimer: (fn, ms) => setTimeout(fn, ms), clearTimer: timer => clearTimeout(timer)
+};
+export function createOwnedJsonReader(limits: JsonLimits, injected: Partial<OwnedJsonDependencies> = {}, errors: { unsettled(status: number): Error; failure(message: string, status: number): Error } = { unsettled: () => new JsonOwnerUnsettled(), failure: message => Error(message) }, noAbortStatus?: number) {
+  const unsettled = (status = 499) => errors.unsettled(status);
+  const deps = { ...defaults, ...injected };
+  let active: object | undefined;
+  return async (url: string, options: {
+    credentials: 'omit' | 'same-origin'; signal?: AbortSignal; assertCurrent(): void; consume?(bytes: number): void;
+  }): Promise<{ status: number; body: unknown }> => {
+    options.assertCurrent();
+    const origin = new URL(deps.origin()).origin, target = new URL(url, origin);
+    if (target.origin !== origin || target.username || target.password || target.hash) throw Error('JSON destination must be same-origin');
+    if (active) throw unsettled();
+    const owner = active = {}, abort = new AbortController();
+    let timedOut = false, eof = false, response: Response | undefined, reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+    let fetchWork: Promise<Response> | undefined, readWork: Promise<ReadableStreamReadResult<Uint8Array>> | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const cancelled = () => errors.failure(timedOut ? 'Response deadline exceeded' : 'Response cancelled', timedOut ? 504 : 499);
+    let rejectAbort: (reason: unknown) => void = () => {};
+    const aborted = new Promise<never>((_resolve, reject) => { rejectAbort = reject; });
+    void aborted.catch(() => {});
+    const onAbort = () => rejectAbort(cancelled()), cancel = () => abort.abort();
+    abort.signal.addEventListener('abort', onAbort, { once: true });
+    options.signal?.addEventListener('abort', cancel, { once: true });
+    if (options.signal?.aborted) cancel();
+    const check = () => {
+      options.assertCurrent();
+      if (options.signal?.aborted || abort.signal.aborted) throw cancelled();
+      if (new URL(deps.origin()).origin !== origin) throw errors.failure('JSON destination changed', 409);
+    };
+    const release = () => { reader?.releaseLock(); if (active === owner) active = undefined; };
+    try {
+      check(); timer = deps.setTimer(() => { timedOut = true; abort.abort(); }, limits.deadlineMs);
+      fetchWork = Promise.resolve().then(() => {
+        check();
+        return deps.fetch(target.href, { method: 'GET', credentials: options.credentials, cache: 'no-store', redirect: 'error', signal: abort.signal, headers: { Accept: 'application/json' } });
+      }).then(value => { response = value; return value; });
+      response = await Promise.race([fetchWork, aborted]); check();
+      // Error bodies are not presentation data. Still own and settle their body.
+      if (response.status !== 200) return { status: response.status, body: null };
+      if (response.headers.get('content-type')?.split(';', 1)[0].trim().toLowerCase() !== 'application/json') throw errors.failure('Non-JSON response', 502);
+      const declared = response.headers.get('content-length');
+      if (declared !== null && (!/^(0|[1-9][0-9]*)$/.test(declared) || Number(declared) > limits.bytes)) throw errors.failure('Response byte budget exceeded', 502);
+      reader = response.body?.getReader(); if (!reader) throw errors.failure('Missing response body', 502);
+      const bytes = new Uint8Array(limits.bytes); let length = 0, fragments = 0, empty = 0;
+      for (;;) {
+        check(); if (++fragments > limits.fragments) throw errors.failure('Response fragment budget exceeded', 502);
+        readWork = Promise.resolve().then(() => { check(); return reader!.read(); }).then(part => { if (part.done) eof = true; return part; });
+        const part = await Promise.race([readWork, aborted]); check(); if (part.done) break;
+        if (!(part.value instanceof Uint8Array) || part.value.byteLength > limits.bytes - length) throw errors.failure('Response byte budget exceeded', 502);
+        if (!part.value.byteLength && ++empty > limits.emptyFragments) throw errors.failure('Response empty-fragment budget exceeded', 502);
+        options.consume?.(part.value.byteLength);
+        bytes.set(part.value, length); length += part.value.byteLength;
+      }
+      const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes.subarray(0, length)); check();
+      const body: unknown = JSON.parse(text); check(); return { status: response.status, body };
+    } finally {
+      if (timer !== undefined) deps.clearTimer(timer);
+      options.signal?.removeEventListener('abort', cancel); abort.signal.removeEventListener('abort', onAbort);
+      if (eof) {
+        try { release(); } catch { throw unsettled(); }
+      } else {
+        const preserveAbort = response?.status === noAbortStatus && noAbortStatus !== undefined;
+        if (!preserveAbort) abort.abort();
+        const cleanup = (async () => {
+          if (fetchWork) await fetchWork.catch(() => undefined);
+          if (!reader && response?.body) reader = response.body.getReader();
+          if (reader) await Promise.allSettled([Promise.resolve().then(() => reader!.cancel()), ...(readWork ? [readWork] : [])]);
+          release();
+        })();
+        const settled = cleanup.then(() => true, () => false);
+        let cleanupTimer: ReturnType<typeof setTimeout> | undefined;
+        try {
+          if (!await Promise.race([settled, new Promise<boolean>(resolve => { cleanupTimer = deps.setTimer(() => resolve(false), limits.cleanupMs); })])) throw unsettled(timedOut ? 504 : 499);
+          if (preserveAbort) check();
+        } finally { if (cleanupTimer !== undefined) deps.clearTimer(cleanupTimer); }
+      }
+    }
+  };
+}

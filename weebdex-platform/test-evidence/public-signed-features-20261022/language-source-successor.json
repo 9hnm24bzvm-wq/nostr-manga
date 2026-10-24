@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "kind": "reviewed-public-language-source-successor",
+  "reviewed_integration_commit": "99483383cf6f50802945a731a5f1665c64038c42",
+  "historical_integrated_association": "integrated-source-successor.json",
+  "historical_integrated_association_sha256": "11fd691810cee5c3679940f91f82a118eaa75303efcc6b62764eb89bde2bc5c0",
+  "prior_pinset_sha256": "2352adb503f6ccbe4b1c4ea6b192b77e2aba3e17d5610dabd516a342a74f7cce",
+  "current_pinset_sha256": "d885d48f6816eb458566694c62fac617482ff4e757dd10a53a6e0e0693fd81cb",
+  "changes": [
+    {
+      "prior": {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte",
+        "bytes": 10090,
+        "sha256": "b368c2419b3eb1babe92bc3c13d274265249cf7c2200f63fb43415467689d328"
+      },
+      "current": {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte",
+        "bytes": 10302,
+        "sha256": "e4f1c783774682001b814d1a6ccf59041e193ab15590c9f3c4d51459703e58fd"
+      },
+      "reviewed_source_commit": "ddb70e39c52c6f4077bd29110bc6e74437f11c21",
+      "reason": "Reviewed public-write language vocabulary and per-field capability guard preserve the imported chapter locale on unrelated metadata updates; native validation remains separate."
+    }
+  ],
+  "browser_executed": false,
+  "hosted_executed": false,
+  "qualification_claim": "Source-only association. Prior execution receipts and immutable initial/workflow/integrated pinsets remain historical; no earlier binary or frontend artifact is relabelled."
+}

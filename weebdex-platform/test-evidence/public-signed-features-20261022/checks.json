@@ -1,0 +1,222 @@
+{
+  "schema": 1,
+  "scope": "finite-source-controller-dom-fixture-guards-only",
+  "browser_executed": false,
+  "database_fixture_executed": false,
+  "hosted_executed": false,
+  "source_pins_sha256": "3c41c318d9bffdacfe613c2fbc7a03371dc5604e461d2aa3024ce1da154ed301",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_signed_feature_phase.py"
+      ],
+      "passed": true,
+      "tests": 6
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_signed_feature_fixture.py"
+      ],
+      "passed": true,
+      "tests": 6
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_signed_feature_source_pins.py"
+      ],
+      "passed": true,
+      "tests": 1
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_public_feature_phase.py"
+      ],
+      "passed": true,
+      "tests": 14
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_independent_public_upload.py"
+      ],
+      "passed": true,
+      "tests": 11
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_public_upload_hosted_profile.py"
+      ],
+      "passed": true,
+      "tests": 13
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_hosted_browser.py"
+      ],
+      "passed": true,
+      "tests": 25
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_native_upload_diagnostic_workflow.py"
+      ],
+      "passed": true,
+      "tests": 8
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_qa_preparation_failure_capture.py"
+      ],
+      "passed": true,
+      "tests": 15
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_runner_diagnostics.py"
+      ],
+      "passed": true,
+      "tests": 12
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_journey_diagnostics.py"
+      ],
+      "passed": true,
+      "tests": 16
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "--test",
+        "tests/ci/test_signed_feature_browser.mjs"
+      ],
+      "passed": true,
+      "tests": 21
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "--test",
+        "tests/ci/test_public_feature_browser_dispatch.mjs"
+      ],
+      "passed": true,
+      "tests": 13
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "--test",
+        "tests/ci/test_public_reports_and_drafts.mjs"
+      ],
+      "passed": true,
+      "tests": 47
+    },
+    {
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "--test",
+        "tests/ci/test_public_report_draft_dom.mjs"
+      ],
+      "passed": true,
+      "tests": 16
+    }
+  ],
+  "rust_fixture_units": {
+    "passed": 3,
+    "failed": 0,
+    "compile_succeeded": true,
+    "scope": "signed_features::tests",
+    "database_or_browser_started": false,
+    "compiled_commit": "f14cc5ab6da0f5d35e4bf25cd8948bb9ba1672d0",
+    "compiled_before_additive_parent_integration": true,
+    "fixture_module_sha256": "1249a29b58fca471e20c6462c0e6f8589e479a044dc1a5c5e2a1b42a0dd84ba0"
+  },
+  "plan_only": {
+    "selection": "public-signed-features",
+    "unique_phase_count": 1,
+    "all_unique_phase_count": 42,
+    "browser_or_fixture_started": false
+  },
+  "raw_output_retained": false,
+  "private_values_omitted": true
+}

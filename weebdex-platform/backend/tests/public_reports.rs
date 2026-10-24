@@ -168,13 +168,14 @@ async fn reports_use_genuine_bound_authority_private_scope_and_native_audit() {
         (10, json!([]), json!(["report.create"]), false, false),
     ] {
         let user = format!("ReportUser{key}");
-        sql.execute("INSERT INTO platform.users(id,username,email,password_hash,roles,permissions,verified,disabled) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,$6)",&[&user,&format!("report-{key}@fixture.invalid"),&roles,&permissions,&verified,&disabled]).await.unwrap();
+        sql.execute("INSERT INTO platform.users(id,username,email,password_hash,roles,permissions,verified,disabled) VALUES($1,$1,$2,'synthetic-no-password',$3,$4,$5,$6)",&[&user,&format!("report-{key}@fixture.invalid"),&roles,&permissions,&verified,&false]).await.unwrap();
         sql.execute(
             "INSERT INTO platform.protocol_identity_bindings(publisher,user_id) VALUES($1,$2)",
             &[&public(key), &user],
         )
         .await
         .unwrap();
+        sql.execute("UPDATE platform.users SET disabled=$2 WHERE id=$1",&[&user,&disabled]).await.unwrap();
     }
     sql.batch_execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating,state) VALUES('ReportManga1','ReportUser2','Owner','Fixture one','en','ongoing','safe','published'),('ReportManga2','ReportUser2','Owner','Fixture two','en','ongoing','safe','published'); INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES('ReportAuthor1','ReportUser2','Owner','Fixture author'); INSERT INTO platform.report_reasons(id,category,reason,details_required) VALUES('manga_new_fixture','manga','Inserted fixture reason',false)").await.unwrap();
     drop(sql);
@@ -319,9 +320,22 @@ async fn reports_use_genuine_bound_authority_private_scope_and_native_audit() {
         .unwrap();
     assert_eq!(item["attributes"]["version"], 2);
     assert_eq!(item["attributes"]["reason"]["en"], "Updated fixture label");
+    // The same public reason ID is not authority to substitute a new reason
+    // revision for the one the reporting user actually reviewed.
+    let before_reports:i64=state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.reports",&[]).await.unwrap().get(0);
+    call(&client,&origin,"POST","/api/v1/report",Some(json!({"category":"manga","reason":reason,"objectId":manga,"details":"Reviewed original reason","expectedReasonVersion":1})),Some(2),409).await;
+    let after_reports:i64=state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.reports",&[]).await.unwrap().get(0);
+    assert_eq!(after_reports,before_reports,"Stale reviewed reason may not create a report");
+
     for path in [
         "/api/v1/report/reasons/reply",
         "/api/v1/report/reasons/manga?limit=1",
+        "/api/v1/report?scope=all",
+        "/api/v1/report?expectedAccountId=native",
+        "/api/v1/report?expectedAccountId=11111111-1111-8111-8111-111111111111&expectedAccountId=11111111-1111-8111-111111111111",
+        "/api/v1/report?scope=",
+        "/api/v1/report?scope=mine&scope=mine",
+        "/api/v1/report?scope=ReportUser2",
         "/api/v1/report?limit=0",
         "/api/v1/report?limit=101",
         "/api/v1/report?offset=10001",
@@ -646,6 +660,65 @@ async fn reports_use_genuine_bound_authority_private_scope_and_native_audit() {
             total
         );
     }
+    // A captured account ID is checked under the same locked read transaction,
+    // before selecting private rows or even returning an empty page. It never
+    // selects an owner or grants access, and omission preserves existing clients.
+    let expected_user = resolver.preferred(ResourceKind::User, "ReportUser2").await.unwrap().unwrap();
+    let expected_moderator = resolver.preferred(ResourceKind::User, "ReportUser6").await.unwrap().unwrap();
+    for (key, expected, personal_total) in [(2, &expected_user, 2), (6, &expected_moderator, 0)] {
+        let path = format!("/api/v1/report?scope=mine&expectedAccountId={expected}");
+        let page = call(&client, &origin, "GET", &path, None, Some(key), 200).await;
+        assert_eq!(page["total"], personal_total);
+    }
+    let unchanged_default = call(&client, &origin, "GET", &format!("/api/v1/report?expectedAccountId={expected_moderator}"), None, Some(6), 200).await;
+    assert_eq!(unchanged_default["total"], 4, "The optional account fence does not narrow the default moderator queue");
+    // Model a binding change after the UI captured the account and signed URL.
+    let rebound_path = format!("/api/v1/report?scope=mine&expectedAccountId={expected_user}");
+    let rebound_url = format!("{origin}{rebound_path}");
+    let captured_proof = proof(2, &rebound_url, "GET", b"");
+    state.db.client().await.unwrap().execute("UPDATE platform.protocol_identity_bindings SET user_id='ReportUser4' WHERE publisher=$1", &[&public(2)]).await.unwrap();
+    let changed = client.get(&rebound_url).header("Authorization", captured_proof).send().await.unwrap();
+    assert_eq!(changed.status().as_u16(), 409);
+    let changed: Value = changed.json().await.unwrap();
+    assert_eq!(changed["result"], "error"); assert!(changed.get("data").is_none());
+    for suffix in ["&status=autoresolved", "&offset=10000", "&status=autoresolved&offset=10000"] {
+        let refused = call(&client, &origin, "GET", &format!("{rebound_path}{suffix}"), None, Some(2), 409).await;
+        assert!(refused.get("data").is_none(), "An empty page may not bypass the account fence");
+    }
+    // A moderator's stale account must also be refused rather than expose queue
+    // rows, even without personal narrowing. A client-supplied owner grants none.
+    let refused = call(&client, &origin, "GET", &format!("/api/v1/report?expectedAccountId={expected_user}"), None, Some(6), 409).await;
+    assert!(refused.get("data").is_none());
+    state.db.client().await.unwrap().execute("UPDATE platform.protocol_identity_bindings SET user_id='ReportUser2' WHERE publisher=$1", &[&public(2)]).await.unwrap();
+    let restored = call(&client, &origin, "GET", &format!("{rebound_path}&status=autoresolved"), None, Some(2), 200).await;
+    assert_eq!(restored["total"], 0); assert_eq!(restored["data"], json!([]));
+
+    // Personal inspection narrows ordinary and moderator views to the actual
+    // transaction-validated account; default moderator queue remains unchanged.
+    for (key, total) in [(2, 2), (4, 2), (5, 0), (6, 0), (7, 0)] {
+        assert_eq!(call(&client, &origin, "GET", "/api/v1/report?scope=mine", None, Some(key), 200).await["total"], total);
+    }
+    let mine_page = call(&client, &origin, "GET", "/api/v1/report?scope=mine&limit=1&offset=1&order[createdAt]=asc", None, Some(2), 200).await;
+    assert_eq!(mine_page["total"], 2);
+    assert_eq!(mine_page["data"][0]["id"], own["data"][1]["id"]);
+    // Relabel only disposable fixture ownership, then restore it, so the
+    // existing create/audit/permission assertions remain unchanged below.
+    let sql = state.db.client().await.unwrap();
+    assert_eq!(sql.execute("UPDATE platform.reports SET submitter_id='ReportUser6' WHERE submitter_id='ReportUser4'", &[]).await.unwrap(), 2);
+    drop(sql);
+    let moderator_id = resolver.preferred(ResourceKind::User, "ReportUser6").await.unwrap().unwrap();
+    let moderator_mine = call(&client, &origin, "GET", "/api/v1/report?scope=mine&limit=1&offset=1&status=waiting&includes[]=reason", None, Some(6), 200).await;
+    assert_eq!(moderator_mine["total"], 2);
+    assert_eq!(moderator_mine["data"].as_array().unwrap().len(), 1);
+    assert_eq!(moderator_mine["data"][0]["relationships"][0]["id"], moderator_id.as_str());
+    assert_eq!(call(&client, &origin, "GET", "/api/v1/report", None, Some(6), 200).await["total"], 4);
+    assert_eq!(call(&client, &origin, "GET", "/api/v1/report?scope=mine&status=accepted", None, Some(6), 200).await["total"], 0);
+    let beyond = call(&client, &origin, "GET", "/api/v1/report?scope=mine&limit=1&offset=10000", None, Some(6), 200).await;
+    assert_eq!(beyond["total"], 2);
+    assert!(beyond["data"].as_array().unwrap().is_empty());
+    let sql = state.db.client().await.unwrap();
+    assert_eq!(sql.execute("UPDATE platform.reports SET submitter_id='ReportUser4' WHERE submitter_id='ReportUser6'", &[]).await.unwrap(), 2);
+    drop(sql);
     let filter = format!(
         "/api/v1/report?category=manga&reasonId={old_alias}&objectId={target_alias}&status=waiting"
     );

@@ -9,6 +9,7 @@ import { stripTypeScriptTypes } from 'node:module';
 import { createUploadRefusalQaPlugin } from '../../scripts/public-upload-refusal-qa.mjs';
 import { harness } from './public-upload-observer-query-fixture.mjs';
 import { fileURLToPath } from 'node:url';
+import { restoreReviewedLanguageSource } from './reviewed-local-page-source-successors.mjs';
 const root=fileURLToPath(new URL('../../',import.meta.url)), read=name=>fs.readFileSync(new URL(name,import.meta.url),'utf8');
 const digest=value=>createHash('sha256').update(value).digest('hex'), clone=value=>JSON.parse(JSON.stringify(value));
 const text=new TextEncoder();
@@ -23,7 +24,7 @@ const makeFixture=source=>new Function('vm','stripTypeScriptTypes','source','dig
 const plugin=createUploadRefusalQaPlugin(root,{enabled:true,publicUploadEnabled:true});plugin.configResolved({build:{ssr:false}});plugin.buildStart.call({emitFile(){}});
 const fixture=makeFixture(plugin.transform(transport,transportPath).code);
 const consumerCode=prior.slice(prior.indexOf('function previewConsumer('),prior.indexOf("test('valid 200 preview consumption"));
-const {previewConsumer,heldPreviewBody}=new Function('fs','URL','base','assert','digest','stripTypeScriptTypes','Blob','Headers','Response','deferred',consumerCode.replaceAll('import.meta.url','base')+';return {previewConsumer,heldPreviewBody};')(fs,URL,new URL('./test_public_upload_request_recovery.mjs',import.meta.url).href,assert,digest,stripTypeScriptTypes,Blob,Headers,Response,deferred);
+const {previewConsumer,heldPreviewBody}=new Function('fs','URL','base','assert','digest','restoreReviewedLanguageSource','stripTypeScriptTypes','Blob','Headers','Response','deferred',consumerCode.replaceAll('import.meta.url','base')+';return {previewConsumer,heldPreviewBody};')(fs,URL,new URL('./test_public_upload_request_recovery.mjs',import.meta.url).href,assert,digest,restoreReviewedLanguageSource,stripTypeScriptTypes,Blob,Headers,Response,deferred);
 async function leaseApi(){const context=vm.createContext({URL,Blob,Error,Object,Map,Set,Symbol,Number,Promise});const module=new vm.SourceTextModule(stripTypeScriptTypes(read('../../platform-integrations/public-api/upload-preview.ts')),{context});await module.link(()=>{throw Error('Unexpected dependency');});await module.evaluate();return module.namespace;}
 const bytes=new Uint8Array([137,80,78,71,13,10,26,10]);
 const previewPath='/api/v1/nostr/uploads/11111111-1111-8111-8111-111111111111/files/22222222-2222-8222-8222-222222222222/preview';

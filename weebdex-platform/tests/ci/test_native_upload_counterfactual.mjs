@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {stripTypeScriptTypes} from 'node:module';
 import path from 'node:path';
+import os from 'node:os';
 import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
 import {CASES,VERSIONS,BODY,emptyCase,emptyReport,expectedCase,canonicalReport,sandboxStatusOkay,OPERATIONS,FAILURE_REASONS,recordApplicationSnapshot,recordTerminalSnapshot,validateCaseObservation,preserveCaseFailure,OBSERVER_FAILURE_KINDS,countObserverFailures} from '../../scripts/ci/native-upload-counterfactual-contract.mjs';
@@ -15,7 +16,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),re
 const source=process.env.COUNTERFACTUAL_SOURCE_ROOT?path.resolve(process.env.COUNTERFACTUAL_SOURCE_ROOT):root;
 test('six finite cases and fixed18-byte synthetic payload',()=>{assert.equal(CASES.length*VERSIONS.length,6);assert.equal(Buffer.byteLength(BODY),18);assert.deepEqual(CASES,['complete-eof','truncated-valid-json','owner-dispose-checkpoint']);});
 test('CRC32C implementation matches standard finite vector',()=>{assert.equal((crc32c(Buffer.from('123456789'))^0xffffffff)>>>0,0xe3069283);});
-test('exact frozen product, observer and candidate files match',()=>{assert.match(verifySources(path.dirname(source),path.join(repo,'.ci/native-upload-counterfactual/source-freeze.json')),/^[0-9a-f]{64}$/);});
+test('exact frozen product, observer and candidate files match',()=>{assert.match(verifySources(path.dirname(source),path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json')),/^[0-9a-f]{64}$/);});
 test('current actual closed browser graph links without fabricated application exports',async()=>{const assets=await browserModules(source);const context=vm.createContext({});const modules=new Map();for(const [name,code]of assets)modules.set(name,new vm.SourceTextModule(code,{context,identifier:name}));await modules.get('/entry.js').link(specifier=>{assert.ok(modules.has(specifier),specifier);return modules.get(specifier);});assert.equal(modules.get('/entry.js').status,'linked');assert.ok(assets.has('/modules/schedules.js'));});
 test('sanitized report fails closed on raw fields or forged qualification',()=>{const row=emptyReport();assert.ok(Buffer.byteLength(canonicalReport(row))<65536);assert.throws(()=>canonicalReport({...row,url:'not allowed'}));row.qualified=true;assert.throws(()=>canonicalReport(row));});
 function ready(version,kind){return {...emptyCase(version,kind),infrastructure:true,cleanup:true,correlated:true,account_finished:true,observer_valid:true,server_terminal_before_cleanup:true,phases:2,server_finish:true};}
@@ -34,7 +35,7 @@ test('unclean outer settlement cannot claim completed even with six settled rows
 function workflowGate(file,job,github){const text=fs.readFileSync(path.join(repo,'.github/workflows',file),'utf8');const block=text.split('\n  '+job+':\n')[1];assert.ok(block);const expression=block.match(/(?:^|\n)    if: >-\n      ([^\n]+)/)?.[1];assert.ok(expression);return vm.runInNewContext(expression,{github},{timeout:50});}
 test('exact publication push selects only the dedicated job, without manual duplication',()=>{const approved='diagnostic(native-upload): reviewed introspection gate 20261022',old='diagnostic(native-upload): approved bounded pipe run 20261022',sha='1'.repeat(40);const base={event_name:'push',repository:'9hnm24bzvm-wq/nostr-manga',ref:'refs/heads/ci/browser-failure-diagnostics',sha,event:{repository:{private:false},head_commit:{id:sha,message:approved}}};const gates=github=>[workflowGate('native-upload-browser-counterfactual.yml','counterfactual',github),workflowGate('hosted-browser-e2e.yml','browser',github),workflowGate('hosted-browser-e2e.yml','native-upload-diagnostic',github)];assert.deepEqual(gates(base),[true,false,false]);assert.deepEqual(gates({...base,event:{...base.event,head_commit:{id:sha,message:'diagnostic(native-upload): reviewed browser counterfactual 20261022'}}}),[false,false,false]);assert.deepEqual(gates({...base,event:{...base.event,head_commit:{id:sha,message:old}}}),[false,false,true]);assert.deepEqual(gates({...base,event:{...base.event,head_commit:{id:sha,message:'ordinary unrelated push'}}}),[false,true,false]);for(const change of [{repository:'not-approved'},{event_name:'workflow_dispatch'},{ref:'refs/heads/not-approved'},{event:{...base.event,repository:{private:true}}},{event:{...base.event,head_commit:{id:'2'.repeat(40),message:approved}}}])assert.equal(gates({...base,...change})[0],false);});
 test('both official full Chrome pins and exact npm driver integrity remain frozen',()=>{const pins=JSON.parse(fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/browser-pins.json')));assert.equal(pins.driver.version,'1.64.1');const expected=[['156.0.8078.47','1792451271847937',200206486,'cvpoYXzFXs9OK75pfi91hA==','3+SPsQ=='],['157.0.8103.6','1792024099984701',202676171,'5qChIL/Gh+8hZv73vzEakQ==','EJCYzQ==']];for(let i=0;i<2;i++){const row=pins.browsers[i];assert.deepEqual([row.version,row.generation,row.size,row.md5Base64,row.crc32cBase64],expected[i]);assert.equal(row.download,`https://storage.googleapis.com/chrome-for-testing-public/${row.version}/linux64/chrome-linux64.zip`);assert.equal(row.kind,'full-chrome');assert.equal(row.platform,'linux64');assert.equal(row.sha256,null);}const lock=JSON.parse(fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/package-lock.json')));assert.equal(Object.keys(lock.packages).length,3);const integrity=['sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==','sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ=='];for(const [i,name]of ['playwright','playwright-core'].entries()){const row=lock.packages['node_modules/'+name];assert.equal(row.version,'1.64.1');assert.equal(row.integrity,integrity[i]);assert.equal(row.resolved,`https://registry.npmjs.org/${name}/-/${name}-1.64.1.tgz`);}});
-test('all actual project file reads during browser graph preparation are frozen',async()=>{const freeze=JSON.parse(fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/source-freeze.json'))),allowed=new Set(freeze.files.map(row=>path.resolve(row.origin==='input'?path.dirname(source):repo,row.path))),seen=new Set(),original=fs.readFileSync;assert.equal(freeze.files.filter(row=>row.origin==='input').length,13);fs.readFileSync=function(file,...args){const name=typeof file==='number'?null:path.resolve(file instanceof URL?fileURLToPath(file):file);if(name&&(name.startsWith(path.dirname(source)+path.sep)||name.startsWith(repo+path.sep))){assert.ok(allowed.has(name),'unfrozen project read');seen.add(name);}return original.call(fs,file,...args);};try{await browserModules(source);}finally{fs.readFileSync=original;}assert.ok(seen.has(path.join(source,'scripts/vite.platform.config.mjs')));assert.ok(seen.has(path.join(source,'scripts/public-upload-refusal-qa.mjs')));});
+test('all actual project file reads during browser graph preparation are frozen',async()=>{const freeze=JSON.parse(fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json'))),allowed=new Set(freeze.files.map(row=>path.resolve(row.origin==='input'?path.dirname(source):repo,row.path))),seen=new Set(),original=fs.readFileSync;assert.equal(freeze.files.filter(row=>row.origin==='input').length,13);fs.readFileSync=function(file,...args){const name=typeof file==='number'?null:path.resolve(file instanceof URL?fileURLToPath(file):file);if(name&&(name.startsWith(path.dirname(source)+path.sep)||name.startsWith(repo+path.sep))){assert.ok(allowed.has(name),'unfrozen project read');seen.add(name);}return original.call(fs,file,...args);};try{await browserModules(source);}finally{fs.readFileSync=original;}assert.ok(seen.has(path.join(source,'scripts/vite.platform.config.mjs')));assert.ok(seen.has(path.join(source,'scripts/public-upload-refusal-qa.mjs')));});
 test('closed preflight stages distinguish introspection from sandbox without changing old receipt',()=>{const report=emptyReport(2);assert.equal(report.schema,2);const row=report.binaries[0];row.identity=true;row.preflight_stage='command-introspection';assert.ok(canonicalReport(report));assert.throws(()=>canonicalReport({...report,schema:1}));row.preflight_stage='arbitrary raw diagnostic';assert.throws(()=>canonicalReport(report));row.preflight_stage='command-introspection';row.identity=false;assert.throws(()=>canonicalReport(report));row.identity=true;row.sandbox=true;assert.throws(()=>canonicalReport(report));row.sandbox=false;row.protocol=true;assert.throws(()=>canonicalReport(report));row.protocol=false;row.preflight_stage='protocol';assert.throws(()=>canonicalReport(report));row.sandbox=true;assert.ok(canonicalReport(report));row.preflight_stage='complete';assert.throws(()=>canonicalReport(report));row.protocol=true;assert.ok(canonicalReport(report));});
 test('sandbox parser requires exact seccomp and adequate evaluation, never a TSYNC substitute',()=>{
   const healthy='Sandbox Status\nLayer 1 Sandbox\tNamespace\nPID namespaces\tYes\nNetwork namespaces\tYes\nSeccomp-BPF sandbox\tYes\nSeccomp-BPF sandbox supports TSYNC\tYes\nYou are adequately sandboxed.';
@@ -88,3 +89,74 @@ test('clean failed case continues without erasing failure diagnostics',()=>{cons
 test('unsafe or unsettled cleanup halts even if infrastructure passed',()=>{const gate=postCaseGate();for(const infrastructure of [false,true])assert.throws(()=>gate({cleanup:false,infrastructure}));const host=fs.readFileSync(path.join(root,'scripts/ci/run-native-upload-browser-counterfactual.mjs'),'utf8');assert.ok(host.includes('row.cleanup=contextClosed&&settled&&scope.pending()===0&&!scope.unsafe()&&bindings===0&&Date.now()<=deadline'));});
 test('clean failure permits all six scheduled slots including next browser arm',()=>{const gate=postCaseGate(),visited=[];for(const version of VERSIONS)for(const kind of CASES){const row=emptyCase(version,kind);row.cleanup=true;visited.push([version,kind]);gate(row);}assert.deepEqual(visited,VERSIONS.flatMap(version=>CASES.map(kind=>[version,kind])));const stopped=[];assert.throws(()=>{for(const version of VERSIONS)for(const kind of CASES){stopped.push([version,kind]);gate({cleanup:stopped.length!==2,infrastructure:false});}});assert.equal(stopped.length,2);});
 test('continued failed result remains unqualified with unchanged setup and time bounds',()=>{const host=fs.readFileSync(path.join(root,'scripts/ci/run-native-upload-browser-counterfactual.mjs'),'utf8'),report=emptyReport();for(const row of report.cases){row.cleanup=true;postCaseGate()(row);}assert.equal(report.cases.every(r=>r.cleanup&&r.infrastructure),false);assert.equal(report.qualified,false);assert.ok(canonicalReport(report));assert.ok(host.includes("v.terminal!=='pending'&&v.accountFinished"));assert.ok(host.includes('insist(sandboxOkay)'));assert.ok(host.includes('insist(Date.now()+40000<aggregate)'));assert.ok(host.includes('deadline=Math.min(aggregate-8000,Date.now()+LIMITS.case),workDeadline=deadline-LIMITS.reserve'));assert.ok(host.includes('report.completed=report.outer_cleanup&&report.cases.every(r=>r.cleanup&&r.infrastructure)'));assert.ok(host.includes('allProtocol=false'));assert.ok(host.includes('binary.protocol=allProtocol'));});
+
+// Preserve the four actual-current helper/import controls from the private
+// candidate, using this retained public runner's schedules module name.
+test('current graph includes exact actual language and chapter helpers',async()=>{
+ const modules=await browserModules(source);
+ for(const [name,served]of [['language','language'],['chapter-access','chapter-access'],['chapter-command-fence','chapter-command-fence'],['upload-schedules','schedules']]){
+  const raw=fs.readFileSync(path.join(source,'platform-integrations/public-api',name+'.ts'),'utf8');
+  const actual=stripTypeScriptTypes(raw,{mode:'transform'}).replace(/from\s+(['"])([^'"]+)\1/g,(_all,_quote,specifier)=>{assert.equal(specifier,'./validation');return 'from "/modules/validation.js"';});
+  assert.equal(modules.get('/modules/'+served+'.js'),actual);
+ }
+ assert.deepEqual([...modules.keys()].sort(),['/entry.js','/modules/adapter.js','/modules/chapter-access.js','/modules/chapter-command-fence.js','/modules/error.js','/modules/language.js','/modules/multipart.js','/modules/schedules.js','/modules/stubs.js','/modules/transport.js','/modules/validation.js']);
+});
+test('current graph refuses unknown prototype and external imports',async()=>{
+ const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'current-counterfactual-modules-'));
+ const inputs=['upload-client','nostr-upload-request','upload-multipart','validation','language','chapter-access','chapter-command-fence','upload-schedules'].map(name=>'platform-integrations/public-api/'+name+'.ts');
+ inputs.push('frontend/src/lib/constants/Error.ts','scripts/vite.platform.config.mjs','scripts/public-upload-refusal-qa.mjs');
+ try{
+  for(const relative of inputs){const target=path.join(temporary,relative);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(path.join(source,relative),target);}
+  assert.equal((await browserModules(temporary)).size,11);
+  const target=path.join(temporary,'platform-integrations/public-api/upload-client.ts'),original=fs.readFileSync(target,'utf8');
+  for(const specifier of ['./not-reviewed','node:fs','constructor','toString','../outside','/modules/language.js']){
+   fs.writeFileSync(target,original+'\nimport {unexpected} from '+JSON.stringify(specifier)+';\n');
+   await assert.rejects(()=>browserModules(temporary),/Counterfactual contract failed/);
+  }
+ }finally{fs.rmSync(temporary,{recursive:true,force:true});}
+});
+test('seven-module omission control cannot link the actual current adapter',async()=>{
+ const modules=await browserModules(source),cache=new Map(),context=vm.createContext({});
+ for(const name of ['language','chapter-access','chapter-command-fence','schedules'])modules.delete('/modules/'+name+'.js');
+ assert.deepEqual([...modules.keys()].sort(),['/entry.js','/modules/adapter.js','/modules/error.js','/modules/multipart.js','/modules/stubs.js','/modules/transport.js','/modules/validation.js']);
+ function load(name){if(!cache.has(name)){assert.ok(modules.has(name),'Missing graph-control module: '+name);cache.set(name,new vm.SourceTextModule(modules.get(name),{context,identifier:name}));}return cache.get(name);}
+ await assert.rejects(()=>load('/entry.js').link(specifier=>load(specifier)),/Missing graph-control module: \/modules\/schedules\.js/);
+});
+test('current scheduling bytes retain exact predecessor association and missing-helper refusal',async()=>{
+ const bytes=fs.readFileSync(path.join(source,'platform-integrations/public-api/upload-schedules.ts'));
+ const hash=value=>createHash('sha256').update(value).digest('hex');
+ assert.equal(hash(bytes),'ac97fd34eea9e4729c387ce029a5f8ad40fa98c76db911289c52486817db56b2');
+ const current="function fail(message: string, status = 502): never { throw new PublicApiContractError(message, status); }\n";
+ const prior="const fail = (message: string, status = 502): never => { throw new PublicApiContractError(message, status); };\n";
+ const restore=value=>{assert.equal(typeof value,'string');assert.equal(hash(value),'ac97fd34eea9e4729c387ce029a5f8ad40fa98c76db911289c52486817db56b2');assert.equal(value.split(current).length,2);const previous=value.replace(current,()=>prior);assert.equal(hash(previous),'20d68c580461113d27136b3af189d9788d7de18da4164142948ea612fd12e59a');return previous;};
+ const previous=restore(bytes.toString('utf8'));
+ for(const invalid of [previous,bytes.toString('utf8')+' ',bytes.toString('utf8')+current,bytes.toString('utf8').replace(current,prior),bytes.subarray(1)])assert.throws(()=>restore(invalid));
+ // The restored bytes are hash-associated metadata only, never executed.
+ const modules=await browserModules(source),cache=new Map(),context=vm.createContext({});
+ assert.equal(modules.size,11);assert.equal(modules.delete('/modules/schedules.js'),true);assert.equal(modules.size,10);
+ function load(name){if(!cache.has(name)){assert(modules.has(name),'Missing current scheduling module: '+name);cache.set(name,new vm.SourceTextModule(modules.get(name),{context,identifier:name}));}return cache.get(name);}
+ await assert.rejects(()=>load('/entry.js').link(specifier=>load(specifier)),/Missing current scheduling module: \/modules\/schedules\.js/);
+});
+test('current source freeze preserves historical manifest and binds all four changed inputs',()=>{
+ const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+ const oldBytes=fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/source-freeze.json'));
+ assert.equal(hash(oldBytes),'b65e18352e5d09cd1d7a89675dd7ef28009877f51bff74203a7ab2cc672e5426');
+ const currentBytes=fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json'));
+ const previous=JSON.parse(oldBytes),current=JSON.parse(currentBytes);
+ assert.equal(current.source_parent_commit,'92c15ddfbcab8dcb88d8a39fc0bc139c6cae20fc');
+ assert.deepEqual(current.files.map(row=>[row.path,row.origin]),previous.files.map(row=>[row.path,row.origin]));
+ assert.equal(new Set(current.files.map(row=>row.path)).size,28);
+ const expected={
+  'weebdex-platform/platform-integrations/public-api/upload-client.ts':'366517eb1d56d0e3474cd0d8067ace517b2439d5bb132d090b54570f77b4c980',
+  'weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts':'03ffe025cadb09194022b6e8ac496a4e089b5ec44a5e512fce83f528bac74eb8',
+  'weebdex-platform/platform-integrations/public-api/chapter-access.ts':'ef01312598922398c69c847405f7730a023d5b2e5fabf9303a5736f085cabc46',
+  'weebdex-platform/scripts/vite.platform.config.mjs':'3db39b8947976409beb6bfb46432af4633aba02f0d951b51a2ffccc4250dd67e',
+ };
+ for(const row of current.files.filter(row=>row.origin==='input')){
+  const before=previous.files.find(old=>old.path===row.path);
+  assert.equal(row.sha256,expected[row.path]??before.sha256);
+  assert.equal(hash(fs.readFileSync(path.join(path.dirname(source),row.path))),row.sha256);
+ }
+ assert.equal(verifySources(path.dirname(source),path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json')),hash(currentBytes));
+ assert.throws(()=>verifySources(path.dirname(source),path.join(repo,'.ci/native-upload-counterfactual/source-freeze.json')),/Counterfactual contract failed/);
+});

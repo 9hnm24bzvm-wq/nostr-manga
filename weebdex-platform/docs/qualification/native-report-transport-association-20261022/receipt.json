@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "scope": "Test-only one-file/two-view reporting transport comparison successor",
+  "recorded_at": "2026-10-22T14:14:00.136777+00:00",
+  "private_prerequisite_head": "b35d7ff5bc22f879e88d70190dcf3e009dfcb48c",
+  "product_source_commit": "b922c9deb677be3c8d2e6c2c78249d79a4ee16f5",
+  "node_version": "v24.19.0",
+  "command": "NODE_OPTIONS=--experimental-vm-modules timeout 90s node --test --test-concurrency=1 tests/ci/test_public_upload_request_recovery.mjs tests/ci/test_reviewed_native_source_successors.mjs tests/ci/test_reviewed_integration_source_successors.mjs tests/ci/test_reviewed_report_transport_source_successors.mjs",
+  "exit": 0,
+  "passed": 104,
+  "failed": 0,
+  "skipped": 1,
+  "skip": "Pre-existing optional exact original transport counterfactual; no optional baseline was provided",
+  "source_inventory": {
+    "path": "source-inventory.json",
+    "files": 1432,
+    "bytes": 285963,
+    "sha256": "a67681a85ba3ec8dd058b07f56cf8617e7767f020bd3adab649a2b0be59489b6"
+  },
+  "metadata": {
+    "path": "docs/fixtures/native-report-transport-source-association.json",
+    "bytes": 11235,
+    "sha256": "b97dc0ca3aea0330e59c0c88b3281122f426f666773b163353d83b55fc24b1b7"
+  },
+  "log": {
+    "path": "focused.log",
+    "bytes": 11698,
+    "sha256": "6e2af359dad8f8610f603577b77b5ccec528ce57c801fe8ceb98b0fe97abe797"
+  },
+  "immutable_inputs": [
+    {
+      "path": "docs/fixtures/native-user-source-associations.json",
+      "sha256": "9d54b6b8a05d920621a3b72fba31f7b4a85c2a81a5d45ff3399075f68b6ea780"
+    },
+    {
+      "path": "docs/fixtures/integrated-discussion-title-source-association.json",
+      "sha256": "f1cb600e66092923ef0b60c31fbb525329b5c3467dc3537dd5b14259a046c7b9"
+    },
+    {
+      "path": "tests/ci/reviewed-native-source-successors.mjs",
+      "sha256": "88a14a901658bafe70626941490e65b726d39258ca3f1ffb2861a7b1208f3113"
+    }
+  ],
+  "browser_executed": false,
+  "http_executed": false,
+  "database_executed": false,
+  "build_executed": false,
+  "pipe_timing_qualified": false,
+  "full_finite_executed": false
+}

@@ -65,8 +65,8 @@ class PublicFeaturePhase(unittest.TestCase):
     def test_feature_precedes_upload_within_unchanged_total_budget(self):
         self.assertEqual(runner.BATCHES['public-upload'],
                          ['public-feature-recovery', 'public-upload-recovery'])
-        self.assertEqual(len(runner.ALL_PHASES), 41)
-        self.assertEqual(runner.MAX_PHASE_RUNS, 53)
+        self.assertEqual(len(runner.ALL_PHASES), 42)
+        self.assertEqual(runner.MAX_PHASE_RUNS, 54)
         self.assertEqual(runner.maximum('public-feature-recovery'), 180)
         reserve = sum(runner.maximum(phase) + 35 for phase in runner.BATCHES['public-upload']) + 300 + 600
         self.assertEqual(reserve, 1750)
@@ -193,7 +193,7 @@ class PublicFeaturePhase(unittest.TestCase):
         self.assertEqual(summary['passed_unique_phases'], [features.PHASE])
         self.assertEqual(summary['failed_unique_phases'], [runner.PUBLIC_UPLOAD_PHASE])
         self.assertFalse(summary['selected_scope_passed'])
-        self.assertEqual(len(summary['pending_unique_phases']), 39)
+        self.assertEqual(len(summary['pending_unique_phases']), 40)
         validator.summary(summary)
 
     def test_fail_stop_remains_after_each_projected_phase(self):

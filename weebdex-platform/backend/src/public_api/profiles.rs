@@ -11,7 +11,7 @@ use axum::{
 };
 use serde_json::{Value, json};
 pub fn router() -> Router<AppState> {
-    Router::new().route("/user/{p0}", get(one).put(super::native_profile::write))
+    Router::new().route("/user/{p0}", get(one).put(super::native_profile::write).delete(super::account_closure::prepare))
 }
 async fn one(
     State(state): State<AppState>,

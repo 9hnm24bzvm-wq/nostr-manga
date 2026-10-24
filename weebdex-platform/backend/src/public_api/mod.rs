@@ -3,6 +3,7 @@
 pub mod at_home_core;
 pub mod cover_filename;
 pub mod dto;
+mod title_links;
 pub mod errors;
 pub mod id;
 pub mod identity;
@@ -27,6 +28,7 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(statistics::router())
         .merge(popularity::router())
         .merge(catalogue::router())
+        .merge(reader_selector::router())
         .merge(catalogue_edges::router())
         .merge(account_reads::router())
         .merge(ratings::router())
@@ -34,6 +36,14 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(follow_writes::router())
         .merge(native_reading_status::router())
         .merge(native_profile::router())
+        .merge(account_closure::router())
+        .merge(native_user_memberships::router())
+        .merge(native_user_discussion::router())
+        .merge(native_discussion::router())
+        .merge(native_discussion_reports::router())
+        .merge(native_user_reports::router())
+        .merge(native_report_inspection::router())
+        .merge(moderator_reports::router())
         .merge(media::router())
         .merge(native_forum::router())
         .merge(legacy::router())
@@ -42,6 +52,7 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(drafts::router())
         .merge(uploads::router())
         .merge(upload_extensions::router())
+        .merge(scheduled_uploads::router())
         .merge(chapter_writes::router())
         .merge(manga_writes::router())
         .merge(cover_writes::router())
@@ -66,6 +77,7 @@ pub mod statistics;
 pub mod popularity;
 
 pub mod catalogue;
+pub mod reader_selector;
 pub mod catalogue_edges;
 pub mod account_reads;
 pub mod account_settings;
@@ -75,6 +87,15 @@ pub mod list_follows;
 pub mod follow_writes;
 pub mod native_reading_status;
 pub mod native_profile;
+pub mod native_user_memberships;
+mod native_discussion_common;
+pub mod native_discussion;
+mod native_discussion_reports;
+pub mod account_closure;
+pub mod native_user_discussion;
+pub mod native_user_reports;
+pub mod native_report_inspection;
+pub mod moderator_reports;
 
 pub mod media;
 
@@ -100,3 +121,6 @@ pub mod title_disposition;
 pub mod resource_mappings;
 pub mod relation_writes;
 pub(crate) mod relation_paging;
+
+mod publish_at;
+pub mod scheduled_uploads;

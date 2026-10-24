@@ -17,6 +17,7 @@ use axum::{
     extract::{DefaultBodyLimit, OriginalUri, Path, Request, State},
     http::{HeaderMap, StatusCode, header},
     routing::{delete, get, post},
+    response::{IntoResponse, Response},
 };
 use manga_node::http_auth::AdmittedHttpCapability;
 use serde::{Deserialize, de::DeserializeOwned};
@@ -208,7 +209,7 @@ async fn begin(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct Edit { version:i32, #[serde(default,rename="expectedAccountId",deserialize_with="deserialize_optional_account")] expected_account_id:Option<PublicUuid> }
+struct Edit { version:i32, #[serde(default)] replace:bool, #[serde(default,rename="expectedAccountId",deserialize_with="deserialize_optional_account")] expected_account_id:Option<PublicUuid> }
 async fn begin_edit(State(state): State<AppState>, Path(chapter): Path<String>,
     OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
     let chapter=PublicUuid::parse(&chapter)?;
@@ -219,9 +220,12 @@ async fn begin_edit(State(state): State<AppState>, Path(chapter): Path<String>,
     let actor=bound_account_write(&tx,&cap).await?;
     let expected=payload.expected_account_id.as_ref().map(|id|json!(id));
     super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
+    let public_chapter=chapter.clone();
     let chapter=resolve(&tx,ResourceKind::Chapter,&chapter).await?;
-    let native=core::begin_edit_in(&tx,&actor,&chapter,&core::Edit{version:payload.version,replace:false}).await?;
-    let result=session_resource(&tx,&native).await?;
+    let native=core::begin_edit_in(&tx,&actor,&chapter,&core::Edit{version:payload.version,replace:payload.replace}).await?;
+    let mut result=session_resource(&tx,&native).await?;
+    // Bind successful admission to the signed target, version and chosen mode.
+    result["attributes"]["edit"] = json!({"chapterId":public_chapter,"version":payload.version,"replace":payload.replace});
     tx.commit().await?; core::cleanup(&state).await; Ok(Json(result))
 }
 #[derive(Deserialize)]
@@ -231,7 +235,7 @@ async fn check_approval(State(state): State<AppState>, OriginalUri(uri): Origina
     headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
     let (cap,body)=authorize(&state,&uri,&headers,request,4*1024,false).await?;
     let payload:Approval=parse(&body)?;
-    crate::domains::catalog::validation::language(&payload.locale)?;
+    crate::domains::catalog::validation::public_language(&payload.locale)?;
     let mut client=state.db.client().await?; let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;
     let manga=resolve(&tx,ResourceKind::Manga,&payload.manga).await?;
@@ -251,7 +255,12 @@ struct ChapterDraft {
     #[serde(deserialize_with="required_nullable")] chapter:Option<String>,
     #[serde(deserialize_with="required_nullable")] title:Option<String>,
     translated_language:String,
-    #[serde(default)] external_url:Option<String>, #[serde(default)] publish_at:Option<String>,
+    #[serde(default)] external_url:Option<String>, #[serde(default,deserialize_with="optional_publish_at")] publish_at:Option<String>,
+}
+fn optional_publish_at<'de,D:serde::Deserializer<'de>>(deserializer:D)->Result<Option<String>,D::Error> {
+    let value=String::deserialize(deserializer)?;
+    if !super::publish_at::valid_publish_at(&value) {return Err(serde::de::Error::custom("publishAt must be a real YYYY-MM-DDTHH:MM:SS UTC timestamp"));}
+    Ok(Some(value))
 }
 fn required_nullable<'de,D:serde::Deserializer<'de>>(deserializer:D) -> Result<Option<String>,D::Error> {
     Option::<String>::deserialize(deserializer)
@@ -261,16 +270,14 @@ fn draft(payload:ChapterDraft, terms:bool) -> PublicApiResult<core::Draft> {
     if payload.external_url.is_some() {
         return Err(PublicApiError::bad_request("External chapters are unavailable in this instance's image upload module"));
     }
-    if payload.publish_at.is_some() {
-        return Err(PublicApiError::bad_request("Scheduled publication is unavailable in this instance's image upload module"));
-    }
     if payload.title.as_ref().is_some_and(|v|v.chars().count()>255) {
         return Err(PublicApiError::bad_request("Chapter title exceeds 255 characters"));
     }
+    crate::domains::catalog::validation::public_language(&payload.translated_language)?;
     Ok(core::Draft{volume:payload.volume,chapter:payload.chapter,title:payload.title,language:payload.translated_language})
 }
 async fn commit(State(state): State<AppState>, Path(session): Path<String>,
-    OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
+    OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Response> {
     let session=PublicUuid::parse(&session)?;
     // 500 public UUIDs alone need about 20 KiB, before the chapter draft.
     let (cap,body)=authorize(&state,&uri,&headers,request,32*1024,false).await?;
@@ -278,24 +285,33 @@ async fn commit(State(state): State<AppState>, Path(session): Path<String>,
     if payload.page_order.is_empty() || payload.page_order.len()>500 {
         return Err(PublicApiError::bad_request("pageOrder must contain one to 500 files"));
     }
+    let publish_at=payload.chapter_draft.publish_at.clone();
     let draft=draft(payload.chapter_draft,payload.terms_accepted)?;
     let mut client=state.db.client().await?; let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;
     let session=resolve(&tx,ResourceKind::UploadSession,&session).await?;
     let mut page_order=Vec::new();
     for file in payload.page_order { page_order.push(resolve(&tx,ResourceKind::UploadFile,&file).await?); }
-    let native=core::commit_in(&state,&tx,&actor,&session,&core::Commit{draft,page_order}).await?;
+    let payload=core::Commit{draft,page_order};
+    if let Some(receipt)=super::scheduled_uploads::admit(&state,&tx,&actor,&cap,&session,publish_at.as_deref(),&payload).await? {
+        tx.commit().await?;
+        return Ok((StatusCode::ACCEPTED,Json(receipt)).into_response());
+    }
+    let native=core::commit_in(&state,&tx,&actor,&session,&payload).await?;
     let result=chapter_resource(&tx,&native).await?;
-    tx.commit().await?; core::cleanup(&state).await; Ok(Json(result))
+    tx.commit().await?; core::cleanup(&state).await; Ok(Json(result).into_response())
 }
 async fn cancel(State(state): State<AppState>, Path(session): Path<String>,
     OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
     let session=PublicUuid::parse(&session)?;
-    let (cap,_)=authorize(&state,&uri,&headers,request,1,true).await?;
+    let (cap,expected)=authorize_account_query(&state,&uri,&headers,request).await?;
     let mut client=state.db.client().await?; let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;
+    // Optional for existing callers, mandatory in the schedule owner UI. Compare
+    // the signed account before resolving or accessing any private session.
+    super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
     let session=resolve(&tx,ResourceKind::UploadSession,&session).await?;
-    core::cancel_in(&tx,&actor,&session).await?;
+    if !super::scheduled_uploads::cancel_in(&tx,&actor,&session).await? {core::cancel_in(&tx,&actor,&session).await?;}
     tx.commit().await?; core::cleanup(&state).await; Ok(Json(json!({"result":"ok"})))
 }
 async fn delete_file(State(state): State<AppState>, Path((session,file)): Path<(String,String)>,
@@ -440,11 +456,22 @@ mod tests {
         assert!(parse::<Begin>(br#"{"manga":"11111111-1111-8111-8111-111111111111"}"#).is_err());
         assert!(parse::<Edit>(br#"{"version":1,"replace":true}"#).is_err());
         assert!(parse::<Commit>(br#"{"draft":{},"page_order":[]}"#).is_err());
-        for key in ["externalUrl","publishAt"] {
+        for key in ["externalUrl"] {
             let mut value=json!({"volume":null,"chapter":null,"title":null,"translatedLanguage":"en"});
             value[key]=json!(if key=="externalUrl"{"https://fixture.invalid/chapter"}else{"2030-01-01T00:00:00"});
             assert!(draft(serde_json::from_value(value).unwrap(),true).is_err());
         }
+    }
+    #[test]
+    fn publish_at_is_optional_nonnullable_exact_calendar_utc() {
+        let base=json!({"volume":null,"chapter":null,"title":null,"translatedLanguage":"en"});
+        assert!(serde_json::from_value::<ChapterDraft>(base.clone()).unwrap().publish_at.is_none());
+        for value in [json!(null),json!(false),json!(0),json!("2026-02-29T12:00:00"),json!("2028-02-29T12:00:00Z"),json!("2028-02-29T12:00:00+00:00"),json!("2028-02-29T12:00:00.000")] {
+            let mut input=base.clone();input["publishAt"]=value;assert!(serde_json::from_value::<ChapterDraft>(input).is_err());
+        }
+        let mut input=base;input["publishAt"]=json!("2028-02-29T12:00:00");
+        assert!(draft(serde_json::from_value(input).unwrap(),true).is_ok());
+        assert!(serde_json::from_str::<ChapterDraft>(r#"{"volume":null,"chapter":null,"title":null,"translatedLanguage":"en","publishAt":"2028-02-29T12:00:00","publishAt":"2028-02-29T12:00:00"}"#).is_err());
     }
     /// Mapper/error-propagation coverage, not an HTTP missing-alias result.
     /// Normal alias identity triggers remain enabled throughout this fixture.

@@ -33,6 +33,7 @@ const MANGA_FIELDS: &[&str] = &[
     "artists",
     "links",
     "version",
+    "primary_cover",
 ];
 const MANGA_META: &[&str] = &[
     "description",
@@ -143,8 +144,9 @@ struct MangaFields {
     tags: Option<Vec<String>>,
     authors: Option<Vec<String>>,
     artists: Option<Vec<String>>,
+    primary_cover: Option<Option<String>>,
 }
-fn manga_fields(payload: &Value, create: bool) -> ApiResult<MangaFields> {
+fn manga_fields(payload: &Value, create: bool, contract: v::LanguageContract) -> ApiResult<MangaFields> {
     v::allowed(payload, MANGA_FIELDS)?;
     let title = v::string(payload, "title", 500, create)?;
     if title.as_deref() == Some("") {
@@ -160,7 +162,7 @@ fn manga_fields(payload: &Value, create: bool) -> ApiResult<MangaFields> {
     };
     let language = v::string(payload, "language", 12, create)?;
     if let Some(lang) = &language {
-        v::language(lang)?;
+        contract.validate(lang)?;
     }
     let demographic = v::enum_value(
         payload,
@@ -180,9 +182,14 @@ fn manga_fields(payload: &Value, create: bool) -> ApiResult<MangaFields> {
         &["safe", "suggestive", "erotica", "pornographic"],
         create,
     )?;
-    let metadata = v::metadata(payload, MANGA_META)?;
+    let metadata = v::metadata_for(payload, MANGA_META, contract)?;
     v::string(payload, "last_volume", 32, false)?;
     v::string(payload, "last_chapter", 32, false)?;
+    let primary_cover = v::nullable_string(payload, "primary_cover", 128)?;
+    if let Some(Some(cover)) = &primary_cover {
+        v::id(cover)?;
+        if create { return Err(ApiError::bad_request("Upload a cover after creating the title")); }
+    }
     Ok(MangaFields {
         title,
         year,
@@ -194,6 +201,7 @@ fn manga_fields(payload: &Value, create: bool) -> ApiResult<MangaFields> {
         tags: v::ids(payload, "tags", false)?,
         authors: v::ids(payload, "authors", create)?,
         artists: v::ids(payload, "artists", create)?,
+        primary_cover,
     })
 }
 fn merge_localized_metadata(fields: &mut MangaFields, extra: &Value) {
@@ -262,8 +270,9 @@ pub(crate) async fn manga_create_in(
     tx: &Transaction<'_>, actor: &impl CatalogMutationActor, payload: &Value,
     extra_metadata: &Value,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("manga.create")?;
-    let mut f = manga_fields(payload, true)?;
+    let mut f = manga_fields(payload, true, actor.language_contract())?;
     let language = f.language.as_deref().unwrap();
     f.metadata["localized_titles"] = json!({language:f.title});
     if let Some(description) = payload.get("description") { f.metadata["localized_description"] = json!({language:description}); }
@@ -313,9 +322,10 @@ pub(crate) async fn manga_update_in(
     tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str, payload: &Value,
     extra_metadata: &Value,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     v::id(&id)?;
     let version = v::version(&payload)?;
-    let mut f = manga_fields(payload, false)?;
+    let mut f = manga_fields(payload, false, actor.language_contract())?;
     require_manga_edit(tx, &id, actor, "manga.update").await?;
     for (fields, perm) in [
         (&["title", "alt_titles"][..], "manga.title.edit"),
@@ -324,7 +334,8 @@ pub(crate) async fn manga_update_in(
         (&["artists"][..], "manga.artist.edit"),
         (&["links"][..], "manga.link.edit"),
     ] {
-        if fields.iter().any(|key| payload.get(*key).is_some()) {
+        if fields.iter().any(|key| payload.get(*key).is_some())
+            || perm == "manga.link.edit" && extra_metadata.get("official_links").is_some() {
             require_manga_edit(tx, &id, actor, perm).await?;
         }
     }
@@ -336,6 +347,9 @@ pub(crate) async fn manga_update_in(
         .await?;
     let protocol_overlay: bool = row.get(1);
     check_version(row.get(0), version)?;
+    if let Some(cover) = &f.primary_cover {
+        super::repository::CatalogRepository::select_primary_cover(tx, id, actor, version, cover.as_deref()).await?;
+    }
     // A native edit must not leave an older localized public value shadowing it.
     let language = f.language.clone().unwrap_or_else(|| row.get(2));
     if let Some(title) = &f.title { f.metadata["localized_titles"] = json!({language.clone():title}); }
@@ -418,6 +432,7 @@ pub(crate) async fn manga_transition_in(
     state: &AppState, tx: &Transaction<'_>, actor: &impl CatalogMutationActor,
     id: &str, payload: &Value, next: &str, require_original_cover: bool,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     if !["submitted", "published", "rejected"].contains(&next) {
         return Err(ApiError::bad_request("Invalid title transition"));
     }
@@ -561,6 +576,7 @@ pub(crate) async fn manga_lock_in(
     tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str,
     locked: bool, expected: Option<i32>,
 ) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     staff_permission(actor, "manga.lock.update")?;
     v::id(id)?;
     let actual: i32 = tx.query_opt("SELECT version FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR UPDATE", &[&id]).await?.ok_or_else(||ApiError::not_found("Manga not found"))?.get(0);
@@ -587,6 +603,7 @@ pub(crate) async fn manga_delete_in(
     tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str,
     expected: Option<i32>,
 ) -> ApiResult<i32> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     v::id(id)?;
     let row=tx.query_opt("SELECT owner_id,state,locked,version FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Manga not found"))?;
     if !(actor.is_moderator() && actor.has_perm("manga.delete")) {
@@ -618,6 +635,7 @@ pub async fn relation_create(
 }
 
 pub(crate) async fn relation_create_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     v::id(&id)?;
     let (related, kind, expected) = relation_fields(&payload, false)?;
     if id == related {
@@ -666,6 +684,7 @@ pub async fn relation_update(
 }
 
 pub(crate) async fn relation_update_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     v::id(&id)?;
     let (related, kind, expected) = relation_fields(&payload, true)?;
     if id == related {
@@ -787,6 +806,7 @@ pub async fn relation_delete(
 }
 
 pub(crate) async fn relation_delete_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str,payload:&Value)->ApiResult<i32> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     v::id(&id)?;
     v::allowed(&payload, &["related_id", "version"])?;
     let related = v::string(&payload, "related_id", 128, true)?.unwrap();

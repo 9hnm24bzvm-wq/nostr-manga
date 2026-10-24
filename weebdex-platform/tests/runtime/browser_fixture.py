@@ -50,6 +50,8 @@ IDS = {'manga':'SeedManga1','second_manga':'SeedManga2','group':'SeedGroup1','au
 SIGNED_PHASES={'signed-library','signed-profile','signed-social','signed-context','signed-source-controls','signed-namespace','signed-recipients','signed-restart'}
 PUBLIC_UPLOAD_PHASE='public-upload-recovery'
 PUBLIC_FEATURE_PHASE='public-feature-recovery'
+PUBLIC_SIGNED_FEATURE_PHASE='public-signed-feature-recovery'
+SIGNED_FEATURE_CONTROLS={'signed-feature-account','signed-feature-snapshot'}
 PUBLIC_UPLOAD_CONTROLS={'upload-account','upload-snapshot'}
 UI_REGRESSION_CONTROLS={'ui-regressions-seed':120,'ui-regressions-readers':120,'ui-regressions-status':30,'ui-regressions-withdraw':30}
 PG_HOME_FAULT_CONTROLS={'pg-home-fault-begin','pg-home-fault-resume'}
@@ -64,6 +66,24 @@ def public_feature_command(phase, options, script, timeout, public_upload_contro
             type(timeout) is not int or not 15 <= timeout <= 180):
         raise ValueError('Public feature phase admission refused')
     return True
+
+
+def signed_feature_command(phase, options, script, timeout, signed_feature_controls):
+    """One separately opted-in, fixed signed feature journey with a 300s cap."""
+    if phase != PUBLIC_SIGNED_FEATURE_PHASE and options.get('BROWSER_PHASE') != PUBLIC_SIGNED_FEATURE_PHASE:
+        return False
+    if (phase != PUBLIC_SIGNED_FEATURE_PHASE or options.get('BROWSER_PHASE') != PUBLIC_SIGNED_FEATURE_PHASE or
+            signed_feature_controls is not True or script != ROOT/'scripts/browser-acceptance.mjs' or
+            type(timeout) is not int or not 15 <= timeout <= 300):
+        raise ValueError('Signed feature phase admission refused')
+    return True
+
+
+def signed_feature_payload(action, payload):
+    if (action not in SIGNED_FEATURE_CONTROLS or type(payload) is not dict or set(payload) != {'pubkey'} or
+            not isinstance(payload['pubkey'], str) or not re.fullmatch(r'[a-f0-9]{64}', payload['pubkey'])):
+        raise ValueError('Only the fresh synthetic browser public key is allowed')
+    return dict(payload)
 
 
 def free_port():
@@ -192,6 +212,7 @@ class Fixture:
         self.recipient_enabled=args.second_protocol_recipient;self.recipient_origin=f'http://127.0.0.1:{self.recipient_port}'
         self.ui_regression_controls=args.ui_regression_controls
         self.public_upload_controls=args.public_upload_controls;self.public_upload_actions=0
+        self.signed_feature_controls=args.signed_feature_controls;self.signed_feature_actions=0
         self.pg_home_fault_controls=args.pg_home_fault_controls;self.pg_fault=None;self.browser_kind=None
         self.maintenance=threading.Event();self.controls_completed=set();self.generation=0;self.lifecycle_ever_forced=False
         self.ui_dir=self.run/'frontend-snapshot'
@@ -210,7 +231,7 @@ class Fixture:
                       'postgres_bin_root':str(PG_BIN),
                       'platform_origin':self.origin,'mail_origin':self.mail_origin,'ids':IDS,'children':{},'listener_lifecycle':[]}
         write_json(self.run/'supervisor.json',self.receipt)
-        write_json(self.run/'fixture-owned.json',{'fixture_only':True,'database':'weebdex_browser_test','pg_port':self.pg_port,'public_upload_controls':self.public_upload_controls})
+        write_json(self.run/'fixture-owned.json',{'fixture_only':True,'database':'weebdex_browser_test','pg_port':self.pg_port,'public_upload_controls':self.public_upload_controls,'signed_feature_controls':self.signed_feature_controls,'synthetic_images':not args.ubunchu_noncommercial})
     def environment(self):
         # Explicit safe tool/runtime environment; no live account/provider secrets
         # are inherited by PostgreSQL, Rust, provisioner or Chromium children.
@@ -308,6 +329,26 @@ class Fixture:
                 self.receipt['public_upload'].update(receipt)
                 write_json(self.run/'supervisor.json',self.receipt)
         return receipt
+    def signed_feature(self,action,payload):
+        # Public-only transport; fixed users, drafts, chapter and reason are
+        # selected inside the provisioner, never supplied by the browser.
+        if not self.signed_feature_controls or not self.protocol_enabled:raise ValueError('Signed feature fixture is not enabled')
+        payload=signed_feature_payload(action,payload)
+        if self.stop.is_set() or self.maintenance.is_set():raise ValueError('Signed feature fixture is draining or rebuilding')
+        live=self.browser and self.browser.poll()is None
+        if live and (self.browser_kind!=PUBLIC_SIGNED_FEATURE_PHASE or self.browser_phase!=PUBLIC_SIGNED_FEATURE_PHASE):raise ValueError('Only the exact signed feature phase may use these controls')
+        if live and self.browser_deadline-time.monotonic()<30:raise ValueError('Signed feature action cannot fit the active browser deadline')
+        if not self.ready_at or self.receipt['deadline_unix']-time.time()<30:raise ValueError('Signed feature action cannot fit the fixture lifetime')
+        with self.lock:
+            if self.signed_feature_actions>=24:raise ValueError('Signed feature fixture action budget reached')
+            self.signed_feature_actions+=1
+        receipt=self.provision_protocol(action,payload,timeout=20)
+        if receipt.get('fixture_only')is not True or receipt.get('scenario')!='public-signed-features-v1' or receipt.get('pubkey')!=payload['pubkey']:raise RuntimeError('Signed feature fixture receipt mismatch')
+        if action=='signed-feature-account':
+            with self.lock:
+                self.receipt['signed_features'].update(receipt)
+                write_json(self.run/'supervisor.json',self.receipt)
+        return receipt
     def protocol_setup(self):
         setup=self.provision_protocol('setup',{'ui_origin':self.origin,'protocol_origin':self.protocol_origin,
                         'backend_binary':str((ROOT.parent/'manga-protocol-lab/vendor/strfry/strfry').resolve())},timeout=90)
@@ -328,6 +369,9 @@ class Fixture:
         if self.public_upload_controls:
             self.receipt['fixture_control']['allowed_actions']+=sorted(PUBLIC_UPLOAD_CONTROLS)
             self.receipt['public_upload']={'fixture_only':True,'enabled':True,'scenario':'public-upload-v1','account_endpoint':self.mail_origin+'/fixture/protocol/upload-account','snapshot_endpoint':self.mail_origin+'/fixture/protocol/upload-snapshot','maximum_sessions':2,'maximum_current_files':3,'maximum_original_bytes':512,'private_browser_key_received':False}
+        if self.signed_feature_controls:
+            self.receipt['fixture_control']['allowed_actions']+=sorted(SIGNED_FEATURE_CONTROLS)
+            self.receipt['signed_features']={'fixture_only':True,'enabled':True,'scenario':'public-signed-features-v1','account_endpoint':self.mail_origin+'/fixture/protocol/signed-feature-account','snapshot_endpoint':self.mail_origin+'/fixture/protocol/signed-feature-snapshot','maximum_actions':24,'browser_private_key_received':False,'secret_received':False}
         if self.recipient_enabled:
             recipient=self.provision_protocol('recipient-setup',{'recipient_origin':self.recipient_origin},timeout=90)
             config['protocol_connect_origins'] += [self.recipient_origin,recipient['relay_origin']]
@@ -621,6 +665,13 @@ class Fixture:
                     try:receipt=fixture.public_upload(action,value)
                     except ValueError:return self.respond(400,{'error':'bounded explicit public upload fixture target required'})
                     except RuntimeError:return self.respond(503,{'error':'public upload fixture action did not complete'})
+                    return self.respond(200,receipt)
+                if self.path in ['/fixture/protocol/signed-feature-account','/fixture/protocol/signed-feature-snapshot']:
+                    if not fixture.signed_feature_controls:return self.respond(404,{'error':'signed feature fixture controls are disabled'})
+                    action=self.path.rsplit('/',1)[-1]
+                    try:receipt=fixture.signed_feature(action,value)
+                    except ValueError:return self.respond(400,{'error':'bounded explicit signed feature fixture target required'})
+                    except RuntimeError:return self.respond(503,{'error':'signed feature fixture action did not complete'})
                     return self.respond(200,receipt)
                 if self.path=='/fixture/provision':
                     if set(value)-{'email','profile','join_seed_group'}: return self.respond(400,{'error':'unsupported provisioning field'})
@@ -945,13 +996,19 @@ class Fixture:
             payload={}
             action_timeout=90
             public_upload=action in PUBLIC_UPLOAD_CONTROLS
+            signed_feature=action in SIGNED_FEATURE_CONTROLS
             if public_upload:
                 field='pubkey'if action=='upload-account'else'session_id'
                 if set(value)-{'request_id','action','browser_phase',field}:raise ValueError('Only the named public upload control fields are allowed')
                 payload=public_upload_payload(action,{field:value.get(field)});action_timeout=20
                 if not self.public_upload_controls or not self.ready_at or self.receipt['deadline_unix']-time.time()<30:raise ValueError('Public upload control cannot fit the opted-in fixture lifetime')
                 if live and (self.browser_kind!=PUBLIC_UPLOAD_PHASE or self.browser_deadline-time.monotonic()<30):raise ValueError('Public upload control requires its bounded active browser phase')
-            elif 'pubkey'in value or 'session_id'in value:raise ValueError('Public upload targets are reserved for their opt-in controls')
+            elif signed_feature:
+                if set(value)-{'request_id','action','browser_phase','pubkey'}:raise ValueError('Only the named signed feature control fields are allowed')
+                payload=signed_feature_payload(action,{'pubkey':value.get('pubkey')});action_timeout=20
+                if not self.signed_feature_controls or not self.ready_at or self.receipt['deadline_unix']-time.time()<30:raise ValueError('Signed feature control cannot fit the opted-in fixture lifetime')
+                if live and (self.browser_kind!=PUBLIC_SIGNED_FEATURE_PHASE or self.browser_phase!=PUBLIC_SIGNED_FEATURE_PHASE or self.browser_deadline-time.monotonic()<30):raise ValueError('Signed feature control requires its bounded active browser phase')
+            elif 'pubkey'in value or 'session_id'in value:raise ValueError('Public targets are reserved for their opt-in controls')
             pg_home_fault=action in PG_HOME_FAULT_CONTROLS
             if self.pg_fault and self.receipt.get('pg_home_fault',{}).get('active')and action!='pg-home-fault-resume':raise ValueError('Resume the recorded PG dependency fault before another private control')
             if pg_home_fault:
@@ -994,6 +1051,7 @@ class Fixture:
             elif action=='pg-home-fault-resume':operation=self.resume_pg_home_fault()
             elif action=='runtime-restart':operation={'fixture_only':True,'runtime_restart':True}
             elif public_upload:operation=self.public_upload(action,payload)
+            elif signed_feature:operation=self.signed_feature(action,payload)
             else:operation=self.provision_protocol(action,payload,timeout=action_timeout)
             result['operation']=operation
             if pg_home_fault:result['pg_home_fault']=operation
@@ -1072,6 +1130,7 @@ class Fixture:
             script=Path(argv[1]).resolve();assert script.is_file() and (script.is_relative_to(ROOT/'tests/ui') or script==ROOT/'scripts/browser-acceptance.mjs')
             options=value.get('env',{});assert isinstance(options,dict) and set(options)<= {'BROWSER_PHASE','BROWSER_RUN_ID'}
             feature_phase=public_feature_command(phase,options,script,timeout,self.public_upload_controls)
+            signed_feature_command(phase,options,script,timeout,self.signed_feature_controls)
             if options.get('BROWSER_PHASE')==PUBLIC_UPLOAD_PHASE:assert self.public_upload_controls and script==ROOT/'scripts/browser-acceptance.mjs'
             signed_control_phase=script==ROOT/'scripts/browser-acceptance.mjs'and options.get('BROWSER_PHASE')in SIGNED_PHASES|{PUBLIC_UPLOAD_PHASE}
             assert isinstance(timeout,int) and 15<=timeout<=(180 if feature_phase else 600 if signed_control_phase else 300)
@@ -1270,6 +1329,7 @@ def main():
     parser.add_argument('--second-protocol-recipient',action='store_true',help='Own a second actual original node/database/store for bounded two-recipient browser journeys')
     parser.add_argument('--ui-regression-controls',action='store_true',help='Enable private bounded named native pagination/reader regression controls; no bulk data is seeded automatically')
     parser.add_argument('--public-upload-controls',action='store_true',help='Enable the bounded synthetic public signed upload actor/group fixture and exact owned-session observations')
+    parser.add_argument('--signed-feature-controls',action='store_true',help='Enable bounded synthetic signed report/draft/chapter fixtures, separate from upload grants')
     parser.add_argument('--pg-home-fault-controls',action='store_true',help='Enable one named real fixed-cluster PG outage/restart for the reviewed homepage failure phase')
     parser.add_argument('--ubunchu-noncommercial',action='store_true',help='Use licensed originals only for a genuinely noncommercial local fixture; exclude artwork/screenshots from uploads')
     args=parser.parse_args()
@@ -1280,6 +1340,7 @@ def main():
     if args.ui_regression_controls and not args.protocol_provisioner:parser.error('native UI regression controls require the reviewed disposable fixture provisioner')
     if args.public_upload_controls and not args.protocol_provisioner:parser.error('public signed upload controls require the combined reviewed disposable fixture')
     if args.public_upload_controls and args.ubunchu_noncommercial:parser.error('public signed upload controls require the synthetic image fixture')
+    if args.signed_feature_controls and (not args.protocol_provisioner or args.ubunchu_noncommercial):parser.error('signed feature controls require the combined synthetic fixture')
     if args.pg_home_fault_controls and not args.protocol_provisioner:parser.error('PG fault controls require the combined reviewed disposable fixture')
     if args.protocol_provisioner and (not args.expected_sha256 or not args.provisioner_sha256 or not args.frontend_index_sha256):parser.error('combined fixture requires exact platform/provisioner/frontend hashes')
     (ROOT/'test-runtime').mkdir(exist_ok=True)

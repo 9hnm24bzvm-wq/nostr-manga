@@ -123,3 +123,11 @@ rejection costs, cancellation/socket closure, late verification and unsafe-input
 refusal. No service, package installation, external network, image dataset or
 browser is needed. Qualification uses the installed aiohttp 3.14.4; separate
 validation is still required against the original environment's pinned version.
+
+## Finite mounted scenario consumer (2026-10-22)
+
+The [mounted reader scenario core](integrated-mounted-scenarios.md) now consumes
+this primitive through one coordinator for actual composed component/API fan-out
+against an owned synthetic HTTP fixture. This is not the former recipe's
+application dispatch, whole-route/browser measurement or backend qualification.
+The original transport evidence above remains historical finite seam evidence.

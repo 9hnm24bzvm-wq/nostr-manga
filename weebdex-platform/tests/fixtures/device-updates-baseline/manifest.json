@@ -1,0 +1,17 @@
+{
+  "baseline": "c477fc169540e6e280f89e59f544cb245f8c38e6",
+  "files": [
+    {
+      "source": "platform-integrations/local-library/title-index.ts",
+      "file": "title-index.ts.txt",
+      "sha256": "3b492070e486a0caf7eb8a35330f247f3860f779d979837ec6cf2d3c7194583b",
+      "bytes": 10061
+    },
+    {
+      "source": "platform-integrations/public-api/library-catalogue.ts",
+      "file": "library-catalogue.ts.txt",
+      "sha256": "8127da1de74382e0a701f408917de951a47bf32b7be88d5b1e638bdb30de258b",
+      "bytes": 6637
+    }
+  ]
+}

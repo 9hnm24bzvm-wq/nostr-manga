@@ -26,6 +26,7 @@ pub fn router<S: Clone + Send + Sync + 'static>() -> Router<S> {
         serde_json::from_str(INVENTORY).expect("checked-in derived API inventory");
     let mut paths = BTreeMap::<String, MethodRouter<S>>::new();
     for operation in inventory.operations {
+        if (operation.method=="DELETE" && operation.path=="/user/{id}") || (operation.method=="POST" && operation.path=="/user/delete/{code}") {continue;}
         if (operation.method == "POST" && matches!(operation.path.as_str(), "/manga" | "/manga/draft/{id}/commit"))
             || (matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/manga/{id}") { continue; }
         if matches!(operation.method.as_str(), "PUT" | "DELETE") && operation.path == "/chapter/{id}" { continue; }

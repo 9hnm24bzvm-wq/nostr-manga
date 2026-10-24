@@ -30,7 +30,7 @@ const QUERY: QuerySchema<'static> = QuerySchema {
     default_limit: 10,
     max_limit: 100,
     max_offset: 10_000,
-    scalar: &["category", "reasonId", "objectId", "status"],
+    scalar: &["category", "reasonId", "objectId", "status", "scope", "expectedAccountId"],
     arrays: &[],
     includes: &["user", "reason"],
     order: &["createdAt"],
@@ -118,13 +118,16 @@ fn query(raw: Option<&str>) -> PublicApiResult<PublicQuery> {
     if let Some(category) = query.first("category") {
         kind(category)?;
     }
+    if query.first("scope").is_some_and(|scope| scope != "mine") {
+        return Err(PublicApiError::bad_request("Invalid report scope"));
+    }
     if query
         .first("status")
         .is_some_and(|status| !STATUSES.contains(&status))
     {
         return Err(PublicApiError::bad_request("Invalid report status"));
     }
-    for field in ["reasonId", "objectId"] {
+    for field in ["reasonId", "objectId", "expectedAccountId"] {
         if let Some(value) = query.first(field) {
             PublicUuid::parse(value)?;
         }
@@ -151,11 +154,21 @@ async fn list(
         .start()
         .await?;
     let actor = bound_account_read(&tx, &cap).await?;
+    // The captured account is a stale-read fence, never an authority selector.
+    if let Some(expected) = query.first("expectedAccountId") {
+        let expected = PublicUuid::parse(expected)?;
+        let current = super::uploads::preferred(&tx, ResourceKind::User, actor.user_id()).await?;
+        if expected != current { return Err(PublicApiError::conflict("The selected signer is bound to another account; reload report access")); }
+    }
     let mut sql = Sql::default();
     // Preserve the native instance moderation queue permission boundary. Native
     // thread/reply reports have no counterpart in the pinned public categories.
     sql.conditions.push("r.deleted_at IS NULL AND r.entity_type IN ('manga','chapter','scanlation_group','user','author')".into());
-    if !(actor.is_moderator() && actor.require_permission("report.update").is_ok()) {
+    // Instance extension: explicit personal inspection narrows even a moderator
+    // to the transaction-validated actor. No client-supplied owner is trusted.
+    if query.first("scope") == Some("mine")
+        || !(actor.is_moderator() && actor.require_permission("report.update").is_ok())
+    {
         let owner = sql.bind(actor.user_id().to_owned());
         sql.conditions.push(format!("r.submitter_id={owner}"));
     }
@@ -252,6 +265,19 @@ struct CreateReport {
     details: String,
     #[serde(default,deserialize_with="super::uploads::deserialize_optional_account")]
     expected_account_id: Option<PublicUuid>,
+    // Optional compatibility extension. The signed UI always pins the exact
+    // reason the user reviewed, not merely its stable public identifier.
+    #[serde(default, deserialize_with="deserialize_reason_version")]
+    expected_reason_version: Option<i32>,
+}
+fn deserialize_reason_version<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<Option<i32>, D::Error> {
+    let version = i32::deserialize(deserializer)?;
+    if version < 1 { return Err(serde::de::Error::custom("Expected positive reason version")); }
+    Ok(Some(version))
+}
+fn check_reason_version(actual: i32, expected: i32) -> PublicApiResult<()> {
+    if actual != expected { return Err(PublicApiError::conflict("Report reason changed. Reload reasons before reporting.")); }
+    Ok(())
 }
 impl core::sealed::Sealed for BoundAccountWrite {}
 impl core::ReportMutationActor for BoundAccountWrite {
@@ -309,6 +335,13 @@ async fn create(
     .await?
     .remove(&payload.reason)
     .ok_or_else(|| PublicApiError::bad_request("Reason does not belong to this report category"))?;
+    if let Some(expected) = payload.expected_reason_version {
+        // Hold this lock through core validation and insert; an administrative
+        // reason edit cannot change text/required-details after this check.
+        let actual = tx.query_opt("SELECT version FROM platform.report_reasons WHERE id=$1 FOR SHARE", &[&reason.native_id]).await?
+            .ok_or_else(|| PublicApiError::bad_request("Report reason is unavailable"))?;
+        check_reason_version(actual.get(0), expected)?;
+    }
     let target = PostgresPublicIdResolver::resolve_many_in(
         &*tx,
         target_kind,
@@ -356,6 +389,12 @@ mod tests {
     #[test]
     fn strict_report_contract_and_bounds() {
         for value in [
+            "scope=all",
+            "expectedAccountId=native",
+            "expectedAccountId=11111111-1111-8111-8111-111111111111&expectedAccountId=11111111-1111-8111-111111111111",
+            "scope=",
+            "scope=mine&scope=mine",
+            "scope=33333333-3333-8333-8333-333333333333",
             "limit=0",
             "limit=101",
             "offset=10001",
@@ -370,6 +409,8 @@ mod tests {
         ] {
             assert!(query(Some(value)).is_err(), "{value}");
         }
+        assert_eq!(query(Some("scope=mine")).unwrap().first("scope"), Some("mine"));
+        assert_eq!(query(Some("expectedAccountId=11111111-1111-8111-8111-111111111111")).unwrap().first("expectedAccountId"), Some("11111111-1111-8111-8111-111111111111"));
         let q = query(Some(
             "offset=7&limit=1&order[createdAt]=asc&includes[]=reason",
         ))
@@ -378,6 +419,14 @@ mod tests {
         assert_eq!(q.order[0].1, Direction::Asc);
         let valid = r#"{"category":"manga","reason":"11111111-1111-8111-8111-111111111111","objectId":"22222222-2222-8222-8222-222222222222"}"#;
         assert!(serde_json::from_str::<CreateReport>(valid).is_ok());
+        let pinned=valid.replace('}', ",\"expectedReasonVersion\":3}");
+        assert_eq!(serde_json::from_str::<CreateReport>(&pinned).unwrap().expected_reason_version, Some(3));
+        for value in ["null", "false", "[]", "\"3\"", "0", "-1", "1.5", "2147483648"] {
+            assert!(serde_json::from_str::<CreateReport>(&valid.replace('}', &format!(",\"expectedReasonVersion\":{value}}}"))).is_err());
+        }
+        assert!(serde_json::from_str::<CreateReport>(&pinned.replace('}', ",\"expectedReasonVersion\":3}")).is_err());
+        assert!(check_reason_version(3,3).is_ok());
+        assert!(check_reason_version(4,3).is_err());
         let captured=valid.replace('}',",\"expectedAccountId\":\"33333333-3333-8333-8333-333333333333\"}");
         assert!(serde_json::from_str::<CreateReport>(&captured).unwrap().expected_account_id.is_some());
         for field in ["null","false","[]","\"native\""] {

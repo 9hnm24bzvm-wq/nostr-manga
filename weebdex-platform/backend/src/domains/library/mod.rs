@@ -4,6 +4,8 @@ mod follows;
 pub(crate) mod follow_mutations;
 pub(crate) mod reading_status;
 mod history;
+mod reader_completion;
+mod reader_continue;
 mod lists;
 mod preferences;
 pub(crate) mod preference_mutations;
@@ -64,6 +66,14 @@ pub fn router() -> Router<AppState> {
         )
         .route("/user/history/manga", get(history::search))
         .route("/user/history/manga/feed", get(history::feed))
+        .route(
+            "/user/history/manga/{id}/continue",
+            get(reader_continue::get),
+        )
+        .route(
+            "/user/history/manga/{id}/completion",
+            get(reader_completion::get),
+        )
         .route(
             "/user/history/manga/{id}",
             get(history::list).post(history::update),

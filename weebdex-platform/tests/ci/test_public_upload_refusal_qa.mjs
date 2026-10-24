@@ -1,6 +1,9 @@
+import {restoreModeratorTransportSource} from './reviewed-moderator-transport-source-successors.mjs';
+import {restoreReportTransportSource,readReportTransportAssociation} from './reviewed-report-transport-source-successors.mjs';
 // Finite producer and build-hook controls. Explicit fake signing/fetch and fake
 // Rollup graph inputs. No Vite build, browser, network, native service or install.
 import test from 'node:test';
+import {restoreNativeTransportSource} from './reviewed-native-source-successors.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -105,8 +108,11 @@ function emit(f, bundle = graph()) { const output = []; f.value.generateBundle.h
 for (const value of [undefined, '0', '1']) test('explicit finite QA gate ' + value, () => assert.equal(readUploadRefusalQaGate(value), value === '1'));
 for (const value of ['', 'true', 1, true, null]) test('unknown QA gate refuses ' + value, () => assert.throws(() => readUploadRefusalQaGate(value)));
 test('QA build requires explicit public-upload gate', () => assert.throws(() => createUploadRefusalQaPlugin(root, { enabled: true, publicUploadEnabled: false })));
-test('default-OFF/SSR source strips to exact original transport bytes and emits no reader', () => {
-  assert.equal(digest(stripUploadRefusalQaSource(source)), '6b3e14bfdbe5b2dd518297a493534e8ce353ea2fa21aa0e5904bfbfa05f54e23');
+test('default-OFF/SSR keeps current native budgets, exact historical QA stripping and no reader', () => {
+  const comparison = restoreReportTransportSource(readReportTransportAssociation().path, restoreModeratorTransportSource(readReportTransportAssociation().path, source, 'raw'), 'raw');
+  const historical = restoreNativeTransportSource(comparison, 'raw');
+  assert.equal(digest(stripUploadRefusalQaSource(historical)), '6b3e14bfdbe5b2dd518297a493534e8ce353ea2fa21aa0e5904bfbfa05f54e23');
+  assert.equal(restoreNativeTransportSource(stripUploadRefusalQaSource(comparison), 'qa_stripped'), stripUploadRefusalQaSource(historical));
   for (const [enabled, ssr] of [[false, false], [true, true]]) { const f = plugin(enabled, ssr); assert.equal(f.emitted.length, 0); assert.equal(digest(f.code), digest(stripUploadRefusalQaSource(source))); f.value.generateBundle.handler.call({}, {}, {}); }
 });
 test('actual source composition emits only a sole-getter facade and records the shared fake graph provenance', () => {

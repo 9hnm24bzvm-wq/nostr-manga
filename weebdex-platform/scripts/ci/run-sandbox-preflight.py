@@ -184,7 +184,10 @@ def validate_public(value):
 def process(pid):
     try:
         text = Path('/proc/{}/stat'.format(pid)).read_text()
-    except FileNotFoundError:
+    except (FileNotFoundError, ProcessLookupError):
+        # procfs can return ESRCH if the task disappears after its stat inode
+        # is opened. Like ENOENT, this is absence, not an unreadable identity.
+        # Registration still rejects live disappearance and readable PID reuse.
         return None
     fields = text.rsplit(')', 1)[1].split()
     return {'pid': pid, 'state': fields[0], 'ppid': int(fields[1]),
@@ -204,8 +207,11 @@ class Owner:
         self.total_deadline = self.started + total_seconds
         self.cleanup_seconds = cleanup_seconds
         self.ledger = {}
+        self.terminal_observed = {}
         self.unknown = set()
         self.errors = 0
+        self.tracking_error_trace = []
+        self._tracking_operation = 'unclassified'
         self.forced = False
         self.interrupted = False
         self.child = None
@@ -216,36 +222,94 @@ class Owner:
         self.baseline = {(row['pid'], row['birth']) for row in self._rows()
                          if row['ppid'] == os.getpid()}
 
+    def _record_tracking_error(self, operation, error=None):
+        # Private, bounded diagnostics only; never alter the error count or
+        # cleanup decision, and never retain exception text or traceback data.
+        if len(self.tracking_error_trace) >= 16:
+            return
+        operations = {'census-enumeration', 'census-stat', 'scan-ownership',
+                      'scan-register', 'register-identity', 'register-pidfd',
+                      'register-confirm', 'register-close', 'scan-reap',
+                      'scan-return', 'pidfd-signal', 'drain-select', 'drain-read',
+                      'drain-unregister', 'drain-write', 'stdout-eof'}
+        classes = {OSError: 'OSError', PermissionError: 'PermissionError',
+                   ProcessLookupError: 'ProcessLookupError',
+                   ChildProcessError: 'ChildProcessError',
+                   FileNotFoundError: 'FileNotFoundError',
+                   BlockingIOError: 'BlockingIOError', InterruptedError: 'InterruptedError',
+                   ValueError: 'ValueError', IndexError: 'IndexError', KeyError: 'KeyError',
+                   TypeError: 'TypeError', RuntimeError: 'RuntimeError', Refused: 'Refused'}
+        number = error.errno if isinstance(error, OSError) else None
+        self.tracking_error_trace.append({
+            'operation': operation if operation in operations else 'unclassified',
+            'exception_type': classes.get(type(error), 'none' if error is None else 'other'),
+            'errno': number if type(number) is int and 0 <= number <= 4095 else None})
+
     def _rows(self):
         rows = []
+        self._tracking_operation = 'census-enumeration'
         for entry in Path('/proc').iterdir():
             if entry.name.isdigit():
+                self._tracking_operation = 'census-stat'
                 row = process(int(entry.name))
                 if row is not None:
                     rows.append(row)
+            self._tracking_operation = 'census-enumeration'
         return rows
 
+    def record_terminal_absence(self, row):
+        # A census Z is not sufficient: registration must also freshly observe
+        # absence. Never use this path for live, reused, or unreadable identities.
+        key = (row['pid'], row['birth'])
+        self.ledger[key] = None
+        self.terminal_observed[key] = {
+            **{name: row[name] for name in ('pid', 'birth', 'ppid', 'group', 'session')},
+            'initial_state': 'Z', 'confirmation': 'absent',
+        }
+
     def register(self, row):
+        self._tracking_operation = 'register-identity'
         key = (row['pid'], row['birth'])
         if key in self.ledger:
+            if key in self.terminal_observed:
+                self.unknown.add(key)  # A proved-absent identity cannot reappear.
             return
         if len(self.ledger) >= MAX_BIRTHS:
             self.unknown.add(key)
             raise Refused('birth-ledger-limit')
         try:
+            self._tracking_operation = 'register-pidfd'
             fd = os.pidfd_open(row['pid'], 0)
-            again = process(row['pid'])
-            if again is None or again['birth'] != row['birth']:
-                os.close(fd)
-                self.unknown.add(key)
-                return
-            self.ledger[key] = fd
         except ProcessLookupError:
-            self.unknown.add(key)
+            self._tracking_operation = 'register-confirm'
+            if row['state'] == 'Z' and process(row['pid']) is None:
+                self.record_terminal_absence(row)
+            else:
+                self.unknown.add(key)
+            return
+        try:
+            self._tracking_operation = 'register-confirm'
+            again = process(row['pid'])
+            if again is not None and again['birth'] == row['birth']:
+                self.ledger[key] = fd
+                fd = None  # The ledger retains the exact captured handle.
+            elif row['state'] == 'Z' and again is None:
+                self.record_terminal_absence(row)
+            else:
+                self.unknown.add(key)
+        finally:
+            if fd is not None:
+                try:
+                    os.close(fd)
+                except Exception:
+                    self._tracking_operation = 'register-close'
+                    raise
 
     def scan(self):
+        self._tracking_operation = 'census-enumeration'
         try:
             rows = self._rows()
+            self._tracking_operation = 'scan-ownership'
             known = {row['pid']: row for row in rows if (row['pid'], row['birth']) in self.ledger}
             session_alive = self.child is not None and any(row['session'] == self.child.pid for row in known.values())
             owned = {row['pid']: row for row in rows if
@@ -260,48 +324,64 @@ class Owner:
                         owned[row['pid']] = row
                         changed = True
             for row in owned.values():
+                self._tracking_operation = 'scan-register'
                 self.register(row)
             # Reap only this subreaper's exact captured adopted zombies.
             for row in owned.values():
-                if row['state'] == 'Z' and row['ppid'] == os.getpid() and self.child and row['pid'] != self.child.pid:
+                if (row['state'] == 'Z' and row['ppid'] == os.getpid() and self.child and
+                        row['pid'] != self.child.pid and
+                        (row['pid'], row['birth']) not in self.terminal_observed):
                     try:
+                        self._tracking_operation = 'scan-reap'
                         os.waitpid(row['pid'], os.WNOHANG)
-                    except ChildProcessError:
+                    except ChildProcessError as error:
                         self.errors += 1
+                        self._record_tracking_error('scan-reap', error)
+            self._tracking_operation = 'scan-return'
             return [row for row in owned.values() if row['state'] != 'Z']
-        except Exception:
+        except Exception as error:
             self.errors += 1
+            self._record_tracking_error(self._tracking_operation, error)
             return None
 
     def signal_known(self, signum):
         self.scan()  # Census failure must not suppress captured-handle cleanup.
         self.forced = True
         for fd in tuple(self.ledger.values()):
+            if fd is None:
+                continue  # Terminal observations never authorize signalling.
             try:
                 signal.pidfd_send_signal(fd, signum, None, 0)
             except ProcessLookupError:
                 pass
-            except OSError:
+            except OSError as error:
                 self.errors += 1
+                self._record_tracking_error('pidfd-signal', error)
 
     def drain(self):
+        self._tracking_operation = 'drain-select'
         for key, _ in self.selector.select(0):
+            self._tracking_operation = 'drain-read'
             data = os.read(key.fd, 4096)
             if not data:
+                self._tracking_operation = 'drain-unregister'
                 self.selector.unregister(key.fd)
                 self.stdout_eof = True
                 continue
             available = MAX_LOG - self.log_bytes
+            self._tracking_operation = 'drain-write'
             self.log.write(data[:available])
             self.log_bytes += min(len(data), available)
             if len(data) > available:
                 self.output_overflow = True
 
     def safe_drain(self):
+        self._tracking_operation = 'unclassified'
         try:
             self.drain()
-        except Exception:
+        except Exception as error:
             self.errors += 1
+            self._record_tracking_error(self._tracking_operation, error)
 
     def launch(self, argv, cwd, env):
         gate_read, gate_write = os.pipe()
@@ -385,6 +465,7 @@ class Owner:
                 time.sleep(min(.02, max(0, deadline - time.monotonic())))
         if self.child and not self.stdout_eof:
             self.errors += 1
+            self._record_tracking_error('stdout-eof')
         live = self.scan()
         if self.child:
             self.child.poll()
@@ -396,7 +477,9 @@ class Owner:
                   'stdout_eof': self.stdout_eof or self.child is None}
         # Keep ownership handles until terminal private facts have been persisted.
         try:
-            journal = dict(result, births=[{'pid': p, 'birth': b} for p, b in self.ledger])
+            journal = dict(result, births=[{'pid': p, 'birth': b} for p, b in self.ledger],
+                           terminal_observed=list(self.terminal_observed.values()),
+                           tracking_error_trace=list(self.tracking_error_trace))
             (self.private / 'owner.json').write_text(json.dumps(journal, sort_keys=True) + '\n')
         finally:
             self.selector.close()
@@ -405,7 +488,8 @@ class Owner:
             if hasattr(self, 'log'):
                 self.log.close()
             for fd in self.ledger.values():
-                os.close(fd)
+                if fd is not None:
+                    os.close(fd)
         return result
 
 
