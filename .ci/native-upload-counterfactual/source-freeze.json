@@ -129,8 +129,8 @@
     },
     {
       "path": "weebdex-platform/scripts/ci/native-upload-counterfactual-contract.mjs",
-      "bytes": 7453,
-      "sha256": "92cf3612ab5e1c5b8b26e8b05ee31f638f3620b821f2bdf672e00b97a958f34b",
+      "bytes": 11041,
+      "sha256": "d30ce4c6545f3451c4f5c0b3395305f0c0ccfad1f049b931d28bcbb66a69ad92",
       "origin": "payload"
     },
     {
@@ -141,8 +141,8 @@
     },
     {
       "path": "weebdex-platform/scripts/ci/run-native-upload-browser-counterfactual.mjs",
-      "bytes": 19146,
-      "sha256": "0c7659d5365135321d7e07983b29985e3951601fa8958cccb9d953c05fce966e",
+      "bytes": 20496,
+      "sha256": "3c75f0bf26c0beb96ab2efc1ddfe7450eb5f3d66303125238ceea45d13062e84",
       "origin": "payload"
     },
     {
@@ -165,8 +165,8 @@
     },
     {
       "path": "weebdex-platform/tests/ci/test_native_upload_counterfactual.mjs",
-      "bytes": 22915,
-      "sha256": "30876ac5d11aee672ff92a1fe3a4c221da950a47b0593d57fbe6ad8437fcc9e0",
+      "bytes": 30829,
+      "sha256": "b0b57f783dd6a6224873bc5ef48bbd8f649d00c383a59df4f7201a7e0babf393",
       "origin": "payload"
     }
   ]

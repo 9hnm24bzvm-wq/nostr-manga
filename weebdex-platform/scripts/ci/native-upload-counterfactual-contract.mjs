@@ -27,12 +27,12 @@ export function expectedCase(row) {
   if (row.case==='truncated-valid-json') return row.application==='rejected' && !row.eof && row.bytes===18 && row.phases===2 && row.server_finish && !row.server_premature && !row.abort_before_read_error && row.native==='failed' && (row.error==='length-mismatch'||(row.version===VERSIONS[0]&&row.error==='aborted')) && !row.observer_healthy;
   return row.application==='missing' && row.eof && row.body_match && row.body_hash_match && row.bytes===18 && row.phases===2 && row.server_finish && !row.server_premature && !row.cancellation && (row.version===VERSIONS[0] ? row.native==='failed' && row.error==='aborted' && !row.observer_healthy : row.native==='finished' && row.error==='none' && row.observer_healthy);
 }
-export function emptyCase(version,kind) { return {version,case:kind,application:'not-run',native:'not-run',error:'none',eof:false,body_match:false,body_hash_match:false,bytes:0,reads:0,phases:0,cancellation:false,abort_before_read_error:false,observer_healthy:false,observer_valid:false,correlated:false,account_finished:false,mutations:0,server_finish:false,server_premature:false,server_terminal_before_cleanup:false,infrastructure:false,cleanup:false,expectation:false}; }
-export function emptyReport() { return {schema:2,kind:'native-upload-browser-counterfactual',driver:'1.64.1',source_commit:'0'.repeat(40),source_manifest_sha256:'0'.repeat(64),acquisition_manifest_sha256:'0'.repeat(64),sandbox:false,protocol:false,outer_cleanup:false,completed:false,qualified:false,binaries:VERSIONS.map((version,index)=>({version,generation:['1792451271847937','1792024099984701'][index],size:[200206486,202676171][index],archive_sha256:'0'.repeat(64),executable_sha256:'0'.repeat(64),identity:false,sandbox:false,protocol:false,preflight_stage:'not-run'})),cases:VERSIONS.flatMap(version=>CASES.map(kind=>emptyCase(version,kind)))}; }
+export function emptyCase(version,kind,schema=3) { return {...(schema===3?{operation:'not-entered',completed_operation:'not-entered',failure_reason:'none',deadline_elapsed:false}:{}),version,case:kind,application:'not-run',native:'not-run',error:'none',eof:false,body_match:false,body_hash_match:false,bytes:0,reads:0,phases:0,cancellation:false,abort_before_read_error:false,observer_healthy:false,observer_valid:false,correlated:false,account_finished:false,mutations:0,server_finish:false,server_premature:false,server_terminal_before_cleanup:false,infrastructure:false,cleanup:false,expectation:false}; }
+export function emptyReport(schema=3) { return {schema,kind:'native-upload-browser-counterfactual',driver:'1.64.1',source_commit:'0'.repeat(40),source_manifest_sha256:'0'.repeat(64),acquisition_manifest_sha256:'0'.repeat(64),sandbox:false,protocol:false,outer_cleanup:false,completed:false,qualified:false,binaries:VERSIONS.map((version,index)=>({version,generation:['1792451271847937','1792024099984701'][index],size:[200206486,202676171][index],archive_sha256:'0'.repeat(64),executable_sha256:'0'.repeat(64),identity:false,sandbox:false,protocol:false,preflight_stage:'not-run'})),cases:VERSIONS.flatMap(version=>CASES.map(kind=>emptyCase(version,kind,schema)))}; }
 const sameKeys=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join('|')===keys.sort().join('|');
 export function canonicalReport(report) {
-  const skeleton=emptyReport(); insist(sameKeys(report,Object.keys(skeleton)));
-  insist(report.schema===2&&report.kind===skeleton.kind&&report.driver==='1.64.1');
+  insist(report.schema===2||report.schema===3);const skeleton=emptyReport(report.schema); insist(sameKeys(report,Object.keys(skeleton)));
+  insist(report.kind===skeleton.kind&&report.driver==='1.64.1');
   insist(/^[0-9a-f]{40}$/.test(report.source_commit));
   for (const k of ['source_manifest_sha256','acquisition_manifest_sha256']) insist(/^[0-9a-f]{64}$/.test(report[k]));
   for (const k of ['sandbox','protocol','outer_cleanup','completed','qualified']) insist(typeof report[k]==='boolean');
@@ -41,8 +41,41 @@ export function canonicalReport(report) {
     for (const [k,v] of Object.entries(shape)) if(typeof v==='boolean') insist(typeof row[k]==='boolean');
     for(const k of ['bytes','reads','phases','mutations']) insist(Number.isInteger(row[k])&&row[k]>=0&&row[k]<=32);
     insist(['not-run','pending','missing','rejected'].includes(row.application)); insist(['not-run','pending','finished','failed'].includes(row.native)); insist(['none','aborted','length-mismatch','other'].includes(row.error));
+    if(report.schema===3){
+      insist(OPERATIONS.includes(row.operation)&&OPERATIONS.includes(row.completed_operation)&&FAILURE_REASONS.includes(row.failure_reason));
+      insist(OPERATIONS.indexOf(row.completed_operation)<=OPERATIONS.indexOf(row.operation));
+      if(row.operation==='not-entered')insist(row.completed_operation==='not-entered'&&row.failure_reason==='none'&&!row.deadline_elapsed&&!row.infrastructure);
+      if(row.infrastructure)insist(row.operation==='complete'&&row.completed_operation==='complete'&&row.failure_reason==='none'&&!row.deadline_elapsed);
+      if(row.failure_reason!=='none')insist(!row.infrastructure&&row.operation!=='not-entered');
+    }
     insist(row.expectation===expectedCase(row));
   }
   insist(report.completed===(report.outer_cleanup&&report.cases.every(r=>r.cleanup&&r.infrastructure)));insist(report.qualified===(report.completed&&report.sandbox&&report.protocol&&report.binaries.every(r=>r.identity&&r.preflight_stage==='complete')&&report.cases.every(r=>r.expectation)));
   const bytes=JSON.stringify(report)+'\n'; insist(Buffer.byteLength(bytes)<=LIMITS.report); return bytes;
 }
+
+// Closed, sanitized diagnostics. Never carry raw errors, URLs or rejection values.
+export const OPERATIONS=Object.freeze(['not-entered','context','binding','page','observer','cdp-session','network-enable','navigation','readiness','readiness-dispose','start','application-terminal','native-terminal','observer-terminal','server-terminal','validation','complete']);
+export const FAILURE_REASONS=Object.freeze(['none','operation-failed','snapshot-invalid','instrumentation-invalid','ledger-invalid','bindings-pending','phase-mismatch']);
+const boundedCount=value=>Number.isInteger(value)&&value>=0&&value<=32;
+function invalidSnapshot(row){if(row.failure_reason==='none')row.failure_reason='snapshot-invalid';insist(false);}
+export function recordApplicationSnapshot(row,value){
+  const numbers=['bytes','reads','pending','phases','controller','signal','cancel','release','bindings','owned'];
+  const booleans=['eof','body_match','body_hash_match','invalid','read_error','abort_before_read_error','ledger_valid'];
+  if(!sameKeys(value,[...numbers,...booleans,'application'])||!numbers.every(k=>boundedCount(value[k]))||!booleans.every(k=>typeof value[k]==='boolean')||!['pending','missing','rejected'].includes(value.application))invalidSnapshot(row);
+  for(const key of ['application','bytes','reads','eof','body_match','body_hash_match','abort_before_read_error'])row[key]=value[key];
+  row.cancellation=value.controller>0||value.signal>0||value.cancel>0;
+  return value;
+}
+export function recordTerminalSnapshot(row,value){
+  const booleans=['account_finished','server_finish','server_premature','server_terminal_before_cleanup','correlated','observer_valid','observer_healthy'];
+  if(!sameKeys(value,[...booleans,'native','error','mutations','phases'])||!booleans.every(k=>typeof value[k]==='boolean')||!boundedCount(value.mutations)||!boundedCount(value.phases)||!['not-run','pending','finished','failed'].includes(value.native)||!['none','aborted','length-mismatch','other'].includes(value.error))invalidSnapshot(row);
+  Object.assign(row,value);
+}
+export function validateCaseObservation(row,last,bindings,phaseCount,kind){
+  for(const [okay,reason]of [[!last.invalid,'instrumentation-invalid'],[last.ledger_valid,'ledger-invalid'],[bindings===0,'bindings-pending'],[phaseCount===(kind==='owner-dispose-checkpoint'?1:2),'phase-mismatch']])if(!okay){row.failure_reason=reason;insist(false);}
+}
+
+// Failure observations precede cleanup; owned late work must still settle, but
+// cannot overwrite the captured failure stage or make infrastructure successful.
+export function preserveCaseFailure(row){const {cleanup,expectation,...values}=row;const snapshot=Object.freeze(values);return()=>Object.assign(row,snapshot);}
