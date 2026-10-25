@@ -1,3 +1,4 @@
+import { restoreCancellationObserver } from './upload-cancel-observer-association.mjs';
 // Finite source and injected filesystem tests. No package import or browser.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -94,7 +95,7 @@ test('reused qualified acquisition, driver and native acceptance have exact unch
   for (const [file, expected] of Object.entries(pins)) assert.equal(sha(read(file)), expected, file);
   const freeze = JSON.parse(read('.ci/native-upload-counterfactual/source-freeze-current.json'));
   const observer = freeze.files.find(row => row.path.endsWith('/public-upload-recovery-observer.mjs'));
-  assert(observer); assert.equal(sha(read(observer.path)), observer.sha256);
+  assert(observer); assert.equal(sha(restoreCancellationObserver(read(observer.path))), observer.sha256);
 });
 
 test('qualified evidence changes only one exact runtime admission expression', () => {

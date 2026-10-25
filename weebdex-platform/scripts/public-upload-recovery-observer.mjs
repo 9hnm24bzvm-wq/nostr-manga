@@ -14,11 +14,13 @@ export function validateUploadHttpEvent({ authorization, url, method, body, orig
   let event; try { event = JSON.parse(bytes.toString('utf8')); } finally { bytes.fill(0); }
   signedEventEnvelope(event);
   const parsed = new URL(url); assert.equal(parsed.origin, origin); assert.equal(parsed.href, url); assert.ok(!url.includes('#') && route.test(parsed.pathname));
-  // The real upload client binds its initial discovery GET to the account it
-  // just verified. Admit only that exact canonical URL extension, never a
+  // The real client binds discovery GET and exact-session cancellation DELETE
+  // to its verified account. Admit only their canonical URL extension, never a
   // decoded/rebuilt substitute for the full URL covered by the signed u tag.
   if (url.includes('?')) {
-    assert.equal(method, 'GET'); assert.equal(parsed.pathname, '/api/v1/upload');
+    const discovery = method === 'GET' && parsed.pathname === '/api/v1/upload';
+    const cancellation = method === 'DELETE' && parsed.pathname.startsWith('/api/v1/upload/') && accountIdPattern.test(parsed.pathname.slice('/api/v1/upload/'.length));
+    assert.ok(discovery || cancellation); assert.equal(body?.length ?? 0, 0);
     assert.equal(typeof expectedAccountId, 'string'); assert.match(expectedAccountId, accountIdPattern);
     assert.equal(parsed.search, '?expectedAccountId=' + expectedAccountId);
   }
@@ -32,6 +34,7 @@ export function validateUploadHttpEvent({ authorization, url, method, body, orig
   assert.equal(tags.get('u'), url); assert.equal(tags.get('method'), method); assert.equal(tags.get('service'), service);
   assert.match(tags.get('nonce'), /^[A-Za-z0-9_-]{16,128}$/);
   if (body !== null && method !== 'GET') assert.equal(tags.get('payload'), uploadDigest(body));
+  if (method === 'DELETE' && url.includes('?')) assert.equal(tags.get('payload'), uploadDigest(Buffer.alloc(0)));
   if (method === 'GET') assert.equal(body?.length ?? 0, 0);
   return { event_id: id, method, path: parsed.pathname, signed_payload_sha256: tags.get('payload') ?? null,
     observed_body_bytes: body === null ? null : body.length, observed_body_sha256: body === null ? null : uploadDigest(body),
