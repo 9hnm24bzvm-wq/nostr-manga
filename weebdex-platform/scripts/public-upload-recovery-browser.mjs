@@ -240,8 +240,18 @@ export async function runPublicUploadRecovery(h) {
     result.transport_refusal_captures.push(await captureUploadRequestRefusals(page,
       observer.rows.filter(row => row.native === 'failed').map(row => row.event_id)));
     result.preview_transport_refusals = await captureUploadPreviewRefusals(page);
-    try { observer.close(); reader.close(); } finally { result.browser_http = observer.snapshot(); result.independent_http = reader.snapshot();
-      secret?.fill(0); secret = undefined; secretHex = ''; for (const image of [...images, cancelImage, replacementImage]) image.buffer.fill(0); save(); }
+    try {
+      if (result.completed) await until(() => {
+        // Captures above can yield to late signed reads. Check and detach in the
+        // same synchronous turn, so no admitted row misses its native terminal.
+        if (!observer.settled()) return false;
+        assert.equal(observer.mutationCount(), 21, 'Unexpected final UI mutation');
+        observer.close(); return true;
+      }, Boolean, 'Final signed browser closure');
+    } finally {
+      try { observer.close(); reader.close(); } finally { result.browser_http = observer.snapshot(); result.independent_http = reader.snapshot();
+        secret?.fill(0); secret = undefined; secretHex = ''; for (const image of [...images, cancelImage, replacementImage]) image.buffer.fill(0); save(); }
+    }
     // The outer safe-error serializer still owns its redaction entry until the
     // final report has been persisted; removing it here could expose a late error.
   }

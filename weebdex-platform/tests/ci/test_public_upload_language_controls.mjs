@@ -1,3 +1,4 @@
+import { restoreUploadFinalization } from './upload-finalization-source-association.mjs';
 // Finite actual-composition/source-extracted locator seams only. No browser,
 // Svelte runtime, signer, HTTP, database, dependency install or service is used.
 import assert from 'node:assert/strict';
@@ -100,8 +101,8 @@ test('exact active public composition is a code Input; the disabled public profi
   assert.match(canonicalInput, /<input[\s\S]*\{type\}\s*bind:value\s*\{\.\.\.restProps\}/);
 });
 
-test('runner changes are restricted to the two language-control functions; every other oracle is byte-identical to run40133800331', () => {
-  const reverted = source.replace(englishBlock(source), englishBlock(baseline)).replace(metadataBlock(source), metadataBlock(baseline));
+test('apart from exact finalization successor, only language controls differ from run40133800331', () => {
+  const reverted = restoreUploadFinalization(source).replace(englishBlock(source), englishBlock(baseline)).replace(metadataBlock(source), metadataBlock(baseline));
   assert.equal(hash(reverted), '2c1edd5124418e1fb7c1d8a50e93f16aa2bc10bcbb42e7512f7dc2a47392975d');
   for (const code of [englishBlock(source), metadataBlock(source)]) {
     assert.doesNotMatch(code, /select-trigger|select-content|select-item|\.evaluate\(|dispatchEvent|fetch\(|request\(|force:/);

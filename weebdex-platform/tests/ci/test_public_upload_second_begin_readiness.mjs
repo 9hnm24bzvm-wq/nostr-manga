@@ -1,3 +1,4 @@
+import { restoreUploadFinalization } from './upload-finalization-source-association.mjs';
 // Finite source-extracted harness control. No browser, signer, HTTP, fixture,
 // Svelte runtime, dependency install or backend is started by this file.
 import test from 'node:test';
@@ -99,7 +100,7 @@ test('exact frozen917 counterfactual reads current before the delayed native beg
   // public language input locator correction. The second-begin action is unchanged.
   // Admit only its exact full bytes, then keep this check's action identical
   // to the historical action plus the bounded native-terminal wait.
-  assert.equal(createHash('sha256').update(source).digest('hex'), '88f4ecc94ecd31cd4cb6c033e4be22d398c39f538e6b021b798b9baa00d2d95a');
+  assert.equal(createHash('sha256').update(restoreUploadFinalization(source)).digest('hex'), '88f4ecc94ecd31cd4cb6c033e4be22d398c39f538e6b021b798b9baa00d2d95a');
   const action = text => extract(text, "await run('new begin preserves retained language as a genuine save', ", ");\n    await run('autosave title and chapter'");
   assert.equal(action(source), action(original.replace(old, fixed)), 'Only the bounded second-begin terminal wait may differ inside this action');
   const h = harness(original, { delayTicks: 3 });
